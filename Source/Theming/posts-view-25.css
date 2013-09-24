@@ -145,9 +145,6 @@ blockquote {
   font: -apple-system-caption1;
   border-left: 1px solid #999;
 }
-.dark blockquote {
-  border-left-color: #555;
-}
 blockquote img {
   max-width: 160px;
   max-height: 100px;
@@ -195,23 +192,12 @@ footer:after {
 body {
   background-color: #093;
 }
-body.dark {
-  color: #6c0;
-}
 .post {
   background-color: #6c0;
 }
-.dark .post {
-  background-color: #000;
-}
 header {
   border-bottom-right-radius: 4px;
-}
-header {
   border-bottom: 1px solid #000;
-}
-.darkheader {
-  border-bottom: 1px solid #6c0;
 }
 .seen header {
   border-bottom: 1px solid #000;
@@ -219,14 +205,8 @@ header {
 .action-button {
   color: #3e7d00;
 }
-.dark .action-button {
-  color: #6c0;
-}
 .postbody a {
   color: #003366;
-}
-.dark .postbody a {
-  color: #93daff;
 }
 .bbc-spoiler {
   color: #000000;
@@ -245,23 +225,6 @@ header {
 .bbc-spoiler a:active {
   color: #000000;
 }
-.dark  .bbc-spoiler {
-  color: #ffffff;
-  background: #ffffff;
-}
-.dark  .bbc-spoiler li {
-  color: #ffffff;
-  background: #ffffff;
-  list-style: none;
-}
-.dark  .bbc-spoiler img {
-  visibility: hidden;
-}
-.dark  .bbc-spoiler a:link,
-.dark  .bbc-spoiler a:visited,
-.dark  .bbc-spoiler a:active {
-  color: #ffffff;
-}
 .bbc-spoiler.spoiled {
   background: transparent;
 }
@@ -275,13 +238,6 @@ header {
 .bbc-block h4,
 .bbc-block h5 {
   color: #555;
-}
-.dark .bbc-block h4,
-.dark .bbc-block h5 {
-  color: #999;
-}
-.dark blockquote {
-  border-left-color: #555;
 }
 #end {
   line-height: 3em;

@@ -1,12 +1,7 @@
 // Spoilers
 // -------------------------
 
-// This rigamorole is so the .spoilers mixin can optionally take a dark-mode
-// spoiler color, without duplicating bit about the spoiled background.
-
-// The mixins starting with - are meant to be private.
-
-.-spoilers (@color) {
+.spoilers(@color) {
   .bbc-spoiler {
     color: @color;
     background: @color;
@@ -24,31 +19,16 @@
     a:active {
       color: @color;
     }
-  }
-}
-
-.-spoiled() {
-  .bbc-spoiler.spoiled {
-    background: transparent;
-    li {
+    
+    &.spoiled {
       background: transparent;
-      list-style: inherit;
-    }
-    img {
-      visibility: visible;
+      li {
+        background: transparent;
+        list-style: inherit;
+      }
+      img {
+        visibility: visible;
+      }
     }
   }
-}
-
-.spoilers(@color) {
-  .-spoilers(@color);
-  .-spoiled();
-}
-
-.spoilers(@lightcolor, @darkcolor) {
-  .-spoilers(@lightcolor);
-  .dark & {
-    .-spoilers(@darkcolor);
-  }
-  .-spoiled();
 }

@@ -145,9 +145,6 @@ blockquote {
   font: -apple-system-caption1;
   border-left: 1px solid #999;
 }
-.dark blockquote {
-  border-left-color: #555;
-}
 blockquote img {
   max-width: 160px;
   max-height: 100px;
@@ -259,23 +256,6 @@ header {
 .bbc-spoiler a:active {
   color: #000000;
 }
-.dark  .bbc-spoiler {
-  color: #ffffff;
-  background: #ffffff;
-}
-.dark  .bbc-spoiler li {
-  color: #ffffff;
-  background: #ffffff;
-  list-style: none;
-}
-.dark  .bbc-spoiler img {
-  visibility: hidden;
-}
-.dark  .bbc-spoiler a:link,
-.dark  .bbc-spoiler a:visited,
-.dark  .bbc-spoiler a:active {
-  color: #ffffff;
-}
 .bbc-spoiler.spoiled {
   background: transparent;
 }
@@ -289,9 +269,6 @@ header {
 .bbc-block h4,
 .bbc-block h5 {
   color: #555;
-}
-.dark blockquote {
-  border-left-color: #999;
 }
 #end {
   line-height: 3em;

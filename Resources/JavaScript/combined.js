@@ -36,10 +36,6 @@ Awful.stylesheetURL = function(url){
   }
 }
 
-Awful.dark = function(dark){
-  $('body').toggleClass('dark', dark)
-}
-
 Awful.ad = function(ad){
   $('#ad').html(ad)
 }

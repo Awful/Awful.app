@@ -261,18 +261,6 @@ static NSString * JSONizeBool(BOOL aBool)
     }
 }
 
-- (void)setDark:(BOOL)dark
-{
-    if (_dark == dark) return;
-    _dark = dark;
-    [self updateDark];
-}
-
-- (void)updateDark
-{
-    [self evalJavaScript:@"Awful.dark(%@)", JSONizeBool(self.dark)];
-}
-
 - (void)setShowAvatars:(BOOL)showAvatars
 {
     if (_showAvatars == showAvatars) return;
@@ -426,7 +414,6 @@ static NSString * JSONizeBool(BOOL aBool)
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     dispatch_once(&_onceOnFirstLoad, ^{
-        [self updateDark];
         [self updateShowAvatars];
         [self updateShowImages];
         [self updateHighlightQuoteUsername];

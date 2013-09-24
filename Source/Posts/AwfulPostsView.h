@@ -30,8 +30,6 @@
 
 @property (nonatomic) NSURL *stylesheetURL;
 
-@property (getter=isDark, nonatomic) BOOL dark;
-
 @property (nonatomic) BOOL showAvatars;
 
 @property (nonatomic) BOOL showImages;

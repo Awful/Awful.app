@@ -462,7 +462,6 @@
 
 - (void)configurePostsViewSettings
 {
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;

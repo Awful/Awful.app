@@ -87,7 +87,6 @@
     self.view = view;
     [self configurePostsViewSettings];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.postsView.dark = [AwfulSettings settings].darkTheme;
     self.loadingView.tintColor = self.view.backgroundColor;
 }
 

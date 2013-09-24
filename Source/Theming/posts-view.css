@@ -145,9 +145,6 @@ blockquote {
   font: -apple-system-caption1;
   border-left: 1px solid #999;
 }
-.dark blockquote {
-  border-left-color: #555;
-}
 blockquote img {
   max-width: 160px;
   max-height: 100px;
@@ -195,19 +192,12 @@ footer:after {
 body {
   background-color: #fff;
 }
-body.dark {
-  background-color: #000;
-  color: white;
-}
 .post {
   background-color: transparent;
   border-bottom: 1px solid #c3c3c3;
 }
 .post.seen {
   background-color: #f9fafd;
-}
-.dark .post {
-  box-shadow: inset 0 1px 2px -1px #f9fafd, inset 0 -1px 1px -1px #c3c3c3;
 }
 /* Can't do a 1 device pixel border on a retina screen, so fake it with this */
 @media (-webkit-min-device-pixel-ratio: 2) {
@@ -245,23 +235,6 @@ header {
 .bbc-spoiler a:active {
   color: #000000;
 }
-.dark  .bbc-spoiler {
-  color: #ffffff;
-  background: #ffffff;
-}
-.dark  .bbc-spoiler li {
-  color: #ffffff;
-  background: #ffffff;
-  list-style: none;
-}
-.dark  .bbc-spoiler img {
-  visibility: hidden;
-}
-.dark  .bbc-spoiler a:link,
-.dark  .bbc-spoiler a:visited,
-.dark  .bbc-spoiler a:active {
-  color: #ffffff;
-}
 .bbc-spoiler.spoiled {
   background: transparent;
 }
@@ -276,10 +249,6 @@ header {
 .bbc-block h5 {
   color: #555;
 }
-.dark .bbc-block h4,
-.dark .bbc-block h5 {
-  color: #999;
-}
 footer {
   margin-top: 0.6em;
 }
@@ -290,7 +259,4 @@ footer {
 #end {
   color: #000;
   line-height: 3em;
-}
-.dark #end {
-  color: white;
 }
