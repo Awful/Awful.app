@@ -183,8 +183,14 @@
             } else if (operation.response.statusCode == 500) {
                 errorCode = ImgurAPIErrorUnexpectedRemoteError;
             }
-            NSString *message = response[@"data"][@"error"][@"message"];
-            if (!message) message = @"An unknown error occurred";
+            NSString *message = @"An unknown error occurred";
+            @try {
+                NSString *helpfulMessage = response[@"data"][@"error"][@"message"];
+                if (helpfulMessage) message = helpfulMessage;
+            }
+            @catch (NSException *exception) {
+                NSLog(@"Imgur messed with their error response JSON, which was %@", response);
+            }
             NSDictionary *userInfo = @{
                 NSLocalizedDescriptionKey : message,
                 NSUnderlyingErrorKey : operation.error
