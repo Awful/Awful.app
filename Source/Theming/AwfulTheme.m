@@ -72,9 +72,7 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
 {
     NSURL *url = [[NSBundle mainBundle] URLForResource:[self objectForKey:key] withExtension:nil];
     NSError *error;
-    NSString *stylesheet = [NSString stringWithContentsOfURL:url
-                                                usedEncoding:nil
-                                                       error:&error];
+    NSString *stylesheet = [NSString stringWithContentsOfURL:url usedEncoding:nil error:&error];
     NSAssert(stylesheet, @"could not load stylesheet in theme %@ for key %@; error: %@", self.name, key, error);
     return stylesheet;
 }
