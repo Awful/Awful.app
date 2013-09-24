@@ -19,4 +19,9 @@
     return [systemVersion compare:@"6.0" options:NSNumericSearch] != NSOrderedAscending;
 }
 
+- (BOOL)awful_iOS6OrEarlier
+{
+    return [self.systemVersion compare:@"7.0" options:NSNumericSearch] == NSOrderedAscending;
+}
+
 @end

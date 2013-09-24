@@ -4,6 +4,7 @@
 
 #import "AwfulSemiModalViewController.h"
 #import "AwfulScreenCoverView.h"
+#import "UIDevice+OperatingSystemVersion.h"
 
 @interface AwfulSemiModalViewController () <UIPopoverControllerDelegate>
 
@@ -83,7 +84,10 @@
     [self didMoveToParentViewController:viewController];
     [UIView animateWithDuration:0.3 animations:^{
         self.view.frame = CGRectOffset(self.view.frame, 0, -CGRectGetHeight(self.view.frame));
-        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.view);
+        if ([[UIDevice currentDevice] awful_iOS6OrEarlier]) {
+            // This crashes on iOS 7. No idea why, not bothering to look.
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.view);
+        }
     }];
 }
 

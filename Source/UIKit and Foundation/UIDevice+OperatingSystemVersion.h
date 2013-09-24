@@ -12,4 +12,6 @@
 // Returns YES if this device is running iOS 6.0 or a later version.
 - (BOOL)awful_iOS6OrLater;
 
+- (BOOL)awful_iOS6OrEarlier;
+
 @end
