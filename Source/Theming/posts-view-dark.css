@@ -1,0 +1,264 @@
+/*
+ posts-view-dark.css
+ Awful
+ 
+ Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+html {
+  font-family: "Helvetica Neue", sans-serif;
+}
+body {
+  margin: 0;
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  word-wrap: break-word;
+}
+.post {
+  margin: 0;
+}
+.iphone .post {
+  padding: .6em;
+  padding-bottom: 0;
+}
+.ipad .post {
+  padding: 1.07em;
+  padding-bottom: 0;
+}
+header {
+  margin: .25em 0;
+}
+.ipad header {
+  margin-bottom: 8px;
+}
+header:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.avatar {
+  float: left;
+}
+.iphone .avatar {
+  max-height: 2.5em;
+  max-width: 2.5em;
+  margin: 6px 5px 0 0;
+}
+.ipad .avatar {
+  max-height: 4em;
+  margin-right: 8px;
+  margin-bottom: .5em;
+}
+.action-button {
+  float: right;
+}
+.username {
+  margin: 0;
+}
+.ipad .username {
+  padding-top: .5em;
+}
+.postdate {
+  font: -apple-system-subheadline;
+  float: left;
+  margin: .6em 0;
+}
+.regdate {
+  display: block;
+  font: -apple-system-subheadline;
+}
+.ipad .regdate {
+  padding-bottom: .75em;
+}
+header {
+  padding-bottom: 0;
+}
+.username {
+  font: -apple-system-headline;
+  display: inline-block;
+}
+.role-admin .username {
+  background-image: url('adminstar.png');
+}
+.role-mod .username {
+  background-image: url('modstar.png');
+}
+.role-admin .username,
+.role-mod .username {
+  padding-left: 1.125em;
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-size: auto 1em;
+}
+.role-op .username {
+  color: #199ed7;
+}
+.action-button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-family: inherit;
+  font-size: 2.25em;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  background-color: transparent;
+  line-height: 1em;
+}
+.postbody {
+  font: -apple-system-body;
+}
+.postbody img {
+  -webkit-user-select: none;
+}
+.postbody img,
+.postbody iframe {
+  max-width: 100%;
+}
+.iphone .postbody {
+  padding: .36em 0;
+}
+.bbc-block h4 {
+  margin: 0;
+  padding: 1px 0 2px;
+  font: -apple-system-footnote;
+}
+.bbc-block h5 {
+  margin: 0;
+  font: -apple-system-caption1;
+}
+.ipad .bbc-block {
+  margin: 0 10px 1em 10px;
+}
+.bbc-block.mention,
+.bbc-block.mention h4 a {
+  color: #7409a0;
+  border-color: #7409a0;
+}
+span.mention {
+  color: #7409a0;
+}
+.quote_link {
+  text-decoration: none;
+}
+blockquote {
+  margin: 0;
+  padding: 0 10px;
+  font: -apple-system-caption1;
+  border-left: 1px solid #999;
+}
+blockquote img {
+  max-width: 160px;
+  max-height: 100px;
+}
+.postbody a {
+  -webkit-tap-highlight-color: transparent;
+}
+.iphone .postbody ol,
+.iphone .postbody ul {
+  margin: 0;
+  padding-left: 1.5em;
+}
+.bbc-block.code pre {
+  margin: 0;
+  font: -apple-system-caption1;
+}
+.editedby {
+  margin-top: 5px;
+  font: -apple-system-caption1;
+  font-style: italic;
+}
+.attachment {
+  margin: 0;
+}
+footer {
+  font: -apple-system-subheadline2;
+}
+footer:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+#ad {
+  text-align: center;
+}
+#ad img {
+  max-width: 100%;
+}
+#end {
+  font-weight: normal;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+body {
+  color: #ffffff;
+  background-color: #000000;
+}
+.post {
+  background-color: transparent;
+  border-bottom: 1px solid #c3c3c3;
+  box-shadow: inset 0 1px 2px -1px #f9fafd, inset 0 -1px 1px -1px #c3c3c3;
+}
+.post.seen {
+  background-color: #030330;
+}
+/* Can't do a 1 device pixel border on a retina screen, so fake it with this */
+@media (-webkit-min-device-pixel-ratio: 2) {
+  .post {
+    border-bottom: none;
+    box-shadow: inset 0 1px 2px -1px #ffffff, inset 0 -1px 1px -1px #c3c3c3;
+  }
+  .post.seen {
+    box-shadow: inset 0 1px 2px -1px #f9fafd, inset 0 -1px 1px -1px #c3c3c3;
+  }
+}
+header {
+  border-bottom: none;
+}
+.action-button {
+  color: #1682b2;
+}
+.postbody a {
+  color: #1682b2;
+}
+.bbc-spoiler {
+  color: #ffffff;
+  background: #ffffff;
+}
+.bbc-spoiler li {
+  color: #ffffff;
+  background: #ffffff;
+  list-style: none;
+}
+.bbc-spoiler img {
+  visibility: hidden;
+}
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
+  color: #ffffff;
+}
+.bbc-spoiler.spoiled {
+  background: transparent;
+}
+.bbc-spoiler.spoiled li {
+  background: transparent;
+  list-style: inherit;
+}
+.bbc-spoiler.spoiled img {
+  visibility: visible;
+}
+.bbc-block h4,
+.bbc-block h5 {
+  color: #999;
+}
+footer {
+  margin-top: 0.6em;
+}
+.postdate,
+.regdate {
+  color: #8e8e8e;
+}
+#end {
+  color: #ffffff;
+  line-height: 3em;
+}

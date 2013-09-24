@@ -99,6 +99,7 @@
 		1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */; };
 		1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */; };
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
+		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */; };
 		1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */; };
 		1C5BA3EC16CBED3500375A72 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */; };
@@ -455,6 +456,7 @@
 		1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-macinyos.css"; sourceTree = "<group>"; };
 		1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-winpos95.css"; sourceTree = "<group>"; };
 		1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-yospos.css"; sourceTree = "<group>"; };
+		1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-dark.css"; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPage.h; sourceTree = "<group>"; };
 		1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageTopBar.m; sourceTree = "<group>"; };
@@ -1518,6 +1520,7 @@
 				1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
+				1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */,
 				1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */,
 				1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */,
 				1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */,
@@ -1846,6 +1849,7 @@
 				1CFBECDB162F4ED7008AF641 /* pagebar-button-selected.png in Resources */,
 				1CFA2EFB17E1FF5B00DE5DE9 /* pages.png in Resources */,
 				1CFBECDC162F4ED7008AF641 /* pagebar-button-selected@2x.png in Resources */,
+				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
 				1CFBECDD162F4ED7008AF641 /* pagebar-button.png in Resources */,
 				1CFBECDE162F4ED7008AF641 /* pagebar-button@2x.png in Resources */,
 				1CFBECE7162F526A008AF641 /* pagebar-segmented-divider.png in Resources */,
