@@ -18,7 +18,7 @@
  * The source dictionary for this theme. Conventions are:
  *
  * - Colors have a key ending with "Color" and are written as CSS hexadecimal color codes with an optional alpha component (defaults to FF) at the end. For example: "backgroundColor" = "#000000" or, equivalently, "backgroundColor" = "#000000ff". Or, they can be the basename of an image in the main bundle to use as a pattern.
- * - CSS files have a key ending in "CSS" and are written as a filename of a resource in the main bundle.
+ * - Stylesheets have a key ending in "CSS" and are written as a filename of a resource in the main bundle. The file's contents are returned as a string.
  */
 @property (readonly, copy, nonatomic) NSDictionary *dictionary;
 
