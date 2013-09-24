@@ -28,6 +28,16 @@
 @property (readonly, copy, nonatomic) NSString *name;
 
 /**
+ * A descriptive name of the theme, appropriate for e.g. a UILabel.
+ */
+@property (readonly, copy, nonatomic) NSString *descriptiveName;
+
+/**
+ * A color representative of the theme.
+ */
+@property (readonly, strong, nonatomic) UIColor *descriptiveColor;
+
+/**
  * An AwfulTheme to use for looking up values not set by this theme.
  *
  * In the plist, the key is "parent"  and the value is the name of another theme. Defaults to the theme called "default".

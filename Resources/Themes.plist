@@ -4,6 +4,10 @@
 <dict>
 	<key>default</key>
 	<dict>
+		<key>description</key>
+		<string>Light</string>
+		<key>descriptiveColor</key>
+		<string>#ffffff</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
 		<key>actionSheetBackgroundColor</key>
@@ -29,36 +33,64 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>description</key>
+		<string>Dark</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>description</key>
+		<string>Pink</string>
+		<key>descriptiveColor</key>
+		<string>#fd9a9a</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>description</key>
+		<string>Sickly</string>
+		<key>descriptiveColor</key>
+		<string>#68cc24</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-gas-chamber.css</string>
 	</dict>
 	<key>Macinyos</key>
 	<dict>
+		<key>description</key>
+		<string>Macinyos</string>
+		<key>descriptiveColor</key>
+		<string>macinyos-wallpaper</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
+		<key>description</key>
+		<string>Winpos 95</string>
+		<key>descriptiveColor</key>
+		<string>#107f7f</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>description</key>
+		<string>Green console</string>
+		<key>descriptiveColor</key>
+		<string>#57ff57</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>description</key>
+		<string>Amber console</string>
+		<key>descriptiveColor</key>
+		<string>#ebd04b</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-amberpos.css</string>
 	</dict>

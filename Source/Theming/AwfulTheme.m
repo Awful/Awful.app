@@ -14,6 +14,17 @@
     return self;
 }
 
+- (NSString *)descriptiveName
+{
+    // Intentionally bypassing the parentTheme chain.
+    return _dictionary[@"description"];
+}
+
+- (UIColor *)descriptiveColor
+{
+    return self[@"descriptiveColor"];
+}
+
 - (id)objectForKey:(id)key
 {
     return _dictionary[key] ?: [self.parentTheme objectForKey:key];
