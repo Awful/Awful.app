@@ -41,4 +41,16 @@
     return nil;
 }
 
+- (NSArray *)themesForForumWithID:(NSString *)forumID
+{
+    NSMutableArray *themes = [NSMutableArray new];
+    for (AwfulTheme *theme in _themes) {
+        NSString *relevantForumID = theme[@"relevantForumID"];
+        if (!relevantForumID || [relevantForumID isEqualToString:forumID]) {
+            [themes addObject:theme];
+        }
+    }
+    return themes;
+}
+
 @end

@@ -20,4 +20,9 @@
  */
 - (AwfulTheme *)themeNamed:(NSString *)themeName;
 
+/**
+ * Returns an array of AwfulTheme objects usable for the forum with the given ID.
+ */
+- (NSArray *)themesForForumWithID:(NSString *)forumID;
+
 @end

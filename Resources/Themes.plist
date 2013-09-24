@@ -46,6 +46,8 @@
 		<string>Pink</string>
 		<key>descriptiveColor</key>
 		<string>#fd9a9a</string>
+		<key>relevantForumID</key>
+		<string>26</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
 	</dict>
@@ -55,6 +57,8 @@
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
 		<string>#68cc24</string>
+		<key>relevantForumID</key>
+		<string>25</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-gas-chamber.css</string>
 	</dict>
@@ -64,6 +68,8 @@
 		<string>Macinyos</string>
 		<key>descriptiveColor</key>
 		<string>macinyos-wallpaper</string>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
 	</dict>
@@ -73,6 +79,8 @@
 		<string>Winpos 95</string>
 		<key>descriptiveColor</key>
 		<string>#107f7f</string>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
 	</dict>
@@ -82,6 +90,8 @@
 		<string>Green console</string>
 		<key>descriptiveColor</key>
 		<string>#57ff57</string>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 	</dict>
@@ -91,6 +101,8 @@
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
 		<string>#ebd04b</string>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-amberpos.css</string>
 	</dict>
