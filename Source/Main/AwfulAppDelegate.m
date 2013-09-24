@@ -40,7 +40,6 @@
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
-@property (strong, nonatomic) AwfulThemeLoader *themeLoader;
 @property (strong, nonatomic) AwfulTheme *theme;
 
 @end
@@ -172,8 +171,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = self.basementViewController ?: self.verticalTabBarController;
-    self.themeLoader = [AwfulThemeLoader new];
-    self.theme = self.themeLoader.defaultTheme;
+    self.theme = [AwfulThemeLoader sharedLoader].defaultTheme;
     
     return YES;
 }
@@ -297,9 +295,9 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
     
     if ([changes containsObject:AwfulSettingsKeys.darkTheme]) {
         if ([AwfulSettings settings].darkTheme) {
-            self.theme = [self.themeLoader themeNamed:@"dark"];
+            self.theme = [[AwfulThemeLoader sharedLoader] themeNamed:@"dark"];
         } else {
-            self.theme = self.themeLoader.defaultTheme;
+            self.theme = [AwfulThemeLoader sharedLoader].defaultTheme;
         }
     }
 }

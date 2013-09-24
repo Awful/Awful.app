@@ -26,6 +26,16 @@
     return self;
 }
 
++ (instancetype)sharedLoader
+{
+    static AwfulThemeLoader *instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [self new];
+    });
+    return instance;
+}
+
 - (AwfulTheme *)defaultTheme
 {
     return [self themeNamed:@"default"];

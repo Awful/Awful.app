@@ -11,6 +11,11 @@
 @interface AwfulThemeLoader : NSObject
 
 /**
+ * Singleton instance.
+ */
++ (instancetype)sharedLoader;
+
+/**
  * Returns the default AwfulTheme, which has a light background and dark text.
  */
 @property (readonly, strong, nonatomic) AwfulTheme *defaultTheme;
