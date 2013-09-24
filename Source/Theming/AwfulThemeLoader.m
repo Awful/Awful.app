@@ -19,6 +19,7 @@
         [_themes addObject:[[AwfulTheme alloc] initWithName:name dictionary:themesDictionary[name]]];
     }
     for (AwfulTheme *theme in _themes) {
+        if ([theme.name isEqualToString:@"default"]) continue;
         NSString *parentThemeName = theme.dictionary[@"parent"] ?: @"default";
         theme.parentTheme = [self themeNamed:parentThemeName];
     }
