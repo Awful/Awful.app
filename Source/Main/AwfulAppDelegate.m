@@ -13,6 +13,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulLepersViewController.h"
 #import "AwfulLoginController.h"
+#import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationBar.h"
 #import "AwfulNewPMNotifierAgent.h"
@@ -211,6 +212,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
                                                                     diskPath:nil]];
+    [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
