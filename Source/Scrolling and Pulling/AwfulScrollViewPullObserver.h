@@ -6,10 +6,10 @@
 
 @interface AwfulScrollViewPullObserver : NSObject
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, AwfulScrollViewPullDirection) {
     AwfulScrollViewPullDown,
     AwfulScrollViewPullUp
-} AwfulScrollViewPullDirection;
+};
 
 typedef void (^AwfulPullToRefreshBlock)(void);
 

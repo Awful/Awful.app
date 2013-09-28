@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AwfulThreadPage) {
     // Not sure what the last page is, but you want it.
     AwfulThreadPageLast = -2,
     
@@ -13,4 +13,4 @@ typedef enum {
     AwfulThreadPageNone = 0,
     
     /* Implicitly include values for 1 to n, where n is the number of pages in the thread. */
-} AwfulThreadPage;
+};

@@ -487,7 +487,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     }];
     
     BOOL (^openThread)(NSDictionary *) = ^(NSDictionary *params) {
-        NSInteger page = 0;
+        AwfulThreadPage page = 0;
         if ([params[@"page"] isEqual:@"last"]) {
             page = AwfulThreadPageLast;
         } else if ([params[@"page"] isEqual:@"unread"]) {
@@ -597,7 +597,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 }
 
 - (void)pushPostsViewForPostWithID:(NSString *)postID
-                            onPage:(NSInteger)page
+                            onPage:(AwfulThreadPage)page
                     ofThreadWithID:(NSString *)threadID
 {
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];

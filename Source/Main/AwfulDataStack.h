@@ -4,10 +4,10 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, AwfulDataStackInitFailureAction) {
     AwfulDataStackInitFailureAbort,
     AwfulDataStackInitFailureDelete
-} AwfulDataStackInitFailureAction;
+};
 
 
 @interface AwfulDataStack : NSObject

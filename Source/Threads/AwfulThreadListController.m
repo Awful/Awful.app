@@ -375,7 +375,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
     } else if (rating > 5) {
         rating = 5;
     }
-    return [UIImage imageNamed:[NSString stringWithFormat:@"rating%d", rating]];
+    return [UIImage imageNamed:[NSString stringWithFormat:@"rating%ld", rating]];
 }
 
 - (void)updateThreadTagsForCellAtIndexPath:(NSIndexPath *)indexPath
