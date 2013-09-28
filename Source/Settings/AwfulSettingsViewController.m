@@ -148,14 +148,14 @@
     return [self.sections[section][@"Settings"] count];
 }
 
-typedef enum SettingType
+typedef NS_ENUM(NSUInteger, SettingType)
 {
     ImmutableSetting,
     OnOffSetting,
     ChoiceSetting,
     ButtonSetting,
     StepperSetting,
-} SettingType;
+};
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath

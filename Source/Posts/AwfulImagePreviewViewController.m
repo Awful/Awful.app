@@ -293,7 +293,7 @@
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView
                        withView:(UIView *)view
-                        atScale:(float)scale
+                        atScale:(CGFloat)scale
 {
     // Implemented so zooming works.
 }

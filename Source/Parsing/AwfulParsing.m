@@ -963,14 +963,14 @@ static NSString * DeEntitify(NSString *withEntities)
     return bans;
 }
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, LepersColonyColumn) {
     LepersColonyColumnType = 0,
     LepersColonyColumnDate,
     LepersColonyColumnJerk,
     LepersColonyColumnReason,
     LepersColonyColumnRequester,
     LepersColonyColumnApprover
-} LepersColonyColumn;
+};
 
 - (void)parseHTMLData
 {

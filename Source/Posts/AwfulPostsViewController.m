@@ -401,7 +401,7 @@
     
     self.backItem.enabled = self.currentPage > 1;
     if (self.currentPage > 0 && relevantNumberOfPages > 0) {
-        self.currentPageItem.title = [NSString stringWithFormat:@"%d / %d", self.currentPage, relevantNumberOfPages];
+        self.currentPageItem.title = [NSString stringWithFormat:@"%ld / %ld", self.currentPage, relevantNumberOfPages];
     } else {
         self.currentPageItem.title = @"";
     }
@@ -498,7 +498,7 @@
                 // TODO this is stupid, relying on UI state
                 if (self.currentPageItem.title.length == 0) {
                     if ([self relevantNumberOfPagesInThread] > 0) {
-                        NSString *title = [NSString stringWithFormat:@"Page ? of %d", [self relevantNumberOfPagesInThread]];
+                        NSString *title = [NSString stringWithFormat:@"Page ? of %ld", [self relevantNumberOfPagesInThread]];
                         self.currentPageItem.title = title;
                     } else {
                         self.currentPageItem.title = @"Page ? of ?";

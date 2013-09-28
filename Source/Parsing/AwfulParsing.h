@@ -155,13 +155,13 @@
 @end
 
 
-typedef enum {
+typedef NS_ENUM(NSInteger, AwfulBanType) {
     AwfulBanTypeUnknown = 0,
     AwfulBanTypeProbation,
     AwfulBanTypeBan,
     AwfulBanTypeAutoban,
     AwfulBanTypePermaban
-} AwfulBanType;
+};
 
 
 @interface BanParsedInfo : ParsedInfo

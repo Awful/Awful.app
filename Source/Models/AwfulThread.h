@@ -22,9 +22,9 @@
 @end
 
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, AwfulStarCategory) {
     AwfulStarCategoryOrange = 0,
     AwfulStarCategoryRed,
     AwfulStarCategoryYellow,
     AwfulStarCategoryNone
-} AwfulStarCategory;
+};
