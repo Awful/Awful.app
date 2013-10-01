@@ -53,6 +53,8 @@
 
 static UIColor * ColorWithHexCode(NSString *hexCode)
 {
+	if (hexCode == nil) return nil;
+	
     NSMutableString *hexString = [NSMutableString stringWithString:hexCode];
     [hexString replaceOccurrencesOfString:@"#" withString:@"" options:0 range:NSMakeRange(0, hexString.length)];
     CFStringTrimWhitespace((__bridge CFMutableStringRef)hexString);
