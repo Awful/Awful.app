@@ -3,7 +3,7 @@ Awful
 
 [Awful][App Store] is an iOS app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
-This is the in-development Awful 2.0. Dev talk can go in the [project.log][] thread. The last release of Awful 1 is underway on the `old` branch.
+Development talk about Awful 2 and other technobabble can go in the [project.log][] thread for now.
 
 <p align="center">
   <img src="screenshot.png" width="320" height="460" alt="Screenshot of Awful as it appears on a pre-5 iPhone">
