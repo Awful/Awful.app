@@ -208,14 +208,14 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
+    [coder encodeObject:self.detailViewController forKey:DetailViewControllerKey];
     [coder encodeBool:self.detailExpanded forKey:DetailExpandedKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.viewControllers = [coder decodeObjectForKey:ViewControllersKey];
+    self.detailViewController = [coder decodeObjectForKey:DetailViewControllerKey];
     self.detailExpanded = [coder decodeBoolForKey:DetailExpandedKey];
 }
 
@@ -227,7 +227,7 @@
     [self ensureToggleDetailExpandedLeftBarButtonItem];
 }
 
-static NSString * const ViewControllersKey = @"AwfulViewControllers";
+static NSString * const DetailViewControllerKey = @"AwfulDetailViewController";
 static NSString * const DetailExpandedKey = @"AwfulDetailExpanded";
 
 @end
