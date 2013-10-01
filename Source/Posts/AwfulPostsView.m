@@ -318,10 +318,26 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.endMessage(%@)", JSONizeValue(self.endMessage)];
 }
 
+typedef struct WebViewPoint
+{
+    NSInteger x;
+    NSInteger y;
+} WebViewPoint;
+
+static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webView)
+{
+    return (WebViewPoint){
+        // As of iOS 7, UIWebView takes its scroll view's content inset into account when calculating element positions.
+        .x = point.x - webView.scrollView.contentInset.left,
+        .y = point.y - webView.scrollView.contentInset.top,
+    };
+}
+
 - (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(CGRect *)rect
 {
-    NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:
-                              @"Awful.postWithButtonForPoint(%d, %d)", (int)point.x, (int)point.y];
+    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
+    NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:@"Awful.postWithButtonForPoint(%d, %d)",
+                              webViewPoint.x, webViewPoint.y];
     if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
     if (rect) {
         *rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
@@ -331,8 +347,9 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (NSInteger)indexOfPostWithUserNameAtPoint:(CGPoint)point rect:(CGRect *)rect
 {
-	NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:
-														@"Awful.postWithUserNameForPoint(%d, %d)", (int)point.x, (int)point.y];
+    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
+	NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:@"Awful.postWithUserNameForPoint(%d, %d)",
+                              webViewPoint.x, webViewPoint.y];
 	if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
 	if (rect) {
 		*rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
