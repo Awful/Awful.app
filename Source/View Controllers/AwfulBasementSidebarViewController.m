@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulBasementSidebarViewController.h"
+#import "UIApplication+Style.h"
 
 @interface AwfulBasementSidebarViewController ()
 
@@ -39,6 +40,13 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)updateThemedProperties
 {
     self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
+	
+	if (CGColorGetAlpha([self.theme[@"basementBackgroundColor"] CGColor]) < 1.0) {
+		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
+	}
+	else {
+		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
+	}
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -102,7 +110,7 @@ static NSString * const CellIdentifier = @"Cell";
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = self.theme[@"basementBackgroundColor"];
+    cell.backgroundColor = [UIColor clearColor];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

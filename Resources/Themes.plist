@@ -13,17 +13,21 @@
 		<key>actionSheetBackgroundColor</key>
 		<string>#000000d8</string>
 		<key>basementBackgroundColor</key>
-		<string>#133c4e</string>
+		<string>#00000000</string>
 		<key>basementLabelColor</key>
 		<string>#ffffff</string>
 		<key>browserBackgroundColor</key>
 		<string>#ffffff</string>
-		<key>forumsListHeaderBackgroundColor</key>
+		<key>listSecondaryBackgroundColor</key>
 		<string>#e4e4e4</string>
-		<key>forumsListHeaderTextColor</key>
+		<key>listSecondaryTextColor</key>
 		<string>#808080</string>
 		<key>jumpToPageBackgroundColor</key>
 		<string>#ffffff</string>
+		<key>navigationBarTextColor</key>
+		<string>#ffffff</string>
+		<key>navigationBarTintColor</key>
+		<string>#1483b1</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#ffffff</string>
 		<key>postsViewCSS</key>

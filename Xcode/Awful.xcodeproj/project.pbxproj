@@ -278,6 +278,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
+		839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */ = {isa = PBXBuildFile; fileRef = 839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
 		8C2450F91666F76900D3079C /* forum-header-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C2450F51666F76900D3079C /* forum-header-dark.png */; };
@@ -729,6 +730,8 @@
 		288765070DF74369002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F3DF9C27054D9A93B744A1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+Style.h"; sourceTree = "<group>"; };
+		839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+Style.m"; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C2450F51666F76900D3079C /* forum-header-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forum-header-dark.png"; sourceTree = "<group>"; };
@@ -1557,6 +1560,8 @@
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
 				1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */,
+				839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */,
+				839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */,
 			);
 			path = "UIKit and Foundation";
 			sourceTree = "<group>";
@@ -2156,6 +2161,7 @@
 				1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
+				839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
 				1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */,
