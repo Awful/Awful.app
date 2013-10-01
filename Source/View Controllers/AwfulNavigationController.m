@@ -16,7 +16,9 @@
 
 - (id)init
 {
-    return [self initWithNavigationBarClass:[AwfulNavigationBar class] toolbarClass:[AwfulToolbar class]];
+    if (!(self = [self initWithNavigationBarClass:[AwfulNavigationBar class] toolbarClass:[AwfulToolbar class]])) return nil;
+    self.restorationClass = self.class;
+    return self;
 }
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController
