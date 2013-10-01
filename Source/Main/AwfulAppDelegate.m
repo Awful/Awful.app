@@ -36,12 +36,12 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+AwfulTheme.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "UIViewController+AwfulTheme.h"
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
-@property (strong, nonatomic) AwfulTheme *theme;
 
 @end
 
@@ -173,8 +173,8 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = self.basementViewController ?: self.verticalTabBarController;
-    self.theme = [AwfulThemeLoader sharedLoader].defaultTheme;
-    
+    [self themeDidChange];
+	
     return YES;
 }
 
@@ -198,12 +198,10 @@ static NSString * const MessagesExpandingSplitControllerIdentifier = @"AwfulMess
 static NSString * const LepersColonyExpandingSplitControllerIdentifier = @"AwfulLepersColonyExpandingSplitController";
 static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSettingsExpandingSplitController";
 
-- (void)setTheme:(AwfulTheme *)theme
+- (void)themeDidChange
 {
-    if (_theme == theme) return;
-    _theme = theme;
-    self.window.tintColor = _theme[@"tintColor"];
-    self.window.rootViewController.theme = _theme;
+    self.window.tintColor = AwfulTheme.currentTheme[@"tintColor"];
+	[self.window.rootViewController themeDidChange];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -262,47 +260,56 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 {
     NSArray *changes = note.userInfo[AwfulSettingsDidChangeSettingsKey];
     
-    if ([changes containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
-        
-        // Add the private message list if it's needed, or remove it if it isn't.
-        NSArray *roots = [self rootViewControllersUncontained];
-        NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageListController class]];
-        if ([AwfulSettings settings].canSendPrivateMessages) {
-            if (i == NSNotFound) {
-                UINavigationController *nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
-                if (self.basementViewController) {
-                    NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
-                    [viewControllers insertObject:nav atIndex:2];
-                    self.basementViewController.viewControllers = viewControllers;
-                } else if (self.verticalTabBarController) {
-                    NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
-                    [viewControllers insertObject:[[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ nav ]]
-                                          atIndex:2];
-                    self.verticalTabBarController.viewControllers = viewControllers;
-                }
-            }
-        } else {
-            if (i != NSNotFound) {
-                if (self.basementViewController) {
-                    NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
-                    [viewControllers removeObjectAtIndex:i];
-                    self.basementViewController.viewControllers = viewControllers;
-                } else if (self.verticalTabBarController) {
-                    NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
-                    [viewControllers removeObjectAtIndex:i];
-                    self.verticalTabBarController.viewControllers = viewControllers;
-                }
-            }
-        }
-    }
-    
-    if ([changes containsObject:AwfulSettingsKeys.darkTheme]) {
-        if ([AwfulSettings settings].darkTheme) {
-            self.theme = [[AwfulThemeLoader sharedLoader] themeNamed:@"dark"];
-        } else {
-            self.theme = [AwfulThemeLoader sharedLoader].defaultTheme;
-        }
-    }
+	for (NSString *change in changes) {
+		
+		if ([change isEqualToString:AwfulSettingsKeys.canSendPrivateMessages]) {
+			
+			// Add the private message list if it's needed, or remove it if it isn't.
+			NSArray *roots = [self rootViewControllersUncontained];
+			NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageListController class]];
+			if ([AwfulSettings settings].canSendPrivateMessages) {
+				if (i == NSNotFound) {
+					UINavigationController *nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
+					if (self.basementViewController) {
+						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
+						[viewControllers insertObject:nav atIndex:2];
+						self.basementViewController.viewControllers = viewControllers;
+					} else if (self.verticalTabBarController) {
+						NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
+						[viewControllers insertObject:[[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ nav ]]
+											  atIndex:2];
+						self.verticalTabBarController.viewControllers = viewControllers;
+					}
+				}
+			} else {
+				if (i != NSNotFound) {
+					if (self.basementViewController) {
+						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
+						[viewControllers removeObjectAtIndex:i];
+						self.basementViewController.viewControllers = viewControllers;
+					} else if (self.verticalTabBarController) {
+						NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
+						[viewControllers removeObjectAtIndex:i];
+						self.verticalTabBarController.viewControllers = viewControllers;
+					}
+				}
+			}
+			
+		}
+		
+		if ([change isEqualToString:AwfulSettingsKeys.darkTheme] || [change hasPrefix:@"theme"]) {
+			
+			//When the user initiates a theme change, transition from one theme to
+			//the other with a full-screen screenshot fading into the reconfigured interface
+			UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
+			[self.window addSubview:snapshot];
+			[self themeDidChange];
+			[UIView transitionFromView:snapshot toView:nil duration:.2 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+				[snapshot removeFromSuperview];
+			}];
+		}
+		
+	}
 }
 
 - (NSArray *)rootViewControllersUncontained

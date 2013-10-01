@@ -83,7 +83,7 @@
     view.frame = [UIScreen mainScreen].applicationFrame;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.delegate = self;
-    view.stylesheet = self.theme[@"postsViewCSS"];
+    view.stylesheet = AwfulTheme.currentTheme[@"postsViewCSS"];
     self.view = view;
     [self configurePostsViewSettings];
     self.view.backgroundColor = [UIColor whiteColor];

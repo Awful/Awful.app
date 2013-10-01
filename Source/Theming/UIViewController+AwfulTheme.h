@@ -5,12 +5,8 @@
 #import <UIKit/UIKit.h>
 #import "AwfulTheme.h"
 
-@interface UIViewController (AwfulTheme)
 
-/**
- * The first non-nil theme in the view controller's hierarchy, starting with itself and continuing through parent and presenting view controllers.
- */
-@property (strong, nonatomic) AwfulTheme *theme;
+@interface UIViewController (AwfulTheme) 
 
 /**
  * Called when the view controller's theme, derived or otherwise, changes. Subclass implementations should reload and/or update any views customized by the theme, and should call the superclass implementation.
@@ -24,27 +20,31 @@
  *
  * AwfulViewController instances have -themeDidChange called on them after the view loads.
  */
-@interface AwfulViewController : UIViewController
+@interface AwfulViewController : UIViewController 
 
 @end
 
 /**
  * An AwfulTableViewController is a thin customization of UITableViewController that extends AwfulTheme support.
  */
-@interface AwfulTableViewController : UITableViewController
+@interface AwfulTableViewController : UITableViewController 
+
+- (void)themeCell:(UITableViewCell*)cell atIndexPath:indexPath;
 
 @end
 
 /**
  * An AwfulCollectionViewController is a thin customization of UICollectionViewController that extends AwfulTheme support.
  */
-@interface AwfulCollectionViewController : UICollectionViewController
+@interface AwfulCollectionViewController : UICollectionViewController 
+
+- (void)themeCell:(UICollectionViewCell*)cell atIndexPath:indexPath;
 
 @end
 
 /**
  * An AwfulThemedNavigationController is a thin customization of UINavigationController that extends AwfulTheme support.
  */
-@interface AwfulThemedNavigationController : UINavigationController
+@interface AwfulThemedNavigationController : UINavigationController 
 
 @end

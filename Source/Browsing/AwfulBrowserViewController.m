@@ -226,7 +226,7 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"browserBackgroundColor"];
+    self.view.backgroundColor = [AwfulTheme currentTheme][@"browserBackgroundColor"];
 }
 
 static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)

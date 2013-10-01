@@ -5,36 +5,25 @@
 #import "UIViewController+AwfulTheme.h"
 #import <objc/runtime.h>
 
-static void RecursivelyCallThemeDidChangeOn(UIViewController *);
-
 @implementation UIViewController (AwfulTheme)
-
-- (AwfulTheme *)theme
-{
-    AwfulTheme *theme = objc_getAssociatedObject(self, &ThemePropertyKey);
-    if (!theme) {
-        theme = self.parentViewController.theme;
-    }
-    if (!theme) {
-        theme = self.presentingViewController.theme;
-    }
-    return theme;
-}
-
-- (void)setTheme:(AwfulTheme *)theme
-{
-    AwfulTheme *inheritedTheme = self.theme;
-    objc_setAssociatedObject(self, &ThemePropertyKey, theme, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    if (inheritedTheme != theme) {
-        RecursivelyCallThemeDidChangeOn(self);
-    }
-}
-
-static const char ThemePropertyKey;
 
 - (void)themeDidChange
 {
-    // noop
+	if (self.isViewLoaded) {
+		self.view.backgroundColor = AwfulTheme.currentTheme[@"backgroundColor"];
+	}
+	
+	for (UIViewController *child in self.childViewControllers) {
+		if ([child isViewLoaded]) {
+			[child themeDidChange];
+		}
+	}
+	UIViewController *presented = self.presentedViewController;
+	if (presented) {
+		if ([presented isViewLoaded]) {
+			[presented themeDidChange];
+		}
+	}
 }
 
 @end
@@ -47,64 +36,44 @@ static const char ThemePropertyKey;
     [self themeDidChange];
 }
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
-{
-    [super didMoveToParentViewController:parent];
-    if (parent) {
-        RecursivelyCallThemeDidChangeOn(self);
-    }
-}
-
 @end
 
 @implementation AwfulTableViewController
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
+-(void)themeDidChange
 {
-    [super didMoveToParentViewController:parent];
-    if (parent) {
-        RecursivelyCallThemeDidChangeOn(self);
-    }
+	[super themeDidChange];
+	
+	for (UITableViewCell *cell in self.tableView.visibleCells) {
+		[self themeCell:cell atIndexPath:[self.tableView indexPathForCell:cell]];
+	}
+}
+
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:indexPath
+{
+	
 }
 
 @end
 
 @implementation AwfulCollectionViewController
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
+-(void)themeDidChange
 {
-    [super didMoveToParentViewController:parent];
-    if (parent) {
-        RecursivelyCallThemeDidChangeOn(self);
-    }
+	[super themeDidChange];
+	
+	for (UICollectionViewCell *cell in self.collectionView.visibleCells) {
+		[self themeCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+	}
+}
+
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:indexPath
+{
+	
 }
 
 @end
 
 @implementation AwfulThemedNavigationController
 
-- (void)didMoveToParentViewController:(UIViewController *)parent
-{
-    [super didMoveToParentViewController:parent];
-    if (parent) {
-        RecursivelyCallThemeDidChangeOn(self);
-    }
-}
-
 @end
-
-static void RecursivelyCallThemeDidChangeOn(UIViewController *viewController)
-{
-    if ([viewController isViewLoaded]) {
-        [viewController themeDidChange];
-    }
-    for (UIViewController *child in viewController.childViewControllers) {
-        if (!objc_getAssociatedObject(child, &ThemePropertyKey)) {
-            RecursivelyCallThemeDidChangeOn(child);
-        }
-    }
-    UIViewController *presented = viewController.presentedViewController;
-    if (presented && !objc_getAssociatedObject(presented, &ThemePropertyKey)) {
-        RecursivelyCallThemeDidChangeOn(presented);
-    }
-}

@@ -306,7 +306,17 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:ThreadCellIdentifier
                                                             forIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
+	[self themeCell:cell atIndexPath:indexPath];
     return cell;
+}
+
+-(void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
+{
+	AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	
+	cell.backgroundColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listBackgroundColor"];
+	cell.badgeLabel.textColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listTextColor"];
+	cell.textLabel.textColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listTextColor"];
 }
 
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath

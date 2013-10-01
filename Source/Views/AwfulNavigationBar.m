@@ -9,8 +9,6 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    self.tintColor = [UIColor whiteColor];
-    self.barTintColor = [UIColor colorWithRed:0.078 green:0.514 blue:0.694 alpha:1];
     
     // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
     self.translucent = NO;

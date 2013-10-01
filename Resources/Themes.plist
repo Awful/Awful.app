@@ -4,6 +4,8 @@
 <dict>
 	<key>default</key>
 	<dict>
+		<key>backgroundColor</key>
+		<string>#000000</string>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
@@ -36,17 +38,35 @@
 		<string>#1e84af</string>
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
+		<key>listBackgroundColor</key>
+		<string>#ffffff</string>
+		<key>listTextColor</key>
+		<string>#000000</string>
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#ffffff</string>
+		<key>listSecondaryBackgroundColor</key>
+		<string>#222222</string>
 		<key>description</key>
 		<string>Dark</string>
 		<key>descriptiveColor</key>
+		<string>#000000</string>
+		<key>navigationBarTintColor</key>
 		<string>#000000</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#000000</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>
+		<key>settingsSwitchColor</key>
+		<string>#222222</string>
+		<key>listBackgroundColor</key>
+		<string>#000000</string>
+		<key>listSeparatorColor</key>
+		<string>#000000</string>
+		<key>listTextColor</key>
+		<string>#ffffff</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
@@ -114,6 +134,10 @@
 		<string>#5ffc60</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
+		<key>listBackgroundColor</key>
+		<string>#000000</string>
+		<key>listTextColor</key>
+		<string>#00ff00</string>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>

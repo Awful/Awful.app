@@ -213,12 +213,6 @@ static NSString * const HeaderIdentifier = @"Header";
 static NSString * const ForumCellIdentifier = @"Forum";
 static NSString * const FavoriteCellIdentifier = @"Favorite";
 
-- (void)themeDidChange
-{
-    [super themeDidChange];
-    [self.tableView reloadData];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -303,8 +297,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:HeaderIdentifier];
-    header.contentView.backgroundColor = self.theme[@"forumsListHeaderBackgroundColor"];
-    header.textLabel.textColor = self.theme[@"forumsListHeaderTextColor"];
+    header.contentView.backgroundColor = AwfulTheme.currentTheme[@"listSecondaryBackgroundColor"];
+    header.textLabel.textColor = AwfulTheme.currentTheme[@"listSecondaryTextColor"];
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
     } else {
@@ -336,6 +330,7 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
         AwfulFavoriteForumCell *cell = [tableView dequeueReusableCellWithIdentifier:FavoriteCellIdentifier
                                                                        forIndexPath:indexPath];
         [self configureFavoriteCell:cell atIndexPath:indexPath];
+		[self themeCell:cell atIndexPath:indexPath];
         return cell;
     } else {
         AwfulForumCell *cell = [tableView dequeueReusableCellWithIdentifier:ForumCellIdentifier
@@ -345,6 +340,7 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
             adjustedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
         }
         [self configureForumCell:cell atAdjustedIndexPath:adjustedIndexPath];
+		[self themeCell:cell atIndexPath:indexPath];
         return cell;
     }
 }
@@ -354,6 +350,12 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.textLabel.text = forum.name;
     cell.separatorInset = UIEdgeInsetsZero;
+}
+
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:(id)indexPath
+{
+	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
+	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
 }
 
 - (void)configureForumCell:(AwfulForumCell *)cell atAdjustedIndexPath:(NSIndexPath *)indexPath

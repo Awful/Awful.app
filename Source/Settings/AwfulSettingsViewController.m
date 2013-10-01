@@ -87,14 +87,21 @@
 
 #pragma mark - UIViewController
 
+- (void)themeDidChange
+{
+	[super themeDidChange];
+	
+	self.tableView.separatorColor = AwfulTheme.currentTheme[@"listSeparatorColor"];
+	self.tableView.backgroundColor = AwfulTheme.currentTheme[@"listSecondaryBackgroundColor"];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.switches = [NSMutableArray new];
     self.steppers = [NSMutableArray new];
-    self.tableView.backgroundView = nil;
-    self.tableView.backgroundColor = [UIColor colorWithRed:0.937 green:0.937 blue:0.957 alpha:1];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+	[self themeDidChange];
 }
 
 - (void)reloadSections
@@ -156,6 +163,17 @@ typedef NS_ENUM(NSUInteger, SettingType)
     ButtonSetting,
     StepperSetting,
 };
+
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:(id)indexPath
+{
+	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
+	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+	
+	if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
+		UIColor *color = AwfulTheme.currentTheme[@"settingsSwitchColor"];
+		[(UISwitch*)cell.accessoryView setOnTintColor:color];
+	}
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -282,6 +300,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
+	[self themeCell:cell atIndexPath:indexPath];
+	
     return cell;
 }
 

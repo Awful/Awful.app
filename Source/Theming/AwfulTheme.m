@@ -3,8 +3,33 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulTheme.h"
+#import "AwfulSettings.h"
+#import "AwfulThemeLoader.h"
+#import <objc/runtime.h>
 
 @implementation AwfulTheme
+
++ (instancetype)currentTheme
+{
+	if ([AwfulSettings settings].darkTheme) {
+		return [[AwfulThemeLoader sharedLoader] themeNamed:@"dark"];
+	}
+	else {
+		return [AwfulThemeLoader sharedLoader].defaultTheme;
+	}
+}
+
++ (instancetype)currentThemeForForumId:(NSString*)forumId
+{
+	NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:forumId];
+    if (specificThemeName) {
+        return [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
+    }
+	else {
+		return self.currentTheme;
+	}
+}
+
 
 - (id)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary
 {

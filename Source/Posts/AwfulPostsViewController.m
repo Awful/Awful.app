@@ -156,7 +156,7 @@
     AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
     settings.delegate = self;
     settings.themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.thread.forum.forumID];
-    settings.selectedTheme = self.theme;
+    settings.selectedTheme = AwfulTheme.currentTheme;
     self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
     self.pageSettingsPopover.delegate = self;
     [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
@@ -291,7 +291,7 @@
     [self didChangeValueForKey:@"thread"];
     [self updateFetchedResultsController];
     [self updateUserInterface];
-    self.postsView.stylesheet = self.theme[@"postsViewCSS"];
+    self.postsView.stylesheet = AwfulTheme.currentTheme[@"postsViewCSS"];
     [self forgetOngoingReply];
 }
 
@@ -413,7 +413,7 @@
 {
     if (!self.loadingView) {
         AwfulLoadingViewType loadingViewType = AwfulLoadingViewTypeDefault;
-        NSString *loadingViewTypeString = self.theme[@"postsLoadingViewType"];
+        NSString *loadingViewTypeString = AwfulTheme.currentTheme[@"postsLoadingViewType"];
         if ([loadingViewTypeString isEqualToString:@"FYAD"]) {
             loadingViewType = AwfulLoadingViewTypeFYAD;
         } else if ([loadingViewTypeString isEqualToString:@"GasChamber"]) {
@@ -426,7 +426,7 @@
             loadingViewType = AwfulLoadingViewTypeYOSPOS;
         }
         self.loadingView = [AwfulLoadingView loadingViewWithType:loadingViewType];
-        self.loadingView.tintColor = self.theme[@"postsLoadingViewTintColor"];
+        self.loadingView.tintColor = AwfulTheme.currentTheme[@"postsLoadingViewTintColor"];
     }
     self.loadingView.message = message;
     [self.postsView addSubview:self.loadingView];
@@ -444,7 +444,7 @@
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    self.postsView.stylesheet = self.theme[@"postsViewCSS"];
+    self.postsView.stylesheet = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"postsViewCSS"];
     if (self.loadingView) {
         NSString *message = self.loadingView.message;
         [self clearLoadingMessage];
@@ -705,10 +705,6 @@
 
 - (void)loadView
 {
-    NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:self.thread.forum.forumID];
-    if (specificThemeName) {
-        self.theme = [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
-    }
     self.postsView = [AwfulPostsView new];
     self.postsView.delegate = self;
     self.postsView.scrollView.delegate = self;
@@ -1317,13 +1313,13 @@ static char KVOContext;
 {
     AwfulTheme *theme = pageSettings.selectedTheme;
     if (theme.forumSpecific) {
-        self.theme = theme;
         [[AwfulSettings settings] setThemeName:theme.name forForumID:self.thread.forum.forumID];
     } else {
-        self.theme = nil;
         [[AwfulSettings settings] setThemeName:nil forForumID:self.thread.forum.forumID];
         [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
     }
+	
+	[self themeDidChange];
 }
 
 #pragma mark - State Preservation and Restoration

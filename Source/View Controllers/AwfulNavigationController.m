@@ -28,6 +28,14 @@
     return self;
 }
 
+- (void)themeDidChange
+{
+	[super themeDidChange];
+	
+	self.navigationBar.tintColor = AwfulTheme.currentTheme[@"navigationBarTextColor"];
+    self.navigationBar.barTintColor = AwfulTheme.currentTheme[@"navigationBarTintColor"];
+}
+
 #pragma mark UIViewControllerRestoration
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder

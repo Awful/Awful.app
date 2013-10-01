@@ -166,7 +166,7 @@ const UIEdgeInsets SectionInsets = {15, 23, 5, 23};
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"actionSheetBackgroundColor"];
+    self.view.backgroundColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
 }
 
 @end

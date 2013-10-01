@@ -39,9 +39,9 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)updateThemedProperties
 {
-    self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
+    self.view.backgroundColor = AwfulTheme.currentTheme[@"basementBackgroundColor"];
 	
-	if (CGColorGetAlpha([self.theme[@"basementBackgroundColor"] CGColor]) < 1.0) {
+	if (CGColorGetAlpha([AwfulTheme.currentTheme[@"basementBackgroundColor"] CGColor]) < 1.0) {
 		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
 	}
 	else {
@@ -102,7 +102,7 @@ static NSString * const CellIdentifier = @"Cell";
     cell.imageView.contentMode = UIViewContentModeCenter;
     cell.imageView.image = item.image;
     cell.textLabel.text = item.title;
-    cell.textLabel.textColor = self.theme[@"basementLabelColor"];
+    cell.textLabel.textColor = AwfulTheme.currentTheme[@"basementLabelColor"];
     return cell;
 }
 

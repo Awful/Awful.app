@@ -10,6 +10,16 @@
 @interface AwfulTheme : NSObject
 
 /**
+ * Returns an initialized AwfulTheme for the currently selected default theme
+ */
++ (instancetype)currentTheme;
+
+/**
+ * Returns an initialized AwfulTheme that may/may not be customized for a specific fourm
+ */
++ (instancetype)currentThemeForForumId:(NSString*)forumId;
+
+/**
  * Returns an initialized AwfulTheme. This is the designated initializer.
  */
 - (id)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary;
