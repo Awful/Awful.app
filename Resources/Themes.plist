@@ -80,6 +80,12 @@
 		<string>FYAD</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
+		<key>listSeparatorColor</key>
+		<string>#851A51</string>
+		<key>listBackgroundColor</key>
+		<string>#ffccff</string>
+		<key>listTextColor</key>
+		<string>#006666</string>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
@@ -122,6 +128,8 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>parent</key>
+		<string>dark</string>
 		<key>description</key>
 		<string>Green console</string>
 		<key>descriptiveColor</key>
@@ -137,7 +145,7 @@
 		<key>listBackgroundColor</key>
 		<string>#000000</string>
 		<key>listTextColor</key>
-		<string>#00ff00</string>
+		<string>#57FF57</string>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
@@ -151,6 +159,8 @@
 		<string>#eacf4b</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-amberpos.css</string>
+		<key>listTextColor</key>
+		<string>#EACF4C</string>
 	</dict>
 </dict>
 </plist>
