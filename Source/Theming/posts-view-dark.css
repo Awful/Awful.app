@@ -76,6 +76,29 @@ header {
   font: -apple-system-headline;
   display: inline-block;
 }
+.username #bracket {
+  display: inline-block;
+  position: relative;
+  height: 16px;
+  width: 8px;
+}
+.username #bracket::before,
+.username #bracket::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  height: 15%;
+  width: 100%;
+  background: #cccccc;
+}
+.username #bracket::before {
+  top: 50%;
+  -webkit-transform: rotate(45deg);
+}
+.username #bracket::after {
+  top: 81%;
+  -webkit-transform: rotate(-45deg);
+}
 .role-admin .username {
   background-image: url('adminstar.png');
 }

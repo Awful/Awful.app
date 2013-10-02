@@ -108,6 +108,29 @@ header {
   font: -apple-system-headline;
   display: inline-block;
   
+  #bracket {
+    display: inline-block;
+	position: relative;
+	height: 16px;
+	width: 8px;
+  }
+  #bracket::before, #bracket::after {
+	content: '';
+	position: absolute;
+	left: 5px;
+	height: 15%;
+	width: 100%;
+	background: #cccccc;
+  }
+  #bracket::before {
+	top: 50%;
+	-webkit-transform: rotate(45deg);
+  }
+  #bracket::after {
+	top: 81%;
+	-webkit-transform: rotate(-45deg);
+  }
+  
   .role-admin & {
     // Pass URLs through LESS to avoid rewriting them to absolute URLs.
     background-image: ~"url('adminstar.png')";
