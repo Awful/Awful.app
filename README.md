@@ -39,7 +39,6 @@ There are optional dependencies for building Awful. You only need them if you're
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).
     3. In Terminal, install less: `npm install less -g` (prepend `sudo` to avoid permissions errors).
-* [mogenerator][] makes Objective-C classes from our Core Data model. If you're modifying the Core Data model (aka `Model.xcdatamodeld`), please [install mogenerator][mogenerator].
 
 There are unit tests for the HTML parsing, to help us find problems when markup changes, running continuously via [Travis CI][].
 
@@ -47,7 +46,6 @@ There are unit tests for the HTML parsing, to help us find problems when markup 
 
 [CocoaPods]: http://cocoapods.org/
 [LESS]: http://lesscss.org/#usage
-[mogenerator]: http://rentzsch.github.com/mogenerator/
 [Travis CI]: https://travis-ci.org/Awful/Awful.app
 
 Distribute

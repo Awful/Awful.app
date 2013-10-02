@@ -11,7 +11,6 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
 			buildPhases = (
-				1CE2D9A816688CC20024AC1C /* mogenerator */,
 				1CD33EA016EF7C550059587E /* Compile CSS */,
 				1C4191941763CCB800EADE07 /* Concatenate JavaScript */,
 			);
@@ -2021,20 +2020,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
 			shellScript = "set -e\n\nPATH=\"${PATH}:/usr/local/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\ncd \"${PROJECT_DIR}/../Source/Theming\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nfor s in posts-view*.less; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"${s}\")\n    cmodified=$(mtime \"${c}\")\n    if [[ ! -e \"${c}\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling ${s}\"\n        lessc \"${s}\" \"${c}\"\n    fi\ndone\n";
-		};
-		1CE2D9A816688CC20024AC1C /* mogenerator */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = mogenerator;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "PATH=/usr/local/bin:$PATH\ncommand -v mogenerator >/dev/null 2>&1 || { echo >&2 \"Please install mogenerator! brew install mogenerator\"; exit 0; }\nMODELS=\"$PROJECT_DIR/../Source/Models\"\nmogenerator --model \"$MODELS/Model.xcdatamodeld\" --output-dir \"$MODELS\" --machine-dir \"$MODELS/Generated\" --template-var arc=true\n";
 		};
 		712ECA8D897A4C93ABABE9AE /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
