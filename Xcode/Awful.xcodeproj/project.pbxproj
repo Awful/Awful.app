@@ -223,8 +223,6 @@
 		1CC780341612D9DE002AF958 /* AwfulReplyComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyComposeViewController.m */; };
 		1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */; };
 		1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */; };
-		1CD52C6416CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CD52C6316CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel */; };
-		1CD52C6716CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD52C6616CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m */; };
 		1CDD00E116C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */; };
 		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
 		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
@@ -633,9 +631,6 @@
 		1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarksController.m; sourceTree = "<group>"; };
 		1CC7804C1612DA8E002AF958 /* AwfulThreadListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListController.h; sourceTree = "<group>"; };
 		1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListController.m; sourceTree = "<group>"; };
-		1CD52C6316CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ExtractFavorites.xcmappingmodel; sourceTree = "<group>"; };
-		1CD52C6516CCE7AC0078A9F2 /* ExtractFavoritesMigrationPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtractFavoritesMigrationPolicy.h; sourceTree = "<group>"; };
-		1CD52C6616CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtractFavoritesMigrationPolicy.m; sourceTree = "<group>"; };
 		1CDD00DF16C63C2800E72D62 /* AwfulJSONOrScrapeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJSONOrScrapeOperation.h; sourceTree = "<group>"; };
 		1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJSONOrScrapeOperation.m; sourceTree = "<group>"; };
 		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
@@ -1140,9 +1135,6 @@
 				1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */,
 				1C6474BA1569989800C72657 /* Generated */,
 				1C5B99B8166FFA4F004C5D0E /* Model.xcdatamodeld */,
-				1CD52C6316CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel */,
-				1CD52C6516CCE7AC0078A9F2 /* ExtractFavoritesMigrationPolicy.h */,
-				1CD52C6616CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m */,
 				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
 				1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */,
 			);
@@ -2177,8 +2169,6 @@
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
-				1CD52C6416CCE6F30078A9F2 /* ExtractFavorites.xcmappingmodel in Sources */,
-				1CD52C6716CCE7AD0078A9F2 /* ExtractFavoritesMigrationPolicy.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
 				1CB6010416D8267300CBEE22 /* _AwfulPrivateMessage.m in Sources */,
