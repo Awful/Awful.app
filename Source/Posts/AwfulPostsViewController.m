@@ -440,6 +440,9 @@
 
 - (void)configurePostsViewSettings
 {
+	self.postsView.backgroundColor = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"backgroundColor"];
+    self.view.backgroundColor = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"backgroundColor"];
+	
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
@@ -710,7 +713,6 @@
     self.postsView.scrollView.delegate = self;
     self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
-    self.postsView.backgroundColor = [UIColor whiteColor];
     self.view = self.postsView;
     [self configurePostsViewSettings];
     
@@ -735,7 +737,6 @@
     
     [self updateUserInterface];
     
-    self.view.backgroundColor = [UIColor whiteColor];
     self.topBar.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
                           self.topBar.scrollToBottomButton ];
@@ -745,6 +746,8 @@
         [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
     }
+	
+	[self themeDidChange];
 }
 
 - (void)updatePullUpTriggerOffset

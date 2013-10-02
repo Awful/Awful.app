@@ -174,6 +174,16 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     // Hide separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+	
+	[self themeDidChange];
+}
+
+
+-(void)themeDidChange
+{
+	[super themeDidChange];
+	
+	self.view.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"backgroundColor"];
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
@@ -312,11 +322,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 -(void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
 {
-	AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[super themeCell:cell atIndexPath:indexPath];
 	
-	cell.backgroundColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listBackgroundColor"];
-	cell.badgeLabel.textColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listTextColor"];
-	cell.textLabel.textColor = [AwfulTheme currentThemeForForumId:thread.forum.forumID][@"listTextColor"];
+	cell.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listBackgroundColor"];
+	cell.badgeLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
+	cell.textLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
 }
 
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath

@@ -5,7 +5,7 @@
 	<key>default</key>
 	<dict>
 		<key>backgroundColor</key>
-		<string>#000000</string>
+		<string>#ffffff</string>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
@@ -45,6 +45,8 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>backgroundColor</key>
+		<string>#000000</string>
 		<key>listSecondaryTextColor</key>
 		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>
@@ -72,6 +74,8 @@
 	<dict>
 		<key>description</key>
 		<string>Pink</string>
+		<key>backgroundColor</key>
+		<string>#ff3399</string>
 		<key>descriptiveColor</key>
 		<string>#fd9a9a</string>
 		<key>relevantForumID</key>
