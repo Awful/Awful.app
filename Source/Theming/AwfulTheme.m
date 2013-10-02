@@ -52,7 +52,7 @@
 
 - (BOOL)forumSpecific
 {
-    return !!_dictionary[@"relevantForumID"];
+    return !![self objectForKey:@"relevantForumID"];
 }
 
 - (id)objectForKey:(id)key
