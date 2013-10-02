@@ -326,10 +326,17 @@ typedef struct WebViewPoint
 
 static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webView)
 {
+    CGPoint offset = webView.scrollView.contentOffset;
+    if (offset.x > 0) {
+        offset.x = 0;
+    }
+    if (offset.y > 0) {
+        offset.y = 0;
+    }
     return (WebViewPoint){
         // As of iOS 7, UIWebView takes its scroll view's content inset into account when calculating element positions.
-        .x = point.x - webView.scrollView.contentInset.left,
-        .y = point.y - webView.scrollView.contentInset.top,
+        .x = point.x - webView.scrollView.contentInset.left - offset.x,
+        .y = point.y - webView.scrollView.contentInset.top - offset.y,
     };
 }
 
@@ -374,17 +381,15 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 {
     CGRect rect = CGRectMake([rectDict[@"left"] floatValue], [rectDict[@"top"] floatValue],
                              [rectDict[@"width"] floatValue], [rectDict[@"height"] floatValue]);
-    if (self.scrollView.contentOffset.y < 0) {
-        rect.origin.y -= self.scrollView.contentOffset.y;
-    }
-    return rect;
+    UIEdgeInsets insets = self.scrollView.contentInset;
+    return CGRectOffset(rect, insets.left, insets.top);
 }
 
 - (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point
 {
-    NSDictionary *imageInfo = [self evalJavaScriptWithJSONResponse:
-                               @"Awful.spoiledImageInPostForPoint(%d, %d)",
-                               (int)point.x, (int)point.y];
+    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
+    NSDictionary *imageInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledImageInPostForPoint(%d, %d)",
+                               webViewPoint.x, webViewPoint.y];
     if ([imageInfo isKindOfClass:[NSDictionary class]]) {
         return [NSURL awful_URLWithString:imageInfo[@"url"]];
     } else {
@@ -394,9 +399,9 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 
 - (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect
 {
-    NSDictionary *linkInfo = [self evalJavaScriptWithJSONResponse:
-                              @"Awful.spoiledLinkInPostForPoint(%d, %d)",
-                              (int)point.x, (int)point.y];
+    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
+    NSDictionary *linkInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledLinkInPostForPoint(%d, %d)",
+                              webViewPoint.x, webViewPoint.y];
     if (![linkInfo isKindOfClass:[NSDictionary class]]) return nil;
     if (rect) {
         *rect = [self rectOfElementWithRectDictionary:linkInfo[@"rect"]];
@@ -406,9 +411,9 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 
 - (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect
 {
-    NSDictionary *videoInfo = [self evalJavaScriptWithJSONResponse:
-                               @"Awful.spoiledVideoInPostForPoint(%d, %d)",
-                               (int)point.x, (int)point.y];
+    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
+    NSDictionary *videoInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledVideoInPostForPoint(%d, %d)",
+                               webViewPoint.x, webViewPoint.y];
     if (![videoInfo isKindOfClass:[NSDictionary class]]) return nil;
     if (rect) {
         *rect = [self rectOfElementWithRectDictionary:videoInfo[@"rect"]];
