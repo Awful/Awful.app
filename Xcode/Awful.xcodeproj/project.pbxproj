@@ -1111,6 +1111,7 @@
 		1C6474A61569989800C72657 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */,
 				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
 				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
 				1CDF6FBE17FCAA4E00F44174 /* AwfulDataStack.h */,
@@ -1129,7 +1130,6 @@
 				1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */,
 				1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */,
 				1C6474BA1569989800C72657 /* Generated */,
-				1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */,
 				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
 				1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */,
 			);
