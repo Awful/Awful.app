@@ -21,7 +21,6 @@
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
-#import "AwfulStartViewController.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>

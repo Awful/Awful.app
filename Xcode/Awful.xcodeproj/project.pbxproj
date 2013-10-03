@@ -43,7 +43,6 @@
 		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
 		1C09963C16C0AECA00A62D5E /* AwfulLeperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulLeperCell.m */; };
-		1C10157C164E8B0A00302B19 /* AwfulStartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */; };
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
 		1C13FF94161CDDD4000ED2B1 /* bookmarks-landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */; };
 		1C13FF95161CDDD4000ED2B1 /* bookmarks-landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C13FF91161CDDD4000ED2B1 /* bookmarks-landscape@2x.png */; };
@@ -377,8 +376,6 @@
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulLeperCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLeperCell.h; sourceTree = "<group>"; };
 		1C09963B16C0AECA00A62D5E /* AwfulLeperCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLeperCell.m; sourceTree = "<group>"; };
-		1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulStartViewController.h; sourceTree = "<group>"; };
-		1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulStartViewController.m; sourceTree = "<group>"; };
 		1C1015FB165414AE00302B19 /* AwfulImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePreviewViewController.h; sourceTree = "<group>"; };
 		1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePreviewViewController.m; sourceTree = "<group>"; };
 		1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bookmarks-landscape.png"; sourceTree = "<group>"; };
@@ -849,8 +846,6 @@
 				1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */,
 				1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */,
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
-				1C10157A164E8B0A00302B19 /* AwfulStartViewController.h */,
-				1C10157B164E8B0A00302B19 /* AwfulStartViewController.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
 			);
 			path = Main;
@@ -2135,7 +2130,6 @@
 				1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */,
 				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
 				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
-				1C10157C164E8B0A00302B19 /* AwfulStartViewController.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
