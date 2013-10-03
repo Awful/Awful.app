@@ -12,6 +12,8 @@
 
 - (void)logOut;
 
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
 // Sent when the user logs out.
 extern NSString * const AwfulUserDidLogOutNotification;
 

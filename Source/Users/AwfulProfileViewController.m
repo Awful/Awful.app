@@ -23,7 +23,6 @@
 @interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
-@property (nonatomic) AwfulUser *user;
 @property (copy, nonatomic) NSArray *services;
 @property (nonatomic) BOOL skipFetchingAndRenderingProfileOnAppear;
 
@@ -32,15 +31,11 @@
 
 @implementation AwfulProfileViewController
 
-- (void)setUserID:(NSString *)userID
+- (id)initWithUser:(AwfulUser *)user
 {
-    if ([_userID isEqualToString:userID]) return;
-    _userID = [userID copy];
-    if (!_userID) {
-        self.user = nil;
-        return;
-    }
-    self.user = [AwfulUser firstMatchingPredicate:@"userID = %@", _userID];
+    if (!(self = [super init])) return nil;
+    _user = user;
+    return self;
 }
 
 - (void)renderUser
@@ -227,17 +222,16 @@
                                                object:nil];
     if (self.skipFetchingAndRenderingProfileOnAppear) return;
     [self renderUser];
-    [[AwfulHTTPClient client] profileUserWithID:self.userID
+    [[AwfulHTTPClient client] profileUserWithID:self.user.userID
                                         andThen:^(NSError *error, AwfulUser *user)
      {
          if (error) {
-             NSLog(@"error fetching user profile for %@: %@", self.userID, error);
+             NSLog(@"error fetching user profile for %@: %@", self.user.userID, error);
              if (!self.user) {
                  [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
              }
              return;
          }
-         self.user = user;
          [self renderUser];
      }];
 }

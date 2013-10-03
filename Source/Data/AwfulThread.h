@@ -12,9 +12,11 @@
 
 @property (readonly, nonatomic) BOOL beenSeen;
 
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos;
++ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
+                            inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
-+ (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID;
++ (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
+                      inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 - (NSInteger)numberOfPagesForSingleUser:(AwfulUser *)singleUser;
 - (void)setNumberOfPages:(NSInteger)numberOfPages forSingleUser:(AwfulUser *)singleUser;

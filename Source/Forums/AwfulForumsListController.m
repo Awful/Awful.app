@@ -13,7 +13,7 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadListController.h"
 
-@interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
+@interface AwfulForumsListController () <AwfulForumTreeControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) NSDate *lastRefresh;
 @property (nonatomic) NSMutableArray *favoriteForums;
@@ -29,9 +29,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)init
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
+    _managedObjectContext = managedObjectContext;
+    self.restorationClass = self.class;
     self.title = @"Forums";
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
@@ -44,13 +46,13 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    return [self init];
+    return [self initWithManagedObjectContext:nil];
 }
 
 - (AwfulForumTreeController *)treeController
 {
     if (_treeController) return _treeController;
-    _treeController = [AwfulForumTreeController new];
+    _treeController = [[AwfulForumTreeController alloc] initWithManagedObjectContext:_managedObjectContext];
     _treeController.delegate = self;
     return _treeController;
 }
@@ -61,7 +63,8 @@
     if (forumIDs.count == 0) {
         return @[];
     }
-    NSArray *favoriteForums = [AwfulForum fetchAllMatchingPredicate:@"forumID IN %@", forumIDs];
+    NSArray *favoriteForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
+                                                       matchingPredicate:@"forumID IN %@", forumIDs];
     return [favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
         return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
     }];
@@ -195,7 +198,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     if (!self.lastRefresh) return YES;
     if (self.tableView.numberOfSections < 2) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
-    if ([AwfulForum firstMatchingPredicate:@"index = -1"]) return YES;
+    if ([AwfulForum firstInManagedObjectContext:self.managedObjectContext matchingPredicate:@"index = -1"]) {
+        return YES;
+    }
     return NO;
 }
 
@@ -238,8 +243,7 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 
 - (void)didLogIn:(NSNotification *)note
 {
-    self.treeController = [AwfulForumTreeController new];
-    self.treeController.delegate = self;
+    self.treeController = nil;
     [self.tableView reloadData];
 }
 
@@ -391,8 +395,7 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
         }
         forum = [self.treeController visibleForumAtIndexPath:adjustedIndexPath];
     }
-    AwfulThreadListController *threadList = [AwfulThreadListController new];
-    threadList.forum = forum;
+    AwfulThreadListController *threadList = [[AwfulThreadListController alloc] initWithForum:forum];
     threadList.restorationClass = [AwfulThreadListController class];
     threadList.restorationIdentifier = @"Thread";
     [self.navigationController pushViewController:threadList animated:YES];
@@ -526,20 +529,25 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 #pragma mark State preservation and restoration
 
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    AwfulForumsListController *forumsList = [[self alloc] initWithManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    forumsList.restorationIdentifier = identifierComponents.lastObject;
+    return forumsList;
+}
+
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.treeController forKey:TreeControllerKey];
+    [coder encodeObject:self.treeController.preservedState forKey:TreeControllerStateKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.treeController = [coder decodeObjectForKey:TreeControllerKey];
-    self.treeController.delegate = self;
-    [self.tableView reloadData];
+    [self.treeController restoreState:[coder decodeObjectForKey:TreeControllerStateKey]];
 }
 
-static NSString * const TreeControllerKey = @"AwfulForumTreeController";
+static NSString * const TreeControllerStateKey = @"AwfulForumTreeControllerState";
 
 @end

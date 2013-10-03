@@ -5,7 +5,6 @@
 #import "AwfulFetchedTableViewController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import <AFNetworking/AFNetworking.h>
-#import "AwfulDataStack.h"
 
 @interface AwfulFetchedTableViewController ()
 
@@ -32,13 +31,6 @@
 {
     [super viewDidLoad];
     [self createFetchedResultsControllerIfNecessary];
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self selector:@selector(dataStackWillReset:)
-                       name:AwfulDataStackWillResetNotification
-                     object:[AwfulDataStack sharedDataStack]];
-    [noteCenter addObserver:self selector:@selector(dataStackDidReset:)
-                       name:AwfulDataStackDidResetNotification
-                     object:[AwfulDataStack sharedDataStack]];
 }
 
 - (void)createFetchedResultsControllerIfNecessary
@@ -49,20 +41,6 @@
     NSError *error;
     if (![self.fetchedResultsController performFetch:&error]) {
         NSLog(@"%@ error fetching: %@", [self class], error);
-    }
-}
-
-- (void)dataStackWillReset:(NSNotification *)note
-{
-    self.fetchedResultsController.delegate = nil;
-    self.fetchedResultsController = nil;
-    [self.tableView reloadData];
-}
-
-- (void)dataStackDidReset:(NSNotification *)note
-{
-    if ([self isViewLoaded]) {
-        [self createFetchedResultsControllerIfNecessary];
     }
 }
 

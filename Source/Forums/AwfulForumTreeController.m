@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumTreeController.h"
-#import "AwfulDataStack.h"
 
 @interface AwfulForumTreeController () <NSFetchedResultsControllerDelegate>
 
@@ -16,15 +15,16 @@
     NSMutableIndexSet *_newlyInsertedSections;
 }
 
-- (id)init
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super init])) return nil;
+    _managedObjectContext = managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulForum entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"category != nil"];
     fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
                                       [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES] ];
     _frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
+                                               managedObjectContext:_managedObjectContext
                                                  sectionNameKeyPath:@"category.index"
                                                           cacheName:nil];
     _frc.delegate = self;
@@ -40,34 +40,6 @@
         [_hiddenForumsInCategory addObject:[self initialHiddenForumsWithSection:section]];
     }
     return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder
-{
-    if (!(self = [self init])) return nil;
-    NSSet *hiddenForumIDs = [coder decodeObjectForKey:HiddenForumsKey];
-    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
-        NSMutableIndexSet *hiddenSet = _hiddenForumsInCategory[i];
-        [section.objects enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger forumIndex, BOOL *stop) {
-            if ([hiddenForumIDs containsObject:forum.forumID]) {
-                [hiddenSet addIndex:forumIndex];
-            } else {
-                [hiddenSet removeIndex:forumIndex];
-            }
-        }];
-    }];
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    NSMutableSet *hiddenForumIDs = [NSMutableSet new];
-    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
-        NSIndexSet *hiddenSet = _hiddenForumsInCategory[i];
-        NSArray *forums = [section.objects objectsAtIndexes:hiddenSet];
-        [hiddenForumIDs addObjectsFromArray:[forums valueForKey:@"forumID"]];
-    }];
-    [coder encodeObject:[hiddenForumIDs copy] forKey:HiddenForumsKey];
 }
 
 static NSString * const HiddenForumsKey = @"HiddenForums";
@@ -183,6 +155,32 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
         }
     }
     [self.delegate forumTreeControllerDidUpdate:self];
+}
+
+- (id <NSCoding>)preservedState
+{
+    NSMutableSet *hiddenForumIDs = [NSMutableSet new];
+    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
+        NSIndexSet *hiddenSet = _hiddenForumsInCategory[i];
+        NSArray *forums = [section.objects objectsAtIndexes:hiddenSet];
+        [hiddenForumIDs addObjectsFromArray:[forums valueForKey:@"forumID"]];
+    }];
+    return hiddenForumIDs;
+}
+
+- (void)restoreState:(id <NSCoding>)state
+{
+    NSSet *hiddenForumIDs = (NSSet *)state;
+    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
+        NSMutableIndexSet *hiddenSet = _hiddenForumsInCategory[i];
+        [section.objects enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger forumIndex, BOOL *stop) {
+            if ([hiddenForumIDs containsObject:forum.forumID]) {
+                [hiddenSet addIndex:forumIndex];
+            } else {
+                [hiddenSet removeIndex:forumIndex];
+            }
+        }];
+    }];
 }
 
 #pragma mark NSFetchedResultsControllerDelegate

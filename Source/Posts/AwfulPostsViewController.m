@@ -7,7 +7,6 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
-#import "AwfulDataStack.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
@@ -101,8 +100,6 @@
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
     [noteCenter addObserver:self selector:@selector(settingChanged:)
                        name:AwfulSettingsDidChangeNotification object:nil];
-    [noteCenter addObserver:self selector:@selector(willResetDataStack:)
-                       name:AwfulDataStackWillResetNotification object:nil];
     self.toolbarItems = @[ self.settingsItem,
                            [UIBarButtonItem flexibleSpace],
                            self.backItem,
@@ -266,11 +263,6 @@
 {
     [super themeDidChange];
     [self configurePostsViewSettings];
-}
-
-- (void)willResetDataStack:(NSNotification *)note
-{
-    self.fetchedResultsController = nil;
 }
 
 - (void)dealloc
@@ -658,8 +650,7 @@
 
 - (void)showProfileWithUser:(AwfulUser *)user
 {
-    AwfulProfileViewController *profile = [AwfulProfileViewController new];
-    profile.userID = user.userID;
+    AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                           target:self
                                                                           action:@selector(doneWithProfile)];
@@ -674,8 +665,7 @@
 
 - (void)showRapSheetWithUser:(AwfulUser *)user
 {
-    AwfulRapSheetViewController *rapSheet = [AwfulRapSheetViewController new];
-    rapSheet.userID = user.userID;
+    AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
     UIBarButtonItem *item;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -771,7 +761,8 @@
 {
     if (self.singleUserID) {
         return [self.thread numberOfPagesForSingleUser:
-                [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
+                [AwfulUser firstInManagedObjectContext:self.thread.managedObjectContext
+                                     matchingPredicate:@"userID = %@", self.singleUserID]];
     } else {
         return self.thread.numberOfPagesValue;
     }
@@ -990,7 +981,6 @@ static char KVOContext;
                  } else {
                      [SVProgressHUD showSuccessWithStatus:@"Marked"];
                      post.thread.seenPosts = post.threadIndex;
-                     [[AwfulDataStack sharedDataStack] save];
                  }
              }];
         }]];
@@ -1228,7 +1218,8 @@ static char KVOContext;
     if (page != AwfulThreadPageNone) {
         if (self.singleUserID && page == AwfulThreadPageLast) {
             page = [self.thread numberOfPagesForSingleUser:
-                    [AwfulUser firstMatchingPredicate:@"userID = %@", self.singleUserID]];
+                    [AwfulUser firstInManagedObjectContext:self.thread.managedObjectContext
+                                         matchingPredicate:@"userID = %@", self.singleUserID]];
         }
         [self loadPage:page singleUserID:self.singleUserID];
     }
@@ -1346,7 +1337,8 @@ static char KVOContext;
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", [coder decodeObjectForKey:ThreadIDKey]];
+    self.thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey]
+                                     inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
     AwfulThreadPage page = [coder decodeIntegerForKey:CurrentPageKey];
     [self loadPage:page singleUserID:[coder decodeObjectForKey:SingleUserIDKey]];
     self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];

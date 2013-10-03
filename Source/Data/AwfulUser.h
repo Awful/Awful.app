@@ -9,6 +9,7 @@
 
 @property (readonly, nonatomic) NSURL *avatarURL;
 
-+ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo;
++ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
+                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

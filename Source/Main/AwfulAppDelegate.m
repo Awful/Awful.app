@@ -46,6 +46,9 @@
 @end
 
 @implementation AwfulAppDelegate
+{
+    AwfulDataStack *_dataStack;
+}
 
 static id _instance;
 
@@ -86,7 +89,7 @@ static id _instance;
     
     // Delete cached post info. The next user might see things differently than the one logging out.
     // And this lets logging out double as a "delete all data" button.
-    [[AwfulDataStack sharedDataStack] deleteAllDataAndResetStack];
+    [_dataStack deleteStoreAndResetStack];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification
                                                         object:nil];
@@ -99,6 +102,11 @@ static id _instance;
 
 NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLogOutNotification";
 
+- (NSManagedObjectContext *)managedObjectContext
+{
+    return _dataStack.managedObjectContext;
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -110,23 +118,30 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [[AwfulSettings settings] registerDefaults];
     [[AwfulSettings settings] migrateOldSettings];
     
-    // Migrate Core Data early to avoid problems later!
-    [AwfulDataStack sharedDataStack].initFailureAction = AwfulDataStackInitFailureDelete;
-    [[AwfulDataStack sharedDataStack] context];
+    NSURL *storeURL = [[[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory
+                                                              inDomain:NSUserDomainMask
+                                                     appropriateForURL:nil
+                                                                create:YES
+                                                                 error:nil]
+                       URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
+    _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
+    
+    [AwfulHTTPClient client].managedObjectContext = _dataStack.managedObjectContext;
     
     NSMutableArray *viewControllers = [NSMutableArray new];
     NSMutableArray *expandingIdentifiers = [NSMutableArray new];
     UINavigationController *nav;
     UIViewController *vc;
     
-    vc = [AwfulForumsListController new];
+    vc = [[AwfulForumsListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = ForumListControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = ForumNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
     
-    vc = [AwfulBookmarksController new];
+    vc = [[AwfulBookmarksController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = BookmarksControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
@@ -134,7 +149,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
     
     if ([AwfulSettings settings].canSendPrivateMessages) {
-        vc = [AwfulPrivateMessageListController new];
+        vc = [[AwfulPrivateMessageListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
         vc.restorationIdentifier = MessagesListControllerIdentifier;
         nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
@@ -149,7 +164,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:LepersColonyExpandingSplitControllerIdentifier];
     
-    vc = [AwfulSettingsViewController new];
+    vc = [[AwfulSettingsViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = SettingsViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
@@ -269,7 +284,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 			NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageListController class]];
 			if ([AwfulSettings settings].canSendPrivateMessages) {
 				if (i == NSNotFound) {
-					UINavigationController *nav = [[AwfulPrivateMessageListController new] enclosingNavigationController];
+					UINavigationController *nav = [[[AwfulPrivateMessageListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
 					if (self.basementViewController) {
 						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
 						[viewControllers insertObject:nav atIndex:2];
@@ -456,7 +471,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     // TODO fix this for new iPhone, iPad root view controllers.
     AwfulBasementViewController *tabBar = self.basementViewController;
     void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
-        AwfulForum *forum = [AwfulForum fetchOrInsertForumWithID:forumID];
+        AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:_dataStack.managedObjectContext
+                                                                          withID:forumID];
         UINavigationController *nav = tabBar.viewControllers[0];
         [self jumpToForum:forum inNavigationController:nav];
     };
@@ -523,7 +539,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         
         // Load the thread in a new posts view.
         AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]];
+        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]
+                                              inManagedObjectContext:_dataStack.managedObjectContext];
         if (page == 0) {
             page = 1;
         }
@@ -558,7 +575,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         }
         
         // Do we know which thread the post comes from?
-        AwfulPost *post = [AwfulPost firstMatchingPredicate:@"postID = %@", params[@"postID"]];
+        AwfulPost *post = [AwfulPost firstInManagedObjectContext:_dataStack.managedObjectContext
+                                               matchingPredicate:@"postID = %@", params[@"postID"]];
         if (post) {
             [self pushPostsViewForPostWithID:post.postID
                                       onPage:post.page
@@ -608,7 +626,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                     ofThreadWithID:(NSString *)threadID
 {
     AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-    postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
+    postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
+                                          inManagedObjectContext:_dataStack.managedObjectContext];
     [postsView loadPage:page singleUserID:nil];
     [postsView jumpToPostWithID:postID];
     UINavigationController *nav;
@@ -637,8 +656,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         }
     }
     [nav popToRootViewControllerAnimated:NO];
-    AwfulThreadListController *threadList = [AwfulThreadListController new];
-    threadList.forum = forum;
+    AwfulThreadListController *threadList = [[AwfulThreadListController alloc] initWithForum:forum];
     [nav pushViewController:threadList animated:YES];
     UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
     tabBar.selectedViewController = nav;

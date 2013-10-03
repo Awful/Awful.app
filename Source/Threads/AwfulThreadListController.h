@@ -8,9 +8,10 @@
 @interface AwfulThreadListController : AwfulFetchedTableViewController <UIViewControllerRestoration>
 
 // Designated initializer.
-- (id)init;
+- (id)initWithForum:(AwfulForum *)forum;
 
-@property (nonatomic, strong) AwfulForum *forum;
+@property (readonly, strong, nonatomic) AwfulForum *forum;
+
 @property (nonatomic, assign) NSInteger currentPage;
 
 - (void)loadPageNum:(NSUInteger)pageNum;

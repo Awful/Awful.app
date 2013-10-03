@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulUser.h"
-#import "AwfulDataStack.h"
 #import "AwfulParsing.h"
 #import "GTMNSString+HTML.h"
 #import "NSManagedObject+Awful.h"
@@ -30,13 +29,14 @@
 }
 
 + (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
+                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulUser *user = [self firstMatchingPredicate:@"userID = %@", profileInfo.userID];
-    if (!user) user = [AwfulUser insertNew];
+    AwfulUser *user = [self firstInManagedObjectContext:managedObjectContext
+                                      matchingPredicate:@"userID = %@", profileInfo.userID];
+    if (!user) user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
     [profileInfo applyToObject:user];
     user.homepageURL = [profileInfo.homepage absoluteString];
     user.profilePictureURL = [profileInfo.profilePicture absoluteString];
-    [[AwfulDataStack sharedDataStack] save];
     return user;
 }
 

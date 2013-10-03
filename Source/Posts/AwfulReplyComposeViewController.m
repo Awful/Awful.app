@@ -6,6 +6,7 @@
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulKeyboardBar.h"
 #import "AwfulModels.h"
@@ -309,11 +310,13 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
     NSString *editedPostID = [coder decodeObjectForKey:EditedPostIDKey];
     if (threadID) {
-        [self replyToThread:[AwfulThread firstMatchingPredicate:@"threadID = %@", threadID]
+        [self replyToThread:[AwfulThread firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                   matchingPredicate:@"threadID = %@", threadID]
         withInitialContents:self.textView.text
        imageCacheIdentifier:imageCacheIdentifier];
     } else if (editedPostID) {
-        [self editPost:[AwfulPost firstMatchingPredicate:@"postID = %@", editedPostID]
+        [self editPost:[AwfulPost firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                            matchingPredicate:@"postID = %@", editedPostID]
                   text:self.textView.text
   imageCacheIdentifier:imageCacheIdentifier];
     }

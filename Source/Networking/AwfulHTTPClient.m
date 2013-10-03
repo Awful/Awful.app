@@ -4,7 +4,6 @@
 
 #import "AwfulHTTPClient.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulDataStack.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulJSONOrScrapeOperation.h"
 #import "AwfulModels.h"
@@ -144,14 +143,15 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, id responseObject)
     {
-        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject
+                                                       inManagedObjectContext:self.managedObjectContext];
         NSInteger stickyIndex = -(NSInteger)[threads count];
-        NSArray *forums = [AwfulForum fetchAllMatchingPredicate:@"forumID = %@", forumID];
+        NSArray *forums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
+                                                   matchingPredicate:@"forumID = %@", forumID];
         for (AwfulThread *thread in threads) {
             if ([forums count] > 0) thread.forum = forums[0];
             thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
         }
-        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -176,7 +176,8 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id _, id responseObject)
     {
-        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject];
+        NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject
+                                                       inManagedObjectContext:self.managedObjectContext];
         if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -213,7 +214,8 @@ static AwfulHTTPClient *instance = nil;
     {
         PageParsedInfo *pageInfo = responseObject;
         pageInfo.singleUserID = singleUserID;
-        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject];
+        NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:responseObject
+                                               inManagedObjectContext:self.managedObjectContext];
         NSString *ad = [responseObject advertisementHTML];
         if (callback) {
             NSInteger firstUnreadPost = NSNotFound;
@@ -273,9 +275,9 @@ static AwfulHTTPClient *instance = nil;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
-        AwfulThread *thread = [AwfulThread firstMatchingPredicate:@"threadID = %@", threadID];
+        AwfulThread *thread = [AwfulThread firstInManagedObjectContext:self.managedObjectContext
+                                                     matchingPredicate:@"threadID = %@", threadID];
         thread.isBookmarkedValue = isBookmarked;
-        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error);
@@ -295,7 +297,8 @@ static AwfulHTTPClient *instance = nil;
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, ForumHierarchyParsedInfo *info)
              {
-                 NSArray *forums = [AwfulForum updateCategoriesAndForums:info];
+                 NSArray *forums = [AwfulForum updateCategoriesAndForums:info
+                                                  inManagedObjectContext:self.managedObjectContext];
                  if (callback) callback(nil, forums);
              } failure:^(id _, NSError *error) {
                  if (callback) callback(error, nil);
@@ -679,13 +682,13 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:request
                                           success:^(id op, ProfileParsedInfo *info)
     {
-        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info];
+        AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info
+                                                  inManagedObjectContext:self.managedObjectContext];
         if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
             NSString *base = [self.baseURL absoluteString];
             base = [base substringToIndex:[base length] - 1];
             user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
         }
-        [[AwfulDataStack sharedDataStack] save];
         if (callback) callback(nil, user);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
@@ -729,9 +732,10 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, PrivateMessageFolderParsedInfo *info)
     {
-        NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info];
-        [AwfulPrivateMessage deleteAllMatchingPredicate:@"NOT(self IN %@)", messages];
-        [[AwfulDataStack sharedDataStack] save];
+        NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info
+                                                              inManagedObjectContext:self.managedObjectContext];
+        [AwfulPrivateMessage deleteAllInManagedObjectContext:self.managedObjectContext
+                                           matchingPredicate:@"NOT(self IN %@)", messages];
         if (callback) callback(nil, messages);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
@@ -772,7 +776,8 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     id op = [self HTTPRequestOperationWithRequest:urlRequest
                                           success:^(id _, PrivateMessageParsedInfo *info)
     {
-        AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageWithParsedInfo:info];
+        AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageWithParsedInfo:info
+                                                                  inManagedObjectContext:self.managedObjectContext];
         if (callback) callback(nil, message);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);

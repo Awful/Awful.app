@@ -1,3 +1,4 @@
+#import "NSManagedObject+Awful.h"
 #import "AwfulCategory.h"
 #import "AwfulForum.h"
 #import "AwfulPost.h"

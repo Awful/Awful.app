@@ -6,6 +6,7 @@
 #import "AwfulComposeViewControllerSubclass.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulComposeField.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulPostIconPickerController.h"
@@ -427,7 +428,8 @@ didSelectSecondaryIconAtIndex:(NSInteger)index
 {
     [super decodeRestorableStateWithCoder:coder];
     NSString *forumID = [coder decodeObjectForKey:ForumIDKey];
-    self.forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", forumID];
+    self.forum = [AwfulForum firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                       matchingPredicate:@"forumID = %@", forumID];
     self.subject = [coder decodeObjectForKey:SubjectKey];
     self.postIcon = [coder decodeObjectForKey:PostIconKey];
     self.secondaryPostIcon = [coder decodeObjectForKey:SecondaryPostIconKey];

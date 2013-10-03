@@ -15,6 +15,7 @@
 // Returns 0 if the page is unknown.
 @property (readonly, nonatomic) NSInteger singleUserPage;
 
-+ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo;
++ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
+                        inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

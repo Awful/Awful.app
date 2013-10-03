@@ -191,8 +191,7 @@
         }];
     }];
     [sheet addButtonWithTitle:@"User Profile" block:^{
-        AwfulProfileViewController *profile = [AwfulProfileViewController new];
-        profile.userID = self.privateMessage.from.userID;
+        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:self.privateMessage.from];
         UIBarButtonItem *item;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -317,7 +316,8 @@
 {
     [super decodeRestorableStateWithCoder:coder];
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    self.privateMessage = [AwfulPrivateMessage firstMatchingPredicate:@"messageID = %@", messageID];
+    self.privateMessage = [AwfulPrivateMessage firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                         matchingPredicate:@"messageID = %@", messageID];
     [self.postsView reloadData];
 }
 

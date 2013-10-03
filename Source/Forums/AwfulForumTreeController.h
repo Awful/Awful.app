@@ -9,7 +9,19 @@
 /**
  * An AwfulForumTreeController manages the hierarchy of category -> forum -> subforum, translating to and from a flat list of visible forums and remembering whether each forum is expanded.
  */
-@interface AwfulForumTreeController : NSObject <NSCoding>
+@interface AwfulForumTreeController : NSObject
+
+/**
+ * Returns an initialized AwfulForumTreeController. This is the designated initializer.
+ *
+ * @param managedObjectContext The managed object context that has the forums and categories.
+ */
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
+/**
+ * The managed object context.
+ */
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 /**
  * Returns the number of categories.
@@ -56,6 +68,18 @@
  * A delegate to inform of changes to the forum hierarchy in the backing store.
  */
 @property (weak, nonatomic) id <AwfulForumTreeControllerDelegate> delegate;
+
+/**
+ * Returns an object that encapsulates the current state of the tree controller.
+ */
+- (id <NSCoding>)preservedState;
+
+/**
+ * Sets the tree controller's state.
+ *
+ * @param state An object previously obtained by calling -preservedState.
+ */
+- (void)restoreState:(id <NSCoding>)state;
 
 @end
 

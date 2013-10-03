@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThread.h"
-#import "AwfulDataStack.h"
 #import "AwfulParsing.h"
 #import "AwfulSingleUserThreadInfo.h"
 #import "AwfulUser.h"
@@ -37,15 +36,18 @@
 }
 
 + (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
+                            inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSMutableDictionary *existingThreads = [NSMutableDictionary new];
     NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
-    for (AwfulThread *thread in [self fetchAllMatchingPredicate:@"threadID IN %@", threadIDs]) {
+    for (AwfulThread *thread in [self fetchAllInManagedObjectContext:managedObjectContext
+                                                   matchingPredicate:@"threadID IN %@", threadIDs]) {
         existingThreads[thread.threadID] = thread;
     }
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
     NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
-    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", usernames]) {
+    for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
+                                                    matchingPredicate:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
     
@@ -54,42 +56,44 @@
             NSLog(@"ignoring ID-less thread (announcement?)");
             continue;
         }
-        AwfulThread *thread = existingThreads[info.threadID] ?: [AwfulThread insertNew];
+        AwfulThread *thread = (existingThreads[info.threadID] ?:
+                               [AwfulThread insertInManagedObjectContext:managedObjectContext]);
         [info applyToObject:thread];
         if (!thread.author) {
-            thread.author = existingUsers[info.author.username] ?: [AwfulUser insertNew];
+            thread.author = (existingUsers[info.author.username] ?:
+                             [AwfulUser insertInManagedObjectContext:managedObjectContext]);
         }
         [info.author applyToObject:thread.author];
         existingUsers[thread.author.username] = thread.author;
         existingThreads[thread.threadID] = thread;
     }
-    [[AwfulDataStack sharedDataStack] save];
     return [existingThreads allValues];
 }
 
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
+                      inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulThread *thread = [self firstMatchingPredicate:@"threadID = %@", threadID];
+    AwfulThread *thread = [self firstInManagedObjectContext:managedObjectContext
+                                          matchingPredicate:@"threadID = %@", threadID];
     if (thread) return thread;
-    thread = [self insertNew];
+    thread = [self insertInManagedObjectContext:managedObjectContext];
     thread.threadID = threadID;
-    [[AwfulDataStack sharedDataStack] save];
     return thread;
 }
 
 - (NSInteger)numberOfPagesForSingleUser:(AwfulUser *)singleUser
 {
-    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstMatchingPredicate:
-                                       @"thread = %@ AND author = %@", self, singleUser];
-    return info.numberOfPagesValue;
+    return [[AwfulSingleUserThreadInfo firstInManagedObjectContext:self.managedObjectContext
+                                                matchingPredicate:@"thread = %@ AND author = %@", self, singleUser]
+            numberOfPagesValue];
 }
 
 - (void)setNumberOfPages:(NSInteger)numberOfPages forSingleUser:(AwfulUser *)singleUser
 {
-    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstMatchingPredicate:
-                                       @"thread = %@ AND author = %@", self, singleUser];
+    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstInManagedObjectContext:singleUser.managedObjectContext
+                                                                           matchingPredicate:@"thread = %@ AND author = %@", self, singleUser];
     if (!info) {
-        info = [AwfulSingleUserThreadInfo insertNew];
+        info = [AwfulSingleUserThreadInfo insertInManagedObjectContext:singleUser.managedObjectContext];
         info.thread = self;
         info.author = singleUser;
     }

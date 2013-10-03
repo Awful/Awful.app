@@ -30,9 +30,10 @@
 
 @implementation AwfulSettingsViewController
 
-- (id)init
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    _managedObjectContext = managedObjectContext;
     self.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
     return self;
@@ -346,7 +347,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         AwfulPostsViewController *page = [AwfulPostsViewController new];
         page.restorationIdentifier = @"Awful's Thread";
         NSString *threadID = setting[@"ThreadID"];
-        page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
+        page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:self.managedObjectContext];
         [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
         if (self.expandingSplitViewController) {
             UINavigationController * nav = [page enclosingNavigationController];

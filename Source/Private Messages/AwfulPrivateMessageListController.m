@@ -5,7 +5,6 @@
 #import "AwfulPrivateMessageListController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
-#import "AwfulDataStack.h"
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -39,9 +38,10 @@
 
 #pragma mark - AwfulFetchedTableViewController
 
-- (id)init
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super init])) return nil;
+    _managedObjectContext = managedObjectContext;
     self.title = @"Private Messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
@@ -78,9 +78,8 @@
                                [AwfulPrivateMessage entityName]];
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"sentDate"
                                                                ascending:NO] ];
-    NSManagedObjectContext *context = [AwfulDataStack sharedDataStack].context;
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:context
+                                               managedObjectContext:self.managedObjectContext
                                                  sectionNameKeyPath:nil cacheName:nil];
 }
 
@@ -185,7 +184,11 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     if (!message.messageID) {
         NSLog(@"deleting message \"%@\" with no ID", message.subject);
         [message.managedObjectContext deleteObject:message];
-        [[AwfulDataStack sharedDataStack] save];
+        NSError *error;
+        BOOL ok = [message.managedObjectContext save:&error];
+        if (!ok) {
+            NSLog(@"%s error saving after deleting ID-less private message: %@", __PRETTY_FUNCTION__, error);
+        }
         return;
     }
     [[AwfulHTTPClient client] deletePrivateMessageWithID:message.messageID
@@ -196,7 +199,11 @@ static NSString * const MessageCellIdentifier = @"Message cell";
                               buttonTitle:@"OK"];
         } else {
             [message.managedObjectContext deleteObject:message];
-            [[AwfulDataStack sharedDataStack] save];
+            NSError *error;
+            BOOL ok = [message.managedObjectContext save:&error];
+            if (!ok) {
+                NSLog(@"%s error saving after deleting private message %@: %@", __PRETTY_FUNCTION__, message.messageID, error);
+            }
         }
     }];
 }

@@ -6,7 +6,7 @@
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
-#import "AwfulDataStack.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulIconActionSheet.h"
@@ -33,12 +33,20 @@
 
 @implementation AwfulThreadListController
 
-- (id)init
+- (id)initWithForum:(AwfulForum *)forum
 {
-    if (!(self = [super init])) return nil;
+    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    _forum = forum;
+    self.title = _forum.name;
+    self.navigationItem.backBarButtonItem = [self abbreviatedBackBarButtonItem];
     _cellsMissingThreadTags = [NSMutableSet new];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self initWithForum:nil];
 }
 
 - (UIBarButtonItem* )newThreadButtonItem
@@ -75,19 +83,9 @@
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
+                                               managedObjectContext:self.forum.managedObjectContext
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
-}
-
-- (void)setForum:(AwfulForum *)forum
-{
-    if (_forum == forum) return;
-    self.fetchedResultsController.delegate = nil;
-    self.fetchedResultsController = nil;
-    _forum = forum;
-    self.title = _forum.name;
-    self.navigationItem.backBarButtonItem = [self abbreviatedBackBarButtonItem];
 }
 
 - (UIBarButtonItem *)abbreviatedBackBarButtonItem
@@ -148,7 +146,12 @@
             [threads setValue:@NO forKey:@"hideFromList"];
             self.forum.lastRefresh = [NSDate date];
             self.ignoreUpdates = YES;
-            [[AwfulDataStack sharedDataStack] save];
+            NSError *error;
+            BOOL ok = [self.forum.managedObjectContext save:&error];
+            if (!ok) {
+                NSLog(@"%s error saving managed object context while loading forum %@ page %tu: %@",
+                      __PRETTY_FUNCTION__, self.forum.forumID, pageNum, error);
+            }
             self.ignoreUpdates = NO;
             self.currentPage = pageNum;
         }
@@ -231,9 +234,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     if ([thread.author.userID length] > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:
                                             AwfulIconActionItemTypeUserProfile action:^{
-            AwfulProfileViewController *profile = [AwfulProfileViewController new];
+            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
             profile.hidesBottomBarWhenPushed = YES;
-            profile.userID = thread.author.userID;
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 UIBarButtonItem *done;
                 done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -292,7 +294,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             thread.seenPostsValue = 0;
-            [[AwfulDataStack sharedDataStack] save];
+            NSError *error;
+            BOOL ok = [thread.managedObjectContext save:&error];
+            if (!ok) {
+                NSLog(@"%s error saving thread %@ marked unread: %@", __PRETTY_FUNCTION__, thread.threadID, error);
+            }
         }
     }];
 }
@@ -479,7 +485,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
     [self dismissViewControllerAnimated:YES completion:nil];
     AwfulPostsViewController *page = [AwfulPostsViewController new];
     page.restorationIdentifier = @"AwfulPostsViewController";
-    page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID];
+    page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:self.forum.managedObjectContext];
     [page loadPage:1 singleUserID:nil];
     [self displayPage:page];
 }
@@ -495,7 +501,9 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulThreadListController *threadList = [self new];
+    AwfulForum *forum = [AwfulForum firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                              matchingPredicate:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
+    AwfulThreadListController *threadList = [[self alloc] initWithForum:forum];
     threadList.restorationIdentifier = identifierComponents.lastObject;
     threadList.restorationClass = self;
     return threadList;
@@ -511,7 +519,6 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
     self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
     self.composeViewController.delegate = self;
 }

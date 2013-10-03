@@ -5,7 +5,6 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
-#import "AwfulDataStack.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulThreadCell.h"
@@ -22,9 +21,10 @@
 
 @implementation AwfulBookmarksController
 
-- (id)init
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super init])) return nil;
+    if (!(self = [super initWithForum:nil])) return nil;
+    _managedObjectContext = managedObjectContext;
     self.restorationClass = self.class;
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks.png"];
@@ -48,7 +48,7 @@
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
     ];
     return [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                               managedObjectContext:[AwfulDataStack sharedDataStack].context
+                                               managedObjectContext:self.managedObjectContext
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
 }
@@ -65,7 +65,8 @@
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             if (pageNum == 1) {
-                NSArray *bookmarks = [AwfulThread fetchAllMatchingPredicate:@"isBookmarked = YES"];
+                NSArray *bookmarks = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext
+                                                               matchingPredicate:@"isBookmarked = YES"];
                 [bookmarks setValue:@NO forKey:AwfulThreadAttributes.isBookmarked];
                 [threads setValue:@YES forKey:AwfulThreadAttributes.isBookmarked];
                 BOOL wasShowingBookmarkColors = self.showBookmarkColors;
@@ -78,7 +79,11 @@
                     }
                 }
                 self.ignoreUpdates = YES;
-                [[AwfulDataStack sharedDataStack] save];
+                NSError *error;
+                BOOL ok = [self.managedObjectContext save:&error];
+                if (!ok) {
+                    NSLog(@"%s error loading bookmarks page %tu: %@", __PRETTY_FUNCTION__, pageNum, error);
+                }
                 self.ignoreUpdates = NO;
                 self.lastRefreshDate = [NSDate date];
                 if (self.showBookmarkColors != wasShowingBookmarkColors) {
@@ -134,14 +139,12 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
         thread.isBookmarkedValue = NO;
-        [[AwfulDataStack sharedDataStack] save];
         self.networkOperation = [[AwfulHTTPClient client] setThreadWithID:thread.threadID
                                                              isBookmarked:NO
                                                                   andThen:^(NSError *error)
         {
             if (!error) return;
             thread.isBookmarkedValue = YES;
-            [[AwfulDataStack sharedDataStack] save];
             [AwfulAlertView showWithTitle:@"Error Removing Bbookmark"
                                     error:error
                               buttonTitle:@"Whatever"];

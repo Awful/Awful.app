@@ -6,4 +6,9 @@
 
 @interface AwfulPrivateMessageListController : AwfulFetchedTableViewController
 
+// Designated initializer.
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
 @end

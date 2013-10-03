@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPost.h"
-#import "AwfulDataStack.h"
 #import "AwfulForum.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
@@ -45,15 +44,18 @@
 }
 
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
+                        inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if ([pageInfo.forumID length] == 0 || [pageInfo.threadID length] == 0) return nil;
-    AwfulForum *forum = [AwfulForum firstMatchingPredicate:@"forumID = %@", pageInfo.forumID];
+    AwfulForum *forum = [AwfulForum firstInManagedObjectContext:managedObjectContext
+                                              matchingPredicate:@"forumID = %@", pageInfo.forumID];
     if (!forum) {
-        forum = [AwfulForum insertNew];
+        forum = [AwfulForum insertInManagedObjectContext:managedObjectContext];
         forum.forumID = pageInfo.forumID;
     }
     forum.name = pageInfo.forumName;
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:pageInfo.threadID];
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:pageInfo.threadID
+                                             inManagedObjectContext:managedObjectContext];
     thread.forum = forum;
     thread.title = pageInfo.threadTitle;
     thread.isBookmarkedValue = pageInfo.threadBookmarked;
@@ -64,7 +66,8 @@
     NSDictionary *existingPosts = [NSDictionary dictionaryWithObjects:allPosts forKeys:allPostIDs];
     NSArray *allAuthorNames = [pageInfo.posts valueForKeyPath:@"author.username"];
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    for (AwfulUser *user in [AwfulUser fetchAllMatchingPredicate:@"username IN %@", allAuthorNames]) {
+    for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
+                                                    matchingPredicate:@"username IN %@", allAuthorNames]) {
         existingUsers[user.username] = user;
     }
     NSMutableArray *posts = [NSMutableArray new];
@@ -72,7 +75,7 @@
         PostParsedInfo *postInfo = pageInfo.posts[i];
         AwfulPost *post = existingPosts[postInfo.postID];
         if (!post) {
-            post = [AwfulPost insertNew];
+            post = [AwfulPost insertInManagedObjectContext:managedObjectContext];
             post.thread = thread;
         }
         [postInfo applyToObject:post];
@@ -88,7 +91,8 @@
             post.threadIndexValue = threadIndex;
         }
         if (!post.author) {
-            post.author = existingUsers[postInfo.author.username] ?: [AwfulUser insertNew];
+            post.author = (existingUsers[postInfo.author.username] ?:
+                           [AwfulUser insertInManagedObjectContext:managedObjectContext]);
         }
         [postInfo.author applyToObject:post.author];
         existingUsers[post.author.username] = post.author;
@@ -110,7 +114,6 @@
         thread.lastPostAuthorName = [[posts lastObject] author].username;
         thread.lastPostDate = [[posts lastObject] postDate];
     }
-    [[AwfulDataStack sharedDataStack] save];
     return posts;
 }
 

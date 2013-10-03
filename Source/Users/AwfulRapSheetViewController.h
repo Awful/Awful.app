@@ -3,9 +3,13 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulLepersViewController.h"
+#import "AwfulModels.h"
 
 @interface AwfulRapSheetViewController : AwfulLepersViewController
 
-@property (copy, nonatomic) NSString *userID;
+// Designated initializer.
+- (id)initWithUser:(AwfulUser *)user;
+
+@property (readonly, strong, nonatomic) AwfulUser *user;
 
 @end

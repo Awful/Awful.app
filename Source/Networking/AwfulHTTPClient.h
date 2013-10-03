@@ -12,6 +12,8 @@
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
 // Clear singleton instance.
 + (void)reset;
 
