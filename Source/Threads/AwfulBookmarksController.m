@@ -25,7 +25,7 @@
 {
     if (!(self = [super initWithForum:nil])) return nil;
     _managedObjectContext = managedObjectContext;
-    self.restorationClass = self.class;
+    self.restorationClass = nil;
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks.png"];
     UIImage *portrait = [UIImage imageNamed:@"bookmarks.png"];
