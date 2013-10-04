@@ -5,27 +5,37 @@
 #import "AwfulBookmarksController.h"
 #import "AwfulFetchedTableViewControllerSubclass.h"
 #import "AwfulAlertView.h"
+#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulIconActionSheet.h"
 #import "AwfulModels.h"
+#import "AwfulPostsViewController.h"
+#import "AwfulProfileViewController.h"
+#import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThreadTags.h"
 #import "NSManagedObject+Awful.h"
+#import "NSString+CollapseWhitespace.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "UIScrollView+SVInfiniteScrolling.h"
+#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulBookmarksController ()
 
 @property (nonatomic) NSDate *lastRefreshDate;
 @property (nonatomic) BOOL showBookmarkColors;
+@property (nonatomic) NSMutableSet *cellsMissingThreadTags;
+@property (assign, nonatomic) NSInteger currentPage;
 
 @end
-
 
 @implementation AwfulBookmarksController
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super initWithForum:nil])) return nil;
+    if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     _managedObjectContext = managedObjectContext;
-    self.restorationClass = nil;
+    _cellsMissingThreadTags = [NSMutableSet new];
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks.png"];
     UIImage *portrait = [UIImage imageNamed:@"bookmarks.png"];
@@ -36,7 +46,6 @@
                                                              target:nil
                                                              action:NULL];
     self.navigationItem.backBarButtonItem = marks;
-    self.navigationItem.rightBarButtonItem = nil;
     return self;
 }
 
@@ -53,13 +62,57 @@
                                                           cacheName:nil];
 }
 
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView registerClass:[AwfulThreadCell class] forCellReuseIdentifier:ThreadCellIdentifier];
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
+}
+
+static NSString * const ThreadCellIdentifier = @"Thread Cell";
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.currentPage = 1;
+    
+    // Hide separators after the last cell.
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+}
+
+- (void)themeDidChange
+{
+	[super themeDidChange];
+	self.view.backgroundColor = AwfulTheme.currentTheme[@"backgroundColor"];
+}
+
+#pragma mark - Table view controller
+
+- (void)refresh
+{
+    [super refresh];
+    [self.cellsMissingThreadTags removeAllObjects];
+    [self loadPageNum:1];
+}
+
+- (BOOL)canPullForNextPage
+{
+    return YES;
+}
+
+- (void)nextPage
+{
+    [super nextPage];
+    [self loadPageNum:self.currentPage + 1];
+}
+
 - (void)loadPageNum:(NSUInteger)pageNum
 {   
     [self.networkOperation cancel];
-    __block id op;
-    op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum
-                                                       andThen:^(NSError *error, NSArray *threads)
-    {
+    __weak __typeof__(self) weakSelf = self;
+    __block id op = [[AwfulHTTPClient client] listBookmarkedThreadsOnPage:pageNum andThen:^(NSError *error, NSArray *threads) {
+        __typeof__(self) self = weakSelf;
         if (![self.networkOperation isEqual:op]) return;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -90,9 +143,9 @@
                     [self.tableView reloadData];
                 }
             }
-            self.currentPage = pageNum;
             self.tableView.showsInfiniteScrolling = [threads count] >= 40;
         }
+        self.currentPage = pageNum;
         self.refreshing = NO;
     }];
     self.networkOperation = op;
@@ -121,10 +174,227 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
 
 #pragma mark - AwfulTableViewController
 
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulThreadCell *cell = [tableView dequeueReusableCellWithIdentifier:ThreadCellIdentifier
+                                                            forIndexPath:indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
+	[self themeCell:cell atIndexPath:indexPath];
+    return cell;
+}
+
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    [super configureCell:cell atIndexPath:indexPath];
+    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
+    [longPress addTarget:self action:@selector(showThreadActions:)];
+    [cell addGestureRecognizer:longPress];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
+    // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
+    // the empty thread tag for anyone lame enough to pick the same tag twice.
+    UIImage *emptyTag = [UIImage imageNamed:@"empty-thread-tag"];
+    if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
+        cell.tagAndRatingView.threadTag = emptyTag;
+    } else {
+        UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+        if (threadTag) {
+            cell.tagAndRatingView.threadTag = threadTag;
+        } else {
+            cell.tagAndRatingView.threadTag = emptyTag;
+            if (thread.firstIconName) {
+                [self updateThreadTagsForCellAtIndexPath:indexPath];
+            }
+        }
+    }
+    UIImage *secondaryTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.secondIconName];
+    cell.tagAndRatingView.secondaryThreadTag = secondaryTag;
+    if (!secondaryTag && thread.secondIconName) {
+        [self updateThreadTagsForCellAtIndexPath:indexPath];
+    }
     cell.stickyImageView.image = nil;
+    // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
+    if ([thread.forum.forumID isEqualToString:@"133"]) {
+        cell.tagAndRatingView.ratingImage = nil;
+    } else {
+        cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
+    }
+    cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
+    if (thread.isStickyValue || !thread.isClosedValue) {
+        cell.tagAndRatingView.alpha = 1;
+        cell.textLabel.enabled = YES;
+    } else {
+        cell.tagAndRatingView.alpha = 0.5;
+        cell.textLabel.enabled = NO;
+    }
+    cell.numberOfPagesLabel.text = thread.numberOfPages.stringValue;
+    if (thread.beenSeen) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
+    } else {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
+    }
+    NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;
+    cell.badgeLabel.text = @(unreadPosts).stringValue;
+}
+
+- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
+{
+	[super themeCell:cell atIndexPath:indexPath];
+	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
+	cell.badgeLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+}
+
+static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
+{
+    NSInteger rating = lroundf(boxedRating.floatValue);
+    if (rating <= 0) return nil;
+    if (rating < 1) {
+        rating = 1;
+    } else if (rating > 5) {
+        rating = 5;
+    }
+    return [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
+}
+
+- (void)updateThreadTagsForCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.cellsMissingThreadTags count] == 0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newThreadTags:)
+                                                     name:AwfulNewThreadTagsAvailableNotification
+                                                   object:nil];
+    }
+    [self.cellsMissingThreadTags addObject:indexPath];
+}
+
+- (void)newThreadTags:(NSNotification *)note
+{
+    if ([self.cellsMissingThreadTags count] == 0) return;
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AwfulNewThreadTagsAvailableNotification
+                                                  object:nil];
+    [self.tableView reloadRowsAtIndexPaths:[self.cellsMissingThreadTags allObjects]
+                          withRowAnimation:UITableViewRowAnimationNone];
+    [self.cellsMissingThreadTags removeAllObjects];
+}
+
+- (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
+{
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+        UITableViewCell *cell = (UITableViewCell *)longPress.view;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [self showThreadActionsForThread:thread];
+    }
+}
+
+- (void)showThreadActionsForThread:(AwfulThread *)thread
+{
+    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    sheet.title = [thread.title stringByCollapsingWhitespace];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
+        AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
+        page.restorationIdentifier = @"AwfulPostsViewController";
+        [self displayPage:page];
+        page.page = 1;
+    }]];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
+        AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
+        page.restorationIdentifier = @"AwfulPostsViewController";
+        [self displayPage:page];
+        page.page = AwfulThreadPageLast;
+    }]];
+    AwfulIconActionItemType bookmarkItemType;
+    if (thread.isBookmarkedValue) {
+        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+    } else {
+        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+    }
+    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+        [[AwfulHTTPClient client] setThreadWithID:thread.threadID
+                                     isBookmarked:!thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+         {
+             if (error) {
+                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+             } else {
+                 NSString *status = @"Removed Bookmark";
+                 if (thread.isBookmarkedValue) {
+                     status = @"Added Bookmark";
+                 }
+                 [SVProgressHUD showSuccessWithStatus:status];
+             }
+         }];
+    }]];
+    if ([thread.author.userID length] > 0) {
+        AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
+            profile.hidesBottomBarWhenPushed = YES;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                UIBarButtonItem *done;
+                done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                     target:self
+                                                                     action:@selector(doneWithProfile)];
+                profile.navigationItem.leftBarButtonItem = done;
+                [self presentViewController:[profile enclosingNavigationController]
+                                   animated:YES completion:nil];
+            } else {
+                [self.navigationController pushViewController:profile animated:YES];
+            }
+        }];
+        profileItem.title = @"View OP's Profile";
+        [sheet addItem:profileItem];
+    }
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@", thread.threadID];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
+        [UIPasteboard generalPasteboard].items = @[ @{
+                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
+                                                        (id)kUTTypePlainText: url
+                                                        }];
+    }]];
+    if (thread.beenSeen) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread
+                                                  action:^{
+                                                      [self markThreadUnseen:thread];
+                                                  }]];
+    }
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        // We've seen the occasional crash result from the cell being nil, i.e. invisible or out of
+        // range. Fall back to pointing at the table view.
+        [sheet presentFromViewController:self fromRect:CGRectZero inView:cell ?: self.tableView];
+    } else {
+        [sheet presentFromViewController:self.navigationController fromRect:CGRectZero inView:self.view];
+    }
+}
+
+- (void)markThreadUnseen:(AwfulThread *)thread
+{
+    if (!thread.threadID) {
+        return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
+    }
+    [[AwfulHTTPClient client] forgetReadPostsInThreadWithID:thread.threadID
+                                                    andThen:^(NSError *error)
+     {
+         if (error) {
+             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+         } else {
+             thread.seenPostsValue = 0;
+             NSError *error;
+             BOOL ok = [thread.managedObjectContext save:&error];
+             if (!ok) {
+                 NSLog(@"%s error saving thread %@ marked unread: %@", __PRETTY_FUNCTION__, thread.threadID, error);
+             }
+         }
+     }];
+}
+
+- (void)doneWithProfile
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -152,10 +422,26 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 75;
+}
+
 - (NSString *)tableView:(UITableView *)tableView
     titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"Unbookmark";
+}
+
+- (void)displayPage:(AwfulPostsViewController *)page
+{
+    if (self.expandingSplitViewController) {
+        UINavigationController *nav = [page enclosingNavigationController];
+        nav.restorationIdentifier = @"Navigation";
+        self.expandingSplitViewController.detailViewController = nav;
+    } else {
+        [self.navigationController pushViewController:page animated:YES];
+    }
 }
 
 @end

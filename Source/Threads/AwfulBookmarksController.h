@@ -4,7 +4,7 @@
 
 #import "AwfulThreadListController.h"
 
-@interface AwfulBookmarksController : AwfulThreadListController
+@interface AwfulBookmarksController : AwfulFetchedTableViewController
 
 // Designated initializer.
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;

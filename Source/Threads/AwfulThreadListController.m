@@ -22,7 +22,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"
 
-@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate>
+@interface AwfulThreadListController () <AwfulThreadComposeViewControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) NSMutableSet *cellsMissingThreadTags;
 @property (nonatomic) UIBarButtonItem *newThreadButtonItem;
@@ -177,15 +177,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     // Hide separators after the last cell.
     self.tableView.tableFooterView = [UIView new];
     self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
-	
-	[self themeDidChange];
 }
 
-
--(void)themeDidChange
+- (void)themeDidChange
 {
 	[super themeDidChange];
-	
 	self.view.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"backgroundColor"];
 }
 
@@ -324,10 +320,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     return cell;
 }
 
--(void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
+- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
 {
 	[super themeCell:cell atIndexPath:indexPath];
-	
 	cell.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listBackgroundColor"];
 	cell.badgeLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
 	cell.textLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
