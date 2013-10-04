@@ -538,6 +538,9 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 {
     [super decodeRestorableStateWithCoder:coder];
     [self.treeController restoreState:[coder decodeObjectForKey:TreeControllerStateKey]];
+    if ([self isViewLoaded]) {
+        [self.tableView reloadData];
+    }
 }
 
 static NSString * const TreeControllerStateKey = @"AwfulForumTreeControllerState";
