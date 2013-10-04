@@ -526,8 +526,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
             AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([top.thread.threadID isEqual:params[@"threadID"]]) {
-                if ((page == 0 || page == top.currentPage) &&
-                    [top.singleUserID isEqualToString:params[@"userID"]]) {
+                // TODO this probably fails when top.author is nil
+                if ((page == 0 || page == top.page) && [top.author.userID isEqualToString:params[@"userID"]]) {
                     if ([maybes count] > 1) {
                         tabBar.selectedViewController = nav;
                     }
@@ -537,14 +537,11 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         }
         
         // Load the thread in a new posts view.
-        AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-        postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]
-                                              inManagedObjectContext:_dataStack.managedObjectContext];
-        if (page == 0) {
-            page = 1;
-        }
-        [postsView loadPage:page singleUserID:params[@"userID"]];
-        UINavigationController *nav = (id)tabBar.selectedViewController;
+        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]
+                                                 inManagedObjectContext:_dataStack.managedObjectContext];
+        AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsView.page = page ?: 1;
+        UINavigationController *nav = (UINavigationController *)tabBar.selectedViewController;
         
         // On iPad, the app launches with a tag collage as its detail view. A posts view needs to
         // replace this collage, not be pushed on top.
@@ -568,7 +565,9 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
             AwfulPostsViewController *top = (id)nav.topViewController;
             if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
             if ([[top.posts valueForKey:@"postID"] containsObject:params[@"postID"]]) {
-                [top jumpToPostWithID:params[@"postID"]];
+                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:params[@"postID"]
+                                               inManagedObjectContext:_dataStack.managedObjectContext];
+                top.topPost = post;
                 return YES;
             }
         }
@@ -624,11 +623,13 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                             onPage:(AwfulThreadPage)page
                     ofThreadWithID:(NSString *)threadID
 {
-    AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-    postsView.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                          inManagedObjectContext:_dataStack.managedObjectContext];
-    [postsView loadPage:page singleUserID:nil];
-    [postsView jumpToPostWithID:postID];
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
+                                             inManagedObjectContext:_dataStack.managedObjectContext];
+    AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
+    postsView.page = page;
+    AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID
+                                   inManagedObjectContext:_dataStack.managedObjectContext];
+    postsView.topPost = post;
     UINavigationController *nav;
     UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
     nav = (UINavigationController *)tabBar.selectedViewController;

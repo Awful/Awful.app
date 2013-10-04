@@ -40,4 +40,15 @@
     return user;
 }
 
++ (instancetype)firstOrNewUserWithUserID:(NSString *)userID
+                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    AwfulUser *user = [self firstInManagedObjectContext:managedObjectContext matchingPredicate:@"userID = %@", userID];
+    if (!user) {
+        user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
+        user.userID = userID;
+    }
+    return user;
+}
+
 @end

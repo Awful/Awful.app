@@ -42,8 +42,6 @@
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration, AwfulPageSettingsViewControllerDelegate>
 
-@property (nonatomic) AwfulThreadPage currentPage;
-
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
@@ -66,7 +64,7 @@
 @property (strong, nonatomic) UIBarButtonItem *actionsItem;
 
 @property (nonatomic) NSInteger hiddenPosts;
-@property (copy, nonatomic) NSString *jumpToPostAfterLoad;
+@property (strong, nonatomic) AwfulPost *topPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
 @property (nonatomic) GRMustacheTemplate *postTemplate;
 @property (nonatomic) AwfulLoadingView *loadingView;
@@ -91,15 +89,13 @@
 
 @implementation AwfulPostsViewController
 
-- (id)init
+- (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    _thread = thread;
+    _author = author;
     self.restorationClass = self.class;
-    self.hidesBottomBarWhenPushed = YES;
     self.navigationItem.rightBarButtonItem = self.composeItem;
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self selector:@selector(settingChanged:)
-                       name:AwfulSettingsDidChangeNotification object:nil];
     self.toolbarItems = @[ self.settingsItem,
                            [UIBarButtonItem flexibleSpace],
                            self.backItem,
@@ -107,7 +103,16 @@
                            self.forwardItem,
                            [UIBarButtonItem flexibleSpace],
                            self.actionsItem ];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
     return self;
+}
+
+- (id)initWithThread:(AwfulThread *)thread
+{
+    return [self initWithThread:thread author:nil];
 }
 
 - (UIBarButtonItem *)composeItem
@@ -173,8 +178,8 @@
 
 - (void)goToPreviousPage
 {
-    if (self.currentPage > 1) {
-        [self loadPage:(self.currentPage - 1) singleUserID:self.singleUserID];
+    if (self.page > 1) {
+        self.page--;
     }
 }
 
@@ -197,10 +202,10 @@
         if (relevantNumberOfPages < 1) return;
         AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
         jump.numberOfPages = relevantNumberOfPages;
-        if (self.currentPage > 0) {
-            jump.selectedPage = self.currentPage;
+        if (self.page > 0) {
+            jump.selectedPage = self.page;
         }
-        else if (self.currentPage == AwfulThreadPageLast && relevantNumberOfPages > 0) {
+        else if (self.page == AwfulThreadPageLast && relevantNumberOfPages > 0) {
             jump.selectedPage = relevantNumberOfPages;
         }
         UINavigationController *nav = [jump enclosingNavigationController];
@@ -224,8 +229,8 @@
 
 - (void)goToNextPage
 {
-    if (self.currentPage < [self relevantNumberOfPagesInThread]) {
-        [self loadPage:(self.currentPage + 1) singleUserID:self.singleUserID];
+    if (self.page < [self relevantNumberOfPagesInThread]) {
+        self.page++;
     }
 }
 
@@ -245,7 +250,7 @@
     [self showThreadActionsFromRect:toolbar.bounds inView:toolbar];
 }
 
-- (void)settingChanged:(NSNotification *)note
+- (void)settingsDidChange:(NSNotification *)note
 {
     if (![self isViewLoaded]) return;
     NSArray *importantKeys = @[
@@ -311,7 +316,7 @@
 
 - (void)updateFetchedResultsController
 {
-    if (!self.thread || self.currentPage < 1) {
+    if (!self.thread || self.page < 1) {
         self.fetchedResultsController.delegate = nil;
         self.fetchedResultsController = nil;
         return;
@@ -321,20 +326,18 @@
     if (!request) {
         request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
     }
-    NSInteger lowIndex = (self.currentPage - 1) * 40 + 1;
-    NSInteger highIndex = self.currentPage * 40;
+    NSInteger lowIndex = (self.page - 1) * 40 + 1;
+    NSInteger highIndex = self.page * 40;
     NSString *indexKey;
-    if (self.singleUserID) {
+    if (self.author) {
         indexKey = AwfulPostAttributes.singleUserIndex;
     } else {
         indexKey = AwfulPostAttributes.threadIndex;
     }
-    request.predicate = [NSPredicate predicateWithFormat:
-                         @"thread = %@ AND %d <= %K AND %K <= %d",
+    request.predicate = [NSPredicate predicateWithFormat:@"thread = %@ AND %d <= %K AND %K <= %d",
                          self.thread, lowIndex, indexKey, indexKey, highIndex];
-    if (self.singleUserID) {
-        NSPredicate *and = [NSPredicate predicateWithFormat:
-                            @"author.userID = %@", self.singleUserID];
+    if (self.author) {
+        NSPredicate *and = [NSPredicate predicateWithFormat:@"author.userID = %@", self.author.userID];
         request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
                              @[ request.predicate, and ]];
     }
@@ -361,8 +364,8 @@
 {
     self.title = [self.thread.title stringByCollapsingWhitespace];
     
-    if (self.currentPage == AwfulThreadPageLast ||
-        self.currentPage == AwfulThreadPageNextUnread ||
+    if (self.page == AwfulThreadPageLast ||
+        self.page == AwfulThreadPageNextUnread ||
         [self.fetchedResultsController.fetchedObjects count] == 0)
     {
         [self setLoadingMessage:@"Loading…"];
@@ -374,14 +377,14 @@
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     
     NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
-    if (self.currentPage > 0 && self.currentPage >= relevantNumberOfPages) {
+    if (self.page > 0 && self.page >= relevantNumberOfPages) {
         self.postsView.endMessage = @"End of the thread";
     } else {
         self.postsView.endMessage = nil;
     }
     
     AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
-    if (relevantNumberOfPages > self.currentPage) {
+    if (relevantNumberOfPages > self.page) {
         [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
         [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
         [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
@@ -391,13 +394,13 @@
         [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
     }
     
-    self.backItem.enabled = self.currentPage > 1;
-    if (self.currentPage > 0 && relevantNumberOfPages > 0) {
-        self.currentPageItem.title = [NSString stringWithFormat:@"%zd / %zd", self.currentPage, relevantNumberOfPages];
+    self.backItem.enabled = self.page > 1;
+    if (self.page > 0 && relevantNumberOfPages > 0) {
+        self.currentPageItem.title = [NSString stringWithFormat:@"%zd / %zd", self.page, relevantNumberOfPages];
     } else {
         self.currentPageItem.title = @"";
     }
-    self.forwardItem.enabled = self.currentPage > 0 && self.currentPage < relevantNumberOfPages;
+    self.forwardItem.enabled = self.page > 0 && self.page < relevantNumberOfPages;
     self.composeItem.enabled = !self.thread.isClosedValue;
 }
 
@@ -454,17 +457,15 @@
     [self updateUserInterface];
 }
 
-- (void)loadPage:(AwfulThreadPage)page singleUserID:(NSString *)singleUserID
+- (void)setPage:(AwfulThreadPage)page
 {
     [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
-    self.jumpToPostAfterLoad = nil;
-    NSInteger oldPage = self.currentPage;
-    self.currentPage = page;
+    self.topPostAfterLoad = nil;
+    NSInteger oldPage = _page;
+    _page = page;
     BOOL refreshingSamePage = page > 0 && page == oldPage;
-    if (!refreshingSamePage ||
-        (singleUserID != self.singleUserID && [singleUserID isEqual:self.singleUserID])) {
-        self.singleUserID = singleUserID;
+    if (!refreshingSamePage) {
         self.cachedUpdatesWhileScrolling = nil;
         [self updateFetchedResultsController];
         self.pullUpToRefreshControl.refreshing = NO;
@@ -475,17 +476,19 @@
         self.hiddenPosts = 0;
         [self.postsView reloadData];
     }
+    __weak __typeof__(self) weakSelf = self;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
-                                                 singleUserID:singleUserID
+                                                 singleUserID:self.author.userID
                                                       andThen:^(NSError *error, NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
     {
+        __typeof__(self) self = weakSelf;
         // Since we load cached pages where possible, things can get out of order if we change
         // pages quickly. If the callback comes in after we've moved away from the requested page,
         // just don't bother going any further. We have the data for later.
-        if (page != self.currentPage) return;
+        if (page != self.page) return;
         BOOL wasLoading = !!self.loadingView;
         if (error) {
             if (wasLoading) {
@@ -512,7 +515,7 @@
         AwfulPost *lastPost = [posts lastObject];
         if (lastPost) {
             self.thread = [lastPost thread];
-            self.currentPage = singleUserID ? lastPost.singleUserPage : lastPost.page;
+            _page = self.author ? lastPost.singleUserPage : lastPost.page;
         }
         self.advertisementHTML = advertisementHTML;
         if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
@@ -524,9 +527,9 @@
         } else {
             [self.postsView reloadAdvertisementHTML];
         }
-        if (self.jumpToPostAfterLoad) {
-            [self jumpToPostWithID:self.jumpToPostAfterLoad];
-            self.jumpToPostAfterLoad = nil;
+        if (self.topPostAfterLoad) {
+            self.topPost = self.topPostAfterLoad;
+            self.topPostAfterLoad = nil;
         } else if (wasLoading) {
             if (self.hiddenPosts > 0) {
                 [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
@@ -558,30 +561,34 @@
     self.observingThreadSeenPosts = NO;
 }
 
-- (void)jumpToPostWithID:(NSString *)postID
+- (void)setTopPost:(AwfulPost *)topPost
 {
     if (self.loadingView) {
-        self.jumpToPostAfterLoad = postID;
-    } else {
-        if (self.hiddenPosts > 0) {
-            NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post,
-                                                                      NSUInteger _, BOOL *__)
-            {
-                return [post.postID isEqualToString:postID];
-            }];
-            if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
-        }
-        [self.postsView jumpToElementWithID:postID];
+        self.topPostAfterLoad = topPost;
+        return;
     }
+    if (self.hiddenPosts > 0) {
+        NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post, NSUInteger _, BOOL *__) {
+            return [post isEqual:topPost];
+        }];
+        if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
+    }
+    [self.postsView jumpToElementWithID:topPost.postID];
 }
 
 - (void)loadNextPageOrRefresh
 {
-    if ([self relevantNumberOfPagesInThread] > self.currentPage) {
-        [self loadPage:self.currentPage + 1 singleUserID:self.singleUserID];
+    if ([self relevantNumberOfPagesInThread] > self.page) {
+        self.page++;
     } else {
-        [self loadPage:self.currentPage singleUserID:self.singleUserID];
+        [self reloadPage];
     }
+}
+
+- (void)reloadPage
+{
+    // TODO this is stupid
+    self.page = self.page;
 }
 
 - (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
@@ -592,7 +599,7 @@
                                                               action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
-                         self.thread.threadID, @(self.currentPage)];
+                         self.thread.threadID, @(self.page)];
         [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
                                                         (id)kUTTypeURL: [NSURL URLWithString:url],
@@ -759,10 +766,8 @@
 
 - (NSInteger)relevantNumberOfPagesInThread
 {
-    if (self.singleUserID) {
-        return [self.thread numberOfPagesForSingleUser:
-                [AwfulUser firstInManagedObjectContext:self.thread.managedObjectContext
-                                     matchingPredicate:@"userID = %@", self.singleUserID]];
+    if (self.author) {
+        return [self.thread numberOfPagesForSingleUser:self.author];
     } else {
         return self.thread.numberOfPagesValue;
     }
@@ -936,16 +941,15 @@ static char KVOContext;
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
 {
     CGRect rect;
-		NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
-		NSInteger usersPostIndex = [postsView indexOfPostWithUserNameAtPoint:point rect:&rect];
-		if (postIndex != NSNotFound) {
-			AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
-			[self showActionsForPost:post fromRect:rect];
-		}
-		else if(usersPostIndex != NSNotFound) {
-			AwfulPost *post = self.fetchedResultsController.fetchedObjects[usersPostIndex + self.hiddenPosts];
-			[self showActionsForUser:post fromRect:rect];
-		}
+    NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
+    NSInteger usersPostIndex = [postsView indexOfPostWithUserNameAtPoint:point rect:&rect];
+    if (postIndex != NSNotFound) {
+        AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
+        [self showActionsForPost:post fromRect:rect];
+    } else if (usersPostIndex != NSNotFound) {
+        AwfulPost *post = self.fetchedResultsController.fetchedObjects[usersPostIndex + self.hiddenPosts];
+        [self showActionsForUser:post.author fromRect:rect];
+    }
 }
 
 - (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect
@@ -959,14 +963,14 @@ static char KVOContext;
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.currentPage), post.postID];
+                         self.thread.threadID, @(self.page), post.postID];
         [AwfulSettings settings].lastOfferedPasteboardURL = url;
         [UIPasteboard generalPasteboard].items = @[ @{
             (id)kUTTypeURL: [NSURL URLWithString:url],
             (id)kUTTypePlainText: url,
         }];
     }]];
-    if (!self.singleUserID) {
+    if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
                                                   action:^
         {
@@ -1048,38 +1052,33 @@ static char KVOContext;
         [sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
     }
 }
-- (void)showActionsForUser:(AwfulPost *)post fromRect:(CGRect)rect
+- (void)showActionsForUser:(AwfulUser *)user fromRect:(CGRect)rect
 {
 	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
-	sheet.title = [NSString stringWithFormat:@"%@", post.author.username];
+	sheet.title = [NSString stringWithFormat:@"%@", user.username];
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-		[self showProfileWithUser:post.author];
+		[self showProfileWithUser:user];
 	}]];
-	if (!self.singleUserID) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts
-																							action:^
-										{
-											AwfulPostsViewController *postsView = [AwfulPostsViewController new];
-											postsView.thread = self.thread;
-											[postsView loadPage:1 singleUserID:post.author.userID];
-											[self.navigationController pushViewController:postsView animated:YES];
-										}]];
+	if (!self.author) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
+            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
+            postsView.page = 1;
+            [self.navigationController pushViewController:postsView animated:YES];
+        }]];
 	}
 	if ([AwfulSettings settings].canSendPrivateMessages &&
-			post.author.canReceivePrivateMessagesValue &&
-			![post.author.userID isEqual:[AwfulSettings settings].userID]) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage
-																							action:^
-										{
-											AwfulPrivateMessageComposeViewController *compose;
-											compose = [AwfulPrivateMessageComposeViewController new];
-											[compose setRecipient:post.author.username];
-											[self presentViewController:[compose enclosingNavigationController]
-																				 animated:YES completion:nil];
-										}]];
+        user.canReceivePrivateMessagesValue &&
+        ![user.userID isEqual:[AwfulSettings settings].userID]) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
+            AwfulPrivateMessageComposeViewController *compose;
+            compose = [AwfulPrivateMessageComposeViewController new];
+            [compose setRecipient:user.username];
+            [self presentViewController:[compose enclosingNavigationController]
+                               animated:YES completion:nil];
+        }]];
 	}
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-		[self showRapSheetWithUser:post.author];
+		[self showRapSheetWithUser:user];
 	}]];
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 		[sheet presentFromViewController:self fromRect:rect inView:self.postsView];
@@ -1216,12 +1215,10 @@ static char KVOContext;
 - (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
 {
     if (page != AwfulThreadPageNone) {
-        if (self.singleUserID && page == AwfulThreadPageLast) {
-            page = [self.thread numberOfPagesForSingleUser:
-                    [AwfulUser firstInManagedObjectContext:self.thread.managedObjectContext
-                                         matchingPredicate:@"userID = %@", self.singleUserID]];
+        if (self.author && page == AwfulThreadPageLast) {
+            page = [self.thread numberOfPagesForSingleUser:self.author];
         }
-        [self loadPage:page singleUserID:self.singleUserID];
+        self.page = page;
     }
     [self.jumpToPagePopover dismissPopoverAnimated:NO];
     self.jumpToPagePopover = nil;
@@ -1242,7 +1239,7 @@ static char KVOContext;
 {
     [self forgetOngoingReply];
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:AwfulThreadPageNextUnread singleUserID:nil];
+        self.page = AwfulThreadPageNextUnread;
     }];
     self.composeViewController = nil;
 }
@@ -1252,9 +1249,12 @@ static char KVOContext;
 {
     [self forgetOngoingReply];
     [self dismissViewControllerAnimated:YES completion:^{
-        [self loadPage:self.singleUserID ? post.singleUserPage : post.page
-          singleUserID:self.singleUserID];
-        [self jumpToPostWithID:post.postID];
+        if (self.author) {
+            self.page = post.singleUserPage;
+        } else {
+            self.page = post.page;
+        }
+        self.topPost = post;
     }];
     self.composeViewController = nil;
 }
@@ -1320,7 +1320,11 @@ static char KVOContext;
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulPostsViewController *postsView = [AwfulPostsViewController new];
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey]
+                                             inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    AwfulUser *author = [AwfulUser firstOrNewUserWithUserID:[coder decodeObjectForKey:AuthorUserIDKey]
+                                     inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
     return postsView;
 }
@@ -1329,25 +1333,22 @@ static char KVOContext;
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
-    [coder encodeInteger:self.currentPage forKey:CurrentPageKey];
-    [coder encodeObject:self.singleUserID forKey:SingleUserIDKey];
+    [coder encodeInteger:self.page forKey:PageKey];
+    [coder encodeObject:self.author.userID forKey:AuthorUserIDKey];
     [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey]
-                                     inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
-    AwfulThreadPage page = [coder decodeIntegerForKey:CurrentPageKey];
-    [self loadPage:page singleUserID:[coder decodeObjectForKey:SingleUserIDKey]];
+    self.page = [coder decodeIntegerForKey:PageKey];
     self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
     self.composeViewController.delegate = self;
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";
-static NSString * const CurrentPageKey = @"AwfulCurrentPage";
-static NSString * const SingleUserIDKey = @"AwfulSingleUserID";
+static NSString * const PageKey = @"AwfulCurrentPage";
+static NSString * const AuthorUserIDKey = @"AwfulAuthorUserID";
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 
 @end

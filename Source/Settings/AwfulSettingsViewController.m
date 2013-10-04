@@ -344,17 +344,17 @@ typedef NS_ENUM(NSUInteger, SettingType)
         [alert addButtonWithTitle:@"Log Out" block:^{ [[AwfulAppDelegate instance] logOut]; }];
         [alert show];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
-        AwfulPostsViewController *page = [AwfulPostsViewController new];
-        page.restorationIdentifier = @"Awful's Thread";
-        NSString *threadID = setting[@"ThreadID"];
-        page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:self.managedObjectContext];
-        [page loadPage:AwfulThreadPageNextUnread singleUserID:nil];
+        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:setting[@"ThreadID"]
+                                                 inManagedObjectContext:self.managedObjectContext];
+        AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsView.restorationIdentifier = @"Awful's Thread";
+        postsView.page = AwfulThreadPageNextUnread;
         if (self.expandingSplitViewController) {
-            UINavigationController * nav = [page enclosingNavigationController];
+            UINavigationController * nav = [postsView enclosingNavigationController];
             nav.restorationIdentifier = @"Navigation";
             self.expandingSplitViewController.detailViewController = nav;
         } else {
-            [self.navigationController pushViewController:page animated:YES];
+            [self.navigationController pushViewController:postsView animated:YES];
         }
     } else if ([action isEqualToString:@"InstapaperLogIn"]) {
         if ([AwfulSettings settings].instapaperUsername) {

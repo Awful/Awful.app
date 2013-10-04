@@ -18,4 +18,7 @@
 + (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
                         inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
++ (instancetype)firstOrNewPostWithPostID:(NSString *)postID
+                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 @end

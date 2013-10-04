@@ -12,4 +12,7 @@
 + (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
                              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
++ (instancetype)firstOrNewUserWithUserID:(NSString *)userID
+                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 @end

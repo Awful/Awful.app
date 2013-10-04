@@ -117,4 +117,15 @@
     return posts;
 }
 
++ (instancetype)firstOrNewPostWithPostID:(NSString *)postID
+                  inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    AwfulPost *post = [self firstInManagedObjectContext:managedObjectContext matchingPredicate:@"postID = %@", postID];
+    if (!post) {
+        post = [self insertInManagedObjectContext:managedObjectContext];
+        post.postID = postID;
+    }
+    return post;
+}
+
 @end

@@ -3,21 +3,52 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
+#import "AwfulModels.h"
 #import "AwfulThreadPage.h"
-@class AwfulThread;
 
+/**
+ * An AwfulPostsViewController shows a list of posts in a thread.
+ */
 @interface AwfulPostsViewController : AwfulViewController
 
-@property (strong, nonatomic) AwfulThread *thread;
+/**
+ * Returns an initialized AwfulPostsViewController. This is the designated initializer.
+ *
+ * @param thread The thread whose posts are shown.
+ * @param author An optional author used to filter the shown posts. May be nil.
+ */
+- (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author;
 
-@property (readonly, nonatomic) AwfulThreadPage currentPage;
+/**
+ * Returns an initialized AwfulPostsViewController.
+ *
+ * @param thread The thread whose posts are shown.
+ */
+- (id)initWithThread:(AwfulThread *)thread;
 
-@property (copy, nonatomic) NSString *singleUserID;
+/**
+ * The thread whose posts are shown.
+ */
+@property (readonly, strong, nonatomic) AwfulThread *thread;
 
-- (void)loadPage:(AwfulThreadPage)page singleUserID:(NSString*) user;
+/**
+ * Only the author's posts are shown. If nil, all posts are shown.
+ */
+@property (readonly, strong, nonatomic) AwfulUser *author;
 
-- (void)jumpToPostWithID:(NSString *)postID;
+/**
+ * The currently-visible (or currently-loading) page of posts.
+ */
+@property (assign, nonatomic) AwfulThreadPage page;
 
-@property (readonly, nonatomic) NSArray *posts;
+/**
+ * An array of AwfulPost objects of the currently-visible posts.
+ */
+@property (readonly, copy, nonatomic) NSArray *posts;
+
+/**
+ * The currently-visible post.
+ */
+@property (strong, nonatomic) AwfulPost *topPost;
 
 @end

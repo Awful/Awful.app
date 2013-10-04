@@ -196,18 +196,16 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage
                                               action:^
     {
-        AwfulPostsViewController *page = [AwfulPostsViewController new];
+        AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
         page.restorationIdentifier = @"AwfulPostsViewController";
-        page.thread = thread;
         [self displayPage:page];
-        [page loadPage:1 singleUserID:nil];
+        page.page = 1;
     }]];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
-        AwfulPostsViewController *page = [AwfulPostsViewController new];
+        AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
         page.restorationIdentifier = @"AwfulPostsViewController";
-        page.thread = thread;
         [self displayPage:page];
-        [page loadPage:AwfulThreadPageLast singleUserID:nil];
+        page.page = AwfulThreadPageLast;
     }]];
     AwfulIconActionItemType bookmarkItemType;
     if (thread.isBookmarkedValue) {
@@ -464,14 +462,12 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    AwfulPostsViewController *page = [AwfulPostsViewController new];
-    page.restorationIdentifier = @"AwfulPostsViewController";
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    page.thread = thread;
+    AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
+    page.restorationIdentifier = @"AwfulPostsViewController";
     // For an unread thread, the Forums will interpret "next unread page" to mean "last page",
     // which is not very helpful.
-    [page loadPage:thread.beenSeen ? AwfulThreadPageNextUnread : 1
-      singleUserID:nil];
+    page.page = thread.beenSeen ? AwfulThreadPageNextUnread : 1;
     [self displayPage:page];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -483,10 +479,11 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 {
     self.composeViewController = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
-    AwfulPostsViewController *page = [AwfulPostsViewController new];
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
+                                             inManagedObjectContext:self.forum.managedObjectContext];
+    AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
     page.restorationIdentifier = @"AwfulPostsViewController";
-    page.thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:self.forum.managedObjectContext];
-    [page loadPage:1 singleUserID:nil];
+    page.page = 1;
     [self displayPage:page];
 }
 
