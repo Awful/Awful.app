@@ -13,7 +13,7 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadListController.h"
 
-@interface AwfulForumsListController () <AwfulForumTreeControllerDelegate, UIViewControllerRestoration>
+@interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
 
 @property (nonatomic) NSDate *lastRefresh;
 @property (nonatomic) NSMutableArray *favoriteForums;
@@ -33,7 +33,6 @@
 {
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     _managedObjectContext = managedObjectContext;
-    self.restorationClass = self.class;
     self.title = @"Forums";
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
@@ -528,13 +527,6 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 }
 
 #pragma mark State preservation and restoration
-
-+ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
-{
-    AwfulForumsListController *forumsList = [[self alloc] initWithManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
-    forumsList.restorationIdentifier = identifierComponents.lastObject;
-    return forumsList;
-}
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
