@@ -28,6 +28,11 @@
 @property (strong, nonatomic) UITabBarItem *selectedItem;
 
 /**
+ * Additional distance to add between the top of the tab bar and the first tab. (Only the top inset is used.)
+ */
+@property (assign, nonatomic) UIEdgeInsets insets;
+
+/**
  * The delegate.
  */
 @property (weak, nonatomic) id <AwfulVerticalTabBarDelegate> delegate;

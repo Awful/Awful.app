@@ -69,11 +69,17 @@
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[top]-[tabBar]|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tabBar]|"
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
     [self replaceMainViewController:nil withViewController:self.selectedViewController];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    self.tabBar.insets = UIEdgeInsetsMake(self.topLayoutGuide.length, 0, 0, 0);
 }
 
 - (void)themeDidChange
