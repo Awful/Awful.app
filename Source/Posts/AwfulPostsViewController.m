@@ -652,7 +652,7 @@
              }
          }];
     }]];
-    [sheet presentFromViewController:self.navigationController fromRect:rect inView:view];
+    [sheet showFromRect:rect inView:view animated:YES];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
@@ -1045,12 +1045,7 @@ static char KVOContext;
              }];
         }]];
     }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentFromViewController:self fromRect:rect inView:self.postsView];
-    } else {
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        [sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
-    }
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 - (void)showActionsForUser:(AwfulUser *)user fromRect:(CGRect)rect
 {
@@ -1080,13 +1075,9 @@ static char KVOContext;
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
 		[self showRapSheetWithUser:user];
 	}]];
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		[sheet presentFromViewController:self fromRect:rect inView:self.postsView];
-	} else {
-		UIToolbar *toolbar = self.navigationController.toolbar;
-		[sheet presentFromViewController:self.navigationController fromRect:toolbar.bounds inView:toolbar];
-	}
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
+
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
 {
     NSURL *url;

@@ -260,15 +260,10 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             [self markThreadUnseen:thread];
         }]];
     }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        // We've seen the occasional crash result from the cell being nil, i.e. invisible or out of
-        // range. Fall back to pointing at the table view.
-        [sheet presentFromViewController:self fromRect:CGRectZero inView:cell ?: self.tableView];
-    } else {
-        [sheet presentFromViewController:self fromRect:CGRectZero inView:self.view];
-    }
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:thread];
+    // The cell can be nil if it's invisible or out of range. The table view is an acceptable fallback.
+    UIView *view = [self.tableView cellForRowAtIndexPath:indexPath] ?: self.tableView;
+    [sheet showFromRect:view.frame inView:self.tableView animated:YES];
 }
 
 - (void)doneWithProfile

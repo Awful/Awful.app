@@ -5,40 +5,306 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
+#import "AwfulTheme.h"
 
-@interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate>
-
-@property (nonatomic) NSMutableArray *items;
-@property (readonly, nonatomic) UICollectionView *collectionView;
+@interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverControllerDelegate>
 
 @end
-
-
-@interface AwfulIconActionSheetSectionHeader : UICollectionReusableView
-
-@property (copy, nonatomic) NSString *title;
-@property (nonatomic) UIEdgeInsets titleInsets;
-
-+ (UIFont *)titleLabelFont;
-
-@end
-
 
 @implementation AwfulIconActionSheet
-
-- (void)addItem:(AwfulIconActionItem *)item
 {
-    NSInteger newIndex = [self.items count];
-    [self.items addObject:item];
-    if ([self isViewLoaded]) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:newIndex inSection:0];
-        [self.collectionView insertItemsAtIndexPaths:@[ indexPath ]];
+    NSMutableArray *_items;
+    UIToolbar *_toolbar;
+    UILabel *_titleLabel;
+    UIView *_topDivider;
+    UICollectionView *_collectionView;
+    UIView *_bottomDivider;
+    UIButton *_cancelButton;
+    UIView *_overlay;
+    UIPopoverController *_popover;
+    NSLayoutConstraint *_gridHeightConstraint;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    _items = [NSMutableArray new];
+    
+    if ([self needsOwnBlurryBackground]) {
+        _toolbar = [UIToolbar new];
+        _toolbar.translatesAutoresizingMaskIntoConstraints = NO;
+        _toolbar.barTintColor = [AwfulTheme.currentTheme[@"actionSheetBackgroundColor"] colorWithAlphaComponent:1];
+        [self addSubview:_toolbar];
+    }
+    
+    _titleLabel = [UILabel new];
+    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                 forAxis:UILayoutConstraintAxisVertical];
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.numberOfLines = 0;
+    _titleLabel.textColor = [UIColor whiteColor];
+    [self addSubview:_titleLabel];
+    
+    _topDivider = [UIView new];
+    _topDivider.translatesAutoresizingMaskIntoConstraints = NO;
+    _topDivider.backgroundColor = [UIColor grayColor];
+    [self addSubview:_topDivider];
+    
+    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+    if ([self onlyShowsOneRowOfIcons]) {
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    } else {
+        layout.sectionInset = UIEdgeInsetsMake(0, 20, 0, 20);
+    }
+    layout.itemSize = CGSizeMake(70, 90);
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    [_collectionView registerClass:[AwfulIconActionCell class] forCellWithReuseIdentifier:CellIdentifier];
+    _collectionView.dataSource = self;
+    _collectionView.delegate = self;
+    _collectionView.backgroundColor = nil;
+    _collectionView.showsHorizontalScrollIndicator = NO;
+    if ([self onlyShowsOneRowOfIcons]) {
+        _collectionView.contentInset = UIEdgeInsetsMake(0, 17, 0, 17);
+    }
+    [self addSubview:_collectionView];
+    
+    if ([self needsCancelButton]) {
+        _bottomDivider = [UIView new];
+        _bottomDivider.translatesAutoresizingMaskIntoConstraints = NO;
+        _bottomDivider.backgroundColor = [UIColor grayColor];
+        [self addSubview:_bottomDivider];
+        
+        _cancelButton = [UIButton new];
+        _cancelButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [_cancelButton setContentCompressionResistancePriority:UILayoutPriorityRequired
+                                                       forAxis:UILayoutConstraintAxisVertical];
+        [_cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+        [_cancelButton addTarget:self action:@selector(didTapCancel) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_cancelButton];
+    }
+    
+    [self setNeedsUpdateConstraints];
+    return self;
+}
+
+- (void)didTapCancel
+{
+    [self dismissAnimated:YES];
+}
+
+- (BOOL)needsOwnBlurryBackground
+{
+    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad;
+}
+
+- (BOOL)needsCancelButton
+{
+    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad;
+}
+
+- (BOOL)onlyShowsOneRowOfIcons
+{
+    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad;
+}
+
+- (BOOL)showsInPopover
+{
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+}
+
+- (void)updateConstraints
+{
+    [super updateConstraints];
+    NSDictionary *views = @{ @"title": _titleLabel,
+                             @"topDivider": _topDivider,
+                             @"grid": _collectionView };
+    NSDictionary *metrics = @{ @"margin": @10 };
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[title]-[topDivider(==1)]-[grid]"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[title]-|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topDivider]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[grid]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    if ([self needsCancelButton]) {
+        NSDictionary *extraViews = @{ @"grid": views[@"grid"],
+                                      @"bottomDivider": _bottomDivider,
+                                      @"cancel": _cancelButton };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[grid]-[bottomDivider(==1)]-[cancel]-margin-|"
+                                                 options:0
+                                                 metrics:metrics
+                                                   views:extraViews]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bottomDivider]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:extraViews]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[cancel]-|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:extraViews]];
+    } else {
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[grid]-margin-|"
+                                                 options:0
+                                                 metrics:metrics
+                                                   views:views]];
+    }
+    if ([self needsOwnBlurryBackground]) {
+        NSDictionary *extraViews = @{ @"background": _toolbar };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[background]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:extraViews]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[background]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:extraViews]];
+    }
+    if ([self onlyShowsOneRowOfIcons]) {
+        UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)_collectionView.collectionViewLayout;
+        [_collectionView addConstraint:[NSLayoutConstraint constraintWithItem:_collectionView
+                                                                    attribute:NSLayoutAttributeHeight
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1
+                                                                     constant:layout.itemSize.height]];
+    }
+    if ([self showsInPopover]) {
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:self
+                                      attribute:NSLayoutAttributeWidth
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:nil
+                                      attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1
+                                       constant:320 - 2 * LeftRightMargin]];
     }
 }
 
-- (UICollectionView *)collectionView
+static const CGFloat LeftRightMargin = 8;
+
+- (NSString *)title
 {
-    return (id)self.view;
+    return _titleLabel.text;
+}
+
+- (void)setTitle:(NSString *)title
+{
+    _titleLabel.text = title;
+}
+
+- (NSArray *)items
+{
+    return [_items copy];
+}
+
+- (void)setItems:(NSArray *)items
+{
+    [_items setArray:items];
+}
+
+- (void)addItem:(AwfulIconActionItem *)item
+{
+    [_items addObject:item];
+}
+
+- (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
+{
+    if ([self showsInPopover]) {
+        [self showInPopoverFromRect:rect inView:view animated:animated];
+    } else {
+        [self showInView:view animated:animated];
+    }
+}
+
+- (void)showInView:(UIView *)view animated:(BOOL)animated
+{
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    self.layer.cornerRadius = 5;
+    self.clipsToBounds = YES;
+    _overlay = [UIView new];
+    _overlay.translatesAutoresizingMaskIntoConstraints = NO;
+    [_overlay addSubview:self];
+    [_overlay addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[sheet]-margin-|"
+                                             options:0
+                                             metrics:@{ @"margin": @(LeftRightMargin) }
+                                               views:@{ @"sheet": self }]];
+    [view.window.subviews.lastObject addSubview:_overlay];
+    NSDictionary *views = @{ @"overlay": _overlay };
+    [_overlay.superview addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[overlay]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [_overlay.superview addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlay]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [_overlay.superview addConstraint:
+     [NSLayoutConstraint constraintWithItem:_collectionView
+                                  attribute:NSLayoutAttributeCenterY
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:view
+                                  attribute:NSLayoutAttributeCenterY
+                                 multiplier:1
+                                   constant:0]];
+}
+
+- (void)showInPopoverFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
+{
+    UIViewController *contentViewController = [UIViewController new];
+    contentViewController.view = self;
+    
+    // Lay out now so we can get the collection view's content size.
+    [self layoutIfNeeded];
+    
+    UICollectionViewLayout *layout = _collectionView.collectionViewLayout;
+    _gridHeightConstraint = [NSLayoutConstraint constraintWithItem:_collectionView
+                                                         attribute:NSLayoutAttributeHeight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1
+                                                          constant:layout.collectionViewContentSize.height];
+    [_collectionView addConstraint:_gridHeightConstraint];
+    contentViewController.preferredContentSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    _popover = [[UIPopoverController alloc] initWithContentViewController:contentViewController];
+    _popover.backgroundColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
+    _popover.delegate = self;
+    [_popover presentPopoverFromRect:rect inView:view permittedArrowDirections:UIPopoverArrowDirectionAny animated:animated];
+}
+
+- (void)dismissAnimated:(BOOL)animated
+{
+    [_overlay removeFromSuperview];
+    _overlay = nil;
+    [_popover dismissPopoverAnimated:animated];
+    _popover = nil;
+    [_collectionView removeConstraint:_gridHeightConstraint];
+    _gridHeightConstraint = nil;
 }
 
 #pragma mark - UICollectionViewDataSource and UICollectionViewDelegate
@@ -46,16 +312,15 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return [self.items count];
+    return self.items.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulIconActionCell *cell;
-    cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier
-                                                     forIndexPath:indexPath];
-    AwfulIconActionItem *item = self.items[indexPath.item];
+    AwfulIconActionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier
+                                                                          forIndexPath:indexPath];
+    AwfulIconActionItem *item = _items[indexPath.item];
     cell.title = item.title;
     cell.icon = item.icon;
     cell.tintColor = item.tintColor;
@@ -67,168 +332,20 @@
 
 static NSString * const CellIdentifier = @"IconActionCell";
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
-           viewForSupplementaryElementOfKind:(NSString *)kind
-                                 atIndexPath:(NSIndexPath *)indexPath
-{
-    AwfulIconActionSheetSectionHeader *header;
-    header = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                withReuseIdentifier:HeaderIdentifier
-                                                       forIndexPath:indexPath];
-    header.title = self.title;
-    header.titleInsets = UIEdgeInsetsMake(0, SectionInsets.left, 0, SectionInsets.right);
-    return header;
-}
-
-static NSString * const HeaderIdentifier = @"IconActionSectionHeader";
-
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulIconActionItem *item = self.items[indexPath.item];
+    AwfulIconActionItem *item = _items[indexPath.item];
     if (item.action) item.action();
-    [self dismiss];
+    [self dismissAnimated:NO];
 }
 
-#pragma mark - AwfulSemiModalViewController
+#pragma mark - UIPopoverControllerDelegate
 
-- (void)presentFromViewController:(UIViewController *)viewController
-                         fromRect:(CGRect)rect
-                           inView:(UIView *)view
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController
 {
-    UICollectionViewFlowLayout *layout = (id)self.collectionView.collectionViewLayout;
-    CGRect frame = self.view.frame;
-
-    const float itemsPerRow = 3.0;
-    const NSInteger numberOfRows = ceil([self.items count] / itemsPerRow);
-    const CGFloat rowHeight = layout.itemSize.height + layout.minimumLineSpacing;
-    const CGFloat margin = 20;
-    frame.size.height = (numberOfRows * rowHeight) + margin;
-
-    if ([self.title length] == 0) {
-        layout.headerReferenceSize = CGSizeZero;
-        self.collectionView.contentInset = UIEdgeInsetsZero;
-    } else {
-        UIFont *font = [AwfulIconActionSheetSectionHeader titleLabelFont];
-        CGFloat availableWidth = CGRectGetWidth(frame) - SectionInsets.left - SectionInsets.right;
-        CGRect textRect = [self.title boundingRectWithSize:CGSizeMake(availableWidth, CGFLOAT_MAX)
-                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                attributes:@{ NSFontAttributeName: font }
-                                                   context:nil];
-        layout.headerReferenceSize = textRect.size;
-        frame.size.height += CGRectGetHeight(textRect);
-        self.collectionView.contentInset = UIEdgeInsetsMake(12, 0, 0, 0);
-    }
-    self.view.frame = frame;
-    [super presentFromViewController:viewController fromRect:rect inView:view];
-}
-
-- (void)userDismiss
-{
-    [self dismiss];
-}
-
-#pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
-    _items = [NSMutableArray new];
-    return self;
-}
-
-- (void)loadView
-{
-    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(70, 90);
-    layout.sectionInset = SectionInsets;
-    layout.minimumInteritemSpacing = 27;
-    layout.minimumLineSpacing = 12;
-    UICollectionView *collectionView;
-    collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 320, 215)
-                                        collectionViewLayout:layout];
-    [collectionView registerClass:[AwfulIconActionCell class]
-       forCellWithReuseIdentifier:CellIdentifier];
-    [collectionView registerClass:[AwfulIconActionSheetSectionHeader class]
-       forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-              withReuseIdentifier:HeaderIdentifier];
-    collectionView.collectionViewLayout = layout;
-    collectionView.dataSource = self;
-    collectionView.delegate = self;
-    collectionView.bounces = NO;
-    self.view = collectionView;
-    self.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                  UIViewAutoresizingFlexibleTopMargin);
-}
-
-const UIEdgeInsets SectionInsets = {15, 23, 5, 23};
-
-- (void)themeDidChange
-{
-    [super themeDidChange];
-    self.view.backgroundColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
-}
-
-@end
-
-
-@interface AwfulIconActionSheetSectionHeader ()
-
-@property (nonatomic) UILabel *titleLabel;
-
-@end
-
-
-
-@implementation AwfulIconActionSheetSectionHeader
-
-- (NSString *)title
-{
-    return self.titleLabel.text;
-}
-
-- (void)setTitle:(NSString *)title
-{
-    self.titleLabel.text = title;
-    CGSize size = [self.titleLabel sizeThatFits:self.titleLabel.bounds.size];
-    CGRect bounds = self.bounds;
-    bounds.size.height = size.height;
-    self.bounds = bounds;
-}
-
-- (void)setTitleInsets:(UIEdgeInsets)titleInsets
-{
-    if (UIEdgeInsetsEqualToEdgeInsets(_titleInsets, titleInsets)) return;
-    _titleInsets = titleInsets;
-    [self setNeedsLayout];
-}
-                                      
-+ (UIFont *)titleLabelFont
-{
-    return [UIFont systemFontOfSize:14];
-}
-
-#pragma mark - UIView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.titleLabel = [[UILabel alloc] initWithFrame:self.bounds];
-    self.titleLabel.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                        UIViewAutoresizingFlexibleHeight);
-    self.titleLabel.font = [[self class] titleLabelFont];
-    self.titleLabel.textColor = [UIColor whiteColor];
-    self.titleLabel.shadowColor = [UIColor blackColor];
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleLabel.numberOfLines = 0;
-    self.titleLabel.backgroundColor = [UIColor clearColor];
-    [self addSubview:self.titleLabel];
-    return self;
-}
-
-- (void)layoutSubviews
-{
-    self.titleLabel.frame = UIEdgeInsetsInsetRect(self.bounds, self.titleInsets);
+    [self dismissAnimated:NO];
+    return NO;
 }
 
 @end

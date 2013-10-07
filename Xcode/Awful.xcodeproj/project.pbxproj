@@ -244,7 +244,6 @@
 		1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE68BDB16F7C62B003D56C9 /* ONHost.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CE8FDEF17027725006A3B84 /* AwfulJumpToPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDEE17027725006A3B84 /* AwfulJumpToPageController.m */; };
 		1CE8FDF11703CEAC006A3B84 /* font-size@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */; };
-		1CE8FDF71703D648006A3B84 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */; };
 		1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */; };
 		1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */; };
 		1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */; };
@@ -669,8 +668,6 @@
 		1CE8FDED17027724006A3B84 /* AwfulJumpToPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJumpToPageController.h; sourceTree = "<group>"; };
 		1CE8FDEE17027725006A3B84 /* AwfulJumpToPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJumpToPageController.m; sourceTree = "<group>"; };
 		1CE8FDF01703CEAC006A3B84 /* font-size@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "font-size@2x.png"; sourceTree = "<group>"; };
-		1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSemiModalViewController.h; sourceTree = "<group>"; };
-		1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSemiModalViewController.m; sourceTree = "<group>"; };
 		1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCustomBaseURLTransformer.h; sourceTree = "<group>"; };
 		1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCustomBaseURLTransformer.m; sourceTree = "<group>"; };
 		1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsAlternateServerController.h; sourceTree = "<group>"; };
@@ -928,8 +925,6 @@
 				1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */,
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
-				1CE8FDF51703D648006A3B84 /* AwfulSemiModalViewController.h */,
-				1CE8FDF61703D648006A3B84 /* AwfulSemiModalViewController.m */,
 				1C5F701017D9B2BD005ABD6F /* AwfulTabBarButton.h */,
 				1C5F701117D9B2BD005ABD6F /* AwfulTabBarButton.m */,
 				1C5F700A17D87C0C005ABD6F /* AwfulVerticalTabBar.h */,
@@ -2182,7 +2177,6 @@
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
 				1CE8FDEF17027725006A3B84 /* AwfulJumpToPageController.m in Sources */,
-				1CE8FDF71703D648006A3B84 /* AwfulSemiModalViewController.m in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,
 				1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
