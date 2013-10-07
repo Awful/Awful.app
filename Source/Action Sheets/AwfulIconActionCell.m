@@ -11,7 +11,6 @@
 
 @end
 
-
 @implementation AwfulIconActionCell
 
 - (NSString *)title
@@ -73,7 +72,7 @@
 
 const CGSize ImageSize = {56, 56};
 
-#pragma mark - PSUICollectionViewCell
+#pragma mark - UICollectionViewCell
 
 - (void)setHighlighted:(BOOL)highlighted
 {
@@ -103,11 +102,10 @@ const CGSize ImageSize = {56, 56};
 
 - (void)layoutSubviews
 {
-    const CGFloat imageWidth = 56;
     CGRect imageFrame, titleFrame;
-    CGRectDivide(self.contentView.bounds, &imageFrame, &titleFrame, imageWidth, CGRectMinYEdge);
-    imageFrame.origin.x += (CGRectGetWidth(imageFrame) - imageWidth) / 2;
-    imageFrame.size.width = imageWidth;
+    CGRectDivide(self.contentView.bounds, &imageFrame, &titleFrame, ImageSize.width, CGRectMinYEdge);
+    imageFrame.origin.x += (CGRectGetWidth(imageFrame) - ImageSize.width) / 2;
+    imageFrame.size.width = ImageSize.width;
     self.imageView.frame = imageFrame;
     self.titleLabel.frame = titleFrame;
     [self.titleLabel sizeToFit];

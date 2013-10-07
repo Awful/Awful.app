@@ -1532,12 +1532,12 @@
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
+				839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */,
+				839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
 				1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */,
-				839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */,
-				839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */,
 			);
 			path = "UIKit and Foundation";
 			sourceTree = "<group>";

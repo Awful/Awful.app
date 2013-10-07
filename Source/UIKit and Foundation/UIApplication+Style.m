@@ -1,10 +1,6 @@
+//  UIApplication+Style.m
 //
-//  UIDevice+Style.m
-//  Awful
-//
-//  Created by Chris Williams on 10/1/13.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIApplication+Style.h"
 #import <objc/runtime.h>
@@ -13,18 +9,17 @@
 
 typedef void BackgroundMethod(id, SEL, UIBackgroundStyle);
 
-
 @interface UIApplication ()
 
--(void)_setBackgroundStyle:(UIBackgroundStyle)style;
+- (void)_setBackgroundStyle:(UIBackgroundStyle)style;
 
 @end
 
 @implementation UIApplication (Style)
 
--(void)setBackgroundMode:(UIBackgroundStyle)style
+- (void)setBackgroundMode:(UIBackgroundStyle)style
 {
-	//"_setBackgroundStyle:" with 10 added to each character
+	// "_setBackgroundStyle:" with 10 added to each character
 	char obfuscated[20] = {'i', '}', 'o', '~', 'L', 'k', 'm', 'u', 'q', '|', 'y', '\x7f', 'x', 'n', ']', '~', '\x83', 'v', 'o', 'D', };
 	
 	char realSelector[21];
