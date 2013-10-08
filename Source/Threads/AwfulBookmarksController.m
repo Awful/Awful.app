@@ -349,10 +349,8 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
                          "showthread.php?threadid=%@", thread.threadID];
         [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
-                                                        (id)kUTTypePlainText: url
-                                                        }];
+        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: [NSURL URLWithString:url],
+                                                       (id)kUTTypePlainText: url }];
     }]];
     if (thread.beenSeen) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread
