@@ -50,7 +50,7 @@
 		<key>listSecondaryTextColor</key>
 		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>
-		<string>#222222</string>
+		<string>#000000</string>
 		<key>description</key>
 		<string>Dark</string>
 		<key>descriptiveColor</key>
@@ -64,7 +64,7 @@
 		<key>settingsSwitchColor</key>
 		<string>#222222</string>
 		<key>listBackgroundColor</key>
-		<string>#000000</string>
+		<string>#111111</string>
 		<key>listSeparatorColor</key>
 		<string>#000000</string>
 		<key>listTextColor</key>
