@@ -428,6 +428,18 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
     return @"Unbookmark";
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulPostsViewController *page = [[AwfulPostsViewController alloc] initWithThread:thread];
+    page.restorationIdentifier = @"AwfulPostsViewController";
+    // For an unread thread, the Forums will interpret "next unread page" to mean "last page",
+    // which is not very helpful.
+    page.page = thread.beenSeen ? AwfulThreadPageNextUnread : 1;
+    [self displayPage:page];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 - (void)displayPage:(AwfulPostsViewController *)page
 {
     if (self.expandingSplitViewController) {
