@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
+#import "AwfulModels.h"
 
 /**
  * An AwfulTheme stores colors, fonts, and other easily-customizable design parameters.
@@ -15,9 +16,9 @@
 + (instancetype)currentTheme;
 
 /**
- * Returns an initialized AwfulTheme that may/may not be customized for a specific fourm
+ * Returns an initialized AwfulTheme for a given forum, falling back on the currentTheme if no more custom theme is found.
  */
-+ (instancetype)currentThemeForForumId:(NSString*)forumId;
++ (instancetype)currentThemeForForum:(AwfulForum *)forum;
 
 /**
  * Returns an initialized AwfulTheme. This is the designated initializer.

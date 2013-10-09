@@ -158,7 +158,7 @@
     AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
     settings.delegate = self;
     settings.themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.thread.forum.forumID];
-    settings.selectedTheme = AwfulTheme.currentTheme;
+    settings.selectedTheme = [AwfulTheme currentThemeForForum:self.thread.forum];
     self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
     self.pageSettingsPopover.delegate = self;
     [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
@@ -435,14 +435,15 @@
 
 - (void)configurePostsViewSettings
 {
-	self.postsView.backgroundColor = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"backgroundColor"];
-    self.view.backgroundColor = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"backgroundColor"];
+    AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.thread.forum];
+	self.postsView.backgroundColor = theme[@"backgroundColor"];
+    self.view.backgroundColor = theme[@"backgroundColor"];
 	
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
-    self.postsView.stylesheet = [AwfulTheme currentThemeForForumId:self.thread.forum.forumID][@"postsViewCSS"];
+    self.postsView.stylesheet = theme[@"postsViewCSS"];
     if (self.loadingView) {
         NSString *message = self.loadingView.message;
         [self clearLoadingMessage];

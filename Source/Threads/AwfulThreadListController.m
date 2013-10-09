@@ -182,7 +182,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 - (void)themeDidChange
 {
 	[super themeDidChange];
-	self.view.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"backgroundColor"];
+	self.view.backgroundColor = [AwfulTheme currentThemeForForum:self.forum][@"backgroundColor"];
 }
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
@@ -317,10 +317,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
 {
-	[super themeCell:cell atIndexPath:indexPath];
-	cell.backgroundColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listBackgroundColor"];
-	cell.badgeLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
-	cell.textLabel.textColor = [AwfulTheme currentThemeForForumId:self.forum.forumID][@"listTextColor"];
+    [super themeCell:cell atIndexPath:indexPath];
+    AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.forum];
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.badgeLabel.textColor = theme[@"listTextColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
 }
 
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
