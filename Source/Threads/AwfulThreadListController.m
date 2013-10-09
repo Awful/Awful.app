@@ -382,7 +382,10 @@
 
 - (void) hideFilterBar
 {
-    self.tableView.contentOffset = CGPointMake(0, self.threadTagFilterBar.frame.size.height);
+    CGFloat amountToHide = CGRectGetHeight(self.threadTagFilterBar.bounds);
+    if (self.tableView.contentOffset.y <= amountToHide) {
+        self.tableView.contentOffset = CGPointMake(0, amountToHide);
+    }
 }
 
 - (UIView* )threadTagFilterBar
