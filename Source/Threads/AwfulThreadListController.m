@@ -375,12 +375,12 @@
 
 #pragma mark - Thread filter bar
 
-- (BOOL) shouldShowFilterBar
+- (BOOL)shouldShowFilterBar
 {
-    return self.forum.forumID != 0;
+    return !!self.forum.forumID;
 }
 
-- (void) hideFilterBar
+- (void)hideFilterBar
 {
     CGFloat amountToHide = CGRectGetHeight(self.threadTagFilterBar.bounds);
     if (self.tableView.contentOffset.y <= amountToHide) {
