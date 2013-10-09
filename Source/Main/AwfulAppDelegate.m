@@ -349,6 +349,15 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    NSError *error;
+    BOOL ok = [_dataStack.managedObjectContext save:&error];
+    if (!ok) {
+        NSLog(@"%s error saving main managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
+}
+
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
 {
     NSError *error;
