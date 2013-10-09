@@ -40,16 +40,15 @@
 
 @implementation AwfulTableViewController
 
--(void)themeDidChange
+- (void)themeDidChange
 {
 	[super themeDidChange];
-	
 	for (UITableViewCell *cell in self.tableView.visibleCells) {
 		[self themeCell:cell atIndexPath:[self.tableView indexPathForCell:cell]];
 	}
 }
 
--(void)themeCell:(UITableViewCell *)cell atIndexPath:indexPath
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	
 }
@@ -58,16 +57,15 @@
 
 @implementation AwfulCollectionViewController
 
--(void)themeDidChange
+- (void)themeDidChange
 {
 	[super themeDidChange];
-	
 	for (UICollectionViewCell *cell in self.collectionView.visibleCells) {
 		[self themeCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
 	}
 }
 
--(void)themeCell:(UITableViewCell *)cell atIndexPath:indexPath
+- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	
 }

@@ -5,7 +5,6 @@
 #import "AwfulTheme.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
-#import <objc/runtime.h>
 
 @implementation AwfulTheme
 
@@ -19,13 +18,12 @@
 	}
 }
 
-+ (instancetype)currentThemeForForumId:(NSString*)forumId
++ (instancetype)currentThemeForForum:(AwfulForum *)forum
 {
-	NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:forumId];
+	NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:forum.forumID];
     if (specificThemeName) {
         return [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
-    }
-	else {
+    } else {
 		return self.currentTheme;
 	}
 }

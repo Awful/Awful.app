@@ -10,7 +10,7 @@
 @interface AwfulTheme : NSObject
 
 /**
- * Returns an initialized AwfulTheme for the currently selected default theme
+ * Returns an initialized AwfulTheme for the default look or the dark look, depending on the current darkTheme setting.
  */
 + (instancetype)currentTheme;
 

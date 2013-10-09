@@ -5,7 +5,6 @@
 #import <UIKit/UIKit.h>
 #import "AwfulTheme.h"
 
-
 @interface UIViewController (AwfulTheme) 
 
 /**
@@ -18,7 +17,7 @@
 /**
  * An AwfulViewController is a thin customization of UIViewController that extends AwfulTheme support.
  *
- * AwfulViewController instances have -themeDidChange called on them after the view loads.
+ * AwfulViewController instances call -themeDidChange after loading their view, and they call -themeDidChange on all child view controllers and on the presented view controller.
  */
 @interface AwfulViewController : UIViewController 
 
@@ -29,7 +28,10 @@
  */
 @interface AwfulTableViewController : UITableViewController 
 
-- (void)themeCell:(UITableViewCell*)cell atIndexPath:indexPath;
+/**
+ * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
+ */
+- (void)themeCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -38,6 +40,9 @@
  */
 @interface AwfulCollectionViewController : UICollectionViewController 
 
-- (void)themeCell:(UICollectionViewCell*)cell atIndexPath:indexPath;
+/**
+ * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
+ */
+- (void)themeCell:(UICollectionViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
