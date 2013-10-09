@@ -10,6 +10,7 @@
     UIImageView *_secondaryTagImageView;
     UIImageView *_ratingImageView;
     CGFloat _gap;
+    BOOL _addedInitialConstraints;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -21,30 +22,55 @@
     _secondaryTagImageView = [UIImageView new];
     _secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [_tagImageView addSubview:_secondaryTagImageView];
-
-    NSDictionary *views = @{ @"tag": _tagImageView,
-                             @"secondary": _secondaryTagImageView };
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-0@500-|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [_tagImageView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [_tagImageView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
     return self;
+}
+
+- (void)updateConstraints
+{
+    if (!_addedInitialConstraints) {
+        NSDictionary *views = @{ @"tag": _tagImageView,
+                                 @"secondary": _secondaryTagImageView };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-0@500-|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [_tagImageView addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary(==0@1)]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [_tagImageView addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary(==0@1)]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        _addedInitialConstraints = YES;
+    }
+    if (_ratingImageView) {
+        NSDictionary *views = @{ @"tag": _tagImageView,
+                                 @"rating": _ratingImageView };
+        NSDictionary *metrics = @{ @"gap": @(_gap) };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-gap-[rating]|"
+                                                 options:0
+                                                 metrics:metrics
+                                                   views:views]];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:views[@"rating"]
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:views[@"tag"]
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+    }
+    [super updateConstraints];
 }
 
 - (UIImage *)threadTag
@@ -84,29 +110,6 @@
     } else if (!ratingImage && _ratingImageView) {
         [_ratingImageView removeFromSuperview];
         _ratingImageView = nil;
-    }
-}
-
-- (void)updateConstraints
-{
-    [super updateConstraints];
-    if (_ratingImageView) {
-        NSDictionary *views = @{ @"tag": _tagImageView,
-                                 @"rating": _ratingImageView };
-        NSDictionary *metrics = @{ @"gap": @(_gap) };
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-gap-[rating]|"
-                                                 options:0
-                                                 metrics:metrics
-                                                   views:views]];
-        [self addConstraint:
-         [NSLayoutConstraint constraintWithItem:views[@"rating"]
-                                      attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:views[@"tag"]
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:1
-                                       constant:0]];
     }
 }
 
