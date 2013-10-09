@@ -5,6 +5,7 @@
 #import "AwfulNavigationController.h"
 #import "AwfulNavigationBar.h"
 #import "AwfulToolbar.h"
+#import "UIViewController+AwfulTheme.h"
 
 @interface AwfulNavigationController () <UIViewControllerRestoration>
 
@@ -12,7 +13,7 @@
 
 @implementation AwfulNavigationController
 
-// We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can.
+// We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
 
 - (id)init
 {
@@ -28,15 +29,20 @@
     return self;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self themeDidChange];
+}
+
 - (void)themeDidChange
 {
-	[super themeDidChange];
-	
+    [super themeDidChange];
 	self.navigationBar.tintColor = AwfulTheme.currentTheme[@"navigationBarTextColor"];
     self.navigationBar.barTintColor = AwfulTheme.currentTheme[@"navigationBarTintColor"];
 }
 
-#pragma mark UIViewControllerRestoration
+#pragma mark - UIViewControllerRestoration
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {

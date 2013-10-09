@@ -41,10 +41,3 @@
 - (void)themeCell:(UICollectionViewCell*)cell atIndexPath:indexPath;
 
 @end
-
-/**
- * An AwfulThemedNavigationController is a thin customization of UINavigationController that extends AwfulTheme support.
- */
-@interface AwfulThemedNavigationController : UINavigationController 
-
-@end

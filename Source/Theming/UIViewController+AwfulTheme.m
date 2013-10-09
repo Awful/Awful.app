@@ -73,7 +73,3 @@
 }
 
 @end
-
-@implementation AwfulThemedNavigationController
-
-@end
