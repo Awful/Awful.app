@@ -515,91 +515,143 @@
 
 - (void)setPage:(AwfulThreadPage)page
 {
+    if (page == _page) {
+        [self refreshCurrentPage];
+    } else {
+        [self loadFetchAndShowPostsFromPage:page];
+    }
+    _page = page;
+}
+
+- (void)loadFetchAndShowPostsFromPage:(AwfulThreadPage)page
+{
+    [self prepareForLoad];
+    if (page > 0) {
+        [self prepareForNewPage];
+    }
+    [self fetchPage:page completionHandler:^(NSError *error) {
+        if (error) {
+            // Poor man's offline mode.
+            if (AwfulHTTPClient.client.reachable || ![error.domain isEqualToString:NSURLErrorDomain]) {
+                [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+            }
+        }
+    }];
+}
+
+- (void)loadCachedPostsFromPage:(AwfulThreadPage)page
+{
+    _page = page;
+    [self prepareForLoad];
+    if (page > 0) {
+        [self prepareForNewPage];
+    }
+    [self.postsView reloadData];
+    if (self.topPostAfterLoad) {
+        self.topPost = self.topPostAfterLoad;
+        self.topPostAfterLoad = nil;
+    }
+    [self updateUserInterface];
+    [self startObservingThreadSeenPosts];
+    [self clearLoadingMessage];
+}
+
+- (void)refreshCurrentPage
+{
+    [self prepareForLoad];
+    [self fetchPage:self.page completionHandler:^(NSError *error) {
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+        }
+    }];
+}
+
+- (void)prepareForLoad
+{
     [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.topPostAfterLoad = nil;
-    NSInteger oldPage = _page;
-    _page = page;
-    BOOL refreshingSamePage = page > 0 && page == oldPage;
-    if (!refreshingSamePage) {
-        self.cachedUpdatesWhileScrolling = nil;
-        [self updateFetchedResultsController];
-        self.pullUpToRefreshControl.refreshing = NO;
-        [self updateUserInterface];
-        UIEdgeInsets inset = self.postsView.scrollView.contentInset;
-        [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset.top) animated:NO];
-        self.advertisementHTML = nil;
-        self.hiddenPosts = 0;
-        [self.postsView reloadData];
-    }
+}
+
+- (void)prepareForNewPage
+{
+    self.cachedUpdatesWhileScrolling = nil;
+    [self updateFetchedResultsController];
+    self.pullUpToRefreshControl.refreshing = NO;
+    [self updateUserInterface];
+    [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
+    self.advertisementHTML = nil;
+    self.hiddenPosts = 0;
+    [self.postsView reloadData];
+}
+
+- (void)fetchPage:(AwfulThreadPage)page completionHandler:(void (^)(NSError *error))completionHandler
+{
     __weak __typeof__(self) weakSelf = self;
     id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
                                                        onPage:page
                                                  singleUserID:self.author.userID
-                                                      andThen:^(NSError *error, NSArray *posts,
+                                                      andThen:^(NSError *error,
+                                                                NSArray *posts,
                                                                 NSUInteger firstUnreadPost,
                                                                 NSString *advertisementHTML)
-    {
-        __typeof__(self) self = weakSelf;
-        // Since we load cached pages where possible, things can get out of order if we change
-        // pages quickly. If the callback comes in after we've moved away from the requested page,
-        // just don't bother going any further. We have the data for later.
-        if (page != self.page) return;
-        BOOL wasLoading = !!self.loadingView;
-        if (error) {
-            if (wasLoading) {
-                [self clearLoadingMessage];
-                // TODO this is stupid, relying on UI state
-                if (self.currentPageItem.title.length == 0) {
-                    if ([self relevantNumberOfPagesInThread] > 0) {
-                        NSString *title = [NSString stringWithFormat:@"Page ? of %zd", [self relevantNumberOfPagesInThread]];
-                        self.currentPageItem.title = title;
-                    } else {
-                        self.currentPageItem.title = @"Page ? of ?";
-                    }
-                }
-            }
-            // Poor man's offline mode.
-            if (!wasLoading && !refreshingSamePage)
-            if ([error.domain isEqualToString:NSURLErrorDomain]) {
-                return;
-            }
-            [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
-            self.pullUpToRefreshControl.refreshing = NO;
-            return;
-        }
-        AwfulPost *lastPost = [posts lastObject];
-        if (lastPost) {
-            self.thread = [lastPost thread];
-            _page = self.author ? lastPost.singleUserPage : lastPost.page;
-        }
-        self.advertisementHTML = advertisementHTML;
-        if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
-            self.hiddenPosts = firstUnreadPost;
-        }
-        if (!self.fetchedResultsController) [self updateFetchedResultsController];
-        if (wasLoading) {
-            [self.postsView reloadData];
-        } else {
-            [self.postsView reloadAdvertisementHTML];
-        }
-        if (self.topPostAfterLoad) {
-            self.topPost = self.topPostAfterLoad;
-            self.topPostAfterLoad = nil;
-        } else if (wasLoading) {
-            if (self.hiddenPosts > 0) {
-                [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
-            } else {
-                CGFloat inset = self.postsView.scrollView.contentInset.top;
-                [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
-            }
-        }
-        [self updateUserInterface];
-        if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
-            self.thread.seenPostsValue = lastPost.threadIndexValue;
-        }
-        [self startObservingThreadSeenPosts];
-    }];
+             {
+                 __typeof__(self) self = weakSelf;
+                 
+                 // Since we load cached pages where possible, things can get out of order if we change
+                 // pages quickly. If the callback comes in after we've moved away from the requested page,
+                 // just don't bother going any further. We have the data for later.
+                 if (page != self.page) return;
+                 
+                 BOOL wasLoading = !!self.loadingView;
+                 if (error) {
+                     if (wasLoading) {
+                         [self clearLoadingMessage];
+                         // TODO this is stupid, relying on UI state
+                         if (self.currentPageItem.title.length == 0) {
+                             if ([self relevantNumberOfPagesInThread] > 0) {
+                                 NSString *title = [NSString stringWithFormat:@"Page ? of %zd", [self relevantNumberOfPagesInThread]];
+                                 self.currentPageItem.title = title;
+                             } else {
+                                 self.currentPageItem.title = @"Page ? of ?";
+                             }
+                         }
+                     }
+                     completionHandler(error);
+                     return;
+                 }
+                 AwfulPost *lastPost = [posts lastObject];
+                 if (lastPost) {
+                     self.thread = [lastPost thread];
+                     _page = self.author ? lastPost.singleUserPage : lastPost.page;
+                 }
+                 self.advertisementHTML = advertisementHTML;
+                 if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
+                     self.hiddenPosts = firstUnreadPost;
+                 }
+                 if (!self.fetchedResultsController) [self updateFetchedResultsController];
+                 if (wasLoading) {
+                     [self.postsView reloadData];
+                 } else {
+                     [self.postsView reloadAdvertisementHTML];
+                 }
+                 if (self.topPostAfterLoad) {
+                     self.topPost = self.topPostAfterLoad;
+                     self.topPostAfterLoad = nil;
+                 } else if (wasLoading) {
+                     if (self.hiddenPosts > 0) {
+                         [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
+                     } else {
+                         CGFloat inset = self.postsView.scrollView.contentInset.top;
+                         [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
+                     }
+                 }
+                 [self updateUserInterface];
+                 if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
+                     self.thread.seenPostsValue = lastPost.threadIndexValue;
+                 }
+                 [self startObservingThreadSeenPosts];
+             }];
     self.networkOperation = op;
 }
 
@@ -637,14 +689,8 @@
     if ([self relevantNumberOfPagesInThread] > self.page) {
         self.page++;
     } else {
-        [self reloadPage];
+        [self refreshCurrentPage];
     }
-}
-
-- (void)reloadPage
-{
-    // TODO this is stupid
-    self.page = self.page;
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
@@ -1305,8 +1351,12 @@ static char KVOContext;
 {
     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey]
                                              inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
-    AwfulUser *author = [AwfulUser firstOrNewUserWithUserID:[coder decodeObjectForKey:AuthorUserIDKey]
-                                     inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
+    AwfulUser *author;
+    if (authorUserID.length > 0) {
+        author = [AwfulUser firstOrNewUserWithUserID:authorUserID
+                              inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    }
     AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
     return postsView;
@@ -1318,21 +1368,28 @@ static char KVOContext;
     [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
     [coder encodeInteger:self.page forKey:PageKey];
     [coder encodeObject:self.author.userID forKey:AuthorUserIDKey];
+    [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
     [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
+    [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.page = [coder decodeIntegerForKey:PageKey];
     self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
     self.composeViewController.delegate = self;
+    [self loadCachedPostsFromPage:[coder decodeIntegerForKey:PageKey]];
+    self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];
+    self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
+    [self.postsView reloadData];
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";
 static NSString * const PageKey = @"AwfulCurrentPage";
 static NSString * const AuthorUserIDKey = @"AwfulAuthorUserID";
+static NSString * const HiddenPostsKey = @"AwfulHiddenPosts";
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
+static NSString * const AdvertisementHTMLKey = @"AwfulAdvertisementHTML";
 
 @end
 
