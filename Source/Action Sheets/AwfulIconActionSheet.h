@@ -35,6 +35,14 @@
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated;
 
 /**
+ * Displays an action sheet. On iPhone, the sheet is displayed in the middle of the superview of the bar button item's navbar/toolbar. On iPad, the sheet is shown in a popover.
+ *
+ * @param barButtonItem On iPhone, the item used to locate the view in which to display the sheet. On iPad, the item that the popover points to.
+ * @param animated      YES if the sheet presentation should be animated, otherwise NO.
+ */
+- (void)showFromBarButtonItem:(UIBarButtonItem *)barButtonItem animated:(BOOL)animated;
+
+/**
  * Hides an action sheet.
  *
  * @param animated YES if the sheet dismissal should be animated, otherwise NO.

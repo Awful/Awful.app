@@ -232,9 +232,25 @@ static const CGFloat LeftRightMargin = 8;
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
 {
     if ([self showsInPopover]) {
-        [self showInPopoverFromRect:rect inView:view animated:animated];
+        [self createAndConfigurePopover];
+        [_popover presentPopoverFromRect:rect
+                                  inView:view
+                permittedArrowDirections:UIPopoverArrowDirectionAny
+                                animated:animated];
     } else {
         [self showInView:view animated:animated];
+    }
+}
+
+- (void)showFromBarButtonItem:(UIBarButtonItem *)barButtonItem animated:(BOOL)animated
+{
+    if ([self showsInPopover]) {
+        [self createAndConfigurePopover];
+        [_popover presentPopoverFromBarButtonItem:barButtonItem
+                         permittedArrowDirections:UIPopoverArrowDirectionAny
+                                         animated:animated];
+    } else {
+        [self showInView:[barButtonItem valueForKeyPath:@"view.superview"] animated:animated];
     }
 }
 
@@ -243,27 +259,28 @@ static const CGFloat LeftRightMargin = 8;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.layer.cornerRadius = 5;
     self.clipsToBounds = YES;
-    _overlay = [UIView new];
-    _overlay.translatesAutoresizingMaskIntoConstraints = NO;
-    [_overlay addSubview:self];
-    [_overlay addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-margin-[sheet]-margin-|"
-                                             options:0
-                                             metrics:@{ @"margin": @(LeftRightMargin) }
-                                               views:@{ @"sheet": self }]];
-    [view.window.subviews.lastObject addSubview:_overlay];
-    NSDictionary *views = @{ @"overlay": _overlay };
-    [_overlay.superview addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[overlay]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [_overlay.superview addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlay]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [_overlay.superview addConstraint:
+    UIView *overlay = [UIView new];
+    _overlay = overlay;
+    overlay.translatesAutoresizingMaskIntoConstraints = NO;
+    [overlay addSubview:self];
+    [view.window addSubview:overlay];
+    [view.window addConstraint:
+     [NSLayoutConstraint constraintWithItem:self
+                                  attribute:NSLayoutAttributeLeft
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:view
+                                  attribute:NSLayoutAttributeLeft
+                                 multiplier:1
+                                   constant:LeftRightMargin]];
+    [view.window addConstraint:
+     [NSLayoutConstraint constraintWithItem:self
+                                  attribute:NSLayoutAttributeRight
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:view
+                                  attribute:NSLayoutAttributeRight
+                                 multiplier:1
+                                   constant:-LeftRightMargin]];
+    [view.window addConstraint:
      [NSLayoutConstraint constraintWithItem:_collectionView
                                   attribute:NSLayoutAttributeCenterY
                                   relatedBy:NSLayoutRelationEqual
@@ -271,9 +288,20 @@ static const CGFloat LeftRightMargin = 8;
                                   attribute:NSLayoutAttributeCenterY
                                  multiplier:1
                                    constant:0]];
+    NSDictionary *views = @{ @"overlay": overlay };
+    [view.window addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[overlay]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [view.window addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlay]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
 }
 
-- (void)showInPopoverFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
+- (void)createAndConfigurePopover
 {
     UIViewController *contentViewController = [UIViewController new];
     contentViewController.view = self;
@@ -294,7 +322,6 @@ static const CGFloat LeftRightMargin = 8;
     _popover = [[UIPopoverController alloc] initWithContentViewController:contentViewController];
     _popover.backgroundColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
     _popover.delegate = self;
-    [_popover presentPopoverFromRect:rect inView:view permittedArrowDirections:UIPopoverArrowDirectionAny animated:animated];
 }
 
 - (void)dismissAnimated:(BOOL)animated

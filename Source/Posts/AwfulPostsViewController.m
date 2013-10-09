@@ -239,15 +239,70 @@
     if (_actionsItem) return _actionsItem;
     _actionsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                  target:self
-                                                                 action:@selector(toggleActions:)];
+                                                                 action:@selector(showThreadActionsFromBarButtonItem:)];
     return _actionsItem;
 }
 
-- (void)toggleActions:(UIBarButtonItem *)sender
+- (void)showThreadActionsFromBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // TODO this is stupid, show from item.
-    UIToolbar *toolbar = self.navigationController.toolbar;
-    [self showThreadActionsFromRect:toolbar.bounds inView:toolbar];
+    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    sheet.title = self.title;
+    AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
+                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
+                         self.thread.threadID, @(self.page)];
+        [AwfulSettings settings].lastOfferedPasteboardURL = url;
+        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: [NSURL URLWithString:url],
+                                                       (id)kUTTypePlainText: url
+                                                       }];
+    }];
+    copyURL.title = @"Copy Thread URL";
+    [sheet addItem:copyURL];
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
+        AwfulActionSheet *vote = [AwfulActionSheet new];
+        for (int i = 5; i >= 1; i--) {
+            [vote addButtonWithTitle:[@(i) stringValue] block:^{
+                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
+                                                    rating:i
+                                                   andThen:^(NSError *error)
+                 {
+                     if (error) {
+                         [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                     } else {
+                         NSString *status = [NSString stringWithFormat:@"Voted %d", i];
+                         [SVProgressHUD showSuccessWithStatus:status];
+                     }
+                 }];
+            }];
+        }
+        [vote addCancelButtonWithTitle:@"Cancel"];
+        [vote showFromBarButtonItem:barButtonItem animated:NO];
+    }]];
+    
+    AwfulIconActionItemType bookmarkItemType;
+    if (self.thread.isBookmarkedValue) {
+        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+    } else {
+        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+    }
+    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
+                                     isBookmarked:!self.thread.isBookmarkedValue
+                                          andThen:^(NSError *error)
+         {
+             if (error) {
+                 NSLog(@"error %@bookmarking thread %@: %@",
+                       self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
+             } else {
+                 NSString *status = @"Removed Bookmark";
+                 if (self.thread.isBookmarkedValue) {
+                     status = @"Added Bookmark";
+                 }
+                 [SVProgressHUD showSuccessWithStatus:status];
+             }
+         }];
+    }]];
+    [sheet showFromBarButtonItem:barButtonItem animated:NO];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -590,70 +645,6 @@
 {
     // TODO this is stupid
     self.page = self.page;
-}
-
-- (void)showThreadActionsFromRect:(CGRect)rect inView:(UIView *)view
-{
-    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
-    sheet.title = self.title;
-    AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL
-                                                              action:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
-                         self.thread.threadID, @(self.page)];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-                                                        (id)kUTTypeURL: [NSURL URLWithString:url],
-                                                        (id)kUTTypePlainText: url
-                                                        }];
-    }];
-    copyURL.title = @"Copy Thread URL";
-    [sheet addItem:copyURL];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
-        AwfulActionSheet *vote = [AwfulActionSheet new];
-        for (int i = 5; i >= 1; i--) {
-            [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
-                                                    rating:i
-                                                   andThen:^(NSError *error)
-                 {
-                     if (error) {
-                         [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
-                     } else {
-                         NSString *status = [NSString stringWithFormat:@"Voted %d", i];
-                         [SVProgressHUD showSuccessWithStatus:status];
-                     }
-                 }];
-            }];
-        }
-        [vote addCancelButtonWithTitle:@"Cancel"];
-        [vote showFromRect:rect inView:view animated:YES];
-    }]];
-    
-    AwfulIconActionItemType bookmarkItemType;
-    if (self.thread.isBookmarkedValue) {
-        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
-    } else {
-        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
-                                     isBookmarked:!self.thread.isBookmarkedValue
-                                          andThen:^(NSError *error)
-         {
-             if (error) {
-                 NSLog(@"error %@bookmarking thread %@: %@",
-                       self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
-             } else {
-                 NSString *status = @"Removed Bookmark";
-                 if (self.thread.isBookmarkedValue) {
-                     status = @"Added Bookmark";
-                 }
-                 [SVProgressHUD showSuccessWithStatus:status];
-             }
-         }];
-    }]];
-    [sheet showFromRect:rect inView:view animated:YES];
 }
 
 - (void)showProfileWithUser:(AwfulUser *)user
