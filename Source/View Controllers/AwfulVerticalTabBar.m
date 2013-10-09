@@ -81,7 +81,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     [_buttons enumerateObjectsUsingBlock:^(UITabBarItem *item, NSUInteger i, BOOL *stop) {
         UIButton *button = _buttons[i];
         [_buttonConstraints addObjectsFromArray:
@@ -105,6 +104,7 @@
         }
     }];
     [self addConstraints:_buttonConstraints];
+    [super updateConstraints];
 }
 
 @end

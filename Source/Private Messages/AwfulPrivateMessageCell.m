@@ -59,7 +59,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     NSDictionary *views = @{ @"tag": self.imageView,
                              @"subject": self.textLabel,
                              @"sender": self.detailTextLabel,
@@ -116,6 +115,7 @@
                                   attribute:NSLayoutAttributeBottom
                                  multiplier:1
                                    constant:2]];
+    [super updateConstraints];
 }
 
 @end

@@ -43,7 +43,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     NSDictionary *views = @{ @"avatarsLabel": self.avatarsLabel,
                              @"avatarsSwitch": self.avatarsEnabledSwitch,
                              @"imagesLabel": self.imagesLabel,
@@ -70,6 +69,7 @@
                                              options:NSLayoutFormatAlignAllLeft
                                              metrics:nil
                                                views:views]];
+    [super updateConstraints];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size

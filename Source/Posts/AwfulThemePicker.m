@@ -69,7 +69,6 @@ static const CGFloat Padding = 8;
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     UIView *previous;
     for (UIView *subview in self.subviews) {
         [_constraints addObjectsFromArray:
@@ -99,6 +98,7 @@ static const CGFloat Padding = 8;
         previous = subview;
     }
     [self addConstraints:_constraints];
+    [super updateConstraints];
 }
 
 @end

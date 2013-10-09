@@ -45,7 +45,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     [self.contentView addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[disclosure(32)]-_-[name]-_-[favorite(disclosure)]|"
                                              options:NSLayoutFormatAlignAllCenterY
@@ -58,6 +57,7 @@
                                              options:0
                                              metrics:nil
                                                views:@{ @"name": self.textLabel }]];
+    [super updateConstraints];
 }
 
 - (void)willTransitionToState:(UITableViewCellStateMask)state

@@ -116,7 +116,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     NSDictionary *views = @{ @"title": _titleLabel,
                              @"topDivider": _topDivider,
                              @"grid": _collectionView };
@@ -200,6 +199,7 @@
                                      multiplier:1
                                        constant:320 - 2 * LeftRightMargin]];
     }
+    [super updateConstraints];
 }
 
 static const CGFloat LeftRightMargin = 8;

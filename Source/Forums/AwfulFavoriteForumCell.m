@@ -36,7 +36,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     [self.contentView addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[favorite(width)]-[name]-width-|"
                                              options:NSLayoutFormatAlignAllCenterY
@@ -48,6 +47,7 @@
                                              options:NSLayoutFormatAlignAllCenterY
                                              metrics:nil
                                                views:@{ @"name": self.textLabel }]];
+    [super updateConstraints];
 }
 
 @end

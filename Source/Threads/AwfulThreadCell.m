@@ -75,7 +75,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
     NSDictionary *views = @{ @"tag": self.tagAndRatingView,
                              @"name": self.textLabel,
                              @"pages": self.numberOfPagesLabel,
@@ -150,6 +149,7 @@
                                              options:0
                                              metrics:nil
                                                views:views]];
+    [super updateConstraints];
 }
 
 @end
