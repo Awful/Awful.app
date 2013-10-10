@@ -229,6 +229,7 @@ body {
 }
 .iphone .postbody {
   padding: .36em;
+  margin-top: -4px;
 }
 header {
   position: relative;
@@ -239,11 +240,20 @@ header {
 .iphone header {
   top: 3px;
   background: 40px bottom no-repeat url('fyad-bubble.png');
+  background-size: 75px 25px;
 }
 .ipad header {
   top: 11px;
   padding: 0 15px 15px 15px;
   background: 65px bottom no-repeat url('fyad-bubble.png');
+  background-size: 70px 25px;
+}
+#bracket::before,
+#bracket::after {
+  background: #000000;
+}
+.regdate {
+  display: none;
 }
 .iphone .avatar {
   max-width: 50px;

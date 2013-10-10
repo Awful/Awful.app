@@ -85,11 +85,11 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
 		<key>listSeparatorColor</key>
-		<string>#851A51</string>
+		<string>#0000</string>
 		<key>listBackgroundColor</key>
 		<string>#ffccff</string>
 		<key>listTextColor</key>
-		<string>#006666</string>
+		<string>#000000</string>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
