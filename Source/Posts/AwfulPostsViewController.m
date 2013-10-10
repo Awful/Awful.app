@@ -279,22 +279,22 @@
     }]];
     
     AwfulIconActionItemType bookmarkItemType;
-    if (self.thread.isBookmarked) {
+    if (self.thread.bookmarked) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
-                                     isBookmarked:!self.thread.isBookmarked
+                                     isBookmarked:!self.thread.bookmarked
                                           andThen:^(NSError *error)
          {
              if (error) {
                  NSLog(@"error %@bookmarking thread %@: %@",
-                       self.thread.isBookmarked ? @"un" : @"", self.thread.threadID, error);
+                       self.thread.bookmarked ? @"un" : @"", self.thread.threadID, error);
              } else {
                  NSString *status = @"Removed Bookmark";
-                 if (self.thread.isBookmarked) {
+                 if (self.thread.bookmarked) {
                      status = @"Added Bookmark";
                  }
                  [SVProgressHUD showSuccessWithStatus:status];
@@ -455,7 +455,7 @@
         self.currentPageItem.title = @"";
     }
     self.forwardItem.enabled = self.page > 0 && self.page < relevantNumberOfPages;
-    self.composeItem.enabled = !self.thread.isClosed;
+    self.composeItem.enabled = !self.thread.closed;
 }
 
 - (void)setLoadingMessage:(NSString *)message
@@ -1048,7 +1048,7 @@ static char KVOContext;
              }];
         }]];
     }
-    if (!self.thread.isClosed) {
+    if (!self.thread.closed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)

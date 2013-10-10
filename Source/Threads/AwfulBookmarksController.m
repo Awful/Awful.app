@@ -51,7 +51,7 @@
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isBookmarked = YES"];
+    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
     request.sortDescriptors = @[
         [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]
     ];
@@ -118,9 +118,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         } else {
             if (pageNum == 1) {
                 NSArray *bookmarks = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext
-                                                         matchingPredicateFormat:@"isBookmarked = YES"];
-                [bookmarks setValue:@NO forKey:@"isBookmarked"];
-                [threads setValue:@YES forKey:@"isBookmarked"];
+                                                         matchingPredicateFormat:@"bookmarked = YES"];
+                [bookmarks setValue:@NO forKey:@"bookmarked"];
+                [threads setValue:@YES forKey:@"bookmarked"];
                 BOOL wasShowingBookmarkColors = self.showBookmarkColors;
                 self.showBookmarkColors = NO;
                 for (NSNumber *star in [bookmarks valueForKey:@"starCategory"]) {
@@ -219,7 +219,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
         cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (thread.isSticky || !thread.isClosed) {
+    if (thread.sticky || !thread.closed) {
         cell.tagAndRatingView.alpha = 1;
         cell.textLabel.enabled = YES;
     } else {
@@ -304,21 +304,21 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
         page.page = AwfulThreadPageLast;
     }]];
     AwfulIconActionItemType bookmarkItemType;
-    if (thread.isBookmarked) {
+    if (thread.bookmarked) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:thread.threadID
-                                     isBookmarked:!thread.isBookmarked
+                                     isBookmarked:!thread.bookmarked
                                           andThen:^(NSError *error)
          {
              if (error) {
                  [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
              } else {
                  NSString *status = @"Removed Bookmark";
-                 if (thread.isBookmarked) {
+                 if (thread.bookmarked) {
                      status = @"Added Bookmark";
                  }
                  [SVProgressHUD showSuccessWithStatus:status];
@@ -400,13 +400,13 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        thread.isBookmarked = NO;
+        thread.bookmarked = NO;
         self.networkOperation = [[AwfulHTTPClient client] setThreadWithID:thread.threadID
                                                              isBookmarked:NO
                                                                   andThen:^(NSError *error)
         {
             if (!error) return;
-            thread.isBookmarked = YES;
+            thread.bookmarked = YES;
             [AwfulAlertView showWithTitle:@"Error Removing Bbookmark"
                                     error:error
                               buttonTitle:@"Whatever"];

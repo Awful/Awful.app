@@ -22,24 +22,19 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (assign, nonatomic) BOOL archived;
 
 /**
- * A property that should be deleted.
- */
-@property (assign, nonatomic) BOOL hideFromList;
-
-/**
  * YES if the currently logged-in user has bookmarked the thread, otherwise NO.
  */
-@property (assign, nonatomic) BOOL isBookmarked;
+@property (assign, nonatomic) BOOL bookmarked;
 
 /**
  * YES if the thread is closed (does not accept new posts), otherwise NO.
  */
-@property (assign, nonatomic) BOOL isClosed;
+@property (assign, nonatomic) BOOL closed;
 
 /**
- * YES if the thread is stuck to the top of the forum, otherwise NO.
+ * A property that should be deleted.
  */
-@property (assign, nonatomic) BOOL isSticky;
+@property (assign, nonatomic) BOOL hideFromList;
 
 /**
  * A property that should be deleted.
@@ -70,6 +65,11 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
  * The color assigned to the thread in the currently logged-in user's bookmarks.
  */
 @property (assign, nonatomic) AwfulStarCategory starCategory;
+
+/**
+ * YES if the thread is stuck to the top of the forum, otherwise NO.
+ */
+@property (assign, nonatomic) BOOL sticky;
 
 /**
  * Where the thread appears atop the forum, among the stickied threads, ending at -1.

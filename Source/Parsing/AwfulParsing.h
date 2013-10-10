@@ -96,15 +96,15 @@
 @property (readonly, copy, nonatomic) NSString *forumID;
 @property (readonly, copy, nonatomic) NSString *threadID;
 @property (readonly, copy, nonatomic) NSString *title;
-@property (readonly, nonatomic) BOOL isSticky;
+@property (readonly, nonatomic) BOOL sticky;
 @property (readonly, nonatomic) NSURL *threadTagURL;
 @property (readonly, nonatomic) NSURL *secondaryThreadTagURL;
 @property (readonly, nonatomic) UserParsedInfo *author;
 
 @property (readonly, nonatomic) BOOL seen;
-@property (readonly, nonatomic) BOOL isClosed;
+@property (readonly, nonatomic) BOOL closed;
 @property (readonly, nonatomic) NSInteger starCategory;
-@property (readonly, nonatomic) BOOL isBookmarked;
+@property (readonly, nonatomic) BOOL bookmarked;
 @property (readonly, nonatomic) NSInteger seenPosts;
 @property (readonly, nonatomic) NSInteger totalReplies;
 @property (readonly, nonatomic) NSInteger threadVotes;

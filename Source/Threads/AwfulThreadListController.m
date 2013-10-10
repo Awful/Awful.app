@@ -204,21 +204,21 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         page.page = AwfulThreadPageLast;
     }]];
     AwfulIconActionItemType bookmarkItemType;
-    if (thread.isBookmarked) {
+    if (thread.bookmarked) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:thread.threadID
-                                     isBookmarked:!thread.isBookmarked
+                                     isBookmarked:!thread.bookmarked
                                           andThen:^(NSError *error)
          {
              if (error) {
                  [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
              } else {
                  NSString *status = @"Removed Bookmark";
-                 if (thread.isBookmarked) {
+                 if (thread.bookmarked) {
                      status = @"Added Bookmark";
                  }
                  [SVProgressHUD showSuccessWithStatus:status];
@@ -352,7 +352,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     if (!secondaryTag && thread.secondIconName) {
         [self updateThreadTagsForCellAtIndexPath:indexPath];
     }
-    if (thread.isSticky) {
+    if (thread.sticky) {
         cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
     } else {
         cell.stickyImageView.image = nil;
@@ -364,7 +364,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (thread.isSticky || !thread.isClosed) {
+    if (thread.sticky || !thread.closed) {
         cell.tagAndRatingView.alpha = 1;
         cell.textLabel.enabled = YES;
     } else {

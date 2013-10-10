@@ -523,12 +523,12 @@ static NSString * DeEntitify(NSString *withEntities)
 @property (copy, nonatomic) NSString *forumID;
 @property (copy, nonatomic) NSString *threadID;
 @property (copy, nonatomic) NSString *title;
-@property (nonatomic) BOOL isSticky;
+@property (nonatomic) BOOL sticky;
 @property (nonatomic) NSURL *threadTagURL;
 @property (nonatomic) NSURL *secondaryThreadTagURL;
 @property (nonatomic) UserParsedInfo *author;
 @property (nonatomic) BOOL seen;
-@property (nonatomic) BOOL isClosed;
+@property (nonatomic) BOOL closed;
 @property (nonatomic) NSInteger starCategory;
 @property (nonatomic) NSInteger seenPosts;
 @property (nonatomic) NSInteger totalReplies;
@@ -542,7 +542,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 @implementation ThreadParsedInfo
 
-- (BOOL)isBookmarked
+- (BOOL)bookmarked
 {
     return self.starCategory != AwfulStarCategoryNone;
 }
@@ -592,7 +592,7 @@ static NSString * DeEntitify(NSString *withEntities)
     self.title = [title content];
     
     TFHppleElement *isSticky = [doc searchForSingle:@"//td[" HAS_CLASS(title_sticky) "]"];
-    self.isSticky = !!isSticky;
+    self.sticky = !!isSticky;
     
     TFHppleElement *icon = [doc searchForSingle:@"//td[" HAS_CLASS(icon) "]//img"];
     if (!icon) {
@@ -631,7 +631,7 @@ static NSString * DeEntitify(NSString *withEntities)
     self.seen = !!seen;
     
     TFHppleElement *closed = [doc searchForSingle:@"//tr[" HAS_CLASS(closed) "]"];
-    self.isClosed = !!closed;
+    self.closed = !!closed;
     
     TFHppleElement *star = [doc searchForSingle:@"//td[" HAS_CLASS(star) "]"];
     NSCharacterSet *white = [NSCharacterSet whitespaceAndNewlineCharacterSet];
@@ -690,9 +690,9 @@ static NSString * DeEntitify(NSString *withEntities)
 + (NSArray *)keysToApplyToObject
 {
     return @[
-        @"threadID", @"title", @"threadTagURL", @"secondaryThreadTagURL", @"isSticky",
-        @"isClosed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
-        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
+        @"threadID", @"title", @"threadTagURL", @"secondaryThreadTagURL", @"sticky",
+        @"closed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
+        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"bookmarked"
     ];
 }
 

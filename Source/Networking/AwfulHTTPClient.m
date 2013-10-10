@@ -149,7 +149,7 @@ static AwfulHTTPClient *instance = nil;
                                              matchingPredicateFormat:@"forumID = %@", forumID];
         for (AwfulThread *thread in threads) {
             if ([forums count] > 0) thread.forum = forums[0];
-            thread.stickyIndex = thread.isSticky ? stickyIndex++ : 0;
+            thread.stickyIndex = thread.sticky ? stickyIndex++ : 0;
         }
         if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
@@ -276,7 +276,7 @@ static AwfulHTTPClient *instance = nil;
     {
         AwfulThread *thread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                         matchingPredicateFormat:@"threadID = %@", threadID];
-        thread.isBookmarked = isBookmarked;
+        thread.bookmarked = isBookmarked;
         if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error);

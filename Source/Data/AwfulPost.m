@@ -64,8 +64,8 @@
                                              inManagedObjectContext:managedObjectContext];
     thread.forum = forum;
     thread.title = pageInfo.threadTitle;
-    thread.isBookmarked = pageInfo.threadBookmarked;
-    thread.isClosed = pageInfo.threadClosed;
+    thread.bookmarked = pageInfo.threadBookmarked;
+    thread.closed = pageInfo.threadClosed;
     
     NSArray *allPosts = [thread.posts allObjects];
     NSArray *allPostIDs = [allPosts valueForKey:@"postID"];

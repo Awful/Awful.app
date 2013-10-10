@@ -17,16 +17,16 @@
 @implementation AwfulThread
 
 @dynamic archived;
+@dynamic bookmarked;
+@dynamic closed;
 @dynamic hideFromList;
-@dynamic isBookmarked;
-@dynamic isClosed;
-@dynamic isSticky;
 @dynamic lastPostAuthorName;
 @dynamic lastPostDate;
 @dynamic numberOfPages;
 @dynamic secondaryThreadTagURL;
 @dynamic seenPosts;
 @dynamic starCategory;
+@dynamic sticky;
 @dynamic stickyIndex;
 @dynamic threadID;
 @dynamic threadRating;
