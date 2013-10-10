@@ -12,7 +12,7 @@
 @dynamic administrator;
 @dynamic aimName;
 @dynamic canReceivePrivateMessages;
-@dynamic customTitle;
+@dynamic customTitleHTML;
 @dynamic gender;
 @dynamic homepageURL;
 @dynamic icqName;
@@ -37,8 +37,8 @@
 
 - (NSURL *)avatarURL
 {
-    if ([self.customTitle length] == 0) return nil;
-    NSData *data = [self.customTitle dataUsingEncoding:NSUTF8StringEncoding];
+    if (self.customTitleHTML.length == 0) return nil;
+    NSData *data = [self.customTitleHTML dataUsingEncoding:NSUTF8StringEncoding];
     TFHpple *html = [[TFHpple alloc] initWithHTMLData:data];
     // The avatar is an image that's the first child of its parent, which is either a <div>, an
     // <a>, or the implied <body>.

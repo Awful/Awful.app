@@ -74,10 +74,10 @@
 
 - (NSString *)customTitle
 {
-    if ([self.user.customTitle isEqualToString:@"<br/>"]) {
+    if ([self.user.customTitleHTML isEqualToString:@"<br/>"]) {
         return nil;
     }
-    return self.user.customTitle;
+    return self.user.customTitleHTML;
 }
 
 - (NSString *)gender

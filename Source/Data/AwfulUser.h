@@ -33,7 +33,7 @@
 /**
  * The user's custom title as raw HTML.
  */
-@property (copy, nonatomic) NSString *customTitle;
+@property (copy, nonatomic) NSString *customTitleHTML;
 
 /**
  * The user's gender, one of "female", "male", "porpoise".

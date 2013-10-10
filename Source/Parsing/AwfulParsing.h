@@ -21,7 +21,7 @@
 @property (copy, nonatomic) NSString *userID;
 @property (readonly, copy, nonatomic) NSString *username;
 @property (readonly, nonatomic) NSDate *regdate;
-@property (readonly, copy, nonatomic) NSString *customTitle;
+@property (readonly, copy, nonatomic) NSString *customTitleHTML;
 @property (readonly, copy, nonatomic) NSString *aboutMe;
 @property (readonly, copy, nonatomic) NSString *aimName;
 @property (readonly, copy, nonatomic) NSString *gender;

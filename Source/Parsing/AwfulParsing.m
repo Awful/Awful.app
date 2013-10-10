@@ -69,7 +69,7 @@
 
 @property (copy, nonatomic) NSString *username;
 @property (nonatomic) NSDate *regdate;
-@property (copy, nonatomic) NSString *customTitle;
+@property (copy, nonatomic) NSString *customTitleHTML;
 @property (copy, nonatomic) NSString *aboutMe;
 @property (copy, nonatomic) NSString *aimName;
 @property (copy, nonatomic) NSString *gender;
@@ -214,7 +214,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
     TFHppleElement *regdate = [doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"];
     if (regdate) self.regdate = RegdateFromString([regdate content]);
     NSArray *titleNodes = [doc rawSearch:@"//dd[" HAS_CLASS(title) "]/node()"];
-    self.customTitle = [titleNodes componentsJoinedByString:@""];
+    self.customTitleHTML = [titleNodes componentsJoinedByString:@""];
     self.aboutMe = [[doc searchForSingle:@"//td[" HAS_CLASS(info) "]/p[2]"] content];
     NSString *imFormat = @"//dl[" HAS_CLASS(contacts) "]/dt[" HAS_CLASS(%@) "]/following-sibling::dd[not(span)]";
     for (NSString *im in @[ @"aim", @"icq", @"yahoo" ]) {
@@ -264,7 +264,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 + (NSArray *)keysToApplyToObject
 {
     return @[
-        @"userID", @"username", @"regdate", @"customTitle", @"aboutMe", @"aimName", @"gender",
+        @"userID", @"username", @"regdate", @"customTitleHTML", @"aboutMe", @"aimName", @"gender",
         @"icqName", @"interests", @"lastPost", @"location", @"occupation", @"postCount",
         @"yahooName", @"postRate"
     ];
@@ -273,7 +273,7 @@ static NSString * FixSAAndlibxmlHTMLSerialization(NSString *html)
 + (NSArray *)keysToNullifyIfNull
 {
     return @[
-        @"customTitle", @"aboutMe", @"aimName", @"gender", @"icqName", @"interests", @"location",
+        @"customTitleHTML", @"aboutMe", @"aimName", @"gender", @"icqName", @"interests", @"location",
         @"occupation", @"yahooName", @"profilePicture",
     ];
 }

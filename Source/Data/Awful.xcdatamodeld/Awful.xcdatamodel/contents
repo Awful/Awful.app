@@ -75,7 +75,7 @@
         <attribute name="administrator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="aimName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="canReceivePrivateMessages" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="customTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customTitleHTML" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="homepageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="icqName" optional="YES" attributeType="String" syncable="YES"/>
