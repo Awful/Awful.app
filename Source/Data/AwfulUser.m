@@ -60,8 +60,8 @@
                                          matchingPredicateFormat:@"userID = %@", profileInfo.userID];
     if (!user) user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
     [profileInfo applyToObject:user];
-    user.homepageURL = [profileInfo.homepage absoluteString];
-    user.profilePictureURL = [profileInfo.profilePicture absoluteString];
+    user.homepageURL = profileInfo.homepage;
+    user.profilePictureURL = profileInfo.profilePicture;
     return user;
 }
 

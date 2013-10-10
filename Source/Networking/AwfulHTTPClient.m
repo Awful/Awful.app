@@ -683,10 +683,9 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
     {
         AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:info
                                                   inManagedObjectContext:self.managedObjectContext];
-        if (user.profilePictureURL && [user.profilePictureURL hasPrefix:@"/"]) {
-            NSString *base = [self.baseURL absoluteString];
-            base = [base substringToIndex:[base length] - 1];
-            user.profilePictureURL = [base stringByAppendingString:user.profilePictureURL];
+        if (user.profilePictureURL && !user.profilePictureURL.host) {
+            NSURL *resolvedURL = [NSURL URLWithString:user.profilePictureURL.absoluteString relativeToURL:self.baseURL];
+            user.profilePictureURL = resolvedURL.absoluteURL;
         }
         if (callback) callback(nil, user);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

@@ -50,11 +50,9 @@
     if ([self.user.yahooName length] > 0) {
         [contactInfo addObject:@{ @"service": @"Yahoo!", @"address": self.user.yahooName }];
     }
-    if ([self.user.homepageURL length] > 0) {
-        [contactInfo addObject:@{
-             @"service": AwfulServiceHomepage,
-             @"address": self.user.homepageURL,
-         }];
+    if (self.user.homepageURL) {
+        [contactInfo addObject:@{ @"service": AwfulServiceHomepage,
+                                  @"address": self.user.homepageURL }];
     }
     return contactInfo;
 }

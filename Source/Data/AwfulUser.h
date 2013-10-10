@@ -43,7 +43,7 @@
 /**
  * A user-supplied URL to their homepage.
  */
-@property (copy, nonatomic) NSString *homepageURL;
+@property (strong, nonatomic) NSURL *homepageURL;
 
 /**
  * A user-supplied ICQ name or number.
@@ -88,7 +88,7 @@
 /**
  * The URL to the user's profile picture, or nil if they have none.
  */
-@property (copy, nonatomic) NSString *profilePictureURL;
+@property (strong, nonatomic) NSURL *profilePictureURL;
 
 /**
  * When the user created their account.
