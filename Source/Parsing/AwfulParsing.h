@@ -107,8 +107,8 @@
 @property (readonly, nonatomic) BOOL bookmarked;
 @property (readonly, nonatomic) NSInteger seenPosts;
 @property (readonly, nonatomic) NSInteger totalReplies;
-@property (readonly, nonatomic) NSInteger threadVotes;
-@property (readonly, nonatomic) NSDecimalNumber *threadRating;
+@property (readonly, nonatomic) NSInteger numberOfVotes;
+@property (readonly, nonatomic) NSDecimalNumber *rating;
 @property (readonly, copy, nonatomic) NSString *lastPostAuthorName;
 @property (readonly, nonatomic) NSDate *lastPostDate;
 
@@ -187,7 +187,7 @@ typedef NS_ENUM(NSInteger, AwfulBanType) {
 @property (readonly, copy, nonatomic) NSString *messageID;
 @property (readonly, copy, nonatomic) NSString *subject;
 @property (readonly, nonatomic) NSDate *sentDate;
-@property (readonly, nonatomic) NSURL *messageIconImageURL;
+@property (readonly, nonatomic) NSURL *threadTagURL;
 @property (readonly, nonatomic) UserParsedInfo *from;
 @property (readonly, nonatomic) UserParsedInfo *to;
 @property (readonly, nonatomic) BOOL seen;

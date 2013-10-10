@@ -21,11 +21,6 @@
 @property (copy, nonatomic) NSString *innerHTML;
 
 /**
- * The URL of the message's icon. May be nil, which indicates no icon was chosen.
- */
-@property (strong, nonatomic) NSURL *messageIconImageURL;
-
-/**
  * The presumably unique message ID.
  */
 @property (copy, nonatomic) NSString *messageID;
@@ -51,6 +46,11 @@
 @property (copy, nonatomic) NSString *subject;
 
 /**
+ * The URL of the message's thread tag. May be nil, which indicates no icon was chosen.
+ */
+@property (strong, nonatomic) NSURL *threadTagURL;
+
+/**
  * Who sent the message.
  */
 @property (strong, nonatomic) AwfulUser *from;
@@ -61,7 +61,7 @@
 @property (strong, nonatomic) AwfulUser *to;
 
 /**
- * The name of the message's icon, as derived from the messageIconImageURL.
+ * The name of the message's icon, as derived from the threadTagURL.
  */
 @property (readonly, nonatomic) NSString *firstIconName;
 

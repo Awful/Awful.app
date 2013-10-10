@@ -216,7 +216,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
     if ([thread.forum.forumID isEqualToString:@"133"]) {
         cell.tagAndRatingView.ratingImage = nil;
     } else {
-        cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
+        cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.rating);
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.sticky || !thread.closed) {

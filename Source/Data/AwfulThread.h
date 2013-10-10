@@ -52,6 +52,16 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (assign, nonatomic) int32_t numberOfPages;
 
 /**
+ * The number of votes that make up the thread's rating.
+ */
+@property (assign, nonatomic) int16_t numberOfVotes;
+
+/**
+ * The thread's rating, between 0 and 5 (inclusive).
+ */
+@property (strong, nonatomic) NSDecimalNumber *rating;
+
+/**
  * The URL of the thread's secondary icon.
  */
 @property (strong, nonatomic) NSURL *secondaryThreadTagURL;
@@ -85,16 +95,6 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
  * The presumably unique ID of the thread.
  */
 @property (copy, nonatomic) NSString *threadID;
-
-/**
- * The thread's rating, between 0 and 5 (inclusive).
- */
-@property (strong, nonatomic) NSDecimalNumber *threadRating;
-
-/**
- * The number of votes that make up the thread's rating.
- */
-@property (assign, nonatomic) int16_t threadVotes;
 
 /**
  * The thread's title.

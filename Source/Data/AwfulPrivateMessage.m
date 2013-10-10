@@ -8,19 +8,18 @@
 
 @dynamic forwarded;
 @dynamic innerHTML;
-@dynamic messageIconImageURL;
 @dynamic messageID;
 @dynamic replied;
 @dynamic seen;
 @dynamic sentDate;
 @dynamic subject;
+@dynamic threadTagURL;
 @dynamic from;
 @dynamic to;
 
 - (NSString *)firstIconName
 {
-    NSString *basename = [[self.messageIconImageURL lastPathComponent]
-                          stringByDeletingPathExtension];
+    NSString *basename = [self.threadTagURL.lastPathComponent stringByDeletingPathExtension];
     return [basename stringByAppendingPathExtension:@"png"];
 }
 

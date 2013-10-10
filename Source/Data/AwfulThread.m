@@ -23,15 +23,15 @@
 @dynamic lastPostAuthorName;
 @dynamic lastPostDate;
 @dynamic numberOfPages;
+@dynamic numberOfVotes;
+@dynamic rating;
 @dynamic secondaryThreadTagURL;
 @dynamic seenPosts;
 @dynamic starCategory;
 @dynamic sticky;
 @dynamic stickyIndex;
 @dynamic threadID;
-@dynamic threadRating;
 @dynamic threadTagURL;
-@dynamic threadVotes;
 @dynamic title;
 @dynamic totalReplies;
 @dynamic author;

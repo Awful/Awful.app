@@ -532,8 +532,8 @@ static NSString * DeEntitify(NSString *withEntities)
 @property (nonatomic) NSInteger starCategory;
 @property (nonatomic) NSInteger seenPosts;
 @property (nonatomic) NSInteger totalReplies;
-@property (nonatomic) NSInteger threadVotes;
-@property (nonatomic) NSDecimalNumber *threadRating;
+@property (nonatomic) NSInteger numberOfVotes;
+@property (nonatomic) NSDecimalNumber *rating;
 @property (copy, nonatomic) NSString *lastPostAuthorName;
 @property (nonatomic) NSDate *lastPostDate;
 
@@ -670,12 +670,12 @@ static NSString * DeEntitify(NSString *withEntities)
         NSInteger numberOfVotes;
         BOOL ok = [numberScanner scanInteger:&numberOfVotes];
         if (ok) {
-            self.threadVotes = numberOfVotes;
+            self.numberOfVotes = numberOfVotes;
         }
         NSDecimal average;
         ok = [numberScanner scanDecimal:&average];
         if (ok) {
-            self.threadRating = [NSDecimalNumber decimalNumberWithDecimal:average];
+            self.rating = [NSDecimalNumber decimalNumberWithDecimal:average];
         }
     }
     
@@ -691,8 +691,8 @@ static NSString * DeEntitify(NSString *withEntities)
 {
     return @[
         @"threadID", @"title", @"threadTagURL", @"secondaryThreadTagURL", @"sticky",
-        @"closed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
-        @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"bookmarked"
+        @"closed", @"starCategory", @"totalReplies", @"seenPosts", @"numberOfVotes",
+        @"rating", @"lastPostAuthorName", @"lastPostDate", @"bookmarked"
     ];
 }
 
@@ -1046,7 +1046,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 @property (copy, nonatomic) NSString *messageID;
 @property (copy, nonatomic) NSString *subject;
 @property (nonatomic) NSDate *sentDate;
-@property (nonatomic) NSURL *messageIconImageURL;
+@property (nonatomic) NSURL *threadTagURL;
 @property (nonatomic) UserParsedInfo *from;
 @property (nonatomic) UserParsedInfo *to;
 @property (nonatomic) BOOL seen;
@@ -1129,7 +1129,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"messageID", @"subject", @"messageIconImageURL", @"seen", @"replied", @"forwarded",
+    return @[ @"messageID", @"subject", @"threadTagURL", @"seen", @"replied", @"forwarded",
               @"sentDate", @"innerHTML" ];
 }
 
@@ -1158,7 +1158,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
         info.seen = PrivateMessageIconSeen(seenImageSrc);
         
         TFHppleElement *tag = [row searchForSingle:@"//td[2]//img"];
-        info.messageIconImageURL = [NSURL URLWithString:[tag objectForKey:@"src"]];
+        info.threadTagURL = [NSURL URLWithString:[tag objectForKey:@"src"]];
         
         TFHppleElement *subject = [row searchForSingle:@"//td[3]//a"];
         if (subject) {
