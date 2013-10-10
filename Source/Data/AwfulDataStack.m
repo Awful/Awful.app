@@ -34,6 +34,11 @@
                                                                                  options:options
                                                                                    error:&error];
     if (!store) {
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSMigrationMissingSourceModelError) {
+            NSLog(@"%s automatic migration failed", __PRETTY_FUNCTION__);
+            [self deleteStoreAndResetStack];
+            return;
+        }
         NSLog(@"%s error adding %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
     }
 }
@@ -54,10 +59,16 @@
         if (!ok) {
             NSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
         }
-        ok = [fileManager removeItemAtURL:store.URL error:&error];
-        if (!ok) {
-            NSLog(@"%s error deleting store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
+        if (![store.URL isEqual:_storeURL]) {
+            ok = [fileManager removeItemAtURL:store.URL error:&error];
+            if (!ok) {
+                NSLog(@"%s error deleting store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
+            }
         }
+    }
+    ok = [fileManager removeItemAtURL:_storeURL error:&error];
+    if (!ok) {
+        NSLog(@"%s error deleting main store at %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
     }
     [self addPersistentStore];
 }
