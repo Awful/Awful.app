@@ -296,6 +296,7 @@
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CA6EFD617E00E9C0025F06C /* lepers_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD517E00E9C0025F06C /* lepers_icon.png */; };
 		8CA6EFD817E00F0A0025F06C /* lepers_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */; };
+		8CB7C8B8180632D900890B11 /* pm-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CB7C8B7180632D900890B11 /* pm-icon.png */; };
 		8CBDD2EA17E0140F0036AC4F /* sticky@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDD2E917E0140F0036AC4F /* sticky@2x.png */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
@@ -735,6 +736,7 @@
 		8CA6EFD517E00E9C0025F06C /* lepers_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lepers_icon.png; sourceTree = "<group>"; };
 		8CA6EFD717E00F0A0025F06C /* lepers_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lepers_icon@2x.png"; sourceTree = "<group>"; };
 		8CB5468C15BD936600E8BEC1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		8CB7C8B7180632D900890B11 /* pm-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pm-icon.png"; sourceTree = "<group>"; };
 		8CBDD2E917E0140F0036AC4F /* sticky@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sticky@2x.png"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* AwfulLepersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLepersViewController.h; sourceTree = "<group>"; };
 		8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLepersViewController.m; sourceTree = "<group>"; };
@@ -1649,6 +1651,7 @@
 				8CCD525215B783FC00E5893B /* list_icon@2x.png */,
 				1CFA2EFA17E1FF5B00DE5DE9 /* pages.png */,
 				1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */,
+				8CB7C8B7180632D900890B11 /* pm-icon.png */,
 				1C5B997A166F6E54004C5D0E /* pm-icon@2x.png */,
 				1CBEE2461733005400C4884A /* Posts View */,
 				1CBEE2491733012E00C4884A /* Private Messages */,
@@ -1879,6 +1882,7 @@
 				1C8BE4FA169115020022B331 /* profile-view.css in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
+				8CB7C8B8180632D900890B11 /* pm-icon.png in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				1C41B8A916CD573D00718F79 /* title-probation.png in Resources */,
 				1C9FDE5E16EA008400C665B5 /* empty-pm-tag@2x.png in Resources */,
