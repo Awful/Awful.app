@@ -40,7 +40,6 @@
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */; };
 		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
-		1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
 		1C09963C16C0AECA00A62D5E /* AwfulLeperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulLeperCell.m */; };
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
@@ -49,7 +48,7 @@
 		1C13FF96161CDDD4000ED2B1 /* bookmarks.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C13FF92161CDDD4000ED2B1 /* bookmarks.png */; };
 		1C13FF97161CDDD4000ED2B1 /* bookmarks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C13FF93161CDDD4000ED2B1 /* bookmarks@2x.png */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
-		1C1D2FDF171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDE171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m */; };
+		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
 		1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
@@ -113,9 +112,6 @@
 		1C5F701217D9B2BD005ABD6F /* AwfulTabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F701117D9B2BD005ABD6F /* AwfulTabBarButton.m */; };
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
-		1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474BE1569989800C72657 /* _AwfulForum.m */; };
-		1C6474D01569989800C72657 /* _AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474C01569989800C72657 /* _AwfulThread.m */; };
-		1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6D3EF7168D97CB00B91A65 /* profile.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D3EF5168D97B900B91A65 /* profile.html */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
@@ -180,7 +176,6 @@
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */; };
 		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
-		1CB6010416D8267300CBEE22 /* _AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */; };
 		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */; };
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
@@ -212,9 +207,7 @@
 		1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
 		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
-		1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
-		1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
@@ -370,8 +363,6 @@
 		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
 		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
 		1C05EDAE16230C1700FE567F /* AwfulParsing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParsing.h; sourceTree = "<group>"; };
-		1C090FB5163A40A1003FD0A3 /* _AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPost.h; sourceTree = "<group>"; };
-		1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPost.m; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulLeperCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLeperCell.h; sourceTree = "<group>"; };
@@ -384,8 +375,8 @@
 		1C13FF93161CDDD4000ED2B1 /* bookmarks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bookmarks@2x.png"; sourceTree = "<group>"; };
 		1C1D2FDA171A75CB00AC6387 /* AwfulSingleUserThreadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSingleUserThreadInfo.h; sourceTree = "<group>"; };
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
-		1C1D2FDD171A75D400AC6387 /* _AwfulSingleUserThreadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulSingleUserThreadInfo.h; sourceTree = "<group>"; };
-		1C1D2FDE171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
+		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
+		1C20562E1806700500A84C6D /* AwfulManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulManagedObject.m; sourceTree = "<group>"; };
 		1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* posts-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "posts-view.html"; sourceTree = "<group>"; };
@@ -479,12 +470,6 @@
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
 		1C6474B41569989800C72657 /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
 		1C6474B51569989800C72657 /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
-		1C6474BD1569989800C72657 /* _AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulForum.h; sourceTree = "<group>"; };
-		1C6474BE1569989800C72657 /* _AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulForum.m; sourceTree = "<group>"; };
-		1C6474BF1569989800C72657 /* _AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulThread.h; sourceTree = "<group>"; };
-		1C6474C01569989800C72657 /* _AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulThread.m; sourceTree = "<group>"; };
-		1C6D3EE6168D7B1400B91A65 /* _AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulUser.h; sourceTree = "<group>"; };
-		1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulUser.m; sourceTree = "<group>"; };
 		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6D3EF5168D97B900B91A65 /* profile.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile.html; sourceTree = "<group>"; };
@@ -572,8 +557,6 @@
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
 		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
 		1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessage.m; sourceTree = "<group>"; };
-		1CB6010216D8267300CBEE22 /* _AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulPrivateMessage.h; sourceTree = "<group>"; };
-		1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulPrivateMessage.m; sourceTree = "<group>"; };
 		1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageListController.h; sourceTree = "<group>"; };
 		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageListController.m; sourceTree = "<group>"; };
 		1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
@@ -608,12 +591,8 @@
 		1CBDB5EE1625B76F0004BDF4 /* newreply.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = newreply.html; sourceTree = "<group>"; };
 		1CBDB5EF1625B76F0004BDF4 /* showthread.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = showthread.html; sourceTree = "<group>"; };
 		1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsing.m; sourceTree = "<group>"; };
-		1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Awful.h"; sourceTree = "<group>"; };
-		1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Awful.m"; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
-		1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _AwfulCategory.h; sourceTree = "<group>"; };
-		1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _AwfulCategory.m; sourceTree = "<group>"; };
 		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
 		1CC780171612D8AF002AF958 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsListController.m; sourceTree = "<group>"; };
 		1CC780201612D989002AF958 /* AwfulHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPClient.h; sourceTree = "<group>"; };
@@ -1115,6 +1094,8 @@
 				1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */,
 				1C6474AB1569989800C72657 /* AwfulForum.h */,
 				1C6474AC1569989800C72657 /* AwfulForum.m */,
+				1C20562D1806700500A84C6D /* AwfulManagedObject.h */,
+				1C20562E1806700500A84C6D /* AwfulManagedObject.m */,
 				1C6474AD1569989800C72657 /* AwfulModels.h */,
 				1C090FB8163A40C1003FD0A3 /* AwfulPost.h */,
 				1C090FB9163A40C1003FD0A3 /* AwfulPost.m */,
@@ -1126,32 +1107,8 @@
 				1C6474B51569989800C72657 /* AwfulThread.m */,
 				1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */,
 				1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */,
-				1C6474BA1569989800C72657 /* Generated */,
-				1CBDB5FD162600D30004BDF4 /* NSManagedObject+Awful.h */,
-				1CBDB5FE162600D40004BDF4 /* NSManagedObject+Awful.m */,
 			);
 			path = Data;
-			sourceTree = "<group>";
-		};
-		1C6474BA1569989800C72657 /* Generated */ = {
-			isa = PBXGroup;
-			children = (
-				1CC38BB4160D8C6000C35A11 /* _AwfulCategory.h */,
-				1CC38BB5160D8C6000C35A11 /* _AwfulCategory.m */,
-				1C6474BD1569989800C72657 /* _AwfulForum.h */,
-				1C6474BE1569989800C72657 /* _AwfulForum.m */,
-				1C090FB5163A40A1003FD0A3 /* _AwfulPost.h */,
-				1C090FB6163A40A1003FD0A3 /* _AwfulPost.m */,
-				1CB6010216D8267300CBEE22 /* _AwfulPrivateMessage.h */,
-				1CB6010316D8267300CBEE22 /* _AwfulPrivateMessage.m */,
-				1C1D2FDD171A75D400AC6387 /* _AwfulSingleUserThreadInfo.h */,
-				1C1D2FDE171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m */,
-				1C6474BF1569989800C72657 /* _AwfulThread.h */,
-				1C6474C01569989800C72657 /* _AwfulThread.m */,
-				1C6D3EE6168D7B1400B91A65 /* _AwfulUser.h */,
-				1C6D3EE7168D7B1400B91A65 /* _AwfulUser.m */,
-			);
-			path = Generated;
 			sourceTree = "<group>";
 		};
 		1C6ED634169103FE0015CDD5 /* Users */ = {
@@ -2103,10 +2060,7 @@
 				1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
-				1C6474CF1569989800C72657 /* _AwfulForum.m in Sources */,
-				1C6474D01569989800C72657 /* _AwfulThread.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
-				1CC38BB6160D8C6000C35A11 /* _AwfulCategory.m in Sources */,
 				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
 				1C5F700917D87863005ABD6F /* AwfulVerticalTabBarController.m in Sources */,
@@ -2118,15 +2072,14 @@
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
 				1C5F700F17D8821A005ABD6F /* AwfulExpandingSplitViewController.m in Sources */,
 				1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */,
-				1CBDB5FF162600D40004BDF4 /* NSManagedObject+Awful.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
-				1C090FB7163A40A1003FD0A3 /* _AwfulPost.m in Sources */,
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
 				1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */,
+				1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */,
 				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
 				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
@@ -2148,7 +2101,6 @@
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
-				1C6D3EE8168D7B1400B91A65 /* _AwfulUser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
@@ -2163,7 +2115,6 @@
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
-				1CB6010416D8267300CBEE22 /* _AwfulPrivateMessage.m in Sources */,
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
@@ -2187,7 +2138,6 @@
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C5F701217D9B2BD005ABD6F /* AwfulTabBarButton.m in Sources */,
 				1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */,
-				1C1D2FDF171A75D400AC6387 /* _AwfulSingleUserThreadInfo.m in Sources */,
 				1C28B34D1729DD3F00254EE7 /* AwfulIconActionSheet.m in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C5F700C17D87C0C005ABD6F /* AwfulVerticalTabBar.m in Sources */,

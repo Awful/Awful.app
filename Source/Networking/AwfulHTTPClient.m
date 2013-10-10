@@ -10,7 +10,6 @@
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
-#import "NSManagedObject+Awful.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulHTTPClient ()
@@ -147,10 +146,10 @@ static AwfulHTTPClient *instance = nil;
                                                        inManagedObjectContext:self.managedObjectContext];
         NSInteger stickyIndex = -(NSInteger)[threads count];
         NSArray *forums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
-                                                   matchingPredicate:@"forumID = %@", forumID];
+                                             matchingPredicateFormat:@"forumID = %@", forumID];
         for (AwfulThread *thread in threads) {
             if ([forums count] > 0) thread.forum = forums[0];
-            thread.stickyIndexValue = thread.isStickyValue ? stickyIndex++ : 0;
+            thread.stickyIndex = thread.isSticky ? stickyIndex++ : 0;
         }
         if (callback) callback(nil, threads);
     } failure:^(id _, NSError *error) {
@@ -275,9 +274,9 @@ static AwfulHTTPClient *instance = nil;
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:^(id _, id __)
     {
-        AwfulThread *thread = [AwfulThread firstInManagedObjectContext:self.managedObjectContext
-                                                     matchingPredicate:@"threadID = %@", threadID];
-        thread.isBookmarkedValue = isBookmarked;
+        AwfulThread *thread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
+                                                        matchingPredicateFormat:@"threadID = %@", threadID];
+        thread.isBookmarked = isBookmarked;
         if (callback) callback(nil);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error);
@@ -735,7 +734,7 @@ andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))call
         NSArray *messages = [AwfulPrivateMessage privateMessagesWithFolderParsedInfo:info
                                                               inManagedObjectContext:self.managedObjectContext];
         [AwfulPrivateMessage deleteAllInManagedObjectContext:self.managedObjectContext
-                                           matchingPredicate:@"NOT(self IN %@)", messages];
+                                     matchingPredicateFormat:@"NOT(self IN %@)", messages];
         if (callback) callback(nil, messages);
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);

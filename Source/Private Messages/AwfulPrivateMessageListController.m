@@ -140,12 +140,13 @@ static NSString * const MessageCellIdentifier = @"Message cell";
         // TODO handle updated thread tags
         cell.imageView.image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     }
-    if (pm.repliedValue || pm.forwardedValue || !pm.seenValue) {
-        if (pm.repliedValue) {
+    // TODO this is more convoluted than necessary
+    if (pm.replied || pm.forwarded || !pm.seen) {
+        if (pm.replied) {
             cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
-        } else if (pm.forwardedValue) {
+        } else if (pm.forwarded) {
             cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
-        } else if (!pm.seenValue) {
+        } else if (!pm.seen) {
             cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
         }
     } else {

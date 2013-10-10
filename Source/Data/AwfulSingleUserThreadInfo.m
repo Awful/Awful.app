@@ -1,15 +1,13 @@
+//  AwfulSingleUserThreadInfo.m
+//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+
 #import "AwfulSingleUserThreadInfo.h"
-
-
-@interface AwfulSingleUserThreadInfo ()
-
-// Private interface goes here.
-
-@end
-
 
 @implementation AwfulSingleUserThreadInfo
 
-// Custom logic goes here.
+@dynamic numberOfPages;
+@dynamic author;
+@dynamic thread;
 
 @end

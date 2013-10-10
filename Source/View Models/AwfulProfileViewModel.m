@@ -12,7 +12,6 @@
 
 @end
 
-
 @implementation AwfulProfileViewModel
 
 + (id)newWithUser:(AwfulUser *)user
@@ -38,12 +37,9 @@
 - (NSArray *)contactInfo
 {
     NSMutableArray *contactInfo = [NSMutableArray new];
-    if (self.user.canReceivePrivateMessagesValue)
-    if ([AwfulSettings settings].canSendPrivateMessages) {
-        [contactInfo addObject:@{
-             @"service": AwfulServicePrivateMessage,
-             @"address": self.user.username,
-         }];
+    if (self.user.canReceivePrivateMessages && [AwfulSettings settings].canSendPrivateMessages) {
+        [contactInfo addObject:@{ @"service": AwfulServicePrivateMessage,
+                                  @"address": self.user.username }];
     }
     if ([self.user.aimName length] > 0) {
         [contactInfo addObject:@{ @"service": @"AIM", @"address": self.user.aimName }];

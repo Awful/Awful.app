@@ -3,12 +3,37 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulUser.h"
-#import "AwfulParsing.h"
 #import "GTMNSString+HTML.h"
-#import "NSManagedObject+Awful.h"
 #import "TFHpple.h"
 
 @implementation AwfulUser
+
+@dynamic aboutMe;
+@dynamic administrator;
+@dynamic aimName;
+@dynamic canReceivePrivateMessages;
+@dynamic customTitle;
+@dynamic gender;
+@dynamic homepageURL;
+@dynamic icqName;
+@dynamic interests;
+@dynamic lastPost;
+@dynamic location;
+@dynamic moderator;
+@dynamic occupation;
+@dynamic postCount;
+@dynamic postRate;
+@dynamic profilePictureURL;
+@dynamic regdate;
+@dynamic userID;
+@dynamic username;
+@dynamic yahooName;
+@dynamic editedPosts;
+@dynamic posts;
+@dynamic receivedPrivateMessages;
+@dynamic sentPrivateMessages;
+@dynamic singleUserThreadInfos;
+@dynamic threads;
 
 - (NSURL *)avatarURL
 {
@@ -31,8 +56,8 @@
 + (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
                              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulUser *user = [self firstInManagedObjectContext:managedObjectContext
-                                      matchingPredicate:@"userID = %@", profileInfo.userID];
+    AwfulUser *user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                         matchingPredicateFormat:@"userID = %@", profileInfo.userID];
     if (!user) user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
     [profileInfo applyToObject:user];
     user.homepageURL = [profileInfo.homepage absoluteString];
@@ -43,7 +68,8 @@
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulUser *user = [self firstInManagedObjectContext:managedObjectContext matchingPredicate:@"userID = %@", userID];
+    AwfulUser *user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                         matchingPredicateFormat:@"userID = %@", userID];
     if (!user) {
         user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
         user.userID = userID;

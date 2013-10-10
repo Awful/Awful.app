@@ -15,7 +15,6 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import <GRMustache/GRMustache.h>
-#import "NSManagedObject+Awful.h"
 #import "NSURL+Punycode.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIViewController+NavigationEnclosure.h"

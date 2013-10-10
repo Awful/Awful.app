@@ -125,11 +125,11 @@
 - (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
 {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    dict[AwfulPostAttributes.innerHTML] = self.privateMessage.innerHTML ?: @"";
-    dict[@"beenSeen"] = self.privateMessage.seen ?: @NO;
-    dict[AwfulPostAttributes.postDate] = self.privateMessage.sentDate ?: [NSNull null];
+    dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
+    dict[@"beenSeen"] = @(self.privateMessage.seen) ?: @NO;
+    dict[@"postDate"] = self.privateMessage.sentDate ?: [NSNull null];
     dict[@"postDateFormat"] = AwfulDateFormatters.formatters.postDateFormatter;
-    dict[AwfulPostRelationships.author] = self.privateMessage.from;
+    dict[@"author"] = self.privateMessage.from;
     dict[@"regDateFormat"] = AwfulDateFormatters.formatters.regDateFormatter;
     NSError *error;
     NSString *html = [GRMustacheTemplate renderObject:dict
@@ -316,8 +316,8 @@
 {
     [super decodeRestorableStateWithCoder:coder];
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    self.privateMessage = [AwfulPrivateMessage firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                                         matchingPredicate:@"messageID = %@", messageID];
+    self.privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                            matchingPredicateFormat:@"messageID = %@", messageID];
     [self.postsView reloadData];
 }
 

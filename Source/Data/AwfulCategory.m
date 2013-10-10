@@ -6,6 +6,9 @@
 
 @implementation AwfulCategory
 
-// Custom logic goes here.
+@dynamic categoryID;
+@dynamic index;
+@dynamic name;
+@dynamic forums;
 
 @end

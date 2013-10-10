@@ -63,7 +63,7 @@
         return @[];
     }
     NSArray *favoriteForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
-                                                       matchingPredicate:@"forumID IN %@", forumIDs];
+                                                 matchingPredicateFormat:@"forumID IN %@", forumIDs];
     return [favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
         return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
     }];
@@ -197,7 +197,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     if (!self.lastRefresh) return YES;
     if (self.tableView.numberOfSections < 2) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
-    if ([AwfulForum firstInManagedObjectContext:self.managedObjectContext matchingPredicate:@"index = -1"]) {
+    if ([AwfulForum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
         return YES;
     }
     return NO;

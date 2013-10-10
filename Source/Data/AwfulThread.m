@@ -4,12 +4,42 @@
 
 #import "AwfulThread.h"
 #import "AwfulParsing.h"
-#import "AwfulSingleUserThreadInfo.h"
-#import "AwfulUser.h"
 #import "GTMNSString+HTML.h"
-#import "NSManagedObject+Awful.h"
+
+@interface AwfulThread ()
+
+@property (strong, nonatomic) NSNumber *primitiveTotalReplies;
+
+@property (strong, nonatomic) NSNumber *primitiveSeenPosts;
+
+@end
 
 @implementation AwfulThread
+
+@dynamic archived;
+@dynamic hideFromList;
+@dynamic isBookmarked;
+@dynamic isClosed;
+@dynamic isSticky;
+@dynamic lastPostAuthorName;
+@dynamic lastPostDate;
+@dynamic numberOfPages;
+@dynamic seenPosts;
+@dynamic starCategory;
+@dynamic stickyIndex;
+@dynamic threadIconImageURL;
+@dynamic threadIconImageURL2;
+@dynamic threadID;
+@dynamic threadRating;
+@dynamic threadVotes;
+@dynamic title;
+@dynamic totalReplies;
+@dynamic author;
+@dynamic forum;
+@dynamic posts;
+@dynamic singleUserThreadInfos;
+@dynamic primitiveTotalReplies;
+@dynamic primitiveSeenPosts;
 
 - (NSString *)firstIconName
 {
@@ -27,7 +57,7 @@
 
 - (BOOL)beenSeen
 {
-    return self.seenPostsValue > 0;
+    return self.seenPosts > 0;
 }
 
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
@@ -41,13 +71,13 @@
     NSMutableDictionary *existingThreads = [NSMutableDictionary new];
     NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
     for (AwfulThread *thread in [self fetchAllInManagedObjectContext:managedObjectContext
-                                                   matchingPredicate:@"threadID IN %@", threadIDs]) {
+                                             matchingPredicateFormat:@"threadID IN %@", threadIDs]) {
         existingThreads[thread.threadID] = thread;
     }
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
     NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
     for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
-                                                    matchingPredicate:@"username IN %@", usernames]) {
+                                              matchingPredicateFormat:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
     
@@ -73,8 +103,8 @@
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
                       inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulThread *thread = [self firstInManagedObjectContext:managedObjectContext
-                                          matchingPredicate:@"threadID = %@", threadID];
+    AwfulThread *thread = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                             matchingPredicateFormat:@"threadID = %@", threadID];
     if (thread) return thread;
     thread = [self insertInManagedObjectContext:managedObjectContext];
     thread.threadID = threadID;
@@ -83,43 +113,43 @@
 
 - (NSInteger)numberOfPagesForSingleUser:(AwfulUser *)singleUser
 {
-    return [[AwfulSingleUserThreadInfo firstInManagedObjectContext:self.managedObjectContext
-                                                matchingPredicate:@"thread = %@ AND author = %@", self, singleUser]
-            numberOfPagesValue];
+    return [[AwfulSingleUserThreadInfo fetchArbitraryInManagedObjectContext:self.managedObjectContext
+                                                    matchingPredicateFormat:@"thread = %@ AND author = %@", self, singleUser]
+            numberOfPages];
 }
 
 - (void)setNumberOfPages:(NSInteger)numberOfPages forSingleUser:(AwfulUser *)singleUser
 {
-    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo firstInManagedObjectContext:singleUser.managedObjectContext
-                                                                           matchingPredicate:@"thread = %@ AND author = %@", self, singleUser];
+    AwfulSingleUserThreadInfo *info = [AwfulSingleUserThreadInfo fetchArbitraryInManagedObjectContext:singleUser.managedObjectContext
+                                                                              matchingPredicateFormat:@"thread = %@ AND author = %@", self, singleUser];
     if (!info) {
         info = [AwfulSingleUserThreadInfo insertInManagedObjectContext:singleUser.managedObjectContext];
         info.thread = self;
         info.author = singleUser;
     }
-    info.numberOfPagesValue = numberOfPages;
+    info.numberOfPages = numberOfPages;
 }
 
 #pragma mark - _AwfulThread
 
-- (void)setTotalReplies:(NSNumber *)totalReplies
+- (void)setTotalReplies:(int32_t)totalReplies
 {
-    [self willChangeValueForKey:AwfulThreadAttributes.totalReplies];
-    self.primitiveTotalReplies = totalReplies;
-    [self didChangeValueForKey:AwfulThreadAttributes.totalReplies];
-    NSInteger minimumNumberOfPages = 1 + [totalReplies integerValue] / 40;
-    if (minimumNumberOfPages > self.numberOfPagesValue) {
-        self.numberOfPagesValue = minimumNumberOfPages;
+    [self willChangeValueForKey:@"totalReplies"];
+    self.primitiveTotalReplies = @(totalReplies);
+    [self didChangeValueForKey:@"totalReplies"];
+    int32_t minimumNumberOfPages = 1 + totalReplies / 40;
+    if (minimumNumberOfPages > self.numberOfPages) {
+        self.numberOfPages = minimumNumberOfPages;
     }
 }
 
-- (void)setSeenPosts:(NSNumber *)seenPosts
+- (void)setSeenPosts:(int32_t)seenPosts
 {
-    [self willChangeValueForKey:AwfulThreadAttributes.seenPosts];
-    self.primitiveSeenPosts = seenPosts;
-    [self didChangeValueForKey:AwfulThreadAttributes.seenPosts];
-    if (self.seenPostsValue > self.totalRepliesValue + 1) {
-        self.totalRepliesValue = self.seenPostsValue - 1;
+    [self willChangeValueForKey:@"seenPosts"];
+    self.primitiveSeenPosts = @(seenPosts);
+    [self didChangeValueForKey:@"seenPosts"];
+    if (self.seenPosts > self.totalReplies + 1) {
+        self.totalReplies = self.seenPosts - 1;
     }
 }
 

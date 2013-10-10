@@ -204,21 +204,21 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         page.page = AwfulThreadPageLast;
     }]];
     AwfulIconActionItemType bookmarkItemType;
-    if (thread.isBookmarkedValue) {
+    if (thread.isBookmarked) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:thread.threadID
-                                     isBookmarked:!thread.isBookmarkedValue
+                                     isBookmarked:!thread.isBookmarked
                                           andThen:^(NSError *error)
          {
              if (error) {
                  [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
              } else {
                  NSString *status = @"Removed Bookmark";
-                 if (thread.isBookmarkedValue) {
+                 if (thread.isBookmarked) {
                      status = @"Added Bookmark";
                  }
                  [SVProgressHUD showSuccessWithStatus:status];
@@ -282,7 +282,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            thread.seenPostsValue = 0;
+            thread.seenPosts = 0;
             NSError *error;
             BOOL ok = [thread.managedObjectContext save:&error];
             if (!ok) {
@@ -352,7 +352,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     if (!secondaryTag && thread.secondIconName) {
         [self updateThreadTagsForCellAtIndexPath:indexPath];
     }
-    if (thread.isStickyValue) {
+    if (thread.isSticky) {
         cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
     } else {
         cell.stickyImageView.image = nil;
@@ -364,20 +364,20 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         cell.tagAndRatingView.ratingImage = ThreadRatingImageForRating(thread.threadRating);
     }
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
-    if (thread.isStickyValue || !thread.isClosedValue) {
+    if (thread.isSticky || !thread.isClosed) {
         cell.tagAndRatingView.alpha = 1;
         cell.textLabel.enabled = YES;
     } else {
         cell.tagAndRatingView.alpha = 0.5;
         cell.textLabel.enabled = NO;
     }
-    cell.numberOfPagesLabel.text = thread.numberOfPages.stringValue;
+    cell.numberOfPagesLabel.text = @(thread.numberOfPages).stringValue;
     if (thread.beenSeen) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
     } else {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
     }
-    NSInteger unreadPosts = thread.totalRepliesValue + 1 - thread.seenPostsValue;
+    NSInteger unreadPosts = thread.totalReplies + 1 - thread.seenPosts;
     cell.badgeLabel.text = @(unreadPosts).stringValue;
 }
 
@@ -432,7 +432,7 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return thread.seenPostsValue > 0;
+    return thread.seenPosts > 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView
@@ -489,8 +489,8 @@ static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulForum *forum = [AwfulForum firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                              matchingPredicate:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
+    AwfulForum *forum = [AwfulForum fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                 matchingPredicateFormat:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
     AwfulThreadListController *threadList = [[self alloc] initWithForum:forum];
     threadList.restorationIdentifier = identifierComponents.lastObject;
     threadList.restorationClass = self;

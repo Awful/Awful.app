@@ -28,7 +28,6 @@
 #import <Crashlytics/Crashlytics.h>
 #import <JLRoutes/JLRoutes.h>
 #import "NSFileManager+UserDirectories.h"
-#import "NSManagedObject+Awful.h"
 #import "NSURL+Awful.h"
 #import "NSURL+Punycode.h"
 #import <PocketAPI/PocketAPI.h>
@@ -582,8 +581,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         }
         
         // Do we know which thread the post comes from?
-        AwfulPost *post = [AwfulPost firstInManagedObjectContext:_dataStack.managedObjectContext
-                                               matchingPredicate:@"postID = %@", params[@"postID"]];
+        AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:_dataStack.managedObjectContext
+                                                  matchingPredicateFormat:@"postID = %@", params[@"postID"]];
         if (post) {
             [self pushPostsViewForPostWithID:post.postID
                                       onPage:post.page

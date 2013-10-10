@@ -9,6 +9,5 @@
     #import <MobileCoreServices/MobileCoreServices.h>
     #import <QuartzCore/QuartzCore.h>
     #import <SystemConfiguration/SystemConfiguration.h>
-    #import "NSManagedObject+Awful.h"
-    #import "NSURL+QueryDictionary.h"
+    #import "AwfulModels.h"
 #endif

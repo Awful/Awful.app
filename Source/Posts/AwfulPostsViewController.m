@@ -29,7 +29,6 @@
 #import "AwfulThemeLoader.h"
 #import <GRMustache/GRMustache.h>
 #import "NSFileManager+UserDirectories.h"
-#import "NSManagedObject+Awful.h"
 #import "NSString+CollapseWhitespace.h"
 #import "NSURL+Awful.h"
 #import "NSURL+OpensInBrowser.h"
@@ -280,22 +279,22 @@
     }]];
     
     AwfulIconActionItemType bookmarkItemType;
-    if (self.thread.isBookmarkedValue) {
+    if (self.thread.isBookmarked) {
         bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
-                                     isBookmarked:!self.thread.isBookmarkedValue
+                                     isBookmarked:!self.thread.isBookmarked
                                           andThen:^(NSError *error)
          {
              if (error) {
                  NSLog(@"error %@bookmarking thread %@: %@",
-                       self.thread.isBookmarkedValue ? @"un" : @"", self.thread.threadID, error);
+                       self.thread.isBookmarked ? @"un" : @"", self.thread.threadID, error);
              } else {
                  NSString *status = @"Removed Bookmark";
-                 if (self.thread.isBookmarkedValue) {
+                 if (self.thread.isBookmarked) {
                      status = @"Added Bookmark";
                  }
                  [SVProgressHUD showSuccessWithStatus:status];
@@ -385,9 +384,9 @@
     NSInteger highIndex = self.page * 40;
     NSString *indexKey;
     if (self.author) {
-        indexKey = AwfulPostAttributes.singleUserIndex;
+        indexKey = @"singleUserIndex";
     } else {
-        indexKey = AwfulPostAttributes.threadIndex;
+        indexKey = @"threadIndex";
     }
     request.predicate = [NSPredicate predicateWithFormat:@"thread = %@ AND %d <= %K AND %K <= %d",
                          self.thread, lowIndex, indexKey, indexKey, highIndex];
@@ -456,7 +455,7 @@
         self.currentPageItem.title = @"";
     }
     self.forwardItem.enabled = self.page > 0 && self.page < relevantNumberOfPages;
-    self.composeItem.enabled = !self.thread.isClosedValue;
+    self.composeItem.enabled = !self.thread.isClosed;
 }
 
 - (void)setLoadingMessage:(NSString *)message
@@ -647,8 +646,8 @@
                      }
                  }
                  [self updateUserInterface];
-                 if (self.thread.seenPostsValue < lastPost.threadIndexValue) {
-                     self.thread.seenPostsValue = lastPost.threadIndexValue;
+                 if (self.thread.seenPosts < lastPost.threadIndex) {
+                     self.thread.seenPosts = lastPost.threadIndex;
                  }
                  [self startObservingThreadSeenPosts];
              }];
@@ -807,7 +806,7 @@
     if (self.author) {
         return [self.thread numberOfPagesForSingleUser:self.author];
     } else {
-        return self.thread.numberOfPagesValue;
+        return self.thread.numberOfPages;
     }
 }
 
@@ -1013,7 +1012,7 @@ static char KVOContext;
                                                   action:^
         {
             [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                                   readUpToPostAtIndex:[post.threadIndex stringValue]
+                                   readUpToPostAtIndex:[@(post.threadIndex) stringValue]
                                                andThen:^(NSError *error)
              {
                  if (error) {
@@ -1027,7 +1026,7 @@ static char KVOContext;
              }];
         }]];
     }
-    if (post.editableValue) {
+    if (post.editable) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
                                                   andThen:^(NSError *error, NSString *text)
@@ -1049,7 +1048,7 @@ static char KVOContext;
              }];
         }]];
     }
-    if (!self.thread.isClosedValue) {
+    if (!self.thread.isClosed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
                                                     andThen:^(NSError *error, NSString *quotedText)
@@ -1100,7 +1099,7 @@ static char KVOContext;
         }]];
 	}
 	if ([AwfulSettings settings].canSendPrivateMessages &&
-        user.canReceivePrivateMessagesValue &&
+        user.canReceivePrivateMessages &&
         ![user.userID isEqual:[AwfulSettings settings].userID]) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
             AwfulPrivateMessageComposeViewController *compose;

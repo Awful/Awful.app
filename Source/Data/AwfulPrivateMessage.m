@@ -3,12 +3,19 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessage.h"
-#import "AwfulDataStack.h"
-#import "AwfulParsing.h"
-#import "AwfulUser.h"
-#import "NSManagedObject+Awful.h"
 
 @implementation AwfulPrivateMessage
+
+@dynamic forwarded;
+@dynamic innerHTML;
+@dynamic messageIconImageURL;
+@dynamic messageID;
+@dynamic replied;
+@dynamic seen;
+@dynamic sentDate;
+@dynamic subject;
+@dynamic from;
+@dynamic to;
 
 - (NSString *)firstIconName
 {
@@ -20,8 +27,8 @@
 + (instancetype)privateMessageWithParsedInfo:(PrivateMessageParsedInfo *)info
                       inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulPrivateMessage *message = [self firstInManagedObjectContext:managedObjectContext
-                                                   matchingPredicate:@"messageID = %@", info.messageID];
+    AwfulPrivateMessage *message = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                                      matchingPredicateFormat:@"messageID = %@", info.messageID];
     if (!message) {
         message = [AwfulPrivateMessage insertInManagedObjectContext:managedObjectContext];
     }
@@ -29,12 +36,12 @@
     if (info.from) {
         AwfulUser *from;
         if (info.from.userID) {
-            from = [AwfulUser firstInManagedObjectContext:managedObjectContext
-                                        matchingPredicate:@"userID = %@", info.from.userID];
+            from = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
+                                           matchingPredicateFormat:@"userID = %@", info.from.userID];
         }
         if (!from && info.from.username) {
-            from = [AwfulUser firstInManagedObjectContext:managedObjectContext
-                                        matchingPredicate:@"username = %@", info.from.username];
+            from = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
+                                           matchingPredicateFormat:@"username = %@", info.from.username];
         }
         if (!from) {
             from = [AwfulUser insertInManagedObjectContext:managedObjectContext];
@@ -43,8 +50,8 @@
         message.from = from;
     }
     if (info.to) {
-        AwfulUser *to = [AwfulUser firstInManagedObjectContext:managedObjectContext
-                                             matchingPredicate:@"userID = %@", info.to.userID];
+        AwfulUser *to = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
+                                                matchingPredicateFormat:@"userID = %@", info.to.userID];
         if (!to) {
             to = [AwfulUser insertInManagedObjectContext:managedObjectContext];
         }
@@ -65,13 +72,13 @@
     NSMutableDictionary *existingPMs = [NSMutableDictionary new];
     NSArray *messageIDs = [info.privateMessages valueForKey:@"messageID"];
     for (AwfulPrivateMessage *msg in [self fetchAllInManagedObjectContext:managedObjectContext
-                                                        matchingPredicate:@"messageID IN %@", messageIDs]) {
+                                                  matchingPredicateFormat:@"messageID IN %@", messageIDs]) {
         existingPMs[msg.messageID] = msg;
     }
     NSMutableDictionary *existingUsers = [NSMutableDictionary new];
     NSArray *usernames = [info.privateMessages valueForKeyPath:@"from.username"];
     for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
-                                                    matchingPredicate:@"username IN %@", usernames]) {
+                                              matchingPredicateFormat:@"username IN %@", usernames]) {
         existingUsers[user.username] = user;
     }
     NSMutableArray *messages = [NSMutableArray new];

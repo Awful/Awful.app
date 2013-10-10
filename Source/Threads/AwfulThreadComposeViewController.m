@@ -428,8 +428,8 @@ didSelectSecondaryIconAtIndex:(NSInteger)index
 {
     [super decodeRestorableStateWithCoder:coder];
     NSString *forumID = [coder decodeObjectForKey:ForumIDKey];
-    self.forum = [AwfulForum firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                       matchingPredicate:@"forumID = %@", forumID];
+    self.forum = [AwfulForum fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                          matchingPredicateFormat:@"forumID = %@", forumID];
     self.subject = [coder decodeObjectForKey:SubjectKey];
     self.postIcon = [coder decodeObjectForKey:PostIconKey];
     self.secondaryPostIcon = [coder decodeObjectForKey:SecondaryPostIconKey];

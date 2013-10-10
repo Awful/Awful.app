@@ -310,13 +310,13 @@ static NSURL *CachedImageDirectoryForIdentifier(id identifier)
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
     NSString *editedPostID = [coder decodeObjectForKey:EditedPostIDKey];
     if (threadID) {
-        [self replyToThread:[AwfulThread firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                                   matchingPredicate:@"threadID = %@", threadID]
+        [self replyToThread:[AwfulThread fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                      matchingPredicateFormat:@"threadID = %@", threadID]
         withInitialContents:self.textView.text
        imageCacheIdentifier:imageCacheIdentifier];
     } else if (editedPostID) {
-        [self editPost:[AwfulPost firstInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                            matchingPredicate:@"postID = %@", editedPostID]
+        [self editPost:[AwfulPost fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                               matchingPredicateFormat:@"postID = %@", editedPostID]
                   text:self.textView.text
   imageCacheIdentifier:imageCacheIdentifier];
     }
