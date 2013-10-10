@@ -524,8 +524,8 @@ static NSString * DeEntitify(NSString *withEntities)
 @property (copy, nonatomic) NSString *threadID;
 @property (copy, nonatomic) NSString *title;
 @property (nonatomic) BOOL isSticky;
-@property (nonatomic) NSURL *threadIconImageURL;
-@property (nonatomic) NSURL *threadIconImageURL2;
+@property (nonatomic) NSURL *threadTagURL;
+@property (nonatomic) NSURL *secondaryThreadTagURL;
 @property (nonatomic) UserParsedInfo *author;
 @property (nonatomic) BOOL seen;
 @property (nonatomic) BOOL isClosed;
@@ -601,12 +601,12 @@ static NSString * DeEntitify(NSString *withEntities)
                 @"//td[" HAS_CLASS(rating) "]/img[contains(@src, '/rate/reviews')]"];
     }
     if (icon) {
-        self.threadIconImageURL = [NSURL URLWithString:[icon objectForKey:@"src"]];
+        self.threadTagURL = [NSURL URLWithString:[icon objectForKey:@"src"]];
     }
     
     TFHppleElement *icon2 = [doc searchForSingle:@"//td[" HAS_CLASS(icon2) "]/img"];
     if (icon2) {
-        self.threadIconImageURL2 = [NSURL URLWithString:[icon2 objectForKey:@"src"]];
+        self.secondaryThreadTagURL = [NSURL URLWithString:[icon2 objectForKey:@"src"]];
     }
     
     self.author = [UserParsedInfo new];
@@ -690,7 +690,7 @@ static NSString * DeEntitify(NSString *withEntities)
 + (NSArray *)keysToApplyToObject
 {
     return @[
-        @"threadID", @"title", @"threadIconImageURL", @"threadIconImageURL2", @"isSticky",
+        @"threadID", @"title", @"threadTagURL", @"secondaryThreadTagURL", @"isSticky",
         @"isClosed", @"starCategory", @"totalReplies", @"seenPosts", @"threadVotes",
         @"threadRating", @"lastPostAuthorName", @"lastPostDate", @"isBookmarked"
     ];

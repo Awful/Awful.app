@@ -97,8 +97,8 @@
 @property (readonly, copy, nonatomic) NSString *threadID;
 @property (readonly, copy, nonatomic) NSString *title;
 @property (readonly, nonatomic) BOOL isSticky;
-@property (readonly, nonatomic) NSURL *threadIconImageURL;
-@property (readonly, nonatomic) NSURL *threadIconImageURL2;
+@property (readonly, nonatomic) NSURL *threadTagURL;
+@property (readonly, nonatomic) NSURL *secondaryThreadTagURL;
 @property (readonly, nonatomic) UserParsedInfo *author;
 
 @property (readonly, nonatomic) BOOL seen;

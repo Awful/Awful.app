@@ -24,13 +24,13 @@
 @dynamic lastPostAuthorName;
 @dynamic lastPostDate;
 @dynamic numberOfPages;
+@dynamic secondaryThreadTagURL;
 @dynamic seenPosts;
 @dynamic starCategory;
 @dynamic stickyIndex;
-@dynamic threadIconImageURL;
-@dynamic threadIconImageURL2;
 @dynamic threadID;
 @dynamic threadRating;
+@dynamic threadTagURL;
 @dynamic threadVotes;
 @dynamic title;
 @dynamic totalReplies;
@@ -43,15 +43,12 @@
 
 - (NSString *)firstIconName
 {
-    NSString *basename = [[self.threadIconImageURL lastPathComponent]
-                          stringByDeletingPathExtension];
-    return [basename stringByAppendingPathExtension:@"png"];
+    return [[self.threadTagURL.lastPathComponent stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
 }
 
 - (NSString *)secondIconName
 {
-    NSString *basename = [[self.threadIconImageURL2 lastPathComponent]
-                          stringByDeletingPathExtension];
+    NSString *basename = [self.secondaryThreadTagURL.lastPathComponent stringByDeletingPathExtension];
     return [basename stringByAppendingPathExtension:@"png"];
 }
 

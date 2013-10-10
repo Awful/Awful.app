@@ -57,6 +57,11 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (assign, nonatomic) int32_t numberOfPages;
 
 /**
+ * The URL of the thread's secondary icon.
+ */
+@property (strong, nonatomic) NSURL *secondaryThreadTagURL;
+
+/**
  * The number of posts that the currently logged-in user has seen in the thread, including the OP.
  */
 @property (assign, nonatomic) int32_t seenPosts;
@@ -72,14 +77,9 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (assign, nonatomic) int32_t stickyIndex;
 
 /**
- * The URL of the thread's main icon.
+ * The URL of the thread's tag.
  */
-@property (strong, nonatomic) NSURL *threadIconImageURL;
-
-/**
- * The URL of the thread's secondary icon.
- */
-@property (strong, nonatomic) NSURL *threadIconImageURL2;
+@property (strong, nonatomic) NSURL *threadTagURL;
 
 /**
  * The presumably unique ID of the thread.
@@ -127,12 +127,12 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (copy, nonatomic) NSSet *singleUserThreadInfos;
 
 /**
- * The name of the thread's main icon, as determined from threadIconImageURL.
+ * The name of the thread's main icon, as determined from threadTagURL.
  */
 @property (readonly, nonatomic) NSString *firstIconName;
 
 /**
- * The name of the thread's secondary icon, as determined from threadIconImageURL2. May be nil.
+ * The name of the thread's secondary icon, as determined from secondaryThreadTagURL. May be nil.
  */
 @property (readonly, nonatomic) NSString *secondIconName;
 
