@@ -514,18 +514,19 @@
 
 - (void)setPage:(AwfulThreadPage)page
 {
-    if (page == _page) {
+    AwfulThreadPage oldPage = _page;
+    _page = page;
+    if (page == oldPage) {
         [self refreshCurrentPage];
     } else {
         [self loadFetchAndShowPostsFromPage:page];
     }
-    _page = page;
 }
 
 - (void)loadFetchAndShowPostsFromPage:(AwfulThreadPage)page
 {
     [self prepareForLoad];
-    if (page > 0) {
+    if (page != AwfulThreadPageNone) {
         [self prepareForNewPage];
     }
     [self fetchPage:page completionHandler:^(NSError *error) {
