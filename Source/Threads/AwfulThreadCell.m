@@ -102,7 +102,7 @@
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tagAndRating(45)]-9-[name]-5-[badge]-5-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tagAndRating(45)]-9-[name]-6-[badge]-5-|"
                                              options:0
                                              metrics:nil
                                                views:views]];

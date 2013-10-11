@@ -42,6 +42,12 @@
 		<string>#ffffff</string>
 		<key>listTextColor</key>
 		<string>#000000</string>
+		<key>unreadBadgeOrangeColor</key>
+		<string>#ff8000</string>
+		<key>unreadBadgeRedColor</key>
+		<string>#ff0000</string>
+		<key>unreadBadgeYellowColor</key>
+		<string>#ffff00</string>
 	</dict>
 	<key>dark</key>
 	<dict>

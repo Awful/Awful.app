@@ -320,8 +320,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [super themeCell:cell atIndexPath:indexPath];
     AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.forum];
     cell.backgroundColor = theme[@"listBackgroundColor"];
-    cell.badgeLabel.textColor = theme[@"listTextColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
+    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    switch (thread.starCategory) {
+        case AwfulStarCategoryOrange: cell.badgeLabel.textColor = theme[@"unreadBadgeOrangeColor"]; break;
+        case AwfulStarCategoryRed: cell.badgeLabel.textColor = theme[@"unreadBadgeRedColor"]; break;
+        case AwfulStarCategoryYellow: cell.badgeLabel.textColor = theme[@"unreadBadgeYellowColor"]; break;
+        default: cell.badgeLabel.textColor = theme[@"tintColor"]; break;
+    }
 }
 
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
