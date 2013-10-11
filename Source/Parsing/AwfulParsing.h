@@ -85,7 +85,7 @@
 @property (readonly, nonatomic) BOOL moderator;
 @property (readonly, nonatomic) BOOL administrator;
 @property (readonly, nonatomic) BOOL originalPoster;
-@property (readonly, copy, nonatomic) NSString *customTitle;
+@property (readonly, copy, nonatomic) NSString *customTitleHTML;
 @property (readonly, nonatomic) BOOL canReceivePrivateMessages;
 
 @end

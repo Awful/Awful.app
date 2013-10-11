@@ -511,7 +511,7 @@ static NSString * DeEntitify(NSString *withEntities)
 
 + (NSArray *)keysToApplyToObject
 {
-    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitle",
+    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitleHTML",
               @"canReceivePrivateMessages" ];
 }
 
