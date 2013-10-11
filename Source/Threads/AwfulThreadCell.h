@@ -11,7 +11,7 @@
 @interface AwfulThreadCell : UITableViewCell
 
 /**
- * Returns an initialized AwfulThreadCell.
+ * Returns an initialized AwfulThreadCell. This is the designated initializer.
  *
  * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
  */
