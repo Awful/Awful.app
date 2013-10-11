@@ -236,7 +236,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
     cell.badgeLabel.text = @(unreadPosts).stringValue;
 }
 
-- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
+- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	[super themeCell:cell atIndexPath:indexPath];
 	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];

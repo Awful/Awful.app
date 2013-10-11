@@ -315,7 +315,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     return cell;
 }
 
-- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(id)indexPath
+- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     [super themeCell:cell atIndexPath:indexPath];
     AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.forum];

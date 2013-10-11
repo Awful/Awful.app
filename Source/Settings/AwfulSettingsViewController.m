@@ -164,7 +164,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     StepperSetting,
 };
 
--(void)themeCell:(UITableViewCell *)cell atIndexPath:(id)indexPath
+-(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
 	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
