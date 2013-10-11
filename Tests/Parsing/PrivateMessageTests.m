@@ -18,7 +18,7 @@
     STAssertEqualObjects(info.from.username, @"InFlames235", nil);
     STAssertEqualObjects(info.from.userID, @"47395", nil);
     STAssertNotNil(info.from.regdate, nil);
-    STAssertStringContainsSubstringOnce(info.from.customTitle, @"as a cow", nil);
+    STAssertStringContainsSubstringOnce(info.from.customTitleHTML, @"as a cow", nil);
     STAssertFalse(info.replied, nil);
     STAssertTrue(info.seen, nil);
     STAssertNotNil(info.sentDate, nil);

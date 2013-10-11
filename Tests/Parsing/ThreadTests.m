@@ -50,7 +50,7 @@
     STAssertEqualObjects(tenth.threadIndex, @"171", nil);
     STAssertEqualObjects(tenth.author.username, @"JayMax", nil);
     STAssertTrue([tenth.innerHTML rangeOfString:@"Québec"].location != NSNotFound, nil);
-    STAssertTrue([tenth.author.customTitle rangeOfString:@"gentleman"].location != NSNotFound, nil);
+    STAssertTrue([tenth.author.customTitleHTML rangeOfString:@"gentleman"].location != NSNotFound, nil);
     STAssertTrue(tenth.beenSeen, nil);
     STAssertFalse(tenth.editable, nil);
     STAssertTrue(tenth.author.canReceivePrivateMessages, nil);
@@ -73,7 +73,7 @@
     STAssertEqualObjects(fourteenth.author.username, @"angerbot", nil);
     STAssertTrue(fourteenth.author.administrator, nil);
     STAssertFalse(fourteenth.author.moderator, nil);
-    STAssertTrue([fourteenth.author.customTitle rangeOfString:@"/images/angerbrat.jpg"].length != 0, nil);
+    STAssertTrue([fourteenth.author.customTitleHTML rangeOfString:@"/images/angerbrat.jpg"].length != 0, nil);
     STAssertFalse(fourteenth.beenSeen, nil);
     STAssertFalse(fourteenth.editable, nil);
     

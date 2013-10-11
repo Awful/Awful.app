@@ -496,7 +496,7 @@ static NSString * DeEntitify(NSString *withEntities)
 @property (nonatomic) BOOL moderator;
 @property (nonatomic) BOOL administrator;
 @property (nonatomic) BOOL originalPoster;
-@property (copy, nonatomic) NSString *customTitle;
+@property (copy, nonatomic) NSString *customTitleHTML;
 @property (nonatomic) BOOL canReceivePrivateMessages;
 
 @end
@@ -756,7 +756,7 @@ static NSString * DeEntitify(NSString *withEntities)
     NSString *regdate = [[doc searchForSingle:@"//dd[" HAS_CLASS(registered) "]"] content];
     if (regdate) self.author.regdate = RegdateFromString(regdate);
     NSArray *customTitleNodes = [doc rawSearch:@"//dl[" HAS_CLASS(userinfo) "]//dd[" HAS_CLASS(title) "]//node()"];
-    self.author.customTitle = [customTitleNodes componentsJoinedByString:@""];
+    self.author.customTitleHTML = [customTitleNodes componentsJoinedByString:@""];
     TFHppleElement *messageLink = [doc searchForSingle:@"//ul[" HAS_CLASS(profilelinks) "]//a[contains(@href, 'private.php')]"];
     self.author.canReceivePrivateMessages = !!messageLink;
     TFHppleElement *showPostsByUser = [doc searchForSingle:@"//a[" HAS_CLASS(user_jump) "]"];
@@ -1085,7 +1085,7 @@ static BOOL PrivateMessageIconSeen(NSString *src)
     self.from.regdate = RegdateFromString([regdate content]);
     NSArray *customTitle = PerformRawHTMLXPathQuery(self.htmlData, @"//dl[" HAS_CLASS(userinfo)
                                                     "]//dd[" HAS_CLASS(title) "][1]/node()");
-    self.from.customTitle = [customTitle componentsJoinedByString:@""];
+    self.from.customTitleHTML = [customTitle componentsJoinedByString:@""];
     TFHppleElement *roleHolder = [doc searchForSingle:@"//dl[" HAS_CLASS(userinfo) "]//dt[" HAS_CLASS(author) "]"];
     if (roleHolder) {
         NSString *classAttribute = [roleHolder objectForKey:@"class"];
