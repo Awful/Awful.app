@@ -51,10 +51,10 @@
     
     STAssertEqualObjects([threadInfos[7] title], @"End of an Era: Remembering a Hero of the United States Congress", nil);
     
-    STAssertTrue([threadInfos[0] isSticky], nil);
-    STAssertFalse([threadInfos[1] isSticky] || [threadInfos[10] isSticky], nil);
+    STAssertTrue([threadInfos[0] sticky], nil);
+    STAssertFalse([threadInfos[1] sticky] || [threadInfos[10] sticky], nil);
     
-    STAssertEqualObjects([[threadInfos[12] threadIconImageURL] absoluteString],
+    STAssertEqualObjects([[threadInfos[12] threadTagURL] absoluteString],
                          @"http://fi.somethingawful.com/forums/posticons/lf-gotmine.gif#534", nil);
     
     STAssertEqualObjects([[threadInfos[16] author] username], @"WYA", nil);
@@ -62,9 +62,9 @@
     STAssertTrue([threadInfos[12] seen] && [threadInfos[13] seen], nil);
     STAssertFalse([threadInfos[19] seen] || [threadInfos[24] seen], nil);
     
-    STAssertFalse([threadInfos[6] isClosed], nil);
+    STAssertFalse([threadInfos[6] closed], nil);
     
-    STAssertEquals([threadInfos[0] starCategory], 3, nil);
+    STAssertEquals([(ThreadParsedInfo *)threadInfos[0] starCategory], 3, nil);
     
     STAssertEquals([threadInfos[0] seenPosts], 12, nil);
     STAssertEquals([threadInfos[1] seenPosts], 0, nil);
@@ -72,8 +72,8 @@
     
     STAssertEquals([threadInfos[38] totalReplies], 343, nil);
     
-    STAssertEquals([threadInfos[8] threadVotes], 63, nil);
-    STAssertEqualObjects([threadInfos[8] threadRating], [NSDecimalNumber decimalNumberWithString:@"1.58"], nil);
+    STAssertEquals([(ThreadParsedInfo *)threadInfos[8] numberOfVotes], 63, nil);
+    STAssertEqualObjects([threadInfos[8] rating], [NSDecimalNumber decimalNumberWithString:@"1.58"], nil);
     
     STAssertEqualObjects([threadInfos[30] lastPostAuthorName], @"richardfun", nil);
     

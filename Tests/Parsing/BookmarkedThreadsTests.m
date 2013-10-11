@@ -18,11 +18,11 @@
     STAssertEqualObjects(second.title, @"Awful Android app", nil);
     STAssertTrue(second.seenPosts == 7955, nil);
     STAssertEqualObjects(second.lastPostAuthorName, @"spankmeister", nil);
-    STAssertFalse(second.isClosed, nil);
-    STAssertFalse(second.isSticky, nil);
+    STAssertFalse(second.closed, nil);
+    STAssertFalse(second.sticky, nil);
     STAssertTrue(second.seen, nil);
     STAssertTrue(second.starCategory == AwfulStarCategoryRed, nil);
-    STAssertEqualObjects([second.threadIconImageURL lastPathComponent], @"cps-android.gif", nil);
+    STAssertEqualObjects([second.threadTagURL lastPathComponent], @"cps-android.gif", nil);
     
     ThreadParsedInfo *third = threads[2];
     STAssertTrue(third.starCategory == AwfulStarCategoryOrange, nil);
