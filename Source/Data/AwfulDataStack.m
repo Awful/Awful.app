@@ -34,7 +34,8 @@
                                                                                  options:options
                                                                                    error:&error];
     if (!store) {
-        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSMigrationMissingSourceModelError) {
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && (error.code == NSMigrationMissingSourceModelError ||
+                                                                  error.code == NSMigrationMissingMappingModelError)) {
             NSLog(@"%s automatic migration failed", __PRETTY_FUNCTION__);
             [self deleteStoreAndResetStack];
             return;
