@@ -17,6 +17,7 @@
 #import "NSString+CollapseWhitespace.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "UIScrollView+SVInfiniteScrolling.h"
+#import "UITableView+HideStuff.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulBookmarksController ()
@@ -74,10 +75,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 {
     [super viewDidLoad];
     self.currentPage = 1;
-    
-    // Hide separators after the last cell.
-    self.tableView.tableFooterView = [UIView new];
-    self.tableView.tableFooterView.backgroundColor = [UIColor clearColor];
+    [self.tableView awful_hideExtraneousSeparators];
 }
 
 - (void)themeDidChange

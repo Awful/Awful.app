@@ -16,6 +16,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
+#import "UITableView+HideStuff.h"
 #import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageListController ()
@@ -95,7 +96,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 {
     [super viewDidLoad];
     self.tableView.rowHeight = 75;
-    self.tableView.tableFooterView = [UIView new];
+    [self.tableView awful_hideExtraneousSeparators];
 }
 
 - (BOOL)refreshOnAppear

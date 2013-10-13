@@ -12,6 +12,7 @@
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadListController.h"
+#import "UITableView+HideStuff.h"
 
 @interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
 
@@ -224,15 +225,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     self.tableView.backgroundView = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 37, 0, 0);
     
-    // This little ditty stops section headers from sticking. Double the row height to keep section headers out from under a transparent navbar.
-    CGRect headerFrame = CGRectMake(0, 0, 0, self.tableView.rowHeight * 2);
-    self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:headerFrame];
-    UIEdgeInsets contentInset = self.tableView.contentInset;
-    contentInset.top -= CGRectGetHeight(headerFrame);
-    self.tableView.contentInset = contentInset;
-    
-    // Don't show cell separators after last cell.
-    self.tableView.tableFooterView = [UIView new];
+    [self.tableView awful_unstickSectionHeaders];
+    [self.tableView awful_hideExtraneousSeparators];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogIn:)
                                                  name:AwfulUserDidLogInNotification object:nil];
