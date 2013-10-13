@@ -1090,6 +1090,8 @@
 			children = (
 				1CDF6FBE17FCAA4E00F44174 /* AwfulDataStack.h */,
 				1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */,
+				1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */,
+				1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1370,8 +1372,6 @@
 				1C73921F17DFC0FA00089248 /* AwfulFavoriteForumCell.m */,
 				1C73921817DF350F00089248 /* AwfulForumCell.h */,
 				1C73921917DF350F00089248 /* AwfulForumCell.m */,
-				1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */,
-				1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */,
 				1CC780161612D8AF002AF958 /* AwfulForumsListController.h */,
 				1CC780171612D8AF002AF958 /* AwfulForumsListController.m */,
 			);
