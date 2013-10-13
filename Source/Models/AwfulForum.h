@@ -31,6 +31,11 @@
 @property (copy, nonatomic) NSString *name;
 
 /**
+ * An abbreviated name of the forum if one is available, otherwise the full name.
+ */
+@property (readonly, copy, nonatomic) NSString *abbreviatedName;
+
+/**
  * The forum's category.
  */
 @property (strong, nonatomic) AwfulCategory *category;
@@ -50,9 +55,15 @@
  */
 @property (strong, nonatomic) NSSet *threads;
 
+/**
+ * Returns an AwfulForum with the given forum ID, inserting one if necessary.
+ */
 + (instancetype)fetchOrInsertForumInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                                   withID:(NSString *)forumID;
 
+/**
+ * Returns an array of AwfulForum objects derived from parsed info.
+ */
 + (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
                 inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 

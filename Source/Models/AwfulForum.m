@@ -15,6 +15,18 @@
 @dynamic parentForum;
 @dynamic threads;
 
+- (NSString *)abbreviatedName
+{
+    static NSDictionary *abbreviations;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURL *abbreviationsURL = [[NSBundle mainBundle] URLForResource:@"Forum Abbreviations" withExtension:@"plist"];
+        abbreviations = [NSDictionary dictionaryWithContentsOfURL:abbreviationsURL];
+    });
+    if (!self.forumID) return nil;
+    return abbreviations[self.forumID] ?: self.name;
+}
+
 + (instancetype)fetchOrInsertForumInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                                   withID:(NSString *)forumID
 {
