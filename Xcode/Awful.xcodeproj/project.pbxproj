@@ -208,13 +208,14 @@
 		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
+		1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
 		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
 		1CC780341612D9DE002AF958 /* AwfulReplyComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7802C1612D9DE002AF958 /* AwfulReplyComposeViewController.m */; };
 		1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */; };
-		1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */; };
+		1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */; };
 		1CDD00E116C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */; };
 		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
 		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
@@ -594,6 +595,8 @@
 		1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsing.m; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AwfulCategory.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AwfulCategory.m; path = AwfulCategory.m; sourceTree = "<group>"; };
+		1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
+		1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedResultsControllerDataSource.m; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
@@ -606,8 +609,8 @@
 		1CC7802C1612D9DE002AF958 /* AwfulReplyComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyComposeViewController.m; sourceTree = "<group>"; };
 		1CC780481612DA8E002AF958 /* AwfulBookmarksController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarksController.h; sourceTree = "<group>"; };
 		1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulBookmarksController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1CC7804C1612DA8E002AF958 /* AwfulThreadListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListController.h; sourceTree = "<group>"; };
-		1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulThreadListController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1CC7804C1612DA8E002AF958 /* AwfulForumThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumThreadTableViewController.h; sourceTree = "<group>"; };
+		1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumThreadTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1CDD00DF16C63C2800E72D62 /* AwfulJSONOrScrapeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJSONOrScrapeOperation.h; sourceTree = "<group>"; };
 		1CDD00E016C63C2800E72D62 /* AwfulJSONOrScrapeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJSONOrScrapeOperation.m; sourceTree = "<group>"; };
 		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
@@ -1093,6 +1096,8 @@
 			children = (
 				1CDF6FBE17FCAA4E00F44174 /* AwfulDataStack.h */,
 				1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */,
+				1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */,
+				1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */,
 				1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */,
 				1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */,
 			);
@@ -1431,12 +1436,12 @@
 			children = (
 				1CC780481612DA8E002AF958 /* AwfulBookmarksController.h */,
 				1CC780491612DA8E002AF958 /* AwfulBookmarksController.m */,
+				1CC7804C1612DA8E002AF958 /* AwfulForumThreadTableViewController.h */,
+				1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */,
 				1C73921B17DF850F00089248 /* AwfulThreadCell.h */,
 				1C73921C17DF850F00089248 /* AwfulThreadCell.m */,
 				1C7D232A1747CE5F008A802C /* AwfulThreadComposeViewController.h */,
 				1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */,
-				1CC7804C1612DA8E002AF958 /* AwfulThreadListController.h */,
-				1CC7804D1612DA8E002AF958 /* AwfulThreadListController.m */,
 				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
 				1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */,
 				1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */,
@@ -2080,9 +2085,10 @@
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
 				1CC780341612D9DE002AF958 /* AwfulReplyComposeViewController.m in Sources */,
 				1CC7804E1612DA8E002AF958 /* AwfulBookmarksController.m in Sources */,
-				1CC780501612DA8E002AF958 /* AwfulThreadListController.m in Sources */,
+				1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */,
 				1C5F6FF417D731DC005ABD6F /* AwfulForumTreeController.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
+				1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */,
 				1C5F700F17D8821A005ABD6F /* AwfulExpandingSplitViewController.m in Sources */,
 				1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,

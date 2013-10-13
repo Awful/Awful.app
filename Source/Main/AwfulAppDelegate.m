@@ -10,6 +10,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulForumsListController.h"
+#import "AwfulForumThreadTableViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLepersViewController.h"
 #import "AwfulLoginController.h"
@@ -654,8 +655,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     if ([nav.viewControllers count] > 1) {
         [maybes insertObject:nav.viewControllers[[nav.viewControllers count] - 2] atIndex:0];
     }
-    for (AwfulThreadListController *viewController in maybes) {
-        if (![viewController isKindOfClass:[AwfulThreadListController class]]) continue;
+    for (AwfulForumThreadTableViewController *viewController in maybes) {
+        if (![viewController isKindOfClass:[AwfulForumThreadTableViewController class]]) continue;
         if ([viewController.forum isEqual:forum]) {
             [nav popToViewController:viewController animated:YES];
             UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
@@ -664,7 +665,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         }
     }
     [nav popToRootViewControllerAnimated:NO];
-    AwfulThreadListController *threadList = [[AwfulThreadListController alloc] initWithForum:forum];
+    AwfulForumThreadTableViewController *threadList = [[AwfulForumThreadTableViewController alloc] initWithForum:forum];
     [nav pushViewController:threadList animated:YES];
     UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
     tabBar.selectedViewController = nav;

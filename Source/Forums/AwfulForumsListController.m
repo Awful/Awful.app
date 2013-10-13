@@ -7,11 +7,11 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulFavoriteForumCell.h"
 #import "AwfulForumCell.h"
+#import "AwfulForumThreadTableViewController.h"
 #import "AwfulForumTreeController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadListController.h"
 #import "UITableView+HideStuff.h"
 
 @interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
@@ -388,8 +388,8 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
         }
         forum = [self.treeController visibleForumAtIndexPath:adjustedIndexPath];
     }
-    AwfulThreadListController *threadList = [[AwfulThreadListController alloc] initWithForum:forum];
-    threadList.restorationClass = [AwfulThreadListController class];
+    AwfulForumThreadTableViewController *threadList = [[AwfulForumThreadTableViewController alloc] initWithForum:forum];
+    threadList.restorationClass = threadList.class;
     threadList.restorationIdentifier = @"Thread";
     [self.navigationController pushViewController:threadList animated:YES];
 }
