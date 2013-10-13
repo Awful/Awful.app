@@ -206,11 +206,9 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
             }
         }
     }
-    UIImage *secondaryTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.secondIconName];
-    cell.tagAndRatingView.secondaryThreadTag = secondaryTag;
-    if (!secondaryTag && thread.secondIconName) {
-        [self updateThreadTagsForCellAtIndexPath:indexPath];
-    }
+    
+    // configure secondary badge
+    
     cell.stickyImageView.image = nil;
     // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
     if ([thread.forum.forumID isEqualToString:@"133"]) {
@@ -239,9 +237,11 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
 - (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	[super themeCell:cell atIndexPath:indexPath];
-	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
-	cell.badgeLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
-	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+    AwfulTheme *theme = AwfulTheme.currentTheme;
+	cell.backgroundColor = theme[@"listBackgroundColor"];
+	cell.badgeLabel.textColor = theme[@"listTextColor"];
+	cell.textLabel.textColor = theme[@"listTextColor"];
+    // theme secondary badge
 }
 
 static UIImage * ThreadRatingImageForRating(NSNumber *boxedRating)

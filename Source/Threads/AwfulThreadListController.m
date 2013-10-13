@@ -328,6 +328,21 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         case AwfulStarCategoryYellow: cell.badgeLabel.textColor = theme[@"unreadBadgeYellowColor"]; break;
         default: cell.badgeLabel.textColor = theme[@"tintColor"]; break;
     }
+    if ([thread.secondIconName isEqualToString:@"icon-37-selling.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"sellingBadgeColor"];
+    } else if ([thread.secondIconName isEqualToString:@"icon-46-trading.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"tradingBadgeColor"];
+    } else if ([thread.secondIconName isEqualToString:@"icon-38-buying.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"buyingBadgeColor"];
+    } else if ([thread.secondIconName isEqualToString:@"icon-52-trading.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"auctionBadgeColor"];
+    } else if ([thread.secondIconName isEqualToString:@"ama.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"askBadgeColor"];
+    } else if ([thread.secondIconName isEqualToString:@"tma.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = theme[@"tellBadgeColor"];
+    } else {
+        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = nil;
+    }
 }
 
 - (void)configureCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -353,11 +368,23 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             }
         }
     }
-    UIImage *secondaryTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.secondIconName];
-    cell.tagAndRatingView.secondaryThreadTag = secondaryTag;
-    if (!secondaryTag && thread.secondIconName) {
-        [self updateThreadTagsForCellAtIndexPath:indexPath];
+    
+    if ([thread.secondIconName isEqualToString:@"icon-37-selling.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"S";
+    } else if ([thread.secondIconName isEqualToString:@"icon-46-trading.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
+    } else if ([thread.secondIconName isEqualToString:@"icon-38-buying.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"B";
+    } else if ([thread.secondIconName isEqualToString:@"icon-52-trading.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
+    } else if ([thread.secondIconName isEqualToString:@"ama.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
+    } else if ([thread.secondIconName isEqualToString:@"tma.png"]) {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
+    } else {
+        cell.tagAndRatingView.secondaryThreadTagBadge.text = nil;
     }
+    
     if (thread.sticky) {
         cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
     } else {

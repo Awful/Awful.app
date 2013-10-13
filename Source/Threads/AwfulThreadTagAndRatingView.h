@@ -15,9 +15,9 @@
 @property (strong, nonatomic) UIImage *threadTag;
 
 /**
- * The secondary thread tag to lay over the thread tag. May be nil.
+ * The secondary thread tag badge.
  */
-@property (strong, nonatomic) UIImage *secondaryThreadTag;
+@property (readonly, strong, nonatomic) UILabel *secondaryThreadTagBadge;
 
 /**
  * The rating image to show below. May be nil.
