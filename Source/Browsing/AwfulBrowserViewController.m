@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulBrowserViewController.h"
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulPageBarBackgroundView.h"
@@ -12,20 +13,57 @@
 
 @interface AwfulBrowserViewController () <UIWebViewDelegate>
 
-@property (weak, nonatomic) UIWebView *webView;
-
-@property (nonatomic) UIBarButtonItem *actionButton;
-@property (nonatomic) UIBarButtonItem *backBrowserButton;
-@property (nonatomic) UIBarButtonItem *forwardBrowserButton;
-@property (weak, nonatomic) UISegmentedControl *backForwardControl;
-
-@property (weak, nonatomic) UIToolbar *toolbar;
+@property (readonly, strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) UIBarButtonItem *actionItem;
+@property (strong, nonatomic) UIBarButtonItem *backItem;
+@property (strong, nonatomic) UIBarButtonItem *forwardItem;
 
 @end
 
 @implementation AwfulBrowserViewController
 
-- (void)actOnCurrentPage
+- (void)dealloc
+{
+    if ([self isViewLoaded]) {
+        self.webView.delegate = nil;
+    }
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self.title = @"Awful Browser";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        self.navigationItem.rightBarButtonItems = @[ self.actionItem, self.forwardItem, self.backItem ];
+    } else {
+        self.toolbarItems = @[ self.backItem, self.forwardItem, UIBarButtonItem.flexibleSpace, self.actionItem ];
+    }
+    [self updateBackForwardItemEnabledState];
+    return self;
+}
+
+- (void)setURL:(NSURL *)URL
+{
+    if (_URL == URL) return;
+    _URL = URL;
+    [self.webView loadRequest:[NSURLRequest requestWithURL:URL]];
+}
+
+- (UIWebView *)webView
+{
+    return (UIWebView *)self.view;
+}
+
+- (UIBarButtonItem *)actionItem
+{
+    if (_actionItem) return _actionItem;
+    _actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                target:self
+                                                                action:@selector(actOnCurrentPage:)];
+    return _actionItem;
+}
+
+- (void)actOnCurrentPage:(UIBarButtonItem *)sender
 {
     NSURL *url = self.webView.request.URL;
     if (url.absoluteString.length == 0) {
@@ -54,116 +92,55 @@
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet showFromBarButtonItem:self.actionButton animated:YES];
-    } else {
-        [sheet showFromToolbar:self.toolbar];
-    }
+    [sheet showFromBarButtonItem:sender animated:YES];
 }
 
-- (void)actOnCurrentPage:(UISegmentedControl *)seg
+- (UIBarButtonItem *)backItem
 {
-    [self actOnCurrentPage];
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
+    if (_backItem) return _backItem;
+    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"]
+                                                 style:UIBarButtonItemStylePlain
+                                                target:self
+                                                action:@selector(goBack)];
+    _backItem.accessibilityLabel = @"Back";
+    return _backItem;
 }
 
-- (void)backOrForwardTapped:(UISegmentedControl *)seg
-{
-    if (seg.selectedSegmentIndex == 0) {
-        [self.webView goBack];
-    } else {
-        [self.webView goForward];
-    }
-    seg.selectedSegmentIndex = UISegmentedControlNoSegment;
-}
-
-- (void)browserBack
+- (void)goBack
 {
     [self.webView goBack];
 }
 
-- (void)browserForward
+- (UIBarButtonItem *)forwardItem
+{
+    if (_forwardItem) return _forwardItem;
+    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
+                                                    style:UIBarButtonItemStylePlain
+                                                   target:self
+                                                   action:@selector(goForward)];
+    _forwardItem.accessibilityLabel = @"Forward";
+    return _forwardItem;
+}
+
+- (void)goForward
 {
     [self.webView goForward];
 }
 
-- (void)setURL:(NSURL *)URL
+- (void)updateBackForwardItemEnabledState
 {
-    if (_URL == URL) return;
-    _URL = URL;
-    [self.webView loadRequest:[NSURLRequest requestWithURL:URL]];
+    if ([self isViewLoaded]) {
+        self.backItem.enabled = self.webView.canGoBack;
+        self.forwardItem.enabled = self.webView.canGoForward;
+    } else {
+        self.backItem.enabled = NO;
+        self.forwardItem.enabled = NO;
+    }
 }
 
 - (void)preventDefaultLongTapMenu
 {
-    [self.webView stringByEvaluatingJavaScriptFromString:
-     @"document.body.style.webkitTouchCallout='none'"];
-}
-
-- (UIBarButtonItem *)actionButton
-{
-    if (_actionButton) return _actionButton;
-    UIButton *button = MakeBorderlessButton([UIImage imageNamed:@"action.png"],
-                                            self, @selector(actOnCurrentPage));
-    button.accessibilityLabel = @"Act";
-    _actionButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    return _actionButton;
-}
-
-- (UIBarButtonItem *)backBrowserButton
-{
-    if (_backBrowserButton) return _backBrowserButton;
-    UIButton *button = MakeBorderlessButton([UIImage imageNamed:@"arrowleft.png"],
-                                            self, @selector(browserBack));
-    button.accessibilityLabel = @"Browser-back";
-    _backBrowserButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    return _backBrowserButton;
-}
-
-- (UIBarButtonItem *)forwardBrowserButton
-{
-    if (_forwardBrowserButton) return _forwardBrowserButton;
-    UIButton *button = MakeBorderlessButton([UIImage imageNamed:@"arrowright.png"],
-                                            self, @selector(browserForward));
-    button.accessibilityLabel = @"Browser-forward";
-    _forwardBrowserButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    return _forwardBrowserButton;
-}
-
-static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
-{
-    UIButton *button = [UIButton new];
-    [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
-    [button setImage:image forState:UIControlStateNormal];
-    button.showsTouchWhenHighlighted = YES;
-    [button sizeToFit];
-    CGRect frame = button.frame;
-    frame.size.width = 44;
-    button.frame = frame;
-    return button;
-}
-
-- (void)updateBackForwardButtonEnabledState
-{
-    self.backBrowserButton.enabled = [self.webView canGoBack];
-    [self.backForwardControl setEnabled:[self.webView canGoBack] forSegmentAtIndex:0];
-    self.forwardBrowserButton.enabled = [self.webView canGoForward];
-    [self.backForwardControl setEnabled:[self.webView canGoForward] forSegmentAtIndex:1];
-}
-
-#pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.title = @"Awful Browser";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.navigationItem.rightBarButtonItems = @[
-            self.actionButton, self.forwardBrowserButton, self.backBrowserButton
-        ];
-    }
-    self.forwardBrowserButton.enabled = self.backBrowserButton.enabled = NO;
-    return self;
+    [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none'"];
 }
 
 - (void)setTitle:(NSString *)title
@@ -177,73 +154,30 @@ static UIButton * MakeBorderlessButton(UIImage *image, id target, SEL action)
 
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    CGRect webViewFrame = (CGRect){ .size = self.view.frame.size };
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        CGRect toolbarFrame;
-        CGRectDivide(webViewFrame, &toolbarFrame, &webViewFrame, 38, CGRectMaxYEdge);
-        UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:toolbarFrame];
-        toolbar.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                    UIViewAutoresizingFlexibleTopMargin);
-        toolbar.barStyle = UIBarStyleBlack;
-        AwfulPageBarBackgroundView *background = [AwfulPageBarBackgroundView new];
-        background.frame = toolbar.bounds;
-        background.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                       UIViewAutoresizingFlexibleHeight);
-        [toolbar insertSubview:background atIndex:1];
-        UIImage *back = [UIImage imageNamed:@"arrowleft.png"];
-        back.accessibilityLabel = @"Browser-back";
-        UIImage *forward = [UIImage imageNamed:@"arrowright.png"];
-        forward.accessibilityLabel = @"Browser-forward";
-        UISegmentedControl *backForwardControl = MakeSegmentedBarButton(@[ back, forward ]);
-        [backForwardControl addTarget:self action:@selector(backOrForwardTapped:)
-                     forControlEvents:UIControlEventValueChanged];
-        UIBarButtonItem *backForward = [[UIBarButtonItem alloc] initWithCustomView:backForwardControl];
-        self.backForwardControl = backForwardControl;
-        UIBarButtonItem *space;
-        space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                              target:nil action:NULL];
-        UIImage *action = [UIImage imageNamed:@"action.png"];
-        action.accessibilityLabel = @"Act";
-        UISegmentedControl *actionControl = MakeSegmentedBarButton(@[ action ]);
-        [actionControl addTarget:self action:@selector(actOnCurrentPage:)
-                forControlEvents:UIControlEventValueChanged];
-        UIBarButtonItem *actionItem = [[UIBarButtonItem alloc] initWithCustomView:actionControl];
-        toolbar.items = @[ backForward, space, actionItem ];
-        [self.view addSubview:toolbar];
-        self.toolbar = toolbar;
-    }
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:webViewFrame];
+    UIWebView *webView = [UIWebView new];
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
     webView.scalesPageToFit = YES;
+    
+    // Start with a clear background for the web view to avoid a FOUC.
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
-    [self.view addSubview:webView];
-    self.webView = webView;
+    
+    self.view = webView;
 }
 
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = [AwfulTheme currentTheme][@"browserBackgroundColor"];
+    self.view.backgroundColor = AwfulTheme.currentTheme[@"browserBackgroundColor"];
 }
 
-static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
+- (void)viewWillAppear:(BOOL)animated
 {
-    UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:items];
-    seg.frame = CGRectMake(0, 0, [items count] == 1 ? 40 : 85, 29);
-    UIImage *back = [[UIImage imageNamed:@"pagebar-button.png"]
-                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
-    [seg setBackgroundImage:back forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    UIImage *selected = [[UIImage imageNamed:@"pagebar-button-selected.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 3, 0, 3)];
-    [seg setBackgroundImage:selected forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [seg setDividerImage:[UIImage imageNamed:@"pagebar-segmented-divider.png"]
-     forLeftSegmentState:UIControlStateNormal
-       rightSegmentState:UIControlStateNormal
-              barMetrics:UIBarMetricsDefault];
-    return seg;
+    [super viewWillAppear:animated];
+    if (self.toolbarItems.count > 0) {
+        [self.navigationController setToolbarHidden:NO animated:animated];
+    }
 }
 
 - (void)viewDidLoad
@@ -254,39 +188,25 @@ static UISegmentedControl * MakeSegmentedBarButton(NSArray *items)
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    } else {
-        return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-    }
-}
-
-- (void)dealloc
-{
-    self.webView.delegate = nil;
-}
-
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [self updateBackForwardButtonEnabledState];
+    [AFNetworkActivityIndicatorManager.sharedManager incrementActivityCount];
+    [self updateBackForwardItemEnabledState];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    // Websites expect a white background if they don't explicitly set one themselves, so this should be a hardcoded white.
+    // We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
     webView.backgroundColor = [UIColor whiteColor];
     webView.opaque = YES;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [AFNetworkActivityIndicatorManager.sharedManager decrementActivityCount];
     _URL = webView.request.URL;
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = [title length] > 0 ? title : @"Awful Browser";
     [self preventDefaultLongTapMenu];
-    [self updateBackForwardButtonEnabledState];
+    [self updateBackForwardItemEnabledState];
 }
 
 @end

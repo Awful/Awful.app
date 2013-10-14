@@ -4,8 +4,14 @@
 
 #import "UIViewController+AwfulTheme.h"
 
+/**
+ * An AwfulBrowserViewController displays web content with a minimal browser interface.
+ */
 @interface AwfulBrowserViewController : AwfulViewController
 
-@property (nonatomic) NSURL *URL;
+/**
+ * The URL of the current page.
+ */
+@property (strong, nonatomic) NSURL *URL;
 
 @end

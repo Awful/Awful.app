@@ -70,15 +70,6 @@
 
 @end
 
-@interface UIBarButtonItem (Awful)
-
-/**
- * Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
- */
-+ (instancetype)flexibleSpace;
-
-@end
-
 @implementation AwfulPostsViewController
 
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
@@ -1370,16 +1361,5 @@ static NSString * const AuthorUserIDKey = @"AwfulAuthorUserID";
 static NSString * const HiddenPostsKey = @"AwfulHiddenPosts";
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 static NSString * const AdvertisementHTMLKey = @"AwfulAdvertisementHTML";
-
-@end
-
-@implementation UIBarButtonItem (Awful)
-
-+ (instancetype)flexibleSpace
-{
-    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                         target:nil
-                                                         action:nil];
-}
 
 @end
