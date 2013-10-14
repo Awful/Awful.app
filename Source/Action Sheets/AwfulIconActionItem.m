@@ -46,7 +46,7 @@
         case AwfulIconActionItemTypeJumpToFirstPage:
             title = @"Jump to First Page";
             tintColor = [UIColor colorWithHue:0.153 saturation:0.111 brightness:0.882 alpha:1];
-            icon = [UIImage imageNamed:@"jump-to-first-page.png"];
+            icon = [UIImage imageNamed:@"jump-to-first-page"];
             break;
         
         case AwfulIconActionItemTypeJumpToLastPage:

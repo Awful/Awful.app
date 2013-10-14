@@ -215,7 +215,7 @@ static NSString * CreateBanIDForBan(BanParsedInfo *ban)
     background.image = self.cellBackgroundImage;
     
     if (ban.banType == AwfulBanTypeProbation) {
-        cell.imageView.image = [UIImage imageNamed:@"title-probation.png"];
+        cell.imageView.image = [UIImage imageNamed:@"title-probation"];
     } else if (ban.banType == AwfulBanTypePermaban) {
         cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
     } else {

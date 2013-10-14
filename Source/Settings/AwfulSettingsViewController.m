@@ -34,7 +34,7 @@
     if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
     _managedObjectContext = managedObjectContext;
     self.title = @"Settings";
-    self.tabBarItem.image = [UIImage imageNamed:@"cog.png"];
+    self.tabBarItem.image = [UIImage imageNamed:@"cog"];
     return self;
 }
 
