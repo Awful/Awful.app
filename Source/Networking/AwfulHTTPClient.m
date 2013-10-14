@@ -181,7 +181,7 @@ static AwfulHTTPClient *instance = nil;
     } failure:^(id _, NSError *error) {
         if (callback) callback(error, nil);
     }];
-    [op setCreateParsedInfoBlock:^id(NSData *data) {
+    [op setCreateParsedInfoBlock:^(NSData *data) {
         return [ThreadParsedInfo threadsWithHTMLData:data];
     }];
     [self enqueueHTTPRequestOperation:op];
