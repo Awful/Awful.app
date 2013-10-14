@@ -13,10 +13,10 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulSettingsViewController () <AwfulInstapaperLogInControllerDelegate>
 

@@ -12,7 +12,7 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
-#import "UITableView+HideStuff.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulForumsListController () <AwfulForumTreeControllerDelegate>
 

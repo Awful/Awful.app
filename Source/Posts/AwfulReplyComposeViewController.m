@@ -13,11 +13,9 @@
 #import "AwfulNavigationBar.h"
 #import "AwfulSettings.h"
 #import "AwfulTextView.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import "ImgurHTTPClient.h"
-#import "NSFileManager+UserDirectories.h"
-#import "NSString+CollapseWhitespace.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulReplyComposeViewController () <UIImagePickerControllerDelegate,
                                                UINavigationControllerDelegate,

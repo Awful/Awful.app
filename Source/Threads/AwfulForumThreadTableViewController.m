@@ -18,11 +18,9 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadComposeViewController.h"
 #import "AwfulThreadTags.h"
-#import "NSString+CollapseWhitespace.h"
+#import "awfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
-#import "UITableView+HideStuff.h"
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulForumThreadTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulThreadComposeViewControllerDelegate, UIViewControllerRestoration>
 

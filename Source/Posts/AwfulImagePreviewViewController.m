@@ -3,14 +3,14 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImagePreviewViewController.h"
+#import <AFNetworking/AFNetworking.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulSettings.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import "FVGifAnimation.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 

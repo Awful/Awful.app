@@ -8,7 +8,7 @@
 #import "AwfulPageBarBackgroundView.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "UINavigationItem+TwoLineTitle.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulBrowserViewController () <UIWebViewDelegate>
 

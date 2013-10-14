@@ -19,12 +19,8 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
-#import "NSFileManager+UserDirectories.h"
-#import "NSURL+Awful.h"
-#import "NSURL+OpensInBrowser.h"
-#import "NSURL+Punycode.h"
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, UIViewControllerRestoration>
 

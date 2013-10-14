@@ -23,19 +23,14 @@
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulThemeLoader.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import <JLRoutes/JLRoutes.h>
-#import "NSFileManager+UserDirectories.h"
-#import "NSURL+Awful.h"
-#import "NSURL+Punycode.h"
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIViewController+AwfulTheme.h"
-#import "UIViewController+NavigationEnclosure.h"
-#import "UIViewController+AwfulTheme.h"
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 

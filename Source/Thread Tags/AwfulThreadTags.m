@@ -3,7 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTags.h"
-#import "NSFileManager+UserDirectories.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulThreadTags ()
 

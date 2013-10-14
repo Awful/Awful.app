@@ -14,10 +14,9 @@
 #import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
-#import "NSURL+Punycode.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 

@@ -14,8 +14,8 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagButton.h"
 #import "AwfulThreadTags.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulThreadComposeViewController () <AwfulPostIconPickerControllerDelegate, UITextFieldDelegate>
 

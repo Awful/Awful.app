@@ -4,8 +4,7 @@
 
 #import "AwfulPostsView.h"
 #import "AwfulSettings.h"
-#import "NSFileManager+UserDirectories.h"
-#import "NSURL+Punycode.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulPostsView () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 

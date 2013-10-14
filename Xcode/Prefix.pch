@@ -10,4 +10,5 @@
     #import <QuartzCore/QuartzCore.h>
     #import <SystemConfiguration/SystemConfiguration.h>
     #import "AwfulModels.h"
+    #import "AwfulUIKitAndFoundationCategories.h"
 #endif

@@ -4,8 +4,8 @@
 
 #import "AwfulParsing.h"
 #import "AwfulThread.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import "GTMNSString+HTML.h"
-#import "NSURL+QueryDictionary.h"
 #import "TFHpple.h"
 #import "XPathQuery.h"
 

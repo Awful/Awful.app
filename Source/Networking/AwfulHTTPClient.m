@@ -10,7 +10,7 @@
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
-#import "NSURL+QueryDictionary.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulHTTPClient ()
 

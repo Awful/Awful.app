@@ -15,9 +15,8 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
-#import "UITableView+HideStuff.h"
-#import "UIViewController+NavigationEnclosure.h"
 
 @interface AwfulPrivateMessageListController ()
 
