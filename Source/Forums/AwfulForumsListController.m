@@ -378,20 +378,23 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum;
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
-        forum = self.favoriteForums[indexPath.row];
+        [self showForum:self.favoriteForums[indexPath.row] animated:YES];
     } else {
         NSIndexPath *adjustedIndexPath = indexPath;
         if (self.favoriteForums.count > 0) {
             adjustedIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section - 1];
         }
-        forum = [self.treeController visibleForumAtIndexPath:adjustedIndexPath];
+        [self showForum:[self.treeController visibleForumAtIndexPath:adjustedIndexPath] animated:YES];
     }
+}
+
+- (void)showForum:(AwfulForum *)forum animated:(BOOL)animated
+{
     AwfulForumThreadTableViewController *threadList = [[AwfulForumThreadTableViewController alloc] initWithForum:forum];
     threadList.restorationClass = threadList.class;
     threadList.restorationIdentifier = @"Thread";
-    [self.navigationController pushViewController:threadList animated:YES];
+    [self.navigationController pushViewController:threadList animated:animated];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView

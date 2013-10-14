@@ -251,6 +251,7 @@
 		1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461E16DD848100C75E05 /* AwfulTextView.m */; };
 		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
 		1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */; };
+		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1CFA2EF917E1FD4700DE5DE9 /* pages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */; };
 		1CFA2EFB17E1FF5B00DE5DE9 /* pages.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CFA2EFA17E1FF5B00DE5DE9 /* pages.png */; };
@@ -674,6 +675,8 @@
 		1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageComposeViewController.h; sourceTree = "<group>"; };
 		1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageComposeViewController.m; sourceTree = "<group>"; };
 		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
+		1CF3A465180C768100EC2450 /* AwfulURLRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulURLRouter.h; sourceTree = "<group>"; };
+		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
 		1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageCell.h; sourceTree = "<group>"; };
 		1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageCell.m; sourceTree = "<group>"; };
 		1CFA2EF817E1FD4700DE5DE9 /* pages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pages@2x.png"; sourceTree = "<group>"; };
@@ -933,6 +936,8 @@
 			children = (
 				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
 				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
+				1CF3A465180C768100EC2450 /* AwfulURLRouter.h */,
+				1CF3A466180C768100EC2450 /* AwfulURLRouter.m */,
 				1C96D0AA1682B1140043B194 /* NSURL+Awful.h */,
 				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
 				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
@@ -2094,6 +2099,7 @@
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */,
+				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */,
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,

@@ -27,6 +27,7 @@
 #import "AwfulReplyComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
+#import "AwfulForumThreadTableViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
@@ -807,7 +808,7 @@
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
-    [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
+    [AwfulAppDelegate.instance openAwfulURL:[NSURL URLWithString:url]];
 }
 
 - (void)showHiddenSeenPosts

@@ -24,6 +24,7 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
 #import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
@@ -42,6 +43,7 @@
 @implementation AwfulAppDelegate
 {
     AwfulDataStack *_dataStack;
+    AwfulURLRouter *_awfulURLRouter;
 }
 
 static id _instance;
@@ -223,8 +225,6 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
-    [self routeAwfulURLs];
-    
     [self.window makeKeyAndVisible];
     
     if (![AwfulHTTPClient client].loggedIn) {
@@ -258,6 +258,9 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
+    
+    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.window.rootViewController
+                                                    managedObjectContext:_dataStack.managedObjectContext];
     
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
@@ -373,7 +376,7 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
     if (!url) {
         url = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
     }
-    if (![url awfulURL]) return;
+    if (![url awfulURL] || [[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] == NSOrderedSame) return;
     
     // Don't ask about the same URL over and over.
     if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:[url absoluteString]]) {
@@ -451,219 +454,19 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
  */
 static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 
-#pragma mark - awful:// URL scheme
-
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
-    if ([[PocketAPI sharedAPI] handleOpenURL:url]) return YES;
-    if ([[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
-    if (![AwfulHTTPClient client].loggedIn) return NO;
-    return [self openAwfulURL:url];
+    if (!AwfulHTTPClient.client.loggedIn) return NO;
+    if ([self openAwfulURL:url]) return YES;
+    return [PocketAPI.sharedAPI handleOpenURL:url];
 }
 
 - (BOOL)openAwfulURL:(NSURL *)url
 {
-    return [JLRoutes routeURL:url];
-}
-
-- (void)routeAwfulURLs
-{
-    // TODO fix this for new iPhone, iPad root view controllers.
-    AwfulBasementViewController *tabBar = self.basementViewController;
-    void (^jumpToForum)(NSString *) = ^(NSString *forumID) {
-        AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:_dataStack.managedObjectContext
-                                                                          withID:forumID];
-        UINavigationController *nav = tabBar.viewControllers[0];
-        [self jumpToForum:forum inNavigationController:nav];
-    };
-    
-    [JLRoutes addRoute:@"/forums/:forumID" handler:^(NSDictionary *params) {
-        jumpToForum(params[@"forumID"]);
-        return YES;
-    }];
-    
-    [JLRoutes addRoute:@"/forums" handler:^(id _) {
-        tabBar.selectedViewController = tabBar.viewControllers[0];
-        return YES;
-    }];
-    
-    void (^selectAndPopViewControllerAtIndex)(NSInteger) = ^(NSInteger i) {
-        UINavigationController *nav = tabBar.viewControllers[i];
-        [nav popToRootViewControllerAnimated:YES];
-        tabBar.selectedViewController = nav;
-    };
-    
-    // TODO messages has changed positions, and may not even appear if the user doesn't support PMs.
-    [JLRoutes addRoute:@"/messages" handler:^(id _) {
-        selectAndPopViewControllerAtIndex(1);
-        return YES;
-    }];
-    
-    [JLRoutes addRoute:@"/bookmarks" handler:^(id _) {
-        selectAndPopViewControllerAtIndex(2);
-        return YES;
-    }];
-    
-    [JLRoutes addRoute:@"/settings" handler:^(id _) {
-        selectAndPopViewControllerAtIndex(3);
-        return YES;
-    }];
-    
-    BOOL (^openThread)(NSDictionary *) = ^(NSDictionary *params) {
-        AwfulThreadPage page = 0;
-        if ([params[@"page"] isEqual:@"last"]) {
-            page = AwfulThreadPageLast;
-        } else if ([params[@"page"] isEqual:@"unread"]) {
-            page = AwfulThreadPageNextUnread;
-        } else {
-            page = [params[@"page"] integerValue];
-        }
-        
-        // Maybe the thread is already open.
-        // On iPhone, could be in any tab, but on iPad, there's only one navigation controller for
-        // posts view controllers.
-        NSArray *maybes = tabBar.viewControllers;
-        for (UINavigationController *nav in maybes) {
-            AwfulPostsViewController *top = (id)nav.topViewController;
-            if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([top.thread.threadID isEqual:params[@"threadID"]]) {
-                // TODO this probably fails when top.author is nil
-                if ((page == 0 || page == top.page) && [top.author.userID isEqualToString:params[@"userID"]]) {
-                    if ([maybes count] > 1) {
-                        tabBar.selectedViewController = nav;
-                    }
-                    return YES;
-                }
-            }
-        }
-        
-        // Load the thread in a new posts view.
-        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:params[@"threadID"]
-                                                 inManagedObjectContext:_dataStack.managedObjectContext];
-        AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
-        postsView.page = page ?: 1;
-        UINavigationController *nav = (UINavigationController *)tabBar.selectedViewController;
-        
-        // On iPad, the app launches with a tag collage as its detail view. A posts view needs to
-        // replace this collage, not be pushed on top.
-        [nav pushViewController:postsView animated:YES];
-        
-        return YES;
-    };
-    
-    [JLRoutes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *params) {
-        return openThread(params);
-    }];
-    
-    [JLRoutes addRoute:@"/threads/:threadID" handler:^(NSDictionary *params) {
-        return openThread(params);
-    }];
-    
-    [JLRoutes addRoute:@"/posts/:postID" handler:^(NSDictionary *params) {
-        // Maybe the post is already visible.
-        NSArray *maybes = tabBar.viewControllers;
-        for (UINavigationController *nav in maybes) {
-            AwfulPostsViewController *top = (id)nav.topViewController;
-            if (![top isKindOfClass:[AwfulPostsViewController class]]) continue;
-            if ([[top.posts valueForKey:@"postID"] containsObject:params[@"postID"]]) {
-                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:params[@"postID"]
-                                               inManagedObjectContext:_dataStack.managedObjectContext];
-                top.topPost = post;
-                return YES;
-            }
-        }
-        
-        // Do we know which thread the post comes from?
-        AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:_dataStack.managedObjectContext
-                                                  matchingPredicateFormat:@"postID = %@", params[@"postID"]];
-        if (post) {
-            [self pushPostsViewForPostWithID:post.postID
-                                      onPage:post.page
-                              ofThreadWithID:post.thread.threadID];
-            return YES;
-        }
-        
-        // Go find the thread.
-        [SVProgressHUD showWithStatus:@"Locating Post"];
-        [[AwfulHTTPClient client] locatePostWithID:params[@"postID"]
-                                           andThen:^(NSError *error, NSString *threadID,
-                                                     AwfulThreadPage page)
-        {
-            if (error) {
-                [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
-                NSLog(@"couldn't resolve post at %@: %@", params[kJLRouteURLKey], error);
-            } else {
-                [SVProgressHUD dismiss];
-                [self pushPostsViewForPostWithID:params[@"postID"]
-                                          onPage:page
-                                  ofThreadWithID:threadID];
-            }
-        }];
-        return YES;
-    }];
-    
-    #pragma mark Legacy routes
-    
-    [JLRoutes addRoute:@"/favorites/:forumID" handler:^(NSDictionary *params) {
-        jumpToForum(params[@"forumID"]);
-        return YES;
-    }];
-    
-    [JLRoutes addRoute:@"/favorites" handler:^(NSDictionary *parameters) {
-        UINavigationController *nav = tabBar.viewControllers[0];
-        tabBar.selectedViewController = nav;
-        UIScrollView *scrollView = (id)nav.topViewController.view;
-        if ([scrollView respondsToSelector:@selector(setContentOffset:animated:)]) {
-            [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:YES];
-        }
-        return YES;
-    }];
-}
-
-- (void)pushPostsViewForPostWithID:(NSString *)postID
-                            onPage:(AwfulThreadPage)page
-                    ofThreadWithID:(NSString *)threadID
-{
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                             inManagedObjectContext:_dataStack.managedObjectContext];
-    AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
-    postsView.page = page;
-    AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID
-                                   inManagedObjectContext:_dataStack.managedObjectContext];
-    postsView.topPost = post;
-    UINavigationController *nav;
-    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
-    nav = (UINavigationController *)tabBar.selectedViewController;
-    [nav pushViewController:postsView animated:YES];
-}
-
-- (void)jumpToForum:(AwfulForum *)forum inNavigationController:(UINavigationController *)nav
-{
-    if (!forum) {
-        [nav popToRootViewControllerAnimated:YES];
-        return;
-    }
-    NSMutableArray *maybes = [@[ nav.topViewController ] mutableCopy];
-    if ([nav.viewControllers count] > 1) {
-        [maybes insertObject:nav.viewControllers[[nav.viewControllers count] - 2] atIndex:0];
-    }
-    for (AwfulForumThreadTableViewController *viewController in maybes) {
-        if (![viewController isKindOfClass:[AwfulForumThreadTableViewController class]]) continue;
-        if ([viewController.forum isEqual:forum]) {
-            [nav popToViewController:viewController animated:YES];
-            UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
-            tabBar.selectedViewController = nav;
-            return;
-        }
-    }
-    [nav popToRootViewControllerAnimated:NO];
-    AwfulForumThreadTableViewController *threadList = [[AwfulForumThreadTableViewController alloc] initWithForum:forum];
-    [nav pushViewController:threadList animated:YES];
-    UITabBarController *tabBar = (UITabBarController *)(self.basementViewController);
-    tabBar.selectedViewController = nav;
+    return [_awfulURLRouter routeURL:url];
 }
 
 #pragma mark - AwfulLoginControllerDelegate
