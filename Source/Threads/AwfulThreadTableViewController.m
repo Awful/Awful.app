@@ -50,10 +50,22 @@
 
 static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    _threadDataSource.paused = NO;
+}
+
 - (void)themeDidChange
 {
 	[super themeDidChange];
 	self.view.backgroundColor = self.theme[@"backgroundColor"];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    _threadDataSource.paused = YES;
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSource

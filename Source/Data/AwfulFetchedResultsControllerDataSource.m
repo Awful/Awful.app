@@ -19,6 +19,7 @@
     _tableView = tableView;
     tableView.dataSource = self;
     _reuseIdentifier = [reuseIdentifier copy];
+    _paused = YES;
     return self;
 }
 
@@ -26,12 +27,24 @@
 {
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = fetchedResultsController;
-    _fetchedResultsController.delegate = self;
-    NSError *error;
-    BOOL ok = [_fetchedResultsController performFetch:&error];
-    if (!ok) {
-        NSLog(@"%s error performing first fetch of NSFetchedResultsController %@: %@",
-              __PRETTY_FUNCTION__, _fetchedResultsController, error);
+    self.paused = YES;
+}
+
+- (void)setPaused:(BOOL)paused
+{
+    _paused = paused;
+    if (paused) {
+        self.fetchedResultsController.delegate = nil;
+    } else {
+        self.fetchedResultsController.delegate = self;
+        _fetchedResultsController.delegate = self;
+        NSError *error;
+        BOOL ok = [_fetchedResultsController performFetch:&error];
+        if (!ok) {
+            NSLog(@"%s error performing first fetch of NSFetchedResultsController %@: %@",
+                  __PRETTY_FUNCTION__, _fetchedResultsController, error);
+        }
+        [self.tableView reloadData];
     }
 }
 
