@@ -5,7 +5,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulAlertView.h"
 #import "AwfulBasementViewController.h"
-#import "AwfulBookmarksController.h"
+#import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
 #import "AwfulExpandingSplitViewController.h"
@@ -135,7 +135,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
     
-    vc = [[AwfulBookmarksController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
+    vc = [[AwfulBookmarkedThreadTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = BookmarksControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
