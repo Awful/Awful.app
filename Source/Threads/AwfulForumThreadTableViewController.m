@@ -95,7 +95,13 @@
     [super viewDidLoad];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    
+    if (self.fetchedResultsController.fetchedObjects.count > 0) {
+        [self enableInfiniteScrolling];
+    }
+}
+
+- (void)enableInfiniteScrolling
+{
     __weak __typeof__(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         __typeof__(self) self = weakSelf;
@@ -153,7 +159,11 @@
         }
         _mostRecentlyLoadedPage = page;
         [self.refreshControl endRefreshing];
-        [self.tableView.infiniteScrollingView stopAnimating];
+        if (self.tableView.showsInfiniteScrolling) {
+            [self.tableView.infiniteScrollingView stopAnimating];
+        } else {
+            [self enableInfiniteScrolling];
+        }
     }];
 }
 
