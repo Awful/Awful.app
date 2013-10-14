@@ -9,9 +9,6 @@
 @end
 
 @implementation AwfulFetchedResultsControllerDataSource
-{
-    BOOL _userDrivenChange;
-}
 
 - (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
 {
