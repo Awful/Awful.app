@@ -131,11 +131,12 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     cell.numberOfPagesLabel.text = @(thread.numberOfPages).stringValue;
     if (thread.beenSeen) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
+        NSInteger unreadPosts = thread.totalReplies + 1 - thread.seenPosts;
+        cell.badgeLabel.text = @(unreadPosts).stringValue;
     } else {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
+        cell.badgeLabel.text = nil;
     }
-    NSInteger unreadPosts = thread.totalReplies + 1 - thread.seenPosts;
-    cell.badgeLabel.text = @(unreadPosts).stringValue;
     [self themeCell:cell withObject:thread];
 }
 
