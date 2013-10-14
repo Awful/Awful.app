@@ -250,7 +250,7 @@ static const CGFloat LeftRightMargin = 8;
                          permittedArrowDirections:UIPopoverArrowDirectionAny
                                          animated:animated];
     } else {
-        [self showInView:[barButtonItem valueForKeyPath:@"view.superview"] animated:animated];
+        [self showInView:[barButtonItem valueForKeyPath:@"view.superview.superview"] animated:animated];
     }
 }
 
