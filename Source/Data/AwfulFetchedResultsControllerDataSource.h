@@ -57,4 +57,21 @@
  */
 - (void)configureCell:(id)cell withObject:(id)object;
 
+@optional
+
+/**
+ * Asks the delegate whether an object can be deleted. If the delegate does not implement this method, it is assumed that no objects can be deleted.
+ *
+ * @param object    The object to test for deletion.
+ * @param indexPath Where the object appears in the table.
+ *
+ * @return YES if the object can be deleted, otherwise NO.
+ */
+- (BOOL)canDeleteObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ * Asks the delegate to delete the object. Its cell is automatically deleted from the table view.
+ */
+- (void)deleteObject:(id)object;
+
 @end

@@ -19,7 +19,7 @@
 #import "AwfulNavigationBar.h"
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPostsViewController.h"
-#import "AwfulPrivateMessageListController.h"
+#import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulThemeLoader.h"
@@ -143,7 +143,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
     
     if ([AwfulSettings settings].canSendPrivateMessages) {
-        vc = [[AwfulPrivateMessageListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
+        vc = [[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
         vc.restorationIdentifier = MessagesListControllerIdentifier;
         nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
@@ -275,10 +275,10 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 			
 			// Add the private message list if it's needed, or remove it if it isn't.
 			NSArray *roots = [self rootViewControllersUncontained];
-			NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageListController class]];
+			NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageTableViewController class]];
 			if ([AwfulSettings settings].canSendPrivateMessages) {
 				if (i == NSNotFound) {
-					UINavigationController *nav = [[[AwfulPrivateMessageListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
+					UINavigationController *nav = [[[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
 					if (self.basementViewController) {
 						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
 						[viewControllers insertObject:nav atIndex:2];

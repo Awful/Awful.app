@@ -176,7 +176,7 @@
 		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTags.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */; };
 		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
-		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */; };
+		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */; };
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
 		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
@@ -228,7 +228,6 @@
 		1CE2D984165F8B8D0024AC1C /* star-off-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2D982165F8B8D0024AC1C /* star-off-dark@2x.png */; };
 		1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */; };
 		1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */; };
-		1CE2D9D8166ABD0D0024AC1C /* AwfulFetchedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
 		1CE2D9DB166ABD0D0024AC1C /* AwfulOldTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
@@ -560,8 +559,8 @@
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTags.m; sourceTree = "<group>"; };
 		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
 		1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessage.m; sourceTree = "<group>"; };
-		1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageListController.h; sourceTree = "<group>"; };
-		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageListController.m; sourceTree = "<group>"; };
+		1CB6010716D826F000CBEE22 /* AwfulPrivateMessageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageTableViewController.h; sourceTree = "<group>"; };
+		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageTableViewController.m; sourceTree = "<group>"; };
 		1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
 		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
@@ -634,9 +633,6 @@
 		1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionSheet.m; sourceTree = "<group>"; };
 		1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAlertView.h; sourceTree = "<group>"; };
 		1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAlertView.m; sourceTree = "<group>"; };
-		1CE2D9C3166ABD0D0024AC1C /* AwfulFetchedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewController.h; sourceTree = "<group>"; };
-		1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedTableViewController.m; sourceTree = "<group>"; };
-		1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedTableViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
 		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
 		1CE2D9CA166ABD0D0024AC1C /* AwfulOldTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulOldTableViewController.h; sourceTree = "<group>"; };
@@ -909,9 +905,6 @@
 				1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */,
 				1C5F700D17D8821A005ABD6F /* AwfulExpandingSplitViewController.h */,
 				1C5F700E17D8821A005ABD6F /* AwfulExpandingSplitViewController.m */,
-				1CE2D9C3166ABD0D0024AC1C /* AwfulFetchedTableViewController.h */,
-				1CE2D9C4166ABD0D0024AC1C /* AwfulFetchedTableViewController.m */,
-				1CE2D9C5166ABD0D0024AC1C /* AwfulFetchedTableViewControllerSubclass.h */,
 				1CE2D9CA166ABD0D0024AC1C /* AwfulOldTableViewController.h */,
 				1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */,
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
@@ -1208,18 +1201,18 @@
 		1CB6010616D826DA00CBEE22 /* Private Messages */ = {
 			isa = PBXGroup;
 			children = (
+				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
+				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
 				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
 				1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */,
 				1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */,
-				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageListController.h */,
-				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageListController.m */,
-				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
-				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
 				1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */,
 				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
-				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
-				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
+				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageTableViewController.h */,
+				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */,
+				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
+				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
 			);
 			path = "Private Messages";
 			sourceTree = "<group>";
@@ -2111,7 +2104,6 @@
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
-				1CE2D9D8166ABD0D0024AC1C /* AwfulFetchedTableViewController.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CE2D9DB166ABD0D0024AC1C /* AwfulOldTableViewController.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
@@ -2142,7 +2134,7 @@
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
-				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageListController.m in Sources */,
+				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,

@@ -68,6 +68,32 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (![self.delegate respondsToSelector:@selector(canDeleteObject:atIndexPath:)]) return NO;
+    id object = [_fetchedResultsController objectAtIndexPath:indexPath];
+    return [self.delegate canDeleteObject:object atIndexPath:indexPath];
+}
+
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle != UITableViewCellEditingStyleDelete) return;
+    id object = [_fetchedResultsController objectAtIndexPath:indexPath];
+    [tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self performIgnoringUpdates:^{
+        [self.delegate deleteObject:object];
+    }];
+}
+
+- (void)performIgnoringUpdates:(void (^)(void))block
+{
+    _fetchedResultsController.delegate = nil;
+    block();
+    _fetchedResultsController.delegate = self;
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
