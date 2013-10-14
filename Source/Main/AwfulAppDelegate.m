@@ -33,7 +33,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 
-@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
+@interface AwfulAppDelegate () <AwfulLoginControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
@@ -129,6 +129,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = ForumListControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = ForumNavigationControllerIdentifier;
+    nav.delegate = self;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
     
@@ -136,6 +137,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = BookmarksControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
+    nav.delegate = self;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
     
@@ -144,6 +146,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         vc.restorationIdentifier = MessagesListControllerIdentifier;
         nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
+        nav.delegate = self;
         [viewControllers addObject:nav];
         [expandingIdentifiers addObject:MessagesExpandingSplitControllerIdentifier];
     }
@@ -152,6 +155,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = LepersColonyViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;
+    nav.delegate = self;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:LepersColonyExpandingSplitControllerIdentifier];
     
@@ -159,6 +163,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = SettingsViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
+    nav.delegate = self;
     [viewControllers addObject:nav];
     [expandingIdentifiers addObject:SettingsExpandingSplitControllerIdentifier];
     
@@ -486,6 +491,15 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"Alright"
                        completion:nil];
+}
+
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
 }
 
 @end

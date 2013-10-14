@@ -48,7 +48,6 @@
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
 @property (nonatomic) AwfulPost *ongoingEditedPost;
-@property (assign, nonatomic) BOOL toolbarWasHidden;
 
 @property (strong, nonatomic) UIBarButtonItem *settingsItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
@@ -837,19 +836,6 @@
     UIScrollView *scrollView = self.postsView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
                            animated:YES];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.toolbarWasHidden = self.navigationController.toolbarHidden;
-    [self.navigationController setToolbarHidden:NO animated:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [self.navigationController setToolbarHidden:self.toolbarWasHidden animated:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
