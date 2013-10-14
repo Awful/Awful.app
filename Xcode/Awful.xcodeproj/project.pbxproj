@@ -297,8 +297,6 @@
 		8CBDD2EA17E0140F0036AC4F /* sticky@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CBDD2E917E0140F0036AC4F /* sticky@2x.png */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulLepersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
-		8CCD536E15B783FD00E5893B /* action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504215B783FC00E5893B /* action.png */; };
-		8CCD536F15B783FD00E5893B /* action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504315B783FC00E5893B /* action@2x.png */; };
 		8CCD537015B783FD00E5893B /* arrowleft.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504415B783FC00E5893B /* arrowleft.png */; };
 		8CCD537115B783FD00E5893B /* arrowleft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504515B783FC00E5893B /* arrowleft@2x.png */; };
 		8CCD537215B783FD00E5893B /* arrowright.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD504615B783FC00E5893B /* arrowright.png */; };
@@ -733,8 +731,6 @@
 		8CCA272C16B8C1EF00A4952A /* AwfulLepersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLepersViewController.m; sourceTree = "<group>"; };
 		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Xcode/Info.plist; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
-		8CCD504215B783FC00E5893B /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action.png; sourceTree = "<group>"; };
-		8CCD504315B783FC00E5893B /* action@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "action@2x.png"; sourceTree = "<group>"; };
 		8CCD504415B783FC00E5893B /* arrowleft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowleft.png; sourceTree = "<group>"; };
 		8CCD504515B783FC00E5893B /* arrowleft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrowleft@2x.png"; sourceTree = "<group>"; };
 		8CCD504615B783FC00E5893B /* arrowright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowright.png; sourceTree = "<group>"; };
@@ -1618,8 +1614,6 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				8CCD504215B783FC00E5893B /* action.png */,
-				8CCD504315B783FC00E5893B /* action@2x.png */,
 				1C13FF90161CDDD3000ED2B1 /* bookmarks-landscape.png */,
 				1C13FF91161CDDD4000ED2B1 /* bookmarks-landscape@2x.png */,
 				1C13FF92161CDDD4000ED2B1 /* bookmarks.png */,
@@ -1786,8 +1780,6 @@
 			files = (
 				1C41918E1763C88E00EADE07 /* combined.js in Resources */,
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
-				8CCD536E15B783FD00E5893B /* action.png in Resources */,
-				8CCD536F15B783FD00E5893B /* action@2x.png in Resources */,
 				8CCD537015B783FD00E5893B /* arrowleft.png in Resources */,
 				8CA6EFD617E00E9C0025F06C /* lepers_icon.png in Resources */,
 				8CCD537115B783FD00E5893B /* arrowleft@2x.png in Resources */,
