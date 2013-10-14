@@ -70,7 +70,7 @@
 - (BOOL)canDeleteObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 
 /**
- * Asks the delegate to delete the object. Its cell is automatically deleted from the table view.
+ * Asks the delegate to delete the object.
  */
 - (void)deleteObject:(id)object;
 
