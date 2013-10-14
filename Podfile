@@ -4,7 +4,7 @@ link_with ['Awful', 'Imgur API Test']
 
 pod 'AFNetworking', '1.3.0'
 pod 'GRMustache', '6.7.3', :inhibit_warnings => true
-pod 'JLRoutes', '1.2', :inhibit_warnings => true
+pod 'JLRoutes', '1.4'
 pod 'PocketAPI', '1.0.2'
 pod 'SVProgressHUD', :head
 pod 'SVPullToRefresh', '0.4.1'

@@ -23,7 +23,7 @@ static BOOL verboseLoggingEnabled = NO;
 @property (strong) NSString *namespaceKey;
 
 + (void)verboseLogWithFormat:(NSString *)format, ...;
-+ (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController;
++ (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController parameters:(NSDictionary *)parameters;
 - (BOOL)isGlobalRoutesController;
 
 @end
@@ -87,7 +87,9 @@ static BOOL verboseLoggingEnabled = NO;
 	}
 	
 	// do a quick component count check to quickly eliminate incorrect patterns
-	if (self.patternPathComponents.count == URLComponents.count) {
+	BOOL componentCountEqual = self.patternPathComponents.count == URLComponents.count;
+	BOOL routeContainsWildcard = !NSEqualRanges([self.pattern rangeOfString:@"*"], NSMakeRange(NSNotFound, 0));
+	if (componentCountEqual || routeContainsWildcard) {
 		// now that we've identified a possible match, move component by component to check if it's a match
 		NSUInteger componentIndex = 0;
 		NSMutableDictionary *variables = [NSMutableDictionary dictionary];
@@ -100,6 +102,11 @@ static BOOL verboseLoggingEnabled = NO;
 				NSString *variableName = [patternComponent substringFromIndex:1];
 				NSString *variableValue = URLComponent;
 				variables[variableName] = [variableValue JLRoutes_URLDecodedString];
+			} else if ([patternComponent isEqualToString:@"*"]) {
+				// match wildcards
+				variables[kJLRouteWildcardComponentsKey] = [URLComponents subarrayWithRange:NSMakeRange(componentIndex, URLComponents.count-componentIndex)];
+				isMatch = YES;
+				break;
 			} else if (![patternComponent isEqualToString:URLComponent]) {
 				// a non-variable component did not match, so this route doesn't match up - on to the next one
 				isMatch = NO;
@@ -208,16 +215,48 @@ static BOOL verboseLoggingEnabled = NO;
 
 
 + (BOOL)routeURL:(NSURL *)URL {
+	return [self routeURL:URL withParameters:nil executeRouteBlock:YES];
+}
+
++ (BOOL)routeURL:(NSURL *)URL withParameters:(NSDictionary *)parameters {
+    return [self routeURL:URL withParameters:parameters executeRouteBlock:YES];
+}
+
+
++ (BOOL)canRouteURL:(NSURL *)URL {
+    return [self routeURL:URL withParameters:nil executeRouteBlock:NO];
+}
+
++ (BOOL)canRouteURL:(NSURL *)URL withParameters:(NSDictionary *)parameters {
+    return [self routeURL:URL withParameters:parameters executeRouteBlock:NO];
+}
+
++ (BOOL)routeURL:(NSURL *)URL withParameters:(NSDictionary *)parameters executeRouteBlock:(BOOL)execute {
 	if (!URL) {
 		return NO;
 	}
-	
+
 	// figure out which routes controller to use based on the scheme
 	JLRoutes *routesController = routeControllersMap[[URL scheme]] ?: [self globalRoutes];
-	
-	return [self routeURL:URL withController:routesController];
+
+	return [self routeURL:URL withController:routesController parameters:parameters executeBlock:execute];
 }
 
+- (BOOL)routeURL:(NSURL *)URL {
+	return [[self class] routeURL:URL withController:self];
+}
+
+- (BOOL)routeURL:(NSURL *)URL withParameters:(NSDictionary *)parameters {
+	return [[self class] routeURL:URL withController:self parameters:parameters];
+}
+
+- (BOOL)canRouteURL:(NSURL *)URL {
+	return [[self class] routeURL:URL withController:self parameters:nil executeBlock:NO];
+}
+
+- (BOOL)canRouteURL:(NSURL *)URL withParameters:(NSDictionary *)parameters {
+	return [[self class] routeURL:URL withController:self parameters:parameters executeBlock:NO];
+}
 
 #pragma mark -
 #pragma mark Debugging Aids
@@ -253,6 +292,14 @@ static BOOL verboseLoggingEnabled = NO;
 #pragma mark Internal API
 
 + (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController {
+    return [self routeURL:URL withController:routesController parameters:nil executeBlock:YES];
+}
+
++ (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController parameters:(NSDictionary *)parameters {
+    return [self routeURL:URL withController:routesController parameters:parameters executeBlock:YES];
+}
+
++ (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController parameters:(NSDictionary *)parameters executeBlock:(BOOL)executeBlock {
 	[self verboseLogWithFormat:@"Trying to route URL %@", URL];
 	BOOL didRoute = NO;
 	NSArray *routes = routesController.routes;
@@ -277,7 +324,10 @@ static BOOL verboseLoggingEnabled = NO;
 		NSDictionary *matchParameters = [route parametersForURL:URL components:pathComponents];
 		if (matchParameters) {
 			[self verboseLogWithFormat:@"Successfully matched %@", route];
-			
+            if (!executeBlock) {
+                return YES;
+            }
+
 			// add the URL parameters
 			NSMutableDictionary *finalParameters = [NSMutableDictionary dictionary];
 
@@ -285,6 +335,7 @@ static BOOL verboseLoggingEnabled = NO;
 			[finalParameters addEntriesFromDictionary:queryParameters];
 			[finalParameters addEntriesFromDictionary:fragmentParameters];
 			[finalParameters addEntriesFromDictionary:matchParameters];
+			[finalParameters addEntriesFromDictionary:parameters];
 			finalParameters[kJLRoutePatternKey] = route.pattern;
 			finalParameters[kJLRouteURLKey] = URL;
 			finalParameters[kJLRouteNamespaceKey] = route.parentRoutesController.namespaceKey;
@@ -304,7 +355,12 @@ static BOOL verboseLoggingEnabled = NO;
 	// if we couldn't find a match and this routes controller specifies to fallback and its also not the global routes controller, then...
 	if (!didRoute && routesController.shouldFallbackToGlobalRoutes && ![routesController isGlobalRoutesController]) {
 		[self verboseLogWithFormat:@"Falling back to global routes..."];
-		didRoute = [self routeURL:URL withController:[self globalRoutes]];
+		didRoute = [self routeURL:URL withController:[self globalRoutes] parameters:parameters];
+	}
+	
+	// if, after everything, we did not route anything and we have an unmatched URL handler, then call it
+	if (!didRoute && routesController.unmatchedURLHandler) {
+		routesController.unmatchedURLHandler(routesController, URL, parameters);
 	}
 	
 	return didRoute;
@@ -328,5 +384,11 @@ static BOOL verboseLoggingEnabled = NO;
 	}
 }
 
+#pragma mark -
+#pragma mark Subscripting
+
+- (void)setObject:(id)handlerBlock forKeyedSubscript:(NSString *)routePatten {
+  [self addRoute:routePatten handler:handlerBlock];
+}
 
 @end
