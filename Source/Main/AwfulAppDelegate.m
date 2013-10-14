@@ -114,12 +114,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [[AwfulSettings settings] registerDefaults];
     [[AwfulSettings settings] migrateOldSettings];
     
-    NSURL *storeURL = [[[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory
-                                                              inDomain:NSUserDomainMask
-                                                     appropriateForURL:nil
-                                                                create:YES
-                                                                 error:nil]
-                       URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSURL *storeURL = [NSFileManager.defaultManager.documentDirectory URLByAppendingPathComponent:@"AwfulData.sqlite"];
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
     _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
     
