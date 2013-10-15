@@ -4,7 +4,7 @@
 
 #import "AwfulExpandingSplitViewController.h"
 
-@interface AwfulExpandingSplitViewController ()
+@interface AwfulExpandingSplitViewController () <UINavigationControllerDelegate>
 
 @property (strong, nonatomic) NSLayoutConstraint *expandedDetailViewControllerConstraint;
 
@@ -107,6 +107,18 @@
 - (void)replaceDetailViewController:(UIViewController *)oldDetailViewController
                  withViewController:(UIViewController *)newDetailViewController
 {
+    if ([oldDetailViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)oldDetailViewController;
+        if ([nav.delegate isEqual:self]) {
+            nav.delegate = nil;
+        }
+    }
+    if ([newDetailViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)newDetailViewController;
+        if (!nav.delegate) {
+            nav.delegate = self;
+        }
+    }
     [oldDetailViewController willMoveToParentViewController:nil];
     [self addChildViewController:newDetailViewController];
     [self.view removeConstraints:_detailViewControllerConstraints];
@@ -203,7 +215,16 @@
     }
 }
 
-#pragma mark State preservation and restoration
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
+}
+
+#pragma mark - State preservation and restoration
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
