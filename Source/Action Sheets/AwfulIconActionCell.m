@@ -45,26 +45,29 @@
         return;
     }
     
+    void (^drawIcon)(void) = ^{
+        if (self.icon) {
+            CGRect rect = (CGRect){ .size = self.icon.size };
+            rect.origin.x = (ImageSize.width - CGRectGetWidth(rect)) / 2;
+            rect.origin.y = (ImageSize.height - CGRectGetHeight(rect)) / 2;
+            [self.icon drawInRect:rect];
+        }
+    };
+    
     UIGraphicsBeginImageContextWithOptions(ImageSize, NO, 0);
+    
+    [self.tintColor set];
   
     UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:(CGRect){ .size = ImageSize }];
     path.lineWidth = 2;
     [path addClip];
     
-    [self.tintColor set];
     [path stroke];
-    
-    if (self.icon) {
-        CGRect rect = (CGRect){ .size = self.icon.size };
-        rect.origin.x = (ImageSize.width - CGRectGetWidth(rect)) / 2;
-        rect.origin.y = (ImageSize.height - CGRectGetHeight(rect)) / 2;
-        [self.icon drawInRect:rect];
-    }
-    
+    drawIcon();
     self.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
     
-    [[UIColor colorWithWhite:0 alpha:0.3] set];
     [path fill];
+    drawIcon();
     self.imageView.highlightedImage = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
