@@ -139,6 +139,7 @@
 		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */; };
+		1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */; };
 		1C9FDACC16E1EA8700C665B5 /* private-new.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDACA16E1EA6600C665B5 /* private-new.html */; };
 		1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */; };
 		1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */; };
@@ -446,6 +447,8 @@
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+AwfulConvenience.m"; sourceTree = "<group>"; };
+		1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverBackgroundView.h; sourceTree = "<group>"; };
+		1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPopoverBackgroundView.m; sourceTree = "<group>"; };
 		1C9FDACA16E1EA6600C665B5 /* private-new.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-new.html"; sourceTree = "<group>"; };
 		1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostIconPickerController.h; sourceTree = "<group>"; };
 		1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostIconPickerController.m; sourceTree = "<group>"; };
@@ -823,6 +826,8 @@
 				1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */,
 				1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */,
 				1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */,
+				1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */,
+				1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */,
 			);
 			path = "Action Sheets";
 			sourceTree = "<group>";
@@ -1784,6 +1789,7 @@
 				1CC45267180B7C1A00F5F043 /* AwfulThreadTableViewController.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
+				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
 				839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */,
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,

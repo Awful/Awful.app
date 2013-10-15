@@ -5,6 +5,7 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
+#import "AwfulPopoverBackgroundView.h"
 #import "AwfulTheme.h"
 
 @interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverControllerDelegate>
@@ -320,7 +321,7 @@ static const CGFloat LeftRightMargin = 8;
     [_collectionView addConstraint:_gridHeightConstraint];
     contentViewController.preferredContentSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
     _popover = [[UIPopoverController alloc] initWithContentViewController:contentViewController];
-    _popover.backgroundColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
+    _popover.popoverBackgroundViewClass = [AwfulPopoverBackgroundView class];
     _popover.delegate = self;
 }
 
