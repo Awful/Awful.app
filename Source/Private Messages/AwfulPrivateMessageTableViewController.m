@@ -199,6 +199,12 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulPrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    if (!pm.seen) {
+        NSInteger oldValue = self.tabBarItem.badgeValue.integerValue;
+        if (oldValue > 0) {
+            self.tabBarItem.badgeValue = @(oldValue - 1).stringValue;
+        }
+    }
     AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
     vc.restorationIdentifier = @"Private Message";
     if (self.expandingSplitViewController) {
