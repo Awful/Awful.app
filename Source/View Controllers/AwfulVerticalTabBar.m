@@ -11,6 +11,11 @@
     NSMutableArray *_buttonConstraints;
 }
 
+- (void)dealloc
+{
+    [self stopObservingItems];
+}
+
 - (id)initWithItems:(NSArray *)items
 {
     if (!(self = [super init])) return nil;
@@ -24,6 +29,7 @@
 - (void)setItems:(NSArray *)items
 {
     if (_items == items) return;
+    [self stopObservingItems];
     _items = [items copy];
     while (_items.count < _buttons.count) {
         UIButton *button = _buttons.lastObject;
@@ -37,6 +43,11 @@
         [self addSubview:button];
         [_buttons addObject:button];
     }
+    [_items addObserver:self
+     toObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
+             forKeyPath:@"badgeValue"
+                options:NSKeyValueObservingOptionInitial
+                context:KVOContext];
     [_buttons enumerateObjectsUsingBlock:^(AwfulTabBarButton *button, NSUInteger i, BOOL *stop) {
         UITabBarItem *item = _items[i];
         [button setImage:item.image];
@@ -47,6 +58,29 @@
         self.selectedItem = _items[0];
     }
 }
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context != KVOContext) {
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    if ([keyPath isEqualToString:@"badgeValue"]) {
+        UITabBarItem *tabBarItem = object;
+        NSUInteger i = [self.items indexOfObject:tabBarItem];
+        UIButton *button = _buttons[i];
+        [button setTitle:tabBarItem.badgeValue forState:UIControlStateNormal];
+    }
+}
+
+- (void)stopObservingItems
+{
+    [_items removeObserver:self
+      fromObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
+                forKeyPath:@"badgeValue"
+                   context:KVOContext];
+}
+
+static void * KVOContext = &KVOContext;
 
 - (void)removeAllConstraints
 {

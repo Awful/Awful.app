@@ -18,6 +18,8 @@
 		<string>#00000000</string>
 		<key>basementLabelColor</key>
 		<string>#ffffff</string>
+		<key>basementBadgeColor</key>
+		<string>#dddddd</string>
 		<key>browserBackgroundColor</key>
 		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>

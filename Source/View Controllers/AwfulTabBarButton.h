@@ -10,10 +10,8 @@
 @interface AwfulTabBarButton : UIButton
 
 /**
- * Sets the button's image in the UIControlStateNormal and UIControlStateSelected states, using `image` as a template and the button's `tintColor` for the selected color.
- *
- * @param image An image which is used as a mask.
+ * An image to use as a template for button's image in the UIControlStateNormal (tinted grey) and UIControlStateSelected (tinted tintColor) states.
  */
-- (void)setImage:(UIImage *)image;
+@property (strong, nonatomic) UIImage *image;
 
 @end

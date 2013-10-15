@@ -4,13 +4,16 @@
 
 #import "AwfulTabBarButton.h"
 
-@interface AwfulTabBarButton ()
-
-@property (strong, nonatomic) UIImage *image;
-
-@end
-
 @implementation AwfulTabBarButton
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (!(self = [super initWithFrame:frame])) return nil;
+    self.titleLabel.font = [UIFont systemFontOfSize:11];
+    [self setTitleColor:[UIColor colorWithWhite:0.541 alpha:1] forState:UIControlStateNormal];
+    [self setTitleColor:self.tintColor forState:UIControlStateSelected];
+    return self;
+}
 
 - (void)setImage:(UIImage *)image
 {
@@ -36,7 +39,7 @@
     CGContextClipToMask(context, all, self.image.CGImage);
     
     CGContextSaveGState(context);
-    CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:0.541 alpha:1].CGColor);
+    CGContextSetFillColorWithColor(context, [self titleColorForState:UIControlStateNormal].CGColor);
     CGContextFillRect(context, all);
     UIImage *normal = UIGraphicsGetImageFromCurrentImageContext();
     CGContextRestoreGState(context);
@@ -56,6 +59,27 @@
 - (void)tintColorDidChange
 {
     [self updateImages];
+    [self setTitleColor:self.tintColor forState:UIControlStateSelected];
+}
+
+- (CGRect)titleRectForContentRect:(CGRect)contentRect
+{
+    if (self.currentTitle.length == 0) {
+        return CGRectZero;
+    } else {
+        [self.titleLabel sizeToFit];
+        CGRect titleRect = self.titleLabel.bounds;
+        titleRect.origin.x = CGRectGetMidX(contentRect) - CGRectGetWidth(titleRect) / 2;
+        titleRect.origin.y = CGRectGetMaxY(contentRect) - CGRectGetHeight(titleRect);
+        return titleRect;
+    }
+}
+
+- (CGRect)imageRectForContentRect:(CGRect)contentRect
+{
+    CGRect imageRect = [super imageRectForContentRect:contentRect];
+    imageRect.origin.x = CGRectGetMidX(contentRect) - CGRectGetWidth(imageRect) / 2;
+    return imageRect;
 }
 
 @end

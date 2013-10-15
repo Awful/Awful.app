@@ -11,6 +11,11 @@
 
 @implementation AwfulBasementSidebarViewController
 
+- (void)dealloc
+{
+    [self stopObservingItems];
+}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     return [super initWithStyle:UITableViewStylePlain];
@@ -38,12 +43,10 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)updateThemedProperties
 {
     self.view.backgroundColor = AwfulTheme.currentTheme[@"basementBackgroundColor"];
-	
 	if (CGColorGetAlpha([AwfulTheme.currentTheme[@"basementBackgroundColor"] CGColor]) < 1.0) {
 		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
-	}
-	else {
-		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
+	} else {
+		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDefault];
 	}
 }
 
@@ -68,12 +71,41 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)setItems:(NSArray *)items
 {
     if (_items == items) return;
+    [self stopObservingItems];
     _items = [items copy];
     if (![_items containsObject:self.selectedItem]) {
         self.selectedItem = _items[0];
     }
     [self.tableView reloadData];
+    [_items addObserver:self
+     toObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
+             forKeyPath:@"badgeValue"
+                options:0
+                context:KVOContext];
 }
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context != KVOContext) {
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    if ([keyPath isEqualToString:@"badgeValue"]) {
+        UITabBarItem *tabBarItem = object;
+        NSUInteger i = [self.items indexOfObject:tabBarItem];
+        [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:i inSection:0] ]
+                              withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
+
+- (void)stopObservingItems
+{
+    [_items removeObserver:self
+      fromObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
+                forKeyPath:@"badgeValue"
+                   context:KVOContext];
+}
+
+static void * KVOContext = &KVOContext;
 
 - (void)setSelectedItem:(UITabBarItem *)selectedItem
 {
@@ -107,6 +139,15 @@ static NSString * const CellIdentifier = @"Cell";
     cell.imageView.image = item.image;
     cell.textLabel.text = item.title;
     cell.textLabel.textColor = AwfulTheme.currentTheme[@"basementLabelColor"];
+    if (item.badgeValue.length > 0) {
+        UILabel *badge = (UILabel *)cell.accessoryView ?: [UILabel new];
+        badge.textColor = AwfulTheme.currentTheme[@"basementBadgeColor"];
+        badge.text = item.badgeValue;
+        [badge sizeToFit];
+        cell.accessoryView = badge;
+    } else {
+        cell.accessoryView = nil;
+    }
     return cell;
 }
 
