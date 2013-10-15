@@ -79,6 +79,9 @@
 {
     CGRect imageRect = [super imageRectForContentRect:contentRect];
     imageRect.origin.x = CGRectGetMidX(contentRect) - CGRectGetWidth(imageRect) / 2;
+    if (self.currentTitle.length > 0) {
+        imageRect.size.height -= 2;
+    }
     return imageRect;
 }
 
