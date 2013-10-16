@@ -12,7 +12,6 @@
 #import "AwfulForumsListController.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulLepersViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
@@ -20,6 +19,7 @@
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulPrivateMessageTableViewController.h"
+#import "AwfulRapSheetViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulThemeLoader.h"
@@ -151,7 +151,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         [expandingIdentifiers addObject:MessagesExpandingSplitControllerIdentifier];
     }
 
-    vc = [AwfulLepersViewController new];
+    vc = [AwfulRapSheetViewController new];
     vc.restorationIdentifier = LepersColonyViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;

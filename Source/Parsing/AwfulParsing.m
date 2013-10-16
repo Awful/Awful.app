@@ -1020,6 +1020,19 @@ static AwfulBanType BanTypeWithString(NSString *s)
     return [banTypes[s] integerValue];
 }
 
+- (BOOL)isEqual:(BanParsedInfo *)other
+{
+    return ([other isKindOfClass:[BanParsedInfo class]] &&
+            self.banType == other.banType &&
+            [self.banDate isEqualToDate:other.banDate] &&
+            [self.bannedUserID isEqualToString:other.bannedUserID]);
+}
+
+- (NSUInteger)hash
+{
+    return self.banDate.hash ^ self.bannedUserID.hash;
+}
+
 @end
 
 
