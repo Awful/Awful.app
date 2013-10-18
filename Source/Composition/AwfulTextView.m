@@ -247,4 +247,45 @@
     return self.showStandardMenuItems && [super canPerformAction:action withSender:sender];
 }
 
+#pragma mark - iOS 7 Workarounds
+
+- (void)scrollRangeToVisible:(NSRange)range
+{
+    [super scrollRangeToVisible:range];
+    
+    // Fixes disappearing caret after inserting a newline at the end of the document.
+    // https://devforums.apple.com/message/889660#889660
+    if (self.layoutManager.extraLineFragmentTextContainer && self.selectedRange.location == range.location) {
+        CGRect caretRect = [self caretRectForPosition:self.selectedTextRange.start];
+        [self scrollRectToVisible:caretRect animated:YES];
+    }
+}
+
+- (UITextPosition *)closestPositionToPoint:(CGPoint)point
+{
+    if (self.text.length == 0) return [super positionFromPosition:self.beginningOfDocument offset:0];
+    
+    // Fixes tapping after the end of a line, even if the line consists entirely of a newline.
+    // Hybrid solution from examples at https://devforums.apple.com/message/899221#899221 and https://gist.github.com/agiletortoise/a24ccbf2d33aafb2abc1
+    point.x -= self.textContainerInset.left;
+    point.y -= self.textContainerInset.top;
+    CGRect bottomCaretRect;
+    if ([self.text characterAtIndex:self.text.length - 1] == '\n') {
+        bottomCaretRect = [self caretRectForPosition:[self positionFromPosition:self.endOfDocument offset:-1]];
+        bottomCaretRect.origin.y += self.font.lineHeight;
+    } else {
+        bottomCaretRect = [self caretRectForPosition:[self positionFromPosition:self.endOfDocument offset:0]];
+    }
+    NSUInteger characterIndex = 0;
+    // TODO this presumably fails on RTL or bidi text.
+    if (point.x >= CGRectGetMinX(bottomCaretRect) && point.y >= CGRectGetMinY(bottomCaretRect)) {
+        characterIndex = [self offsetFromPosition:self.beginningOfDocument toPosition:self.endOfDocument];
+    } else {
+        characterIndex = [self.layoutManager characterIndexForPoint:point
+                                                    inTextContainer:self.textContainer
+                           fractionOfDistanceBetweenInsertionPoints:nil];
+    }
+    return [self positionFromPosition:self.beginningOfDocument offset:characterIndex];
+}
+
 @end
