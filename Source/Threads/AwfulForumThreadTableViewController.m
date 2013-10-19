@@ -115,6 +115,9 @@
     if ([self shouldRefreshOnAppear]) {
         [self refresh];
     }
+    if (self.fetchedResultsController.fetchedObjects.count > 0) {
+        [self enableInfiniteScrolling];
+    }
 }
 
 - (BOOL)shouldRefreshOnAppear
@@ -139,13 +142,13 @@
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            [self.tableView beginUpdates];
             if (page == 1) {
                 NSMutableSet *threadsToHide = [self.forum.threads mutableCopy];
                 for (AwfulThread *thread in threads) {
                     [threadsToHide removeObject:thread];
                 }
                 [threadsToHide setValue:@YES forKey:@"hideFromList"];
+                [self enableInfiniteScrolling];
             }
             [threads setValue:@NO forKey:@"hideFromList"];
             self.forum.lastRefresh = [NSDate date];
@@ -155,15 +158,10 @@
                 NSLog(@"%s error saving managed object context while loading %@ page %tu: %@",
                       __PRETTY_FUNCTION__, self.forum.name, page, error);
             }
-            [self.tableView endUpdates];
         }
         _mostRecentlyLoadedPage = page;
         [self.refreshControl endRefreshing];
-        if (self.tableView.showsInfiniteScrolling) {
-            [self.tableView.infiniteScrollingView stopAnimating];
-        } else {
-            [self enableInfiniteScrolling];
-        }
+        [self.tableView.infiniteScrollingView stopAnimating];
     }];
 }
 
