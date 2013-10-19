@@ -99,18 +99,15 @@ header {
   top: 81%;
   -webkit-transform: rotate(-45deg);
 }
-.role-admin .username {
-  background-image: url('adminstar.png');
+.role-admin .username:before {
+  color: #990011;
 }
-.role-mod .username {
-  background-image: url('modstar.png');
+.role-mod .username:before {
+  color: #006699;
 }
-.role-admin .username,
-.role-mod .username {
-  padding-left: 1.125em;
-  background-position: 0 center;
-  background-repeat: no-repeat;
-  background-size: auto 1em;
+.role-admin .username:before,
+.role-mod .username:before {
+  content: '★';
 }
 .role-op .username {
   color: #199ed7;

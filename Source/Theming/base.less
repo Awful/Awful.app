@@ -131,21 +131,17 @@ header {
 	-webkit-transform: rotate(-45deg);
   }
   
-  .role-admin & {
-    // Pass URLs through LESS to avoid rewriting them to absolute URLs.
-    background-image: ~"url('adminstar.png')";
+  .role-admin &:before {
+    color: #990011;
   }
   
-  .role-mod & {
-    background-image: ~"url('modstar.png')";
+  .role-mod &:before {
+    color: #006699;
   }
   
-  .role-admin &,
-  .role-mod & {
-    padding-left: 1.125em;
-    background-position: 0 center;
-    background-repeat: no-repeat;
-    background-size: auto 1em;
+  .role-admin &:before,
+  .role-mod &:before {
+    content: '★'; 
   }
   
   .role-op & {
