@@ -42,12 +42,12 @@
     [super viewDidLoad];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    
     __weak __typeof__(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         __typeof__(self) self = weakSelf;
         [self loadPage:self->_mostRecentlyLoadedPage + 1];
     }];
+    self.tableView.showsInfiniteScrolling = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated

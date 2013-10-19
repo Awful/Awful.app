@@ -95,13 +95,6 @@
     [super viewDidLoad];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    if (self.fetchedResultsController.fetchedObjects.count > 0) {
-        [self enableInfiniteScrolling];
-    }
-}
-
-- (void)enableInfiniteScrolling
-{
     __weak __typeof__(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         __typeof__(self) self = weakSelf;
@@ -115,9 +108,7 @@
     if ([self shouldRefreshOnAppear]) {
         [self refresh];
     }
-    if (self.fetchedResultsController.fetchedObjects.count > 0) {
-        [self enableInfiniteScrolling];
-    }
+    self.tableView.showsInfiniteScrolling = self.fetchedResultsController.fetchedObjects.count > 0;
 }
 
 - (BOOL)shouldRefreshOnAppear
@@ -148,7 +139,7 @@
                     [threadsToHide removeObject:thread];
                 }
                 [threadsToHide setValue:@YES forKey:@"hideFromList"];
-                [self enableInfiniteScrolling];
+                self.tableView.showsInfiniteScrolling = YES;
             }
             [threads setValue:@NO forKey:@"hideFromList"];
             self.forum.lastRefresh = [NSDate date];
