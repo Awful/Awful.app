@@ -76,6 +76,7 @@ header {
 
 .username {
   margin: 0;
+  padding-top: .2em;
   
   .ipad & {
     padding-top: .5em;
@@ -83,14 +84,21 @@ header {
 }
 
 .postdate {
-  font: -apple-system-subheadline;
+  font: -apple-system-subheadline; 
+  font-weight: lighter;
   float: left;
-  margin: .6em 0;  
+  margin: .6em 0;
+  background-image: ~"url('clock.png')";
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding-left: 16px;
+  background-size: 12px;  
 }
 
 .regdate {
   display: block;
   font: -apple-system-subheadline;
+  font-weight: lighter;
   
   .ipad & {
     padding-bottom: .75em;
@@ -120,7 +128,7 @@ header {
 	left: 5px;
 	height: 15%;
 	width: 100%;
-	background: #cccccc;
+	background: #1682b2;
   }
   #bracket::before {
 	top: 50%;
@@ -281,6 +289,16 @@ footer {
   
   img {
     max-width: 100%;
+  }
+  
+  .iphone & {
+    padding: .6em;
+    padding-bottom: 0;
+  }
+  
+  .ipad & {
+    padding: 1.07em;
+    padding-bottom: 0;
   }
 }
 
