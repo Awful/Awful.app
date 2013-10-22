@@ -36,6 +36,7 @@
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
     if (_selectedViewController == selectedViewController) return;
+    NSParameterAssert([self.viewControllers containsObject:selectedViewController]);
     UIViewController *oldViewController = _selectedViewController;
     _selectedViewController = selectedViewController;
     if ([self isViewLoaded]) {
@@ -128,6 +129,10 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
+    
+    // Encoding these just so they'll get preserved. We won't be restoring them.
+    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
+    
     [coder encodeObject:self.selectedViewController forKey:SelectedViewControllerKey];
 }
 
@@ -137,6 +142,7 @@
     self.selectedViewController = [coder decodeObjectForKey:SelectedViewControllerKey];
 }
 
+static NSString * const ViewControllersKey = @"AwfulViewControllers";
 static NSString * const SelectedViewControllerKey = @"AwfulSelectedViewController";
 
 @end

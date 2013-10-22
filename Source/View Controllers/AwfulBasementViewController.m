@@ -364,6 +364,10 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
+    
+    // Encoding these just so they'll get saved. We won't be restoring them.
+    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
+    
     [coder encodeObject:self.selectedViewController forKey:SelectedViewControllerKey];
     [coder encodeBool:self.sidebarVisible forKey:SidebarVisibleKey];
 }
@@ -376,6 +380,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     self.sidebarVisible = [coder decodeBoolForKey:SidebarVisibleKey];
 }
 
+static NSString * const ViewControllersKey = @"AwfulViewControllers";
 static NSString * const SelectedViewControllerKey = @"AwfulSelectedViewController";
 static NSString * const SidebarVisibleKey = @"AwfulSidebarVisible";
 

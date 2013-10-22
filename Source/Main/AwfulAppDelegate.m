@@ -121,7 +121,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     [AwfulHTTPClient client].managedObjectContext = _dataStack.managedObjectContext;
     
     NSMutableArray *viewControllers = [NSMutableArray new];
-    NSMutableArray *expandingIdentifiers = [NSMutableArray new];
     UINavigationController *nav;
     UIViewController *vc;
     
@@ -129,67 +128,62 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = ForumListControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = ForumNavigationControllerIdentifier;
+    nav.restorationClass = nil;
     nav.delegate = self;
     [viewControllers addObject:nav];
-    [expandingIdentifiers addObject:ForumExpandingSplitControllerIdentifier];
     
     vc = [[AwfulBookmarkedThreadTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = BookmarksControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
+    nav.restorationClass = nil;
     nav.delegate = self;
     [viewControllers addObject:nav];
-    [expandingIdentifiers addObject:BookmarksExpandingSplitControllerIdentifier];
     
     if ([AwfulSettings settings].canSendPrivateMessages) {
         vc = [[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
         vc.restorationIdentifier = MessagesListControllerIdentifier;
         nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
+        nav.restorationClass = nil;
         nav.delegate = self;
         [viewControllers addObject:nav];
-        [expandingIdentifiers addObject:MessagesExpandingSplitControllerIdentifier];
     }
 
     vc = [AwfulRapSheetViewController new];
     vc.restorationIdentifier = LepersColonyViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;
+    nav.restorationClass = nil;
     nav.delegate = self;
     [viewControllers addObject:nav];
-    [expandingIdentifiers addObject:LepersColonyExpandingSplitControllerIdentifier];
     
     vc = [[AwfulSettingsViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = SettingsViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
+    nav.restorationClass = nil;
     nav.delegate = self;
     [viewControllers addObject:nav];
-    [expandingIdentifiers addObject:SettingsExpandingSplitControllerIdentifier];
     
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
         self.basementViewController.restorationIdentifier = RootViewControllerIdentifier;
+        self.window.rootViewController = self.basementViewController;
     } else {
-        NSMutableArray *splits = [NSMutableArray new];
-        [viewControllers enumerateObjectsUsingBlock:^(UIViewController *viewController, NSUInteger i, BOOL *stop) {
-            AwfulExpandingSplitViewController *split;
-            split = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ viewController ]];
-            split.restorationIdentifier = expandingIdentifiers[i];
-            [splits addObject:split];
-        }];
-        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:splits];
+        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:viewControllers];
         self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
+        self.window.rootViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ self.verticalTabBarController ]];
+        self.window.rootViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
     }
-    
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = self.basementViewController ?: self.verticalTabBarController;
     [self themeDidChange];
 	
     return YES;
 }
 
 static NSString * const RootViewControllerIdentifier = @"AwfulRootViewController";
+static NSString * const RootExpandingSplitViewControllerIdentifier = @"AwfulRootExpandingSplitViewController";
 
 static NSString * const ForumListControllerIdentifier = @"AwfulForumListController";
 static NSString * const BookmarksControllerIdentifier = @"AwfulBookmarksController";
@@ -202,12 +196,6 @@ static NSString * const BookmarksNavigationControllerIdentifier = @"AwfulBookmar
 static NSString * const MessagesNavigationControllerIdentifier = @"AwfulMessagesNavigationController";
 static NSString * const LepersColonyNavigationControllerIdentifier = @"AwfulLepersColonyNavigationController";
 static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettingsNavigationController";
-
-static NSString * const ForumExpandingSplitControllerIdentifier = @"AwfulForumExpandingSplitController";
-static NSString * const BookmarksExpandingSplitControllerIdentifier = @"AwfulBookmarksExpandingSplitController";
-static NSString * const MessagesExpandingSplitControllerIdentifier = @"AwfulMessagesExpandingSplitController";
-static NSString * const LepersColonyExpandingSplitControllerIdentifier = @"AwfulLepersColonyExpandingSplitController";
-static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSettingsExpandingSplitController";
 
 - (void)themeDidChange
 {
@@ -271,75 +259,43 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 - (void)settingsDidChange:(NSNotification *)note
 {
     NSArray *changes = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    if ([changes containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
+        
+        // Add the private message list if it's needed, or remove it if it isn't.
+        NSMutableArray *roots = [(self.basementViewController ?: self.verticalTabBarController) mutableArrayValueForKey:@"viewControllers"];
+        NSUInteger i = [roots indexOfObjectPassingTest:^(UINavigationController *nav, NSUInteger i, BOOL *stop) {
+            return [nav.viewControllers.firstObject isKindOfClass:[AwfulPrivateMessageTableViewController class]];
+        }];
+        if ([AwfulSettings settings].canSendPrivateMessages) {
+            if (i == NSNotFound) {
+                UINavigationController *nav = [[[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
+                [roots insertObject:nav atIndex:2];
+            }
+        } else {
+            if (i != NSNotFound) {
+                [roots removeObjectAtIndex:i];
+            }
+        }
+    }
     
 	for (NSString *change in changes) {
-		
-		if ([change isEqualToString:AwfulSettingsKeys.canSendPrivateMessages]) {
-			
-			// Add the private message list if it's needed, or remove it if it isn't.
-			NSArray *roots = [self rootViewControllersUncontained];
-			NSUInteger i = [[roots valueForKey:@"class"] indexOfObject:[AwfulPrivateMessageTableViewController class]];
-			if ([AwfulSettings settings].canSendPrivateMessages) {
-				if (i == NSNotFound) {
-					UINavigationController *nav = [[[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
-					if (self.basementViewController) {
-						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
-						[viewControllers insertObject:nav atIndex:2];
-						self.basementViewController.viewControllers = viewControllers;
-					} else if (self.verticalTabBarController) {
-						NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
-						[viewControllers insertObject:[[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ nav ]]
-											  atIndex:2];
-						self.verticalTabBarController.viewControllers = viewControllers;
-					}
-				}
-			} else {
-				if (i != NSNotFound) {
-					if (self.basementViewController) {
-						NSMutableArray *viewControllers = [self.basementViewController.viewControllers mutableCopy];
-						[viewControllers removeObjectAtIndex:i];
-						self.basementViewController.viewControllers = viewControllers;
-					} else if (self.verticalTabBarController) {
-						NSMutableArray *viewControllers = [self.verticalTabBarController.viewControllers mutableCopy];
-						[viewControllers removeObjectAtIndex:i];
-						self.verticalTabBarController.viewControllers = viewControllers;
-					}
-				}
-			}
-			
-		}
-		
 		if ([change isEqualToString:AwfulSettingsKeys.darkTheme] || [change hasPrefix:@"theme"]) {
 			
-			//When the user initiates a theme change, transition from one theme to
-			//the other with a full-screen screenshot fading into the reconfigured interface
+			// When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
 			UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
 			[self.window addSubview:snapshot];
 			[self themeDidChange];
-			[UIView transitionFromView:snapshot toView:nil duration:.2 options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+			[UIView transitionFromView:snapshot
+                                toView:nil
+                              duration:0.2
+                               options:UIViewAnimationOptionTransitionCrossDissolve
+                            completion:^(BOOL finished)
+            {
 				[snapshot removeFromSuperview];
 			}];
+            break;
 		}
-		
 	}
-}
-
-- (NSArray *)rootViewControllersUncontained
-{
-    NSMutableArray *roots = [NSMutableArray new];
-    for (UINavigationController *nav in self.basementViewController.viewControllers) {
-        [roots addObject:nav.viewControllers[0]];
-    }
-    for (id something in self.verticalTabBarController.viewControllers) {
-        UINavigationController *nav;
-        if ([something isKindOfClass:[AwfulExpandingSplitViewController class]]) {
-            nav = ((AwfulExpandingSplitViewController *)something).viewControllers[0];
-        } else {
-            nav = something;
-        }
-        [roots addObject:nav.viewControllers[0]];
-    }
-    return roots;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -423,28 +379,16 @@ static NSString * const SettingsExpandingSplitControllerIdentifier = @"AwfulSett
 
 - (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSString *identifier = identifierComponents.lastObject;
-    if ([identifier isEqualToString:RootViewControllerIdentifier]) {
-        return self.window.rootViewController;
-    }
-    for (UIViewController *viewController in self.basementViewController.viewControllers) {
-        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
-            return viewController;
-        }
-    }
-    for (AwfulExpandingSplitViewController *split in self.verticalTabBarController.viewControllers) {
-        if ([split.restorationIdentifier isEqualToString:identifier]) {
-            return split;
-        }
-        UIViewController *master = split.viewControllers[0];
-        if ([master.restorationIdentifier isEqualToString:identifier]) {
-            return master;
-        }
-    }
-    for (UIViewController *viewController in [self rootViewControllersUncontained]) {
-        if ([viewController.restorationIdentifier isEqualToString:identifier]) {
-            return viewController;
-        }
+    return ViewControllerWithRestorationIdentifier(self.window.rootViewController, identifierComponents.lastObject);
+}
+
+static UIViewController * ViewControllerWithRestorationIdentifier(UIViewController *viewController, NSString *identifier)
+{
+    if ([viewController.restorationIdentifier isEqualToString:identifier]) return viewController;
+    if (![viewController respondsToSelector:@selector(viewControllers)]) return nil;
+    for (UIViewController *child in [viewController valueForKey:@"viewControllers"]) {
+        UIViewController *found = ViewControllerWithRestorationIdentifier(child, identifier);
+        if (found) return found;
     }
     return nil;
 }

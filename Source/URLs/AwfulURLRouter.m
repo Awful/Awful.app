@@ -177,18 +177,21 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
 
 - (BOOL)showPostsViewController:(AwfulPostsViewController *)postsViewController
 {
+    postsViewController.restorationIdentifier = @"Posts from URL";
+    if ([self.rootViewController isKindOfClass:[AwfulExpandingSplitViewController class]]) {
+        AwfulExpandingSplitViewController *split = (AwfulExpandingSplitViewController *)self.rootViewController;
+        split.detailViewController = postsViewController.enclosingNavigationController;
+        split.detailViewController.restorationIdentifier = @"Navigation";
+        return YES;
+    }
     if (![self.rootViewController respondsToSelector:@selector(selectedViewController)]) return NO;
     UIViewController *selected = [self.rootViewController valueForKey:@"selectedViewController"];
-    if ([selected isKindOfClass:[AwfulExpandingSplitViewController class]]) {
-        AwfulExpandingSplitViewController *expandingSplitViewController = (AwfulExpandingSplitViewController *)selected;
-        [expandingSplitViewController setDetailViewController:postsViewController];
-    } else if ([selected isKindOfClass:[UINavigationController class]]) {
+    if ([selected isKindOfClass:[UINavigationController class]]) {
         UINavigationController *navigationController = (UINavigationController *)selected;
         [navigationController pushViewController:postsViewController animated:YES];
-    } else {
-        return NO;
+        return YES;
     }
-    return YES;
+    return NO;
 }
 
 - (BOOL)routeURL:(NSURL *)url

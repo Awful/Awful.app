@@ -90,7 +90,7 @@
     [self.view insertSubview:newMasterViewController.view atIndex:0];
     NSDictionary *views = @{ @"master": newMasterViewController.view };
     [_masterViewControllerConstraints addObjectsFromArray:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[master(==320)]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[master(==384)]"
                                              options:0
                                              metrics:nil
                                                views:views]];
@@ -229,6 +229,7 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
     [coder encodeObject:self.detailViewController forKey:DetailViewControllerKey];
     [coder encodeBool:self.detailExpanded forKey:DetailExpandedKey];
 }
@@ -248,6 +249,7 @@
     [self ensureToggleDetailExpandedLeftBarButtonItem];
 }
 
+static NSString * const ViewControllersKey = @"AwfulViewControllers";
 static NSString * const DetailViewControllerKey = @"AwfulDetailViewController";
 static NSString * const DetailExpandedKey = @"AwfulDetailExpanded";
 
