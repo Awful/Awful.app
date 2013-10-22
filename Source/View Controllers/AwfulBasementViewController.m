@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 @property (copy, nonatomic) NSArray *visibleSidebarConstraints;
 @property (strong, nonatomic) UIPanGestureRecognizer *mainViewPan;
 @property (strong, nonatomic) UITapGestureRecognizer *mainViewTap;
+@property (strong, nonatomic) UIScreenEdgePanGestureRecognizer *screenEdgePan;
 
 @end
 
@@ -105,10 +106,11 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     self.sidebarViewController.items = [self.viewControllers valueForKey:@"tabBarItem"];
     self.sidebarViewController.selectedItem = self.selectedViewController.tabBarItem;
     
-    UIScreenEdgePanGestureRecognizer *pan = [UIScreenEdgePanGestureRecognizer new];
-    pan.edges = UIRectEdgeLeft;
-    [pan addTarget:self action:@selector(panFromLeftScreenEdge:)];
-    [self.view addGestureRecognizer:pan];
+    self.screenEdgePan = [UIScreenEdgePanGestureRecognizer new];
+    self.screenEdgePan.delegate = self;
+    self.screenEdgePan.edges = UIRectEdgeLeft;
+    [self.screenEdgePan addTarget:self action:@selector(panFromLeftScreenEdge:)];
+    [self.view addGestureRecognizer:self.screenEdgePan];
     
     self.mainContainerView = [UIView new];
     self.mainContainerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -356,7 +358,20 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    return CGRectContainsPoint(self.mainContainerView.frame, [touch locationInView:self.view]);
+    if ([gestureRecognizer isEqual:self.mainViewTap]) {
+        return CGRectContainsPoint(self.mainContainerView.frame, [touch locationInView:self.view]);
+    }
+    return YES;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer isEqual:self.screenEdgePan]) {
+        if (![self.selectedViewController isKindOfClass:[UINavigationController class]]) return YES;
+        UINavigationController *nav = (UINavigationController *)self.selectedViewController;
+        return nav.viewControllers.count < 2;
+    }
+    return YES;
 }
 
 #pragma mark State preservation and restoration
