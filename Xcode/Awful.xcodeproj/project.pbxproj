@@ -201,7 +201,6 @@
 		1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */; };
 		1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
-		1CE2D9DB166ABD0D0024AC1C /* AwfulOldTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
 		1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */; };
 		1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
@@ -533,8 +532,6 @@
 		1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAlertView.m; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
 		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
-		1CE2D9CA166ABD0D0024AC1C /* AwfulOldTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulOldTableViewController.h; sourceTree = "<group>"; };
-		1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulOldTableViewController.m; sourceTree = "<group>"; };
 		1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+UserDirectories.h"; sourceTree = "<group>"; };
 		1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+UserDirectories.m"; sourceTree = "<group>"; };
 		1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CollapseWhitespace.h"; sourceTree = "<group>"; };
@@ -759,8 +756,6 @@
 				1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */,
 				1C5F700D17D8821A005ABD6F /* AwfulExpandingSplitViewController.h */,
 				1C5F700E17D8821A005ABD6F /* AwfulExpandingSplitViewController.m */,
-				1CE2D9CA166ABD0D0024AC1C /* AwfulOldTableViewController.h */,
-				1CE2D9CB166ABD0D0024AC1C /* AwfulOldTableViewController.m */,
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
 				1C5F701017D9B2BD005ABD6F /* AwfulTabBarButton.h */,
@@ -1782,7 +1777,6 @@
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
-				1CE2D9DB166ABD0D0024AC1C /* AwfulOldTableViewController.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
 				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,

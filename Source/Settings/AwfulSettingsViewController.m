@@ -50,41 +50,6 @@
     return [PocketAPI sharedAPI].isLoggedIn;
 }
 
-#pragma mark - AwfulTableViewController
-
-- (BOOL)canPullToRefresh
-{
-    return NO;
-}
-
-- (BOOL)refreshOnAppear
-{
-    return YES;
-}
-
-- (void)refresh
-{
-    [super refresh];
-    [self.networkOperation cancel];
-    id op = [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo)
-    {
-        if (error) {
-            NSLog(@"failed refreshing user info: %@", error);
-        } else {
-            NSString *appVersion = [[NSBundle mainBundle]
-                                    infoDictionary][@"CFBundleShortVersionString"];
-            [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-            [AwfulSettings settings].username = userInfo[@"username"];
-            [AwfulSettings settings].userID = userInfo[@"userID"];
-            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"]
-                                                               boolValue];
-            [self.tableView reloadData];
-            self.refreshing = NO;
-        }
-    }];
-    self.networkOperation = op;
-}
-
 #pragma mark - UIViewController
 
 - (void)themeDidChange
@@ -134,6 +99,21 @@
     [super viewWillAppear:animated];
     [self reloadSections];
     [self.tableView reloadData];
+    
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+        __typeof__(self) self = weakSelf;
+        if (error) {
+            NSLog(@"failed refreshing user info: %@", error);
+        } else {
+            NSString *appVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"];
+            [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
+            [AwfulSettings settings].username = userInfo[@"username"];
+            [AwfulSettings settings].userID = userInfo[@"userID"];
+            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+            [self.tableView reloadData];
+        }
+    }];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
