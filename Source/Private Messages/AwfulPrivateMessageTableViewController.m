@@ -179,6 +179,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
             [AwfulAlertView showWithTitle:@"Could Not Delete Message" error:error buttonTitle:@"OK"];
         } else {
             [pm.managedObjectContext deleteObject:pm];
+            [self decrementBadgeValue];
             NSError *error;
             BOOL ok = [pm.managedObjectContext save:&error];
             if (!ok) {
@@ -188,16 +189,19 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     }];
 }
 
+- (void)decrementBadgeValue
+{
+    NSInteger newValue = self.tabBarItem.badgeValue.integerValue - 1;
+    self.tabBarItem.badgeValue = newValue > 0 ? @(newValue).stringValue : nil;
+}
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulPrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
     if (!pm.seen) {
-        NSInteger oldValue = self.tabBarItem.badgeValue.integerValue;
-        if (oldValue > 0) {
-            self.tabBarItem.badgeValue = @(oldValue - 1).stringValue;
-        }
+        [self decrementBadgeValue];
     }
     AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
     vc.restorationIdentifier = @"Private Message";
