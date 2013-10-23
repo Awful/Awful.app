@@ -53,7 +53,7 @@
     
     _badgeLabel = [UILabel new];
     _badgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:_textLabel.font.pointSize];
+    _badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:_textLabel.font.pointSize];
     _badgeLabel.textAlignment = NSTextAlignmentRight;
     [_badgeLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
     [self.contentView addSubview:_badgeLabel];
