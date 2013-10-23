@@ -10,12 +10,8 @@
 
 @implementation AwfulFetchedResultsControllerDataSource
 {
-    NSMutableIndexSet *_pendingSectionInsertions;
-    NSMutableIndexSet *_pendingSectionDeletions;
-    NSMutableOrderedSet *_pendingRowInsertions;
-    NSMutableOrderedSet *_pendingRowDeletions;
-    NSMutableOrderedSet *_pendingRowUpdates;
-    BOOL _didFirstReload;
+    NSMutableIndexSet *_sectionInsertions;
+    NSMutableIndexSet *_sectionDeletions;
 }
 
 - (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
@@ -24,11 +20,8 @@
     _tableView = tableView;
     tableView.dataSource = self;
     _reuseIdentifier = [reuseIdentifier copy];
-    _pendingSectionInsertions = [NSMutableIndexSet new];
-    _pendingSectionDeletions = [NSMutableIndexSet new];
-    _pendingRowInsertions = [NSMutableOrderedSet new];
-    _pendingRowDeletions = [NSMutableOrderedSet new];
-    _pendingRowUpdates = [NSMutableOrderedSet new];
+    _sectionInsertions = [NSMutableIndexSet new];
+    _sectionDeletions = [NSMutableIndexSet new];
     return self;
 }
 
@@ -37,55 +30,12 @@
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = fetchedResultsController;
     _fetchedResultsController.delegate = self;
-    self.paused = YES;
-    _didFirstReload = NO;
-}
-
-- (void)setPaused:(BOOL)paused
-{
-    _paused = paused;
-    if (!paused) {
-        if (_didFirstReload) {
-            [self replayPendingChanges];
-        } else {
-            NSError *error;
-            BOOL ok = [self.fetchedResultsController performFetch:&error];
-            if (!ok) {
-                NSLog(@"%s error performing first fetch of fetched results controller: %@", __PRETTY_FUNCTION__, error);
-            }
-            [self.tableView reloadData];
-            _didFirstReload = YES;
-        }
+    NSError *error;
+    BOOL ok = [self.fetchedResultsController performFetch:&error];
+    if (!ok) {
+        NSLog(@"%s error performing first fetch of fetched results controller: %@", __PRETTY_FUNCTION__, error);
     }
-}
-
-- (NSUInteger)numberOfPendingChanges
-{
-    return (_pendingSectionInsertions.count +
-            _pendingSectionDeletions.count +
-            _pendingRowInsertions.count +
-            _pendingRowDeletions.count +
-            _pendingRowUpdates.count);
-}
-
-- (void)replayPendingChanges
-{
-    if (self.numberOfPendingChanges > 50) {
-        [self.tableView reloadData];
-    } else {
-        [self.tableView beginUpdates];
-        [self.tableView insertSections:_pendingSectionInsertions withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView deleteSections:_pendingSectionDeletions withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView insertRowsAtIndexPaths:_pendingRowInsertions.array withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView deleteRowsAtIndexPaths:_pendingRowDeletions.array withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView reloadRowsAtIndexPaths:_pendingRowUpdates.array withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }
-    [_pendingSectionInsertions removeAllIndexes];
-    [_pendingSectionDeletions removeAllIndexes];
-    [_pendingRowInsertions removeAllObjects];
-    [_pendingRowDeletions removeAllObjects];
-    [_pendingRowUpdates removeAllObjects];
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
@@ -125,15 +75,24 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
 - (void)controller:(NSFetchedResultsController *)controller
   didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
     if (type == NSFetchedResultsChangeInsert) {
-        [_pendingSectionInsertions addIndex:sectionIndex];
+        [_sectionInsertions addIndex:sectionIndex];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
     } else if (type == NSFetchedResultsChangeDelete) {
-        [_pendingSectionDeletions addIndex:sectionIndex];
+        [_sectionDeletions addIndex:sectionIndex];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 
@@ -144,30 +103,30 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     if (type == NSFetchedResultsChangeInsert) {
-        if (![_pendingSectionInsertions containsIndex:newIndexPath.section]) {
-            [_pendingRowInsertions addObject:newIndexPath];
+        if (![_sectionInsertions containsIndex:newIndexPath.section]) {
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     } else if (type == NSFetchedResultsChangeDelete) {
-        if (![_pendingSectionDeletions containsIndex:indexPath.section]) {
-            [_pendingRowDeletions addObject:indexPath];
+        if (![_sectionDeletions containsIndex:indexPath.section]) {
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     } else if (type == NSFetchedResultsChangeUpdate) {
-        [_pendingRowUpdates addObject:indexPath];
+        [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationNone];
     } else if (type == NSFetchedResultsChangeMove) {
-        if (![_pendingSectionInsertions containsIndex:newIndexPath.section]) {
-            [_pendingRowInsertions addObject:newIndexPath];
+        if (![_sectionInsertions containsIndex:newIndexPath.section]) {
+            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
-        if (![_pendingSectionDeletions containsIndex:indexPath.section]) {
-            [_pendingRowDeletions addObject:indexPath];
+        if (![_sectionDeletions containsIndex:indexPath.section]) {
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
     }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    if (!self.paused) {
-        [self replayPendingChanges];
-    }
+    [self.tableView endUpdates];
+    [_sectionInsertions removeAllIndexes];
+    [_sectionDeletions removeAllIndexes];
 }
 
 @end

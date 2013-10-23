@@ -34,11 +34,6 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 /**
- * YES if updates to the table view should be suspended, otherwise NO. Default is YES.
- */
-@property (assign, nonatomic) BOOL paused;
-
-/**
  * The delegate.
  */
 @property (weak, nonatomic) id <AwfulFetchedResultsControllerDataSourceDelegate> delegate;
