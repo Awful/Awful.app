@@ -263,6 +263,9 @@ static const CGFloat LeftRightMargin = 8;
     UIView *overlay = [UIView new];
     _overlay = overlay;
     overlay.translatesAutoresizingMaskIntoConstraints = NO;
+    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+    [tap addTarget:self action:@selector(didTapOverlay:)];
+    [overlay addGestureRecognizer:tap];
     [overlay addSubview:self];
     [view.window addSubview:overlay];
     [view.window addConstraint:
@@ -300,6 +303,13 @@ static const CGFloat LeftRightMargin = 8;
                                              options:0
                                              metrics:nil
                                                views:views]];
+}
+
+- (void)didTapOverlay:(UITapGestureRecognizer *)tap
+{
+    if (tap.state == UIGestureRecognizerStateEnded) {
+        [self dismissAnimated:NO];
+    }
 }
 
 - (void)createAndConfigurePopover
