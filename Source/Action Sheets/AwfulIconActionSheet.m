@@ -264,6 +264,10 @@ static const CGFloat LeftRightMargin = 8;
     _overlay = overlay;
     overlay.translatesAutoresizingMaskIntoConstraints = NO;
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
+    
+    // Need to let touches go to the collection view so cell selection still works.
+    tap.cancelsTouchesInView = NO;
+    
     [tap addTarget:self action:@selector(didTapOverlay:)];
     [overlay addGestureRecognizer:tap];
     [overlay addSubview:self];
@@ -308,7 +312,10 @@ static const CGFloat LeftRightMargin = 8;
 - (void)didTapOverlay:(UITapGestureRecognizer *)tap
 {
     if (tap.state == UIGestureRecognizerStateEnded) {
-        [self dismissAnimated:NO];
+        CGPoint point = [tap locationInView:self.superview];
+        if (!CGRectContainsPoint(self.frame, point)) {
+            [self dismissAnimated:NO];
+        }
     }
 }
 
