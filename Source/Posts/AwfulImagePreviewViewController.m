@@ -17,6 +17,7 @@
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UIImageView *imageView;
 @property (nonatomic) NSData *imageData;
+@property (assign, nonatomic) BOOL imageIsGIF;
 
 @property (nonatomic) NSOperationQueue *queue;
 
@@ -82,7 +83,8 @@
     [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseData) {
         self.imageData = responseData;
         FVGifAnimation *animation = [[FVGifAnimation alloc] initWithData:responseData];
-        if ([animation canAnimate]) {
+        self.imageIsGIF = [animation canAnimate];
+        if (self.imageIsGIF) {
             [animation setAnimationToImageView:self.imageView];
             [self.imageView startAnimating];
         } else {
@@ -170,7 +172,11 @@
         [self hideBarsAfterShortDuration];
     }];
     [sheet addButtonWithTitle:@"Copy Image to Clipboard" block:^{
-        [UIPasteboard generalPasteboard].image = self.imageView.image;
+        if (self.imageIsGIF) {
+            [[UIPasteboard generalPasteboard] setData:self.imageData forPasteboardType:(__bridge NSString *)kUTTypeGIF];
+        } else {
+            [UIPasteboard generalPasteboard].image = self.imageView.image;
+        }
         [self hideBarsAfterShortDuration];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel" block:^{
