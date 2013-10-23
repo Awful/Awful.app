@@ -17,6 +17,7 @@
 @property (strong, nonatomic) UIBarButtonItem *actionItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
 @property (strong, nonatomic) UIBarButtonItem *forwardItem;
+@property (assign, nonatomic) BOOL loading;
 
 @end
 
@@ -27,6 +28,7 @@
     if ([self isViewLoaded]) {
         self.webView.delegate = nil;
     }
+    [self hideNetworkIndicator];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -192,7 +194,7 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    [AFNetworkActivityIndicatorManager.sharedManager incrementActivityCount];
+    [self showNetworkIndicator];
     [self updateBackForwardItemEnabledState];
 }
 
@@ -201,12 +203,28 @@
     // We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
     webView.backgroundColor = [UIColor whiteColor];
     webView.opaque = YES;
-    [AFNetworkActivityIndicatorManager.sharedManager decrementActivityCount];
+    [self hideNetworkIndicator];
     _URL = webView.request.URL;
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.title = [title length] > 0 ? title : @"Awful Browser";
     [self preventDefaultLongTapMenu];
     [self updateBackForwardItemEnabledState];
+}
+
+- (void)showNetworkIndicator
+{
+    if (!self.loading) {
+        [AFNetworkActivityIndicatorManager.sharedManager incrementActivityCount];
+        self.loading = YES;
+    }
+}
+
+- (void)hideNetworkIndicator
+{
+    if (self.loading) {
+        [AFNetworkActivityIndicatorManager.sharedManager decrementActivityCount];
+        self.loading = NO;
+    }
 }
 
 @end
