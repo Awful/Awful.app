@@ -622,12 +622,8 @@
                      self.topPost = self.topPostAfterLoad;
                      self.topPostAfterLoad = nil;
                  } else if (wasLoading) {
-                     if (self.hiddenPosts > 0) {
-                         [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
-                     } else {
-                         CGFloat inset = self.postsView.scrollView.contentInset.top;
-                         [self.postsView.scrollView setContentOffset:CGPointMake(0, -inset) animated:NO];
-                     }
+                     UIScrollView *scrollView = self.postsView.scrollView;
+                     [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
                  }
                  [self updateUserInterface];
                  if (self.thread.seenPosts < lastPost.threadIndex) {
