@@ -69,7 +69,13 @@
             return;
         }
         [SVProgressHUD showSuccessWithStatus:@"Sent"];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:^{
+            if (self.regardingMessage) {
+                self.regardingMessage.replied = YES;
+            } else if (self.forwardedMessage) {
+                self.forwardedMessage.forwarded = YES;
+            }
+        }];
     }];
     self.networkOperation = op;
 }
