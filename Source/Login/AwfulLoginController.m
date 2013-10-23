@@ -60,14 +60,6 @@
     [cell.textField becomeFirstResponder];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)o
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return o != UIInterfaceOrientationPortraitUpsideDown;
-}
-
 #pragma mark - UITableView data source and delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

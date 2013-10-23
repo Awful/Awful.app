@@ -246,12 +246,6 @@
     [super viewWillDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return YES;
-    return toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-}
-
 - (void)dealloc
 {
     if ([self isViewLoaded]) self.webView.delegate = nil;

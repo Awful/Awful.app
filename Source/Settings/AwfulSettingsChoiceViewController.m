@@ -42,14 +42,6 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return YES;
-    }
-    return interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown;
-}
-
 #pragma mark - UITableView data source and delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
