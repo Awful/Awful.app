@@ -92,13 +92,13 @@
             break;
             
         case AwfulIconActionItemTypeSingleUsersPosts:
-            title = @"Filter by this User";
+            title = @"Just Their Posts";
             tintColor = [UIColor colorWithHue:0.523 saturation:0.831 brightness:0.675 alpha:1];
             icon = [UIImage imageNamed:@"single-users-posts"];
             break;
         
         case AwfulIconActionItemTypeUserProfile:
-            title = @"User Profile";
+            title = @"Profile";
             tintColor = [UIColor colorWithHue:0.633 saturation:0.055 brightness:0.718 alpha:1];
             icon = [UIImage imageNamed:@"user-profile"];
             break;
