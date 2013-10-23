@@ -21,7 +21,6 @@
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulPrivateMessageComposeViewController.h"
-#import "AwfulPullToRefreshControl.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulReplyComposeViewController.h"
@@ -31,6 +30,7 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
 #import <WYPopoverController/WYPopoverController.h>
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulReplyComposeViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration, AwfulPageSettingsViewControllerDelegate>
@@ -43,7 +43,6 @@
 @property (strong, nonatomic) AwfulPostsView *postsView;
 @property (strong, nonatomic) WYPopoverController *jumpToPagePopover;
 @property (strong, nonatomic) WYPopoverController *pageSettingsPopover;
-@property (nonatomic) AwfulPullToRefreshControl *pullUpToRefreshControl;
 @property (nonatomic) UIBarButtonItem *composeItem;
 @property (copy, nonatomic) NSString *ongoingReplyText;
 @property (nonatomic) id ongoingReplyImageCacheIdentifier;
@@ -421,15 +420,15 @@
         self.postsView.endMessage = nil;
     }
     
-    AwfulPullToRefreshControl *refresh = self.pullUpToRefreshControl;
+    SVPullToRefreshView *refresh = self.postsView.scrollView.pullToRefreshView;
     if (relevantNumberOfPages > self.page) {
-        [refresh setTitle:@"Pull for next page…" forState:UIControlStateNormal];
-        [refresh setTitle:@"Release for next page…" forState:UIControlStateSelected];
-        [refresh setTitle:@"Loading next page…" forState:AwfulControlStateRefreshing];
+        [refresh setTitle:@"Pull for next page…" forState:SVPullToRefreshStateStopped];
+        [refresh setTitle:@"Release for next page…" forState:SVPullToRefreshStateTriggered];
+        [refresh setTitle:@"Loading next page…" forState:SVPullToRefreshStateLoading];
     } else {
-        [refresh setTitle:@"Pull to refresh…" forState:UIControlStateNormal];
-        [refresh setTitle:@"Release to refresh…" forState:UIControlStateSelected];
-        [refresh setTitle:@"Refreshing…" forState:AwfulControlStateRefreshing];
+        [refresh setTitle:@"Pull to refresh…" forState:SVPullToRefreshStateStopped];
+        [refresh setTitle:@"Release to refresh…" forState:SVPullToRefreshStateTriggered];
+        [refresh setTitle:@"Refreshing…" forState:SVPullToRefreshStateLoading];
     }
     
     self.backItem.enabled = self.page > 1;
@@ -561,7 +560,7 @@
 {
     self.cachedUpdatesWhileScrolling = nil;
     [self updateFetchedResultsController];
-    self.pullUpToRefreshControl.refreshing = NO;
+    [self.postsView.scrollView.pullToRefreshView stopAnimating];
     [self updateUserInterface];
     [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
     self.advertisementHTML = nil;
@@ -746,16 +745,6 @@
                                forControlEvents:UIControlEventTouchUpInside];
     [self.postsView.scrollView addSubview:self.topBar];
     
-    self.pullUpToRefreshControl = [[AwfulPullToRefreshControl alloc]
-                                   initWithDirection:AwfulScrollViewPullUp];
-    [self.pullUpToRefreshControl addTarget:self action:@selector(loadNextPageOrRefresh)
-                          forControlEvents:UIControlEventValueChanged];
-    self.pullUpToRefreshControl.backgroundColor = self.postsView.backgroundColor;
-    [self.postsView.scrollView addSubview:self.pullUpToRefreshControl];
-    [self updatePullUpTriggerOffset];
-    
-    [self updateUserInterface];
-    
     self.topBar.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
                           self.topBar.scrollToBottomButton ];
@@ -769,21 +758,13 @@
 	[self themeDidChange];
 }
 
-- (void)updatePullUpTriggerOffset
+- (void)viewDidAppear:(BOOL)animated
 {
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.pullUpToRefreshControl.triggerOffset = 45;
-        } else {
-            self.pullUpToRefreshControl.triggerOffset = 35;
-        }
-    } else {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.pullUpToRefreshControl.triggerOffset = 25;
-        } else {
-            self.pullUpToRefreshControl.triggerOffset = -10;
-        }
-    }
+    [super viewDidAppear:animated];
+    
+    // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
+    [self.postsView.scrollView addPullToRefreshWithActionHandler:^{ [self loadNextPageOrRefresh]; }
+                                                        position:SVPullToRefreshPositionBottom];
 }
 
 - (NSInteger)relevantNumberOfPagesInThread
@@ -870,12 +851,6 @@ static char KVOContext;
                                           context:&KVOContext];
         _observingScrollViewSize = NO;
     }
-}
-
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-                                         duration:(NSTimeInterval)duration
-{
-    [self updatePullUpTriggerOffset];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1206,7 +1181,7 @@ static char KVOContext;
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     if (!self.cachedUpdatesWhileScrolling) [self.postsView endUpdates];
-    [self.pullUpToRefreshControl setRefreshing:NO animated:YES];
+    [self.postsView.scrollView.pullToRefreshView stopAnimating];
     [self updateUserInterface];
 }
 

@@ -47,8 +47,6 @@
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
-		1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */; };
-		1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */; };
 		1C28B34D1729DD3F00254EE7 /* AwfulIconActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34C1729DD3F00254EE7 /* AwfulIconActionSheet.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
 		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
@@ -308,10 +306,6 @@
 		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
 		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
 		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
-		1C278A471647A47F007D3CEC /* AwfulPullToRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPullToRefreshControl.h; sourceTree = "<group>"; };
-		1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPullToRefreshControl.m; sourceTree = "<group>"; };
-		1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewPullObserver.h; sourceTree = "<group>"; };
-		1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewPullObserver.m; sourceTree = "<group>"; };
 		1C28B34B1729DD3F00254EE7 /* AwfulIconActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionSheet.h; sourceTree = "<group>"; };
 		1C28B34C1729DD3F00254EE7 /* AwfulIconActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulIconActionSheet.m; sourceTree = "<group>"; };
 		1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionItem.h; sourceTree = "<group>"; };
@@ -803,17 +797,6 @@
 			path = URLs;
 			sourceTree = "<group>";
 		};
-		1C278A3316453296007D3CEC /* Scrolling and Pulling */ = {
-			isa = PBXGroup;
-			children = (
-				1C278A471647A47F007D3CEC /* AwfulPullToRefreshControl.h */,
-				1C278A481647A47F007D3CEC /* AwfulPullToRefreshControl.m */,
-				1C278A491647A47F007D3CEC /* AwfulScrollViewPullObserver.h */,
-				1C278A4A1647A47F007D3CEC /* AwfulScrollViewPullObserver.m */,
-			);
-			path = "Scrolling and Pulling";
-			sourceTree = "<group>";
-		};
 		1C28B34A1729DC9700254EE7 /* Action Sheets */ = {
 			isa = PBXGroup;
 			children = (
@@ -897,7 +880,6 @@
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C7D22F6173B66B3008A802C /* Read Later Services */,
-				1C278A3316453296007D3CEC /* Scrolling and Pulling */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1796,8 +1778,6 @@
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
 				1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */,
 				1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */,
-				1C278A4D1647A47F007D3CEC /* AwfulPullToRefreshControl.m in Sources */,
-				1C278A4E1647A47F007D3CEC /* AwfulScrollViewPullObserver.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,

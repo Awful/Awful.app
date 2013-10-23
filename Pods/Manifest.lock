@@ -6,7 +6,7 @@ PODS:
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
   - SVProgressHUD (HEAD based on 0.9)
-  - SVPullToRefresh (0.4.1)
+  - SVPullToRefresh (HEAD based on 0.4.1)
   - WYPopoverController (0.1.4)
 
 DEPENDENCIES:
@@ -15,7 +15,7 @@ DEPENDENCIES:
   - JLRoutes (= 1.4)
   - PocketAPI (= 1.0.2)
   - SVProgressHUD (HEAD)
-  - SVPullToRefresh (= 0.4.1)
+  - SVPullToRefresh (HEAD)
   - WYPopoverController (= 0.1.4)
 
 SPEC CHECKSUMS:

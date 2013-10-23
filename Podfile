@@ -1,13 +1,14 @@
 platform :ios, '7.0'
 xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
 link_with ['Awful', 'Imgur API Test']
+inhibit_all_warnings!
 
 pod 'AFNetworking', '1.3.0'
-pod 'GRMustache', '6.7.3', :inhibit_warnings => true
+pod 'GRMustache', '6.7.3'
 pod 'JLRoutes', '1.4'
 pod 'PocketAPI', '1.0.2'
 pod 'SVProgressHUD', :head
-pod 'SVPullToRefresh', '0.4.1'
+pod 'SVPullToRefresh', :head
 pod 'WYPopoverController', '0.1.4'
 
 # Custom text atop the "Acknowledgements" Settings screen.
