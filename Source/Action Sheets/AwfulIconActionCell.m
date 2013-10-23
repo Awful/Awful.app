@@ -64,11 +64,11 @@
     
     [path stroke];
     drawIcon();
-    self.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    self.imageView.highlightedImage = UIGraphicsGetImageFromCurrentImageContext();
     
     [path fill];
     drawIcon();
-    self.imageView.highlightedImage = UIGraphicsGetImageFromCurrentImageContext();
+    self.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
 }
