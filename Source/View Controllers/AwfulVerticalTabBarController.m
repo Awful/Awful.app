@@ -64,8 +64,7 @@
     self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
     self.tabBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tabBar];
-    NSDictionary *views = @{ @"tabBar": self.tabBar,
-                             @"top": self.topLayoutGuide };
+    NSDictionary *views = @{ @"tabBar": self.tabBar };
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tabBar(==64)]"
                                                                       options:0
                                                                       metrics:nil
@@ -80,7 +79,11 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    self.tabBar.insets = UIEdgeInsetsMake(self.topLayoutGuide.length, 0, 0, 0);
+    id <UILayoutSupport> topLayoutGuide = self.topLayoutGuide;
+    if (self.parentViewController) {
+        topLayoutGuide = self.parentViewController.topLayoutGuide;
+    }
+    self.tabBar.insets = UIEdgeInsetsMake(topLayoutGuide.length, 0, 0, 0);
 }
 
 - (void)themeDidChange
