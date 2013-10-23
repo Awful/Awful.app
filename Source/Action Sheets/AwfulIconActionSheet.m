@@ -122,7 +122,7 @@
                              @"grid": _collectionView };
     NSDictionary *metrics = @{ @"margin": @10 };
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[title]-[topDivider(==1)]-[grid]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[title]-14-[topDivider(==1)]-[grid]"
                                              options:0
                                              metrics:metrics
                                                views:views]];
@@ -146,7 +146,7 @@
                                       @"bottomDivider": _bottomDivider,
                                       @"cancel": _cancelButton };
         [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[grid]-[bottomDivider(==1)]-[cancel]-margin-|"
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[grid]-[bottomDivider(==1)]-8-[cancel]-margin-|"
                                                  options:0
                                                  metrics:metrics
                                                    views:extraViews]];
