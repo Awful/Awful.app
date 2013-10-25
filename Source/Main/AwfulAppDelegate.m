@@ -173,7 +173,7 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         self.window.rootViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
     }
     [self themeDidChange];
-	
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
@@ -207,8 +207,6 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
-    
-    [self.window makeKeyAndVisible];
     
     if (![AwfulHTTPClient client].loggedIn) {
         [self showLoginFormIsAtLaunch:YES andThen:nil];
