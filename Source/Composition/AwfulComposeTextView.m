@@ -240,10 +240,10 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     NSTextAttachment *attachment = [NSTextAttachment new];
     attachment.image = image;
     CGFloat widthRatio = image.size.width / RequiresThumbnailImageSize.width;
-    CGFloat heightRatio = image.size.height > RequiresThumbnailImageSize.height;
-    CGFloat viewRatio = image.size.width / CGRectGetWidth(UIEdgeInsetsInsetRect(self.frame, self.textContainerInset));
-    if (widthRatio > 1 || heightRatio > 1 || viewRatio > 1) {
-        CGFloat ratio = MAX(widthRatio, MAX(heightRatio, viewRatio));
+    CGFloat heightRatio = image.size.height / RequiresThumbnailImageSize.height;
+    CGFloat screenRatio = image.size.width / (CGRectGetWidth([UIScreen mainScreen].bounds) - 8);
+    if (widthRatio > 1 || heightRatio > 1 || screenRatio > 1) {
+        CGFloat ratio = MAX(widthRatio, MAX(heightRatio, screenRatio));
         attachment.bounds = CGRectIntegral(CGRectMake(0, 0, image.size.width / ratio, image.size.height / ratio));
     }
     NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attachment];
