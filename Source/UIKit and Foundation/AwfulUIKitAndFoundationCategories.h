@@ -12,6 +12,7 @@
 #import "UIApplication+Style.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UINavigationItem+TwoLineTitle.h"
+#import "UIPasteboard+AwfulStringyURLs.h"
 #import "UITableView+HideStuff.h"
 #import "UIViewController+NavigationEnclosure.h"
 #import "UIViewController+AwfulTheme.h"

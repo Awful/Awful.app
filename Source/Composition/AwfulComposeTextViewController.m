@@ -4,6 +4,7 @@
 
 #import "AwfulComposeTextViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulComposeTextView.h"
 #import "ImgurHTTPClient.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 
@@ -52,7 +53,7 @@
 
 - (void)loadView
 {
-    UITextView *textView = [UITextView new];
+    UITextView *textView = [AwfulComposeTextView new];
     textView.restorationIdentifier = @"AwfulComposeTextView";
     textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.view = textView;
@@ -159,12 +160,13 @@
                                    options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
                                 usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
              {
+                 if (!attachment) return;
                  NSURL *URL = URLs[[attachments indexOfObject:attachment]];
                  
-                 // "Keep all images smaller than **800 pixels horizontal and 600 pixels vertical.**"
-                 // http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
                  NSString *t = @"";
-                 if (attachment.image.size.width > 800 || attachment.image.size.height > 600) {
+                 CGSize imageSize = attachment.image.size;
+                 if (imageSize.width > RequiresThumbnailImageSize.width ||
+                     imageSize.height > RequiresThumbnailImageSize.height) {
                      t = @"t";
                  }
                  

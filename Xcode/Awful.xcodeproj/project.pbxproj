@@ -161,6 +161,8 @@
 		1CB9B8551694339E00A3CD16 /* profile5.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8541694339E00A3CD16 /* profile5.html */; };
 		1CB9B85716943F5E00A3CD16 /* profile6.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B85616943F5E00A3CD16 /* profile6.html */; };
 		1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* AwfulReplyViewController.m */; };
+		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
+		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */; };
@@ -476,6 +478,10 @@
 		1CB9B85616943F5E00A3CD16 /* profile6.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile6.html; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
 		1CBC74AD181A16040076234E /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
+		1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeTextView.h; sourceTree = "<group>"; };
+		1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeTextView.m; sourceTree = "<group>"; };
+		1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+AwfulStringyURLs.h"; sourceTree = "<group>"; };
+		1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+AwfulStringyURLs.m"; sourceTree = "<group>"; };
 		1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulMinusFixURLProtocol.h; sourceTree = "<group>"; };
 		1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulMinusFixURLProtocol.m; sourceTree = "<group>"; };
 		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
@@ -1275,6 +1281,8 @@
 				1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
+				1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */,
+				1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */,
 				1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */,
 				1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
@@ -1286,6 +1294,8 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
+				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* AwfulComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */,
 				1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */,
@@ -1762,6 +1772,7 @@
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
 				1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */,
 				1C5F6FF417D731DC005ABD6F /* AwfulForumTreeController.m in Sources */,
+				1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */,
 				1C83DB54161FF48600E53CFA /* ImgurHTTPClient.m in Sources */,
 				1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */,
 				1C5F700F17D8821A005ABD6F /* AwfulExpandingSplitViewController.m in Sources */,
@@ -1854,6 +1865,7 @@
 				1C3447CF174D8D7A007377C5 /* AwfulThreadTag.m in Sources */,
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
+				1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */,
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
 				1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
