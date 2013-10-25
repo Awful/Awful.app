@@ -3,9 +3,12 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulComposeTextView.h"
+#import "AwfulKeyboardBar.h"
 #import "PSMenuItem.h"
 
 @interface AwfulComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+
+@property (strong, nonatomic) AwfulKeyboardBar *BBcodeBar;
 
 @property (copy, nonatomic) NSArray *topLevelMenuItems;
 @property (copy, nonatomic) NSArray *URLSubmenuItems;
@@ -19,6 +22,17 @@
     BOOL _showingSubmenu;
     id _menuDidHideObserver;
     UIPopoverController *_imagePickerPopover;
+}
+
+- (AwfulKeyboardBar *)BBcodeBar
+{
+    if (_BBcodeBar) return _BBcodeBar;
+    _BBcodeBar = [AwfulKeyboardBar new];
+    _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
+                                  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
+    _BBcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+    _BBcodeBar.keyInputView = self;
+    return _BBcodeBar;
 }
 
 #pragma mark - UIMenuController shenanigans
@@ -307,7 +321,11 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 - (BOOL)becomeFirstResponder
 {
-    if (![super becomeFirstResponder]) return NO;
+    self.inputAccessoryView = self.BBcodeBar;
+    if (![super becomeFirstResponder]) {
+        self.inputAccessoryView = nil;
+        return NO;
+    }
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [PSMenuItem installMenuHandlerForObject:self];
@@ -320,6 +338,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 {
     if (![super resignFirstResponder]) return NO;
     [UIMenuController sharedMenuController].menuItems = nil;
+    self.inputAccessoryView = nil;
     return YES;
 }
 
