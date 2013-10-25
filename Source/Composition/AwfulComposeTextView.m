@@ -175,8 +175,19 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
                            permittedArrowDirections:UIPopoverArrowDirectionAny
                                            animated:YES];
     } else {
-        [self.window.rootViewController presentViewController:imagePickerController animated:YES completion:nil];
+        [[self nearestViewController] presentViewController:imagePickerController animated:YES completion:nil];
     }
+}
+
+- (UIViewController *)nearestViewController
+{
+    UIResponder *responder = self;
+    while ((responder = [responder nextResponder])) {
+        if ([responder isKindOfClass:[UIViewController class]]) {
+            return (UIViewController *)responder;
+        }
+    }
+    return nil;
 }
 
 - (void)wrapSelectionInTag:(NSString *)tagSpecifier
