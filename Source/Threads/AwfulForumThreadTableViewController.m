@@ -12,21 +12,20 @@
 #import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
+#import "AwfulNewThreadViewController.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
-#import "AwfulThreadComposeViewController.h"
 #import "AwfulThreadTags.h"
 #import "awfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulForumThreadTableViewController () <AwfulThreadComposeViewControllerDelegate, UIViewControllerRestoration>
+@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
 @property (strong, nonatomic) UIBarButtonItem *abbreviatedBackButtonItem;
-@property (strong, nonatomic) AwfulThreadComposeViewController *composeViewController;
 
 @end
 
@@ -34,6 +33,7 @@
 {
     NSFetchedResultsController *_fetchedResultsController;
     NSInteger _mostRecentlyLoadedPage;
+    AwfulNewThreadViewController *_newThreadViewController;
 }
 
 - (id)initWithForum:(AwfulForum *)forum
@@ -57,11 +57,11 @@
 
 - (void)didTapNewThreadButtonItem
 {
-    self.composeViewController = [[AwfulThreadComposeViewController alloc] initWithForum:self.forum];
-    self.composeViewController.restorationIdentifier = @"Compose thread view";
-    self.composeViewController.delegate = self;
-    UINavigationController *nav = [self.composeViewController enclosingNavigationController];
-    nav.restorationIdentifier = @"Compose thread navigation view";
+    _newThreadViewController = [[AwfulNewThreadViewController alloc] initWithForum:self.forum];
+    _newThreadViewController.restorationIdentifier = @"New thread composition";
+    _newThreadViewController.delegate = self;
+    UINavigationController *nav = [_newThreadViewController enclosingNavigationController];
+    nav.restorationIdentifier = @"New thread composition navigation";
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -175,26 +175,20 @@
     }
 }
 
-#pragma mark - AwfulThreadComposeViewControllerDelegate
+#pragma mark - AwfulComposeTextViewController
 
-- (void)threadComposeController:(AwfulThreadComposeViewController *)controller
-            didPostThreadWithID:(NSString *)threadID
+- (void)composeTextViewController:(AwfulNewThreadViewController *)newThreadViewController
+didFinishWithSuccessfulSubmission:(BOOL)success
 {
-    self.composeViewController = nil;
-    [self dismissViewControllerAnimated:YES completion:nil];
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                             inManagedObjectContext:self.forum.managedObjectContext];
-    AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-    postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-    postsViewController.page = 1;
-    [self showPostsViewController:postsViewController];
-}
-
-- (void)threadComposeControllerDidCancel:(AwfulThreadComposeViewController *)controller
-{
-    // TODO save draft?
-    self.composeViewController = nil;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (success) {
+            AwfulThread *thread = newThreadViewController.thread;
+            AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+            postsViewController.restorationIdentifier = @"AwfulPostsViewController";
+            postsViewController.page = 1;
+            [self showPostsViewController:postsViewController];
+        }
+    }];
 }
 
 #pragma mark - State preservation and restoration
@@ -213,17 +207,17 @@
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
-    [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
+    [coder encodeObject:_newThreadViewController forKey:NewThreadViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
-    self.composeViewController.delegate = self;
+    _newThreadViewController = [coder decodeObjectForKey:NewThreadViewControllerKey];
+    _newThreadViewController.delegate = self;
 }
 
 static NSString * const ForumIDKey = @"AwfulForumID";
-static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
+static NSString * const NewThreadViewControllerKey = @"AwfulNewThreadViewController";
 
 @end

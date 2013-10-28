@@ -16,6 +16,7 @@
     id _keyboardWillShowObserver;
     id _keyboardWillHideObserver;
     id <ImgurHTTPClientCancelToken> _imageUploadCancelToken;
+    NSLayoutConstraint *_customViewWidthConstraint;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -183,6 +184,49 @@
     [self doesNotRecognizeSelector:_cmd];
 }
 
+- (void)setCustomView:(UIView<AwfulComposeCustomView> *)customView
+{
+    UIEdgeInsets textContainerInset = self.textView.textContainerInset;
+    textContainerInset.top -= CGRectGetHeight(_customView.frame);
+    [_customView removeFromSuperview];
+    [_customView removeConstraint:_customViewWidthConstraint];
+    _customViewWidthConstraint = nil;
+    _customView = customView;
+    if (!customView) {
+        self.textView.textContainerInset = textContainerInset;
+        return;
+    }
+    customView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.textView addSubview:customView];
+    CGFloat height = CGRectGetHeight(customView.frame);
+    textContainerInset.top += height;
+    self.textView.textContainerInset = textContainerInset;
+    NSDictionary *metrics = @{ @"height": @(height) };
+    NSDictionary *views = NSDictionaryOfVariableBindings(customView);
+    [self.textView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    [self.textView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView(height)]"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    _customViewWidthConstraint = [NSLayoutConstraint constraintWithItem:customView
+                                                              attribute:NSLayoutAttributeWidth
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:nil
+                                                              attribute:NSLayoutAttributeNotAnAttribute
+                                                             multiplier:1
+                                                               constant:CGRectGetWidth(self.view.bounds)];
+    
+    // If we're not in the view controller hierarchy, we might not yet have a width, in which case we'll add the constraint later.
+    if (_customViewWidthConstraint.constant > 0) {
+        [customView addConstraint:_customViewWidthConstraint];
+    }
+}
+
 - (void)didTapCancel
 {
     if (_imageUploadCancelToken) {
@@ -263,6 +307,21 @@
             [self.textView scrollRectToVisible:caretRect animated:YES];
         }
     }];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    if (_customViewWidthConstraint && width > 0) {
+        _customViewWidthConstraint.constant = width;
+        
+        // If our view wasn't already in the hierarchy when the custom view was added, we didn't know how wide to make the custom view. Now we do.
+        if (![self.customView.constraints containsObject:_customViewWidthConstraint]) {
+            [self.customView addConstraint:_customViewWidthConstraint];
+        }
+        [self.view layoutSubviews];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
