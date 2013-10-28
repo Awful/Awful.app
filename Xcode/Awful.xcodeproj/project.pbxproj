@@ -1136,6 +1136,7 @@
 				1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */,
 				1C6474B41569989800C72657 /* AwfulThread.h */,
 				1C6474B51569989800C72657 /* AwfulThread.m */,
+				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
 				1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */,
 				1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */,
 			);
@@ -1211,7 +1212,6 @@
 				1C73921C17DF850F00089248 /* AwfulThreadCell.m */,
 				1C7D232A1747CE5F008A802C /* AwfulThreadComposeViewController.h */,
 				1C7D232B1747CE5F008A802C /* AwfulThreadComposeViewController.m */,
-				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
 				1CC45265180B7C1A00F5F043 /* AwfulThreadTableViewController.h */,
 				1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */,
 				1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */,

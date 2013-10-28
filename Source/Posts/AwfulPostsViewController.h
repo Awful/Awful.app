@@ -4,7 +4,6 @@
 
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
-#import "AwfulThreadPage.h"
 
 /**
  * An AwfulPostsViewController shows a list of posts in a thread.

@@ -12,3 +12,4 @@
 #import "AwfulPost.h"
 #import "AwfulPrivateMessage.h"
 #import "AwfulSingleUserThreadInfo.h"
+#import "AwfulThreadPage.h"
