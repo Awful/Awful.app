@@ -1028,8 +1028,6 @@
 		1CB6010616D826DA00CBEE22 /* Private Messages */ = {
 			isa = PBXGroup;
 			children = (
-				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
-				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
 				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
 				1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */,
@@ -1294,6 +1292,8 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
+				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
 				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* AwfulComposeTextViewController.h */,
