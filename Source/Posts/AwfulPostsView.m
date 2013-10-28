@@ -24,7 +24,7 @@
 
 @implementation AwfulPostsView
 {
-    dispatch_once_t _onceOnFirstLoad;
+    BOOL _onceOnFirstLoad;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -424,7 +424,8 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    dispatch_once(&_onceOnFirstLoad, ^{
+    if (!_onceOnFirstLoad) {
+        _onceOnFirstLoad = YES;
         [self updateShowAvatars];
         [self updateShowImages];
         [self updateHighlightQuoteUsername];
@@ -436,7 +437,7 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;
         }
-    });
+    }
 }
 
 - (BOOL)webView:(UIWebView *)webView
