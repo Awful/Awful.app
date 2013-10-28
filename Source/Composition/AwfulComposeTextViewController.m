@@ -77,6 +77,24 @@
                                                                            usingBlock:^(NSNotification *note)
     {
         [self updateSubmitButtonItem];
+        
+        // Fix iOS 7's disappearing caret after pressing return at the end of the document.
+        // http://stackoverflow.com/a/19277383/1063051
+        // 1. Figure out how far the caret is beyond the currently-visible area.
+        CGRect caretRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
+        CGRect visibleRect = UIEdgeInsetsInsetRect(self.textView.bounds, self.textView.contentInset);
+        CGFloat remainder = CGRectGetMaxY(caretRect) - CGRectGetMaxY(visibleRect);
+        if (remainder > 0) {
+            
+            // 2. We're below the visible text. This animated scroll seems to work better than -setContentOffset:animated:YES.
+            CGPoint contentOffset = self.textView.contentOffset;
+            
+            // The extra 4 pushes the caret a couple points above the inputView/inputAccessoryView.
+            contentOffset.y += remainder + 4;
+            [UIView animateWithDuration:0.2 animations:^{
+                [self.textView setContentOffset:contentOffset animated:NO];
+            }];
+        }
     }];
 }
 

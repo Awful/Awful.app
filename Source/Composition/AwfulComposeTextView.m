@@ -349,18 +349,6 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 #pragma mark - iOS 7 Workarounds
 
-- (void)scrollRangeToVisible:(NSRange)range
-{
-    [super scrollRangeToVisible:range];
-    
-    // Fixes disappearing caret after inserting a newline at the end of the document.
-    // https://devforums.apple.com/message/889660#889660
-    if (self.layoutManager.extraLineFragmentTextContainer && self.selectedRange.location == range.location) {
-        CGRect caretRect = [self caretRectForPosition:self.selectedTextRange.start];
-        [self scrollRectToVisible:caretRect animated:YES];
-    }
-}
-
 - (UITextPosition *)closestPositionToPoint:(CGPoint)point
 {
     if (self.text.length == 0) return [super positionFromPosition:self.beginningOfDocument offset:0];
