@@ -115,6 +115,12 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     
     [AwfulHTTPClient client].managedObjectContext = _dataStack.managedObjectContext;
     
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
+                                                                diskCapacity:50 * 1024 * 1024
+                                                                    diskPath:nil]];
+    [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
+    
     NSMutableArray *viewControllers = [NSMutableArray new];
     UINavigationController *nav;
     UIViewController *vc;
@@ -200,12 +206,6 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
-                                                                diskCapacity:50 * 1024 * 1024
-                                                                    diskPath:nil]];
-    [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
-    
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
     if (![AwfulHTTPClient client].loggedIn) {
