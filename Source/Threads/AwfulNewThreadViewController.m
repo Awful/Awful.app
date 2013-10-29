@@ -28,11 +28,6 @@
     NSArray *_availableSecondaryThreadTags;
 }
 
-- (void)dealloc
-{
-    NSLog(@"%s %@ is out!", __PRETTY_FUNCTION__, self);
-}
-
 - (id)initWithForum:(AwfulForum *)forum
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;

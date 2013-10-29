@@ -59,7 +59,6 @@
                                              options:0
                                              metrics:nil
                                                views:views]];
-    [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recursivelyExercise) userInfo:nil repeats:YES];
     return self;
 }
 
@@ -76,25 +75,6 @@
 {
     UITextField *subject = self.subjectField.textField;
     return subject.text.length > 0 ? subject : nil;
-}
-
-@end
-
-@interface UIView (eh)
-
-- (void)recursivelyExercise;
-
-@end
-
-@implementation UIView (eh)
-
-- (void)recursivelyExercise
-{
-    if ([self hasAmbiguousLayout]) {
-        NSLog(@"%@ has ambiguous layout", self);
-        [self exerciseAmbiguityInLayout];
-    }
-    [self.subviews makeObjectsPerformSelector:@selector(recursivelyExercise)];
 }
 
 @end
