@@ -144,6 +144,7 @@ static NSString * const DefaultTitle = @"New Thread";
 - (void)subjectFieldDidChange:(UITextField *)subjectTextField
 {
     self.title = subjectTextField.text.length > 0 ? subjectTextField.text : DefaultTitle;
+    [self updateSubmitButtonItem];
 }
 
 - (BOOL)canSubmitComposition
