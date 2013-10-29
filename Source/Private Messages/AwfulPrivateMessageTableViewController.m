@@ -110,6 +110,12 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    _dataSource.updatesTableView = YES;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -139,6 +145,12 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     [super setEditing:editing animated:animated];
     [self.navigationItem setRightBarButtonItem:editing ? nil : self.composeItem
                                       animated:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    _dataSource.updatesTableView = NO;
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate

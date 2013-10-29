@@ -51,10 +51,22 @@
 
 static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    _threadDataSource.updatesTableView = YES;
+}
+
 - (void)themeDidChange
 {
 	[super themeDidChange];
 	self.view.backgroundColor = self.theme[@"backgroundColor"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    _threadDataSource.updatesTableView = NO;
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSource

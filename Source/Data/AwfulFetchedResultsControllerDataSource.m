@@ -12,6 +12,7 @@
 {
     NSMutableIndexSet *_sectionInsertions;
     NSMutableIndexSet *_sectionDeletions;
+    BOOL _completedFirstFetch;
 }
 
 - (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
@@ -30,12 +31,26 @@
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = fetchedResultsController;
     _fetchedResultsController.delegate = self;
-    NSError *error;
-    BOOL ok = [self.fetchedResultsController performFetch:&error];
-    if (!ok) {
-        NSLog(@"%s error performing first fetch of fetched results controller: %@", __PRETTY_FUNCTION__, error);
+}
+
+- (void)setUpdatesTableView:(BOOL)updatesTableView
+{
+    if (updatesTableView == _updatesTableView) return;
+    _updatesTableView = updatesTableView;
+    if (updatesTableView) {
+        _fetchedResultsController.delegate = self;
+        if (!_completedFirstFetch) {
+            NSError *error;
+            BOOL ok = [self.fetchedResultsController performFetch:&error];
+            if (!ok) {
+                NSLog(@"%s error performing first fetch of fetched results controller: %@", __PRETTY_FUNCTION__, error);
+            }
+            _completedFirstFetch = ok;
+        }
+        [self.tableView reloadData];
+    } else {
+        _fetchedResultsController.delegate = nil;
     }
-    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource

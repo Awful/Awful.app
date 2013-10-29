@@ -34,6 +34,11 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 /**
+ * YES if the AwfulFetchedResultsControllerDataSource updates its table view, otherwise NO (the default). Consider setting this to YES in -viewWillAppear: and NO in -viewDidDisappear:.
+ */
+@property (assign, nonatomic) BOOL updatesTableView;
+
+/**
  * The delegate.
  */
 @property (weak, nonatomic) id <AwfulFetchedResultsControllerDataSourceDelegate> delegate;
