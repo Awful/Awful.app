@@ -250,12 +250,16 @@ static NSString * const DefaultTitle = @"New Thread";
     if (_availableSecondaryThreadTags.count > 0) {
         self.secondaryThreadTag = _availableSecondaryThreadTags[picker.secondarySelectedIndex];
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self focusInitialFirstResponder];
+    }];
 }
 
 - (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self focusInitialFirstResponder];
+    }];
 }
 
 #pragma mark - State preservation and restoration
