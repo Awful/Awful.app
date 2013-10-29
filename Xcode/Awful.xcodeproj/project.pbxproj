@@ -224,8 +224,6 @@
 		1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */; };
 		1CF2461B16DC286A00C75E05 /* private-list.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461916DC286A00C75E05 /* private-list.html */; };
 		1CF2461C16DC286A00C75E05 /* private-one.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461A16DC286A00C75E05 /* private-one.html */; };
-		1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461E16DD848100C75E05 /* AwfulTextView.m */; };
-		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -578,11 +576,6 @@
 		1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageTests.m; sourceTree = "<group>"; };
 		1CF2461916DC286A00C75E05 /* private-list.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-list.html"; sourceTree = "<group>"; };
 		1CF2461A16DC286A00C75E05 /* private-one.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "private-one.html"; sourceTree = "<group>"; };
-		1CF2461D16DD848100C75E05 /* AwfulTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextView.h; sourceTree = "<group>"; };
-		1CF2461E16DD848100C75E05 /* AwfulTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextView.m; sourceTree = "<group>"; };
-		1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewController.h; sourceTree = "<group>"; };
-		1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeViewController.m; sourceTree = "<group>"; };
-		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CF3A465180C768100EC2450 /* AwfulURLRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulURLRouter.h; sourceTree = "<group>"; };
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
 		1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageCell.h; sourceTree = "<group>"; };
@@ -1308,11 +1301,6 @@
 				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* AwfulComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */,
-				1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */,
-				1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */,
-				1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */,
-				1CF2461D16DD848100C75E05 /* AwfulTextView.h */,
-				1CF2461E16DD848100C75E05 /* AwfulTextView.m */,
 				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
 				1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */,
 			);
