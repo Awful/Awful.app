@@ -24,6 +24,16 @@
 @property (readonly, strong, nonatomic) UIBarButtonItem *cancelButtonItem;
 
 /**
+ * Tells a reasonable responder to become first responder.
+ */
+- (void)focusInitialFirstResponder;
+
+/**
+ * Refreshes the submit button's enabled status.
+ */
+- (void)updateSubmitButtonItem;
+
+/**
  * Returns YES when the submission is valid and ready, otherwise NO. The default is to return YES when the textView is nonempty.
  */
 @property (readonly, assign, nonatomic) BOOL canSubmitComposition;

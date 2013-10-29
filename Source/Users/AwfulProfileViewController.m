@@ -9,8 +9,8 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPostsView.h"
-#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
@@ -18,7 +18,7 @@
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 
-@interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate>
+@interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (readonly, nonatomic) UIWebView *webView;
 @property (copy, nonatomic) NSArray *services;
@@ -148,9 +148,8 @@
             [self showActionsForHomepage:url atRect:rect];
         }
     } else if ([service[@"service"] isEqual:AwfulServicePrivateMessage]) {
-        AwfulPrivateMessageComposeViewController *compose;
-        compose = [AwfulPrivateMessageComposeViewController new];
-        [compose setRecipient:self.user.username];
+        AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:self.user];
+        newPrivateMessageViewController.delegate = self;
         
         // Try setting the delay to 0 then causing this to run. That is, as a user who can send PMs,
         // view the profile of a user who can receive PMs, and tap the "Private Message" row.
@@ -169,10 +168,13 @@
         //
         // I cannot figure out why this happens, so that lamest of all Cocoa workarounds makes its
         // appearance here.
+        //
+        // TODO test this on iOS 7.
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.45 * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self presentViewController:[compose enclosingNavigationController]
-                               animated:YES completion:nil];
+            [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
+                               animated:YES
+                             completion:nil];
         });
     } else {
         self.skipFetchingAndRenderingProfileOnAppear = NO;
@@ -266,6 +268,13 @@
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return YES;
+}
+
+#pragma mark - AwfulComposeTextViewControllerDelegate
+
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController didFinishWithSuccessfulSubmission:(BOOL)success
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

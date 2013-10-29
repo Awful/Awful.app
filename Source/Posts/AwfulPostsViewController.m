@@ -15,12 +15,12 @@
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
+#import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
-#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulReplyViewController.h"
@@ -1007,11 +1007,10 @@ static char KVOContext;
         user.canReceivePrivateMessages &&
         ![user.userID isEqual:[AwfulSettings settings].userID]) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-            AwfulPrivateMessageComposeViewController *compose;
-            compose = [AwfulPrivateMessageComposeViewController new];
-            [compose setRecipient:user.username];
-            [self presentViewController:[compose enclosingNavigationController]
-                               animated:YES completion:nil];
+            AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+            [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
+                               animated:YES
+                             completion:nil];
         }]];
 	}
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
@@ -1167,8 +1166,18 @@ static char KVOContext;
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulReplyViewController *)replyViewController
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
+{
+    if ([composeTextViewController isEqual:self.replyViewController]) {
+        [self replyViewController:(AwfulReplyViewController *)composeTextViewController didFinishWithSuccessfulSubmission:success];
+    } else {
+        [self newPrivateMessageViewController:(AwfulNewPrivateMessageViewController *)composeTextViewController
+            didFinishWithSuccessfulSubmission:success];
+    }
+}
+
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController didFinishWithSuccessfulSubmission:(BOOL)success
 {
     [self dismissViewControllerAnimated:YES completion:^{
         if (!success) return;
@@ -1184,6 +1193,12 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         }
         self.replyViewController = nil;
     }];
+}
+
+- (void)newPrivateMessageViewController:(AwfulNewPrivateMessageViewController *)newPrivateMessageViewController
+      didFinishWithSuccessfulSubmission:(BOOL)success
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIScrollViewDelegate

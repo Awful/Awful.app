@@ -64,6 +64,7 @@
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
+		1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */; };
 		1C41918E1763C88E00EADE07 /* combined.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C41918D1763C88E00EADE07 /* combined.js */; };
 		1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C41B8A016CD4C7600718F79 /* Crashlytics.framework */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
@@ -156,6 +157,7 @@
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
 		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
+		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
 		1CB9B84F1693D9F700A3CD16 /* profile2.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B84C1693D9DC00A3CD16 /* profile2.html */; };
 		1CB9B8511693DC3800A3CD16 /* profile3.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8501693DC3800A3CD16 /* profile3.html */; };
 		1CB9B8531694334500A3CD16 /* profile4.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CB9B8521694334500A3CD16 /* profile4.html */; };
@@ -224,7 +226,6 @@
 		1CF2461C16DC286A00C75E05 /* private-one.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461A16DC286A00C75E05 /* private-one.html */; };
 		1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2461E16DD848100C75E05 /* AwfulTextView.m */; };
 		1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */; };
-		1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -336,6 +337,8 @@
 		1C3447EA175E5D78007377C5 /* AwfulLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingView.h; sourceTree = "<group>"; };
 		1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingView.m; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
+		1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageViewController.h; sourceTree = "<group>"; };
+		1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageViewController.m; sourceTree = "<group>"; };
 		1C41918D1763C88E00EADE07 /* combined.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = combined.js; sourceTree = "<group>"; };
 		1C4191901763C8BD00EADE07 /* awful.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = awful.js; sourceTree = "<group>"; };
 		1C41B8A016CD4C7600718F79 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
@@ -474,6 +477,8 @@
 		1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
 		1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDateFormatters.h; sourceTree = "<group>"; };
 		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
+		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
+		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
 		1CB9B84C1693D9DC00A3CD16 /* profile2.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile2.html; sourceTree = "<group>"; };
 		1CB9B8501693DC3800A3CD16 /* profile3.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile3.html; sourceTree = "<group>"; };
 		1CB9B8521694334500A3CD16 /* profile4.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = profile4.html; sourceTree = "<group>"; };
@@ -577,8 +582,6 @@
 		1CF2461E16DD848100C75E05 /* AwfulTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextView.m; sourceTree = "<group>"; };
 		1CF2462116DD95F400C75E05 /* AwfulComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewController.h; sourceTree = "<group>"; };
 		1CF2462216DD95F400C75E05 /* AwfulComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeViewController.m; sourceTree = "<group>"; };
-		1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageComposeViewController.h; sourceTree = "<group>"; };
-		1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageComposeViewController.m; sourceTree = "<group>"; };
 		1CF2462716DD9FBF00C75E05 /* AwfulComposeViewControllerSubclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeViewControllerSubclass.h; sourceTree = "<group>"; };
 		1CF3A465180C768100EC2450 /* AwfulURLRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulURLRouter.h; sourceTree = "<group>"; };
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
@@ -1033,10 +1036,12 @@
 			children = (
 				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
 				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
+				1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */,
+				1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */,
+				1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */,
+				1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */,
 				1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */,
 				1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */,
-				1CF2462416DD969000C75E05 /* AwfulPrivateMessageComposeViewController.h */,
-				1CF2462516DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m */,
 				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageTableViewController.h */,
 				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */,
 				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
@@ -1831,17 +1836,16 @@
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
+				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
 				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
 				8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */,
-				1CF2461F16DD848100C75E05 /* AwfulTextView.m in Sources */,
-				1CF2462316DD95F400C75E05 /* AwfulComposeViewController.m in Sources */,
 				1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */,
-				1CF2462616DD969000C75E05 /* AwfulPrivateMessageComposeViewController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
 				1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */,
 				1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
+				1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,

@@ -14,22 +14,21 @@
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
+#import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPostsView.h"
-#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
 
-@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, UIViewControllerRestoration>
+@interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) AwfulPrivateMessage *privateMessage;
 @property (readonly) AwfulPostsView *postsView;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
 @end
-
 
 @implementation AwfulPrivateMessageViewController
 
@@ -160,12 +159,11 @@
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
                                   buttonTitle:@"OK"];
             } else {
-                AwfulPrivateMessageComposeViewController *compose;
-                compose = [AwfulPrivateMessageComposeViewController new];
-                [compose setRegardingMessage:self.privateMessage];
-                [compose setMessageBody:bbcode];
-                [self presentViewController:[compose enclosingNavigationController]
-                                   animated:YES completion:nil];
+                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage initialContents:bbcode];
+                newPrivateMessageViewController.delegate = self;
+                [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
+                                   animated:YES
+                                 completion:nil];
             }
         }];
     }];
@@ -174,15 +172,13 @@
                                                     andThen:^(NSError *error, NSString *bbcode)
         {
             if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
-                                  buttonTitle:@"OK"];
+                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                AwfulPrivateMessageComposeViewController *compose;
-                compose = [AwfulPrivateMessageComposeViewController new];
-                [compose setForwardedMessage:self.privateMessage];
-                [compose setMessageBody:bbcode];
-                [self presentViewController:[compose enclosingNavigationController]
-                                   animated:YES completion:nil];
+                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage initialContents:bbcode];
+                newPrivateMessageViewController.delegate = self;
+                [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
+                                   animated:YES
+                                 completion:nil];
             }
         }];
     }];
@@ -194,8 +190,7 @@
                                                                  target:self
                                                                  action:@selector(doneWithProfile)];
             profile.navigationItem.leftBarButtonItem = item;
-            [self presentViewController:[profile enclosingNavigationController]
-                               animated:YES completion:nil];
+            [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {
             profile.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:profile animated:YES];
@@ -291,6 +286,13 @@
     } else {
         [[UIApplication sharedApplication] openURL:url];
     }
+}
+
+#pragma mark - AwfulComposeTextViewControllerDelegate
+
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController didFinishWithSuccessfulSubmission:(BOOL)success
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark State preservation and restoration

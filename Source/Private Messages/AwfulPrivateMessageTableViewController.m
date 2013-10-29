@@ -8,8 +8,8 @@
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
 #import "AwfulNewPMNotifierAgent.h"
+#import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPrivateMessageCell.h"
-#import "AwfulPrivateMessageComposeViewController.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
@@ -17,7 +17,7 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 
-@interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate>
+@interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
@@ -67,8 +67,9 @@
 
 - (void)didTapCompose
 {
-    AwfulPrivateMessageComposeViewController *compose = [AwfulPrivateMessageComposeViewController new];
+    AwfulNewPrivateMessageViewController *compose = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
     compose.restorationIdentifier = @"Message compose view";
+    compose.delegate = self;
     UINavigationController *nav = [compose enclosingNavigationController];
     nav.restorationIdentifier = @"Message compose nav view";
     [self presentViewController:nav animated:YES completion:nil];
@@ -212,6 +213,13 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     } else {
         [self.navigationController pushViewController:vc animated:YES];
     }
+}
+
+#pragma mark - AwfulComposeTextViewControllerDelegate
+
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController didFinishWithSuccessfulSubmission:(BOOL)success
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
