@@ -11,6 +11,7 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
+#import "AwfulThreadTag.h"
 #import "AwfulThreadTags.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
@@ -67,7 +68,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
     // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
     // the empty thread tag for anyone lame enough to pick the same tag twice.
-    UIImage *emptyTag = [UIImage imageNamed:@"empty-thread-tag"];
+    UIImage *emptyTag = [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
     if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
         cell.tagAndRatingView.threadTag = emptyTag;
     } else {
