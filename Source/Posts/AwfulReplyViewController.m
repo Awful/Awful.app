@@ -135,7 +135,8 @@
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
         replyViewController = [[AwfulReplyViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {
-        NSLog(@"%s no post or thread; skipping restore", __PRETTY_FUNCTION__);
+        NSLog(@"%s no post or thread at %@; skipping restore",
+              __PRETTY_FUNCTION__, [identifierComponents componentsJoinedByString:@"/"]);
         return nil;
     }
     replyViewController.restorationIdentifier = identifierComponents.lastObject;
