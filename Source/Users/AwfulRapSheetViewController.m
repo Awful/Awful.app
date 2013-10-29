@@ -11,6 +11,12 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
+@interface AwfulRapSheetViewController ()
+
+@property (strong, nonatomic) UIBarButtonItem *doneItem;
+
+@end
+
 @implementation AwfulRapSheetViewController
 {
     NSInteger _mostRecentlyLoadedPage;
@@ -21,16 +27,29 @@
 {
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     _user = user;
+    _bans = [NSMutableOrderedSet new];
     self.title = user ? @"Rap Sheet" : @"Leper's Colony";
     self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
     self.modalPresentationStyle = UIModalPresentationFormSheet;
-    _bans = [NSMutableOrderedSet new];
+    self.hidesBottomBarWhenPushed = YES;
     return self;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     return [self initWithUser:nil];
+}
+
+- (UIBarButtonItem *)doneItem
+{
+    if (_doneItem) return _doneItem;
+    _doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(didTapDone)];
+    return _doneItem;
+}
+
+- (void)didTapDone
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)loadView
@@ -45,6 +64,14 @@
     [self.tableView awful_hideExtraneousSeparators];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (self.presentingViewController) {
+        self.navigationItem.rightBarButtonItem = self.doneItem;
+    }
 }
 
 - (void)refresh
@@ -191,6 +218,9 @@ static NSString * const CellIdentifier = @"Infraction Cell";
     if (!ban.postID) return;
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
     [AwfulAppDelegate.instance openAwfulURL:url];
+    if (self.presentingViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 @end

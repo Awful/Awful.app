@@ -662,26 +662,16 @@
 - (void)showRapSheetWithUser:(AwfulUser *)user
 {
     AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
-    UIBarButtonItem *item;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                             target:nil
-                                                             action:@selector(doneWithRapSheet)];
-        rapSheet.navigationItem.leftBarButtonItem = item;
-        [self presentViewController:[rapSheet enclosingNavigationController]
-                           animated:YES completion:nil];
+        [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
     } else {
-        rapSheet.hidesBottomBarWhenPushed = YES;
-        item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered
-                                               target:nil action:NULL];
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:nil
+                                                                action:nil];
         self.navigationItem.backBarButtonItem = item;
         [self.navigationController pushViewController:rapSheet animated:YES];
     }
-}
-
-- (void)doneWithRapSheet
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIViewController
