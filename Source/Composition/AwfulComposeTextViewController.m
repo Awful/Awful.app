@@ -310,8 +310,8 @@
     UIViewAnimationOptions options = curve << 16;
     CGRect keyboardEndScreenFrame = ((NSValue *)note.userInfo[UIKeyboardFrameEndUserInfoKey]).CGRectValue;
     CGRect keyboardEndWindowFrame = [self.view.window convertRect:keyboardEndScreenFrame fromWindow:nil];
-    CGRect textViewWindowFrame = [self.textView.superview convertRect:self.textView.frame toView:nil];
-    CGRect overlap = CGRectIntersection(keyboardEndWindowFrame, textViewWindowFrame);
+    CGRect keyboardEndTextViewFrame = [self.textView convertRect:keyboardEndWindowFrame fromView:nil];
+    CGRect overlap = CGRectIntersection(keyboardEndTextViewFrame, self.textView.bounds);
     UIEdgeInsets contentInset = self.textView.contentInset;
     UIEdgeInsets indicatorInsets = self.textView.scrollIndicatorInsets;
     contentInset.bottom = CGRectGetHeight(overlap);
