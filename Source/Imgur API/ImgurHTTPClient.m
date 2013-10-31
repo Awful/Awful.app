@@ -3,10 +3,12 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ImgurHTTPClient.h"
+#import <AFNetworking/AFNetworking.h>
 #import "UIImage+Resize.h"
 
-// Rotates each image's data to match its UIImage imageOrientation, then downscales any images
-// larger than Imgur's file size limit, and saves the end result as a PNG image.
+/**
+ * An ImageResizeOperation rotates each image according to its imageOrientation, then downscales any images larger than Imgur's file size limit, and saves the end result as a PNG image.
+ */
 @interface ImageResizeOperation : NSOperation
 
 - (id)initWithImages:(NSArray *)images;
@@ -17,8 +19,9 @@
 
 @end
 
-
-// Collects the URLs for the uploaded images, and cancels all related operations when cancelled.
+/**
+ * A URLCollectionOperation collects the URLs for uploaded images and cancels all related operations when cancelled.
+ */
 @interface URLCollectionOperation : NSOperation <ImgurHTTPClientCancelToken>
 
 @property (nonatomic) ImageResizeOperation *resizeOperation;
@@ -31,24 +34,27 @@
 
 @end
 
-
 @implementation ImgurHTTPClient
+{
+    AFHTTPClient *_client;
+}
 
 + (ImgurHTTPClient *)client
 {
     static ImgurHTTPClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[self alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.imgur.com/"]];
+        instance = [self new];
     });
     return instance;
 }
 
-- (id)initWithBaseURL:(NSURL *)url
+- (id)init
 {
-    if (!(self = [super initWithBaseURL:url])) return nil;
-    [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [self setDefaultHeader:@"Authorization" value:@"Client-ID 4db466addcb5cfc"];
+    if (!(self = [super init])) return nil;
+    _client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.imgur.com/3/"]];
+    [_client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [_client setDefaultHeader:@"Authorization" value:@"Client-ID 4db466addcb5cfc"];
     return self;
 }
 
@@ -63,8 +69,8 @@
     urlOp.resizeOperation.completionBlock = ^{
         [self uploadImageDatasForURLCollectionOperation:weakURLOp];
     };
-    [self.operationQueue addOperation:urlOp.resizeOperation];
-    [self.operationQueue addOperation:urlOp];
+    [_client.operationQueue addOperation:urlOp.resizeOperation];
+    [_client.operationQueue addOperation:urlOp];
     return urlOp;
 }
 
@@ -72,25 +78,23 @@
 {
     NSMutableArray *operations = [NSMutableArray new];
     for (NSData *imageData in urlOp.resizeOperation.resizedImageDatas) {
-        NSURLRequest *request = [self multipartFormRequestWithMethod:@"POST"
-                                                                path:@"/3/image.json"
-                                                          parameters:nil
-                                           constructingBodyWithBlock:^(id<AFMultipartFormData> form)
+        NSURLRequest *request = [_client multipartFormRequestWithMethod:@"POST"
+                                                                   path:@"/3/image.json"
+                                                             parameters:nil
+                                              constructingBodyWithBlock:^(id<AFMultipartFormData> form)
         {
             [form appendPartWithFileData:imageData
                                     name:@"image"
                                 fileName:@"image.png"
                                 mimeType:@"image/png"];
         }];
-        [operations addObject:[self HTTPRequestOperationWithRequest:request
-                                                            success:nil failure:nil]];
+        [operations addObject:[_client HTTPRequestOperationWithRequest:request success:nil failure:nil]];
     }
     urlOp.uploadOperations = operations;
-    [self enqueueBatchOfHTTPRequestOperations:operations progressBlock:nil completionBlock:nil];
+    [_client enqueueBatchOfHTTPRequestOperations:operations progressBlock:nil completionBlock:nil];
 }
 
 @end
-
 
 @implementation ImageResizeOperation
 
@@ -122,7 +126,6 @@
 }
 
 @end
-
 
 @implementation URLCollectionOperation
 
