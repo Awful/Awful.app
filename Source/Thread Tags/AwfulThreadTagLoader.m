@@ -14,14 +14,14 @@
 
 @implementation AwfulThreadTagLoader
 {
-    AFHTTPClient *_client;
+    AFHTTPSessionManager *_HTTPManager;
 }
 
 - (id)init
 {
     if (!(self = [super init])) return nil;
     NSString *URLString = [NSBundle mainBundle].infoDictionary[kNewThreadTagURLKey];
-    _client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:URLString]];
+    _HTTPManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:URLString]];
     return self;
 }
 
@@ -71,51 +71,45 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
     self.downloadingNewTags = YES;
     
     [self ensureCacheFolder];
-    NSURLRequest *request = [_client requestWithMethod:@"GET" path:@"tags.txt" parameters:nil];
-    AFHTTPRequestOperation *op = [_client HTTPRequestOperationWithRequest:request success:^(id _, id responseObject) {
-        NSString *tagsFile = [[NSString alloc] initWithData:responseObject
-                                                   encoding:NSUTF8StringEncoding];
+    [_HTTPManager GET:@"tags.txt" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSString *tagsFile = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         [self saveTagsFile:tagsFile];
         NSCharacterSet *newlines = [NSCharacterSet newlineCharacterSet];
         NSArray *lines = [tagsFile componentsSeparatedByCharactersInSet:newlines];
         NSRange rest = NSMakeRange(1, [lines count] - 1);
         [self downloadNewThreadTagsInList:[lines subarrayWithRange:rest] fromRelativePath:lines[0]];
     } failure:nil];
-    [_client enqueueHTTPRequestOperation:op];
 }
 
 - (void)downloadNewThreadTagsInList:(NSArray *)threadTags fromRelativePath:(NSString *)relativePath
 {
     NSMutableArray *tagsToDownload = [threadTags mutableCopy];
     [tagsToDownload removeObjectsInArray:[self availableThreadTagNames]];
-    NSMutableArray *batchOfOperations = [NSMutableArray new];
+    __block NSUInteger remaining = tagsToDownload.count;
     for (NSString *threadTagName in tagsToDownload) {
-        NSString *path = [relativePath stringByAppendingPathComponent:threadTagName];
-        NSURLRequest *request = [_client requestWithMethod:@"GET" path:path parameters:nil];
-        AFHTTPRequestOperation *op = [_client HTTPRequestOperationWithRequest:request success:nil failure:nil];
-        NSURL *outURL = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
-        op.outputStream = [NSOutputStream outputStreamWithURL:outURL append:NO];
-        [batchOfOperations addObject:op];
-    }
-    
-    [self ensureCacheFolder];
-    [_client enqueueBatchOfHTTPRequestOperations:batchOfOperations
-                                progressBlock:nil
-                              completionBlock:^(NSArray *operations)
-    {
-        self.downloadingNewTags = NO;
-        NSMutableArray *newlyAvailableTagNames = [NSMutableArray new];
-        for (AFHTTPRequestOperation *op in operations) {
-            if ([op hasAcceptableStatusCode]) {
-                [newlyAvailableTagNames addObject:[[op.request URL] lastPathComponent]];
+        NSURL *URL = [NSURL URLWithString:[relativePath stringByAppendingPathComponent:threadTagName]
+                            relativeToURL:_HTTPManager.baseURL];
+        NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
+                                                                        URLString:URL.absoluteString
+                                                                       parameters:nil];
+        NSURLSessionTask *task = [_HTTPManager downloadTaskWithRequest:request
+                                                              progress:nil
+                                                           destination:^(NSURL *targetPath, NSURLResponse *response)
+        {
+            return [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
+        } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+            remaining--;
+            if (remaining == 0) {
+                self.downloadingNewTags = NO;
             }
-        }
-        if ([newlyAvailableTagNames count] == 0) return;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewThreadTagsAvailableNotification
-                                                                object:newlyAvailableTagNames];
-        });
-    }];
+            if (error) return;
+            NSDictionary *userInfo = @{ AwfulThreadTagLoaderNewImageNameKey: [threadTagName stringByDeletingPathExtension] };
+            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagLoaderNewImageAvailableNotification
+                                                                object:self
+                                                              userInfo:userInfo];
+        }];
+        [task resume];
+    }
 }
 
 #pragma mark - Caching tags
@@ -196,4 +190,6 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
 
 @end
 
-NSString * const AwfulNewThreadTagsAvailableNotification = @"com.awfulapp.Awful.NewThreadTagsAvailable";
+NSString * const AwfulThreadTagLoaderNewImageAvailableNotification = @"com.awfulapp.Awful.ThreadTagLoaderNewImageAvailable";
+
+NSString * const AwfulThreadTagLoaderNewImageNameKey = @"AwfulThreadTagLoaderNewImageName";

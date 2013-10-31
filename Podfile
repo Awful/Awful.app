@@ -3,7 +3,7 @@ xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
 link_with ['Awful', 'Imgur API Test']
 inhibit_all_warnings!
 
-pod 'AFNetworking', '1.3.0'
+pod 'AFNetworking', '2.0.2'
 pod 'GRMustache', '6.7.3'
 pod 'JLRoutes', '1.4'
 pod 'PocketAPI', '1.0.2'

@@ -26,6 +26,11 @@
 @end
 
 /**
- * Posted when new thread tags become available. The notification's object conforms to NSFastEnumeration and responds to -containsObject:.
+ * Posted when a thread tag image becomes newly available or updates. The notification's object is the AwfulThreadTagLoader that downloaded the image. The notification's userInfo contains a value for the AwfulThreadTagLoaderNewImageNameKey.
  */
-extern NSString * const AwfulNewThreadTagsAvailableNotification;
+extern NSString * const AwfulThreadTagLoaderNewImageAvailableNotification;
+
+/**
+ * Value is an NSString suitable for -[AwfulThreadTagLoader threadTagNamed:].
+ */
+extern NSString * const AwfulThreadTagLoaderNewImageNameKey;

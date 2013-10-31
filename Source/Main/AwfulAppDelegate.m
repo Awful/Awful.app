@@ -3,6 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulAppDelegate.h"
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import "AwfulAlertView.h"
 #import "AwfulBasementViewController.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
@@ -23,7 +24,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
-#import <AFNetworking/AFNetworking.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import <PocketAPI/PocketAPI.h>
@@ -114,7 +114,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
     
     [AwfulHTTPClient client].managedObjectContext = _dataStack.managedObjectContext;
-    
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024

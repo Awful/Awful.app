@@ -36,7 +36,7 @@
 
 @implementation ImgurHTTPClient
 {
-    AFHTTPClient *_client;
+    AFHTTPRequestOperationManager *_HTTPManager;
 }
 
 + (ImgurHTTPClient *)client
@@ -52,9 +52,9 @@
 - (id)init
 {
     if (!(self = [super init])) return nil;
-    _client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://api.imgur.com/3/"]];
-    [_client registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [_client setDefaultHeader:@"Authorization" value:@"Client-ID 4db466addcb5cfc"];
+    NSURL *baseURL = [NSURL URLWithString:@"https://api.imgur.com/3/"];
+    _HTTPManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+    [_HTTPManager.requestSerializer setValue:@"Client-ID 4db466addcb5cfc" forHTTPHeaderField:@"Authorization"];
     return self;
 }
 
@@ -69,8 +69,8 @@
     urlOp.resizeOperation.completionBlock = ^{
         [self uploadImageDatasForURLCollectionOperation:weakURLOp];
     };
-    [_client.operationQueue addOperation:urlOp.resizeOperation];
-    [_client.operationQueue addOperation:urlOp];
+    [_HTTPManager.operationQueue addOperation:urlOp.resizeOperation];
+    [_HTTPManager.operationQueue addOperation:urlOp];
     return urlOp;
 }
 
@@ -78,20 +78,16 @@
 {
     NSMutableArray *operations = [NSMutableArray new];
     for (NSData *imageData in urlOp.resizeOperation.resizedImageDatas) {
-        NSURLRequest *request = [_client multipartFormRequestWithMethod:@"POST"
-                                                                   path:@"image.json"
-                                                             parameters:nil
-                                              constructingBodyWithBlock:^(id<AFMultipartFormData> form)
-        {
-            [form appendPartWithFileData:imageData
-                                    name:@"image"
-                                fileName:@"image.png"
-                                mimeType:@"image/png"];
-        }];
-        [operations addObject:[_client HTTPRequestOperationWithRequest:request success:nil failure:nil]];
+        [operations addObject:[_HTTPManager POST:@"image.json"
+                                      parameters:nil
+                       constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                           [formData appendPartWithFileData:imageData
+                                                       name:@"image"
+                                                   fileName:@"image.png"
+                                                   mimeType:@"image/png"];
+                       } success:nil failure:nil]];
     }
     urlOp.uploadOperations = operations;
-    [_client enqueueBatchOfHTTPRequestOperations:operations progressBlock:nil completionBlock:nil];
 }
 
 @end
@@ -173,9 +169,9 @@
 - (void)main
 {
     NSMutableArray *listOfURLs = [NSMutableArray new];
-    for (AFJSONRequestOperation *operation in self.uploadOperations) {
-        NSDictionary *response = operation.responseJSON;
-        if (!operation.hasAcceptableStatusCode) {
+    for (AFHTTPRequestOperation *operation in self.uploadOperations) {
+        NSDictionary *response = operation.responseObject;
+        if (!response) {
             NSInteger errorCode = ImgurAPIErrorUnknown;
             if (operation.response.statusCode == 400) {
                 errorCode = ImgurAPIErrorInvalidImage;
@@ -189,15 +185,15 @@
             NSString *message = @"An unknown error occurred";
             @try {
                 NSString *helpfulMessage = response[@"data"][@"error"][@"message"];
-                if (helpfulMessage) message = helpfulMessage;
+                if (helpfulMessage) {
+                    message = helpfulMessage;
+                }
             }
             @catch (NSException *exception) {
                 NSLog(@"Imgur messed with their error response JSON, which was %@", response);
             }
-            NSDictionary *userInfo = @{
-                NSLocalizedDescriptionKey : message,
-                NSUnderlyingErrorKey : operation.error
-            };
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : message,
+                                        NSUnderlyingErrorKey : operation.error };
             NSError *error = [NSError errorWithDomain:ImgurAPIErrorDomain
                                                  code:errorCode
                                              userInfo:userInfo];

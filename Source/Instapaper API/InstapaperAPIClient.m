@@ -7,7 +7,7 @@
 
 @implementation InstapaperAPIClient
 {
-    AFHTTPClient *_client;
+    AFHTTPSessionManager *_HTTPManager;
 }
 
 + (instancetype)client
@@ -23,7 +23,8 @@
 - (id)init
 {
     if (!(self = [super init])) return nil;
-    _client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.instapaper.com/api/"]];
+    NSURL *baseURL = [NSURL URLWithString:@"https://www.instapaper.com/api/"];
+    _HTTPManager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
     return self;
 }
 
@@ -31,30 +32,25 @@
                 password:(NSString *)password
                  andThen:(void (^)(NSError *error))callback
 {
-    password = password ?: @"";
-    [_client postPath:@"authenticate"
-        parameters:@{ @"username": username, @"password": password }
-           success:^(AFHTTPRequestOperation *operation, id responseObject)
-    {
-        if (callback) callback(nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *underlyingError) {
-        if (callback) {
-            NSInteger errorCode = InstapaperAPIErrorCodes.unknownError;
-            NSString *description = @"An unknown error occurred";
-            if (operation.response.statusCode == 403) {
-                errorCode = InstapaperAPIErrorCodes.invalidUsernameOrPassword;
-                description = @"Invalid username or password";
-            }
-            NSDictionary *userInfo = @{
-                NSUnderlyingErrorKey: underlyingError,
-                NSLocalizedDescriptionKey: description,
-            };
-            NSError *error = [NSError errorWithDomain:InstapaperAPIErrorDomain
-                                                 code:errorCode
-                                             userInfo:userInfo];
-            callback(error);
-        }
-    }];
+    [_HTTPManager POST:@"authenticate"
+            parameters:@{ @"username": username, @"password": password ?: @"" }
+               success:^(NSURLSessionDataTask *task, id responseObject) {
+                   if (callback) callback(nil);
+               } failure:^(NSURLSessionDataTask *task, NSError *underlyingError) {
+                   if (!callback) return;
+                   NSInteger errorCode = InstapaperAPIErrorCodes.unknownError;
+                   NSString *description = @"An unknown error occurred";
+                   if (((NSHTTPURLResponse *)task.response).statusCode == 403) {
+                       errorCode = InstapaperAPIErrorCodes.invalidUsernameOrPassword;
+                       description = @"Invalid username or password";
+                   }
+                   NSDictionary *userInfo = @{ NSUnderlyingErrorKey: underlyingError,
+                                               NSLocalizedDescriptionKey: description };
+                   NSError *error = [NSError errorWithDomain:InstapaperAPIErrorDomain
+                                                        code:errorCode
+                                                    userInfo:userInfo];
+                   callback(error);
+               }];
 }
 
 - (void)addURL:(NSURL *)url
@@ -62,36 +58,37 @@
       password:(NSString *)password
        andThen:(void (^)(NSError *error))callback
 {
-    [_client clearAuthorizationHeader];
-    [_client setAuthorizationHeaderWithUsername:username password:password ?: @""];
-    [_client postPath:@"add"
-        parameters:@{ @"url": [url absoluteString] }
-           success:^(AFHTTPRequestOperation *operation, id responseObject)
+    AFHTTPRequestSerializer *requestSerializer = [_HTTPManager.requestSerializer copy];
+    [requestSerializer setAuthorizationHeaderFieldWithUsername:username password:password ?: @""];
+    NSURL *requestURL = [NSURL URLWithString:@"add" relativeToURL:_HTTPManager.baseURL];
+    NSURLRequest *request = [requestSerializer requestWithMethod:@"POST"
+                                                       URLString:requestURL.absoluteString
+                                                      parameters:@{ @"url": url.absoluteString }];
+    [_HTTPManager dataTaskWithRequest:request
+                    completionHandler:^(NSURLResponse *response, id responseObject, NSError *underlyingError)
     {
-        if (callback) callback(nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *underlyingError) {
-        if (callback) {
-            NSInteger errorCode = InstapaperAPIErrorCodes.unknownError;
-            NSString *description = @"An unknown error occurred";
-            if (operation.response.statusCode == 403) {
-                errorCode = InstapaperAPIErrorCodes.invalidUsernameOrPassword;
-                description = @"Invalid username or password";
-            } else if (operation.response.statusCode == 400) {
-                errorCode = InstapaperAPIErrorCodes.rateLimitExceeded;
-                description = @"Rate limit exceeded";
-            }
-            NSDictionary *userInfo = @{
-                NSUnderlyingErrorKey: underlyingError,
-                NSLocalizedDescriptionKey: description,
-            };
-            NSError *error = [NSError errorWithDomain:InstapaperAPIErrorDomain
-                                                 code:errorCode
-                                             userInfo:userInfo];
-            callback(error);
+        if (!callback) return;
+        if (!underlyingError) {
+            callback(nil);
+            return;
         }
+        NSInteger errorCode = InstapaperAPIErrorCodes.unknownError;
+        NSString *description = @"An unknown error occurred";
+        if (((NSHTTPURLResponse *)response).statusCode == 403) {
+            errorCode = InstapaperAPIErrorCodes.invalidUsernameOrPassword;
+            description = @"Invalid username or password";
+        } else if (((NSHTTPURLResponse *)response).statusCode == 400) {
+            errorCode = InstapaperAPIErrorCodes.rateLimitExceeded;
+            description = @"Rate limit exceeded";
+        }
+        NSDictionary *userInfo = @{ NSUnderlyingErrorKey: underlyingError,
+                                    NSLocalizedDescriptionKey: description };
+        NSError *error = [NSError errorWithDomain:InstapaperAPIErrorDomain
+                                             code:errorCode
+                                         userInfo:userInfo];
+        callback(error);
     }];
 }
-
 
 @end
 
