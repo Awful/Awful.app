@@ -19,14 +19,6 @@ class ::Pod::Generator::Acknowledgements
 end
 
 post_install do |i|
-  # Fix ARCHS setting.
-  i.project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['ARCHS'] = "$(ARCHS_STANDARD_INCLUDING_64_BIT)"
-    end
-  end
-  
-  require 'xcodeproj/xcodeproj_ext'
   plist = Xcodeproj.read_plist('Pods/Pods-acknowledgements.plist')
   licenses = plist['PreferenceSpecifiers']
   
