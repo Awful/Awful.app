@@ -979,6 +979,7 @@ static char KVOContext;
     }
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
+
 - (void)showActionsForUser:(AwfulUser *)user fromRect:(CGRect)rect
 {
 	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
