@@ -16,7 +16,7 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>

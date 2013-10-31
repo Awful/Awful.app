@@ -13,7 +13,7 @@
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 
@@ -157,7 +157,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-    UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:pm.firstIconName];
+    UIImage *threadTag = [[AwfulThreadTagLoader loader] threadTagNamed:pm.firstIconName];
     if (threadTag) {
         cell.imageView.image = threadTag;
     } else {

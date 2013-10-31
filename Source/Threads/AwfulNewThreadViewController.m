@@ -9,7 +9,7 @@
 #import "AwfulNewThreadFieldView.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
 @interface AwfulNewThreadViewController () <AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
@@ -99,7 +99,7 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.threadTag.imageName];
+        image = [[AwfulThreadTagLoader loader] threadTagNamed:self.threadTag.imageName];
     } else {
         image = [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
     }
@@ -107,7 +107,7 @@ static NSString * const DefaultTitle = @"New Thread";
     if (self.secondaryThreadTag) {
         // TODO grab new style from AwfulThreadTableViewController
         AwfulThreadTag *tag = self.secondaryThreadTag;
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag.imageName];
+        image = [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
     } else {
         image = nil;
     }
@@ -209,7 +209,7 @@ static NSString * const DefaultTitle = @"New Thread";
         return [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag.imageName];
+        return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
     }
 }
 
@@ -217,7 +217,7 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     // TODO grab new style from thread table view controller
     AwfulThreadTag *tag = _availableSecondaryThreadTags[index];
-    return [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag.imageName];
+    return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
 }
 
 - (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index

@@ -12,7 +12,7 @@
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
@@ -84,7 +84,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
         cell.tagAndRatingView.threadTag = emptyTag;
     } else {
-        UIImage *threadTag = [[AwfulThreadTags sharedThreadTags] threadTagNamed:thread.firstIconName];
+        UIImage *threadTag = [[AwfulThreadTagLoader loader] threadTagNamed:thread.firstIconName];
         cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
     }
     

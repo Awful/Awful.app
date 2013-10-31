@@ -1,33 +1,35 @@
-//  AwfulThreadTags.m
+//  AwfulThreadTagLoader.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
+#import <AFNetworking/AFNetworking.h>
 #import "AwfulUIKitAndFoundationCategories.h"
 
-@interface AwfulThreadTags ()
+@interface AwfulThreadTagLoader ()
 
 @property (nonatomic) BOOL downloadingNewTags;
 
 @end
 
-@implementation AwfulThreadTags
-
-#pragma mark - NSObject
+@implementation AwfulThreadTagLoader
+{
+    AFHTTPClient *_client;
+}
 
 - (id)init
 {
-    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    return [super initWithBaseURL:[NSURL URLWithString:info[kNewThreadTagURLKey]]];
+    if (!(self = [super init])) return nil;
+    NSString *URLString = [NSBundle mainBundle].infoDictionary[kNewThreadTagURLKey];
+    _client = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:URLString]];
+    return self;
 }
 
 static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
 
-#pragma mark - API
-
-+ (AwfulThreadTags *)sharedThreadTags
++ (AwfulThreadTagLoader *)loader
 {
-    static AwfulThreadTags *instance = nil;
+    static AwfulThreadTagLoader *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [self new];
@@ -69,10 +71,8 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
     self.downloadingNewTags = YES;
     
     [self ensureCacheFolder];
-    NSURLRequest *request = [self requestWithMethod:@"GET" path:@"tags.txt" parameters:nil];
-    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                               success:^(id _, id responseObject)
-    {
+    NSURLRequest *request = [_client requestWithMethod:@"GET" path:@"tags.txt" parameters:nil];
+    AFHTTPRequestOperation *op = [_client HTTPRequestOperationWithRequest:request success:^(id _, id responseObject) {
         NSString *tagsFile = [[NSString alloc] initWithData:responseObject
                                                    encoding:NSUTF8StringEncoding];
         [self saveTagsFile:tagsFile];
@@ -81,7 +81,7 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
         NSRange rest = NSMakeRange(1, [lines count] - 1);
         [self downloadNewThreadTagsInList:[lines subarrayWithRange:rest] fromRelativePath:lines[0]];
     } failure:nil];
-    [self enqueueHTTPRequestOperation:op];
+    [_client enqueueHTTPRequestOperation:op];
 }
 
 - (void)downloadNewThreadTagsInList:(NSArray *)threadTags fromRelativePath:(NSString *)relativePath
@@ -91,17 +91,15 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
     NSMutableArray *batchOfOperations = [NSMutableArray new];
     for (NSString *threadTagName in tagsToDownload) {
         NSString *path = [relativePath stringByAppendingPathComponent:threadTagName];
-        NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:nil];
-        AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
-                                                                   success:nil
-                                                                   failure:nil];
+        NSURLRequest *request = [_client requestWithMethod:@"GET" path:path parameters:nil];
+        AFHTTPRequestOperation *op = [_client HTTPRequestOperationWithRequest:request success:nil failure:nil];
         NSURL *outURL = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
         op.outputStream = [NSOutputStream outputStreamWithURL:outURL append:NO];
         [batchOfOperations addObject:op];
     }
     
     [self ensureCacheFolder];
-    [self enqueueBatchOfHTTPRequestOperations:batchOfOperations
+    [_client enqueueBatchOfHTTPRequestOperations:batchOfOperations
                                 progressBlock:nil
                               completionBlock:^(NSArray *operations)
     {
@@ -131,7 +129,10 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
 - (void)ensureCacheFolder
 {
     NSError *error;
-    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:[self cacheFolder] withIntermediateDirectories:YES attributes:nil error:&error];
+    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:[self cacheFolder]
+                                       withIntermediateDirectories:YES
+                                                        attributes:nil
+                                                             error:&error];
     if (!ok) {
         NSLog(@"error creating thread tag cache folder %@: %@", [self cacheFolder], error);
     }
@@ -195,6 +196,4 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
 
 @end
 
-
-NSString * const AwfulNewThreadTagsAvailableNotification
-    = @"com.awfulapp.Awful.NewThreadTagsAvailable";
+NSString * const AwfulNewThreadTagsAvailableNotification = @"com.awfulapp.Awful.NewThreadTagsAvailable";

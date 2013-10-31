@@ -4,7 +4,7 @@
 
 #import "AwfulPostIconPickerController.h"
 #import "AwfulImageCollectionViewCell.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulPostIconPickerController () <UIPopoverControllerDelegate>

@@ -9,7 +9,7 @@
 #import "AwfulNewPrivateMessageFieldView.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
-#import "AwfulThreadTags.h"
+#import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulNewPrivateMessageViewController () <AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
@@ -128,7 +128,7 @@
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [[AwfulThreadTags sharedThreadTags] threadTagNamed:self.threadTag.imageName];
+        image = [[AwfulThreadTagLoader loader] threadTagNamed:self.threadTag.imageName];
     } else {
         image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     }
@@ -211,7 +211,7 @@
         return [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTags sharedThreadTags] threadTagNamed:tag.imageName];
+        return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
     }
 }
 
