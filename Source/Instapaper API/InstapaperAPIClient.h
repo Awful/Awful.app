@@ -2,35 +2,30 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AFHTTPClient.h"
+#import <Foundation/Foundation.h>
 
-// Instapaper simple API client.
-@interface InstapaperAPIClient : AFHTTPClient
+/**
+ * An InstapaperAPIClient adds URLs to Instapaper using the simple API. http://www.instapaper.com/api/simple
+ */
+@interface InstapaperAPIClient : NSObject
 
-// Singleton instance.
+/**
+ * Convenient singleton instance.
+ */
 + (instancetype)client;
 
-// Validate an Instapaper username and password.
-//
-// username - the username for the Instapaper account.
-// password - the password for the Instapaper account. If the account has no password, any password
-//            will work.
-// callback - a block that's called after receiving a response:
-//              error - an NSError in the InstapaperAPIErrorDomain on failure, or nil on success.
+/**
+ * @param callback A block that's called after validation that takes one parameter: an NSError object in the InstapaperAPIErrorDomain on failure, or nil on success.
+ */
 - (void)validateUsername:(NSString *)username
                 password:(NSString *)password
                  andThen:(void (^)(NSError *error))callback;
 
-// Add the URL to the stored Instapaper account.
-//
-// url - the URL to add.
-// username - the username for the Instapaper account.
-// password - the password for the Instapaper account, if any.
-// callback - a block that's called after receiving a response:
-//              error - an NSError in the InstapaperAPIErrorDomain on failure, or nil on success.
-//
-// If the URL already exists in the user's Instapaper account, it will be marked unread and sent to
-// the top of the list. It will not be duplicated.
+/**
+ * @param callback A block that's called after adding the URL that takes one parameter: an NSError object in the InstapaperAPIErrorDomain on failure, or nil on success.
+ *
+ * If the URL already exists in the user's Instapaper account, it will be marked unread and sent to the top of the list. It will not be duplicated.
+ */
 - (void)addURL:(NSURL *)url
    forUsername:(NSString *)username
       password:(NSString *)password

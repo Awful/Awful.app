@@ -3,20 +3,28 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "InstapaperAPIClient.h"
-#import "AFHTTPRequestOperation.h"
+#import <AFNetworking/AFNetworking.h>
 
-// http://www.instapaper.com/api/simple
 @implementation InstapaperAPIClient
+{
+    AFHTTPClient *_client;
+}
 
 + (instancetype)client
 {
     static InstapaperAPIClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[self alloc] initWithBaseURL:
-                    [NSURL URLWithString:@"https://www.instapaper.com/api/"]];
+        instance = [self new];
     });
     return instance;
+}
+
+- (id)init
+{
+    if (!(self = [super init])) return nil;
+    _client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://www.instapaper.com/api/"]];
+    return self;
 }
 
 - (void)validateUsername:(NSString *)username
@@ -24,7 +32,7 @@
                  andThen:(void (^)(NSError *error))callback
 {
     password = password ?: @"";
-    [self postPath:@"authenticate"
+    [_client postPath:@"authenticate"
         parameters:@{ @"username": username, @"password": password }
            success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
@@ -54,9 +62,9 @@
       password:(NSString *)password
        andThen:(void (^)(NSError *error))callback
 {
-    [self clearAuthorizationHeader];
-    [self setAuthorizationHeaderWithUsername:username password:password ?: @""];
-    [self postPath:@"add"
+    [_client clearAuthorizationHeader];
+    [_client setAuthorizationHeaderWithUsername:username password:password ?: @""];
+    [_client postPath:@"add"
         parameters:@{ @"url": [url absoluteString] }
            success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
