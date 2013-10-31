@@ -79,7 +79,7 @@
     NSMutableArray *operations = [NSMutableArray new];
     for (NSData *imageData in urlOp.resizeOperation.resizedImageDatas) {
         NSURLRequest *request = [_client multipartFormRequestWithMethod:@"POST"
-                                                                   path:@"/3/image.json"
+                                                                   path:@"image.json"
                                                              parameters:nil
                                               constructingBodyWithBlock:^(id<AFMultipartFormData> form)
         {
