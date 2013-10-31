@@ -2,20 +2,18 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <AFNetworking/AFNetworking.h>
-#import "AwfulThreadPage.h"
-@class AwfulPrivateMessage;
-@class AwfulUser;
+#import <Foundation/Foundation.h>
+#import "AwfulModels.h"
 
-@interface AwfulHTTPClient : AFHTTPClient
+@interface AwfulHTTPClient : NSObject
 
 // Singleton instance.
 + (AwfulHTTPClient *)client;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-// Clear singleton instance.
-+ (void)reset;
+// Recreate internal HTTP client using base URL from settings.
+- (void)reset;
 
 // Returns YES if the forums are reachable through current network settings.
 @property (readonly, getter=isReachable, nonatomic) BOOL reachable;

@@ -3,6 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumsListController.h"
+#import <AFNetworking/AFNetworking.h>
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulFavoriteForumCell.h"

@@ -61,7 +61,7 @@ static id _instance;
 - (void)logOut
 {
     // Reset the HTTP client so it gets remade (if necessary) with the default URL.
-    [AwfulHTTPClient reset];
+    [[AwfulHTTPClient client] reset];
     
     // Delete all cookies, both from SA and possibly accrued from using Awful Browser.
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
