@@ -11,12 +11,14 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulIconActionSheet.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPostsView.h"
 #import "AwfulProfileViewController.h"
+#import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
@@ -142,12 +144,13 @@
     CGRect rect;
     if ([postsView indexOfPostWithActionButtonAtPoint:point rect:&rect] != NSNotFound) {
         [self showPostActionsFromRect:rect];
+    } else if ([postsView indexOfPostWithUserNameAtPoint:point rect:&rect] != NSNotFound) {
+        [self showUserActionsFromRect:rect];
     }
 }
 
 - (void)showPostActionsFromRect:(CGRect)rect
 {
-    rect = [self.postsView convertRect:rect toView:nil];
     NSString *title = [NSString stringWithFormat:@"%@'s Message",
                        self.privateMessage.from.username];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
@@ -197,7 +200,37 @@
         }
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:self.postsView.window animated:YES];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
+}
+
+- (void)showUserActionsFromRect:(CGRect)rect
+{
+	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    AwfulUser *user = self.privateMessage.from;
+	sheet.title = [NSString stringWithFormat:@"%@", user.username];
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                              target:self
+                                                                              action:@selector(doneWithProfile)];
+        profile.navigationItem.leftBarButtonItem = item;
+        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+	}]];
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+        AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+        } else {
+            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                     style:UIBarButtonItemStylePlain
+                                                                    target:nil
+                                                                    action:nil];
+            self.navigationItem.backBarButtonItem = item;
+            [self.navigationController pushViewController:rapSheet animated:YES];
+        }
+
+	}]];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
 - (void)doneWithProfile
@@ -290,7 +323,8 @@
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController didFinishWithSuccessfulSubmission:(BOOL)success
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+didFinishWithSuccessfulSubmission:(BOOL)success
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
