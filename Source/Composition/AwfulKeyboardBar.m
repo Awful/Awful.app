@@ -47,7 +47,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
-    self.backgroundColor = [UIColor colorWithRed:0.078 green:0.078 blue:0.078 alpha:1];
+	self.backgroundColor = [UIColor colorWithRed:0.863 green:0.871 blue:0.886 alpha:1];
     self.opaque = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     return self;
@@ -88,11 +88,11 @@
     if (!(self = [super init])) return nil;
     _character = [character copy];
     [self setTitle:_character forState:UIControlStateNormal];
-		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     self.titleLabel.font = [UIFont systemFontOfSize:22];
     
-		self.backgroundColor = [UIColor colorWithRed:0.353 green:0.353 blue:0.353 alpha:1];
+		self.backgroundColor = [UIColor colorWithRed:0.992 green:0.992 blue:0.996 alpha:1];
 		self.layer.cornerRadius = 3.5;
     self.layer.borderWidth = 0;
     return self;
