@@ -21,6 +21,7 @@ PODS:
     - AFNetworking/NSURLConnection
   - GRMustache (6.7.3):
     - JRSwizzle (~> 1.0)
+  - HTMLReader (0.0.1-alpha.8)
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
@@ -31,15 +32,21 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (= 2.0.2)
   - GRMustache (= 6.7.3)
+  - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - JLRoutes (= 1.4)
   - PocketAPI (= 1.0.2)
   - SVProgressHUD (HEAD)
   - SVPullToRefresh (HEAD)
   - WYPopoverController (= 0.1.4)
 
+EXTERNAL SOURCES:
+  HTMLReader:
+    :git: https://github.com/nolanw/HTMLReader
+
 SPEC CHECKSUMS:
   AFNetworking: 22de50ae71ab1c4859773f61068d6fcd1d8f9a4d
   GRMustache: e662eb62eeb19b54cf4441043cfb70808eb86dba
+  HTMLReader: 57de5741a6e91c6b9d443fd3119e28693c8d56e8
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
