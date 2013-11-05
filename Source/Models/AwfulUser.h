@@ -152,9 +152,10 @@
                              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 /**
- * Returns an AwfulUser with the given user ID, inserting one if necessary.
+ * Returns an AwfulUser with the given user ID and/or username, inserting one if necessary.
  */
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
+                                username:(NSString *)username
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

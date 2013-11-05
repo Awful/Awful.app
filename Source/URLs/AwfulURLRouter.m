@@ -154,7 +154,9 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     AwfulPostsViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
-        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID inManagedObjectContext:self.managedObjectContext];
+        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID
+                                                     username:nil
+                                       inManagedObjectContext:self.managedObjectContext];
         postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread author:user];
     } else {
         postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];

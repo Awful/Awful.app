@@ -257,6 +257,7 @@
     AwfulNewPrivateMessageViewController *newPrivateMessageViewController;
     if (recipientUserID) {
         AwfulUser *recipient = [AwfulUser firstOrNewUserWithUserID:recipientUserID
+                                                          username:nil
                                             inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:recipient];
     } else if (regardingMessageID) {

@@ -66,13 +66,28 @@
 }
 
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
+                                username:(NSString *)username
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    AwfulUser *user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
-                                         matchingPredicateFormat:@"userID = %@", userID];
+    AwfulUser *user;
+    if (userID.length > 0) {
+        user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                  matchingPredicateFormat:@"userID = %@", userID];
+    } else if (username.length > 0) {
+        user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
+                                  matchingPredicateFormat:@"username = %@", username];
+    } else {
+        NSLog(@"%s need user ID or username to fetch user", __PRETTY_FUNCTION__);
+        return nil;
+    }
     if (!user) {
         user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
+    }
+    if (userID.length > 0) {
         user.userID = userID;
+    }
+    if (username.length > 0) {
+        user.username = username;
     }
     return user;
 }
