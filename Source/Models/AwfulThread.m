@@ -62,41 +62,6 @@
     return [NSSet setWithObject:@"seenPosts"];
 }
 
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
-                            inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-{
-    NSMutableDictionary *existingThreads = [NSMutableDictionary new];
-    NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
-    for (AwfulThread *thread in [self fetchAllInManagedObjectContext:managedObjectContext
-                                             matchingPredicateFormat:@"threadID IN %@", threadIDs]) {
-        existingThreads[thread.threadID] = thread;
-    }
-    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
-    for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
-                                              matchingPredicateFormat:@"username IN %@", usernames]) {
-        existingUsers[user.username] = user;
-    }
-    
-    for (ThreadParsedInfo *info in threadInfos) {
-        if ([info.threadID length] == 0) {
-            NSLog(@"ignoring ID-less thread (announcement?)");
-            continue;
-        }
-        AwfulThread *thread = (existingThreads[info.threadID] ?:
-                               [AwfulThread insertInManagedObjectContext:managedObjectContext]);
-        [info applyToObject:thread];
-        if (!thread.author) {
-            thread.author = (existingUsers[info.author.username] ?:
-                             [AwfulUser insertInManagedObjectContext:managedObjectContext]);
-        }
-        [info.author applyToObject:thread.author];
-        existingUsers[thread.author.username] = thread.author;
-        existingThreads[thread.threadID] = thread;
-    }
-    return [existingThreads allValues];
-}
-
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
                       inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {

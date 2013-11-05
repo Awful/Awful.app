@@ -6,10 +6,12 @@
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
+#import "AwfulHTMLResponseSerializer.h"
 #import "AwfulModels.h"
 #import "AwfulParsedInfoResponseSerializer.h"
 #import "AwfulParsing.h"
 #import "AwfulSettings.h"
+#import "AwfulThreadListScraper.h"
 #import "AwfulThreadTag.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
@@ -140,43 +142,77 @@
                                    onPage:(NSInteger)page
                                   andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    return [_HTTPManager GET:@"forumdisplay.php"
-                  parameters:@{ @"forumid": forumID,
-                                @"perpage": @40,
-                                @"pagenumber": @(page) }
-            parsingWithBlock:^(NSData *data) { return [ThreadParsedInfo threadsWithHTMLData:data]; }
-                     success:^(AFHTTPRequestOperation *operation, NSArray *parsedInfos) {
-                         NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:parsedInfos
-                                                                        inManagedObjectContext:self.managedObjectContext];
-                         NSInteger stickyIndex = -(NSInteger)[threads count];
-                         NSArray *forums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
-                                                              matchingPredicateFormat:@"forumID = %@", forumID];
-                         for (AwfulThread *thread in threads) {
-                             if ([forums count] > 0) thread.forum = forums[0];
-                             thread.stickyIndex = thread.sticky ? stickyIndex++ : 0;
-                         }
-                         if (callback) callback(nil, threads);
-                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         if (callback) callback(error, nil);
-                     }];
+    NSURL *URL = [NSURL URLWithString:@"forumdisplay.php" relativeToURL:_HTTPManager.baseURL];
+    NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
+                                                                    URLString:URL.absoluteString
+                                                                   parameters:@{ @"forumid": forumID,
+                                                                                 @"perpage": @40,
+                                                                                 @"pagenumber": @(page) }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    AFHTTPRequestOperation *operation = [_HTTPManager HTTPRequestOperationWithRequest:request
+                                                                              success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+                                         {
+                                             [managedObjectContext performBlock:^{
+                                                 AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
+                                                 NSError *error;
+                                                 NSArray *threads = [scraper scrapeDocument:document
+                                                                                    fromURL:operation.response.URL
+                                                                   intoManagedObjectContext:managedObjectContext
+                                                                                      error:&error];
+                                                 if (callback) {
+                                                     dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^{
+                                                         callback(error, threads);
+                                                     });
+                                                 }
+                                             }];
+                                         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                             if (callback) callback(error, nil);
+                                         }];
+    operation.responseSerializer = [AwfulHTMLResponseSerializer new];
+    [_HTTPManager.operationQueue addOperation:operation];
+    return operation;
 }
 
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    return [_HTTPManager GET:@"bookmarkthreads.php"
-                  parameters:@{ @"action": @"view",
-                                @"perpage": @40,
-                                @"pagenumber": @(page) }
-            parsingWithBlock:^(NSData *data) {
-                return [ThreadParsedInfo threadsWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                NSArray *threads = [AwfulThread threadsCreatedOrUpdatedWithParsedInfo:responseObject
-                                                               inManagedObjectContext:self.managedObjectContext];
-                if (callback) callback(nil, threads);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+    NSURL *URL = [NSURL URLWithString:@"bookmarkthreads.php" relativeToURL:_HTTPManager.baseURL];
+    NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
+                                                                    URLString:URL.absoluteString
+                                                                   parameters:@{ @"action": @"view",
+                                                                                 @"perpage": @40,
+                                                                                 @"pagenumber": @(page) }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    AFHTTPRequestOperation *operation = [_HTTPManager HTTPRequestOperationWithRequest:request
+                                                                              success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+                                         {
+                                             [managedObjectContext performBlock:^{
+                                                 AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
+                                                 NSError *error;
+                                                 NSArray *threads = [scraper scrapeDocument:document
+                                                                                    fromURL:operation.response.URL
+                                                                   intoManagedObjectContext:managedObjectContext
+                                                                                      error:&error];
+                                                 if (!threads) {
+                                                     if (callback) {
+                                                         dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^{
+                                                             callback(error, nil);
+                                                         });
+                                                     }
+                                                     return;
+                                                 }
+                                                 if (callback) {
+                                                     dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^{
+                                                         callback(error, threads);
+                                                     });
+                                                 }
+                                             }];
+                                         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                             if (callback) callback(error, nil);
+                                         }];
+    operation.responseSerializer = [AwfulHTMLResponseSerializer new];
+    [_HTTPManager.operationQueue addOperation:operation];
+    return operation;
 }
 
 - (NSOperation *)listPostsInThreadWithID:(NSString *)threadID

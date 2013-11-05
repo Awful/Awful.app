@@ -226,6 +226,8 @@
 		1CF2461C16DC286A00C75E05 /* private-one.html in Resources */ = {isa = PBXBuildFile; fileRef = 1CF2461A16DC286A00C75E05 /* private-one.html */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
+		1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */; };
+		1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -582,6 +584,10 @@
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
 		1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageCell.h; sourceTree = "<group>"; };
 		1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageCell.m; sourceTree = "<group>"; };
+		1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLResponseSerializer.h; sourceTree = "<group>"; };
+		1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLResponseSerializer.m; sourceTree = "<group>"; };
+		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
+		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -784,6 +790,8 @@
 			children = (
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
+				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
+				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -1161,6 +1169,8 @@
 		1CC7801D1612D988002AF958 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */,
+				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */,
@@ -1801,6 +1811,7 @@
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
 				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
+				1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */,
 				1C5F700917D87863005ABD6F /* AwfulVerticalTabBarController.m in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
@@ -1833,6 +1844,7 @@
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,
 				1C5B99BC166FFA4F004C5D0E /* Awful.xcdatamodeld in Sources */,
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
+				1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */,
 				1C4D7BDB167A5C7C00CF3659 /* PSMenuItem.m in Sources */,
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
 				1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */,

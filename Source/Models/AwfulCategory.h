@@ -29,4 +29,10 @@
  */
 @property (copy, nonatomic) NSSet *forums;
 
+/**
+ * Returns an AwfulCategory object with the category ID, inserting one if necessary.
+ */
++ (instancetype)firstOrNewCategoryWithCategoryID:(NSString *)categoryID
+                          inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 @end

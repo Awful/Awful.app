@@ -142,12 +142,6 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (readonly, nonatomic) BOOL beenSeen;
 
 /**
- * Returns an array of AwfulThread objects derived from an array of ThreadParsedInfo objects.
- */
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
-                            inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
-
-/**
  * Returns an AwfulThread object with the given thread ID, inserting one if necessary.
  */
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
