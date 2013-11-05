@@ -169,11 +169,8 @@
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
-		1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */; };
 		1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D31625A08F0004BDF4 /* ForumTests.m */; };
-		1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */; };
 		1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */; };
 		1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */; };
 		1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */; };
@@ -228,6 +225,20 @@
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */; };
 		1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
+		1CFE9847182934A5003DBBC2 /* ThreadListParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */; };
+		1CFE984A1829360E003DBBC2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CFE9848182934C6003DBBC2 /* XCTest.framework */; };
+		1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */; };
+		1CFE984C182936BE003DBBC2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
+		1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
+		1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
+		1CFE984F18293786003DBBC2 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
+		1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
+		1CFE985118293786003DBBC2 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
+		1CFE985218293786003DBBC2 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
+		1CFE985318293786003DBBC2 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
+		1CFE985418293786003DBBC2 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
+		1CFE985518293786003DBBC2 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
+		1CFE9856182937A6003DBBC2 /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765080DF74369002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765070DF74369002DB57D /* CoreGraphics.framework */; };
@@ -498,12 +509,9 @@
 		1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulMinusFixURLProtocol.m; sourceTree = "<group>"; };
 		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
 		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
-		1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParsingTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParsingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParsingTests-Info.plist"; sourceTree = "<group>"; };
 		1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParsingTests-Prefix.pch"; sourceTree = "<group>"; };
-		1CBDB5D31625A08F0004BDF4 /* ForumTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumTests.m; sourceTree = "<group>"; };
-		1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedThreadsTests.m; sourceTree = "<group>"; };
 		1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTests.m; sourceTree = "<group>"; };
 		1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewReplyTests.m; sourceTree = "<group>"; };
 		1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadTests.m; sourceTree = "<group>"; };
@@ -588,6 +596,8 @@
 		1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLResponseSerializer.m; sourceTree = "<group>"; };
 		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
 		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
+		1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadListParsingTests.m; sourceTree = "<group>"; };
+		1CFE9848182934C6003DBBC2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -644,7 +654,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CBDB5BE16259C6C0004BDF4 /* SenTestingKit.framework in Frameworks */,
+				1CFE984C182936BE003DBBC2 /* CoreData.framework in Frameworks */,
+				1CFE984A1829360E003DBBC2 /* XCTest.framework in Frameworks */,
 				1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */,
 				1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */,
 				1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */,
@@ -741,7 +752,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful.app */,
-				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */,
+				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */,
 				1C96D055167FDEA60043B194 /* Imgur API Test.app */,
 			);
 			name = Products;
@@ -1062,11 +1073,10 @@
 				1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */,
 				1CBDB5E11625A7780004BDF4 /* ParsingTests.h */,
 				1CBDB5E21625A7780004BDF4 /* ParsingTests.m */,
-				1CBDB5D61625A0A70004BDF4 /* BookmarkedThreadsTests.m */,
-				1CBDB5D31625A08F0004BDF4 /* ForumTests.m */,
 				1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */,
 				1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */,
 				1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */,
+				1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */,
 				1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */,
 			);
 			path = Parsing;
@@ -1336,6 +1346,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1CFE9848182934C6003DBBC2 /* XCTest.framework */,
 				1C74880916AC4B710068B8A3 /* AssetsLibrary.framework */,
 				1C5BA3EB16CBED3500375A72 /* AVFoundation.framework */,
 				10D34FA8128F41160026C7C2 /* CFNetwork.framework */,
@@ -1347,7 +1358,6 @@
 				10D34FAE128F413C0026C7C2 /* MobileCoreServices.framework */,
 				11099066134B86FC0013444C /* QuartzCore.framework */,
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
-				1CBDB5BD16259C6C0004BDF4 /* SenTestingKit.framework */,
 				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1CAB36B01548F0FE00A4A362 /* libxml2.dylib */,
@@ -1447,8 +1457,8 @@
 			);
 			name = ParsingTests;
 			productName = ParsingTests;
-			productReference = 1CBDB5BC16259C6C0004BDF4 /* ParsingTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
@@ -1773,20 +1783,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CBDB5D41625A08F0004BDF4 /* ForumTests.m in Sources */,
-				1CBDB5D71625A0A70004BDF4 /* BookmarkedThreadsTests.m in Sources */,
+				1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */,
 				1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */,
 				1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */,
 				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
+				1CFE9847182934A5003DBBC2 /* ThreadListParsingTests.m in Sources */,
+				1CFE985418293786003DBBC2 /* AwfulThread.m in Sources */,
+				1CFE985218293786003DBBC2 /* AwfulPrivateMessage.m in Sources */,
 				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,
 				1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */,
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
+				1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */,
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
+				1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
 				1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */,
+				1CFE9856182937A6003DBBC2 /* Awful.xcdatamodeld in Sources */,
 				1CF2461616DC1B4600C75E05 /* PrivateMessageTests.m in Sources */,
+				1CFE984F18293786003DBBC2 /* AwfulForum.m in Sources */,
+				1CFE985118293786003DBBC2 /* AwfulPost.m in Sources */,
 				1C9FDE5C16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
+				1CFE985518293786003DBBC2 /* AwfulUser.m in Sources */,
+				1CFE985318293786003DBBC2 /* AwfulSingleUserThreadInfo.m in Sources */,
 				1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */,
+				1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2016,8 +2036,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2030,7 +2052,10 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SDKROOT}/usr/include/libxml2",
+				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2055,14 +2080,19 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SDKROOT}/usr/include/libxml2",
+				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2072,7 +2102,6 @@
 					"-Wextra",
 					"-Wno-unused-parameter",
 				);
-				WRAPPER_EXTENSION = octest;
 			};
 			name = "App Store";
 		};
@@ -2193,14 +2222,19 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SDKROOT}/usr/include/libxml2",
+				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2210,7 +2244,6 @@
 					"-Wextra",
 					"-Wno-unused-parameter",
 				);
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Beta;
 		};

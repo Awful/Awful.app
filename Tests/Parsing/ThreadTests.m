@@ -19,17 +19,16 @@
 - (void)testPageInfo
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEquals(info.pageNumber, 5, nil);
-    STAssertEquals(info.pagesInThread, 151, nil);
-    STAssertEqualObjects(info.forumID, @"46", nil);
-    STAssertEqualObjects(info.forumName, @"Debate & Discussion", nil);
-    STAssertEqualObjects(info.threadID, @"3507451", nil);
-    STAssertEqualObjects(info.threadTitle,
-                         @"Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe",
-                         nil);
-    STAssertFalse(info.threadClosed, nil);
-    STAssertTrue(info.threadBookmarked, nil);
-    STAssertEquals([info.posts count], 40U, nil);
+    XCTAssertEqual(info.pageNumber, 5);
+    XCTAssertEqual(info.pagesInThread, 151);
+    XCTAssertEqualObjects(info.forumID, @"46");
+    XCTAssertEqualObjects(info.forumName, @"Debate & Discussion");
+    XCTAssertEqualObjects(info.threadID, @"3507451");
+    XCTAssertEqualObjects(info.threadTitle,
+                         @"Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe");
+    XCTAssertFalse(info.threadClosed);
+    XCTAssertTrue(info.threadBookmarked);
+    XCTAssertEqual([info.posts count], 40U);
 }
 
 - (void)testPostInfo
@@ -38,57 +37,57 @@
     NSDateFormatter *formatter = [NSDateFormatter new];
     
     PostParsedInfo *first = info.posts[0];
-    STAssertEqualObjects(first.postID, @"407741839", nil);
-    STAssertEqualObjects(first.threadIndex, @"161", nil);
+    XCTAssertEqualObjects(first.postID, @"407741839");
+    XCTAssertEqualObjects(first.threadIndex, @"161");
     [formatter setDateFormat:@"MMM dd, yyyy  h:mm a"];
-    STAssertEqualObjects([formatter stringFromDate:first.postDate], @"Sep 20, 2012  11:16 AM", nil);
-    STAssertTrue(first.beenSeen, nil);
-    STAssertFalse(first.editable, nil);
+    XCTAssertEqualObjects([formatter stringFromDate:first.postDate], @"Sep 20, 2012  11:16 AM");
+    XCTAssertTrue(first.beenSeen);
+    XCTAssertFalse(first.editable);
     
     PostParsedInfo *tenth = info.posts[10];
-    STAssertEqualObjects(tenth.postID, @"407751664", nil);
-    STAssertEqualObjects(tenth.threadIndex, @"171", nil);
-    STAssertEqualObjects(tenth.author.username, @"JayMax", nil);
-    STAssertTrue([tenth.innerHTML rangeOfString:@"Québec"].location != NSNotFound, nil);
-    STAssertTrue([tenth.author.customTitleHTML rangeOfString:@"gentleman"].location != NSNotFound, nil);
-    STAssertTrue(tenth.beenSeen, nil);
-    STAssertFalse(tenth.editable, nil);
-    STAssertTrue(tenth.author.canReceivePrivateMessages, nil);
+    XCTAssertEqualObjects(tenth.postID, @"407751664");
+    XCTAssertEqualObjects(tenth.threadIndex, @"171");
+    XCTAssertEqualObjects(tenth.author.username, @"JayMax");
+    XCTAssertTrue([tenth.innerHTML rangeOfString:@"Québec"].location != NSNotFound);
+    XCTAssertTrue([tenth.author.customTitleHTML rangeOfString:@"gentleman"].location != NSNotFound);
+    XCTAssertTrue(tenth.beenSeen);
+    XCTAssertFalse(tenth.editable);
+    XCTAssertTrue(tenth.author.canReceivePrivateMessages);
     
     PostParsedInfo *eleventh = info.posts[11];
-    STAssertFalse(eleventh.author.canReceivePrivateMessages, nil);
+    XCTAssertFalse(eleventh.author.canReceivePrivateMessages);
     
     PostParsedInfo *twelfth = info.posts[12];
-    STAssertEqualObjects(twelfth.postID, @"407751956", nil);
-    STAssertEqualObjects(twelfth.threadIndex, @"173", nil);
-    STAssertEqualObjects(twelfth.author.username, @"Dreylad", nil);
-    STAssertTrue(twelfth.author.originalPoster, nil);
-    STAssertFalse(twelfth.author.moderator, nil);
-    STAssertFalse(twelfth.beenSeen, nil);
-    STAssertFalse(twelfth.editable, nil);
+    XCTAssertEqualObjects(twelfth.postID, @"407751956");
+    XCTAssertEqualObjects(twelfth.threadIndex, @"173");
+    XCTAssertEqualObjects(twelfth.author.username, @"Dreylad");
+    XCTAssertTrue(twelfth.author.originalPoster);
+    XCTAssertFalse(twelfth.author.moderator);
+    XCTAssertFalse(twelfth.beenSeen);
+    XCTAssertFalse(twelfth.editable);
     
     PostParsedInfo *fourteenth = info.posts[14];
-    STAssertEqualObjects(fourteenth.postID, @"407753032", nil);
-    STAssertEqualObjects(fourteenth.threadIndex, @"175", nil);
-    STAssertEqualObjects(fourteenth.author.username, @"angerbot", nil);
-    STAssertTrue(fourteenth.author.administrator, nil);
-    STAssertFalse(fourteenth.author.moderator, nil);
-    STAssertTrue([fourteenth.author.customTitleHTML rangeOfString:@"/images/angerbrat.jpg"].length != 0, nil);
-    STAssertFalse(fourteenth.beenSeen, nil);
-    STAssertFalse(fourteenth.editable, nil);
+    XCTAssertEqualObjects(fourteenth.postID, @"407753032");
+    XCTAssertEqualObjects(fourteenth.threadIndex, @"175");
+    XCTAssertEqualObjects(fourteenth.author.username, @"angerbot");
+    XCTAssertTrue(fourteenth.author.administrator);
+    XCTAssertFalse(fourteenth.author.moderator);
+    XCTAssertTrue([fourteenth.author.customTitleHTML rangeOfString:@"/images/angerbrat.jpg"].length != 0);
+    XCTAssertFalse(fourteenth.beenSeen);
+    XCTAssertFalse(fourteenth.editable);
     
     PostParsedInfo *twentyFirst = info.posts[21];
-    STAssertFalse(twentyFirst.beenSeen, nil);
-    STAssertFalse(twentyFirst.editable, nil);
+    XCTAssertFalse(twentyFirst.beenSeen);
+    XCTAssertFalse(twentyFirst.editable);
     
     PostParsedInfo *last = [info.posts lastObject];
-    STAssertEqualObjects(last.postID, @"407769816", nil);
-    STAssertEqualObjects(last.threadIndex, @"200", nil);
+    XCTAssertEqualObjects(last.postID, @"407769816");
+    XCTAssertEqualObjects(last.threadIndex, @"200");
     formatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     [formatter setDateFormat:@"MMM dd, yyyy"];
-    STAssertEqualObjects([formatter stringFromDate:last.author.regdate], @"Aug 25, 2009", nil);
-    STAssertFalse(last.beenSeen, nil);
-    STAssertFalse(last.editable, nil);
+    XCTAssertEqualObjects([formatter stringFromDate:last.author.regdate], @"Aug 25, 2009");
+    XCTAssertFalse(last.beenSeen);
+    XCTAssertFalse(last.editable);
 }
 
 @end
@@ -107,9 +106,9 @@
 {
     PageParsedInfo *info = [[PageParsedInfo alloc] initWithHTMLData:self.fixture];
     PostParsedInfo *ganker = info.posts[24];
-    STAssertEqualObjects(ganker.author.username, @"Ganker", nil);
+    XCTAssertEqualObjects(ganker.author.username, @"Ganker");
     PostParsedInfo *afterGanker = info.posts[25];
-    STAssertEqualObjects(afterGanker.author.username, @"brylcreem", nil);
+    XCTAssertEqualObjects(afterGanker.author.username, @"brylcreem");
 }
 
 @end
@@ -125,7 +124,7 @@
 {
     SuccessfulNewThreadParsedInfo *info = [[SuccessfulNewThreadParsedInfo alloc]
                                            initWithHTMLData:self.fixture];
-    STAssertEqualObjects(info.threadID, @"3550424", nil);
+    XCTAssertEqualObjects(info.threadID, @"3550424");
 }
 
 @end
@@ -140,24 +139,24 @@
 - (void)testNewThreadForm
 {
     NewThreadFormParsedInfo *info = [[NewThreadFormParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(info.formkey, @"abc123", nil);
-    STAssertEqualObjects(info.formCookie, @"heyhey", nil);
-    STAssertEqualObjects(info.automaticallyParseURLs, @"yes", nil);
-    STAssertNil(info.bookmarkThread, nil);
+    XCTAssertEqualObjects(info.formkey, @"abc123");
+    XCTAssertEqualObjects(info.formCookie, @"heyhey");
+    XCTAssertEqualObjects(info.automaticallyParseURLs, @"yes");
+    XCTAssertNil(info.bookmarkThread);
 }
 
 - (void)testIconIDs
 {
     ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
                                              initWithHTMLData:self.fixture];
-    STAssertEqualObjects([[info.postIcons[@"526"] lastPathComponent] stringByDeletingPathExtension],
-                         @"lf-9287", nil);
-    STAssertTrue([info.postIconIDs containsObject:@"322"], nil);
+    XCTAssertEqualObjects([[info.postIcons[@"526"] lastPathComponent] stringByDeletingPathExtension],
+                         @"lf-9287");
+    XCTAssertTrue([info.postIconIDs containsObject:@"322"]);
     
-    STAssertEqualObjects([info.secondaryIcons[@"0"] lastPathComponent], @"tma.gif", nil);
-    STAssertTrue([info.secondaryIconIDs containsObject:@"1"], nil);
-    STAssertEqualObjects(info.secondaryIconKey, @"tma_ama", nil);
-    STAssertEqualObjects(info.selectedSecondaryIconID, @"0", nil);
+    XCTAssertEqualObjects([info.secondaryIcons[@"0"] lastPathComponent], @"tma.gif");
+    XCTAssertTrue([info.secondaryIconIDs containsObject:@"1"]);
+    XCTAssertEqualObjects(info.secondaryIconKey, @"tma_ama");
+    XCTAssertEqualObjects(info.selectedSecondaryIconID, @"0");
 }
 
 @end
@@ -172,11 +171,10 @@
 {
     ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
                                              initWithHTMLData:self.fixture];
-    STAssertEqualObjects(info.secondaryIconKey, @"samart_tag", nil);
-    STAssertTrue([info.secondaryIconIDs containsObject:@"4"], nil);
-    STAssertEqualObjects([info.secondaryIcons[@"1"] lastPathComponent], @"icon-37-selling.gif",
-                         nil);
-    STAssertEqualObjects(info.selectedSecondaryIconID, @"1", nil);
+    XCTAssertEqualObjects(info.secondaryIconKey, @"samart_tag");
+    XCTAssertTrue([info.secondaryIconIDs containsObject:@"4"]);
+    XCTAssertEqualObjects([info.secondaryIcons[@"1"] lastPathComponent], @"icon-37-selling.gif");
+    XCTAssertEqualObjects(info.selectedSecondaryIconID, @"1");
 }
 
 @end

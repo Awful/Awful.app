@@ -10,9 +10,9 @@
 @interface AwfulDataStack : NSObject
 
 /**
- * Returns an initialized AwfulDataStack. This is the designated initializer.
+ * Returns an initialized AwfulDataStack. This is one of two designated initializers.
  *
- * @param storeURL The location of the store. A new store is created in this location as needed (when there is no store, or when the existing store is incompatible with the model).
+ * @param storeURL The location of the store. A new store is created in this location as needed (when there is no store, or when the existing store is incompatible with the model). If nil, an in-memory store is created and will not persist.
  * @param modelURL The location of the managed object model.
  */
 - (id)initWithStoreURL:(NSURL *)storeURL modelURL:(NSURL *)modelURL;

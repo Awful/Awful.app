@@ -13,16 +13,16 @@
 {
     PrivateMessageParsedInfo *info = [[PrivateMessageParsedInfo alloc]
                                       initWithHTMLData:self.fixture];
-    STAssertEqualObjects(info.subject, @"Awful app", nil);
-    STAssertEqualObjects(info.messageID, @"4601162", nil);
-    STAssertEqualObjects(info.from.username, @"InFlames235", nil);
-    STAssertEqualObjects(info.from.userID, @"47395", nil);
-    STAssertNotNil(info.from.regdate, nil);
-    STAssertStringContainsSubstringOnce(info.from.customTitleHTML, @"as a cow", nil);
-    STAssertFalse(info.replied, nil);
-    STAssertTrue(info.seen, nil);
-    STAssertNotNil(info.sentDate, nil);
-    STAssertStringContainsSubstringOnce(info.innerHTML, @"an awesome app", nil);
+    XCTAssertEqualObjects(info.subject, @"Awful app");
+    XCTAssertEqualObjects(info.messageID, @"4601162");
+    XCTAssertEqualObjects(info.from.username, @"InFlames235");
+    XCTAssertEqualObjects(info.from.userID, @"47395");
+    XCTAssertNotNil(info.from.regdate);
+    AwfulAssertStringContainsSubstringOnce(info.from.customTitleHTML, @"as a cow");
+    XCTAssertFalse(info.replied);
+    XCTAssertTrue(info.seen);
+    XCTAssertNotNil(info.sentDate);
+    AwfulAssertStringContainsSubstringOnce(info.innerHTML, @"an awesome app");
 }
 
 @end
@@ -37,19 +37,19 @@
 {
     PrivateMessageFolderParsedInfo *info = [[PrivateMessageFolderParsedInfo alloc]
                                             initWithHTMLData:self.fixture];
-    STAssertTrue([info.privateMessages count] == 3, nil);
+    XCTAssertTrue([info.privateMessages count] == 3);
     
     PrivateMessageParsedInfo *first = info.privateMessages[0];
-    STAssertEqualObjects(first.subject, @"Re: Awful app", nil);
-    STAssertEqualObjects(first.from.username, @"InFlames235", nil);
-    STAssertFalse(first.replied, nil);
-    STAssertTrue(first.seen, nil);
+    XCTAssertEqualObjects(first.subject, @"Re: Awful app");
+    XCTAssertEqualObjects(first.from.username, @"InFlames235");
+    XCTAssertFalse(first.replied);
+    XCTAssertTrue(first.seen);
     
     PrivateMessageParsedInfo *second = info.privateMessages[1];
-    STAssertEqualObjects(second.subject, @"Awful app", nil);
-    STAssertEqualObjects(second.from.username, @"InFlames235", nil);
-    STAssertTrue(second.replied, nil);
-    STAssertTrue(second.seen, nil);
+    XCTAssertEqualObjects(second.subject, @"Awful app");
+    XCTAssertEqualObjects(second.from.username, @"InFlames235");
+    XCTAssertTrue(second.replied);
+    XCTAssertTrue(second.seen);
 }
 
 @end
@@ -64,10 +64,10 @@
 {
     ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
                                              initWithHTMLData:self.fixture];
-    STAssertTrue([info.postIcons count] == 49, nil);
+    XCTAssertTrue([info.postIcons count] == 49);
     NSURL *first = info.postIcons[@"692"];
-    STAssertEqualObjects([first lastPathComponent], @"dd-9-11.gif", nil);
-    STAssertEqualObjects(info.text, @"", nil);
+    XCTAssertEqualObjects([first lastPathComponent], @"dd-9-11.gif");
+    XCTAssertEqualObjects(info.text, @"");
 }
 
 @end
@@ -83,7 +83,7 @@
     ComposePrivateMessageParsedInfo *info = [[ComposePrivateMessageParsedInfo alloc]
                                              initWithHTMLData:self.fixture];
     NSString *prefix = [info.text substringToIndex:27];
-    STAssertEqualObjects(prefix, @"\n\n[quote]\nInFlames235 wrote", nil);
+    XCTAssertEqualObjects(prefix, @"\n\n[quote]\nInFlames235 wrote");
 }
 
 @end

@@ -2,10 +2,10 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "AwfulParsing.h"
 
-@interface ParsingTests : SenTestCase
+@interface ParsingTests : XCTestCase
 
 @property (readonly, copy, nonatomic) NSData *fixture;
 
@@ -13,14 +13,14 @@
 
 @end
 
-#define STAssertStringContainsSubstringOnce(s, sub, ...) do { \
-    STAssertNotNil(s, __VA_ARGS__); \
+#define AwfulAssertStringContainsSubstringOnce(s, sub, ...) do { \
+    XCTAssertNotNil(s, ##__VA_ARGS__); \
     NSRange __a = [s rangeOfString:sub]; \
-    STAssertTrue(__a.location != NSNotFound, __VA_ARGS__); \
+    XCTAssertTrue(__a.location != NSNotFound, ##__VA_ARGS__); \
     NSRange __b = [s rangeOfString:sub options:NSBackwardsSearch]; \
-    STAssertTrue(NSEqualRanges(__a, __b), __VA_ARGS__); \
+    XCTAssertTrue(NSEqualRanges(__a, __b), ##__VA_ARGS__); \
 } while (0)
 
 
-#define STAssertStringDoesNotContain(s, sub, ...) \
-    STAssertTrue([s rangeOfString:sub].location == NSNotFound, __VA_ARGS__)
+#define AwfulAssertStringDoesNotContain(s, sub, ...) \
+    XCTAssertTrue([s rangeOfString:sub].location == NSNotFound, ##__VA_ARGS__)

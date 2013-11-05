@@ -19,9 +19,9 @@
 - (void)testFormValues
 {
     ReplyFormParsedInfo *info = [[ReplyFormParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(info.formkey, @"0253d85a945b60daa0165f718df82b8a", nil);
-    STAssertEqualObjects(info.formCookie, @"80c74b48f557", nil);
-    STAssertEqualObjects(info.bookmark, @"yes", nil);
+    XCTAssertEqualObjects(info.formkey, @"0253d85a945b60daa0165f718df82b8a");
+    XCTAssertEqualObjects(info.formCookie, @"80c74b48f557");
+    XCTAssertEqualObjects(info.bookmark, @"yes");
 }
 
 @end

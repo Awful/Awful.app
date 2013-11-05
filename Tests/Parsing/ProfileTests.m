@@ -12,8 +12,8 @@
 - (void)testEditProfileInfo
 {
     ProfileParsedInfo *profileInfo = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profileInfo.userID, @"106125", nil);
-    STAssertEqualObjects(profileInfo.username, @"pokeyman", nil);
+    XCTAssertEqualObjects(profileInfo.userID, @"106125");
+    XCTAssertEqualObjects(profileInfo.username, @"pokeyman");
 }
 
 @end
@@ -27,14 +27,14 @@
 - (void)testViewAvatarAndText
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"pokeyman", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"play?", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"title-pokeyman", nil);
-    STAssertEqualObjects(profile.icqName, @"1234", nil);
-    STAssertNil(profile.aimName, nil);
-    STAssertEquals(profile.postCount, 1954, nil);
-    STAssertTrue([profile.postRate rangeOfString:@"0.88"].location == 0, nil);
-    STAssertEqualObjects(profile.gender, @"porpoise", nil);
+    XCTAssertEqualObjects(profile.username, @"pokeyman");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"play?");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"title-pokeyman");
+    XCTAssertEqualObjects(profile.icqName, @"1234");
+    XCTAssertNil(profile.aimName);
+    XCTAssertEqual(profile.postCount, 1954);
+    XCTAssertTrue([profile.postRate rangeOfString:@"0.88"].location == 0);
+    XCTAssertEqualObjects(profile.gender, @"porpoise");
 }
 
 @end
@@ -48,11 +48,11 @@
 - (void)testViewAvatarAndGangTag
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"Ronald Raiden", nil);
-    STAssertEqualObjects(profile.location, @"San Francisco", nil);
-    STAssertTrue([profile.customTitleHTML rangeOfString:@"safs/titles"].length > 0, nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"dd/68", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"01/df", nil);
+    XCTAssertEqualObjects(profile.username, @"Ronald Raiden");
+    XCTAssertEqualObjects(profile.location, @"San Francisco");
+    XCTAssertTrue([profile.customTitleHTML rangeOfString:@"safs/titles"].length > 0);
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"dd/68");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"01/df");
 }
 
 @end
@@ -66,10 +66,10 @@
 - (void)testViewAvatarAndFunkyText
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"Rinkles", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"<i>", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"I'm getting at is", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"safs/titles", nil);
+    XCTAssertEqualObjects(profile.username, @"Rinkles");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"<i>");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"I'm getting at is");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"safs/titles");
 }
 
 @end
@@ -82,8 +82,8 @@
 - (void)testViewNoAvatarOrTitle
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"Cryptic Edge", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"<br", nil);
+    XCTAssertEqualObjects(profile.username, @"Cryptic Edge");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"<br");
 }
 
 @end
@@ -97,8 +97,8 @@
 - (void)testViewStupidNewbie
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"Grim Up North", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"newbie.gif", nil);
+    XCTAssertEqualObjects(profile.username, @"Grim Up North");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"newbie.gif");
 }
 
 @end
@@ -112,9 +112,9 @@
 - (void)testViewTitleAndGangTagAndNoAvatar
 {
     ProfileParsedInfo *profile = [[ProfileParsedInfo alloc] initWithHTMLData:self.fixture];
-    STAssertEqualObjects(profile.username, @"The Gripper", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"i am winner", nil);
-    STAssertStringContainsSubstringOnce(profile.customTitleHTML, @"tccburnouts.png", nil);
+    XCTAssertEqualObjects(profile.username, @"The Gripper");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"i am winner");
+    AwfulAssertStringContainsSubstringOnce(profile.customTitleHTML, @"tccburnouts.png");
 }
 
 @end

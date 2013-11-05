@@ -1,5 +1,8 @@
 language: objective-c
-script: ./Scripts/travis.sh
+before_install:
+  - brew update
+  - brew install xctool
+script: xctool -workspace Awful.xcworkspace -scheme 'Awful App Store' -sdk iphonesimulator test
 notifications:
   email:
     - nolan@nolanw.ca
