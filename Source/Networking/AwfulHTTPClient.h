@@ -30,9 +30,15 @@
 //              threads - A list of AwfulThread on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
-                                   onPage:(NSInteger)page
-                                  andThen:(void (^)(NSError *error, NSArray *threads))callback;
+
+/**
+ * @param callback A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+                             onPage:(NSInteger)page
+                            andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
 // Gets the bookmarked threads on a given page.
 //

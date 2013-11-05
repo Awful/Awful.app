@@ -143,13 +143,13 @@
     }
 }
 
-- (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
-                                   onPage:(NSInteger)page
-                                  andThen:(void (^)(NSError *error, NSArray *threads))callback
+- (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+                             onPage:(NSInteger)page
+                            andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager HTMLGET:@"forumdisplay.php"
-                      parameters:@{ @"forumid": forumID,
+                      parameters:@{ @"forumid": forum.forumID,
                                     @"perpage": @40,
                                     @"pagenumber": @(page) }
                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
@@ -189,14 +189,6 @@
                                                fromURL:operation.response.URL
                               intoManagedObjectContext:managedObjectContext
                                                  error:&error];
-            if (!threads) {
-                if (callback) {
-                    dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^{
-                        callback(error, nil);
-                    });
-                }
-                return;
-            }
             if (callback) {
                 dispatch_async(operation.completionQueue ?: dispatch_get_main_queue(), ^{
                     callback(error, threads);

@@ -93,16 +93,12 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             [self.tableView beginUpdates];
+            [threads setValue:@YES forKey:@"bookmarked"];
             if (page == 1) {
                 NSArray *threadIDsToIgnore = [threads valueForKey:@"threadID"];
                 NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext
                                                                matchingPredicateFormat:@"bookmarked = YES && NOT(threadID IN %@)", threadIDsToIgnore];
                 [threadsToForget setValue:@NO forKey:@"bookmarked"];
-                NSError *error;
-                BOOL ok = [self.managedObjectContext save:&error];
-                if (!ok) {
-                    NSLog(@"%s error saving after fetching bookmarks page one: %@", __PRETTY_FUNCTION__, error);
-                }
             }
             [self.tableView endUpdates];
         }
