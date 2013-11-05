@@ -2,6 +2,7 @@ language: objective-c
 before_install:
   - brew update
   - brew install xctool || brew upgrade xctool
+  - gem install cocoapods
 script: xctool -workspace Awful.xcworkspace -scheme 'Awful App Store' -sdk iphonesimulator test
 notifications:
   email:
