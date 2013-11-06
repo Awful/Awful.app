@@ -31,9 +31,10 @@
 
 - (id)scrapeFixtureNamed:(NSString *)fixtureName
 {
-    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixtureName withExtension:@"html"];
+    NSString *fixturePath = [@"Fixtures" stringByAppendingPathComponent:fixtureName];
+    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixturePath withExtension:@"html"];
     NSError *error;
-    NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSUTF8StringEncoding error:&error];
+    NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSWindowsCP1252StringEncoding error:&error];
     XCTAssertNotNil(fixtureHTML, @"error loading fixture from %@: %@", fixtureURL, error);
     HTMLDocument *document = [HTMLDocument documentWithString:fixtureHTML];
     AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];

@@ -16,17 +16,17 @@
     return nil;
 }
 
-- (void)setUp
+- (NSData *)fixture
 {
-    if (!_fixture) {
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-        NSURL *fixtureURL = [bundle URLForResource:[[self class] fixtureFilename]
-                                     withExtension:nil];
-        NSString *dumbCharset = [NSString stringWithContentsOfURL:fixtureURL
-                                                         encoding:NSWindowsCP1252StringEncoding
-                                                            error:NULL];
-        _fixture = [dumbCharset dataUsingEncoding:NSUTF8StringEncoding];
-    }
+    if (_fixture) return _fixture;
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSString *fixturePath = [@"Fixtures" stringByAppendingPathComponent:[[self class] fixtureFilename]];
+    NSURL *fixtureURL = [bundle URLForResource:fixturePath withExtension:nil];
+    NSString *dumbCharset = [NSString stringWithContentsOfURL:fixtureURL
+                                                     encoding:NSWindowsCP1252StringEncoding
+                                                        error:NULL];
+    _fixture = [dumbCharset dataUsingEncoding:NSUTF8StringEncoding];
+    return _fixture;
 }
 
 @end
