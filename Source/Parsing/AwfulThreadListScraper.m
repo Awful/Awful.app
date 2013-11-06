@@ -26,37 +26,37 @@
     return _lastPostDateParser;
 }
 
+#pragma mark - AwfulDocumentScraper
+
 - (id)scrapeDocument:(HTMLDocument *)document
              fromURL:(NSURL *)documentURL
 intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
+    AwfulForum *forum;
+    HTMLElementNode *body = [document firstNodeMatchingSelector:@"body"];
+    if (body[@"data-forum"]) {
+        forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
+    }
+    
     HTMLElementNode *breadcrumbsDiv = [document firstNodeMatchingSelector:@"div.breadcrumbs"];
     
-    // If there are any hierarchy links, the last one is this forum.
-    // If there are multiple hierarchy links, the first one is the category.
-    // Intervening hierarchy links, if any, form a path of subforums from the category to this forum.
+    // The first hierarchy link (if any) is the category. The rest are forums/subforums.
     NSArray *hierarchyLinks = [breadcrumbsDiv nodesMatchingSelector:@"a[href *= 'forumdisplay.php']"];
-    AwfulForum *forum;
+
     HTMLElementNode *forumLink = hierarchyLinks.lastObject;
     if (forumLink) {
-        NSURL *URL = [NSURL URLWithString:forumLink[@"href"]];
-        NSString *forumID = URL.queryDictionary[@"forumid"];
-        if (forumID) {
-            forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:forumID];
-            forum.name = [forumLink.innerHTML gtm_stringByUnescapingFromHTML];
-        }
+        forum.name = [forumLink.innerHTML gtm_stringByUnescapingFromHTML];
     }
-    if (hierarchyLinks.count > 1) {
+    if (hierarchyLinks.count > 0) {
         HTMLElementNode *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID
                                                            inManagedObjectContext:managedObjectContext];
         category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
-        forum.category = category;
-        NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
-        AwfulForum *currentForum = forum;
+        NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
+        AwfulForum *currentForum;
         for (HTMLElementNode *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
@@ -81,7 +81,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
             threadID = [scanner.string substringFromIndex:scanner.scanLocation];
         }
-        if (!threadID) {
+        if (threadID.length == 0) {
             if (error) {
                 *error = [NSError errorWithDomain:AwfulErrorDomain
                                              code:AwfulErrorCodes.parseError

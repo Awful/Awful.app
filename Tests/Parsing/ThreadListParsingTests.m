@@ -210,4 +210,22 @@
     XCTAssertEqualObjects(venezuelanThread.lastPostAuthorName, @"d3c0y2");
 }
 
+- (void)testSubforumHierarchy
+{
+    [self scrapeFixtureNamed:@"forumdisplay2"];
+    NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
+    XCTAssertTrue(allForums.count == 2);
+    NSArray *allForumNames = [[allForums valueForKey:@"name"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    XCTAssertEqualObjects(allForumNames, (@[ @"Games", @"Let's Play!" ]));
+    NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
+    XCTAssertTrue(allCategories.count == 1);
+    AwfulCategory *discussion = allCategories.firstObject;
+    XCTAssertEqual(discussion.forums.count, allForums.count);
+    AwfulForum *games = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext
+                                                 matchingPredicateFormat:@"name = 'Games'"];
+    XCTAssertTrue(games.children.count == 1);
+    AwfulForum *letsPlay = games.children.firstObject;
+    XCTAssertEqualObjects(letsPlay.name, @"Let's Play!");
+}
+
 @end
