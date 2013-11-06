@@ -1,10 +1,6 @@
-//
 //  AwfulThreadListScraper.m
-//  Awful
 //
-//  Created by Nolan Waite on 11/4/2013.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadListScraper.h"
 #import "AwfulErrorDomain.h"

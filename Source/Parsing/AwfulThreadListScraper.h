@@ -1,19 +1,12 @@
-//
 //  AwfulThreadListScraper.h
-//  Awful
 //
-//  Created by Nolan Waite on 11/4/2013.
-//  Copyright (c) 2013 Awful Contributors. All rights reserved.
-//
+//  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <CoreData/CoreData.h>
-#import <HTMLReader/HTMLReader.h>
+#import "AwfulDocumentScraper.h"
 
-@interface AwfulThreadListScraper : NSObject
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError **)error;
+/**
+ * An AwfulThreadListScraper scrapes an array of AwfulThread objects.
+ */
+@interface AwfulThreadListScraper : NSObject <AwfulDocumentScraper>
 
 @end

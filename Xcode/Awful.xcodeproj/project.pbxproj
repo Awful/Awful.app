@@ -598,6 +598,7 @@
 		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
 		1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadListParsingTests.m; sourceTree = "<group>"; };
 		1CFE9848182934C6003DBBC2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		1CFE985A18296D41003DBBC2 /* AwfulDocumentScraper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulDocumentScraper.h; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -799,6 +800,7 @@
 		1C05EDAD16230BFE00FE567F /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
+				1CFE985A18296D41003DBBC2 /* AwfulDocumentScraper.h */,
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
