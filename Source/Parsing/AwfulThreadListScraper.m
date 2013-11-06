@@ -3,23 +3,12 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadListScraper.h"
+#import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
+#import "AwfulModels.h"
+#import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
 #import "NSURL+QueryDictionary.h"
-
-@interface AwfulCompoundDateParser : NSObject
-
-- (id)initWithFormats:(NSArray *)formats;
-
-@property (readonly, copy, nonatomic) NSArray *formats;
-
-- (NSDate *)dateFromString:(NSString *)string;
-
-@end
-
-@interface AwfulScanner : NSScanner
-
-@end
 
 @interface AwfulThreadListScraper ()
 
@@ -199,55 +188,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     }
     [managedObjectContext save:error];
     return threads;
-}
-
-@end
-
-@implementation AwfulScanner
-
-- (id)initWithString:(NSString *)string
-{
-    self = [super initWithString:string];
-    if (!self) return nil;
-    self.charactersToBeSkipped = nil;
-    self.caseSensitive = YES;
-    return self;
-}
-
-@end
-
-@implementation AwfulCompoundDateParser
-{
-    NSMutableArray *_formatters;
-}
-
-- (id)initWithFormats:(NSArray *)formats
-{
-    self = [super init];
-    if (!self) return nil;
-    _formatters = [NSMutableArray new];
-    for (NSString *format in formats) {
-        NSDateFormatter *formatter = [NSDateFormatter new];
-        formatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        formatter.timeZone = [NSTimeZone localTimeZone];
-        formatter.dateFormat = format;
-        [_formatters addObject:formatter];
-    }
-    return self;
-}
-
-- (NSArray *)formats
-{
-    return [_formatters valueForKey:@"dateFormat"];
-}
-
-- (NSDate *)dateFromString:(NSString *)string
-{
-    for (NSDateFormatter *formatter in _formatters) {
-        NSDate *parsedDate = [formatter dateFromString:string];
-        if (parsedDate) return parsedDate;
-    }
-    return nil;
 }
 
 @end
