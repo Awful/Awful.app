@@ -89,8 +89,11 @@
         urlString = @"http://forums.somethingawful.com/";
     }
     _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
+    _HTTPManager.requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+    AFHTTPResponseSerializer *dataResponseSerializer = [AFHTTPResponseSerializer new];
+    dataResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     NSArray *serializers = @[ [AFJSONResponseSerializer new],
-                              [AFHTTPResponseSerializer new] ];
+                              dataResponseSerializer ];
     _HTTPManager.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:serializers];
 }
 
@@ -846,6 +849,7 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
     NSURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     AwfulParsedInfoResponseSerializer *responseSerializer = [AwfulParsedInfoResponseSerializer new];
+    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     responseSerializer.parseBlock = parseBlock;
     operation.responseSerializer = responseSerializer;
     [self.operationQueue addOperation:operation];
@@ -862,6 +866,7 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
     NSURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:URL.absoluteString parameters:parameters];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
     AwfulParsedInfoResponseSerializer *responseSerializer = [AwfulParsedInfoResponseSerializer new];
+    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     responseSerializer.parseBlock = parseBlock;
     operation.responseSerializer = responseSerializer;
     [self.operationQueue addOperation:operation];
@@ -878,7 +883,9 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
     NSURL *URL = [NSURL URLWithString:URLString relativeToURL:self.baseURL];
     NSURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters];
     AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
-    operation.responseSerializer = [AwfulHTMLResponseSerializer new];
+    AwfulHTMLResponseSerializer *responseSerializer = [AwfulHTMLResponseSerializer new];
+    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+    operation.responseSerializer = responseSerializer;
     [self.operationQueue addOperation:operation];
     return operation;
 }
