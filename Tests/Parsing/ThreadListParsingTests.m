@@ -2,62 +2,18 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <XCTest/XCTest.h>
-#import "AwfulDataStack.h"
+#import "AwfulParsingTestCase.h"
 #import "AwfulThreadListScraper.h"
-#import <HTMLReader/HTMLReader.h>
 
-@interface ThreadListParsingTests : XCTestCase
-
-@property (strong, nonatomic) AwfulDataStack *dataStack;
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@interface ThreadListParsingTests : AwfulParsingTestCase
 
 @end
 
 @implementation ThreadListParsingTests
 
-- (AwfulDataStack *)dataStack
++ (Class)scraperClass
 {
-    if (_dataStack) return _dataStack;
-    NSURL *modelURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"Awful" withExtension:@"momd"];
-    _dataStack = [[AwfulDataStack alloc] initWithStoreURL:nil modelURL:modelURL];
-    return _dataStack;
-}
-
-- (NSManagedObjectContext *)managedObjectContext
-{
-    return self.dataStack.managedObjectContext;
-}
-
-- (id)scrapeFixtureNamed:(NSString *)fixtureName
-{
-    NSString *fixturePath = [@"Fixtures" stringByAppendingPathComponent:fixtureName];
-    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixturePath withExtension:@"html"];
-    NSError *error;
-    NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSWindowsCP1252StringEncoding error:&error];
-    XCTAssertNotNil(fixtureHTML, @"error loading fixture from %@: %@", fixtureURL, error);
-    HTMLDocument *document = [HTMLDocument documentWithString:fixtureHTML];
-    AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
-    NSArray *scrapedThreads = [scraper scrapeDocument:document
-                                              fromURL:fixtureURL
-                             intoManagedObjectContext:self.managedObjectContext
-                                                error:&error];
-    XCTAssertNotNil(scrapedThreads, @"error scraping threads: %@", error);
-    return scrapedThreads;
-}
-
-- (void)setUp
-{
-    [super setUp];
-    
-    // The scraper uses the default time zone. To make the test repeatable, we set a known time zone.
-    [NSTimeZone setDefaultTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-}
-
-- (void)tearDown
-{
-    [_dataStack deleteStoreAndResetStack];
-    [super tearDown];
+    return [AwfulThreadListScraper class];
 }
 
 - (void)testBookmarkedThreadList

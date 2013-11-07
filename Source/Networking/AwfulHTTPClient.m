@@ -10,6 +10,8 @@
 #import "AwfulModels.h"
 #import "AwfulParsedInfoResponseSerializer.h"
 #import "AwfulParsing.h"
+#import "AwfulPostsPageScraper.h"
+#import "AwfulScanner.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadListScraper.h"
 #import "AwfulThreadTag.h"
@@ -223,31 +225,37 @@
     if (singleUserID) {
         parameters[@"userid"] = singleUserID;
     }
-    return [_HTTPManager GET:@"showthread.php"
-                  parameters:parameters
-            parsingWithBlock:^id(NSData *data) {
-                return [[PageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, PageParsedInfo *pageInfo) {
-                pageInfo.singleUserID = singleUserID;
-                NSArray *posts = [AwfulPost postsCreatedOrUpdatedFromPageInfo:pageInfo
-                                                       inManagedObjectContext:self.managedObjectContext];
-                NSString *ad = [pageInfo advertisementHTML];
-                if (callback) {
-                    NSInteger firstUnreadPost = NSNotFound;
-                    if (page == AwfulThreadPageNextUnread) {
-                        NSString *fragment = operation.response.URL.fragment;
-                        if ([fragment hasPrefix:@"pti"]) {
-                            firstUnreadPost = [[fragment substringFromIndex:3] integerValue] - 1;
-                            if (firstUnreadPost < 0) {
-                                firstUnreadPost = NSNotFound;
-                            }
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    return [_HTTPManager HTMLGET:@"showthread.php"
+                      parameters:parameters
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper new];
+            NSError *error;
+            NSArray *posts = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (callback) {
+                NSInteger firstUnreadPostIndex = NSNotFound;
+                if (page == AwfulThreadPageNextUnread) {
+                    AwfulScanner *scanner = [AwfulScanner scannerWithString:operation.response.URL.fragment];
+                    if ([scanner scanString:@"pti" intoString:nil]) {
+                        [scanner scanInteger:&firstUnreadPostIndex];
+                        if (firstUnreadPostIndex == 0) {
+                            firstUnreadPostIndex = NSNotFound;
+                        } else {
+                            firstUnreadPostIndex--;
                         }
                     }
-                    callback(nil, posts, firstUnreadPost, ad);
                 }
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil, NSNotFound, nil);
-            }];
+                callback(nil, posts, firstUnreadPostIndex, nil);
+            }
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil, NSNotFound, nil);
+    }];
 }
 
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
