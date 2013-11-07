@@ -167,7 +167,6 @@
 		1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */; };
 		1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */; };
-		1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */; };
 		1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5E21625A7780004BDF4 /* ParsingTests.m */; };
 		1CBDB5F61625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
 		1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */; };
@@ -498,7 +497,6 @@
 		1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParsingTests-Prefix.pch"; sourceTree = "<group>"; };
 		1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileTests.m; sourceTree = "<group>"; };
 		1CBDB5DC1625A0C10004BDF4 /* NewReplyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewReplyTests.m; sourceTree = "<group>"; };
-		1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadTests.m; sourceTree = "<group>"; };
 		1CBDB5E11625A7780004BDF4 /* ParsingTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParsingTests.h; sourceTree = "<group>"; };
 		1CBDB5E21625A7780004BDF4 /* ParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParsingTests.m; sourceTree = "<group>"; };
 		1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsing.m; sourceTree = "<group>"; };
@@ -1069,7 +1067,6 @@
 				1CF2461516DC1B4600C75E05 /* PrivateMessageTests.m */,
 				1CBDB5D91625A0B60004BDF4 /* ProfileTests.m */,
 				1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */,
-				1CBDB5DF1625A0D00004BDF4 /* ThreadTests.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -1734,7 +1731,6 @@
 				1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */,
 				1CBDB5DA1625A0B60004BDF4 /* ProfileTests.m in Sources */,
 				1CBDB5DD1625A0C10004BDF4 /* NewReplyTests.m in Sources */,
-				1CBDB5E01625A0D00004BDF4 /* ThreadTests.m in Sources */,
 				1C6FFEDD182AA57C0014311C /* PostsPageParsingTests.m in Sources */,
 				1CFE9847182934A5003DBBC2 /* ThreadListParsingTests.m in Sources */,
 				1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */,
