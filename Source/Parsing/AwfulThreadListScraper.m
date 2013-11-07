@@ -21,8 +21,10 @@
 - (AwfulCompoundDateParser *)lastPostDateParser
 {
     if (_lastPostDateParser) return _lastPostDateParser;
-    _lastPostDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"HH:mm MMM d, yyyy",
-                                                                              @"h:mm a MMM d, yyyy" ]];
+    _lastPostDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[
+                                                                             @"h:mm a MMM d, yyyy",
+                                                                             @"HH:mm MMM d, yyyy",
+                                                                             ]];
     return _lastPostDateParser;
 }
 
