@@ -101,6 +101,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
                 [threadsToForget setValue:@NO forKey:@"bookmarked"];
             }
             [self.tableView endUpdates];
+            [self setLastRefreshDate:[NSDate date]];
         }
         [self.refreshControl endRefreshing];
         [self.tableView.infiniteScrollingView stopAnimating];
