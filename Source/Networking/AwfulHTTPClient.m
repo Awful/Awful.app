@@ -258,9 +258,16 @@
                 return [[ProfileParsedInfo alloc] initWithHTMLData:data];
             } success:^(AFHTTPRequestOperation *operation, ProfileParsedInfo *parsedInfo) {
                 if (callback) {
+                    if (parsedInfo.userID) {
                     callback(nil, @{ @"userID": parsedInfo.userID,
                                      @"username": parsedInfo.username,
                                      @"canSendPrivateMessages": @(parsedInfo.hasPlatinum) });
+                    } else {
+                        NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                             code:AwfulErrorCodes.parseError
+                                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to get user info; could not parse user ID" }];
+                        callback(error, nil);
+                    }
                 }
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
