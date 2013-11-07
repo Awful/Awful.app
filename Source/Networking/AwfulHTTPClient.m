@@ -506,6 +506,30 @@ static NSString * PreparePostText(NSString *noEntities)
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
+    // Apparently non-utf8 POST requests have characters outside the target string encoding replaced with numeric HTML entities. This should probably go in a request serializer, and explains why we need to do what we do when sending posts, but for now we'll just do it with passwords.
+    NSStringEncoding targetEncoding = _HTTPManager.requestSerializer.stringEncoding;
+    if (![password dataUsingEncoding:targetEncoding]) {
+        NSMutableString *HTMLEscapedPassword = [password mutableCopy];
+        NSRange range = NSMakeRange(0, 1);
+        while (NSMaxRange(range) <= HTMLEscapedPassword.length) {
+            if (CFStringIsSurrogateHighCharacter([HTMLEscapedPassword characterAtIndex:range.location])) {
+                range.length = 2;
+            }
+            NSString *part = [HTMLEscapedPassword substringWithRange:range];
+            if (![part dataUsingEncoding:targetEncoding]) {
+                UTF32Char longChar = [HTMLEscapedPassword characterAtIndex:range.location];
+                if (range.length == 2) {
+                    longChar = CFStringGetLongCharacterForSurrogatePair(longChar, [HTMLEscapedPassword characterAtIndex:range.location + 1]);
+                }
+                NSUInteger oldLength = HTMLEscapedPassword.length;
+                NSString *replacement = [NSString stringWithFormat:@"&#%u;", (unsigned int)longChar];
+                [HTMLEscapedPassword replaceCharactersInRange:range withString:replacement];
+                range.location += HTMLEscapedPassword.length - oldLength;
+            }
+            range = NSMakeRange(NSMaxRange(range), 1);
+        }
+        password = HTMLEscapedPassword;
+    }
     return [_HTTPManager POST:@"account.php?json=1"
                    parameters:@{ @"action" : @"login",
                                  @"username" : username,
