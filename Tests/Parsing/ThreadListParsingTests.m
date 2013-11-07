@@ -63,13 +63,13 @@
 - (void)testBookmarkedThreadList
 {
     NSArray *scrapedThreads = [self scrapeFixtureNamed:@"bookmarkthreads"];
-    XCTAssertTrue(scrapedThreads.count == 11);
+    XCTAssertEqual(scrapedThreads.count, 11U);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(scrapedThreads.count, allThreads.count);
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allCategories.count == 0);
+    XCTAssertEqual(allCategories.count, 0U);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allForums.count == 0);
+    XCTAssertEqual(allForums.count, 0U);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     NSArray *allUsernames = [[allUsers valueForKey:@"username"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     XCTAssertEqualObjects(allUsernames, (@[
@@ -92,12 +92,12 @@
     XCTAssertEqualObjects(wireThread.threadTagURL.lastPathComponent, @"tava-vintage.gif");
     XCTAssertFalse(wireThread.sticky);
     XCTAssertEqualObjects(wireThread.title, @"The Wire: The Rewatch... and all the pieces matter.");
-    XCTAssertTrue(wireThread.seenPosts == 435);
+    XCTAssertEqual(wireThread.seenPosts, 435);
     XCTAssertEqualObjects(wireThread.author.username, @"escape artist");
-    XCTAssertTrue(wireThread.totalReplies == 434);
-    XCTAssertTrue(wireThread.numberOfVotes == 0);
-    XCTAssertTrue(wireThread.rating.doubleValue == 0);
-    XCTAssertTrue(wireThread.lastPostDate.timeIntervalSince1970 == 1357964700);
+    XCTAssertEqual(wireThread.totalReplies, 434);
+    XCTAssertEqual(wireThread.numberOfVotes, (int16_t)0);
+    XCTAssertEqual(wireThread.rating.doubleValue, 0.);
+    XCTAssertEqual(wireThread.lastPostDate.timeIntervalSince1970, 1357964700.);
     XCTAssertEqualObjects(wireThread.lastPostAuthorName, @"MC Fruit Stripe");
     
     AwfulThread *CoCFAQ = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
@@ -105,35 +105,35 @@
     XCTAssertEqual(CoCFAQ.starCategory, AwfulStarCategoryOrange);
     XCTAssertEqualObjects(CoCFAQ.threadTagURL.lastPathComponent, @"help.png");
     XCTAssertTrue(CoCFAQ.sticky);
-    XCTAssertTrue(CoCFAQ.stickyIndex == 0);
+    XCTAssertEqual(CoCFAQ.stickyIndex, 0);
     XCTAssertEqualObjects(CoCFAQ.title, @"Cavern of Cobol FAQ (Read this first)");
-    XCTAssertTrue(CoCFAQ.seenPosts == 1);
+    XCTAssertEqual(CoCFAQ.seenPosts, 1);
     XCTAssertEqualObjects(CoCFAQ.author.username, @"Scaevolus");
-    XCTAssertTrue(CoCFAQ.totalReplies == 0);
-    XCTAssertTrue(CoCFAQ.rating.doubleValue == 0);
-    XCTAssertTrue(CoCFAQ.lastPostDate.timeIntervalSince1970 == 1209381240);
+    XCTAssertEqual(CoCFAQ.totalReplies, 0);
+    XCTAssertEqual(CoCFAQ.rating.doubleValue, 0.);
+    XCTAssertEqual(CoCFAQ.lastPostDate.timeIntervalSince1970, 1209381240.);
     XCTAssertEqualObjects(CoCFAQ.lastPostAuthorName, @"Scaevolus");
     
     AwfulThread *androidAppThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                               matchingPredicateFormat:@"author.username = 'Ferg'"];
     XCTAssertEqual(androidAppThread.starCategory, AwfulStarCategoryRed);
-    XCTAssertTrue(androidAppThread.numberOfVotes == 159);
-    XCTAssertTrue(androidAppThread.rating.doubleValue == 4.79);
+    XCTAssertEqual(androidAppThread.numberOfVotes, (int16_t)159);
+    XCTAssertEqual(androidAppThread.rating.doubleValue, 4.79);
 }
 
 - (void)testDebateAndDiscussionThreadList
 {
     NSArray *scrapedThreads = [self scrapeFixtureNamed:@"forumdisplay"];
-    XCTAssertTrue(scrapedThreads.count == 40);
+    XCTAssertEqual(scrapedThreads.count, 40U);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreads.count, scrapedThreads.count);
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allCategories.count == 1);
+    XCTAssertEqual(allCategories.count, 1U);
     AwfulCategory *discussion = allCategories.firstObject;
     XCTAssertEqualObjects(discussion.name, @"Discussion");
-    XCTAssertTrue(discussion.forums.count == 1);
+    XCTAssertEqual(discussion.forums.count, 1U);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allForums.count == 1);
+    XCTAssertEqual(allForums.count, 1U);
     AwfulForum *debateAndDiscussion = allForums.firstObject;
     XCTAssertEqualObjects(debateAndDiscussion.name, @"Debate & Discussion");
     XCTAssertEqualObjects(debateAndDiscussion.forumID, @"46");
@@ -185,14 +185,14 @@
     XCTAssertEqual(rulesThread.starCategory, AwfulStarCategoryNone);
     XCTAssertEqualObjects(rulesThread.threadTagURL.lastPathComponent, @"icon23-banme.gif");
     XCTAssertTrue(rulesThread.sticky);
-    XCTAssertFalse(rulesThread.stickyIndex == 0);
+    XCTAssertNotEqual(rulesThread.stickyIndex, 0);
     XCTAssertEqualObjects(rulesThread.title, @"The Improved Rules of Debate and Discussion - New Update");
-    XCTAssertTrue(rulesThread.seenPosts == 12);
+    XCTAssertEqual(rulesThread.seenPosts, 12);
     XCTAssertEqualObjects(rulesThread.author.username, @"tonelok");
-    XCTAssertTrue(rulesThread.totalReplies == 11);
-    XCTAssertTrue(rulesThread.numberOfVotes == 0);
-    XCTAssertTrue(rulesThread.rating.doubleValue == 0);
-    XCTAssertTrue(rulesThread.lastPostDate.timeIntervalSince1970 == 1330198920);
+    XCTAssertEqual(rulesThread.totalReplies, 11);
+    XCTAssertEqual(rulesThread.numberOfVotes, (int16_t)0);
+    XCTAssertEqual(rulesThread.rating.doubleValue, 0.);
+    XCTAssertEqual(rulesThread.lastPostDate.timeIntervalSince1970, 1330198920.);
     XCTAssertEqualObjects(rulesThread.lastPostAuthorName, @"Xandu");
     
     AwfulThread *venezuelanThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
@@ -201,12 +201,12 @@
     XCTAssertEqualObjects(venezuelanThread.threadTagURL.lastPathComponent, @"lf-marx.png");
     XCTAssertFalse(venezuelanThread.sticky);
     XCTAssertEqualObjects(venezuelanThread.title, @"Venezuelan elections");
-    XCTAssertTrue(venezuelanThread.seenPosts == 0);
+    XCTAssertEqual(venezuelanThread.seenPosts, 0);
     XCTAssertEqualObjects(venezuelanThread.author.username, @"a bad enough dude");
-    XCTAssertTrue(venezuelanThread.totalReplies == 410);
-    XCTAssertTrue(venezuelanThread.numberOfVotes == 0);
-    XCTAssertTrue(venezuelanThread.rating.doubleValue == 0);
-    XCTAssertTrue(venezuelanThread.lastPostDate.timeIntervalSince1970 == 1357082460);
+    XCTAssertEqual(venezuelanThread.totalReplies, 410);
+    XCTAssertEqual(venezuelanThread.numberOfVotes, (int16_t)0);
+    XCTAssertEqual(venezuelanThread.rating.doubleValue, 0.);
+    XCTAssertEqual(venezuelanThread.lastPostDate.timeIntervalSince1970, 1357082460.);
     XCTAssertEqualObjects(venezuelanThread.lastPostAuthorName, @"d3c0y2");
 }
 
@@ -214,16 +214,16 @@
 {
     [self scrapeFixtureNamed:@"forumdisplay2"];
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allForums.count == 2);
+    XCTAssertEqual(allForums.count, 2U);
     NSArray *allForumNames = [[allForums valueForKey:@"name"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     XCTAssertEqualObjects(allForumNames, (@[ @"Games", @"Let's Play!" ]));
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertTrue(allCategories.count == 1);
+    XCTAssertEqual(allCategories.count, 1U);
     AwfulCategory *discussion = allCategories.firstObject;
     XCTAssertEqual(discussion.forums.count, allForums.count);
     AwfulForum *games = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                  matchingPredicateFormat:@"name = 'Games'"];
-    XCTAssertTrue(games.children.count == 1);
+    XCTAssertEqual(games.children.count, 1U);
     AwfulForum *letsPlay = games.children.firstObject;
     XCTAssertEqualObjects(letsPlay.name, @"Let's Play!");
 }
