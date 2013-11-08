@@ -6,13 +6,28 @@
 
 @implementation AwfulScanner
 
-- (id)initWithString:(NSString *)string
+static inline id CommonInit(NSScanner *self)
 {
-    self = [super initWithString:string];
-    if (!self) return nil;
     self.charactersToBeSkipped = nil;
     self.caseSensitive = YES;
     return self;
+}
+
+// NSScanner has no designated initializer :-(
+
++ (instancetype)scannerWithString:(NSString *)string
+{
+    return CommonInit([super scannerWithString:string]);
+}
+
++ (instancetype)localizedScannerWithString:(NSString *)string
+{
+    return CommonInit([super localizedScannerWithString:string]);
+}
+
+- (id)initWithString:(NSString *)string
+{
+    return CommonInit([super initWithString:string]);
 }
 
 @end
