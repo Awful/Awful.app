@@ -220,15 +220,15 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
         NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
         NSString *lastCheck = [AwfulSettings settings].lastForcedUserInfoUpdateVersion;
         if ([appVersion compare:lastCheck options:NSNumericSearch] == NSOrderedDescending) {
-            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
                 if (error) {
                     NSLog(@"error forcing user info update: %@", error);
                     return;
                 }
                 [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-                [AwfulSettings settings].userID = userInfo[@"userID"];
-                [AwfulSettings settings].username = userInfo[@"username"];
-                [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+                [AwfulSettings settings].userID = user.userID;
+                [AwfulSettings settings].username = user.username;
+                [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }];
         }
     }

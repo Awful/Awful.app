@@ -80,11 +80,10 @@
 //
 // callback - A block to call after getting the user's info, which takes as parameters:
 //              error    - An error on failure, or nil on success.
-//              userInfo - A dictionary with keys "userID", "username" on success, or nil on
-//                         failure.
+//              user - An AwfulUser object on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
+- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 // Add or remove a bookmark for a thread.
 //

@@ -11,6 +11,7 @@
 #import "AwfulParsedInfoResponseSerializer.h"
 #import "AwfulParsing.h"
 #import "AwfulPostsPageScraper.h"
+#import "AwfulProfileScraper.h"
 #import "AwfulScanner.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadListScraper.h"
@@ -258,28 +259,25 @@
     }];
 }
 
-- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
+- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    return [_HTTPManager GET:@"member.php"
-                  parameters:@{ @"action": @"getinfo" }
-            parsingWithBlock:^(NSData *data) {
-                return [[ProfileParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ProfileParsedInfo *parsedInfo) {
-                if (callback) {
-                    if (parsedInfo.userID) {
-                    callback(nil, @{ @"userID": parsedInfo.userID,
-                                     @"username": parsedInfo.username,
-                                     @"canSendPrivateMessages": @(parsedInfo.hasPlatinum) });
-                    } else {
-                        NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                             code:AwfulErrorCodes.parseError
-                                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to get user info; could not parse user ID" }];
-                        callback(error, nil);
-                    }
-                }
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    return [_HTTPManager HTMLGET:@"member.php"
+                      parameters:@{ @"action": @"getinfo" }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
+            NSError *error;
+            AwfulUser *user = [scraper scrapeDocument:document
+                                              fromURL:operation.response.URL
+                             intoManagedObjectContext:managedObjectContext
+                                                error:&error];
+            if (callback) callback(error, user);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)setThreadWithID:(NSString *)threadID
@@ -646,23 +644,24 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)profileUserWithID:(NSString *)userID
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    return [_HTTPManager GET:@"member.php"
-                  parameters:@{ @"action": @"getinfo",
-                                @"userid": userID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ProfileParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ProfileParsedInfo *parsedInfo) {
-                AwfulUser *user = [AwfulUser userCreatedOrUpdatedFromProfileInfo:parsedInfo
-                                                          inManagedObjectContext:self.managedObjectContext];
-                if (user.profilePictureURL && !user.profilePictureURL.host) {
-                    NSURL *resolvedURL = [NSURL URLWithString:user.profilePictureURL.absoluteString
-                                                relativeToURL:_HTTPManager.baseURL];
-                    user.profilePictureURL = resolvedURL.absoluteURL;
-                }
-                if (callback) callback(nil, user);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+    NSManagedObjectContext *managedObjectContext;
+    return [_HTTPManager HTMLGET:@"member.php"
+                      parameters:@{ @"action": @"getinfo",
+                                    @"userid": userID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
+            NSError *error;
+            AwfulUser *user = [scraper scrapeDocument:document
+                                              fromURL:operation.response.URL
+                             intoManagedObjectContext:managedObjectContext
+                                                error:&error];
+            if (callback) callback(error, user);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)listBansOnPage:(NSInteger)page

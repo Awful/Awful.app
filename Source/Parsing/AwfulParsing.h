@@ -16,30 +16,6 @@
 @end
 
 
-@interface ProfileParsedInfo : ParsedInfo
-
-@property (copy, nonatomic) NSString *userID;
-@property (readonly, copy, nonatomic) NSString *username;
-@property (readonly, nonatomic) NSDate *regdate;
-@property (readonly, copy, nonatomic) NSString *customTitleHTML;
-@property (readonly, copy, nonatomic) NSString *aboutMe;
-@property (readonly, copy, nonatomic) NSString *aimName;
-@property (readonly, copy, nonatomic) NSString *gender;
-@property (readonly, nonatomic) NSURL *homepage;
-@property (readonly, copy, nonatomic) NSString *icqName;
-@property (readonly, copy, nonatomic) NSString *interests;
-@property (readonly, nonatomic) NSDate *lastPost;
-@property (readonly, copy, nonatomic) NSString *location;
-@property (readonly, copy, nonatomic) NSString *occupation;
-@property (readonly, nonatomic) NSInteger postCount;
-@property (readonly, copy, nonatomic) NSString *postRate;
-@property (readonly, nonatomic) NSURL *profilePicture;
-@property (readonly, copy, nonatomic) NSString *yahooName;
-@property (readonly, nonatomic) BOOL hasPlatinum;
-
-@end
-
-
 @interface ReplyFormParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *formkey;

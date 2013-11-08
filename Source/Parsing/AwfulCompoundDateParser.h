@@ -23,4 +23,10 @@
  */
 - (NSDate *)dateFromString:(NSString *)string;
 
+#pragma mark - Common parser factories
+
++ (instancetype)regdateDateParser;
+
++ (instancetype)postDateParser;
+
 @end

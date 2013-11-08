@@ -53,18 +53,6 @@
     return [NSSet setWithObject:@"customTitle"];
 }
 
-+ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
-                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-{
-    AwfulUser *user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
-                                         matchingPredicateFormat:@"userID = %@", profileInfo.userID];
-    if (!user) user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
-    [profileInfo applyToObject:user];
-    user.homepageURL = profileInfo.homepage;
-    user.profilePictureURL = profileInfo.profilePicture;
-    return user;
-}
-
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
                                 username:(NSString *)username
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext

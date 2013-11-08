@@ -21,20 +21,13 @@
 
 - (AwfulCompoundDateParser *)postDateParser
 {
-    if (_postDateParser) return _postDateParser;
-    _postDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[
-                                                                         @"MMM d, yyyy h:mm a",
-                                                                         @"MMM d, yyyy HH:mm",
-                                                                         ]];
+    if (!_postDateParser) _postDateParser = [AwfulCompoundDateParser postDateParser];
     return _postDateParser;
 }
 
 - (AwfulCompoundDateParser *)regdateDateParser
 {
-    if (_regdateDateParser) return _regdateDateParser;
-    _regdateDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[
-                                                                            @"MMM d, yyyy"
-                                                                            ]];
+    if (!_regdateDateParser) _regdateDateParser = [AwfulCompoundDateParser regdateDateParser];
     return _regdateDateParser;
 }
 
