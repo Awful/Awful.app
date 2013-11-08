@@ -91,7 +91,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         if (pagesSelect) {
             HTMLElementNode *lastOption = [pagesSelect nodesMatchingSelector:@"option"].lastObject;
             NSString *pageValue = lastOption[@"value"];
-            numberOfPages = pageValue.integerValue;
+            numberOfPages = (int32_t)pageValue.integerValue;
         } else {
             numberOfPages = 1;
         }
@@ -134,7 +134,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         [posts addObject:post];
         post.thread = thread;
-        int32_t index = [table[@"data-idx"] integerValue];
+        int32_t index = (int32_t)[table[@"data-idx"] integerValue];
         if (index > 0) {
             if (singleUser) {
                 post.singleUserIndex = index;
