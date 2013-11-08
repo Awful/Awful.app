@@ -83,6 +83,7 @@
 
 - (void)reset
 {
+    [_HTTPManager.operationQueue cancelAllOperations];
     NSString *urlString = [AwfulSettings settings].customBaseURL;
     if (urlString) {
         NSURL *url = [NSURL URLWithString:urlString];
