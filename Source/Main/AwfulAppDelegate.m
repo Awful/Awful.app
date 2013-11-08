@@ -78,12 +78,12 @@ static id _instance;
     // Clear any stored logins for other services
     [[PocketAPI sharedAPI] logout];
     
+    // Send the notification just before deleting the data store, so anything using it can clean up.
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification object:nil];
+    
     // Delete cached post info. The next user might see things differently than the one logging out.
     // And this lets logging out double as a "delete all data" button.
     [_dataStack deleteStoreAndResetStack];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification
-                                                        object:nil];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
         self.basementViewController.selectedIndex = 0;
