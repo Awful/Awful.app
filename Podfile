@@ -8,7 +8,7 @@ pod 'GRMustache', '6.7.3'
 pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
 pod 'JLRoutes', '1.4'
 pod 'PocketAPI', '1.0.2'
-pod 'SVProgressHUD', :head
+pod 'SVProgressHUD', '1.0'
 pod 'SVPullToRefresh', :head
 pod 'WYPopoverController', '0.1.4'
 
