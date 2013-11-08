@@ -6,6 +6,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
+#import "AwfulHTMLRequestSerializer.h"
 #import "AwfulHTMLResponseSerializer.h"
 #import "AwfulModels.h"
 #import "AwfulParsedInfoResponseSerializer.h"
@@ -92,7 +93,9 @@
         urlString = @"http://forums.somethingawful.com/";
     }
     _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
-    _HTTPManager.requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+    AwfulHTMLRequestSerializer *requestSerializer = [AwfulHTMLRequestSerializer new];
+    requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+    _HTTPManager.requestSerializer = requestSerializer;
     AFHTTPResponseSerializer *dataResponseSerializer = [AFHTTPResponseSerializer new];
     dataResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     NSArray *serializers = @[ [AFJSONResponseSerializer new],
@@ -336,7 +339,7 @@
                                                           @"formkey" : formInfo.formkey,
                                                           @"form_cookie" : formInfo.formCookie,
                                                           @"action" : @"postreply",
-                                                          @"message" : PreparePostText(text),
+                                                          @"message" : text,
                                                           @"parseurl" : @"yes",
                                                           @"submit" : @"Submit Reply" } mutableCopy];
                 if (formInfo.bookmark) {
@@ -355,53 +358,6 @@
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];
-}
-
-static NSString * PreparePostText(NSString *noEntities)
-{
-    // Replace all characters outside windows-1252 with XML entities.
-    noEntities = [noEntities precomposedStringWithCanonicalMapping];
-    NSMutableString *withEntities = [noEntities mutableCopy];
-    NSError *error;
-    NSString *pattern = @"(?x)[^ \\u0000-\\u007F \\u20AC \\u201A \\u0192 \\u201E \\u2026 \\u2020 "
-                         "\\u2021 \\u02C6 \\u2030 \\u0160 \\u2039 \\u0152 \\u017D \\u2018 \\u2019 "
-                         "\\u201C \\u201D \\u2022 \\u2013 \\u2014 \\u02DC \\u2122 \\u0161 \\u203A "
-                         "\\u0153 \\u017E \\u0178 \\u00A0-\\u00FF ]";
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:0
-                                                                             error:&error];
-    if (!regex) {
-        NSLog(@"error creating regex in Entitify: %@", error);
-        return nil;
-    }
-    __block NSInteger offset = 0;
-    NSNumberFormatter *formatter = [NSNumberFormatter new];
-    [formatter setNumberStyle:NSNumberFormatterNoStyle];
-    [regex enumerateMatchesInString:noEntities
-                            options:0
-                              range:NSMakeRange(0, [noEntities length])
-                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags _, BOOL *__)
-    {
-        NSMutableString *replacement = [NSMutableString new];
-        NSString *needsEntity = [noEntities substringWithRange:[result range]];
-        uint32_t codepoint;
-        NSRange remaining = NSMakeRange(0, [needsEntity length]);
-        while ([needsEntity getBytes:&codepoint
-                           maxLength:sizeof(codepoint)
-                          usedLength:NULL
-                            encoding:NSUTF32LittleEndianStringEncoding
-                             options:0
-                               range:remaining
-                      remainingRange:&remaining]) {
-            NSNumber *number = [NSNumber numberWithUnsignedInt:CFSwapInt32LittleToHost(codepoint)];
-            [replacement appendFormat:@"&#%@;", [formatter stringFromNumber:number]];
-        }
-        NSRange replacementRange = [result range];
-        replacementRange.location += offset;
-        [withEntities replaceCharactersInRange:replacementRange withString:replacement];
-        offset += [replacement length] - replacementRange.length;
-    }];
-    return withEntities;
 }
 
 - (NSOperation *)getTextOfPostWithID:(NSString *)postID
@@ -456,7 +412,7 @@ static NSString * PreparePostText(NSString *noEntities)
                 NSMutableDictionary *parameters = [@{ @"action": @"updatepost",
                                                       @"submit": @"Save Changes",
                                                       @"postid": postID,
-                                                      @"message": PreparePostText(text) } mutableCopy];
+                                                      @"message": text } mutableCopy];
                 if (formInfo.bookmark) {
                     parameters[@"bookmark"] = formInfo.bookmark;
                 }
@@ -519,30 +475,6 @@ static NSString * PreparePostText(NSString *noEntities)
                     withPassword:(NSString *)password
                          andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
 {
-    // Apparently non-utf8 POST requests have characters outside the target string encoding replaced with numeric HTML entities. This should probably go in a request serializer, and explains why we need to do what we do when sending posts, but for now we'll just do it with passwords.
-    NSStringEncoding targetEncoding = _HTTPManager.requestSerializer.stringEncoding;
-    if (![password dataUsingEncoding:targetEncoding]) {
-        NSMutableString *HTMLEscapedPassword = [password mutableCopy];
-        NSRange range = NSMakeRange(0, 1);
-        while (NSMaxRange(range) <= HTMLEscapedPassword.length) {
-            if (CFStringIsSurrogateHighCharacter([HTMLEscapedPassword characterAtIndex:range.location])) {
-                range.length = 2;
-            }
-            NSString *part = [HTMLEscapedPassword substringWithRange:range];
-            if (![part dataUsingEncoding:targetEncoding]) {
-                UTF32Char longChar = [HTMLEscapedPassword characterAtIndex:range.location];
-                if (range.length == 2) {
-                    longChar = CFStringGetLongCharacterForSurrogatePair(longChar, [HTMLEscapedPassword characterAtIndex:range.location + 1]);
-                }
-                NSUInteger oldLength = HTMLEscapedPassword.length;
-                NSString *replacement = [NSString stringWithFormat:@"&#%u;", (unsigned int)longChar];
-                [HTMLEscapedPassword replaceCharactersInRange:range withString:replacement];
-                range.location += HTMLEscapedPassword.length - oldLength;
-            }
-            range = NSMakeRange(NSMaxRange(range), 1);
-        }
-        password = HTMLEscapedPassword;
-    }
     return [_HTTPManager POST:@"account.php?json=1"
                    parameters:@{ @"action" : @"login",
                                  @"username" : username,
@@ -843,9 +775,9 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
                                                       @"formkey": formInfo.formkey,
                                                       @"form_cookie": formInfo.formCookie,
                                                       // I'm not sure if the subject needs any particular escapes, or what's allowed. This is a total guess.
-                                                      @"subject": PreparePostText(subject),
+                                                      @"subject": subject,
                                                       @"iconid": iconID ?: @"0",
-                                                      @"message": PreparePostText(text),
+                                                      @"message": text,
                                                       @"polloptions": @"4",
                                                       @"submit": @"Submit New Thread" } mutableCopy];
                 if ([secondaryIconID length] > 0 && [secondaryIconKey length] > 0) {

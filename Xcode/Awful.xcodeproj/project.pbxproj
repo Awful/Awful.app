@@ -94,6 +94,7 @@
 		1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
 		1C6D2E9B182C6F8C00785766 /* ProfileParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */; };
 		1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
+		1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
@@ -388,6 +389,8 @@
 		1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileScraper.m; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileParsingTests.m; sourceTree = "<group>"; };
+		1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLRequestSerializer.h; sourceTree = "<group>"; };
+		1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRequestSerializer.m; sourceTree = "<group>"; };
 		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6ED636169104150015CDD5 /* profile-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "profile-view.html"; sourceTree = "<group>"; };
@@ -1148,6 +1151,8 @@
 		1CC7801D1612D988002AF958 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */,
+				1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */,
 				1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */,
 				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
@@ -1842,6 +1847,7 @@
 				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
+				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
