@@ -3,8 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulUser.h"
-#import "GTMNSString+HTML.h"
-#import "TFHpple.h"
+#import <HTMLReader/HTMLReader.h>
 
 @implementation AwfulUser
 
@@ -38,14 +37,11 @@
 - (NSURL *)avatarURL
 {
     if (self.customTitleHTML.length == 0) return nil;
-    NSData *data = [self.customTitleHTML dataUsingEncoding:NSUTF8StringEncoding];
-    TFHpple *html = [[TFHpple alloc] initWithHTMLData:data];
-    // The avatar is an image that's the first child of its parent, which is either a <div>, an
-    // <a>, or the implied <body>.
-    TFHppleElement *avatar = [html searchForSingle:@"//img[count(preceding-sibling::*) = 0 and (parent::div or parent::body or parent::a)]"];
-    NSString *src = [avatar objectForKey:@"src"];
-    if ([src length] == 0) return nil;
-    return [NSURL URLWithString:src];
+    HTMLDocument *document = [HTMLDocument documentWithString:self.customTitleHTML];
+    HTMLElementNode *avatarImage = ([document firstNodeMatchingSelector:@"div > img:first-child"] ?:
+                                    [document firstNodeMatchingSelector:@"body > img:first-child"] ?:
+                                    [document firstNodeMatchingSelector:@"a > img:first-child"]);
+    return [NSURL URLWithString:avatarImage[@"src"]];
 }
 
 + (NSSet *)keyPathsForValuesAffectingAvatarURL
