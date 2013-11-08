@@ -95,6 +95,9 @@
 		1C6D2E9B182C6F8C00785766 /* ProfileParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */; };
 		1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
 		1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */; };
+		1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
+		1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
+		1C6D2EA5182D622D00785766 /* ForumHierarchyParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
 		1C6ED638169104150015CDD5 /* profile-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ED636169104150015CDD5 /* profile-view.html */; };
 		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
@@ -391,6 +394,9 @@
 		1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileParsingTests.m; sourceTree = "<group>"; };
 		1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLRequestSerializer.h; sourceTree = "<group>"; };
 		1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRequestSerializer.m; sourceTree = "<group>"; };
+		1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHierarchyScraper.h; sourceTree = "<group>"; };
+		1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHierarchyScraper.m; sourceTree = "<group>"; };
+		1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumHierarchyParsingTests.m; sourceTree = "<group>"; };
 		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
 		1C6ED636169104150015CDD5 /* profile-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "profile-view.html"; sourceTree = "<group>"; };
@@ -789,14 +795,16 @@
 				1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */,
 				1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */,
 				1CFE985A18296D41003DBBC2 /* AwfulDocumentScraper.h */,
-				1CFE985B18297255003DBBC2 /* AwfulScanner.h */,
-				1CFE985C18297255003DBBC2 /* AwfulScanner.m */,
+				1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */,
+				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
 				1C05EDAE16230C1700FE567F /* AwfulParsing.h */,
 				1CBDB5F51625BACE0004BDF4 /* AwfulParsing.m */,
 				1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */,
 				1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */,
 				1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */,
 				1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */,
+				1CFE985B18297255003DBBC2 /* AwfulScanner.h */,
+				1CFE985C18297255003DBBC2 /* AwfulScanner.m */,
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 			);
@@ -1067,6 +1075,7 @@
 				1C6FFEDE182AA5AA0014311C /* AwfulParsingTestCase.h */,
 				1C6FFEDF182AA5AA0014311C /* AwfulParsingTestCase.m */,
 				1C6FFED9182A74A00014311C /* Fixtures */,
+				1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */,
 				1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */,
 				1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */,
 				1CBDB5E11625A7780004BDF4 /* ParsingTests.h */,
@@ -1749,11 +1758,13 @@
 				1CFE985218293786003DBBC2 /* AwfulPrivateMessage.m in Sources */,
 				1CBDB5E31625A7780004BDF4 /* ParsingTests.m in Sources */,
 				1CBDB5F71625BACE0004BDF4 /* AwfulParsing.m in Sources */,
+				1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
 				1C6FFEE1182AA5CB0014311C /* AwfulParsingTestCase.m in Sources */,
 				1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */,
 				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */,
+				1C6D2EA5182D622D00785766 /* ForumHierarchyParsingTests.m in Sources */,
 				1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */,
 				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
 				1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */,
@@ -1821,6 +1832,7 @@
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
+				1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,
 				1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */,
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,

@@ -6,6 +6,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
+#import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTMLRequestSerializer.h"
 #import "AwfulHTMLResponseSerializer.h"
 #import "AwfulModels.h"
@@ -302,20 +303,26 @@
                       }];
 }
 
-- (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
+- (NSOperation *)listForumHierarchyAndThen:(void (^)(NSError *error, NSArray *categories))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-    return [_HTTPManager GET:@"forumdisplay.php"
-                  parameters:@{ @"forumid": @"48" }
-            parsingWithBlock:^(NSData *data) {
-                return [[ForumHierarchyParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ForumHierarchyParsedInfo *parsedInfo) {
-                NSArray *forums = [AwfulForum updateCategoriesAndForums:parsedInfo
-                                                 inManagedObjectContext:self.managedObjectContext];
-                if (callback) callback(nil, forums);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    return [_HTTPManager HTMLGET:@"forumdisplay.php"
+                      parameters:@{ @"forumid": @"48" }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper new];
+            NSError *error;
+            NSArray *categories = [scraper scrapeDocument:document
+                                                  fromURL:operation.response.URL
+                                 intoManagedObjectContext:managedObjectContext
+                                                    error:&error];
+            if (callback) callback(error, categories);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)replyToThreadWithID:(NSString *)threadID

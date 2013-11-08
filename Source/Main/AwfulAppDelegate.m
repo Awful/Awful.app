@@ -417,7 +417,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     settings.userID = userInfo[@"userID"];
     settings.canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
-        [[AwfulHTTPClient client] listForumsAndThen:nil];
+        [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
     }];
 }
 

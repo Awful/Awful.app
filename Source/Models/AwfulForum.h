@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulModels.h"
-#import "AwfulParsing.h"
 
 /**
  * An AwfulForum is a collection of threads somewhere in a hierarchy of forums and categories.
@@ -60,11 +59,5 @@
  */
 + (instancetype)fetchOrInsertForumInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                                   withID:(NSString *)forumID;
-
-/**
- * Returns an array of AwfulForum objects derived from parsed info.
- */
-+ (NSArray *)updateCategoriesAndForums:(ForumHierarchyParsedInfo *)info
-                inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

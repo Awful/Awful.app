@@ -99,12 +99,12 @@
 
 // Get the forum hierarchy.
 //
-// callback - A block to call after updating all forums and subforums, which takes as parameters:
-//              error  - An error on failure, or nil on succes.
-//              forums - A list of AwfulForum on success, or nil on failure.
+// callback - A block to call after updating all categories, forums, and subforums, which takes as parameters:
+//              error      - An error on failure, or nil on succes.
+//              categories - An array of AwfulCategory objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback;
+- (NSOperation *)listForumHierarchyAndThen:(void (^)(NSError *error, NSArray *categories))callback;
 
 // Posts a new reply to a thread.
 //

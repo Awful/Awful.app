@@ -26,13 +26,6 @@
 @end
 
 
-@interface ForumHierarchyParsedInfo : ParsedInfo
-
-@property (readonly, nonatomic) NSArray *categories;
-
-@end
-
-
 @interface CategoryParsedInfo : ParsedInfo
 
 @property (readonly, nonatomic) NSArray *forums;

@@ -185,7 +185,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (void)refresh
 {
-    [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums) {
+    [[AwfulHTTPClient client] listForumHierarchyAndThen:^(NSError *error, NSArray *categories) {
         if (!error) {
             self.lastRefresh = [NSDate date];
         }
