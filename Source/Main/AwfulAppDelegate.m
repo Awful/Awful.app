@@ -223,6 +223,7 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
             [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
                 if (error) {
                     NSLog(@"error forcing user info update: %@", error);
+                    [self logOut];
                     return;
                 }
                 [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
