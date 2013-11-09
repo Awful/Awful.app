@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessageScraper.h"
+#import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
@@ -12,7 +13,7 @@
 @interface AwfulPrivateMessageScraper ()
 
 @property (strong, nonatomic) AwfulCompoundDateParser *sentDateParser;
-@property (strong, nonatomic) AwfulCompoundDateParser *regdateDateParser;
+@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
 
 @end
 
@@ -24,10 +25,10 @@
     return _sentDateParser;
 }
 
-- (AwfulCompoundDateParser *)regdateDateParser
+- (AwfulAuthorScraper *)authorScraper
 {
-    if (!_regdateDateParser) _regdateDateParser = [AwfulCompoundDateParser regdateDateParser];
-    return _regdateDateParser;
+    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
+    return _authorScraper;
 }
 
 #pragma mark - AwfulDocumentScraper
@@ -75,31 +76,10 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     if (postBodyCell) {
         message.innerHTML = postBodyCell.innerHTML;
     }
-    HTMLElementNode *fromProfileLink = [document firstNodeMatchingSelector:@"ul.profilelinks a"];
-    NSURL *fromProfileLinkURL = [NSURL URLWithString:fromProfileLink[@"href"]];
-    NSString *fromUserID = fromProfileLinkURL.queryDictionary[@"userid"];
-    HTMLElementNode *fromUsernameTerm = [document firstNodeMatchingSelector:@"dl.userinfo dt.author"];
-    NSString *fromUsername = [fromUsernameTerm.innerHTML gtm_stringByUnescapingFromHTML];
-    AwfulUser *from = [AwfulUser firstOrNewUserWithUserID:fromUserID
-                                                 username:fromUsername
-                                   inManagedObjectContext:managedObjectContext];
-    if (fromUsernameTerm) {
-        NSArray *classes = [fromUsernameTerm[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        from.administrator = [classes containsObject:@"role-admin"];
-        from.moderator = [classes containsObject:@"role-mod"];
+    AwfulUser *from = [self.authorScraper scrapeAuthorFromNode:document intoManagedObjectContext:managedObjectContext];
+    if (from) {
+        message.from = from;
     }
-    HTMLElementNode *regdateDefinition = [document firstNodeMatchingSelector:@"dl.userinfo dd.registered"];
-    if (regdateDefinition) {
-        NSDate *regdate = [self.regdateDateParser dateFromString:regdateDefinition.innerHTML];
-        if (regdate) {
-            from.regdate = regdate;
-        }
-    }
-    HTMLElementNode *customTitleDefinition = [document firstNodeMatchingSelector:@"dl.userinfo dd.title"];
-    if (customTitleDefinition) {
-        from.customTitleHTML = customTitleDefinition.innerHTML;
-    }
-    message.from = from;
     return message;
 }
 

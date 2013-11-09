@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsPageScraper.h"
+#import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
@@ -13,7 +14,7 @@
 @interface AwfulPostsPageScraper ()
 
 @property (strong, nonatomic) AwfulCompoundDateParser *postDateParser;
-@property (strong, nonatomic) AwfulCompoundDateParser *regdateDateParser;
+@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
 
 @end
 
@@ -25,10 +26,10 @@
     return _postDateParser;
 }
 
-- (AwfulCompoundDateParser *)regdateDateParser
+- (AwfulAuthorScraper *)authorScraper
 {
-    if (!_regdateDateParser) _regdateDateParser = [AwfulCompoundDateParser regdateDateParser];
-    return _regdateDateParser;
+    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
+    return _authorScraper;
 }
 
 #pragma mark - AwfulDocumentScraper
@@ -148,33 +149,12 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             post.postDate = [self.postDateParser dateFromString:postDateString];
         }
-        HTMLElementNode *authorTerm = [table firstNodeMatchingSelector:@"dt.author"];
-        HTMLElementNode *authorUserIDLink = [table firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'userid']"];
-        NSString *authorUsername = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
-        NSString *authorUserID;
-        {
-            NSURL *URL = [NSURL URLWithString:authorUserIDLink[@"href"]];
-            authorUserID = URL.queryDictionary[@"userid"];
-        }
-        AwfulUser *author = [AwfulUser firstOrNewUserWithUserID:authorUserID
-                                                       username:authorUsername
-                                         inManagedObjectContext:managedObjectContext];
-        post.author = author;
-        NSArray *authorClasses = [authorTerm[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if (authorClasses) {
-            author.administrator = [authorClasses containsObject:@"role-admin"];
-            author.moderator = [authorClasses containsObject:@"role-mod"];
-            if ([authorClasses containsObject:@"op"]) {
+        AwfulUser *author = [self.authorScraper scrapeAuthorFromNode:table intoManagedObjectContext:managedObjectContext];
+        if (author) {
+            post.author = author;
+            if ([table firstNodeMatchingSelector:@"dt.author.op"]) {
                 thread.author = author;
             }
-        }
-        HTMLElementNode *regdateDefinition = [table firstNodeMatchingSelector:@"dd.registered"];
-        if (regdateDefinition) {
-            author.regdate = [self.regdateDateParser dateFromString:[regdateDefinition.innerHTML gtm_stringByUnescapingFromHTML]];
-        }
-        HTMLElementNode *customTitleDefinition = [table firstNodeMatchingSelector:@"dl.userinfo dd.title"];
-        if (customTitleDefinition) {
-            author.customTitleHTML = customTitleDefinition.innerHTML;
         }
         HTMLElementNode *privateMessageLink = [table firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'private.php']"];
         author.canReceivePrivateMessages = !!privateMessageLink;

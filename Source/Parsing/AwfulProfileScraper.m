@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileScraper.h"
+#import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
@@ -10,17 +11,17 @@
 
 @interface AwfulProfileScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *regdateDateParser;
+@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
 @property (strong, nonatomic) AwfulCompoundDateParser *postDateParser;
 
 @end
 
 @implementation AwfulProfileScraper
 
-- (AwfulCompoundDateParser *)regdateDateParser
+- (AwfulAuthorScraper *)authorScraper
 {
-    if (!_regdateDateParser) _regdateDateParser = [AwfulCompoundDateParser regdateDateParser];
-    return _regdateDateParser;
+    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
+    return _authorScraper;
 }
 
 - (AwfulCompoundDateParser *)postDateParser
@@ -36,29 +37,15 @@
 intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
-    HTMLElementNode *usernameTerm = [document firstNodeMatchingSelector:@"dl.userinfo dt.author"];
-    NSString *username = [usernameTerm.innerHTML gtm_stringByUnescapingFromHTML];
-    HTMLElementNode *userIDInput = [document firstNodeMatchingSelector:@"input[name = 'userid']"];
-    NSString *userID = userIDInput[@"value"];
-    if (username.length == 0 && userID.length == 0) {
+    AwfulUser *user = [self.authorScraper scrapeAuthorFromNode:document
+                                      intoManagedObjectContext:managedObjectContext];
+    if (!user) {
         if (error) {
             *error = [NSError errorWithDomain:AwfulErrorDomain
                                          code:AwfulErrorCodes.parseError
                                      userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing user profile; could not find either username or user ID" }];
         }
         return nil;
-    }
-    AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:managedObjectContext];
-    HTMLElementNode *regdateDefinition = [document firstNodeMatchingSelector:@"dl.userinfo dd.registered"];
-    if (regdateDefinition) {
-        NSDate *regdate = [self.regdateDateParser dateFromString:regdateDefinition.innerHTML];
-        if (regdate) {
-            user.regdate = regdate;
-        }
-    }
-    HTMLElementNode *customTitleDefinition = [document firstNodeMatchingSelector:@"dl.userinfo dd.title"];
-    if (customTitleDefinition) {
-        user.customTitleHTML = customTitleDefinition.innerHTML;
     }
     HTMLElementNode *infoParagraph = [document firstNodeMatchingSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {

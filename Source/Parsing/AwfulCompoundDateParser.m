@@ -38,11 +38,6 @@
     return nil;
 }
 
-+ (instancetype)regdateDateParser
-{
-    return [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"MMM d, yyyy" ]];
-}
-
 + (instancetype)postDateParser
 {
     return [[AwfulCompoundDateParser alloc] initWithFormats:@[
