@@ -4,30 +4,6 @@
 
 #import "ParsingTests.h"
 
-@interface PrivateMessageTests : ParsingTests @end
-@implementation PrivateMessageTests
-
-+ (NSString *)fixtureFilename { return @"private-one.html"; }
-
-- (void)testPrivateMessageInfo
-{
-    PrivateMessageParsedInfo *info = [[PrivateMessageParsedInfo alloc]
-                                      initWithHTMLData:self.fixture];
-    XCTAssertEqualObjects(info.subject, @"Awful app");
-    XCTAssertEqualObjects(info.messageID, @"4601162");
-    XCTAssertEqualObjects(info.from.username, @"InFlames235");
-    XCTAssertEqualObjects(info.from.userID, @"47395");
-    XCTAssertNotNil(info.from.regdate);
-    AwfulAssertStringContainsSubstringOnce(info.from.customTitleHTML, @"as a cow");
-    XCTAssertFalse(info.replied);
-    XCTAssertTrue(info.seen);
-    XCTAssertNotNil(info.sentDate);
-    AwfulAssertStringContainsSubstringOnce(info.innerHTML, @"an awesome app");
-}
-
-@end
-
-
 @interface PrivateMessageListTests : ParsingTests @end
 @implementation PrivateMessageListTests
 

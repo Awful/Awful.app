@@ -23,44 +23,14 @@
     return [basename stringByAppendingPathExtension:@"png"];
 }
 
-+ (instancetype)privateMessageWithParsedInfo:(PrivateMessageParsedInfo *)info
-                      inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
++ (instancetype)firstOrNewPrivateMessageWithMessageID:(NSString *)messageID
+                               inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     AwfulPrivateMessage *message = [self fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                      matchingPredicateFormat:@"messageID = %@", info.messageID];
+                                                      matchingPredicateFormat:@"messageID = %@", messageID];
     if (!message) {
-        message = [AwfulPrivateMessage insertInManagedObjectContext:managedObjectContext];
-    }
-    [info applyToObject:message];
-    if (info.from) {
-        AwfulUser *from;
-        if (info.from.userID) {
-            from = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
-                                           matchingPredicateFormat:@"userID = %@", info.from.userID];
-        }
-        if (!from && info.from.username) {
-            from = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
-                                           matchingPredicateFormat:@"username = %@", info.from.username];
-        }
-        if (!from) {
-            from = [AwfulUser insertInManagedObjectContext:managedObjectContext];
-        }
-        [info.from applyToObject:from];
-        message.from = from;
-    }
-    if (info.to) {
-        AwfulUser *to = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                matchingPredicateFormat:@"userID = %@", info.to.userID];
-        if (!to) {
-            to = [AwfulUser insertInManagedObjectContext:managedObjectContext];
-        }
-        [info.to applyToObject:to];
-        message.to = to;
-    }
-    NSError *error;
-    BOOL ok = [managedObjectContext save:&error];
-    if (!ok) {
-        NSLog(@"%s error saving parsed private message %@: %@", __PRETTY_FUNCTION__, info.messageID, error);
+        message = [self insertInManagedObjectContext:managedObjectContext];
+        message.messageID = messageID;
     }
     return message;
 }

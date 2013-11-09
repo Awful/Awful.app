@@ -66,10 +66,10 @@
 @property (readonly, nonatomic) NSString *firstIconName;
 
 /**
- * Returns an AwfulPrivateMessage derived from parsed info.
+ * Returns an AwfulPrivateMessage object with the given message ID, inserting a new one if needed.
  */
-+ (instancetype)privateMessageWithParsedInfo:(PrivateMessageParsedInfo *)info
-                      inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
++ (instancetype)firstOrNewPrivateMessageWithMessageID:(NSString *)messageID
+                               inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 /**
  * Returns an array of AwfulPrivateMessage objects derived from parsed info.

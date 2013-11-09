@@ -13,6 +13,7 @@
 #import "AwfulParsedInfoResponseSerializer.h"
 #import "AwfulParsing.h"
 #import "AwfulPostsPageScraper.h"
+#import "AwfulPrivateMessageScraper.h"
 #import "AwfulProfileScraper.h"
 #import "AwfulScanner.h"
 #import "AwfulSettings.h"
@@ -657,18 +658,24 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
                                   andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
 {
-    return [_HTTPManager GET:@"private.php"
-                  parameters:@{ @"action": @"show",
-                                @"privatemessageid": messageID }
-            parsingWithBlock:^(NSData *data) {
-                return [[PrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, PrivateMessageParsedInfo *parsedInfo) {
-                AwfulPrivateMessage *message = [AwfulPrivateMessage privateMessageWithParsedInfo:parsedInfo
-                                                                          inManagedObjectContext:self.managedObjectContext];
-                if (callback) callback(nil, message);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    return [_HTTPManager HTMLGET:@"private.php"
+                      parameters:@{ @"action": @"show",
+                                    @"privatemessageid": messageID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper new];
+            NSError *error;
+            AwfulPrivateMessage *message = [scraper scrapeDocument:document
+                                                           fromURL:operation.response.URL
+                                          intoManagedObjectContext:managedObjectContext
+                                                             error:&error];
+            if (callback) callback(error, message);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
