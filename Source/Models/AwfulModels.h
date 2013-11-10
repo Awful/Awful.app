@@ -13,3 +13,4 @@
 #import "AwfulPrivateMessage.h"
 #import "AwfulSingleUserThreadInfo.h"
 #import "AwfulThreadPage.h"
+#import "AwfulBan.h"

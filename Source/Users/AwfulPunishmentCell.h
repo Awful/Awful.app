@@ -1,4 +1,4 @@
-//  AwfulInfractionCell.h
+//  AwfulPunishmentCell.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -7,7 +7,7 @@
 /**
  * An AwfulInfractionCell details a probation or ban.
  */
-@interface AwfulInfractionCell : UITableViewCell
+@interface AwfulPunishmentCell : UITableViewCell
 
 /**
  * Returns an initialized AwfulInfractionCell. This is the designated initializer.

@@ -9,6 +9,7 @@
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTMLRequestSerializer.h"
 #import "AwfulHTMLResponseSerializer.h"
+#import "AwfulLepersColonyPageScraper.h"
 #import "AwfulMessageFolderScraper.h"
 #import "AwfulModels.h"
 #import "AwfulParsedInfoResponseSerializer.h"
@@ -608,22 +609,30 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 }
 
 - (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(NSString *)userID
+                        forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
     NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
-    if (userID) {
+    if (user.userID) {
         parameters[@"pagenumber"] = @(page);
     }
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"banlist.php"
                   parameters:parameters
-            parsingWithBlock:^(NSData *data) {
-                return [BanParsedInfo bansWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, NSArray *bans) {
-                if (callback) callback(nil, bans);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper new];
+            NSError *error;
+            NSArray *bans = [scraper scrapeDocument:document
+                                            fromURL:operation.response.URL
+                           intoManagedObjectContext:managedObjectContext
+                                              error:&error];
+            if (callback) callback(error, bans);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback

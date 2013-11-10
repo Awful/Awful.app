@@ -231,13 +231,14 @@ extern NSString * const AwfulUserDidLogInNotification;
 // List probations, bans, and permabans from the Leper's Colony.
 //
 // page     - Which page of the Leper's Colony to list. First page is page 1.
-// callback - A block to call after listing punishment, which takes as parameters:
+// user     - An AwfulUser to filter the punishments by, or nil for no filter.
+// callback - A block to call after listing punishments, which takes as parameters:
 //              error - An error on failure, or nil on success.
-//              bans  - An array of BanParsedInfo instances on success, or nil on failure.
+//              bans  - An array of AwfulBan objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(NSString *)userID
+                        forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 // List private messages in the logged-in user's Inbox.
