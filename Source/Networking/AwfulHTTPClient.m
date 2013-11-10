@@ -36,11 +36,6 @@
                          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
-- (AFHTTPRequestOperation *)HTMLGET:(NSString *)URLString
-                         parameters:(NSDictionary *)parameters
-                            success:(void (^)(AFHTTPRequestOperation *, id))success
-                            failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure;
-
 @end
 
 @implementation AwfulHTTPClient
@@ -97,13 +92,19 @@
         urlString = @"http://forums.somethingawful.com/";
     }
     _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
-    AwfulHTMLRequestSerializer *requestSerializer = [AwfulHTMLRequestSerializer new];
-    requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    _HTTPManager.requestSerializer = requestSerializer;
-    AFHTTPResponseSerializer *dataResponseSerializer = [AFHTTPResponseSerializer new];
-    dataResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    NSArray *serializers = @[ [AFJSONResponseSerializer new],
-                              dataResponseSerializer ];
+    _HTTPManager.requestSerializer = ({
+        AwfulHTMLRequestSerializer *serializer = [AwfulHTMLRequestSerializer new];
+        serializer.stringEncoding = NSWindowsCP1252StringEncoding;
+        serializer;
+    });
+    NSArray *serializers = @[
+                             [AFJSONResponseSerializer new],
+                             ({
+                                 AwfulHTMLResponseSerializer *serializer = [AwfulHTMLResponseSerializer new];
+                                 serializer.stringEncoding = NSWindowsCP1252StringEncoding;
+                                 serializer;
+                             }),
+                             ];
     _HTTPManager.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:serializers];
 }
 
@@ -161,11 +162,11 @@
                             andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"forumdisplay.php"
-                      parameters:@{ @"forumid": forum.forumID,
-                                    @"perpage": @40,
-                                    @"pagenumber": @(page) }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"forumdisplay.php"
+                  parameters:@{ @"forumid": forum.forumID,
+                                @"perpage": @40,
+                                @"pagenumber": @(page) }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
@@ -189,11 +190,11 @@
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"bookmarkthreads.php"
-                      parameters:@{ @"action": @"view",
-                                    @"perpage": @40,
-                                    @"pagenumber": @(page) }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"bookmarkthreads.php"
+                  parameters:@{ @"action": @"view",
+                                @"perpage": @40,
+                                @"pagenumber": @(page) }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
@@ -234,9 +235,9 @@
         parameters[@"userid"] = singleUserID;
     }
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"showthread.php"
-                      parameters:parameters
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"showthread.php"
+                  parameters:parameters
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper new];
@@ -269,9 +270,9 @@
 - (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"member.php"
-                      parameters:@{ @"action": @"getinfo" }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"member.php"
+                  parameters:@{ @"action": @"getinfo" }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper new];
@@ -309,9 +310,9 @@
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"forumdisplay.php"
-                      parameters:@{ @"forumid": @"48" }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"forumdisplay.php"
+                  parameters:@{ @"forumid": @"48" }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper new];
@@ -587,10 +588,10 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     NSManagedObjectContext *managedObjectContext;
-    return [_HTTPManager HTMLGET:@"member.php"
-                      parameters:@{ @"action": @"getinfo",
-                                    @"userid": userID }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"member.php"
+                  parameters:@{ @"action": @"getinfo",
+                                @"userid": userID }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper new];
@@ -628,9 +629,9 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"private.php"
-                      parameters:nil
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"private.php"
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulMessageFolderScraper *scraper = [AwfulMessageFolderScraper new];
@@ -664,10 +665,10 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                                   andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager HTMLGET:@"private.php"
-                      parameters:@{ @"action": @"show",
-                                    @"privatemessageid": messageID }
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [_HTTPManager GET:@"private.php"
+                  parameters:@{ @"action": @"show",
+                                @"privatemessageid": messageID }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper new];
@@ -858,23 +859,6 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
     AwfulParsedInfoResponseSerializer *responseSerializer = [AwfulParsedInfoResponseSerializer new];
     responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     responseSerializer.parseBlock = parseBlock;
-    operation.responseSerializer = responseSerializer;
-    [self.operationQueue addOperation:operation];
-    return operation;
-}
-
-#pragma mark - HTMLReader-based parsing
-
-- (AFHTTPRequestOperation *)HTMLGET:(NSString *)URLString
-                         parameters:(NSDictionary *)parameters
-                            success:(void (^)(AFHTTPRequestOperation *, id))success
-                            failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
-{
-    NSURL *URL = [NSURL URLWithString:URLString relativeToURL:self.baseURL];
-    NSURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters];
-    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
-    AwfulHTMLResponseSerializer *responseSerializer = [AwfulHTMLResponseSerializer new];
-    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
     operation.responseSerializer = responseSerializer;
     [self.operationQueue addOperation:operation];
     return operation;
