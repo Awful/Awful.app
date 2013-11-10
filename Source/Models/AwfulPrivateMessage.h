@@ -71,10 +71,4 @@
 + (instancetype)firstOrNewPrivateMessageWithMessageID:(NSString *)messageID
                                inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
-/**
- * Returns an array of AwfulPrivateMessage objects derived from parsed info.
- */
-+ (NSArray *)privateMessagesWithFolderParsedInfo:(PrivateMessageFolderParsedInfo *)info
-                          inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
-
 @end

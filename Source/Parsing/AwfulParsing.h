@@ -95,29 +95,6 @@ typedef NS_ENUM(NSInteger, AwfulBanType) {
 @end
 
 
-@interface PrivateMessageParsedInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSString *messageID;
-@property (readonly, copy, nonatomic) NSString *subject;
-@property (readonly, nonatomic) NSDate *sentDate;
-@property (readonly, nonatomic) NSURL *threadTagURL;
-@property (readonly, nonatomic) UserParsedInfo *from;
-@property (readonly, nonatomic) UserParsedInfo *to;
-@property (readonly, nonatomic) BOOL seen;
-@property (readonly, nonatomic) BOOL replied;
-@property (readonly, nonatomic) BOOL forwarded;
-@property (readonly, nonatomic) NSString *innerHTML;
-
-@end
-
-
-@interface PrivateMessageFolderParsedInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSArray *privateMessages;
-
-@end
-
-
 @interface ComposePrivateMessageParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSDictionary *postIcons;

@@ -49,8 +49,7 @@
 
 - (id)scrapeFixtureNamed:(NSString *)fixtureName
 {
-    NSString *fixturePath = [@"Fixtures" stringByAppendingPathComponent:fixtureName];
-    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixturePath withExtension:@"html"];
+    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixtureName withExtension:@"html" subdirectory:@"Fixtures"];
     NSError *error;
     NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSWindowsCP1252StringEncoding error:&error];
     XCTAssertNotNil(fixtureHTML, @"error loading fixture from %@: %@", fixtureURL, error);

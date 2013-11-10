@@ -244,8 +244,7 @@ extern NSString * const AwfulUserDidLogInNotification;
 //
 // callback - A block to call after listing messages, which takes as parameters:
 //              error    - An error on failure, or nil on success.
-//              messages - An array of PrivateMessageParsedInfo instances on success, or nil on
-//                         failure.
+//              messages - An array of AwfulPrivateMessage objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
