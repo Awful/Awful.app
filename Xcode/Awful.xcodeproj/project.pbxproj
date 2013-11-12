@@ -31,9 +31,6 @@
 		117DBE3B1522A39A007125EF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 117DBE3A1522A39A007125EF /* CoreData.framework */; };
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
-		1190F7EE13BE4ECB00B9D271 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C213BE4ECB00B9D271 /* TFHpple.m */; };
-		1190F7EF13BE4ECB00B9D271 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
-		1190F7F013BE4ECB00B9D271 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0A3173973FA008895E7 /* AwfulScreenCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A2173973FA008895E7 /* AwfulScreenCoverView.m */; };
@@ -170,7 +167,6 @@
 		1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6016EA030700C665B5 /* pmforwarded.gif */; };
 		1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6116EA030700C665B5 /* pmreplied.gif */; };
 		1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1857F17E3472300462F20 /* AwfulToolbar.m */; };
-		1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
 		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */; };
@@ -178,7 +174,6 @@
 		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
 		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
-		1CB7C25A18228DCB00CF2B76 /* AwfulParsedInfoResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C25918228DCB00CF2B76 /* AwfulParsedInfoResponseSerializer.m */; };
 		1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* AwfulReplyViewController.m */; };
 		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
@@ -186,10 +181,6 @@
 		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C213BE4ECB00B9D271 /* TFHpple.m */; };
-		1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */; };
-		1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7C613BE4ECB00B9D271 /* XPathQuery.m */; };
-		1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CAB36B01548F0FE00A4A362 /* libxml2.dylib */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
@@ -300,12 +291,6 @@
 		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
-		1190F7C113BE4ECB00B9D271 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
-		1190F7C213BE4ECB00B9D271 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHpple.m; sourceTree = "<group>"; };
-		1190F7C313BE4ECB00B9D271 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHppleElement.h; sourceTree = "<group>"; };
-		1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
-		1190F7C513BE4ECB00B9D271 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
-		1190F7C613BE4ECB00B9D271 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../../Xcode/Prefix.pch; sourceTree = "<group>"; };
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
@@ -505,7 +490,6 @@
 		1C9FDE6116EA030700C665B5 /* pmreplied.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmreplied.gif; sourceTree = "<group>"; };
 		1CA1857E17E3472300462F20 /* AwfulToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulToolbar.h; sourceTree = "<group>"; };
 		1CA1857F17E3472300462F20 /* AwfulToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulToolbar.m; sourceTree = "<group>"; };
-		1CAB36B01548F0FE00A4A362 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagLoader.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagLoader.m; sourceTree = "<group>"; };
 		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
@@ -520,8 +504,6 @@
 		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
 		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
 		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
-		1CB7C25818228DCA00CF2B76 /* AwfulParsedInfoResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParsedInfoResponseSerializer.h; sourceTree = "<group>"; };
-		1CB7C25918228DCB00CF2B76 /* AwfulParsedInfoResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsedInfoResponseSerializer.m; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
 		1CBC74AD181A16040076234E /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
 		1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeTextView.h; sourceTree = "<group>"; };
@@ -677,7 +659,6 @@
 				1CFE984A1829360E003DBBC2 /* XCTest.framework in Frameworks */,
 				1CBDB5BF16259C6C0004BDF4 /* UIKit.framework in Frameworks */,
 				1CBDB5C016259C6C0004BDF4 /* Foundation.framework in Frameworks */,
-				1CBDB5FC1625E7440004BDF4 /* libxml2.dylib in Frameworks */,
 				F69D0B2EEA8D4E9BA2423573 /* libPods-ParsingTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -699,7 +680,6 @@
 				1172A62E14F5DB160026CDA8 /* Security.framework in Frameworks */,
 				10D34FB1128F413C0026C7C2 /* SystemConfiguration.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				1CAB36B11548F0FE00A4A362 /* libxml2.dylib in Frameworks */,
 				10D34FB7128F414E0026C7C2 /* libz.dylib in Frameworks */,
 				4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */,
 			);
@@ -741,7 +721,6 @@
 				8C8AB94A16DC499400D85404 /* CustomBadge */,
 				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
 				1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */,
-				1190F7BF13BE4ECB00B9D271 /* Hpple */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1C4D7BD6167A5C7C00CF3659 /* PSMenuItem */,
@@ -751,20 +730,6 @@
 			);
 			name = Vendor;
 			path = ../Vendor;
-			sourceTree = "<group>";
-		};
-		1190F7BF13BE4ECB00B9D271 /* Hpple */ = {
-			isa = PBXGroup;
-			children = (
-				1190F7C113BE4ECB00B9D271 /* TFHpple.h */,
-				1190F7C213BE4ECB00B9D271 /* TFHpple.m */,
-				1190F7C313BE4ECB00B9D271 /* TFHppleElement.h */,
-				1190F7C413BE4ECB00B9D271 /* TFHppleElement.m */,
-				1190F7C513BE4ECB00B9D271 /* XPathQuery.h */,
-				1190F7C613BE4ECB00B9D271 /* XPathQuery.m */,
-			);
-			name = Hpple;
-			path = hpple;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -1206,8 +1171,6 @@
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
 				1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */,
 				1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */,
-				1CB7C25818228DCA00CF2B76 /* AwfulParsedInfoResponseSerializer.h */,
-				1CB7C25918228DCB00CF2B76 /* AwfulParsedInfoResponseSerializer.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -1381,7 +1344,6 @@
 				1172A62D14F5DB160026CDA8 /* Security.framework */,
 				10D34FB0128F413C0026C7C2 /* SystemConfiguration.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1CAB36B01548F0FE00A4A362 /* libxml2.dylib */,
 				10D34FB6128F414E0026C7C2 /* libz.dylib */,
 				5A0A70D650DA4CEE875C5173 /* libPods.a */,
 				63F3DF9C27054D9A93B744A1 /* libPods.a */,
@@ -1801,15 +1763,12 @@
 				1C6D2EB5182FE21A00785766 /* AwfulMessageFolderScraper.m in Sources */,
 				1C35FB731831A7F200B52724 /* AwfulThreadTag.m in Sources */,
 				1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */,
-				1CBDB5F91625E7320004BDF4 /* TFHpple.m in Sources */,
 				1C6FFEE1182AA5CB0014311C /* AwfulParsingTestCase.m in Sources */,
 				1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */,
 				1C35FB791832A31000B52724 /* AwfulFormScraper.m in Sources */,
-				1CBDB5FA1625E7320004BDF4 /* TFHppleElement.m in Sources */,
 				1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */,
 				1C6D2EA5182D622D00785766 /* ForumHierarchyParsingTests.m in Sources */,
 				1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */,
-				1CBDB5FB1625E7320004BDF4 /* XPathQuery.m in Sources */,
 				1CE694AD182FF6B600B24928 /* LepersColonyPageScrapingTests.m in Sources */,
 				1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */,
 				1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */,
@@ -1834,10 +1793,7 @@
 			files = (
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
-				1190F7EE13BE4ECB00B9D271 /* TFHpple.m in Sources */,
 				1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */,
-				1190F7EF13BE4ECB00B9D271 /* TFHppleElement.m in Sources */,
-				1190F7F013BE4ECB00B9D271 /* XPathQuery.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */,
@@ -1932,7 +1888,6 @@
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
 				1CE8FDEF17027725006A3B84 /* AwfulJumpToPageController.m in Sources */,
-				1CB7C25A18228DCB00CF2B76 /* AwfulParsedInfoResponseSerializer.m in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,
 				1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
@@ -2082,10 +2037,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2119,10 +2070,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2196,10 +2143,6 @@
 					"DEBUG=0",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
@@ -2261,10 +2204,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2298,10 +2237,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
@@ -2331,10 +2266,6 @@
 					"DEBUG=0",
 				);
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${SDKROOT}/usr/include/libxml2",
-				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Awful;
