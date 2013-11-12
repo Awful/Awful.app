@@ -69,14 +69,12 @@ static NSString * const DefaultTitle = @"New Thread";
     [super viewDidLoad];
     [self updateThreadTagButtonImage];
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID
-                                                           andThen:^(NSError *error, NSArray *postIcons, NSArray *secondaryPostIcons, NSString *secondaryIconKey)
-    {
+    [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
         __typeof__(self) self = weakSelf;
-        _availableThreadTags = [postIcons copy];
-        _availableSecondaryThreadTags = [secondaryPostIcons copy];
-        self.secondaryThreadTag = secondaryPostIcons.firstObject;
-        _secondaryIconKey = [secondaryIconKey copy];
+        _availableThreadTags = [form.threadTags copy];
+        _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
+        self.secondaryThreadTag = _availableSecondaryThreadTags.firstObject;
+        _secondaryIconKey = [form.secondaryThreadTagName copy];
         [_postIconPicker reloadData];
     }];
 }

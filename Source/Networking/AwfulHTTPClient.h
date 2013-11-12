@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
+#import "AwfulForm.h"
 #import "AwfulModels.h"
 
 @interface AwfulHTTPClient : NSObject
@@ -317,21 +318,12 @@ extern NSString * const AwfulUserDidLogInNotification;
 //
 // forumID  - Which forum to list icons for.
 // callback - A block to call after listing post icons, which takes as parameters:
-//              error              - An error on failure, or nil on success.
-//              postIcons          - An array of AwfulThreadTag instances on success, or nil on
-//                                   failure.
-//              secondaryPostIcons - An array of AwfulThreadTag instances on success, or nil if
-//                                   the forum doesn't use secondary thread tags, or nil on failure.
-//              secondaryIconKey   - Pass this to -postThreadInForumWithID... along with the ID of
-//                                   the selected secondary icon.
+//              error - An error on failure, or nil on success.
+//              form  - An AwfulForm object with thread tags and secondary thread tags on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
-                                              andThen:(void (^)(NSError *error,
-                                                                NSArray *postIcons,
-                                                                NSArray *secondaryPostIcons,
-                                                                NSString *secondaryIconKey
-                                                                ))callback;
+                                              andThen:(void (^)(NSError *error, AwfulForm *form))callback;
 
 // Post a new thread in a forum.
 //

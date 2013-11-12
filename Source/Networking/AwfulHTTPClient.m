@@ -6,14 +6,13 @@
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
+#import "AwfulFormScraper.h"
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTMLRequestSerializer.h"
 #import "AwfulHTMLResponseSerializer.h"
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulMessageFolderScraper.h"
 #import "AwfulModels.h"
-#import "AwfulParsedInfoResponseSerializer.h"
-#import "AwfulParsing.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulPrivateMessageScraper.h"
 #import "AwfulProfileScraper.h"
@@ -24,18 +23,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulHTTPRequestOperationManager : AFHTTPRequestOperationManager
-
-- (AFHTTPRequestOperation *)GET:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
-               parsingWithBlock:(id (^)(NSData *data))parseBlock
-                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
-
-- (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
-                parsingWithBlock:(id (^)(NSData *data))parseBlock
-                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
 @end
 
@@ -333,63 +320,96 @@
                                 text:(NSString *)text
                              andThen:(void (^)(NSError *error, NSString *postID))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newreply.php"
                   parameters:@{ @"action" : @"newreply",
                                 @"threadid" : threadID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ReplyFormParsedInfo *formInfo) {
-                if (!(formInfo.formkey && formInfo.formCookie)) {
-                    NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"Thread is closed" };
-                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                         code:AwfulErrorCodes.threadIsClosed
-                                                     userInfo:userInfo];
-                    if (callback) callback(error, nil);
-                    return;
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to reply; could not find form" }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            AwfulForm *form = forms[0];
+            NSMutableDictionary *parameters = [form recommendedParameters];
+            if (!parameters[@"formkey"] || !parameters[@"form_cookie"]) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.threadIsClosed
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Thread will not accept new replies from you. It may be closed." }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            parameters[@"threadid"] = threadID;
+            parameters[@"message"] = text;
+            [_HTTPManager POST:@"newreply.php"
+                    parameters:parameters
+                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+            {
+                NSString *postID;
+                HTMLElementNode *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
+                                         [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
+                NSURL *URL = [NSURL URLWithString:link[@"href"]];
+                if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
+                    postID = URL.queryDictionary[@"postid"];
                 }
-                NSMutableDictionary *postParameters = [@{ @"threadid" : threadID,
-                                                          @"formkey" : formInfo.formkey,
-                                                          @"form_cookie" : formInfo.formCookie,
-                                                          @"action" : @"postreply",
-                                                          @"message" : text,
-                                                          @"parseurl" : @"yes",
-                                                          @"submit" : @"Submit Reply" } mutableCopy];
-                if (formInfo.bookmark) {
-                    postParameters[@"bookmark"] = formInfo.bookmark;
-                }
-                [_HTTPManager POST:@"newreply.php"
-                        parameters:postParameters
-                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
-                {
-                    NSString *postID;
-                    HTMLElementNode *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
-                                             [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
-                    NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                    if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
-                        postID = URL.queryDictionary[@"postid"];
-                    }
-                    if (callback) callback(nil, postID);
-                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                    if (callback) callback(error, nil);
-                }];
+                if (callback) callback(nil, postID);
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)getTextOfPostWithID:(NSString *)postID
                              andThen:(void (^)(NSError *error, NSString *text))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"editpost.php"
                   parameters:@{ @"action": @"editpost",
                                 @"postid": postID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ReplyFormParsedInfo *formInfo) {
-                if (callback) callback(nil, formInfo.text);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find form" }];
                 if (callback) callback(error, nil);
-            }];
+                return;
+            }
+            AwfulForm *form = forms[0];
+            for (AwfulFormItem *text in form.texts) {
+                if ([text.name isEqualToString:@"message"]) {
+                    if (callback) callback(error, text.value);
+                    return;
+                }
+            }
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.parseError
+                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find text box" }];
+            if (callback) callback(error, nil);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
@@ -420,29 +440,41 @@
                            text:(NSString *)text
                         andThen:(void (^)(NSError *error))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"editpost.php"
                   parameters:@{ @"action": @"editpost",
                                 @"postid": postID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ReplyFormParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ReplyFormParsedInfo *formInfo) {
-                NSMutableDictionary *parameters = [@{ @"action": @"updatepost",
-                                                      @"submit": @"Save Changes",
-                                                      @"postid": postID,
-                                                      @"message": text } mutableCopy];
-                if (formInfo.bookmark) {
-                    parameters[@"bookmark"] = formInfo.bookmark;
-                }
-                [_HTTPManager POST:@"editpost.php"
-                        parameters:parameters
-                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                               if (callback) callback(nil);
-                           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                               if (callback) callback(error);
-                           }];
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
                 if (callback) callback(error);
-            }];
+                return;
+            }
+            AwfulForm *form = forms[0];
+            NSMutableDictionary *parameters = [form recommendedParameters];
+            parameters[@"postid"] = postID;
+            parameters[@"message"] = text;
+            [_HTTPManager POST:@"editpost.php"
+                    parameters:parameters
+                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                           if (callback) callback(nil);
+                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                           if (callback) callback(error);
+                       }];
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
 - (NSOperation *)rateThreadWithID:(NSString *)threadID
@@ -701,48 +733,70 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
                                    andThen:(void (^)(NSError *error, NSString *bbcode))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
                   parameters:@{ @"action": @"newmessage",
                                 @"privatemessageid": messageID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo) {
-                if (callback) callback(nil, parsedInfo.text);
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
-}
-
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error,
-                                                                       NSArray *postIcons))callback
-{
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"private.php"
-                  parameters:@{ @"action": @"newmessage" }
-            parsingWithBlock:^(NSData *data) {
-                return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo)
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            NSArray *threadTags = [self collectedPostIconsWithIDs:parsedInfo.postIconIDs
-                                                            icons:parsedInfo.postIcons];
-            if (callback) callback(nil, threadTags);
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed quoting private message; could not find form" }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            AwfulForm *form = forms[0];
+            for (AwfulFormItem *text in form.texts) {
+                if ([text.name isEqualToString:@"message"]) {
+                    if (callback) callback(error, text.value);
+                    return;
+                }
+            }
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.parseError
+                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed quoting private message; could not find text box" }];
+            if (callback) callback(error, nil);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
 }
 
-- (NSArray *)collectedPostIconsWithIDs:(NSArray *)postIconIDs icons:(NSDictionary *)postIcons
+- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSArray *postIcons))callback
 {
-    if ([postIconIDs count] == 0) return nil;
-    NSMutableArray *collection = [NSMutableArray new];
-    for (NSString *iconID in postIconIDs) {
-        AwfulThreadTag *tag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:iconID
-                                                                    threadTagURL:postIcons[iconID] inManagedObjectContext:self.managedObjectContext];
-        [collection addObject:tag];
-    }
-    return collection;
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    return [_HTTPManager GET:@"private.php"
+                  parameters:@{ @"action": @"newmessage" }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed scraping thread tags from new private message form" }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            AwfulForm *form = forms[0];
+            if (callback) callback(error, form.threadTags);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
@@ -773,25 +827,32 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 }
 
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
-                                              andThen:(void (^)(NSError *error, NSArray *postIcons, NSArray *secondaryPostIcons, NSString *secondaryIconKey))callback
+                                              andThen:(void (^)(NSError *error, AwfulForm *form))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
                                 @"forumid": forumID }
-            parsingWithBlock:^(NSData *data) {
-                return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo)
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            NSArray *threadTags = [self collectedPostIconsWithIDs:parsedInfo.postIconIDs
-                                                            icons:parsedInfo.postIcons];
-            NSArray *secondaryThreadTags = [self collectedPostIconsWithIDs:parsedInfo.secondaryIconIDs
-                                                                     icons:parsedInfo.secondaryIcons];
-            if (callback) callback(nil, threadTags, secondaryThreadTags, parsedInfo.secondaryIconKey);
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing new thread form" }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            if (callback) callback(error, forms[0]);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error, nil, nil, nil);
+        if (callback) callback(error, nil);
     }];
 }
 
@@ -807,86 +868,54 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
     NSParameterAssert([subject length] > 0);
     NSParameterAssert([text length] > 0);
     
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
                                 @"forumid": forumID }
-            parsingWithBlock:^(NSData *data) {
-                return [[NewThreadFormParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, NewThreadFormParsedInfo *formInfo) {
-                NSMutableDictionary *parameters = [@{ @"forumid": forumID,
-                                                      @"action": @"postthread",
-                                                      @"formkey": formInfo.formkey,
-                                                      @"form_cookie": formInfo.formCookie,
-                                                      // I'm not sure if the subject needs any particular escapes, or what's allowed. This is a total guess.
-                                                      @"subject": subject,
-                                                      @"iconid": iconID ?: @"0",
-                                                      @"message": text,
-                                                      @"polloptions": @"4",
-                                                      @"submit": @"Submit New Thread" } mutableCopy];
-                if ([secondaryIconID length] > 0 && [secondaryIconKey length] > 0) {
-                    parameters[secondaryIconKey] = secondaryIconID;
-                }
-                if (formInfo.automaticallyParseURLs) {
-                    parameters[@"parseurl"] = formInfo.automaticallyParseURLs;
-                }
-                if (formInfo.bookmarkThread) {
-                    parameters[@"bookmark"] = formInfo.bookmarkThread;
-                }
-                [_HTTPManager POST:@"newthread.php"
-                        parameters:parameters
-                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
-                {
-                    HTMLElementNode *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
-                    NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                    NSString *threadID = URL.queryDictionary[@"threadid"];
-                    if (callback) callback(nil, threadID);
-                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                    if (callback) callback(error, nil);
-                }];
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            if (forms.count < 1) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to scrape new thread form" }];
+                if (callback) callback(error, nil);
+                return;
+            }
+            AwfulForm *form = forms[0];
+            NSMutableDictionary *parameters = [form recommendedParameters];
+            parameters[@"subject"] = [subject copy];
+            parameters[form.threadTagName] = iconID ?: @"0";
+            parameters[@"message"] = [text copy];
+            if (secondaryIconID.length > 0) {
+                parameters[form.secondaryThreadTagName] = secondaryIconID;
+            }
+            [_HTTPManager POST:@"newthread.php"
+                    parameters:parameters
+                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+            {
+                HTMLElementNode *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
+                NSURL *URL = [NSURL URLWithString:link[@"href"]];
+                NSString *threadID = URL.queryDictionary[@"threadid"];
+                if (callback) callback(nil, threadID);
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
 @end
 
 @implementation AwfulHTTPRequestOperationManager
-
-#pragma mark - ParsedInfo-based parsing
-
-- (AFHTTPRequestOperation *)GET:(NSString *)URLString
-                     parameters:(NSDictionary *)parameters
-               parsingWithBlock:(id (^)(NSData *data))parseBlock
-                        success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                        failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    NSURL *URL = [NSURL URLWithString:URLString relativeToURL:self.baseURL];
-    NSURLRequest *request = [self.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters];
-    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
-    AwfulParsedInfoResponseSerializer *responseSerializer = [AwfulParsedInfoResponseSerializer new];
-    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    responseSerializer.parseBlock = parseBlock;
-    operation.responseSerializer = responseSerializer;
-    [self.operationQueue addOperation:operation];
-    return operation;
-}
-
-- (AFHTTPRequestOperation *)POST:(NSString *)URLString
-                      parameters:(NSDictionary *)parameters
-                parsingWithBlock:(id (^)(NSData *data))parseBlock
-                         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    NSURL *URL = [NSURL URLWithString:URLString relativeToURL:self.baseURL];
-    NSURLRequest *request = [self.requestSerializer requestWithMethod:@"POST" URLString:URL.absoluteString parameters:parameters];
-    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
-    AwfulParsedInfoResponseSerializer *responseSerializer = [AwfulParsedInfoResponseSerializer new];
-    responseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    responseSerializer.parseBlock = parseBlock;
-    operation.responseSerializer = responseSerializer;
-    [self.operationQueue addOperation:operation];
-    return operation;
-}
 
 #pragma mark -
 
