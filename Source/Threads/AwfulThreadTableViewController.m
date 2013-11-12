@@ -80,26 +80,27 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
     // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
     // the empty thread tag for anyone lame enough to pick the same tag twice.
-    UIImage *emptyTag = [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
-    if ([thread.firstIconName isEqualToString:thread.secondIconName]) {
+    UIImage *emptyTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+    if ([thread.threadTag isEqual:thread.secondaryThreadTag]) {
         cell.tagAndRatingView.threadTag = emptyTag;
     } else {
-        UIImage *threadTag = [[AwfulThreadTagLoader loader] threadTagNamed:thread.firstIconName];
+        UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
         cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
     }
     
     cell.tagAndRatingView.secondaryThreadTagBadge.hidden = NO;
-    if ([thread.secondIconName isEqualToString:@"icon-37-selling.png"]) {
+    AwfulThreadTag *secondaryThreadTag = thread.secondaryThreadTag;
+    if ([secondaryThreadTag.imageName isEqualToString:@"icon-37-selling"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"S";
-    } else if ([thread.secondIconName isEqualToString:@"icon-46-trading.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-46-trading"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
-    } else if ([thread.secondIconName isEqualToString:@"icon-38-buying.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-38-buying"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"B";
-    } else if ([thread.secondIconName isEqualToString:@"icon-52-trading.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-52-trading"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
-    } else if ([thread.secondIconName isEqualToString:@"ama.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"ama"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
-    } else if ([thread.secondIconName isEqualToString:@"tma.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"tma"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
     } else {
         cell.tagAndRatingView.secondaryThreadTagBadge.hidden = YES;
@@ -267,17 +268,18 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         case AwfulStarCategoryYellow: cell.badgeLabel.textColor = self.theme[@"unreadBadgeYellowColor"]; break;
         default: cell.badgeLabel.textColor = self.theme[@"tintColor"]; break;
     }
-    if ([thread.secondIconName isEqualToString:@"icon-37-selling.png"]) {
+    AwfulThreadTag *secondaryThreadTag = thread.secondaryThreadTag;
+    if ([secondaryThreadTag.imageName isEqualToString:@"icon-37-selling"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"sellingBadgeColor"];
-    } else if ([thread.secondIconName isEqualToString:@"icon-46-trading.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-46-trading"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"tradingBadgeColor"];
-    } else if ([thread.secondIconName isEqualToString:@"icon-38-buying.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-38-buying"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"buyingBadgeColor"];
-    } else if ([thread.secondIconName isEqualToString:@"icon-52-trading.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-52-trading"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"auctionBadgeColor"];
-    } else if ([thread.secondIconName isEqualToString:@"ama.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"ama"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"askBadgeColor"];
-    } else if ([thread.secondIconName isEqualToString:@"tma.png"]) {
+    } else if ([secondaryThreadTag.imageName isEqualToString:@"tma"]) {
         cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"tellBadgeColor"];
     }
 }

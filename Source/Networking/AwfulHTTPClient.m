@@ -711,25 +711,30 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error,
                                                                        NSArray *postIcons))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
                   parameters:@{ @"action": @"newmessage" }
             parsingWithBlock:^(NSData *data) {
                 return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo) {
-                if (callback) callback(nil, CollectPostIcons(parsedInfo.postIconIDs, parsedInfo.postIcons));
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil);
-            }];
+            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo)
+    {
+        [managedObjectContext performBlock:^{
+            NSArray *threadTags = [self collectedPostIconsWithIDs:parsedInfo.postIconIDs
+                                                            icons:parsedInfo.postIcons];
+            if (callback) callback(nil, threadTags);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
-static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
+- (NSArray *)collectedPostIconsWithIDs:(NSArray *)postIconIDs icons:(NSDictionary *)postIcons
 {
     if ([postIconIDs count] == 0) return nil;
     NSMutableArray *collection = [NSMutableArray new];
     for (NSString *iconID in postIconIDs) {
-        AwfulThreadTag *tag = [AwfulThreadTag new];
-        tag.composeID = iconID;
-        tag.imageName = [[postIcons[iconID] lastPathComponent] stringByDeletingPathExtension];
+        AwfulThreadTag *tag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:iconID
+                                                                    threadTagURL:postIcons[iconID] inManagedObjectContext:self.managedObjectContext];
         [collection addObject:tag];
     }
     return collection;
@@ -765,21 +770,24 @@ static NSArray * CollectPostIcons(NSArray *postIconIDs, NSDictionary *postIcons)
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error, NSArray *postIcons, NSArray *secondaryPostIcons, NSString *secondaryIconKey))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
                                 @"forumid": forumID }
             parsingWithBlock:^(NSData *data) {
                 return [[ComposePrivateMessageParsedInfo alloc] initWithHTMLData:data];
-            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo) {
-                if (callback) {
-                    callback(nil,
-                             CollectPostIcons(parsedInfo.postIconIDs, parsedInfo.postIcons),
-                             CollectPostIcons(parsedInfo.secondaryIconIDs, parsedInfo.secondaryIcons),
-                             parsedInfo.secondaryIconKey);
-                }
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                if (callback) callback(error, nil, nil, nil);
-            }];
+            } success:^(AFHTTPRequestOperation *operation, ComposePrivateMessageParsedInfo *parsedInfo)
+    {
+        [managedObjectContext performBlock:^{
+            NSArray *threadTags = [self collectedPostIconsWithIDs:parsedInfo.postIconIDs
+                                                            icons:parsedInfo.postIcons];
+            NSArray *secondaryThreadTags = [self collectedPostIconsWithIDs:parsedInfo.secondaryIconIDs
+                                                                     icons:parsedInfo.secondaryIcons];
+            if (callback) callback(nil, threadTags, secondaryThreadTags, parsedInfo.secondaryIconKey);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil, nil, nil);
+    }];
 }
 
 - (NSOperation *)postThreadInForumWithID:(NSString *)forumID

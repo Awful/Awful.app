@@ -8,6 +8,7 @@
 #import "AwfulUser.h"
 #import "AwfulCategory.h"
 #import "AwfulForum.h"
+#import "AwfulThreadTag.h"
 #import "AwfulThread.h"
 #import "AwfulPost.h"
 #import "AwfulPrivateMessage.h"

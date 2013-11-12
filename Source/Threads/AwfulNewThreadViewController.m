@@ -99,15 +99,15 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [[AwfulThreadTagLoader loader] threadTagNamed:self.threadTag.imageName];
+        image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
     } else {
-        image = [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
+        image = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
         // TODO grab new style from AwfulThreadTableViewController
         AwfulThreadTag *tag = self.secondaryThreadTag;
-        image = [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
+        image = [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
     } else {
         image = nil;
     }
@@ -172,8 +172,8 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     [[AwfulHTTPClient client] postThreadInForumWithID:self.forum.forumID
                                               subject:self.fieldView.subjectField.textField.text
-                                                 icon:_threadTag.composeID
-                                        secondaryIcon:_secondaryThreadTag.composeID
+                                                 icon:_threadTag.threadTagID
+                                        secondaryIcon:_secondaryThreadTag.threadTagID
                                      secondaryIconKey:_secondaryIconKey
                                                  text:composition
                                               andThen:^(NSError *error, NSString *threadID)
@@ -206,10 +206,10 @@ static NSString * const DefaultTitle = @"New Thread";
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [UIImage imageNamed:[AwfulThreadTag emptyThreadTagImageName]];
+        return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
+        return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
     }
 }
 
@@ -217,7 +217,7 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     // TODO grab new style from thread table view controller
     AwfulThreadTag *tag = _availableSecondaryThreadTags[index];
-    return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
+    return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
 }
 
 - (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
@@ -278,21 +278,31 @@ static NSString * const DefaultTitle = @"New Thread";
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
     [coder encodeObject:self.fieldView.subjectField.textField.text forKey:SubjectKey];
-    [coder encodeObject:self.threadTag forKey:ThreadTagKey];
-    [coder encodeObject:self.secondaryThreadTag forKey:SecondaryThreadTagKey];
+    [coder encodeObject:self.threadTag.imageName forKey:ThreadTagImageNameKey];
+    [coder encodeObject:self.secondaryThreadTag.imageName forKey:SecondaryThreadTagImageNameKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
-    self.threadTag = [coder decodeObjectForKey:ThreadTagKey];
-    self.secondaryThreadTag = [coder decodeObjectForKey:SecondaryThreadTagKey];
+    NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
+    if (threadTagImageName) {
+        self.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
+                                                                  imageName:threadTagImageName
+                                                     inManagedObjectContext:self.forum.managedObjectContext];
+    }
+    NSString *secondaryThreadTagImageName = [coder decodeObjectForKey:SecondaryThreadTagImageNameKey];
+    if (secondaryThreadTagImageName) {
+        self.secondaryThreadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
+                                                                           imageName:secondaryThreadTagImageName
+                                                              inManagedObjectContext:self.forum.managedObjectContext];
+    }
 }
 
 static NSString * const ForumIDKey = @"AwfulForumID";
 static NSString * const SubjectKey = @"AwfulSubject";
-static NSString * const ThreadTagKey = @"AwfulThreadTag";
-static NSString * const SecondaryThreadTagKey = @"AwfulSecondaryThreadTag";
+static NSString * const ThreadTagImageNameKey = @"AwfulThreadTagImageName";
+static NSString * const SecondaryThreadTagImageNameKey = @"AwfulSecondaryThreadTagImageName";
 
 @end

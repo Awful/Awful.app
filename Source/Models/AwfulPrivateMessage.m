@@ -13,15 +13,9 @@
 @dynamic seen;
 @dynamic sentDate;
 @dynamic subject;
-@dynamic threadTagURL;
+@dynamic threadTag;
 @dynamic from;
 @dynamic to;
-
-- (NSString *)firstIconName
-{
-    NSString *basename = [self.threadTagURL.lastPathComponent stringByDeletingPathExtension];
-    return [basename stringByAppendingPathExtension:@"png"];
-}
 
 + (instancetype)firstOrNewPrivateMessageWithMessageID:(NSString *)messageID
                                inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext

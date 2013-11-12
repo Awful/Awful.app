@@ -128,9 +128,9 @@
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [[AwfulThreadTagLoader loader] threadTagNamed:self.threadTag.imageName];
+        image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
     } else {
-        image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+        image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
 }
@@ -183,7 +183,7 @@
 {
     [[AwfulHTTPClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
                                            subject:self.fieldView.subjectField.textField.text
-                                              icon:self.threadTag.composeID
+                                              icon:self.threadTag.threadTagID
                                               text:composition
                             asReplyToMessageWithID:self.regardingMessage.messageID
                         forwardedFromMessageWithID:self.forwardingMessage.messageID
@@ -208,10 +208,10 @@
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+        return [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTagLoader loader] threadTagNamed:tag.imageName];
+        return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
     }
 }
 
@@ -284,6 +284,7 @@
     [coder encodeObject:self.regardingMessage.messageID forKey:RegardingMessageIDKey];
     [coder encodeObject:self.forwardingMessage forKey:ForwardingMessageIDKey];
     [coder encodeObject:self.initialContents forKey:InitialContentsKey];
+    [coder encodeObject:self.threadTag.imageName forKey:ThreadTagImageNameKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -291,6 +292,15 @@
     [super decodeRestorableStateWithCoder:coder];
     self.fieldView.toField.textField.text = [coder decodeObjectForKey:ToKey];
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
+    NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
+    if (threadTagImageName) {
+        NSManagedObjectContext *managedObjectContext = (self.recipient.managedObjectContext ?:
+                                                        self.regardingMessage.managedObjectContext ?:
+                                                        self.forwardingMessage.managedObjectContext);
+        self.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
+                                                                  imageName:threadTagImageName
+                                                     inManagedObjectContext:managedObjectContext];
+    }
 }
 
 static NSString * const RecipientUserIDKey = @"AwfulRecipientUserID";
@@ -299,5 +309,6 @@ static NSString * const ForwardingMessageIDKey = @"AwfulForwardingMessageID";
 static NSString * const InitialContentsKey = @"AwfulInitialContents";
 static NSString * const ToKey = @"AwfulTo";
 static NSString * const SubjectKey = @"AwfulSubject";
+static NSString * const ThreadTagImageNameKey = @"AwfulThreadTagImageName";
 
 @end

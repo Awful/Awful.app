@@ -62,9 +62,9 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (strong, nonatomic) NSDecimalNumber *rating;
 
 /**
- * The URL of the thread's secondary icon.
+ * The secondary thread tag, e.g. "Ask" or "Selling".
  */
-@property (strong, nonatomic) NSURL *secondaryThreadTagURL;
+@property (strong, nonatomic) AwfulThreadTag *secondaryThreadTag;
 
 /**
  * The number of posts that the currently logged-in user has seen in the thread, including the OP.
@@ -87,9 +87,9 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @property (assign, nonatomic) int32_t stickyIndex;
 
 /**
- * The URL of the thread's tag.
+ * The thread's tag.
  */
-@property (strong, nonatomic) NSURL *threadTagURL;
+@property (strong, nonatomic) AwfulThreadTag *threadTag;
 
 /**
  * The presumably unique ID of the thread.
@@ -125,16 +125,6 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
  * A set of AwfulSingleUserThreadInfo objects for this thread.
  */
 @property (copy, nonatomic) NSSet *singleUserThreadInfos;
-
-/**
- * The name of the thread's main icon, as determined from threadTagURL.
- */
-@property (readonly, nonatomic) NSString *firstIconName;
-
-/**
- * The name of the thread's secondary icon, as determined from secondaryThreadTagURL. May be nil.
- */
-@property (readonly, nonatomic) NSString *secondIconName;
 
 /**
  * YES if the currently logged-in user has seen any posts in this thread, otherwise NO.

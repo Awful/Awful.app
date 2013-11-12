@@ -3,8 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThread.h"
-#import "AwfulParsing.h"
-#import "GTMNSString+HTML.h"
 
 @interface AwfulThread ()
 
@@ -25,13 +23,13 @@
 @dynamic numberOfPages;
 @dynamic numberOfVotes;
 @dynamic rating;
-@dynamic secondaryThreadTagURL;
+@dynamic secondaryThreadTag;
 @dynamic seenPosts;
 @dynamic starCategory;
 @dynamic sticky;
 @dynamic stickyIndex;
 @dynamic threadID;
-@dynamic threadTagURL;
+@dynamic threadTag;
 @dynamic title;
 @dynamic totalReplies;
 @dynamic author;
@@ -40,17 +38,6 @@
 @dynamic singleUserThreadInfos;
 @dynamic primitiveTotalReplies;
 @dynamic primitiveSeenPosts;
-
-- (NSString *)firstIconName
-{
-    return [[self.threadTagURL.lastPathComponent stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
-}
-
-- (NSString *)secondIconName
-{
-    NSString *basename = [self.secondaryThreadTagURL.lastPathComponent stringByDeletingPathExtension];
-    return [basename stringByAppendingPathExtension:@"png"];
-}
 
 - (BOOL)beenSeen
 {

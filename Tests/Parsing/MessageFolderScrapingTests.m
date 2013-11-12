@@ -30,7 +30,7 @@
     XCTAssertEqualObjects(tagged.messageID, @"4549686");
     XCTAssertEqualObjects(tagged.subject, @"Re: Awful app etc.");
     XCTAssertEqual(tagged.sentDate.timeIntervalSince1970, 1348778940.);
-    XCTAssertEqualObjects(tagged.threadTagURL.lastPathComponent, @"sex.png");
+    XCTAssertEqualObjects(tagged.threadTag.imageName, @"sex");
     XCTAssertTrue(tagged.replied);
     XCTAssertTrue(tagged.seen);
     XCTAssertFalse(tagged.forwarded);

@@ -113,11 +113,19 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             threadTagImage = [row firstNodeMatchingSelector:@"td.rating img[src*='/rate/reviews']"];
         }
         if (threadTagImage) {
-            thread.threadTagURL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
+            NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
+            NSString *threadTagID = URL.fragment;
+            thread.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
+                                                                     threadTagURL:URL
+                                                           inManagedObjectContext:managedObjectContext];
         }
         HTMLElementNode *secondaryThreadTagImage = [row firstNodeMatchingSelector:@"td.icon2 img"];
         if (secondaryThreadTagImage) {
-            thread.secondaryThreadTagURL = [NSURL URLWithString:secondaryThreadTagImage[@"src"] relativeToURL:documentURL];
+            NSURL *URL = [NSURL URLWithString:secondaryThreadTagImage[@"src"] relativeToURL:documentURL];
+            NSString *threadTagID = URL.fragment;
+            thread.secondaryThreadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
+                                                                              threadTagURL:URL
+                                                                    inManagedObjectContext:managedObjectContext];
         }
         HTMLElementNode *authorProfileLink = [row firstNodeMatchingSelector:@"td.author a"];
         if (authorProfileLink) {

@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulModels.h"
-#import "AwfulParsing.h"
 
 /**
  * An AwfulPrivateMessage object is a message sent from one user to another.
@@ -46,9 +45,9 @@
 @property (copy, nonatomic) NSString *subject;
 
 /**
- * The URL of the message's thread tag. May be nil, which indicates no icon was chosen.
+ * The message's thread tag, or nil if none was chosen by its sender.
  */
-@property (strong, nonatomic) NSURL *threadTagURL;
+@property (strong, nonatomic) AwfulThreadTag *threadTag;
 
 /**
  * Who sent the message.
@@ -59,11 +58,6 @@
  * Who received the message.
  */
 @property (strong, nonatomic) AwfulUser *to;
-
-/**
- * The name of the message's icon, as derived from the threadTagURL.
- */
-@property (readonly, nonatomic) NSString *firstIconName;
 
 /**
  * Returns an AwfulPrivateMessage object with the given message ID, inserting a new one if needed.

@@ -60,8 +60,14 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         {
             HTMLElementNode *threadTagImage = [row firstNodeMatchingSelector:@"td.icon img"];
-            NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
-            message.threadTagURL = URL;
+            if (threadTagImage) {
+                NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
+                message.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
+                                                                          threadTagURL:URL
+                                                                inManagedObjectContext:managedObjectContext];
+            } else {
+                message.threadTag = nil;
+            }
         }
         {
             HTMLElementNode *fromCell = [row firstNodeMatchingSelector:@"td.sender"];

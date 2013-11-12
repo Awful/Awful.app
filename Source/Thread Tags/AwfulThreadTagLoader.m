@@ -37,17 +37,18 @@ static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
     return instance;
 }
 
-- (UIImage *)threadTagNamed:(NSString *)threadTagName
+- (UIImage *)imageNamed:(NSString *)imageName
 {
-    if ([threadTagName length] == 0) return nil;
-    UIImage *shipped = [UIImage imageNamed:[NSString stringWithFormat:@"Thread Tags/%@", threadTagName]];
+    NSParameterAssert(imageName.length > 0);
+    NSString *imagePath = [@"Thread Tags" stringByAppendingPathComponent:imageName];
+    UIImage *shipped = [UIImage imageNamed:imagePath];
     if (shipped) return EnsureDoubleScaledImage(shipped);
     
-    NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
-    if ([url.pathExtension length] == 0) {
+    NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:imageName];
+    if (url.pathExtension.length == 0) {
         url = [url URLByAppendingPathExtension:@"png"];
     }
-    UIImage *cached = [UIImage imageWithContentsOfFile:[url path]];
+    UIImage *cached = [UIImage imageWithContentsOfFile:url.path];
     if (cached) return EnsureDoubleScaledImage(cached);
     
     [self downloadNewThreadTags];
@@ -186,6 +187,16 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
     cached = [cached valueForKey:@"lastPathComponent"];
     
     return [resources arrayByAddingObjectsFromArray:cached];
+}
+
+- (UIImage *)emptyThreadTagImage
+{
+    return [self imageNamed:@"empty-thread-tag"];
+}
+
+- (UIImage *)emptyPrivateMessageImage
+{
+    return [self imageNamed:@"empty-pm-tag"];
 }
 
 @end

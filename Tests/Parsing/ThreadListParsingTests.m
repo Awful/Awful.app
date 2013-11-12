@@ -45,7 +45,7 @@
     AwfulThread *wireThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                         matchingPredicateFormat:@"title BEGINSWITH 'The Wire'"];
     XCTAssertEqual(wireThread.starCategory, AwfulStarCategoryOrange);
-    XCTAssertEqualObjects(wireThread.threadTagURL.lastPathComponent, @"tava-vintage.gif");
+    XCTAssertEqualObjects(wireThread.threadTag.imageName, @"tava-vintage");
     XCTAssertFalse(wireThread.sticky);
     XCTAssertEqualObjects(wireThread.title, @"The Wire: The Rewatch... and all the pieces matter.");
     XCTAssertEqual(wireThread.seenPosts, 435);
@@ -59,7 +59,7 @@
     AwfulThread *CoCFAQ = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                     matchingPredicateFormat:@"title CONTAINS 'FAQ'"];
     XCTAssertEqual(CoCFAQ.starCategory, AwfulStarCategoryOrange);
-    XCTAssertEqualObjects(CoCFAQ.threadTagURL.lastPathComponent, @"help.png");
+    XCTAssertEqualObjects(CoCFAQ.threadTag.imageName, @"help");
     XCTAssertTrue(CoCFAQ.sticky);
     XCTAssertEqual(CoCFAQ.stickyIndex, 0);
     XCTAssertEqualObjects(CoCFAQ.title, @"Cavern of Cobol FAQ (Read this first)");
@@ -139,7 +139,7 @@
     AwfulThread *rulesThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                          matchingPredicateFormat:@"title CONTAINS 'Improved Rules'"];
     XCTAssertEqual(rulesThread.starCategory, AwfulStarCategoryNone);
-    XCTAssertEqualObjects(rulesThread.threadTagURL.lastPathComponent, @"icon23-banme.gif");
+    XCTAssertEqualObjects(rulesThread.threadTag.imageName, @"icon23-banme");
     XCTAssertTrue(rulesThread.sticky);
     XCTAssertNotEqual(rulesThread.stickyIndex, 0);
     XCTAssertEqualObjects(rulesThread.title, @"The Improved Rules of Debate and Discussion - New Update");
@@ -154,7 +154,7 @@
     AwfulThread *venezuelanThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                               matchingPredicateFormat:@"title BEGINSWITH 'Venezuelan'"];
     XCTAssertEqual(venezuelanThread.starCategory, AwfulStarCategoryNone);
-    XCTAssertEqualObjects(venezuelanThread.threadTagURL.lastPathComponent, @"lf-marx.png");
+    XCTAssertEqualObjects(venezuelanThread.threadTag.imageName, @"lf-marx");
     XCTAssertFalse(venezuelanThread.sticky);
     XCTAssertEqualObjects(venezuelanThread.title, @"Venezuelan elections");
     XCTAssertEqual(venezuelanThread.seenPosts, 0);

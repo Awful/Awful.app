@@ -157,12 +157,12 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-    UIImage *threadTag = [[AwfulThreadTagLoader loader] threadTagNamed:pm.firstIconName];
+    UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
     if (threadTag) {
         cell.imageView.image = threadTag;
     } else {
         // TODO handle updated thread tags
-        cell.imageView.image = [UIImage imageNamed:[AwfulThreadTag emptyPrivateMessageTagImageName]];
+        cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
     }
     // TODO this is more convoluted than necessary
     if (pm.replied || pm.forwarded || !pm.seen) {
