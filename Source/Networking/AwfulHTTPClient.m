@@ -359,14 +359,19 @@
                 }
                 [_HTTPManager POST:@"newreply.php"
                         parameters:postParameters
-                  parsingWithBlock:^id(NSData *data) {
-                      return [[SuccessfulReplyInfo alloc] initWithHTMLData:data];
-                  } success:^(AFHTTPRequestOperation *operation, SuccessfulReplyInfo *replyInfo) {
-                      NSString *postID = replyInfo.lastPage ? nil : replyInfo.postID;
-                      if (callback) callback(nil, postID);
-                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                      if (callback) callback(error, nil);
-                  }];
+                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+                {
+                    NSString *postID;
+                    HTMLElementNode *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
+                                             [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
+                    NSURL *URL = [NSURL URLWithString:link[@"href"]];
+                    if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
+                        postID = URL.queryDictionary[@"postid"];
+                    }
+                    if (callback) callback(nil, postID);
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    if (callback) callback(error, nil);
+                }];
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];

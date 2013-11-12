@@ -144,33 +144,6 @@ static NSString * DeEntitify(NSString *withEntities)
 @end
 
 
-@interface SuccessfulReplyInfo ()
-
-@property (copy, nonatomic) NSString *postID;
-@property (nonatomic) BOOL lastPage;
-
-@end
-
-
-@implementation SuccessfulReplyInfo
-
-- (void)parseHTMLData
-{
-    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
-    TFHppleElement *a = [doc searchForSingle:@"//a[contains(@href, 'goto=post')]"];
-    if (a) {
-        NSURL *sa = [NSURL URLWithString:@"http://forums.somethingawful.com"];
-        NSURL *url = [NSURL URLWithString:[a objectForKey:@"href"] relativeToURL:sa];
-        self.postID = [url queryDictionary][@"postid"];
-    } else {
-        a = [doc searchForSingle:@"//a[contains(@href, 'goto=lastpost')]"];
-        if (a) self.lastPage = YES;
-    }
-}
-
-@end
-
-
 @interface ComposePrivateMessageParsedInfo ()
 
 @property (nonatomic) NSMutableDictionary *mutablePostIcons;

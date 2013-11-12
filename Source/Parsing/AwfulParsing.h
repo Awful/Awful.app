@@ -26,14 +26,6 @@
 @end
 
 
-@interface SuccessfulReplyInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSString *postID;
-@property (readonly, nonatomic) BOOL lastPage;
-
-@end
-
-
 @interface ComposePrivateMessageParsedInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSDictionary *postIcons;
