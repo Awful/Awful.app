@@ -65,19 +65,6 @@
 @end
 
 
-NSString * UserIDFromURLString(NSString *s)
-{
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"userid=(\\d+)"
-                                                                           options:0
-                                                                             error:nil];
-    NSTextCheckingResult *match = [regex firstMatchInString:s
-                                                    options:0
-                                                      range:NSMakeRange(0, [s length])];
-    if (match) return [s substringWithRange:[match rangeAtIndex:1]];
-    return nil;
-}
-
-
 @interface ReplyFormParsedInfo ()
 
 @property (copy, nonatomic) NSString *formkey;
@@ -263,25 +250,6 @@ static NSString * DeEntitify(NSString *withEntities)
     TFHppleElement *bookmarkThread = [doc searchForSingle:
                                       @"//input[@name = 'bookmark' and @checked = 'checked']"];
     self.bookmarkThread = [bookmarkThread objectForKey:@"value"];
-}
-
-@end
-
-
-@interface SuccessfulNewThreadParsedInfo ()
-
-@property (copy, nonatomic) NSString *threadID;
-
-@end
-
-@implementation SuccessfulNewThreadParsedInfo
-
-- (void)parseHTMLData
-{
-    TFHpple *doc = [[TFHpple alloc] initWithHTMLData:self.htmlData];
-    TFHppleElement *threadLink = [doc searchForSingle:@"//a[contains(@href, 'showthread')]"];
-    NSURL *url = [NSURL URLWithString:[threadLink objectForKey:@"href"]];
-    self.threadID = url.queryDictionary[@"threadid"];
 }
 
 @end

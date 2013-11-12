@@ -47,10 +47,3 @@
 @property (readonly, copy, nonatomic) NSString *bookmarkThread;
 
 @end
-
-
-@interface SuccessfulNewThreadParsedInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSString *threadID;
-
-@end

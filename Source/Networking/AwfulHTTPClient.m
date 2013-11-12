@@ -834,13 +834,15 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
                 }
                 [_HTTPManager POST:@"newthread.php"
                         parameters:parameters
-                  parsingWithBlock:^(NSData *data) {
-                      return [[SuccessfulNewThreadParsedInfo alloc] initWithHTMLData:data];
-                  } success:^(AFHTTPRequestOperation *operation, SuccessfulNewThreadParsedInfo *parsedInfo) {
-                      if (callback) callback(nil, parsedInfo.threadID);
-                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                      if (callback) callback(error, nil);
-                  }];
+                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+                {
+                    HTMLElementNode *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
+                    NSURL *URL = [NSURL URLWithString:link[@"href"]];
+                    NSString *threadID = URL.queryDictionary[@"threadid"];
+                    if (callback) callback(nil, threadID);
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    if (callback) callback(error, nil);
+                }];
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];
