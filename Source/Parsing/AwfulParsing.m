@@ -144,36 +144,6 @@ static NSString * DeEntitify(NSString *withEntities)
 @end
 
 
-@interface UserParsedInfo ()
-
-@property (copy, nonatomic) NSString *username;
-@property (copy, nonatomic) NSString *userID;
-@property (nonatomic) NSDate *regdate;
-@property (nonatomic) BOOL moderator;
-@property (nonatomic) BOOL administrator;
-@property (nonatomic) BOOL originalPoster;
-@property (copy, nonatomic) NSString *customTitleHTML;
-@property (nonatomic) BOOL canReceivePrivateMessages;
-
-@end
-
-
-@implementation UserParsedInfo
-
-- (void)parseHTMLData
-{
-    
-}
-
-+ (NSArray *)keysToApplyToObject
-{
-    return @[ @"username", @"userID", @"regdate", @"moderator", @"administrator", @"customTitleHTML",
-              @"canReceivePrivateMessages" ];
-}
-
-@end
-
-
 @interface SuccessfulReplyInfo ()
 
 @property (copy, nonatomic) NSString *postID;

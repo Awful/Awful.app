@@ -26,40 +26,6 @@
 @end
 
 
-@interface CategoryParsedInfo : ParsedInfo
-
-@property (readonly, nonatomic) NSArray *forums;
-@property (readonly, copy, nonatomic) NSString *name;
-@property (readonly, copy, nonatomic) NSString *categoryID;
-
-@end
-
-
-@interface ForumParsedInfo : ParsedInfo
-
-@property (readonly, weak, nonatomic) CategoryParsedInfo *category;
-@property (readonly, nonatomic) NSArray *subforums;
-@property (readonly, weak, nonatomic) ForumParsedInfo *parentForum;
-@property (readonly, copy, nonatomic) NSString *name;
-@property (readonly, copy, nonatomic) NSString *forumID;
-
-@end
-
-
-@interface UserParsedInfo : ParsedInfo
-
-@property (readonly, copy, nonatomic) NSString *username;
-@property (readonly, copy, nonatomic) NSString *userID;
-@property (readonly, nonatomic) NSDate *regdate;
-@property (readonly, nonatomic) BOOL moderator;
-@property (readonly, nonatomic) BOOL administrator;
-@property (readonly, nonatomic) BOOL originalPoster;
-@property (readonly, copy, nonatomic) NSString *customTitleHTML;
-@property (readonly, nonatomic) BOOL canReceivePrivateMessages;
-
-@end
-
-
 @interface SuccessfulReplyInfo : ParsedInfo
 
 @property (readonly, copy, nonatomic) NSString *postID;
