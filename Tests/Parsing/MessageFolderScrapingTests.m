@@ -19,11 +19,11 @@
 - (void)testInbox
 {
     NSArray *messages = [self scrapeFixtureNamed:@"private-list"];
-    XCTAssertEqual(messages.count, 4U);
+    XCTAssertEqual(messages.count, (NSUInteger)4);
     NSArray *allMessages = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(messages.count, allMessages.count);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allUsers.count, 3U);
+    XCTAssertEqual(allUsers.count, (NSUInteger)3);
     
     AwfulPrivateMessage *tagged = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                                     matchingPredicateFormat:@"from.username = 'CamH'"];

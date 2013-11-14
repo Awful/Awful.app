@@ -19,13 +19,13 @@
 - (void)testBookmarkedThreadList
 {
     NSArray *scrapedThreads = [self scrapeFixtureNamed:@"bookmarkthreads"];
-    XCTAssertEqual(scrapedThreads.count, 11U);
+    XCTAssertEqual(scrapedThreads.count, (NSUInteger)11);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(scrapedThreads.count, allThreads.count);
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allCategories.count, 0U);
+    XCTAssertEqual(allCategories.count, (NSUInteger)0);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allForums.count, 0U);
+    XCTAssertEqual(allForums.count, (NSUInteger)0);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     NSArray *allUsernames = [[allUsers valueForKey:@"username"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     XCTAssertEqualObjects(allUsernames, (@[
@@ -80,16 +80,16 @@
 - (void)testDebateAndDiscussionThreadList
 {
     NSArray *scrapedThreads = [self scrapeFixtureNamed:@"forumdisplay"];
-    XCTAssertEqual(scrapedThreads.count, 40U);
+    XCTAssertEqual(scrapedThreads.count, (NSUInteger)40);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreads.count, scrapedThreads.count);
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allCategories.count, 1U);
+    XCTAssertEqual(allCategories.count, (NSUInteger)1);
     AwfulCategory *discussion = allCategories.firstObject;
     XCTAssertEqualObjects(discussion.name, @"Discussion");
-    XCTAssertEqual(discussion.forums.count, 1U);
+    XCTAssertEqual(discussion.forums.count, (NSUInteger)1);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allForums.count, 1U);
+    XCTAssertEqual(allForums.count, (NSUInteger)1);
     AwfulForum *debateAndDiscussion = allForums.firstObject;
     XCTAssertEqualObjects(debateAndDiscussion.name, @"Debate & Discussion");
     XCTAssertEqualObjects(debateAndDiscussion.forumID, @"46");
@@ -170,16 +170,16 @@
 {
     [self scrapeFixtureNamed:@"forumdisplay2"];
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allForums.count, 2U);
+    XCTAssertEqual(allForums.count, (NSUInteger)2);
     NSArray *allForumNames = [[allForums valueForKey:@"name"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     XCTAssertEqualObjects(allForumNames, (@[ @"Games", @"Let's Play!" ]));
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allCategories.count, 1U);
+    XCTAssertEqual(allCategories.count, (NSUInteger)1);
     AwfulCategory *discussion = allCategories.firstObject;
     XCTAssertEqual(discussion.forums.count, allForums.count);
     AwfulForum *games = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                  matchingPredicateFormat:@"name = 'Games'"];
-    XCTAssertEqual(games.children.count, 1U);
+    XCTAssertEqual(games.children.count, (NSUInteger)1);
     AwfulForum *letsPlay = games.children.firstObject;
     XCTAssertEqualObjects(letsPlay.name, @"Let's Play!");
 }

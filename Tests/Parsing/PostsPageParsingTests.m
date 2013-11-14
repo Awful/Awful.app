@@ -19,19 +19,19 @@
 - (void)testCanadianPoliticsThread
 {
     NSArray *posts = [self scrapeFixtureNamed:@"showthread"];
-    XCTAssertEqual(posts.count, 40U);
+    XCTAssertEqual(posts.count, (NSUInteger)40);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allThreads.count, 1U);
+    XCTAssertEqual(allThreads.count, (NSUInteger)1);
     AwfulThread *canpoliThread = allThreads.firstObject;
     XCTAssertEqualObjects(canpoliThread.threadID, @"3507451");
     XCTAssertEqualObjects(canpoliThread.title, @"Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe");
     XCTAssertFalse(canpoliThread.closed);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allForums.count, 1U);
+    XCTAssertEqual(allForums.count, (NSUInteger)1);
     AwfulForum *forum = canpoliThread.forum;
     XCTAssertEqualObjects(forum.name, @"Debate & Discussion");
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allCategories.count, 1U);
+    XCTAssertEqual(allCategories.count, (NSUInteger)1);
     AwfulCategory *category = allCategories.firstObject;
     XCTAssertEqualObjects(category.name, @"Discussion");
     
@@ -74,7 +74,7 @@
 {
     // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
     NSArray *posts = [self scrapeFixtureNamed:@"showthread2"];
-    XCTAssertEqual(posts.count, 40U);
+    XCTAssertEqual(posts.count, (NSUInteger)40);
     AwfulPost *ganker = posts[24];
     XCTAssertEqualObjects(ganker.author.username, @"Ganker");
     XCTAssertNotEqual([ganker.author.customTitleHTML rangeOfString:@"forced meme"].location, NSNotFound);

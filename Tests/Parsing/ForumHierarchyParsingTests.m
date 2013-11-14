@@ -30,7 +30,7 @@
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(categories.count, allCategories.count);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allForums.count, 66U);
+    XCTAssertEqual(allForums.count, (NSUInteger)66);
     
     AwfulForum *ENBullshit = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                       matchingPredicateFormat:@"name BEGINSWITH 'E/N'"];

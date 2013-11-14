@@ -19,11 +19,11 @@
 - (void)testFirstPage
 {
     NSArray *bans = [self scrapeFixtureNamed:@"banlist"];
-    XCTAssertEqual(bans.count, 50U);
+    XCTAssertEqual(bans.count, (NSUInteger)50);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allUsers.count, 71U);
+    XCTAssertEqual(allUsers.count, (NSUInteger)71);
     NSArray *allPosts = [AwfulPost fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allPosts.count, 46U);
+    XCTAssertEqual(allPosts.count, (NSUInteger)46);
     
     AwfulBan *first = bans[0];
     XCTAssertEqual(first.punishment, AwfulPunishmentProbation);

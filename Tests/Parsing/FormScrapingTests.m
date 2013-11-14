@@ -20,9 +20,9 @@
 - (void)testReply
 {
     NSArray *forms = [self scrapeFixtureNamed:@"newreply"];
-    XCTAssertEqual(forms.count, 1U);
+    XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
-    XCTAssertEqual(form.threadTags.count, 0U);
+    XCTAssertEqual(form.threadTags.count, (NSUInteger)0);
     NSMutableDictionary *parameters = [form recommendedParameters];
     XCTAssertEqualObjects(parameters[@"action"], @"postreply");
     XCTAssertEqualObjects(parameters[@"threadid"], @"3507451");
@@ -39,9 +39,9 @@
 - (void)testThread
 {
     NSArray *forms = [self scrapeFixtureNamed:@"newthread"];
-    XCTAssertEqual(forms.count, 1U);
+    XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
-    XCTAssertEqual(form.threadTags.count, 51U);
+    XCTAssertEqual(form.threadTags.count, (NSUInteger)51);
     NSArray *allThreadTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreadTags.count, form.threadTags.count);
     XCTAssertNil(form.secondaryThreadTags);
@@ -60,10 +60,10 @@
 - (void)testAskTellThread
 {
     NSArray *forms = [self scrapeFixtureNamed:@"newthread-at"];
-    XCTAssertEqual(forms.count, 1U);
+    XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
-    XCTAssertEqual(form.threadTags.count, 55U);
-    XCTAssertEqual(form.secondaryThreadTags.count, 2U);
+    XCTAssertEqual(form.threadTags.count, (NSUInteger)55);
+    XCTAssertEqual(form.secondaryThreadTags.count, (NSUInteger)2);
     NSArray *secondaryTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext
                                                     matchingPredicateFormat:@"imageName IN { 'ama', 'tma' }"];
     XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
@@ -72,10 +72,10 @@
 - (void)testSAMartThread
 {
     NSArray *forms = [self scrapeFixtureNamed:@"newthread-samart"];
-    XCTAssertEqual(forms.count, 1U);
+    XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
-    XCTAssertEqual(form.threadTags.count, 69U);
-    XCTAssertEqual(form.secondaryThreadTags.count, 4U);
+    XCTAssertEqual(form.threadTags.count, (NSUInteger)69);
+    XCTAssertEqual(form.secondaryThreadTags.count, (NSUInteger)4);
     NSArray *secondaryTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext
                                                     matchingPredicateFormat:@"imageName LIKE 'icon*ing'"];
     XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
@@ -84,7 +84,7 @@
 - (void)testMessage
 {
     NSArray *forms = [self scrapeFixtureNamed:@"private-reply"];
-    XCTAssertEqual(forms.count, 1U);
+    XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     AwfulFormItem *messageItem;
     for (AwfulFormItem *text in form.texts) {

@@ -20,9 +20,9 @@
 {
     AwfulPrivateMessage *message = [self scrapeFixtureNamed:@"private-one"];
     NSArray *allMessages = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allMessages.count, 1U);
+    XCTAssertEqual(allMessages.count, (NSUInteger)1);
     NSArray *allUsers = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allUsers.count, 1U);
+    XCTAssertEqual(allUsers.count, (NSUInteger)1);
     
     XCTAssertEqualObjects(message.messageID, @"4601162");
     XCTAssertEqualObjects(message.subject, @"Awful app");

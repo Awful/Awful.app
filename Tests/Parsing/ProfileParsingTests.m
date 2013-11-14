@@ -20,7 +20,7 @@
 {
     AwfulUser *pokeyman = [self scrapeFixtureNamed:@"profile"];
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
-    XCTAssertEqual(allUsers.count, 1U);
+    XCTAssertEqual(allUsers.count, (NSUInteger)1);
     XCTAssertEqualObjects(pokeyman.userID, @"106125");
     XCTAssertEqualObjects(pokeyman.username, @"pokeyman");
     XCTAssertNotEqual([pokeyman.customTitleHTML rangeOfString:@"play?"].location, NSNotFound);
