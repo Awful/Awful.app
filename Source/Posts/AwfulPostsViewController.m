@@ -1250,6 +1250,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     AwfulUser *author;
     if (authorUserID.length > 0) {
         author = [AwfulUser firstOrNewUserWithUserID:authorUserID
+                                            username:nil
                               inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
     }
     AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread author:author];

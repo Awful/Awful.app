@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulModels.h"
-#import "AwfulParsing.h"
 
 /**
  * An AwfulPost object is a single reply to a thread.
@@ -79,12 +78,6 @@
  * Which page of the thread on which this post is found when showing only posts by the author, if pages have at most 40 posts. Returns 0 if the page is unknown.
  */
 @property (readonly, nonatomic) NSInteger singleUserPage;
-
-/**
- * Returns updated or inserted AwfulPost objects from parsed info, in the order that they appear in the parsed info.
- */
-+ (NSArray *)postsCreatedOrUpdatedFromPageInfo:(PageParsedInfo *)pageInfo
-                        inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 /**
  * Returns an AwfulPost object with the post ID, inserting one if necessary.

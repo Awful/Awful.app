@@ -3,8 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThread.h"
-#import "AwfulParsing.h"
-#import "GTMNSString+HTML.h"
 
 @interface AwfulThread ()
 
@@ -25,13 +23,13 @@
 @dynamic numberOfPages;
 @dynamic numberOfVotes;
 @dynamic rating;
-@dynamic secondaryThreadTagURL;
+@dynamic secondaryThreadTag;
 @dynamic seenPosts;
 @dynamic starCategory;
 @dynamic sticky;
 @dynamic stickyIndex;
 @dynamic threadID;
-@dynamic threadTagURL;
+@dynamic threadTag;
 @dynamic title;
 @dynamic totalReplies;
 @dynamic author;
@@ -41,17 +39,6 @@
 @dynamic primitiveTotalReplies;
 @dynamic primitiveSeenPosts;
 
-- (NSString *)firstIconName
-{
-    return [[self.threadTagURL.lastPathComponent stringByDeletingPathExtension] stringByAppendingPathExtension:@"png"];
-}
-
-- (NSString *)secondIconName
-{
-    NSString *basename = [self.secondaryThreadTagURL.lastPathComponent stringByDeletingPathExtension];
-    return [basename stringByAppendingPathExtension:@"png"];
-}
-
 - (BOOL)beenSeen
 {
     return self.seenPosts > 0;
@@ -60,41 +47,6 @@
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
     return [NSSet setWithObject:@"seenPosts"];
-}
-
-+ (NSArray *)threadsCreatedOrUpdatedWithParsedInfo:(NSArray *)threadInfos
-                            inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-{
-    NSMutableDictionary *existingThreads = [NSMutableDictionary new];
-    NSArray *threadIDs = [threadInfos valueForKey:@"threadID"];
-    for (AwfulThread *thread in [self fetchAllInManagedObjectContext:managedObjectContext
-                                             matchingPredicateFormat:@"threadID IN %@", threadIDs]) {
-        existingThreads[thread.threadID] = thread;
-    }
-    NSMutableDictionary *existingUsers = [NSMutableDictionary new];
-    NSArray *usernames = [threadInfos valueForKeyPath:@"author.username"];
-    for (AwfulUser *user in [AwfulUser fetchAllInManagedObjectContext:managedObjectContext
-                                              matchingPredicateFormat:@"username IN %@", usernames]) {
-        existingUsers[user.username] = user;
-    }
-    
-    for (ThreadParsedInfo *info in threadInfos) {
-        if ([info.threadID length] == 0) {
-            NSLog(@"ignoring ID-less thread (announcement?)");
-            continue;
-        }
-        AwfulThread *thread = (existingThreads[info.threadID] ?:
-                               [AwfulThread insertInManagedObjectContext:managedObjectContext]);
-        [info applyToObject:thread];
-        if (!thread.author) {
-            thread.author = (existingUsers[info.author.username] ?:
-                             [AwfulUser insertInManagedObjectContext:managedObjectContext]);
-        }
-        [info.author applyToObject:thread.author];
-        existingUsers[thread.author.username] = thread.author;
-        existingThreads[thread.threadID] = thread;
-    }
-    return [existingThreads allValues];
 }
 
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID

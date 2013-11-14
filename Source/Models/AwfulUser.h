@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulModels.h"
-#import "AwfulParsing.h"
 
 /**
  * An AwfulUser post post posts.
@@ -146,15 +145,10 @@
 @property (readonly, nonatomic) NSURL *avatarURL;
 
 /**
- * Returns an AwfulUser derived from parsed info.
- */
-+ (instancetype)userCreatedOrUpdatedFromProfileInfo:(ProfileParsedInfo *)profileInfo
-                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
-
-/**
- * Returns an AwfulUser with the given user ID, inserting one if necessary.
+ * Returns an AwfulUser with the given user ID and/or username, inserting one if necessary.
  */
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
+                                username:(NSString *)username
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

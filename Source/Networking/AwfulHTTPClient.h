@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
+#import "AwfulForm.h"
 #import "AwfulModels.h"
 
 @interface AwfulHTTPClient : NSObject
@@ -30,9 +31,15 @@
 //              threads - A list of AwfulThread on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listThreadsInForumWithID:(NSString *)forumID
-                                   onPage:(NSInteger)page
-                                  andThen:(void (^)(NSError *error, NSArray *threads))callback;
+
+/**
+ * @param callback A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+                             onPage:(NSInteger)page
+                            andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
 // Gets the bookmarked threads on a given page.
 //
@@ -74,11 +81,10 @@
 //
 // callback - A block to call after getting the user's info, which takes as parameters:
 //              error    - An error on failure, or nil on success.
-//              userInfo - A dictionary with keys "userID", "username" on success, or nil on
-//                         failure.
+//              user - An AwfulUser object on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
+- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 // Add or remove a bookmark for a thread.
 //
@@ -94,12 +100,12 @@
 
 // Get the forum hierarchy.
 //
-// callback - A block to call after updating all forums and subforums, which takes as parameters:
-//              error  - An error on failure, or nil on succes.
-//              forums - A list of AwfulForum on success, or nil on failure.
+// callback - A block to call after updating all categories, forums, and subforums, which takes as parameters:
+//              error      - An error on failure, or nil on succes.
+//              categories - An array of AwfulCategory objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
-- (NSOperation *)listForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback;
+- (NSOperation *)listForumHierarchyAndThen:(void (^)(NSError *error, NSArray *categories))callback;
 
 // Posts a new reply to a thread.
 //
@@ -226,21 +232,21 @@ extern NSString * const AwfulUserDidLogInNotification;
 // List probations, bans, and permabans from the Leper's Colony.
 //
 // page     - Which page of the Leper's Colony to list. First page is page 1.
-// callback - A block to call after listing punishment, which takes as parameters:
+// user     - An AwfulUser to filter the punishments by, or nil for no filter.
+// callback - A block to call after listing punishments, which takes as parameters:
 //              error - An error on failure, or nil on success.
-//              bans  - An array of BanParsedInfo instances on success, or nil on failure.
+//              bans  - An array of AwfulBan objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(NSString *)userID
+                        forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 // List private messages in the logged-in user's Inbox.
 //
 // callback - A block to call after listing messages, which takes as parameters:
 //              error    - An error on failure, or nil on success.
-//              messages - An array of PrivateMessageParsedInfo instances on success, or nil on
-//                         failure.
+//              messages - An array of AwfulPrivateMessage objects on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
@@ -312,21 +318,12 @@ extern NSString * const AwfulUserDidLogInNotification;
 //
 // forumID  - Which forum to list icons for.
 // callback - A block to call after listing post icons, which takes as parameters:
-//              error              - An error on failure, or nil on success.
-//              postIcons          - An array of AwfulThreadTag instances on success, or nil on
-//                                   failure.
-//              secondaryPostIcons - An array of AwfulThreadTag instances on success, or nil if
-//                                   the forum doesn't use secondary thread tags, or nil on failure.
-//              secondaryIconKey   - Pass this to -postThreadInForumWithID... along with the ID of
-//                                   the selected secondary icon.
+//              error - An error on failure, or nil on success.
+//              form  - An AwfulForm object with thread tags and secondary thread tags on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
-                                              andThen:(void (^)(NSError *error,
-                                                                NSArray *postIcons,
-                                                                NSArray *secondaryPostIcons,
-                                                                NSString *secondaryIconKey
-                                                                ))callback;
+                                              andThen:(void (^)(NSError *error, AwfulForm *form))callback;
 
 // Post a new thread in a forum.
 //

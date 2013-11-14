@@ -78,12 +78,12 @@ static id _instance;
     // Clear any stored logins for other services
     [[PocketAPI sharedAPI] logout];
     
+    // Send the notification just before deleting the data store, so anything using it can clean up.
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification object:nil];
+    
     // Delete cached post info. The next user might see things differently than the one logging out.
     // And this lets logging out double as a "delete all data" button.
     [_dataStack deleteStoreAndResetStack];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification
-                                                        object:nil];
     
     [self showLoginFormIsAtLaunch:NO andThen:^{
         self.basementViewController.selectedIndex = 0;
@@ -220,15 +220,16 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
         NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
         NSString *lastCheck = [AwfulSettings settings].lastForcedUserInfoUpdateVersion;
         if ([appVersion compare:lastCheck options:NSNumericSearch] == NSOrderedDescending) {
-            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
                 if (error) {
                     NSLog(@"error forcing user info update: %@", error);
+                    [self logOut];
                     return;
                 }
                 [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-                [AwfulSettings settings].userID = userInfo[@"userID"];
-                [AwfulSettings settings].username = userInfo[@"username"];
-                [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+                [AwfulSettings settings].userID = user.userID;
+                [AwfulSettings settings].username = user.username;
+                [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }];
         }
     }
@@ -417,7 +418,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     settings.userID = userInfo[@"userID"];
     settings.canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
     [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
-        [[AwfulHTTPClient client] listForumsAndThen:nil];
+        [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
     }];
 }
 

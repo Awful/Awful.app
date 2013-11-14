@@ -127,7 +127,7 @@
 - (void)loadPage:(NSInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listThreadsInForumWithID:self.forum.forumID onPage:page andThen:^(NSError *error, NSArray *threads) {
+    [AwfulHTTPClient.client listThreadsInForum:self.forum onPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];

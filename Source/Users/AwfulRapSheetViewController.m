@@ -6,8 +6,8 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulInfractionCell.h"
-#import "AwfulParsing.h"
+#import "AwfulModels.h"
+#import "AwfulPunishmentCell.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
@@ -55,7 +55,7 @@
 - (void)loadView
 {
     [super loadView];
-    [self.tableView registerClass:[AwfulInfractionCell class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[AwfulPunishmentCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewDidLoad
@@ -96,7 +96,7 @@
 - (void)loadPage:(NSUInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listBansOnPage:page forUser:self.user.userID andThen:^(NSError *error, NSArray *bans) {
+    [AwfulHTTPClient.client listBansOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *bans) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -155,28 +155,28 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulInfractionCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    BanParsedInfo *ban = _bans[indexPath.row];
+    AwfulPunishmentCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    AwfulBan *ban = _bans[indexPath.row];
     
-    if (ban.banType == AwfulBanTypeProbation) {
+    if (ban.punishment == AwfulPunishmentProbation) {
         cell.imageView.image = [UIImage imageNamed:@"title-probation"];
-    } else if (ban.banType == AwfulBanTypePermaban) {
+    } else if (ban.punishment == AwfulPunishmentPermaban) {
         cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
     } else {
         cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
     }
     
-    cell.textLabel.text = ban.bannedUserName;
+    cell.textLabel.text = ban.user.username;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ by %@",
-                                 [self.banDateFormatter stringFromDate:ban.banDate], ban.requesterUserName];
-    cell.reasonLabel.text = ban.banReason;
+                                 [self.banDateFormatter stringFromDate:ban.date], ban.requester.username];
+    cell.reasonLabel.text = ban.reasonHTML;
     
     NSString *banDescription = @"banned";
-    if (ban.banType == AwfulBanTypeProbation) banDescription = @"probated";
-    else if (ban.banType == AwfulBanTypePermaban) banDescription = @"permabanned";
-    NSString *readableBanDate = [self.readableBanDateFormatter stringFromDate:ban.banDate];
+    if (ban.punishment == AwfulPunishmentProbation) banDescription = @"probated";
+    else if (ban.punishment == AwfulPunishmentPermaban) banDescription = @"permabanned";
+    NSString *readableBanDate = [self.readableBanDateFormatter stringFromDate:ban.date];
     cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”",
-                               ban.bannedUserName, banDescription, ban.requesterUserName, readableBanDate, ban.banReason];
+                               ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
     return cell;
 }
 
@@ -208,15 +208,15 @@ static NSString * const CellIdentifier = @"Infraction Cell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BanParsedInfo *ban = _bans[indexPath.row];
-    return [AwfulInfractionCell rowHeightWithBanReason:ban.banReason width:CGRectGetWidth(tableView.bounds)];
+    AwfulBan *ban = _bans[indexPath.row];
+    return [AwfulPunishmentCell rowHeightWithBanReason:ban.reasonHTML width:CGRectGetWidth(tableView.bounds)];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BanParsedInfo *ban = _bans[indexPath.row];
-    if (!ban.postID) return;
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.postID]];
+    AwfulBan *ban = _bans[indexPath.row];
+    if (!ban.post) return;
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.post.postID]];
     [AwfulAppDelegate.instance openAwfulURL:url];
     if (self.presentingViewController) {
         [self dismissViewControllerAnimated:YES completion:nil];

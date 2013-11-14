@@ -54,7 +54,6 @@
 {
     if (_treeController) return _treeController;
     _treeController = [[AwfulForumTreeController alloc] initWithManagedObjectContext:_managedObjectContext];
-    _treeController.delegate = self;
     return _treeController;
 }
 
@@ -186,7 +185,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (void)refresh
 {
-    [[AwfulHTTPClient client] listForumsAndThen:^(NSError *error, NSArray *forums) {
+    [[AwfulHTTPClient client] listForumHierarchyAndThen:^(NSError *error, NSArray *categories) {
         if (!error) {
             self.lastRefresh = [NSDate date];
         }
@@ -251,7 +250,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([self.tableView numberOfSections] <= 2) [self.tableView reloadData];
+    self.treeController.delegate = self;
+    [self.tableView reloadData];
     if ([self refreshOnAppear]) {
         [self refresh];
     }
@@ -268,6 +268,12 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     if ([self refreshOnAppear]) {
         [self refresh];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.treeController.delegate = nil;
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate

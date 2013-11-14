@@ -101,16 +101,16 @@
     [self.tableView reloadData];
     
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, NSDictionary *userInfo) {
+    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);
         } else {
             NSString *appVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"];
             [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-            [AwfulSettings settings].username = userInfo[@"username"];
-            [AwfulSettings settings].userID = userInfo[@"userID"];
-            [AwfulSettings settings].canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
+            [AwfulSettings settings].username = user.username;
+            [AwfulSettings settings].userID = user.userID;
+            [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
             [self.tableView reloadData];
         }
     }];

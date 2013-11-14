@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12F37" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
@@ -37,8 +37,8 @@
         <attribute name="seen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="sentDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="threadTagURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="from" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="sentPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="messages" inverseEntity="AwfulThreadTag" syncable="YES"/>
         <relationship name="to" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="receivedPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
     </entity>
     <entity name="AwfulSingleUserThreadInfo" representedClassName="AwfulSingleUserThreadInfo" syncable="YES">
@@ -55,20 +55,28 @@
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfVotes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="rating" optional="YES" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
-        <attribute name="secondaryThreadTagURL" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="rating" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
         <attribute name="seenPosts" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="sticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="threadID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="threadTagURL" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
+        <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="secondaryThreads" inverseEntity="AwfulThreadTag" syncable="YES"/>
         <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="threads" inverseEntity="AwfulThreadTag" syncable="YES"/>
+    </entity>
+    <entity name="AwfulThreadTag" representedClassName="AwfulThreadTag" syncable="YES">
+        <attribute name="explanation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadTagID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="threadTag" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
+        <relationship name="secondaryThreads" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
@@ -106,5 +114,6 @@
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="0" height="0"/>
         <element name="AwfulThread" positionX="0" positionY="0" width="0" height="0"/>
         <element name="AwfulUser" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulThreadTag" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

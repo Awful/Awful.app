@@ -28,7 +28,8 @@
     NSPersistentStore *store;
     NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
                                NSInferMappingModelAutomaticallyOption: @YES };
-    store = [_managedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+    NSString *storeType = _storeURL ? NSSQLiteStoreType : NSInMemoryStoreType;
+    store = [_managedObjectContext.persistentStoreCoordinator addPersistentStoreWithType:storeType
                                                                            configuration:nil
                                                                                      URL:_storeURL
                                                                                  options:options
@@ -60,16 +61,18 @@
         if (!ok) {
             NSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
         }
-        if (![store.URL isEqual:_storeURL]) {
+        if (_storeURL && ![store.URL isEqual:_storeURL]) {
             ok = [fileManager removeItemAtURL:store.URL error:&error];
             if (!ok) {
                 NSLog(@"%s error deleting store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
             }
         }
     }
-    ok = [fileManager removeItemAtURL:_storeURL error:&error];
-    if (!ok) {
-        NSLog(@"%s error deleting main store at %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
+    if (_storeURL) {
+        ok = [fileManager removeItemAtURL:_storeURL error:&error];
+        if (!ok) {
+            NSLog(@"%s error deleting main store at %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
+        }
     }
     [self addPersistentStore];
 }

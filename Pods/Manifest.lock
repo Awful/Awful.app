@@ -21,29 +21,36 @@ PODS:
     - AFNetworking/NSURLConnection
   - GRMustache (6.7.3):
     - JRSwizzle (~> 1.0)
+  - HTMLReader (0.0.1-alpha.9)
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
-  - SVProgressHUD (HEAD based on 0.9)
+  - SVProgressHUD (1.0)
   - SVPullToRefresh (HEAD based on 0.4.1)
   - WYPopoverController (0.1.4)
 
 DEPENDENCIES:
   - AFNetworking (= 2.0.2)
   - GRMustache (= 6.7.3)
+  - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - JLRoutes (= 1.4)
   - PocketAPI (= 1.0.2)
-  - SVProgressHUD (HEAD)
+  - SVProgressHUD (= 1.0)
   - SVPullToRefresh (HEAD)
   - WYPopoverController (= 0.1.4)
+
+EXTERNAL SOURCES:
+  HTMLReader:
+    :git: https://github.com/nolanw/HTMLReader
 
 SPEC CHECKSUMS:
   AFNetworking: 22de50ae71ab1c4859773f61068d6fcd1d8f9a4d
   GRMustache: e662eb62eeb19b54cf4441043cfb70808eb86dba
+  HTMLReader: 6e491ee838d708234bc06e14bd80cc7074718677
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
-  SVProgressHUD: 03d4845ec8e64591726428a08236c6a5489d45f8
+  SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
   WYPopoverController: 6e1f58a38d8c5f72b6fc49106ce83cb985cbe507
 
