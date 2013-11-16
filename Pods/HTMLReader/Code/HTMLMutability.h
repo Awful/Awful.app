@@ -1,9 +1,6 @@
-//
 //  HTMLMutability.h
-//  HTMLReader
 //
-//  Created by Nolan Waite on 2013-08-22.
-//
+//  Public domain. https://github.com/nolanw/HTMLReader
 
 #import "HTMLNode.h"
 
@@ -33,6 +30,8 @@
  * @param child The node to remove.
  */
 - (void)removeChild:(HTMLNode *)child;
+
+@property (readonly, assign, nonatomic) NSUInteger childNodeCount;
 
 @end
 

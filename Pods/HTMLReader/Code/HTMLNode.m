@@ -1,9 +1,6 @@
-//
 //  HTMLNode.m
-//  HTMLReader
 //
-//  Created by Nolan Waite on 2013-07-02.
-//
+//  Public domain. https://github.com/nolanw/HTMLReader
 
 #import "HTMLNode.h"
 #import "HTMLMutability.h"
@@ -49,6 +46,11 @@
 - (void)setChildNodes:(NSArray *)childNodes
 {
     [_childNodes setArray:childNodes];
+}
+
+- (NSUInteger)childNodeCount
+{
+    return _childNodes.count;
 }
 
 - (void)appendChild:(HTMLNode *)child
@@ -224,8 +226,8 @@
         return string;
     }
     if ([@[ @"pre", @"textarea", @"listing" ] containsObject:self.tagName]) {
-        if (self.childNodes.count > 0 && [self.childNodes[0] isKindOfClass:[HTMLTextNode class]]) {
-            HTMLTextNode *textNode = self.childNodes[0];
+        if ([self.childNodes.firstObject isKindOfClass:[HTMLTextNode class]]) {
+            HTMLTextNode *textNode = self.childNodes.firstObject;
             if ([textNode.data hasPrefix:@"\n"]) {
                 [string appendString:@"\n"];
             }
@@ -263,7 +265,7 @@
     }
     return [NSString stringWithFormat:@"<%@: %p <%@%@%@> %@ child node%@>", self.class, self,
             namespace, self.tagName, attributes,
-            @(self.childNodes.count), self.childNodes.count == 1 ? @"" : @"s"];
+            @(self.childNodeCount), self.childNodeCount == 1 ? @"" : @"s"];
 }
 
 @end
