@@ -1,0 +1,7 @@
+[
+  "-workspace", "Awful.xcworkspace",
+  "-scheme", "Awful Beta",
+  "-configuration", "Debug",
+  "-sdk", "iphonesimulator",
+  "-arch", "i386"
+]
