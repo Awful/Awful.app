@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Awful.app"
+               BuildableName = "Awful Debug.app"
                BlueprintName = "Awful"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful.app"
+            BuildableName = "Awful Debug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful.app"
+            BuildableName = "Awful Debug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -91,7 +91,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful.app"
+            BuildableName = "Awful Debug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>

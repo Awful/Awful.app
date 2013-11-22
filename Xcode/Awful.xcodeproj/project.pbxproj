@@ -567,7 +567,7 @@
 		1CFE985A18296D41003DBBC2 /* AwfulDocumentScraper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulDocumentScraper.h; sourceTree = "<group>"; };
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Awful.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Awful.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F3DF9C27054D9A93B744A1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+Style.h"; sourceTree = "<group>"; };
@@ -677,7 +677,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Awful.app */,
+				1D6058910D05DD3D006BFB54 /* Awful Debug.app */,
 				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */,
 				1C96D055167FDEA60043B194 /* Imgur API Test.app */,
 			);
@@ -1390,7 +1390,7 @@
 			);
 			name = Awful;
 			productName = Awful;
-			productReference = 1D6058910D05DD3D006BFB54 /* Awful.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Awful Debug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2075,7 +2075,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = Awful;
+				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2169,7 +2169,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = Awful;
+				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2198,7 +2198,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = Awful;
+				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
