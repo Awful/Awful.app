@@ -11,9 +11,7 @@ PODS:
     - AFNetworking/Security
     - AFNetworking/Serialization
   - AFNetworking/NSURLSession (2.0.2):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
+    - AFNetworking/NSURLConnection
   - AFNetworking/Reachability (2.0.2)
   - AFNetworking/Security (2.0.2)
   - AFNetworking/Serialization (2.0.2)
@@ -21,7 +19,7 @@ PODS:
     - AFNetworking/NSURLConnection
   - GRMustache (6.7.3):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.0.1-alpha.9)
+  - HTMLReader (0.1.1)
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
@@ -44,9 +42,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/nolanw/HTMLReader
 
 SPEC CHECKSUMS:
-  AFNetworking: 22de50ae71ab1c4859773f61068d6fcd1d8f9a4d
+  AFNetworking: e663917201cdb73f4ad2ba239ad35be8dc9a1e3c
   GRMustache: e662eb62eeb19b54cf4441043cfb70808eb86dba
-  HTMLReader: 6e491ee838d708234bc06e14bd80cc7074718677
+  HTMLReader: 70088dbdc1e28af9f1cd7e01238db085d4fa135a
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
