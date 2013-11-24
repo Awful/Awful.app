@@ -171,7 +171,7 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = AwfulTheme.currentTheme[@"browserBackgroundColor"];
+    self.view.backgroundColor = self.theme[@"browserBackgroundColor"];
 }
 
 - (void)viewWillAppear:(BOOL)animated

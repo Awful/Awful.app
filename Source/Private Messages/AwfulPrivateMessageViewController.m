@@ -81,7 +81,7 @@
     view.frame = [UIScreen mainScreen].applicationFrame;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.delegate = self;
-    view.stylesheet = AwfulTheme.currentTheme[@"postsViewCSS"];
+    view.stylesheet = self.theme[@"postsViewCSS"];
     self.view = view;
     [self configurePostsViewSettings];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -98,7 +98,7 @@
 {
     [super viewWillAppear:animated];
     if ([self.privateMessage.innerHTML length] == 0) {
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:AwfulTheme.currentTheme];
+        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
         [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID

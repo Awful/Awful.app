@@ -27,11 +27,6 @@
     return [self doesNotRecognizeSelector:_cmd], nil;
 }
 
-- (AwfulTheme *)theme
-{
-    return AwfulTheme.currentTheme;
-}
-
 - (void)loadView
 {
     [super loadView];
@@ -56,13 +51,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [super viewWillAppear:animated];
     _threadDataSource.updatesTableView = YES;
 	[self themeDidChange];
-}
-
-- (void)themeDidChange
-{
-	[super themeDidChange];
-	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
-	self.refreshControl.tintColor = self.theme[@"listTextColor"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated

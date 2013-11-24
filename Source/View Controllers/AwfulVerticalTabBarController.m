@@ -89,8 +89,8 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.tabBar.tintColor = AwfulTheme.currentTheme[@"tintColor"];
-    self.tabBar.backgroundColor = AwfulTheme.currentTheme[@"tabBarBackgroundColor"];
+    self.tabBar.tintColor = self.theme[@"tintColor"];
+    self.tabBar.backgroundColor = self.theme[@"tabBarBackgroundColor"];
 }
 
 - (void)replaceMainViewController:(UIViewController *)oldViewController

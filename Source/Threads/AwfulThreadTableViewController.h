@@ -20,10 +20,6 @@
  */
 @property (readonly, strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
-/**
- * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
- */
-@property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 /**
  * Applies the AwfulThreadTableViewController's theme to the cell for the given thread.

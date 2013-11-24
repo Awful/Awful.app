@@ -57,11 +57,6 @@
     return _treeController;
 }
 
--(void)themeDidChange
-{
-	self.tableView.backgroundColor = AwfulTheme.currentTheme[@"backgroundColor"];
-}
-
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
 {
     NSArray *forumIDs = [AwfulSettings settings].favoriteForums;
@@ -306,8 +301,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:HeaderIdentifier];
-    header.contentView.backgroundColor = AwfulTheme.currentTheme[@"listSecondaryBackgroundColor"];
-    header.textLabel.textColor = AwfulTheme.currentTheme[@"listSecondaryTextColor"];
+    header.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
+    header.textLabel.textColor = self.theme[@"listSecondaryTextColor"];
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
     } else {
@@ -363,8 +358,8 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
 
 -(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
-	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+	cell.backgroundColor = self.theme[@"listBackgroundColor"];
+	cell.textLabel.textColor = self.theme[@"listTextColor"];
 }
 
 - (void)configureForumCell:(AwfulForumCell *)cell atAdjustedIndexPath:(NSIndexPath *)indexPath

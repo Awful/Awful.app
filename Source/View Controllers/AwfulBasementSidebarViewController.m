@@ -42,8 +42,8 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)updateThemedProperties
 {
-    self.view.backgroundColor = AwfulTheme.currentTheme[@"basementBackgroundColor"];
-	if (CGColorGetAlpha([AwfulTheme.currentTheme[@"basementBackgroundColor"] CGColor]) < 1.0) {
+    self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
+	if (CGColorGetAlpha([self.theme[@"basementBackgroundColor"] CGColor]) < 1.0) {
 		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
 	} else {
 		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDefault];
@@ -138,10 +138,10 @@ static void * KVOContext = &KVOContext;
     cell.imageView.contentMode = UIViewContentModeCenter;
     cell.imageView.image = item.image;
     cell.textLabel.text = item.title;
-    cell.textLabel.textColor = AwfulTheme.currentTheme[@"basementLabelColor"];
+    cell.textLabel.textColor = self.theme[@"basementLabelColor"];
     if (item.badgeValue.length > 0) {
         UILabel *badge = (UILabel *)cell.accessoryView ?: [UILabel new];
-        badge.textColor = AwfulTheme.currentTheme[@"basementBadgeColor"];
+        badge.textColor = self.theme[@"basementBadgeColor"];
         badge.text = item.badgeValue;
         [badge sizeToFit];
         cell.accessoryView = badge;

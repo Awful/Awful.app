@@ -9,10 +9,6 @@
 
 - (void)themeDidChange
 {
-	if (self.isViewLoaded) {
-		self.view.backgroundColor = AwfulTheme.currentTheme[@"backgroundColor"];
-	}
-	
 	for (UIViewController *child in self.childViewControllers) {
 		if ([child isViewLoaded]) {
 			[child themeDidChange];
@@ -36,6 +32,11 @@
     [self themeDidChange];
 }
 
+- (AwfulTheme *)theme
+{
+    return AwfulTheme.currentTheme;
+}
+
 @end
 
 @implementation AwfulTableViewController
@@ -49,6 +50,8 @@
 - (void)themeDidChange
 {
 	[super themeDidChange];
+	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
+	self.refreshControl.tintColor = self.theme[@"listTextColor"];
 	for (UITableViewCell *cell in self.tableView.visibleCells) {
 		[self themeCell:cell atIndexPath:[self.tableView indexPathForCell:cell]];
 	}
@@ -57,6 +60,11 @@
 -(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	
+}
+
+- (AwfulTheme *)theme
+{
+    return AwfulTheme.currentTheme;
 }
 
 @end
@@ -80,6 +88,11 @@
 - (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	
+}
+
+- (AwfulTheme *)theme
+{
+    return AwfulTheme.currentTheme;
 }
 
 @end

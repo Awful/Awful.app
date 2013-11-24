@@ -39,7 +39,7 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = AwfulTheme.currentTheme[@"splitViewBackgroundColor"];
+    self.view.backgroundColor = self.theme[@"splitViewBackgroundColor"];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers

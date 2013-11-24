@@ -56,8 +56,8 @@
 {
 	[super themeDidChange];
 	
-	self.tableView.separatorColor = AwfulTheme.currentTheme[@"listSeparatorColor"];
-	self.tableView.backgroundColor = AwfulTheme.currentTheme[@"listSecondaryBackgroundColor"];
+	self.tableView.separatorColor = self.theme[@"listSeparatorColor"];
+	self.tableView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
 }
 
 - (void)viewDidLoad
@@ -146,11 +146,11 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 -(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	cell.backgroundColor = AwfulTheme.currentTheme[@"listBackgroundColor"];
-	cell.textLabel.textColor = AwfulTheme.currentTheme[@"listTextColor"];
+	cell.backgroundColor = self.theme[@"listBackgroundColor"];
+	cell.textLabel.textColor = self.theme[@"listTextColor"];
 	
 	if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
-		UIColor *color = AwfulTheme.currentTheme[@"settingsSwitchColor"];
+		UIColor *color = self.theme[@"settingsSwitchColor"];
 		[(UISwitch*)cell.accessoryView setOnTintColor:color];
 	}
 }

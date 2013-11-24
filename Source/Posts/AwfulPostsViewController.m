@@ -94,6 +94,11 @@
     return [self initWithThread:thread author:nil];
 }
 
+-(AwfulTheme *)theme
+{
+	return [AwfulTheme currentThemeForForum:self.thread.forum];
+}
+
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
@@ -130,7 +135,7 @@
     AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
     settings.delegate = self;
     settings.themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.thread.forum.forumID];
-    settings.selectedTheme = [AwfulTheme currentThemeForForum:self.thread.forum];
+    settings.selectedTheme = self.theme;
     self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
     self.pageSettingsPopover.delegate = self;
     [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
@@ -314,7 +319,7 @@
     [self didChangeValueForKey:@"thread"];
     [self updateFetchedResultsController];
     [self updateUserInterface];
-    self.postsView.stylesheet = AwfulTheme.currentTheme[@"postsViewCSS"];
+    self.postsView.stylesheet = self.theme[@"postsViewCSS"];
     self.replyViewController = nil;
 }
 
@@ -416,8 +421,7 @@
 - (void)setLoadingMessage:(NSString *)message
 {
     if (!self.loadingView) {
-		AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.thread.forum];
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:theme];
+        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
     }
     self.loadingView.message = message;
     [self.postsView addSubview:self.loadingView];
@@ -431,7 +435,7 @@
 
 - (void)configurePostsViewSettings
 {
-    AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.thread.forum];
+    AwfulTheme *theme = self.theme;
 	self.postsView.backgroundColor = theme[@"backgroundColor"];
     self.view.backgroundColor = theme[@"backgroundColor"];
 	

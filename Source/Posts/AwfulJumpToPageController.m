@@ -117,13 +117,13 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = AwfulTheme.currentTheme[@"jumpToPageBackgroundColor"];
+    self.view.backgroundColor = self.theme[@"jumpToPageBackgroundColor"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.tintColor = AwfulTheme.currentTheme[@"tintColor"];
+    self.navigationController.navigationBar.tintColor = self.theme[@"tintColor"];
 }
 
 // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.

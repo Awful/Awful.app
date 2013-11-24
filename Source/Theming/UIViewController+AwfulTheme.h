@@ -19,7 +19,12 @@
  *
  * AwfulViewController instances call -themeDidChange after loading their view, and they call -themeDidChange on all child view controllers and on the presented view controller.
  */
-@interface AwfulViewController : UIViewController 
+@interface AwfulViewController : UIViewController
+
+/**
+ * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ */
+@property (readonly) AwfulTheme *theme;
 
 @end
 
@@ -27,6 +32,11 @@
  * An AwfulTableViewController is a thin customization of UITableViewController that extends AwfulTheme support.
  */
 @interface AwfulTableViewController : UITableViewController 
+
+/**
+ * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ */
+@property (readonly) AwfulTheme *theme;
 
 /**
  * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
@@ -39,6 +49,11 @@
  * An AwfulCollectionViewController is a thin customization of UICollectionViewController that extends AwfulTheme support.
  */
 @interface AwfulCollectionViewController : UICollectionViewController 
+
+/**
+ * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ */
+@property (readonly) AwfulTheme *theme;
 
 /**
  * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
