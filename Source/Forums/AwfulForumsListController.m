@@ -57,6 +57,11 @@
     return _treeController;
 }
 
+-(void)themeDidChange
+{
+	self.tableView.backgroundColor = AwfulTheme.currentTheme[@"backgroundColor"];
+}
+
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
 {
     NSArray *forumIDs = [AwfulSettings settings].favoriteForums;
