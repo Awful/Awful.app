@@ -55,12 +55,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 {
     [super viewWillAppear:animated];
     _threadDataSource.updatesTableView = YES;
+	[self themeDidChange];
 }
 
 - (void)themeDidChange
 {
 	[super themeDidChange];
-	self.view.backgroundColor = self.theme[@"backgroundColor"];
+	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
+	self.refreshControl.tintColor = self.theme[@"listTextColor"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
