@@ -416,21 +416,8 @@
 - (void)setLoadingMessage:(NSString *)message
 {
     if (!self.loadingView) {
-        AwfulLoadingViewType loadingViewType = AwfulLoadingViewTypeDefault;
-        NSString *loadingViewTypeString = AwfulTheme.currentTheme[@"postsLoadingViewType"];
-        if ([loadingViewTypeString isEqualToString:@"FYAD"]) {
-            loadingViewType = AwfulLoadingViewTypeFYAD;
-        } else if ([loadingViewTypeString isEqualToString:@"GasChamber"]) {
-            loadingViewType = AwfulLoadingViewTypeGasChamber;
-        } else if ([loadingViewTypeString isEqualToString:@"Macinyos"]) {
-            loadingViewType = AwfulLoadingViewTypeMacinyos;
-        } else if ([loadingViewTypeString isEqualToString:@"Winpos95"]) {
-            loadingViewType = AwfulLoadingViewTypeWinpos95;
-        } else if ([loadingViewTypeString isEqualToString:@"YOSPOS"]) {
-            loadingViewType = AwfulLoadingViewTypeYOSPOS;
-        }
-        self.loadingView = [AwfulLoadingView loadingViewWithType:loadingViewType];
-        self.loadingView.tintColor = AwfulTheme.currentTheme[@"postsLoadingViewTintColor"];
+		AwfulTheme *theme = [AwfulTheme currentThemeForForum:self.thread.forum];
+        self.loadingView = [AwfulLoadingView loadingViewForTheme:theme];
     }
     self.loadingView.message = message;
     [self.postsView addSubview:self.loadingView];

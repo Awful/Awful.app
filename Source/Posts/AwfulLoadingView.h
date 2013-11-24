@@ -29,13 +29,9 @@ typedef NS_ENUM(NSInteger, AwfulLoadingViewType)
 @interface AwfulLoadingView : UIView
 
 // A convenience constructor for creating different loading view configurations.
-+ (instancetype)loadingViewWithType:(AwfulLoadingViewType)type;
++ (instancetype)loadingViewForTheme:(AwfulTheme*)theme;
 
 // A message to display, like "Loading…".
 @property (copy, nonatomic) NSString *message;
-
-// Different loading view types use their tint colors in different ways. Some types may ignore all
-// attempts to set this property.
-@property (nonatomic) UIColor *tintColor;
 
 @end

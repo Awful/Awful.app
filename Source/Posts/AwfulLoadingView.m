@@ -6,14 +6,16 @@
 #import "FVGifAnimation.h"
 
 @interface AwfulDefaultLoadingView : AwfulLoadingView @end
-@interface AwfulGasChamberLoadingView : AwfulDefaultLoadingView @end
-@interface AwfulFYADLoadingView : AwfulDefaultLoadingView @end
 @interface AwfulYOSPOSLoadingView : AwfulLoadingView @end
 @interface AwfulMacinyosLoadingView : AwfulLoadingView @end
 @interface AwfulWinpos95LoadingView : AwfulLoadingView @end
 
 
 @interface AwfulLoadingView ()
+
+// Different loading view types use their tint colors in different ways. Some types may ignore all
+// attempts to set this property.
+@property (nonatomic) AwfulTheme *theme;
 
 @property (nonatomic) UILabel *messageLabel;
 
@@ -26,16 +28,24 @@
 
 @implementation AwfulLoadingView
 
-+ (instancetype)loadingViewWithType:(AwfulLoadingViewType)type
++(instancetype)loadingViewForTheme:(AwfulTheme *)theme
 {
-    switch (type) {
-        case AwfulLoadingViewTypeDefault: return [AwfulDefaultLoadingView new];
-        case AwfulLoadingViewTypeGasChamber: return [AwfulGasChamberLoadingView new];
-        case AwfulLoadingViewTypeFYAD: return [AwfulFYADLoadingView new];
-        case AwfulLoadingViewTypeYOSPOS: return [AwfulYOSPOSLoadingView new];
-        case AwfulLoadingViewTypeMacinyos: return [AwfulMacinyosLoadingView new];
-        case AwfulLoadingViewTypeWinpos95: return [AwfulWinpos95LoadingView new];
-    }
+	AwfulLoadingView *loadingView = nil;
+	
+	NSString *loadingViewTypeString = theme[@"postsLoadingViewType"];
+	if ([loadingViewTypeString isEqualToString:@"Macinyos"]) {
+		loadingView = [AwfulMacinyosLoadingView new];
+	} else if ([loadingViewTypeString isEqualToString:@"Winpos95"]) {
+		loadingView = [AwfulWinpos95LoadingView new];;
+	} else if ([loadingViewTypeString isEqualToString:@"YOSPOS"]) {
+		loadingView = [AwfulYOSPOSLoadingView new];
+	} else {
+		loadingView = [AwfulDefaultLoadingView new];
+	}
+	
+	loadingView.theme = theme;
+	
+	return loadingView;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -57,13 +67,6 @@
     [self setNeedsLayout];
 }
 
-- (void)setTintColor:(UIColor *)tintColor
-{
-    if (_tintColor == tintColor || self.lockTintColor) return;
-    _tintColor = tintColor;
-    [self retheme];
-}
-
 - (void)retheme
 {
     self.messageLabel.font = [UIFont boldSystemFontOfSize:13];
@@ -75,6 +78,7 @@
 {
     self.frame = (CGRect){ .size = newSuperview.frame.size };
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[self retheme];
 }
 
 @end
@@ -94,19 +98,21 @@
     if (!(self = [super initWithFrame:frame])) return nil;
     self.spinner = [UIActivityIndicatorView new];
     [self addSubview:self.spinner];
-    self.tintColor = [UIColor colorWithWhite:0.82 alpha:1];
     return self;
 }
 
 - (void)retheme
 {
     [super retheme];
-    self.backgroundColor = self.tintColor;
+	
+	UIColor *tint = self.theme[@"postsLoadingViewTintColor"];
+	
+    self.backgroundColor = tint;
     self.spinner.backgroundColor = self.backgroundColor;
     CGFloat whiteness = 1;
-    BOOL ok = [self.tintColor getWhite:&whiteness alpha:nil];
+    BOOL ok = [tint getWhite:&whiteness alpha:nil];
     if (!ok) {
-        ok = [self.tintColor getRed:&whiteness green:nil blue:nil alpha:nil];
+        ok = [tint getRed:&whiteness green:nil blue:nil alpha:nil];
     }
     if (whiteness < 0.1) {
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
@@ -154,45 +160,6 @@
 
 @end
 
-
-@implementation AwfulGasChamberLoadingView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.tintColor = [UIColor colorWithRed:0.082 green:0.6 blue:0.2 alpha:1];
-    self.lockTintColor = YES;
-    return self;
-}
-
-- (void)retheme
-{
-    [super retheme];
-    self.messageLabel.shadowColor = nil;
-}
-
-@end
-
-
-@implementation AwfulFYADLoadingView
-
-- (id)initWithFrame:(CGRect)frame
-{
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.tintColor = [UIColor colorWithRed:0.992 green:0.6 blue:0.6 alpha:1];
-    self.lockTintColor = YES;
-    return self;
-}
-
-- (void)retheme
-{
-    [super retheme];
-    self.messageLabel.shadowColor = nil;
-}
-
-@end
-
-
 @interface AwfulYOSPOSLoadingView ()
 
 @property (nonatomic) UILabel *asciiSpinner;
@@ -235,8 +202,8 @@
 
 - (void)retheme
 {
-    self.messageLabel.textColor = self.tintColor;
-    self.asciiSpinner.textColor = self.tintColor;
+    self.messageLabel.textColor = self.theme[@"postsLoadingViewTintColor"];
+    self.asciiSpinner.textColor = self.theme[@"postsLoadingViewTintColor"];
 }
 
 #pragma mark - UIView

@@ -22,6 +22,7 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulTheme.h"
 #import <GRMustache/GRMustache.h>
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
@@ -97,8 +98,7 @@
 {
     [super viewWillAppear:animated];
     if ([self.privateMessage.innerHTML length] == 0) {
-        self.loadingView = [AwfulLoadingView loadingViewWithType:AwfulLoadingViewTypeDefault];
-        self.loadingView.tintColor = [UIColor whiteColor];
+        self.loadingView = [AwfulLoadingView loadingViewForTheme:AwfulTheme.currentTheme];
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
         [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID

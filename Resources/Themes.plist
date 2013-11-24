@@ -92,6 +92,8 @@
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>postsLoadingViewTintColor</key>
+		<string>#FD9999</string>
 		<key>description</key>
 		<string>Pink</string>
 		<key>backgroundColor</key>
@@ -100,8 +102,6 @@
 		<string>#fd9a9a</string>
 		<key>relevantForumID</key>
 		<string>26</string>
-		<key>postsLoadingViewType</key>
-		<string>FYAD</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-fyad.css</string>
 		<key>listSeparatorColor</key>
@@ -113,14 +113,14 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>postsLoadingViewTintColor</key>
+		<string>#159933</string>
 		<key>description</key>
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
 		<string>#68cc24</string>
 		<key>relevantForumID</key>
 		<string>25</string>
-		<key>postsLoadingViewType</key>
-		<string>GasChamber</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-gas-chamber.css</string>
 	</dict>
