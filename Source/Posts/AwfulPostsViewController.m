@@ -455,7 +455,6 @@
     self.postsView.stylesheet = theme[@"postsViewCSS"];
     if (self.loadingView) {
         NSString *message = self.loadingView.message;
-        [self clearLoadingMessage];
         [self setLoadingMessage:message];
     }
 }
@@ -690,7 +689,6 @@
     self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
     self.view = self.postsView;
-    [self configurePostsViewSettings];
     
     self.topBar = [AwfulPageTopBar new];
     self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
@@ -712,8 +710,6 @@
         [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
     }
-	
-	[self themeDidChange];
 }
 
 - (void)viewDidAppear:(BOOL)animated
