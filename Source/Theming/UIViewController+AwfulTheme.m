@@ -40,6 +40,12 @@
 
 @implementation AwfulTableViewController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self themeDidChange];
+}
+
 - (void)themeDidChange
 {
 	[super themeDidChange];
@@ -56,6 +62,12 @@
 @end
 
 @implementation AwfulCollectionViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self themeDidChange];
+}
 
 - (void)themeDidChange
 {
