@@ -123,4 +123,16 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
     return [NSString stringWithFormat:@"<%@: %p %@>", self.class, self, self.name];
 }
 
+-(UIScrollViewIndicatorStyle)scrollIndicatorStyle
+{
+	NSString *styleString = self[@"scrollIndicatorStyle"];
+	if ([styleString compare:@"white" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		return UIScrollViewIndicatorStyleWhite;
+	} else if ([styleString compare:@"black" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		return UIScrollViewIndicatorStyleBlack;
+	} else {
+		return UIScrollViewIndicatorStyleDefault;
+	}
+}
+
 @end

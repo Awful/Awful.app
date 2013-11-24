@@ -4,6 +4,8 @@
 <dict>
 	<key>default</key>
 	<dict>
+		<key>scrollIndicatorStyle</key>
+		<string>Black</string>
 		<key>backgroundColor</key>
 		<string>#ffffff</string>
 		<key>description</key>
@@ -65,6 +67,8 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>scrollIndicatorStyle</key>
+		<string>White</string>
 		<key>backgroundColor</key>
 		<string>#000000</string>
 		<key>listSecondaryTextColor</key>

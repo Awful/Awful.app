@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "AwfulModels.h"
 
 /**
@@ -51,7 +51,12 @@
 /**
  * YES if the theme is forum-specific, NO if it applies to all forums (the default).
  */
-@property (readonly, assign, nonatomic) BOOL forumSpecific;
+@property (readonly, nonatomic) BOOL forumSpecific;
+
+/**
+ * Returns the scroll indicator style for the theme
+ */
+@property (readonly, nonatomic)  UIScrollViewIndicatorStyle scrollIndicatorStyle;
 
 /**
  * An AwfulTheme to use for looking up values not set by this theme.

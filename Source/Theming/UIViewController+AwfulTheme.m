@@ -52,6 +52,7 @@
 	[super themeDidChange];
 	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
 	self.refreshControl.tintColor = self.theme[@"listTextColor"];
+	self.tableView.indicatorStyle = self.theme.scrollIndicatorStyle;
 	for (UITableViewCell *cell in self.tableView.visibleCells) {
 		[self themeCell:cell atIndexPath:[self.tableView indexPathForCell:cell]];
 	}
@@ -80,6 +81,7 @@
 - (void)themeDidChange
 {
 	[super themeDidChange];
+	self.collectionView.indicatorStyle = self.theme.scrollIndicatorStyle;
 	for (UICollectionViewCell *cell in self.collectionView.visibleCells) {
 		[self themeCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
 	}
