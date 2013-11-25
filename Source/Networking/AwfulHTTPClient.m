@@ -627,7 +627,7 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
 - (NSOperation *)profileUserWithID:(NSString *)userID
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    NSManagedObjectContext *managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"member.php"
                   parameters:@{ @"action": @"getinfo",
                                 @"userid": userID }
