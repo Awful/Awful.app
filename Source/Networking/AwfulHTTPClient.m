@@ -349,6 +349,7 @@
                 if (callback) callback(error, nil);
                 return;
             }
+            [parameters removeObjectForKey:@"preview"];
             parameters[@"threadid"] = threadID;
             parameters[@"message"] = text;
             [_HTTPManager POST:@"newreply.php"
@@ -464,6 +465,7 @@
             NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"postid"] = postID;
             parameters[@"message"] = text;
+            [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"editpost.php"
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -896,6 +898,7 @@ NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLog
             if (secondaryIconID.length > 0) {
                 parameters[form.secondaryThreadTagName] = secondaryIconID;
             }
+            [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"newthread.php"
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
