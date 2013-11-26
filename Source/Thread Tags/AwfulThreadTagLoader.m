@@ -191,12 +191,12 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
 
 - (UIImage *)emptyThreadTagImage
 {
-    return [self imageNamed:@"empty-thread-tag"];
+    return [UIImage imageNamed:@"empty-thread-tag"];
 }
 
 - (UIImage *)emptyPrivateMessageImage
 {
-    return [self imageNamed:@"empty-pm-tag"];
+    return [UIImage imageNamed:@"empty-pm-tag"];
 }
 
 @end
