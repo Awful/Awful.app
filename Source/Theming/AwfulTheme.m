@@ -71,6 +71,7 @@
 - (UIColor *)colorForKey:(NSString *)key
 {
     NSString *value = [self objectForKey:key];
+    if (!value) return nil;
     return ColorWithHexCode(value) ?: ColorWithPatternImageNamed(value);
 }
 
