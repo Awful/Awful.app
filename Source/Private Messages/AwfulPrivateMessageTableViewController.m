@@ -157,9 +157,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-    UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
+    AwfulThreadTag *threadTag = pm.threadTag;
     if (threadTag) {
-        cell.imageView.image = threadTag;
+        cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
     } else {
         // TODO handle updated thread tags
         cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
