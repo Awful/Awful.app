@@ -436,7 +436,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 {
     [AwfulAlertView showWithTitle:@"Problem Logging In"
                           message:@"Double-check your username and password, then try again."
-                      buttonTitle:@"Alright"
+                      buttonTitle:@"OK"
                        completion:nil];
 }
 

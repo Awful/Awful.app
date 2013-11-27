@@ -68,6 +68,15 @@
 
 @implementation AwfulPostsViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self stopObservingScrollViewContentSize];
+    self.postsView.scrollView.delegate = nil;
+    self.fetchedResultsController.delegate = nil;
+    [self stopObservingThreadSeenPosts];
+}
+
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
@@ -300,15 +309,6 @@
 {
     [super themeDidChange];
     [self configurePostsViewSettings];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self stopObservingScrollViewContentSize];
-    self.postsView.scrollView.delegate = nil;
-    self.fetchedResultsController.delegate = nil;
-    [self stopObservingThreadSeenPosts];
 }
 
 - (void)setThread:(AwfulThread *)thread
