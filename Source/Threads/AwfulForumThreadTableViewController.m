@@ -152,6 +152,7 @@
         _mostRecentlyLoadedPage = page;
         [self.refreshControl endRefreshing];
         [self.tableView.infiniteScrollingView stopAnimating];
+        self.title = self.forum.name;
     }];
 }
 
@@ -194,8 +195,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulForum *forum = [AwfulForum fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                                 matchingPredicateFormat:@"forumID = %@", [coder decodeObjectForKey:ForumIDKey]];
+    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext
+                                                                      withID:[coder decodeObjectForKey:ForumIDKey]];
     AwfulForumThreadTableViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;
