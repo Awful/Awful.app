@@ -54,10 +54,15 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     AwfulTextEntryCell *cell = (AwfulTextEntryCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    [cell.textField becomeFirstResponder];
+    
+    // I can't get the keyboard to appear on launch without this ugly delayed perform. Best of all, -becomeFirstResponder returns YES.
+    NSTimeInterval delay = 0.05;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^{
+        [cell.textField becomeFirstResponder];
+    });
 }
 
 #pragma mark - UITableView data source and delegate
@@ -188,14 +193,16 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
                   withRowAnimation:UITableViewRowAnimationNone];
     self.tableView.userInteractionEnabled = NO;
+    __weak __typeof__(self) weakSelf = self;
     [[AwfulHTTPClient client] logInAsUsername:self.username
                                  withPassword:self.password
-                                      andThen:^(NSError *error, NSDictionary *userInfo)
+                                      andThen:^(NSError *error, AwfulUser *user)
     {
+        __typeof__(self) self = weakSelf;
         if (error) {
             [self.delegate loginController:self didFailToLogInWithError:error];
         } else {
-            [self.delegate loginController:self didLogInAsUserWithInfo:userInfo];
+            [self.delegate loginController:self didLogInAsUser:user];
         }
         self.loggingIn = NO;
         self.tableView.userInteractionEnabled = YES;

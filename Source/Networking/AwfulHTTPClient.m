@@ -44,10 +44,6 @@
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didLogOut:)
-                                                 name:AwfulUserDidLogOutNotification
-                                               object:nil];
     
     // When a user changes their password, subsequent HTTP operations will come back without a login cookie. So any operation might bear the news that we've been logged out.
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -102,11 +98,6 @@
     if ([keys containsObject:AwfulSettingsKeys.customBaseURL]) {
         [self reset];
     }
-}
-
-- (void)didLogOut:(NSNotification *)note
-{
-    [self reset];
 }
 
 - (BOOL)isReachable
@@ -524,51 +515,42 @@
 
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback
+                         andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager POST:@"account.php?json=1"
                    parameters:@{ @"action" : @"login",
                                  @"username" : username,
                                  @"password" : password,
-                                 @"next": @"/member.php?action=getinfo&json=1" }
-                      success:^(AFHTTPRequestOperation *operation, NSDictionary *json) {
-                          if (!json[@"userid"] || !json[@"username"] || !json[@"receivepm"]) {
-                              if (callback) {
-                                  NSString *message = @"Could not parse user info";
-                                  NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                                       code:AwfulErrorCodes.parseError
-                                                                   userInfo:@{ NSLocalizedDescriptionKey: message }];
-                                  callback(error, nil);
-                              }
-                              // Don't want this failed login attempt to be taken as successful.
-                              NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-                              for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
-                                  [cookieStorage deleteCookie:cookie];
-                              }
-                              return;
-                          }
-                          NSString *username = json[@"username"];
-                          if ([username respondsToSelector:@selector(stringValue)]) {
-                              username = [(id)username stringValue];
-                          }
-                          NSDictionary *userInfo = @{ @"userID": [json[@"userid"] stringValue],
-                                                      @"username": username,
-                                                      @"canSendPrivateMessages": json[@"receivepm"] };
-                          [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification object:nil];
-                          if (callback) callback(nil, userInfo);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (operation.response.statusCode == 401) {
-                              NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Invalid username or password",
-                                                          NSUnderlyingErrorKey: error };
-                              error = [NSError errorWithDomain:AwfulErrorDomain
-                                                          code:AwfulErrorCodes.badUsernameOrPassword
-                                                      userInfo:userInfo];
-                          }
-                          if (callback) callback(error, nil);
-                      }];
+                                 @"next": @"/member.php?action=getinfo" }
+                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
+            NSError *error;
+            AwfulUser *user = [scraper scrapeDocument:document
+                                              fromURL:operation.response.URL
+                             intoManagedObjectContext:self.managedObjectContext
+                                                error:&error];
+            if (!user) {
+                if (callback) {
+                    callback(error, nil);
+                }
+                return;
+            }
+            if (callback) callback(error, user);
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (operation.response.statusCode == 401) {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Invalid username or password",
+                                        NSUnderlyingErrorKey: error };
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.badUsernameOrPassword
+                                    userInfo:userInfo];
+        }
+        if (callback) callback(error, nil);
+    }];
 }
-
-NSString * const AwfulUserDidLogInNotification = @"com.awfulapp.Awful.UserDidLogInNotification";
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
                           andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback

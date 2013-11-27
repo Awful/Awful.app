@@ -709,8 +709,11 @@
     [super viewDidAppear:animated];
     
     // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
-    [self.postsView.scrollView addPullToRefreshWithActionHandler:^{ [self loadNextPageOrRefresh]; }
-                                                        position:SVPullToRefreshPositionBottom];
+    __weak __typeof__(self) weakSelf = self;
+    [self.postsView.scrollView addPullToRefreshWithActionHandler:^{
+        __typeof__(self) self = weakSelf;
+        [self loadNextPageOrRefresh];
+    } position:SVPullToRefreshPositionBottom];
 }
 
 - (NSInteger)relevantNumberOfPagesInThread

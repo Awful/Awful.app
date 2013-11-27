@@ -14,9 +14,6 @@
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-// Sent when the user logs out.
-extern NSString * const AwfulUserDidLogOutNotification;
-
 // Handles an awful:// URL.
 //
 // Returns YES if the awful:// URL made sense, or NO otherwise.

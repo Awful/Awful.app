@@ -12,6 +12,7 @@
 #import "AwfulExpandingSplitViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulHTTPClient.h"
+#import "AwfulLaunchImageViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
@@ -48,50 +49,37 @@ static id _instance;
     return _instance;
 }
 
-- (void)showLoginFormIsAtLaunch:(BOOL)isAtLaunch andThen:(void (^)(void))callback
-{
-    AwfulLoginController *login = [AwfulLoginController new];
-    login.delegate = self;
-    BOOL animated = !isAtLaunch || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    [self.window.rootViewController presentViewController:[login enclosingNavigationController]
-                                                 animated:animated
-                                               completion:callback];
-}
-
 - (void)logOut
 {
+    // Destroy root view controller before deleting data store so there's no lingering references to persistent objects or their controllers.
+    [self destroyRootViewControllerStack];
+    
     // Reset the HTTP client so it gets remade (if necessary) with the default URL.
     [[AwfulHTTPClient client] reset];
     
-    // Delete all cookies, both from SA and possibly accrued from using Awful Browser.
+    // Logging out doubles as an "empty cache" button.
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
         [cookieStorage deleteCookie:cookie];
     }
-    
-    // Empty the URL cache.
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
-    
-    // Reset all preferences.
     [[AwfulSettings settings] reset];
-    
-    // Clear any stored logins for other services
     [[PocketAPI sharedAPI] logout];
-    
-    // Send the notification just before deleting the data store, so anything using it can clean up.
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogOutNotification object:nil];
-    
-    // Delete cached post info. The next user might see things differently than the one logging out.
-    // And this lets logging out double as a "delete all data" button.
     [_dataStack deleteStoreAndResetStack];
     
-    [self showLoginFormIsAtLaunch:NO andThen:^{
-        self.basementViewController.selectedIndex = 0;
-        self.verticalTabBarController.selectedIndex = 0;
-    }];
+    [UIView transitionWithView:self.window
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        [UIView performWithoutAnimation:^{
+                            self.window.rootViewController = [AwfulLaunchImageViewController new];
+                        }];
+                    } completion:^(BOOL finished) {
+                        AwfulLoginController *loginController = [AwfulLoginController new];
+                        loginController.delegate = self;
+                        [self.window.rootViewController presentViewController:[loginController enclosingNavigationController] animated:YES completion:nil];
+                    }];
 }
-
-NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLogOutNotification";
 
 - (NSManagedObjectContext *)managedObjectContext
 {
@@ -120,6 +108,19 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
                                                                     diskPath:nil]];
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    if ([AwfulHTTPClient client].loggedIn) {
+        self.window.rootViewController = [self createRootViewControllerStack];
+        [self themeDidChange];
+    } else {
+        self.window.rootViewController = [AwfulLaunchImageViewController new];
+    }
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+
+- (UIViewController *)createRootViewControllerStack
+{
     NSMutableArray *viewControllers = [NSMutableArray new];
     UINavigationController *nav;
     UIViewController *vc;
@@ -128,16 +129,12 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = ForumListControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = ForumNavigationControllerIdentifier;
-    nav.restorationClass = nil;
-    nav.delegate = self;
     [viewControllers addObject:nav];
     
     vc = [[AwfulBookmarkedThreadTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = BookmarksControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = BookmarksNavigationControllerIdentifier;
-    nav.restorationClass = nil;
-    nav.delegate = self;
     [viewControllers addObject:nav];
     
     if ([AwfulSettings settings].canSendPrivateMessages) {
@@ -145,8 +142,6 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
         vc.restorationIdentifier = MessagesListControllerIdentifier;
         nav = [vc enclosingNavigationController];
         nav.restorationIdentifier = MessagesNavigationControllerIdentifier;
-        nav.restorationClass = nil;
-        nav.delegate = self;
         [viewControllers addObject:nav];
     }
 
@@ -154,32 +149,41 @@ NSString * const AwfulUserDidLogOutNotification = @"com.awfulapp.Awful.UserDidLo
     vc.restorationIdentifier = LepersColonyViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = LepersColonyNavigationControllerIdentifier;
-    nav.restorationClass = nil;
-    nav.delegate = self;
     [viewControllers addObject:nav];
     
     vc = [[AwfulSettingsViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
     vc.restorationIdentifier = SettingsViewControllerIdentifier;
     nav = [vc enclosingNavigationController];
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
-    nav.restorationClass = nil;
-    nav.delegate = self;
     [viewControllers addObject:nav];
     
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    [viewControllers makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
+    [viewControllers makeObjectsPerformSelector:@selector(setRestorationClass:) withObject:nil];
+    
+    UIViewController *rootViewController;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
         self.basementViewController.restorationIdentifier = RootViewControllerIdentifier;
-        self.window.rootViewController = self.basementViewController;
+        rootViewController = self.basementViewController;
     } else {
         self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:viewControllers];
         self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
-        self.window.rootViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ self.verticalTabBarController ]];
-        self.window.rootViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
+        AwfulExpandingSplitViewController *splitViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ self.verticalTabBarController ]];
+        splitViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
+        rootViewController = splitViewController;
     }
-    [self themeDidChange];
-    [self.window makeKeyAndVisible];
-    return YES;
+    
+    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:rootViewController
+                                                    managedObjectContext:_dataStack.managedObjectContext];
+    return rootViewController;
+}
+
+- (void)destroyRootViewControllerStack
+{
+    self.basementViewController = nil;
+    self.verticalTabBarController = nil;
+    self.window.rootViewController = nil;
+    _awfulURLRouter = nil;
 }
 
 static NSString * const RootViewControllerIdentifier = @"AwfulRootViewController";
@@ -205,11 +209,13 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
-    
     if (![AwfulHTTPClient client].loggedIn) {
-        [self showLoginFormIsAtLaunch:YES andThen:nil];
+        AwfulLoginController *login = [AwfulLoginController new];
+        login.delegate = self;
+        [self.window.rootViewController presentViewController:[login enclosingNavigationController] animated:NO completion:nil];
     }
+    
+    [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
     // Sometimes new features depend on the currently logged in user's info. We update that info on
     // login, and when visiting the Settings tab. But that leaves out people who update to a new
@@ -239,9 +245,6 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
-    
-    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.window.rootViewController
-                                                    managedObjectContext:_dataStack.managedObjectContext];
     
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
@@ -409,17 +412,24 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 #pragma mark - AwfulLoginControllerDelegate
 
 - (void)loginController:(AwfulLoginController *)login
- didLogInAsUserWithInfo:(NSDictionary *)userInfo
+         didLogInAsUser:(AwfulUser *)user
 {
     NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
     AwfulSettings *settings = [AwfulSettings settings];
     settings.lastForcedUserInfoUpdateVersion = appVersion;
-    settings.username = userInfo[@"username"];
-    settings.userID = userInfo[@"userID"];
-    settings.canSendPrivateMessages = [userInfo[@"canSendPrivateMessages"] boolValue];
-    [self.window.rootViewController dismissViewControllerAnimated:YES completion:^{
-        [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
-    }];
+    settings.username = user.username;
+    settings.userID = user.userID;
+    settings.canSendPrivateMessages = user.canReceivePrivateMessages;
+    [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
+    [UIView transitionWithView:self.window
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        [UIView performWithoutAnimation:^{
+                            [login dismissViewControllerAnimated:NO completion:nil];
+                            self.window.rootViewController = [self createRootViewControllerStack];;
+                        }];
+                    } completion:nil];
 }
 
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error

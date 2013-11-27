@@ -193,17 +193,13 @@
 // username - Who to log in as.
 // password - Their password.
 // callback - A block to call after logging in, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              userInfo - A dictionary with keys "userID" and "username" on success, or nil on
-//                         failure.
+//              error - An error on failure, or nil on success.
+//              user  - An AwfulUser object with userID, username, and canReceivePrivateMessages keys set on success, or nil on failure.
 //
 // Returns the enqueued network operation.
 - (NSOperation *)logInAsUsername:(NSString *)username
                     withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error, NSDictionary *userInfo))callback;
-
-// Sent when someone logs in.
-extern NSString * const AwfulUserDidLogInNotification;
+                         andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 // Finds the thread and page where a post appears.
 //

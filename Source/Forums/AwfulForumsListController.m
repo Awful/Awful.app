@@ -185,7 +185,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (void)refresh
 {
+    __weak __typeof__(self) weakSelf = self;
     [[AwfulHTTPClient client] listForumHierarchyAndThen:^(NSError *error, NSArray *categories) {
+        __typeof__(self) self = weakSelf;
         if (!error) {
             self.lastRefresh = [NSDate date];
         }
@@ -224,27 +226,8 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     self.tableView.rowHeight = 45;
     self.tableView.backgroundView = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 37, 0, 0);
-    
     [self.tableView awful_unstickSectionHeaders];
     [self.tableView awful_hideExtraneousSeparators];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogIn:)
-                                                 name:AwfulUserDidLogInNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogOut:)
-                                                 name:AwfulUserDidLogOutNotification object:nil];
-}
-
-- (void)didLogIn:(NSNotification *)note
-{
-    self.treeController = nil;
-    [self.tableView reloadData];
-}
-
-- (void)didLogOut:(NSNotification *)note
-{
-    self.treeController = nil;
-    [self.favoriteForums removeAllObjects];
-    [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
