@@ -557,8 +557,9 @@
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
+    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:_HTTPManager.baseURL];
     NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
-                                                                    URLString:@"showthread.php"
+                                                                    URLString:URL.absoluteString
                                                                    parameters:@{ @"goto" : @"post",
                                                                                  @"postid" : postID }];
     __block BOOL didSucceed = NO;
