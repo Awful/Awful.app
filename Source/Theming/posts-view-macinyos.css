@@ -296,6 +296,10 @@ body {
 .ipad .action-button {
   margin-top: 12px;
 }
+.username #bracket::before,
+.username #bracket::after {
+  background: #000;
+}
 .postbody a {
   color: #000;
 }

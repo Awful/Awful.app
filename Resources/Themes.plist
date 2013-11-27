@@ -156,6 +156,8 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#57FF57</string>
 		<key>parent</key>
 		<string>dark</string>
 		<key>description</key>
@@ -177,6 +179,8 @@
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#57FF57</string>
 		<key>parent</key>
 		<string>YOSPOS</string>
 		<key>description</key>

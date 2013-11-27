@@ -226,7 +226,7 @@ footer:after {
   margin-bottom: 10px;
 }
 html {
-  font-family: monospace;
+  font-family: menlo;
 }
 body {
   color: #57ff57;
@@ -250,17 +250,37 @@ body {
   background-image: none;
   padding-left: 0;
 }
+.role-admin .username:before,
+.role-mod .username:before {
+  color: #57ff57;
+}
 .role-op .username {
   color: #57ff57;
 }
 .role-op .username:before {
   content: "⌨ ";
 }
+.username #bracket::before,
+.username #bracket::after {
+  background: #57ff57;
+}
 .action-button {
   color: #57ff57;
 }
 .postbody a {
   color: #57ff57;
+}
+.postdate,
+.regdate,
+.username,
+.bbc-block h4,
+.bbc-block h5,
+blockquote,
+.bbc-block.code pre,
+.editedby,
+footer,
+.postbody {
+  font-family: menlo;
 }
 .bbc-spoiler {
   color: #57ff57;

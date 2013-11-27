@@ -293,6 +293,18 @@ header {
 .postbody a {
   color: #000;
 }
+.postdate,
+.regdate,
+.username,
+.bbc-block h4,
+.bbc-block h5,
+blockquote,
+.bbc-block.code pre,
+.editedby,
+footer,
+.postbody {
+  font-family: arial;
+}
 .bbc-spoiler {
   color: #000000;
   background: #000000;

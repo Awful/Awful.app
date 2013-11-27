@@ -6,7 +6,7 @@
 @import "base.less";
 
 html {
-  font-family: monospace;
+  font-family: menlo;
 }
 
 body {
@@ -36,6 +36,10 @@ body {
   .role-mod & {
     background-image: none;
     padding-left: 0;
+
+	&:before {
+	  color: @color;
+	}
   } 
    
   .role-op & {
@@ -46,6 +50,9 @@ body {
 	}
   }
 }
+.username #bracket::before, .username #bracket::after {
+	background: @color;
+}
 
 .action-button {
   color: @color;
@@ -53,6 +60,19 @@ body {
 
 .postbody a {
   color: @color;
+}
+
+.postdate,
+.regdate,
+.username,
+.bbc-block h4,
+.bbc-block h5,
+blockquote,
+.bbc-block.code pre,
+.editedby,
+footer,
+.postbody {
+  font-family: menlo; 
 }
 
 @import "spoilers.less";
