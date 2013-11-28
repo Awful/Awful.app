@@ -9,6 +9,7 @@
 
 + (instancetype)awful_URLWithString:(NSString *)string
 {
+    if (!string) return nil;
     NSURL *firstAttempt = [self URLWithString:string];
     if (firstAttempt) return firstAttempt;
     
