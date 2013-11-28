@@ -232,29 +232,6 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
     
-    // Sometimes new features depend on the currently logged in user's info. We update that info on
-    // login, and when visiting the Settings tab. But that leaves out people who update to a new
-    // version of Awful and don't visit the Settings tab. For example, when adding PM support, we'd
-    // erroneously assume they can't send PMs because we'd simply never checked. This will ensure
-    // we update user info at least once for each new version of Awful.
-    if ([AwfulHTTPClient client].loggedIn) {
-        NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
-        NSString *lastCheck = [AwfulSettings settings].lastForcedUserInfoUpdateVersion;
-        if ([appVersion compare:lastCheck options:NSNumericSearch] == NSOrderedDescending) {
-            [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
-                if (error) {
-                    NSLog(@"error forcing user info update: %@", error);
-                    [self logOut];
-                    return;
-                }
-                [AwfulSettings settings].lastForcedUserInfoUpdateVersion = appVersion;
-                [AwfulSettings settings].userID = user.userID;
-                [AwfulSettings settings].username = user.username;
-                [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
-            }];
-        }
-    }
-    
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
