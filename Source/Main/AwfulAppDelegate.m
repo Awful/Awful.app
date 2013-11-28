@@ -90,10 +90,8 @@ static id _instance;
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    StartCrashlytics();
     _instance = self;
-    #if defined(CRASHLYTICS_API_KEY) && !DEBUG
-        [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
-    #endif
     [[AwfulSettings settings] registerDefaults];
     [[AwfulSettings settings] migrateOldSettings];
     
@@ -117,6 +115,23 @@ static id _instance;
     }
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+#define CRASHLYTICS_ENABLED defined(CRASHLYTICS_API_KEY) && !DEBUG
+
+static inline void StartCrashlytics(void)
+{
+    #if CRASHLYTICS_ENABLED
+        [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+        SetCrashlyticsUsername();
+    #endif
+}
+
+static inline void SetCrashlyticsUsername(void)
+{
+    #if CRASHLYTICS_ENABLED && AWFUL_BETA
+        [Crashlytics setUserName:[AwfulSettings settings].username];
+    #endif
 }
 
 - (UIViewController *)createRootViewControllerStack
@@ -274,6 +289,10 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
         }
     }
     
+    if ([changes containsObject:AwfulSettingsKeys.username]) {
+        SetCrashlyticsUsername();
+    }
+    
 	for (NSString *change in changes) {
 		if ([change isEqualToString:AwfulSettingsKeys.darkTheme] || [change hasPrefix:@"theme"]) {
 			
@@ -418,6 +437,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     AwfulSettings *settings = [AwfulSettings settings];
     settings.lastForcedUserInfoUpdateVersion = appVersion;
     settings.username = user.username;
+    SetCrashlyticsUsername();
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;
     [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
