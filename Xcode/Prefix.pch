@@ -1,14 +1,12 @@
+//  Prefix.pch
 //
-// Prefix header for all source files of the 'Awful' target in the 'Awful' project
-//
+//  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import <UIKit/UIKit.h>
-    #import <CoreData/CoreData.h>
-    #import <MobileCoreServices/MobileCoreServices.h>
-    #import <QuartzCore/QuartzCore.h>
-    #import <SystemConfiguration/SystemConfiguration.h>
-    #import "AwfulModels.h"
-    #import "AwfulUIKitAndFoundationCategories.h"
-#endif
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <QuartzCore/QuartzCore.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+#import "AwfulModels.h"
+#import "AwfulUIKitAndFoundationCategories.h"

@@ -1,15 +1,15 @@
-//  ForumHierarchyParsingTests.m
+//  ForumHierarchyScrapingTests.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulForumHierarchyScraper.h"
 
-@interface ForumHierarchyParsingTests : AwfulParsingTestCase
+@interface ForumHierarchyScrapingTests : AwfulScrapingTestCase
 
 @end
 
-@implementation ForumHierarchyParsingTests
+@implementation ForumHierarchyScrapingTests
 
 + (Class)scraperClass
 {

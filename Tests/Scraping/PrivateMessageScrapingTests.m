@@ -1,15 +1,15 @@
-//  PrivateMessageParsingTests.m
+//  PrivateMessageScrapingTests.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulPrivateMessageScraper.h"
 
-@interface PrivateMessageParsingTests : AwfulParsingTestCase
+@interface PrivateMessageScrapingTests : AwfulScrapingTestCase
 
 @end
 
-@implementation PrivateMessageParsingTests
+@implementation PrivateMessageScrapingTests
 
 + (Class)scraperClass
 {

@@ -1,15 +1,15 @@
-//  PostsPageParsingTests.m
+//  PostsPageScrapingTests.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulPostsPageScraper.h"
 
-@interface PostsPageParsingTests : AwfulParsingTestCase
+@interface PostsPageScrapingTests : AwfulScrapingTestCase
 
 @end
 
-@implementation PostsPageParsingTests
+@implementation PostsPageScrapingTests
 
 + (Class)scraperClass
 {

@@ -86,14 +86,14 @@
 		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C6474CB1569989800C72657 /* AwfulThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474B51569989800C72657 /* AwfulThread.m */; };
 		1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
-		1C6D2E9B182C6F8C00785766 /* ProfileParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */; };
+		1C6D2E9B182C6F8C00785766 /* ProfileScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */; };
 		1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
 		1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */; };
 		1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
 		1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
-		1C6D2EA5182D622D00785766 /* ForumHierarchyParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */; };
+		1C6D2EA5182D622D00785766 /* ForumHierarchyScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.m */; };
 		1C6D2EA8182E81B000785766 /* AwfulPrivateMessageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA7182E81B000785766 /* AwfulPrivateMessageScraper.m */; };
-		1C6D2EAA182E890D00785766 /* PrivateMessageParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA9182E890D00785766 /* PrivateMessageParsingTests.m */; };
+		1C6D2EAA182E890D00785766 /* PrivateMessageScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.m */; };
 		1C6D2EAB182E8AA300785766 /* AwfulPrivateMessageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA7182E81B000785766 /* AwfulPrivateMessageScraper.m */; };
 		1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EAD182EB37A00785766 /* AwfulAuthorScraper.m */; };
 		1C6D2EAF182EB9B100785766 /* AwfulAuthorScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EAD182EB37A00785766 /* AwfulAuthorScraper.m */; };
@@ -106,8 +106,8 @@
 		1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFEDB182A74A60014311C /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
-		1C6FFEDD182AA57C0014311C /* PostsPageParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDC182AA57C0014311C /* PostsPageParsingTests.m */; };
-		1C6FFEE1182AA5CB0014311C /* AwfulParsingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* AwfulParsingTestCase.m */; };
+		1C6FFEDD182AA57C0014311C /* PostsPageScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.m */; };
+		1C6FFEE1182AA5CB0014311C /* AwfulScrapingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* AwfulScrapingTestCase.m */; };
 		1C6FFEE2182AA9550014311C /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73921917DF350F00089248 /* AwfulForumCell.m */; };
 		1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73921C17DF850F00089248 /* AwfulThreadCell.m */; };
@@ -206,7 +206,7 @@
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
 		1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */; };
 		1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
-		1CFE9847182934A5003DBBC2 /* ThreadListParsingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */; };
+		1CFE9847182934A5003DBBC2 /* ThreadListScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.m */; };
 		1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */; };
 		1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
 		1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
@@ -221,6 +221,7 @@
 		1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
+		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
 		839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */ = {isa = PBXBuildFile; fileRef = 839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -244,7 +245,6 @@
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		9290A9AE337A4A89B6B1E516 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F3DF9C27054D9A93B744A1 /* libPods.a */; };
 		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
-		F69D0B2EEA8D4E9BA2423573 /* libPods-ParsingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0392F3D5451248E098085BB4 /* libPods-ParsingTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -258,7 +258,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0392F3D5451248E098085BB4 /* libPods-ParsingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ParsingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1190F71913BE4EA900B9D271 /* AwfulLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoginController.h; sourceTree = "<group>"; };
 		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
@@ -365,15 +364,15 @@
 		1C6474B51569989800C72657 /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
 		1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileScraper.m; sourceTree = "<group>"; };
-		1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileParsingTests.m; sourceTree = "<group>"; };
+		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileScrapingTests.m; sourceTree = "<group>"; };
 		1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLRequestSerializer.h; sourceTree = "<group>"; };
 		1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRequestSerializer.m; sourceTree = "<group>"; };
 		1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHierarchyScraper.h; sourceTree = "<group>"; };
 		1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHierarchyScraper.m; sourceTree = "<group>"; };
-		1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumHierarchyParsingTests.m; sourceTree = "<group>"; };
+		1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForumHierarchyScrapingTests.m; sourceTree = "<group>"; };
 		1C6D2EA6182E81B000785766 /* AwfulPrivateMessageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageScraper.h; sourceTree = "<group>"; };
 		1C6D2EA7182E81B000785766 /* AwfulPrivateMessageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageScraper.m; sourceTree = "<group>"; };
-		1C6D2EA9182E890D00785766 /* PrivateMessageParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageParsingTests.m; sourceTree = "<group>"; };
+		1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageScrapingTests.m; sourceTree = "<group>"; };
 		1C6D2EAC182EB37A00785766 /* AwfulAuthorScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAuthorScraper.h; sourceTree = "<group>"; };
 		1C6D2EAD182EB37A00785766 /* AwfulAuthorScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAuthorScraper.m; sourceTree = "<group>"; };
 		1C6D2EB0182FDCBC00785766 /* AwfulMessageFolderScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulMessageFolderScraper.h; sourceTree = "<group>"; };
@@ -387,9 +386,9 @@
 		1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCompoundDateParser.h; sourceTree = "<group>"; };
 		1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCompoundDateParser.m; sourceTree = "<group>"; };
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
-		1C6FFEDC182AA57C0014311C /* PostsPageParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageParsingTests.m; sourceTree = "<group>"; };
-		1C6FFEDE182AA5AA0014311C /* AwfulParsingTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulParsingTestCase.h; sourceTree = "<group>"; };
-		1C6FFEDF182AA5AA0014311C /* AwfulParsingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulParsingTestCase.m; sourceTree = "<group>"; };
+		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageScrapingTests.m; sourceTree = "<group>"; };
+		1C6FFEDE182AA5AA0014311C /* AwfulScrapingTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrapingTestCase.h; sourceTree = "<group>"; };
+		1C6FFEDF182AA5AA0014311C /* AwfulScrapingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrapingTestCase.m; sourceTree = "<group>"; };
 		1C73921817DF350F00089248 /* AwfulForumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumCell.h; sourceTree = "<group>"; };
 		1C73921917DF350F00089248 /* AwfulForumCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumCell.m; sourceTree = "<group>"; };
 		1C73921B17DF850F00089248 /* AwfulThreadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadCell.h; sourceTree = "<group>"; };
@@ -484,11 +483,12 @@
 		1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulMinusFixURLProtocol.m; sourceTree = "<group>"; };
 		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
 		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
-		1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParsingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParsingTests-Info.plist"; sourceTree = "<group>"; };
-		1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParsingTests-Prefix.pch"; sourceTree = "<group>"; };
+		1CBDB5BC16259C6C0004BDF4 /* ScrapingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScrapingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CBDB5C316259C6D0004BDF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1CBDB5CA16259C6D0004BDF4 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		1CC0A4491845FC1300A6F3FE /* AwfulLaunchImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLaunchImageViewController.h; sourceTree = "<group>"; };
 		1CC0A44A1845FC1300A6F3FE /* AwfulLaunchImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLaunchImageViewController.m; sourceTree = "<group>"; };
+		1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pods-ScrapingTests.xcconfig"; path = "../Pods/Pods-ScrapingTests.xcconfig"; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
@@ -564,7 +564,7 @@
 		1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLResponseSerializer.m; sourceTree = "<group>"; };
 		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
 		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
-		1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadListParsingTests.m; sourceTree = "<group>"; };
+		1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadListScrapingTests.m; sourceTree = "<group>"; };
 		1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsPageScraper.h; sourceTree = "<group>"; };
 		1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsPageScraper.m; sourceTree = "<group>"; };
 		1CFE985A18296D41003DBBC2 /* AwfulDocumentScraper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulDocumentScraper.h; sourceTree = "<group>"; };
@@ -599,6 +599,7 @@
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		9306A999CFD7476D8B521B90 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScrapingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
 		FF54849D34B84496B062B479 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
@@ -617,7 +618,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F69D0B2EEA8D4E9BA2423573 /* libPods-ParsingTests.a in Frameworks */,
+				4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -662,6 +663,7 @@
 			isa = PBXGroup;
 			children = (
 				FF54849D34B84496B062B479 /* Pods.xcconfig */,
+				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				8C8AB94A16DC499400D85404 /* CustomBadge */,
 				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
@@ -681,7 +683,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful Debug.app */,
-				1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */,
+				1CBDB5BC16259C6C0004BDF4 /* ScrapingTests.xctest */,
 				1C96D055167FDEA60043B194 /* Imgur API Test.app */,
 			);
 			name = Products;
@@ -727,7 +729,7 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
-		1C05EDAD16230BFE00FE567F /* Parsing */ = {
+		1C05EDAD16230BFE00FE567F /* Scraping */ = {
 			isa = PBXGroup;
 			children = (
 				1C6D2EAC182EB37A00785766 /* AwfulAuthorScraper.h */,
@@ -756,6 +758,7 @@
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 			);
+			name = Scraping;
 			path = Parsing;
 			sourceTree = "<group>";
 		};
@@ -851,10 +854,10 @@
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CC4525B180B35D700F5F043 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
-				1C05EDAD16230BFE00FE567F /* Parsing */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C7D22F6173B66B3008A802C /* Read Later Services */,
+				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1015,31 +1018,31 @@
 			path = "Private Messages";
 			sourceTree = "<group>";
 		};
-		1CBDB5C116259C6C0004BDF4 /* Parsing */ = {
+		1CBDB5C116259C6C0004BDF4 /* Scraping */ = {
 			isa = PBXGroup;
 			children = (
-				1C6FFEDE182AA5AA0014311C /* AwfulParsingTestCase.h */,
-				1C6FFEDF182AA5AA0014311C /* AwfulParsingTestCase.m */,
+				1C6FFEDE182AA5AA0014311C /* AwfulScrapingTestCase.h */,
+				1C6FFEDF182AA5AA0014311C /* AwfulScrapingTestCase.m */,
 				1C6FFED9182A74A00014311C /* Fixtures */,
 				1C35FB7718329D3400B52724 /* FormScrapingTests.m */,
-				1C6D2EA4182D622D00785766 /* ForumHierarchyParsingTests.m */,
+				1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.m */,
+				1CBDB5C316259C6D0004BDF4 /* Info.plist */,
 				1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.m */,
 				1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.m */,
-				1CBDB5C316259C6D0004BDF4 /* ParsingTests-Info.plist */,
-				1CBDB5CA16259C6D0004BDF4 /* ParsingTests-Prefix.pch */,
-				1C6FFEDC182AA57C0014311C /* PostsPageParsingTests.m */,
-				1C6D2EA9182E890D00785766 /* PrivateMessageParsingTests.m */,
-				1C6D2E9A182C6F8C00785766 /* ProfileParsingTests.m */,
-				1CFE984518292DE6003DBBC2 /* ThreadListParsingTests.m */,
+				1CBDB5CA16259C6D0004BDF4 /* Prefix.pch */,
+				1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.m */,
+				1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.m */,
+				1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */,
+				1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.m */,
 			);
-			path = Parsing;
+			path = Scraping;
 			sourceTree = "<group>";
 		};
 		1CBDB5CE16259C930004BDF4 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				1C96D05A167FDEA60043B194 /* Imgur API Test */,
-				1CBDB5C116259C6C0004BDF4 /* Parsing */,
+				1CBDB5C116259C6C0004BDF4 /* Scraping */,
 			);
 			name = Tests;
 			path = ../Tests;
@@ -1280,7 +1283,7 @@
 				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
 				5A0A70D650DA4CEE875C5173 /* libPods.a */,
 				63F3DF9C27054D9A93B744A1 /* libPods.a */,
-				0392F3D5451248E098085BB4 /* libPods-ParsingTests.a */,
+				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -1356,9 +1359,9 @@
 			productReference = 1C96D055167FDEA60043B194 /* Imgur API Test.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1CBDB5BB16259C6C0004BDF4 /* ParsingTests */ = {
+		1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */;
+			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */;
 			buildPhases = (
 				34B5EEF646C542F1B54EDDC3 /* Check Pods Manifest.lock */,
 				1CBDB5B716259C6C0004BDF4 /* Sources */,
@@ -1371,9 +1374,9 @@
 			);
 			dependencies = (
 			);
-			name = ParsingTests;
-			productName = ParsingTests;
-			productReference = 1CBDB5BC16259C6C0004BDF4 /* ParsingTests.xctest */;
+			name = ScrapingTests;
+			productName = ScrapingTests;
+			productReference = 1CBDB5BC16259C6C0004BDF4 /* ScrapingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
@@ -1426,7 +1429,7 @@
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1CE2D9A016688C640024AC1C /* Build Resources */,
 				1C96D054167FDEA60043B194 /* Imgur API Test */,
-				1CBDB5BB16259C6C0004BDF4 /* ParsingTests */,
+				1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1529,7 +1532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Pods-ScrapingTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1C4191941763CCB800EADE07 /* Concatenate JavaScript */ = {
@@ -1682,8 +1685,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */,
-				1C6FFEDD182AA57C0014311C /* PostsPageParsingTests.m in Sources */,
-				1CFE9847182934A5003DBBC2 /* ThreadListParsingTests.m in Sources */,
+				1C6FFEDD182AA57C0014311C /* PostsPageScrapingTests.m in Sources */,
+				1CFE9847182934A5003DBBC2 /* ThreadListScrapingTests.m in Sources */,
 				1C6D2EAB182E8AA300785766 /* AwfulPrivateMessageScraper.m in Sources */,
 				1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */,
 				1C35FB7D1832A96000B52724 /* AwfulForm.m in Sources */,
@@ -1696,11 +1699,11 @@
 				1C6D2EB5182FE21A00785766 /* AwfulMessageFolderScraper.m in Sources */,
 				1C35FB731831A7F200B52724 /* AwfulThreadTag.m in Sources */,
 				1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */,
-				1C6FFEE1182AA5CB0014311C /* AwfulParsingTestCase.m in Sources */,
+				1C6FFEE1182AA5CB0014311C /* AwfulScrapingTestCase.m in Sources */,
 				1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */,
 				1C35FB791832A31000B52724 /* AwfulFormScraper.m in Sources */,
 				1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */,
-				1C6D2EA5182D622D00785766 /* ForumHierarchyParsingTests.m in Sources */,
+				1C6D2EA5182D622D00785766 /* ForumHierarchyScrapingTests.m in Sources */,
 				1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */,
 				1CE694AD182FF6B600B24928 /* LepersColonyPageScrapingTests.m in Sources */,
 				1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */,
@@ -1714,8 +1717,8 @@
 				1C6D2EB4182FE1E400785766 /* MessageFolderScrapingTests.m in Sources */,
 				1CFE985318293786003DBBC2 /* AwfulSingleUserThreadInfo.m in Sources */,
 				1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */,
-				1C6D2E9B182C6F8C00785766 /* ProfileParsingTests.m in Sources */,
-				1C6D2EAA182E890D00785766 /* PrivateMessageParsingTests.m in Sources */,
+				1C6D2E9B182C6F8C00785766 /* ProfileScrapingTests.m in Sources */,
+				1C6D2EAA182E890D00785766 /* PrivateMessageScrapingTests.m in Sources */,
 				1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1945,7 +1948,7 @@
 		};
 		1CBDB5CC16259C6D0004BDF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1964,14 +1967,14 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
+				GCC_PREFIX_HEADER = ../Tests/Scraping/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
+				INFOPLIST_FILE = ../Tests/Scraping/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1985,7 +1988,7 @@
 		};
 		1CBDB5CD16259C6D0004BDF4 /* App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2002,9 +2005,9 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
+				GCC_PREFIX_HEADER = ../Tests/Scraping/Prefix.pch;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
+				INFOPLIST_FILE = ../Tests/Scraping/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
@@ -2120,7 +2123,7 @@
 		};
 		1CE8FE501718E8CD006A3B84 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2137,9 +2140,9 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "../Tests/Parsing/ParsingTests-Prefix.pch";
+				GCC_PREFIX_HEADER = ../Tests/Scraping/Prefix.pch;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "../Tests/Parsing/ParsingTests-Info.plist";
+				INFOPLIST_FILE = ../Tests/Scraping/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
@@ -2274,7 +2277,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ParsingTests" */ = {
+		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CBDB5CC16259C6D0004BDF4 /* Debug */,

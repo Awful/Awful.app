@@ -1,15 +1,15 @@
-//  ThreadListParsingTests.m
+//  ThreadListScrapingTests.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulThreadListScraper.h"
 
-@interface ThreadListParsingTests : AwfulParsingTestCase
+@interface ThreadListScrapingTests : AwfulScrapingTestCase
 
 @end
 
-@implementation ThreadListParsingTests
+@implementation ThreadListScrapingTests
 
 + (Class)scraperClass
 {

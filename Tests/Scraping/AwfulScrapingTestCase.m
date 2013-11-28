@@ -1,18 +1,18 @@
-//  AwfulParsingTestCase.m
+//  AwfulScrapingTestCase.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulDataStack.h"
 #import "AwfulDocumentScraper.h"
 
-@interface AwfulParsingTestCase ()
+@interface AwfulScrapingTestCase ()
 
 @property (strong, nonatomic) AwfulDataStack *dataStack;
 
 @end
 
-@implementation AwfulParsingTestCase
+@implementation AwfulScrapingTestCase
 
 - (AwfulDataStack *)dataStack
 {

@@ -1,15 +1,15 @@
-//  ProfileParsingTests.m
+//  ProfileScrapingTests.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulParsingTestCase.h"
+#import "AwfulScrapingTestCase.h"
 #import "AwfulProfileScraper.h"
 
-@interface ProfileParsingTests : AwfulParsingTestCase
+@interface ProfileScrapingTests : AwfulScrapingTestCase
 
 @end
 
-@implementation ProfileParsingTests
+@implementation ProfileScrapingTests
 
 + (Class)scraperClass
 {

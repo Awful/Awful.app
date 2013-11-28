@@ -12,7 +12,7 @@ pod 'SVProgressHUD', '1.0'
 pod 'SVPullToRefresh', :head
 pod 'WYPopoverController', '0.1.4'
 
-target :ParsingTests, :exclusive => true do
+target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
 end
 
