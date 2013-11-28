@@ -82,4 +82,12 @@
     XCTAssertEqualObjects(brylcreem.author.username, @"brylcreem");
 }
 
+- (void)testFYADThreadIndex
+{
+    NSArray *posts = [self scrapeFixtureNamed:@"showthread-fyad"];
+    XCTAssertEqual(posts.count, (NSUInteger)10);
+    AwfulPost *last = posts.lastObject;
+    XCTAssertEqual(last.page, (NSInteger)2);
+}
+
 @end

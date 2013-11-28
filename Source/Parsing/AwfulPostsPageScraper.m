@@ -88,13 +88,18 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     HTMLElementNode *pagesDiv = [body firstNodeMatchingSelector:@"div.pages"];
     HTMLElementNode *pagesSelect = [pagesDiv firstNodeMatchingSelector:@"select"];
     int32_t numberOfPages = 0;
+    int32_t currentPage = 0;
     if (pagesDiv) {
         if (pagesSelect) {
             HTMLElementNode *lastOption = [pagesSelect nodesMatchingSelector:@"option"].lastObject;
             NSString *pageValue = lastOption[@"value"];
             numberOfPages = (int32_t)pageValue.integerValue;
+            HTMLElementNode *selectedOption = [pagesSelect firstNodeMatchingSelector:@"option[selected]"];
+            NSString *selectedPageValue = selectedOption[@"value"];
+            currentPage = (int32_t)selectedPageValue.integerValue;
         } else {
             numberOfPages = 1;
+            currentPage = 1;
         }
     }
     if (singleUser) {
@@ -116,8 +121,8 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     
     NSMutableArray *posts = [NSMutableArray new];
     NSArray *postTables = [document nodesMatchingSelector:@"table.post"];
-    AwfulPost *firstUnseenPost;
-    for (HTMLElementNode *table in postTables) {
+    __block AwfulPost *firstUnseenPost;
+    [postTables enumerateObjectsUsingBlock:^(HTMLElementNode *table, NSUInteger i, BOOL *stop) {
         NSString *postID;
         {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:table[@"id"]];
@@ -130,12 +135,16 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                              code:AwfulErrorCodes.parseError
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Post parsing failed; could not find post ID" }];
             }
-            continue;
+            return;
         }
         AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         [posts addObject:post];
         post.thread = thread;
-        int32_t index = (int32_t)[table[@"data-idx"] integerValue];
+        int32_t index = (currentPage - 1) * 40 + (int32_t)i;
+        NSInteger indexAttribute = [table[@"data-idx"] integerValue];
+        if (indexAttribute > 0) {
+            index = (int32_t)indexAttribute;
+        }
         if (index > 0) {
             if (singleUser) {
                 post.singleUserIndex = index;
@@ -168,7 +177,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         if (postBodyElement) {
             post.innerHTML = postBodyElement.innerHTML;
         }
-    }
+    }];
     if (firstUnseenPost && !singleUser) {
         thread.seenPosts = firstUnseenPost.threadIndex - 1;
     }
