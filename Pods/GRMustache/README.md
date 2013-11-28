@@ -1,13 +1,13 @@
 GRMustache
 ==========
 
-GRMustache is a flexible and production-ready implementation of [Mustache](http://mustache.github.com/) templates for MacOS Cocoa and iOS.
+GRMustache is a flexible and production-ready implementation of [Mustache](http://mustache.github.io/) templates for MacOS Cocoa and iOS.
 
 GRMustache targets iOS down to version 4.3, MacOS down to 10.6 Snow Leopard (with or without garbage collection), and only depends on the Foundation framework.
 
-**June 2, 2013: GRMustache 6.7.3 is out.** [Release notes](RELEASE_NOTES.md)
+**October 19, 2013: GRMustache 6.8.3 is out.** [Release notes](RELEASE_NOTES.md)
 
-Don't miss a single release: follow [@GRMustache on Twitter](http://twitter.com/GRMustache).
+Get release announcements and usage tips: follow [@GRMustache on Twitter](http://twitter.com/GRMustache).
 
 How To
 ------
@@ -25,17 +25,27 @@ You have three options, from the simplest to the hairiest:
 
 ```objc
 #import "GRMustache.h"
+```
 
+One-liners:
+
+```objc
 // Renders "Hello Arthur!"
-NSString *rendering = [GRMustacheTemplate renderObject:[Person personWithName:@"Arthur"]
-                                            fromString:@"Hello {{name}}!"
-                                                 error:NULL];
+NSString *rendering = [GRMustacheTemplate renderObject:@{ @"name": @"Arthur" } fromString:@"Hello {{name}}!" error:NULL];
+```
 
-// Renders a document from the `Profile.mustache` resource
-NSString *rendering = [GRMustacheTemplate renderObject:[Person personWithName:@"Arthur"]
-                                          fromResource:@"Profile"
-                                                bundle:nil
-                                                 error:NULL];
+```objc
+// Renders the `Profile.mustache` resource of the main bundle
+NSString *rendering = [GRMustacheTemplate renderObject:user fromResource:@"Profile" bundle:nil error:NULL];
+```
+
+Reuse templates in order to avoid parsing the same template several times:
+
+```objc
+GRMustacheTemplate *template = [GRMustacheTemplate templateFromResource:@"Profile" bundle:nil error:nil];
+rendering = [template renderObject:arthur error:NULL];
+rendering = [template renderObject:barbara error:NULL];
+rendering = ...
 ```
 
 [GRMustachio](https://github.com/mugginsoft/GRMustachio) by Jonathan Mitchell is "A super simple, interactive GRMustache based application". It can help you design and test your templates.
@@ -45,7 +55,11 @@ Documentation
 
 ### Mustache syntax
 
-- http://mustache.github.com/mustache.5.html
+- http://mustache.github.io/mustache.5.html
+
+### Reference
+
+- [Reference](http://groue.github.io/GRMustache/Reference/): the GRMustache reference, automatically generated from inline documentation, for fun and profit, by [appledoc](http://gentlebytes.com/appledoc/).
 
 ### Guides
 
@@ -71,8 +85,8 @@ Services:
 Hooks:
 
 - [Filters](Guides/filters.md): `{{ uppercase(name) }}` et al.
-- [Tag Delegates](Guides/delegate.md): observe and alter template rendering.
 - [Rendering Objects](Guides/rendering_objects.md): "Mustache lambdas", and more.
+- [Tag Delegates](Guides/delegate.md): observe and alter template rendering.
 - [Protected Contexts](Guides/protected_contexts.md): protect some keys so that they always evaluate to the same value.
 
 Mustache, and beyond:
@@ -81,15 +95,8 @@ Mustache, and beyond:
 
 ### Sample code
 
-Check the [FAQ](#faq) below.
+Check the [FAQ](#faq) right below.
 
-### Reference
-
-- [Reference](http://groue.github.io/GRMustache/Reference/): the GRMustache reference, automatically generated from inline documentation, for fun and profit, by [appledoc](http://gentlebytes.com/appledoc/).
-
-### Internals
-
-- [Forking](Guides/forking.md): the forking guide tells you everything about GRMustache organization.
 
 FAQ
 ---
@@ -110,6 +117,10 @@ FAQ
     
     A: Yes. You have some [sample code](https://github.com/groue/GRMustache/issues/50#issuecomment-16197912) in issue #50. You may check [@mattt's InflectorKit](https://github.com/mattt/InflectorKit) for actual inflection methods.
 
+- **Q: Is it possible to write Handlebars-like helpers?**
+    
+    A: [Yes](Guides/rendering_objects.md)
+
 - **Q: Is it possible to localize templates?**
 
     A: [Yes](Guides/standard_library.md#localize)
@@ -124,7 +135,7 @@ FAQ
 
 - **Q: Is it possible to render a default value for missing keys?**
 
-    A: [Yes](Guides/view_model.md).
+    A: [Yes](Guides/view_model.md#default-values).
 
 - **Q: Is it possible to disable HTML escaping?**
 
@@ -179,17 +190,19 @@ What other people say
 Who's using GRMustache
 ----------------------------------------
 
-* [tomaz/appledoc](https://github.com/tomaz/appledoc): Objective-c code Apple style documentation set generator
-* [mapbox/mapbox-ios-sdk](https://github.com/mapbox/mapbox-ios-sdk): MapBox iOS SDK, an open source alternative to MapKit
-* [CarterA/Tribo](https://github.com/CarterA/Tribo): Extremely fast static site generator written in Objective-C
+* [tomaz/appledoc](https://github.com/tomaz/appledoc): Objective-c code Apple style documentation set generator.
+* [mapbox/mapbox-ios-sdk](https://github.com/mapbox/mapbox-ios-sdk): MapBox iOS SDK, an open source alternative to MapKit.
+* [CarterA/Tribo](https://github.com/CarterA/Tribo): Extremely fast static site generator written in Objective-C.
 * [AutoLib](http://itunes.com/apps/autolib) uses GRMustache and [spullara/mustache.java](https://github.com/spullara/mustache.java) for rendering an identical set of Mustache templates on iOS and Android.
-* [CinéObs](http://itunes.com/apps/cineobs) uses GRMustache for RSS feeds rendering
-* [Fotopedia](http://itunes.com/apps/fotonautsinc), the first collaborative photo encyclopedia
-* [FunGolf GPS](http://itunes.com/apps/fungolf), a golf app with 3D maps
+* [Bee](http://www.neat.io/bee): Bee is a desktop bug tracker for the Mac. It currently syncs with GitHub Issues, JIRA and FogBugz.
+* [CinéObs](http://itunes.com/apps/cineobs) uses GRMustache for RSS feeds rendering.
+* [Fotopedia](http://itunes.com/apps/fotonautsinc), the first collaborative photo encyclopedia.
+* [FunGolf GPS](http://itunes.com/apps/fungolf), a golf app with 3D maps.
 * [KosmicTask](http://www.mugginsoft.com/kosmictask), an integrated scripting environment for OS X that supports more than 20 scripting languages.
+* [MyInvoice](http://www.myinvoice.biz/en), an invoicing iOS app.
 * [Servus](https://servus.io) can turn any file on your computer into a branded download page hosted on Dropbox.
 
-Do you use GRMustache? [Tweet me](http://twitter.com/GRMustache) your link.
+Do you use GRMustache? [Tweet me your story and your link](http://twitter.com/GRMustache).
 
 
 Contribution wish-list

@@ -1,5 +1,5 @@
 /*
- Version 0.1.4
+ Version 0.1.7
  
  WYPopoverController is available under the MIT license.
  
@@ -30,7 +30,7 @@
 @protocol WYPopoverControllerDelegate;
 
 #ifndef WY_POPOVER_DEFAULT_ANIMATION_DURATION
-    #define WY_POPOVER_DEFAULT_ANIMATION_DURATION    0.20f
+    #define WY_POPOVER_DEFAULT_ANIMATION_DURATION    .20f
 #endif
 
 typedef NS_OPTIONS(NSUInteger, WYPopoverArrowDirection) {
@@ -38,8 +38,15 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverArrowDirection) {
     WYPopoverArrowDirectionDown = 1UL << 1,
     WYPopoverArrowDirectionLeft = 1UL << 2,
     WYPopoverArrowDirectionRight = 1UL << 3,
+    WYPopoverArrowDirectionNone = 1UL << 4,
     WYPopoverArrowDirectionAny = WYPopoverArrowDirectionUp | WYPopoverArrowDirectionDown | WYPopoverArrowDirectionLeft | WYPopoverArrowDirectionRight,
     WYPopoverArrowDirectionUnknown = NSUIntegerMax
+};
+
+typedef NS_OPTIONS(NSUInteger, WYPopoverAnimationOptions) {
+    WYPopoverAnimationOptionFade = 1UL << 0,            // default
+    WYPopoverAnimationOptionScale = 1UL << 1,
+    WYPopoverAnimationOptionFadeWithScale = WYPopoverAnimationOptionFade | WYPopoverAnimationOptionScale
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +82,8 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverArrowDirection) {
 
 @property (nonatomic, assign) UIEdgeInsets viewContentInsets    UI_APPEARANCE_SELECTOR;
 
+@property (nonatomic, strong) UIColor *overlayColor             UI_APPEARANCE_SELECTOR;
+
 @end
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +110,22 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverArrowDirection) {
                permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
                                animated:(BOOL)animated;
 
+- (void)presentPopoverAsDialogAnimated:(BOOL)animated;
+
+- (void)presentPopoverFromRect:(CGRect)rect
+                        inView:(UIView *)view
+      permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                      animated:(BOOL)animated
+                       options:(WYPopoverAnimationOptions)options;
+
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
+               permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                               animated:(BOOL)animated
+                                options:(WYPopoverAnimationOptions)options;
+
+- (void)presentPopoverAsDialogAnimated:(BOOL)animated
+                               options:(WYPopoverAnimationOptions)options;
+
 - (void)dismissPopoverAnimated:(BOOL)animated;
 
 @end
@@ -110,8 +135,10 @@ typedef NS_OPTIONS(NSUInteger, WYPopoverArrowDirection) {
 @protocol WYPopoverControllerDelegate <NSObject>
 @optional
 
-- (BOOL)popoverControllerShouldDismiss:(WYPopoverController *)popoverController;
-- (void)popoverControllerDidDismiss:(WYPopoverController *)popoverController;
+- (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)popoverController;
+
+- (void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController;
+
+- (void)popoverController:(WYPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView **)view;
 
 @end
-

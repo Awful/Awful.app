@@ -55,6 +55,15 @@
 @property (nonatomic, retain) GRMustacheContext *baseContext GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheTemplate.h
+- (void)extendBaseContextWithObject:(id)object GRMUSTACHE_API_PUBLIC;
+
+// Documented in GRMustacheTemplate.h
+- (void)extendBaseContextWithProtectedObject:(id)object GRMUSTACHE_API_PUBLIC;
+
+// Documented in GRMustacheTemplate.h
+- (void)extendBaseContextWithTagDelegate:(id<GRMustacheTagDelegate>)tagDelegate GRMUSTACHE_API_PUBLIC;
+
+// Documented in GRMustacheTemplate.h
 + (instancetype)templateFromString:(NSString *)templateString error:(NSError **)error GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheTemplate.h

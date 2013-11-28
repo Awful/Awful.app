@@ -66,7 +66,16 @@ static NSString *const GRMustacheLocalizerValuePlaceholder = @"GRMustacheLocaliz
  */
 - (id)transformedValue:(id)object
 {
-    return [self localizedStringForKey:[object description]];
+    // Specific case for [NSNull null]
+    
+    if (object == [NSNull null]) {
+        return @"";
+    }
+    
+    // Turns other objects into strings, and localize
+    
+    NSString *string = [object description];
+    return [self localizedStringForKey:string];
 }
 
 

@@ -1141,7 +1141,7 @@ static char KVOContext;
 
 #pragma mark - WYPopoverControllerDelegate
 
-- (void)popoverControllerDidDismiss:(WYPopoverController *)popoverController
+- (void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController
 {
     self.jumpToPagePopover = nil;
     self.pageSettingsPopover = nil;

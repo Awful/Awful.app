@@ -15,11 +15,11 @@ WYPopoverController is for the presentation of content in popover on iPhone / iP
 
 * UIAppearance support
 * Works like UIPopoverController
+* Animation options
 * Automatic orientation support
 * UIStoryboard support
 * Keyboard show / hide support
 * iOS 6 & 7 support
-
 
 ### UIAppearance support
 
@@ -78,9 +78,42 @@ WYPopoverController is for the presentation of content in popover on iPhone / iP
 
 ---
 
-* passthroughViews
-* wantsDefaultContentAppearance
-* popoverLayoutMargins
+#### passthroughViews
+
+An array of views that the user can interact with while the popover is visible.
+
+#### wantsDefaultContentAppearance
+
+![](https://raw.github.com/nicolaschengdev/WYPopoverController/master/screenshots/wypopover_wantsdefaultcontentappearance.png "")
+
+Determines whether the default content appearance should be used for the popover.
+
+#### popoverLayoutMargins
+
+![](https://raw.github.com/nicolaschengdev/WYPopoverController/master/screenshots/wypopover_popoverlayoutmargins.png "")
+
+The margins that define the portion of the screen in which it is permissible to display the popover.
+
+### Animation options
+
+---
+
+Introduced in release 0.1.7, there are 3 styles of animation :
+* Fade *(by default)*
+* Scale
+* Fade with Scale
+
+#### Examples
+
+```objective-c
+
+popover = [[WYPopoverController alloc] initWithContentViewController:contentViewController];
+[popover presentPopoverFromRect:btn.bounds
+                         inView:btn
+       permittedArrowDirections:WYPopoverArrowDirectionAny
+                       animated:YES
+                        options:WYPopoverAnimationOptionFadeWithScale];
+```
 
 ### ARC
 
@@ -96,25 +129,29 @@ WYPopoverController uses ARC.
 
 #### Cocoapods
 
-Add this line `pod 'WYPopoverController', '~> 0.1.3'` to your PodFile.
+Add this line `pod 'WYPopoverController', '~> 0.1.7'` to your PodFile.
 
 Your PodFile should look like :
 
 ```Ruby
-platform :ios, '7.0'
-pod 'WYPopoverController', '~> 0.1.3'
+platform :ios, '6.0'
+pod 'WYPopoverController', '~> 0.1.7'
 ```
 
 To use the `master` branch of the repo :
 
 ```Ruby
 platform :ios, '6.0'
-pod 'WYPopoverController',      :git => 'https://github.com/nicolaschengdev/WYPopoverController.git'
+pod 'WYPopoverController', :git => 'https://github.com/nicolaschengdev/WYPopoverController.git'
 ```
 
 #### Manually
 
-Add these 4 files `WYPopoverController.h`, `WYPopoverController.m`, `WYStoryboardPopoverSegue.h`, `WYStoryboardPopoverSegue.m` and add `Quartzcore` framework to your project.
+Add these files to your project : 
+* `WYPopoverController.h` and `WYPopoverController.m`
+* `WYStoryboardPopoverSegue.h` and `WYStoryboardPopoverSegue.m` 
+
+And link `QuartzCore.framework` library in the *Build Phases* of your project targets.
 
 ### Examples
 
@@ -145,12 +182,12 @@ In the implementation of your view controller
     [popoverController presentPopoverFromRect:button.bounds inView:button permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
 }
 
-- (BOOL)popoverControllerShouldDismiss:(WYPopoverController *)controller
+- (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)controller
 {
     return YES;
 }
 
-- (void)popoverControllerDidDismiss:(WYPopoverController *)controller
+- (void)popoverControllerDidDismissPopover:(WYPopoverController *)controller
 {
     popoverController.delegate = nil;
     popoverController = nil;
@@ -228,8 +265,8 @@ When showing a popover controller, there are times when you will need to handle 
 
 Situations when handling is required:
 
-* If the popover controller is presented from a target rectangle using the `-presentPopoverFromRect:inView:permittedArrowDirections:animated` method of WYPopoverController.
-* If the popover controller is presented from a bar button item that is removed after the rotation has finished.
+* If the popover controller is presented from a target rectangle using the `-presentPopoverFromRect:inView:permittedArrowDirections:animated` method of WYPopoverController. You can use `-popoverController:willRepositionPopoverToRect:inView:` method introduced in the **0.1.6 release** .
+* If the popover controller is presented from a bar button item that is removed after the rotation has finished .
 
 ### Change logs
 

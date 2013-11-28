@@ -21,12 +21,17 @@
 // THE SOFTWARE.
 
 #import "GRMustacheURLLibrary_private.h"
-#import "GRMustacheTag.h"
-#import "GRMustacheContext.h"
+#import "GRMustacheTag_private.h"
+#import "GRMustacheContext_private.h"
+#import "GRMustache_private.h"
 
 
 // =============================================================================
 #pragma mark - GRMustacheURLEscapeFilter
+
+@interface GRMustacheURLEscapeFilter()
+- (NSString *)escape:(NSString *)string;
+@end
 
 @implementation GRMustacheURLEscapeFilter
 
@@ -43,11 +48,66 @@
         return @"";
     }
     
+    NSString *string = [object description];
+    return [self escape:string];
+}
+
+
+#pragma mark - <GRMustacheRendering>
+
+/**
+ * Support for {{# URL.escape }}...{{ value }}...{{ value }}...{{/ URL.escape }}
+ */
+- (NSString *)renderForMustacheTag:(GRMustacheTag *)tag context:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
+{
+    switch (tag.type) {
+        case GRMustacheTagTypeVariable:
+            // {{ URL.escape }}
+            // Behave as a regular object: render self's description
+            if (HTMLSafe != NULL) { *HTMLSafe = NO; }
+            return [self description];
+            
+        case GRMustacheTagTypeInvertedSection:
+            // {{^ URL.escape }}...{{/ URL.escape }}
+            // Behave as a truthy object: don't render for inverted sections
+            return nil;
+            
+        default:
+            // {{# URL.escape }}...{{/ URL.escape }}
+            // {{$ URL.escape }}...{{/ URL.escape }}
+            
+            // Render normally, but listen to all inner tags rendering, so that
+            // we can format them. See mustacheTag:willRenderObject: below.
+            context = [context contextByAddingTagDelegate:self];
+            return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
+    }
+}
+
+
+#pragma mark - <GRMustacheTagDelegate>
+
+/**
+ * Support for {{# URL.escape }}...{{ value }}...{{ value }}...{{/ URL.escape }}
+ */
+- (id)mustacheTag:(GRMustacheTag *)tag willRenderObject:(id)object
+{
+    // Process {{ value }}
+    if (tag.type == GRMustacheTagTypeVariable) {
+        return [self transformedValue:object];
+    }
     
+    // Don't process {{# value }}, {{^ value }}, {{$ value }}
+    return object;
+}
+
+
+#pragma mark - Private
+
+- (NSString *)escape:(NSString *)string
+{
     // Perform a first escaping using Apple's implementation.
     // It leaves many character unescaped. We'll have to go further.
     
-    NSString *string = [object description];
     string = [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     
@@ -120,54 +180,6 @@
         CFStringAppendCharacters((CFMutableStringRef)buffer, unescapedStart, unescapedLength);
     }
     return buffer;
-}
-
-
-#pragma mark - <GRMustacheRendering>
-
-/**
- * Support for {{# URL.escape }}...{{ value }}...{{ value }}...{{/ URL.escape }}
- */
-- (NSString *)renderForMustacheTag:(GRMustacheTag *)tag context:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-            // {{ URL.escape }}
-            // Behave as a regular object: render self's description
-            if (HTMLSafe != NULL) { *HTMLSafe = NO; }
-            return [self description];
-            
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ URL.escape }}...{{/ URL.escape }}
-            // Behave as a truthy object: don't render for inverted sections
-            return nil;
-            
-        default:
-            // {{# URL.escape }}...{{/ URL.escape }}
-            // {{$ URL.escape }}...{{/ URL.escape }}
-            
-            // Render normally, but listen to all inner tags rendering, so that
-            // we can format them. See mustacheTag:willRenderObject: below.
-            context = [context contextByAddingTagDelegate:self];
-            return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-    }
-}
-
-
-#pragma mark - <GRMustacheTagDelegate>
-
-/**
- * Support for {{# URL.escape }}...{{ value }}...{{ value }}...{{/ URL.escape }}
- */
-- (id)mustacheTag:(GRMustacheTag *)tag willRenderObject:(id)object
-{
-    // Process {{ value }}
-    if (tag.type == GRMustacheTagTypeVariable) {
-        return [self transformedValue:object];
-    }
-    
-    // Don't process {{# value }}, {{^ value }}, {{$ value }}
-    return object;
 }
 
 @end

@@ -1,5 +1,5 @@
 /*
- Version 0.1.4
+ Version 0.1.7
  
  WYPopoverController is available under the MIT license.
  
@@ -25,6 +25,8 @@
 
 #import "WYPopoverController.h"
 
+#import <objc/runtime.h>
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     #define WY_BASE_SDK_7_ENABLED
 #endif
@@ -43,6 +45,68 @@
 
 #define WY_IS_IOS_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
+
+@interface UINavigationController (WYPopover)
+
+@property(nonatomic, assign, getter = isEmbedInPopover) BOOL embedInPopover;
+
+@end
+
+@implementation UINavigationController (WYPopover)
+
+static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINavigationControllerEmbedInPopoverTagKey";
+
+@dynamic embedInPopover;
+
++ (void)load
+{
+    Method original, swizzle;
+    
+    original = class_getInstanceMethod(self, @selector(pushViewController:animated:));
+    
+    swizzle = class_getInstanceMethod(self, @selector(sizzled_pushViewController:animated:));
+    
+    method_exchangeImplementations(original, swizzle);
+}
+
+- (BOOL)isEmbedInPopover
+{
+    BOOL result = NO;
+    
+    NSNumber *value = objc_getAssociatedObject(self, UINavigationControllerEmbedInPopoverTagKey);
+    
+    if (value)
+    {
+        result = [value boolValue];
+    }
+    
+    return result;
+}
+
+- (void)setEmbedInPopover:(BOOL)value
+{
+    objc_setAssociatedObject(self, UINavigationControllerEmbedInPopoverTagKey, [NSNumber numberWithBool:value], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)sizzled_pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (self.isEmbedInPopover)
+    {
+#ifdef WY_BASE_SDK_7_ENABLED
+        if ([viewController respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+        {
+            viewController.edgesForExtendedLayout = UIRectEdgeNone;
+        }
+#endif
+    }
+    
+    [self sizzled_pushViewController:viewController animated:animated];
+}
+
+@end
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @interface WYPopoverArea : NSObject
 {
@@ -84,6 +148,10 @@
     else if (arrowDirection == WYPopoverArrowDirectionRight)
     {
         direction = @"RIGHT";
+    }
+    else if (arrowDirection == WYPopoverArrowDirectionNone)
+    {
+        direction = @"NONE";
     }
     
     return [NSString stringWithFormat:@"%@ [ %f x %f ]", direction, areaSize.width, areaSize.height];
@@ -263,6 +331,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 @property (nonatomic, assign) CGFloat  navigationBarHeight;
 @property (nonatomic, assign) BOOL     wantsDefaultContentAppearance;
+@property (nonatomic, assign) CGFloat  borderWidth;
 
 @end
 
@@ -287,6 +356,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 @synthesize navigationBarHeight;
 @synthesize wantsDefaultContentAppearance;
+@synthesize borderWidth;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -321,7 +391,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     UIBezierPath* roundedRectPath = [UIBezierPath bezierPathWithRoundedRect:innerRect cornerRadius:cornerRadius + 1];
     
-    if (wantsDefaultContentAppearance == NO)
+    if (wantsDefaultContentAppearance == NO && borderWidth > 0)
     {
         CGContextSaveGState(context);
         {
@@ -339,13 +409,18 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     CGContextSaveGState(context);
     {
-        if (wantsDefaultContentAppearance == NO)
+        if (wantsDefaultContentAppearance == NO && borderWidth > 0)
         {
             [roundedRectPath addClip];
             CGContextSetShadowWithColor(context, innerShadowOffset, innerShadowBlurRadius, innerShadowColor.CGColor);
         }
         
         UIBezierPath* inRoundedRectPath = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(innerRect, 0.5, 0.5) cornerRadius:cornerRadius];
+        
+        if (borderWidth == 0)
+        {
+            inRoundedRectPath = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(innerRect, 0.5, 0.5) byRoundingCorners:UIRectCornerBottomLeft|UIRectCornerBottomRight cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
+        }
         
         [self.innerStrokeColor setStroke];
         inRoundedRectPath.lineWidth = 1;
@@ -561,6 +636,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
             appearance.innerShadowOffset = CGSizeMake(0, 1);
             appearance.innerCornerRadius = 6;
             appearance.viewContentInsets = UIEdgeInsetsMake(3, 0, 0, 0);
+            appearance.overlayColor = [UIColor clearColor];
         }
         else
         {
@@ -591,6 +667,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
             appearance.innerShadowOffset = CGSizeZero;
             appearance.innerCornerRadius = 0;
             appearance.viewContentInsets = UIEdgeInsetsZero;
+            appearance.overlayColor = [UIColor colorWithWhite:0 alpha:0.15];
         }
     }
 }
@@ -686,7 +763,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     contentView = viewController.view;
     
-    contentView.frame = CGRectMake(0, 0, self.bounds.size.width, 100);
+    contentView.frame = CGRectIntegral(CGRectMake(0, 0, self.bounds.size.width, 100));
     
     [self addSubview:contentView];
     
@@ -698,7 +775,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         navigationBarHeight = navigationController.navigationBar.bounds.size.height;
     }
     
-    contentView.frame = [self innerRect];
+    contentView.frame = CGRectIntegral([self innerRect]);
     
     if (innerView == nil)
     {
@@ -714,6 +791,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         innerView.innerShadowOffset = innerShadowOffset;
         innerView.innerCornerRadius = self.innerCornerRadius;
         innerView.innerShadowBlurRadius = innerShadowBlurRadius;
+        innerView.borderWidth = self.borderWidth;
     }
     
     innerView.navigationBarHeight = navigationBarHeight;
@@ -723,7 +801,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
     [self insertSubview:innerView aboveSubview:contentView];
     
-    innerView.frame = contentView.frame;
+    innerView.frame = CGRectIntegral(contentView.frame);
     
     [self.layer setNeedsDisplay];
 }
@@ -768,6 +846,11 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     if (borderWidth == 0)
     {
         result = 0;
+        
+        if (outerCornerRadius > 0)
+        {
+            result = outerCornerRadius;
+        }
     }
     
     return result;
@@ -934,7 +1017,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
                 reducedOuterCornerRadius = (CGRectGetMidX(outerRect) + arrowOffset - arrowBase / 2) - CGRectGetMinX(outerRect);
             }
         }
-        else
+        else if (arrowDirection == WYPopoverArrowDirectionLeft || arrowDirection == WYPopoverArrowDirectionRight)
         {
             if (arrowOffset >= 0)
             {
@@ -1012,6 +1095,23 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
             CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMinX(outerRect), CGRectGetMaxY(outerRect), CGRectGetMinX(outerRect), CGRectGetMinY(outerRect), outerCornerRadius);
             CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMinX(outerRect), CGRectGetMinY(outerRect), CGRectGetMaxX(outerRect), CGRectGetMinY(outerRect), outerCornerRadius);
             CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMaxX(outerRect), CGRectGetMinY(outerRect), CGRectGetMaxX(outerRect), CGRectGetMaxY(outerRect), (arrowOffset < 0) ? reducedOuterCornerRadius : outerCornerRadius);
+            
+            CGPathAddLineToPoint(outerPathRef, NULL, origin.x, origin.y);
+        }
+        
+        if (arrowDirection == WYPopoverArrowDirectionNone)
+        {
+            origin = CGPointMake(CGRectGetMaxX(outerRect), CGRectGetMidY(outerRect));
+            
+            CGPathMoveToPoint(outerPathRef, NULL, origin.x, origin.y);
+            
+            CGPathAddLineToPoint(outerPathRef, NULL, CGRectGetMaxX(outerRect), CGRectGetMidY(outerRect));
+            CGPathAddLineToPoint(outerPathRef, NULL, CGRectGetMaxX(outerRect), CGRectGetMidY(outerRect));
+            
+            CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMaxX(outerRect), CGRectGetMaxY(outerRect), CGRectGetMinX(outerRect), CGRectGetMaxY(outerRect), outerCornerRadius);
+            CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMinX(outerRect), CGRectGetMaxY(outerRect), CGRectGetMinX(outerRect), CGRectGetMinY(outerRect), outerCornerRadius);
+            CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMinX(outerRect), CGRectGetMinY(outerRect), CGRectGetMaxX(outerRect), CGRectGetMinY(outerRect), outerCornerRadius);
+            CGPathAddArcToPoint(outerPathRef, NULL, CGRectGetMaxX(outerRect), CGRectGetMinY(outerRect), CGRectGetMaxX(outerRect), CGRectGetMaxY(outerRect), outerCornerRadius);
             
             CGPathAddLineToPoint(outerPathRef, NULL, origin.x, origin.y);
         }
@@ -1239,10 +1339,11 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     __weak UIBarButtonItem  *barButtonItem;
     CGRect                   keyboardRect;
     BOOL                     hasAppearanceProxyAvailable;
+    
+    WYPopoverAnimationOptions options;
 }
 
 @property (nonatomic, strong, readonly) UIView  *rootView;
-@property (nonatomic, strong, readonly) UIColor *overlayColor;
 @property (nonatomic, assign, readonly) CGSize   contentSizeForViewInPopover;
 
 - (void)dismissPopoverAnimated:(BOOL)animated callDelegate:(BOOL)callDelegate;
@@ -1304,15 +1405,16 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     
     if (result.subviews.count > 0)
     {
-        result = [result.subviews lastObject];
+        for (UIView *view in result.subviews)
+        {
+            if(!view.isHidden)
+            {
+                return view;
+            }
+        }
+        // result = [result.subviews lastObject];
     }
 
-    return result;
-}
-
-- (UIColor *)overlayColor
-{
-    UIColor* result = (WY_IS_IOS_LESS_THAN(@"7.0")) ? [UIColor clearColor] : [UIColor colorWithWhite:0 alpha:0.15];
     return result;
 }
 
@@ -1360,17 +1462,29 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 {
     CGSize result = CGSizeZero;
     
-#ifdef WY_BASE_SDK_7_ENABLED
-    if ([viewController respondsToSelector:@selector(preferredContentSize)])
+    UIViewController *controller = viewController;
+    
+    if ([controller isKindOfClass:[UINavigationController class]])
     {
-        result = viewController.preferredContentSize;
+        UINavigationController *navigationController = (UINavigationController *)controller;
+        
+        if ([[navigationController viewControllers] count] > 0)
+        {
+            controller = (UIViewController *)[[navigationController viewControllers] objectAtIndex:0];
+        }
+    }
+    
+#ifdef WY_BASE_SDK_7_ENABLED
+    if ([controller respondsToSelector:@selector(preferredContentSize)])
+    {
+        result = controller.preferredContentSize;
     }
 #endif
     if (CGSizeEqualToSize(result, CGSizeZero))
     {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated"
-        result = viewController.contentSizeForViewInPopover;
+        result = controller.contentSizeForViewInPopover;
 #pragma clang diagnostic pop
     }
     
@@ -1382,7 +1496,39 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     return result;
 }
 
-- (void)presentPopoverFromRect:(CGRect)aRect inView:(UIView *)aView permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections animated:(BOOL)aAnimated
+- (void)presentPopoverFromRect:(CGRect)aRect
+                        inView:(UIView *)aView
+      permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                      animated:(BOOL)aAnimated
+{
+    [self presentPopoverFromRect:aRect
+                          inView:aView
+        permittedArrowDirections:arrowDirections
+                        animated:aAnimated
+                         options:WYPopoverAnimationOptionFade];
+}
+
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
+               permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                               animated:(BOOL)aAnimated
+{
+    [self presentPopoverFromBarButtonItem:item
+                 permittedArrowDirections:arrowDirections
+                                 animated:aAnimated
+                                  options:WYPopoverAnimationOptionFade];
+}
+
+- (void)presentPopoverAsDialogAnimated:(BOOL)aAnimated
+{
+    [self presentPopoverAsDialogAnimated:aAnimated
+                                 options:WYPopoverAnimationOptionFade];
+}
+
+- (void)presentPopoverFromRect:(CGRect)aRect
+                        inView:(UIView *)aView
+      permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                      animated:(BOOL)aAnimated
+                       options:(WYPopoverAnimationOptions)aOptions
 {
     NSAssert((arrowDirections != WYPopoverArrowDirectionUnknown), @"WYPopoverArrowDirection must not be UNKNOWN");
     
@@ -1390,6 +1536,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     inView = aView;
     permittedArrowDirections = arrowDirections;
     animated = aAnimated;
+    options = aOptions;
     
     CGSize contentViewSize = self.contentSizeForViewInPopover;
 
@@ -1399,11 +1546,11 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         overlayView.autoresizesSubviews = NO;
         overlayView.userInteractionEnabled = YES;
-        overlayView.backgroundColor = self.overlayColor;
         overlayView.delegate = self;
         overlayView.passthroughViews = passthroughViews;
         
         containerView = [[WYPopoverBackgroundView alloc] initWithContentSize:contentViewSize];
+
         [overlayView addSubview:containerView];
         
         containerView.hidden = YES;
@@ -1443,21 +1590,37 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         containerView.innerShadowOffset = appearance.innerShadowOffset;
         containerView.innerCornerRadius = appearance.innerCornerRadius;
         containerView.viewContentInsets = appearance.viewContentInsets;
+
+        overlayView.backgroundColor = appearance.overlayColor;
+    } else {
+        overlayView.backgroundColor = containerView.overlayColor;
     }
     
     [self positionPopover];
     
-    [self drawPopoverNavigationBar];
+    [self setPopoverNavigationBarBackgroundImage];
     
     containerView.hidden = NO;
     
     if (animated)
     {
-        containerView.alpha = 0;
+        if ((options & WYPopoverAnimationOptionFade) == WYPopoverAnimationOptionFade)
+        {
+            containerView.alpha = 0;
+        }
+        
         [viewController viewWillAppear:YES];
+        
+        if ((options & WYPopoverAnimationOptionScale) == WYPopoverAnimationOptionScale)
+        {
+            CGAffineTransform transform = [self transformTranslateForArrowDirection:containerView.arrowDirection];
+            transform = CGAffineTransformScale(transform, 0, 0);
+            containerView.transform = transform;
+        }
         
         [UIView animateWithDuration:WY_POPOVER_DEFAULT_ANIMATION_DURATION animations:^{
             containerView.alpha = 1;
+            containerView.transform = CGAffineTransformIdentity;
         } completion:^(BOOL finished) {
             if ([viewController isKindOfClass:[UINavigationController class]] == NO)
             {
@@ -1500,85 +1663,83 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     }
 }
 
-- (void)drawPopoverNavigationBar
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
+               permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections
+                               animated:(BOOL)aAnimated
+                                options:(WYPopoverAnimationOptions)aOptions
+{
+    barButtonItem = item;
+    UIView *itemView = [barButtonItem valueForKey:@"view"];
+    arrowDirections = WYPopoverArrowDirectionDown | WYPopoverArrowDirectionUp;
+    [self presentPopoverFromRect:itemView.bounds
+                          inView:itemView
+        permittedArrowDirections:arrowDirections
+                        animated:aAnimated
+                         options:aOptions];
+}
+
+- (void)presentPopoverAsDialogAnimated:(BOOL)aAnimated
+                               options:(WYPopoverAnimationOptions)aOptions
+{
+    [self presentPopoverFromRect:CGRectZero
+                          inView:nil
+        permittedArrowDirections:WYPopoverArrowDirectionNone
+                        animated:aAnimated
+                         options:aOptions];
+}
+
+- (CGAffineTransform)transformTranslateForArrowDirection:(WYPopoverArrowDirection)arrowDirection
+{
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    if (containerView.arrowHeight > 0)
+    {
+        CGSize containerViewSize = containerView.frame.size;
+        
+        if (arrowDirection == WYPopoverArrowDirectionDown)
+        {
+            transform = CGAffineTransformTranslate(CGAffineTransformIdentity, containerView.arrowOffset, containerViewSize.height / 2);
+        }
+        
+        if (arrowDirection == WYPopoverArrowDirectionUp)
+        {
+            transform = CGAffineTransformTranslate(CGAffineTransformIdentity, containerView.arrowOffset, -containerViewSize.height / 2);
+        }
+        
+        if (arrowDirection == WYPopoverArrowDirectionRight)
+        {
+            transform = CGAffineTransformTranslate(CGAffineTransformIdentity, containerView.frame.size.width / 2, containerView.arrowOffset);
+        }
+        
+        if (arrowDirection == WYPopoverArrowDirectionLeft)
+        {
+            transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -containerView.frame.size.width / 2, containerView.arrowOffset);
+        }
+    }
+    
+    return transform;
+}
+
+- (void)setPopoverNavigationBarBackgroundImage
 {
     if (wantsDefaultContentAppearance == NO && [viewController isKindOfClass:[UINavigationController class]])
     {
-        // UIBarMetricsDefault > navigationBarHeight = 44
-        // UIBarMetricsLandscapePhone > navigationBarHeight = 32
-        
         UINavigationController *navigationController = (UINavigationController *)viewController;
+        navigationController.embedInPopover = YES;
         
-        // UIBarMetricsDefault
-        
-        CGFloat navigationBarHeight = 44;
-        
-        CGRect rectPathRect = CGRectMake(0, 0, 20, navigationBarHeight);
-        
-        CGFloat cornerRadius = containerView.innerCornerRadius;
-        
-        UIBezierPath *rectPath = [UIBezierPath bezierPathWithRoundedRect:rectPathRect byRoundingCorners:UIRectCornerTopLeft|UIRectCornerTopRight cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-        
-        UIGraphicsBeginImageContextWithOptions(rectPath.bounds.size, NO, 0.0f);
-        
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        
-        //// Gradient Declarations
-        NSArray* fillGradientColors = [NSArray arrayWithObjects:
-                                       (id)containerView.fillTopColor.CGColor,
-                                       (id)containerView.fillBottomColor.CGColor,
-                                       nil];
-        
-        CGFloat fillGradientLocations[] = {0, 1};
-        
-        CGGradientRef fillGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)fillGradientColors, fillGradientLocations);
-        
-        //// Drawing
-        CGContextSaveGState(context);
+        if ([navigationController viewControllers] && [[navigationController viewControllers] count] > 0)
         {
-            //CGContextAddPath(context, [rectPath CGPath]);
-            //CGContextClip(context);
+#ifdef WY_BASE_SDK_7_ENABLED
+            UIViewController *firstViewController = (UIViewController *)[[navigationController viewControllers] objectAtIndex:0];
             
-            [rectPath addClip];
-            
-            CGFloat gradientTopPosition = [containerView innerRect].origin.y - navigationBarHeight + containerView.outerShadowInsets.top;
-            CGFloat gradientBottomPosition = gradientTopPosition + [containerView outerRect].size.height;
-            
-            CGContextDrawLinearGradient(context, fillGradient,
-                                        CGPointMake(0, gradientTopPosition),
-                                        CGPointMake(0, gradientBottomPosition),
-                                        0);
+            if ([firstViewController respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+            {
+                [firstViewController setEdgesForExtendedLayout:UIRectEdgeNone];
+            }
+#endif
         }
-        CGContextRestoreGState(context);
         
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        CGGradientRelease(fillGradient);
-        CGColorSpaceRelease(colorSpace);
-        
-        [navigationController.navigationBar setBackgroundImage:[image resizableImageWithCapInsets:UIEdgeInsetsMake(0, cornerRadius + 1, 0, cornerRadius + 1)] forBarMetrics:UIBarMetricsDefault];
-        
-        // UIBarMetricsLandscapePhone
-        
-        navigationBarHeight = 32;
-        
-        rectPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, 20, navigationBarHeight)];
-        
-        UIGraphicsBeginImageContextWithOptions(rectPath.bounds.size, NO, 0.0f);
-        
-        context = UIGraphicsGetCurrentContext();
-        
-        CGContextClipToRect(context, CGRectMake(0, 0, rectPath.bounds.size.width, rectPath.bounds.size.height));
-        
-        [image drawInRect:rectPath.bounds];
-        
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        
-        UIGraphicsEndImageContext();
-        
-        [navigationController.navigationBar setBackgroundImage:[image resizableImageWithCapInsets:UIEdgeInsetsMake(0, cornerRadius + 1, 0, cornerRadius + 1)] forBarMetrics:UIBarMetricsLandscapePhone];
+        [navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
     }
     
     viewController.view.clipsToBounds = YES;
@@ -1587,18 +1748,6 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     {
         viewController.view.layer.cornerRadius = containerView.outerCornerRadius;
     }
-    else
-    {
-        viewController.view.layer.cornerRadius = containerView.innerCornerRadius;
-    }
-}
-
-- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item permittedArrowDirections:(WYPopoverArrowDirection)arrowDirections animated:(BOOL)aAnimated
-{
-    barButtonItem = item;
-    UIView *itemView = [barButtonItem valueForKey:@"view"];
-    arrowDirections = WYPopoverArrowDirectionDown | WYPopoverArrowDirectionUp;
-    [self presentPopoverFromRect:itemView.bounds inView:itemView permittedArrowDirections:arrowDirections animated:aAnimated];
 }
 
 - (void)positionPopover
@@ -1644,7 +1793,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         containerFrame.size.width = MIN(maxX - minX, containerFrame.size.width);
         containerFrame.size.height = MIN(maxY - minY, containerFrame.size.height);
         
-        containerView.frame = containerFrame;
+        containerView.frame = CGRectIntegral(containerFrame);
         
         containerView.center = CGPointMake(viewFrame.origin.x + viewFrame.size.width / 2, viewFrame.origin.y + viewFrame.size.height / 2);
         
@@ -1743,7 +1892,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         containerFrame.size.width = MIN(maxX - minX, containerFrame.size.width);
         containerFrame.size.height = MIN(maxY - minY, containerFrame.size.height);
         
-        containerView.frame = containerFrame;
+        containerView.frame = CGRectIntegral(containerFrame);
         
         containerView.center = CGPointMake(viewFrame.origin.x + viewFrame.size.width / 2, viewFrame.origin.y + viewFrame.size.height / 2);
         
@@ -1798,7 +1947,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         
         containerView.center = CGPointMake(viewFrame.origin.x + viewFrame.size.width / 2, viewFrame.origin.y + viewFrame.size.height / 2);
         
-        containerFrame = containerView.frame;
+        containerFrame = CGRectIntegral(containerView.frame);
         
         offset = containerView.frame.size.width / 2 + viewFrame.size.width / 2 - containerView.outerShadowInsets.left;
         
@@ -1833,7 +1982,25 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         containerView.arrowOffset = offset;
     }
     
-    containerView.frame = containerFrame;
+    if (arrowDirection == WYPopoverArrowDirectionNone)
+    {
+        containerView.arrowDirection = WYPopoverArrowDirectionNone;
+        containerViewSize = [containerView sizeThatFits:contentViewSize];
+        
+        containerFrame = CGRectZero;
+        containerFrame.size = containerViewSize;
+        containerFrame.size.width = MIN(maxX - minX, containerFrame.size.width);
+        containerFrame.size.height = MIN(maxY - minY, containerFrame.size.height);
+        containerView.frame = CGRectIntegral(containerFrame);
+        
+        containerView.center = CGPointMake(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
+        
+        containerFrame = containerView.frame;
+        
+        containerView.arrowOffset = offset;
+    }
+    
+    containerView.frame = CGRectIntegral(containerFrame);
     
     containerView.wantsDefaultContentAppearance = wantsDefaultContentAppearance;
     
@@ -1854,6 +2021,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     completionBlock = ^(BOOL finished) {
         
         [overlayView removeFromSuperview];
+        overlayView = nil;
         
         if ([viewController isKindOfClass:[UINavigationController class]] == NO)
         {
@@ -1862,9 +2030,9 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         
         if (callDelegate)
         {
-            if (delegate && [delegate respondsToSelector:@selector(popoverControllerDidDismiss:)])
+            if (delegate && [delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)])
             {
-                [delegate popoverControllerDidDismiss:self];
+                [delegate popoverControllerDidDismissPopover:self];
             }
         }
     };
@@ -1878,7 +2046,9 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
                                                       object:nil];
         
         [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:UIDeviceOrientationDidChangeNotification
+                                                      object:nil];
         
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:UIKeyboardWillShowNotification
@@ -1918,9 +2088,9 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
     {
         BOOL shouldDismiss = !viewController.modalInPopover;
         
-        if (shouldDismiss && delegate && [delegate respondsToSelector:@selector(popoverControllerShouldDismiss:)])
+        if (shouldDismiss && delegate && [delegate respondsToSelector:@selector(popoverControllerShouldDismissPopover:)])
         {
-            shouldDismiss = [delegate popoverControllerShouldDismiss:self];
+            shouldDismiss = [delegate popoverControllerShouldDismissPopover:self];
         }
         
         if (shouldDismiss)
@@ -1972,6 +2142,14 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         area = [[WYPopoverArea alloc] init];
         area.areaSize = [self sizeForRect:aRect inView:aView arrowHeight:arrowHeight arrowDirection:WYPopoverArrowDirectionRight];
         area.arrowDirection = WYPopoverArrowDirectionRight;
+        [areas addObject:area];
+    }
+
+    if ((arrowDirections & WYPopoverArrowDirectionNone) == WYPopoverArrowDirectionNone)
+    {
+        area = [[WYPopoverArea alloc] init];
+        area.areaSize = [self sizeForRect:aRect inView:aView arrowHeight:arrowHeight arrowDirection:WYPopoverArrowDirectionNone];
+        area.arrowDirection = WYPopoverArrowDirectionNone;
         [areas addObject:area];
     }
     
@@ -2089,13 +2267,18 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         result.height = maxY - (viewFrame.origin.y + viewFrame.size.height);
         result.height -= arrowHeight;
     }
+    else if (arrowDirection == WYPopoverArrowDirectionNone)
+    {
+        result.width = maxX - minX;
+        result.height = maxY - minY;
+    }
     
     return result;
 }
 
 #pragma mark Inline functions
 
-NSString* NSStringFromOrientation(NSInteger orientation) {
+static NSString* NSStringFromOrientation(NSInteger orientation) {
     NSString* result = @"Unknown";
     
     switch (orientation) {
@@ -2118,7 +2301,7 @@ NSString* NSStringFromOrientation(NSInteger orientation) {
     return result;
 }
 
-CGFloat GetStatusBarHeight() {
+static CGFloat GetStatusBarHeight() {
     UIInterfaceOrientation orienation = [[UIApplication sharedApplication] statusBarOrientation];
     
     CGFloat statusBarHeight = 0;
@@ -2164,6 +2347,23 @@ CGFloat GetStatusBarHeight() {
         inView = [barButtonItem valueForKey:@"view"];
         rect = inView.bounds;
     }
+    else if ([delegate respondsToSelector:@selector(popoverController:willRepositionPopoverToRect:inView:)])
+    {
+        CGRect anotherRect;
+        UIView *anotherInView;
+        
+        [delegate popoverController:self willRepositionPopoverToRect:&anotherRect inView:&anotherInView];
+        
+        if (&anotherRect != NULL)
+        {
+            rect = anotherRect;
+        }
+        
+        if (&anotherInView != NULL)
+        {
+            inView = anotherInView;
+        }
+    }
     
     [self positionPopover];
     [containerView setNeedsDisplay];
@@ -2188,6 +2388,8 @@ CGFloat GetStatusBarHeight() {
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     barButtonItem = nil;
     passthroughViews = nil;
     viewController = nil;

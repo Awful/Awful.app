@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 
 #import "GRMustacheStandardLibrary_private.h"
+#import "GRMustache_private.h"
+#import "GRMustacheRendering.h"
 
 
 // =============================================================================
@@ -32,7 +34,16 @@
 
 - (id)transformedValue:(id)object
 {
-    return [[object description] capitalizedString];
+    // Specific case for [NSNull null]
+    
+    if (object == [NSNull null]) {
+        return @"";
+    }
+    
+    // Turns other objects into strings, and transform
+    
+    NSString *string = [object description];
+    return [string capitalizedString];
 }
 
 @end
@@ -47,7 +58,16 @@
 
 - (id)transformedValue:(id)object
 {
-    return [[object description] lowercaseString];
+    // Specific case for [NSNull null]
+    
+    if (object == [NSNull null]) {
+        return @"";
+    }
+    
+    // Turns other objects into strings, and transform
+    
+    NSString *string = [object description];
+    return [string lowercaseString];
 }
 
 @end
@@ -62,7 +82,16 @@
 
 - (id)transformedValue:(id)object
 {
-    return [[object description] uppercaseString];
+    // Specific case for [NSNull null]
+    
+    if (object == [NSNull null]) {
+        return @"";
+    }
+    
+    // Turns other objects into strings, and transform
+    
+    NSString *string = [object description];
+    return [string uppercaseString];
 }
 
 @end

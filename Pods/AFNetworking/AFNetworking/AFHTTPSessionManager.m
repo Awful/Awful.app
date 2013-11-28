@@ -49,7 +49,7 @@
 @implementation AFHTTPSessionManager
 
 + (instancetype)manager {
-    return [[AFHTTPSessionManager alloc] initWithBaseURL:nil];
+    return [[[self class] alloc] initWithBaseURL:nil];
 }
 
 - (instancetype)init {
@@ -81,8 +81,6 @@
 
     self.requestSerializer = [AFHTTPRequestSerializer serializer];
     self.responseSerializer = [AFJSONResponseSerializer serializer];
-
-    self.securityPolicy = [AFSecurityPolicy defaultPolicy];
 
     if (self.baseURL.host) {
         self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:self.baseURL.host];
