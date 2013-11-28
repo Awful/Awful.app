@@ -58,6 +58,11 @@ static NSString * const DefaultTitle = @"New Thread";
     [self updateThreadTagButtonImage];
 }
 
+- (AwfulTheme *)theme
+{
+    return [AwfulTheme currentThemeForForum:self.forum];
+}
+
 - (void)loadView
 {
     [super loadView];

@@ -309,6 +309,7 @@
 {
     [super themeDidChange];
     [self configurePostsViewSettings];
+    [self.replyViewController themeDidChange];
 }
 
 - (void)setThread:(AwfulThread *)thread

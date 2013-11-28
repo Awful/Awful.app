@@ -4,12 +4,12 @@
 <dict>
 	<key>default</key>
 	<dict>
+		<key>description</key>
+		<string>Light</string>
 		<key>scrollIndicatorStyle</key>
 		<string>Black</string>
 		<key>backgroundColor</key>
 		<string>#ffffff</string>
-		<key>description</key>
-		<string>Light</string>
 		<key>descriptiveColor</key>
 		<string>#ffffff</string>
 		<key>tintColor</key>
@@ -67,6 +67,8 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>description</key>
+		<string>Dark</string>
 		<key>scrollIndicatorStyle</key>
 		<string>White</string>
 		<key>backgroundColor</key>
@@ -75,8 +77,6 @@
 		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>
 		<string>#000000</string>
-		<key>description</key>
-		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#000000</string>
 		<key>navigationBarTintColor</key>
@@ -93,13 +93,15 @@
 		<string>#000000</string>
 		<key>listTextColor</key>
 		<string>#ffffff</string>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
-		<key>postsLoadingViewTintColor</key>
-		<string>#FD9999</string>
 		<key>description</key>
 		<string>Pink</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#FD9999</string>
 		<key>backgroundColor</key>
 		<string>#ff3399</string>
 		<key>descriptiveColor</key>
@@ -114,6 +116,12 @@
 		<string>#ffccff</string>
 		<key>listTextColor</key>
 		<string>#000000</string>
+		<key>autocorrection</key>
+		<false/>
+		<key>autocapitalization</key>
+		<false/>
+		<key>checkSpelling</key>
+		<false/>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
@@ -140,6 +148,12 @@
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
+		<key>autocorrection</key>
+		<false/>
+		<key>autocapitalization</key>
+		<false/>
+		<key>checkSpelling</key>
+		<false/>
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
@@ -153,6 +167,12 @@
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
+		<key>autocorrection</key>
+		<false/>
+		<key>autocapitalization</key>
+		<false/>
+		<key>checkSpelling</key>
+		<false/>
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
@@ -176,6 +196,12 @@
 		<string>#000000</string>
 		<key>listTextColor</key>
 		<string>#57FF57</string>
+		<key>autocorrection</key>
+		<false/>
+		<key>autocapitalization</key>
+		<false/>
+		<key>checkSpelling</key>
+		<false/>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>

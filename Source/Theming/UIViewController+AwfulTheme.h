@@ -24,7 +24,7 @@
 /**
  * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
  */
-@property (readonly) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 @end
 

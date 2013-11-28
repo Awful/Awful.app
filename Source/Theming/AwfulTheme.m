@@ -64,8 +64,9 @@
         return [self colorForKey:key];
     } else if ([key hasSuffix:@"CSS"]) {
         return [self stylesheetForKey:key];
+    } else {
+        return [self objectForKey:key];
     }
-    return [self objectForKey:key];
 }
 
 - (UIColor *)colorForKey:(NSString *)key
@@ -124,16 +125,58 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
     return [NSString stringWithFormat:@"<%@: %p %@>", self.class, self, self.name];
 }
 
--(UIScrollViewIndicatorStyle)scrollIndicatorStyle
+- (UIScrollViewIndicatorStyle)scrollIndicatorStyle
 {
 	NSString *styleString = self[@"scrollIndicatorStyle"];
-	if ([styleString compare:@"white" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+	if ([styleString caseInsensitiveCompare:@"white"] == NSOrderedSame) {
 		return UIScrollViewIndicatorStyleWhite;
-	} else if ([styleString compare:@"black" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+	} else if ([styleString caseInsensitiveCompare:@"black"] == NSOrderedSame) {
 		return UIScrollViewIndicatorStyleBlack;
 	} else {
 		return UIScrollViewIndicatorStyleDefault;
 	}
+}
+
+- (UIKeyboardAppearance)keyboardAppearance
+{
+    NSString *string = self[@"keyboardAppearance"];
+    if ([string caseInsensitiveCompare:@"dark"] == NSOrderedSame) {
+        return UIKeyboardAppearanceDark;
+    } else if ([string caseInsensitiveCompare:@"light"] == NSOrderedSame) {
+        return UIKeyboardAppearanceLight;
+    } else {
+        return UIKeyboardAppearanceDefault;
+    }
+}
+
+- (UITextAutocorrectionType)autocorrectionType
+{
+    id value = self[@"autocorrection"];
+    if (value) {
+        return [value boolValue] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+    } else {
+        return UITextAutocorrectionTypeDefault;
+    }
+}
+
+- (UITextAutocapitalizationType)autocapitalizationType
+{
+    id value = self[@"autocapitalization"];
+    if (value && ![value boolValue]) {
+        return UITextAutocapitalizationTypeNone;
+    } else {
+        return UITextAutocapitalizationTypeSentences;
+    }
+}
+
+- (UITextSpellCheckingType)spellCheckingType
+{
+    id value = self[@"checkSpelling"];
+    if (value) {
+        return [value boolValue] ? UITextSpellCheckingTypeYes : UITextSpellCheckingTypeNo;
+    } else {
+        return UITextSpellCheckingTypeDefault;
+    }
 }
 
 @end

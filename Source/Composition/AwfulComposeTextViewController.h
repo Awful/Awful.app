@@ -2,11 +2,11 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+#import "UIViewController+AwfulTheme.h"
 @protocol AwfulComposeCustomView;
 @protocol AwfulComposeTextViewControllerDelegate;
 
-@interface AwfulComposeTextViewController : UIViewController
+@interface AwfulComposeTextViewController : AwfulViewController
 
 /**
  * The composition text view. Set its text or attributedText property as appropriate.

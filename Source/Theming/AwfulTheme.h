@@ -51,12 +51,32 @@
 /**
  * YES if the theme is forum-specific, NO if it applies to all forums (the default).
  */
-@property (readonly, nonatomic) BOOL forumSpecific;
+@property (readonly, assign, nonatomic) BOOL forumSpecific;
 
 /**
- * Returns the scroll indicator style for the theme
+ * Returns the scroll indicator style for a theme.
  */
-@property (readonly, nonatomic)  UIScrollViewIndicatorStyle scrollIndicatorStyle;
+@property (readonly, assign, nonatomic) UIScrollViewIndicatorStyle scrollIndicatorStyle;
+
+/**
+ * Returns the keyboard appearance for a theme.
+ */
+@property (readonly, assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
+
+/**
+ * Returns whether text views should autocorrect.
+ */
+@property (readonly, assign, nonatomic) UITextAutocorrectionType autocorrectionType;
+
+/**
+ * Returns whether text views should autocapitalize.
+ */
+@property (readonly, assign, nonatomic) UITextAutocapitalizationType autocapitalizationType;
+
+/**
+ * Returns whether text views should check spelling.
+ */
+@property (readonly, assign, nonatomic) UITextSpellCheckingType spellCheckingType;
 
 /**
  * An AwfulTheme to use for looking up values not set by this theme.

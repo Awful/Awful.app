@@ -56,6 +56,22 @@
     }
 }
 
+- (AwfulTheme *)theme
+{
+    return [AwfulTheme currentThemeForForum:self.forum];
+}
+
+- (AwfulForum *)forum
+{
+    if (self.post) {
+        return self.post.thread.forum;
+    } else if (self.thread) {
+        return self.thread.forum;
+    } else {
+        return nil;
+    }
+}
+
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
     if (![AwfulSettings settings].confirmNewPosts) return handler(YES);
