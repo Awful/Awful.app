@@ -4,6 +4,7 @@
 
 #import "AwfulAppDelegate.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import <AVFoundation/AVFoundation.h>
 #import "AwfulAlertView.h"
 #import "AwfulBasementViewController.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
@@ -25,7 +26,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
-#import <AVFoundation/AVFoundation.h>
 #import <Crashlytics/Crashlytics.h>
 #import <PocketAPI/PocketAPI.h>
 
@@ -65,7 +65,6 @@ static id _instance;
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings settings] reset];
     [[PocketAPI sharedAPI] logout];
-    [_dataStack deleteStoreAndResetStack];
     
     [UIView transitionWithView:self.window
                       duration:0.3
@@ -78,6 +77,9 @@ static id _instance;
                         AwfulLoginController *loginController = [AwfulLoginController new];
                         loginController.delegate = self;
                         [self.window.rootViewController presentViewController:[loginController enclosingNavigationController] animated:YES completion:nil];
+                        
+                        // If we delete the store earlier, the root view controller's still hanging around in an autorelease pool somewhere. If a posts view was open when logging out (which can happen on iPad), it'll crash when the store disappears out from under the managed object context. This seems like a reasonable time to delete the store, as it's not like anyone can do anything in the meantime.
+                        [_dataStack deleteStoreAndResetStack];
                     }];
 }
 
