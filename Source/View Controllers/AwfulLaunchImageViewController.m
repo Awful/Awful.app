@@ -38,6 +38,12 @@
     self.view = imageView;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.imageView.highlighted = UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
+}
+
 - (UIImageView *)imageView
 {
     return (UIImageView *)self.view;
