@@ -320,20 +320,24 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 {
     if (![AwfulHTTPClient client].loggedIn) return;
     
-	// Get a URL from the pasteboard, and fallback to checking the string pasteboard
-	// in case some app is a big jerk and only sets a string value.
-    NSURL *url = [UIPasteboard generalPasteboard].URL;
-    if (!url) {
-        url = [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
+	// Get a URL from the pasteboard. Check the pasteboard's string too in case some app is a big jerk.
+    NSURL *URL = [UIPasteboard generalPasteboard].URL ?: [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
+    
+    // If it's not a URL we can handle, or if we specifically handle it some other way, stop here.
+    if (!URL.awfulURL) return;
+    NSArray *URLTypes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"];
+    NSArray *URLSchemes = [URLTypes valueForKeyPath:@"@distinctUnionOfArrays.CFBundleURLSchemes"];
+    for (NSString *scheme in URLSchemes) {
+        if ([URL.scheme caseInsensitiveCompare:scheme] == NSOrderedSame) return;
     }
-    if (![url awfulURL] || [[url scheme] compare:@"awful" options:NSCaseInsensitiveSearch] == NSOrderedSame) return;
     
     // Don't ask about the same URL over and over.
-    if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:[url absoluteString]]) {
+    if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:URL.absoluteString]) {
         return;
     }
-    [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-    NSMutableString *abbreviatedURL = [[url awful_absoluteUnicodeString] mutableCopy];
+    [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+    
+    NSMutableString *abbreviatedURL = [URL.awful_absoluteUnicodeString mutableCopy];
     NSRange upToHost = [abbreviatedURL rangeOfString:@"://"];
     if (upToHost.location == NSNotFound) {
         upToHost = [abbreviatedURL rangeOfString:@":"];
@@ -343,16 +347,15 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
         upToHost.location = 0;
         [abbreviatedURL deleteCharactersInRange:upToHost];
     }
-    if ([abbreviatedURL length] > 60) {
-        [abbreviatedURL replaceCharactersInRange:NSMakeRange(55, [abbreviatedURL length] - 55)
-                                      withString:@"…"];
+    if (abbreviatedURL.length > 60) {
+        [abbreviatedURL replaceCharactersInRange:NSMakeRange(55, abbreviatedURL.length - 55) withString:@"…"];
     }
     NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", abbreviatedURL];
     [AwfulAlertView showWithTitle:@"Open in Awful"
                           message:message
                     noButtonTitle:@"Cancel"
                    yesButtonTitle:@"Open"
-                     onAcceptance:^{ [self openAwfulURL:[url awfulURL]]; }];
+                     onAcceptance:^{ [self openAwfulURL:URL.awfulURL]; }];
 }
 
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
@@ -393,13 +396,15 @@ static UIViewController * ViewControllerWithRestorationIdentifier(UIViewControll
 static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 
 - (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
+            openURL:(NSURL *)URL
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
     if (!AwfulHTTPClient.client.loggedIn) return NO;
-    if ([self openAwfulURL:url]) return YES;
-    return [PocketAPI.sharedAPI handleOpenURL:url];
+    if ([URL.scheme caseInsensitiveCompare:@"awfulhttp"] == NSOrderedSame) {
+        return [self openAwfulURL:URL.awfulURL];
+    }
+    return [self openAwfulURL:URL] || [[PocketAPI sharedAPI] handleOpenURL:URL];
 }
 
 - (BOOL)openAwfulURL:(NSURL *)url

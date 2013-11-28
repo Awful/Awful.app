@@ -196,10 +196,10 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     return NO;
 }
 
-- (BOOL)routeURL:(NSURL *)url
+- (BOOL)routeURL:(NSURL *)URL
 {
-    if ([url.scheme compare:@"awful" options:NSCaseInsensitiveSearch] != NSOrderedSame) return NO;
-    return [self.routes routeURL:url];
+    if ([URL.scheme caseInsensitiveCompare:@"awful"] != NSOrderedSame) return NO;
+    return [self.routes routeURL:URL];
 }
 
 @end
