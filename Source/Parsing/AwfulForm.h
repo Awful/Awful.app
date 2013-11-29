@@ -22,7 +22,7 @@
 @property (readonly, copy, nonatomic) NSString *name;
 
 /**
- * A dictionary of recommended parameters based on hidden inputs, checked boxes, and default text values that may or may not be sufficient for submitting the form.
+ * A dictionary of recommended parameters including hidden inputs, checked boxes, default text values, and the first submit button that may or may not be sufficient for submitting the form.
  */
 - (NSMutableDictionary *)recommendedParameters;
 

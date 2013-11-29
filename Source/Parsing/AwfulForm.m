@@ -42,6 +42,7 @@
     for (AwfulFormItem *item in _submits) {
         if (item.value.length > 0) {
             parameters[item.name] = item.value;
+            break;
         }
     }
     return parameters;
