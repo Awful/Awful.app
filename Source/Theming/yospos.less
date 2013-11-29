@@ -1,7 +1,7 @@
 // Standard YOSPOS console theme.
 // -------------------------
 
-// Set @color, @seencolor, @bordercolor before @importing this file.
+// Set @color, @seencolor, @bordercolor, @clockimage before @importing this file.
 
 @import "base.less";
 
@@ -62,6 +62,10 @@ body {
 
 .postbody a {
   color: @color;
+}
+
+.postdate {
+  background-image: @clockimage; 
 }
 
 .postdate,

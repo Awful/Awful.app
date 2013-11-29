@@ -233,6 +233,9 @@
 		8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */; };
 		8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
 		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
+		8C88139F1849289F0058009E /* clock-green.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88139D1849289F0058009E /* clock-green.png */; };
+		8C8813A01849289F0058009E /* clock-amber.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88139E1849289F0058009E /* clock-amber.png */; };
+		8C8813A218492AC80058009E /* mac-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8813A118492AC70058009E /* mac-watch.png */; };
 		8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8AB94F16DC49BA00D85404 /* CustomBadge.m */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */; };
@@ -488,7 +491,7 @@
 		1CBDB5CA16259C6D0004BDF4 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		1CC0A4491845FC1300A6F3FE /* AwfulLaunchImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLaunchImageViewController.h; sourceTree = "<group>"; };
 		1CC0A44A1845FC1300A6F3FE /* AwfulLaunchImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLaunchImageViewController.m; sourceTree = "<group>"; };
-		1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Pods-ScrapingTests.xcconfig"; path = "../Pods/Pods-ScrapingTests.xcconfig"; sourceTree = "<group>"; };
+		1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.xcconfig"; path = "../Pods/Pods-ScrapingTests.xcconfig"; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
@@ -585,6 +588,9 @@
 		8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-left.png"; sourceTree = "<group>"; };
 		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
 		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
+		8C88139D1849289F0058009E /* clock-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock-green.png"; sourceTree = "<group>"; };
+		8C88139E1849289F0058009E /* clock-amber.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock-amber.png"; sourceTree = "<group>"; };
+		8C8813A118492AC70058009E /* mac-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mac-watch.png"; sourceTree = "<group>"; };
 		8C8AB94E16DC49BA00D85404 /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
 		8C8AB94F16DC49BA00D85404 /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
@@ -1331,6 +1337,9 @@
 			isa = PBXGroup;
 			children = (
 				8C220D9D1814D61100F188AE /* clock.png */,
+				8C88139D1849289F0058009E /* clock-green.png */,
+				8C88139E1849289F0058009E /* clock-amber.png */,
+				8C8813A118492AC70058009E /* mac-watch.png */,
 				1CBEE24A1733025300C4884A /* Leper's Colony */,
 				1CBEE2491733012E00C4884A /* Private Messages */,
 			);
@@ -1469,6 +1478,7 @@
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
 				1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */,
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
+				8C88139F1849289F0058009E /* clock-green.png in Resources */,
 				1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
@@ -1487,8 +1497,10 @@
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
+				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C6ED638169104150015CDD5 /* profile-view.html in Resources */,
 				1C8BE4FA169115020022B331 /* profile-view.css in Resources */,
+				8C8813A01849289F0058009E /* clock-amber.png in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,

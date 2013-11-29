@@ -277,6 +277,9 @@ body {
 .postbody a {
   color: #eacf4c;
 }
+.postdate {
+  background-image: url('clock-amber.png');
+}
 .postdate,
 .regdate,
 .username,

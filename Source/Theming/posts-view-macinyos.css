@@ -286,6 +286,9 @@ body {
   color: #000;
   font-style: italic;
 }
+.postdate {
+  background-image: url('mac-watch.png');
+}
 .action-button {
   width: 70px;
   height: 34px;
