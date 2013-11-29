@@ -271,6 +271,8 @@ body {
 }
 .action-button {
   color: #eacf4c;
+  font-size: 1.75em;
+  padding: .125em 0;
 }
 .postbody a {
   color: #eacf4c;
