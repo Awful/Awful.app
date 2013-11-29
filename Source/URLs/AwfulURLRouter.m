@@ -72,14 +72,14 @@
         
         [SVProgressHUD showWithStatus:@"Locating Post"];
         __weak __typeof__(self) weakSelf = self;
-        [AwfulHTTPClient.client locatePostWithID:postID andThen:^(NSError *error, NSString *threadID, AwfulThreadPage page) {
+        [AwfulHTTPClient.client locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
                 NSLog(@"%s couldn't locate post at %@: %@", __PRETTY_FUNCTION__, parameters[kJLRouteURLKey], error);
             } else {
                 [SVProgressHUD dismiss];
-                AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
+                AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
                                                          inManagedObjectContext:self.managedObjectContext];
                 AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
                 postsViewController.page = page;

@@ -222,9 +222,9 @@
                                                object:nil];
     if (self.skipFetchingAndRenderingProfileOnAppear) return;
     [self renderUser];
-    [[AwfulHTTPClient client] profileUserWithID:self.user.userID
-                                        andThen:^(NSError *error, AwfulUser *user)
-     {
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulHTTPClient client] profileUser:self.user andThen:^(NSError *error) {
+        __typeof__(self) self = weakSelf;
          if (error) {
              NSLog(@"error fetching user profile for %@: %@", self.user.userID, error);
              if (!self.user) {
@@ -232,7 +232,7 @@
              }
              return;
          }
-         [self renderUser];
+        [self renderUser];
      }];
 }
 

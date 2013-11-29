@@ -40,18 +40,18 @@ static NSString * const kLastMessageCheckDate = @"com.awfulapp.Awful.LastMessage
 
 - (void)checkForNewMessages
 {
-    [[AwfulHTTPClient client] listPrivateMessagesAndThen:^(NSError *error, NSArray *messages)
-    {
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulHTTPClient client] listPrivateMessageInboxAndThen:^(NSError *error, NSArray *messages) {
+        __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"error checking for new private messages: %@", error);
             return;
         }
         self.lastCheckDate = [NSDate date];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"seen = NO"];
-        NSArray *unseen = [messages filteredArrayUsingPredicate:predicate];
-        NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-        [noteCenter postNotificationName:AwfulNewPrivateMessagesNotification object:self
-                                userInfo:@{ AwfulNewPrivateMessageCountKey: @([unseen count]) }];
+        NSArray *unseen = [messages filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"seen = NO"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewPrivateMessagesNotification
+                                                            object:self
+                                                          userInfo:@{ AwfulNewPrivateMessageCountKey: @([unseen count]) }];
     }];
 }
 

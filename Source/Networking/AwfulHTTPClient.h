@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-// Recreate internal HTTP client using base URL from settings.
+// Cancel all operations and recreate internal HTTP client using base URL from settings.
 - (void)reset;
 
 // Returns YES if the forums are reachable through current network settings.
@@ -21,16 +21,6 @@
 
 // Returns YES if someone is currently logged in to the SA Forums.
 @property (readonly, getter=isLoggedIn, nonatomic) BOOL loggedIn;
-
-// Gets the threads in a forum on a given page.
-//
-// forumID  - The ID of the forum with the threads.
-// page     - Which page to get.
-// callback - A block to call after listing the threads, which takes as parameters:
-//              error   - An error on failure, or nil on success.
-//              threads - A list of AwfulThread on success, or nil on failure.
-//
-// Returns the enqueued network operation.
 
 /**
  * @param callback A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
@@ -41,273 +31,195 @@
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
-// Gets the bookmarked threads on a given page.
-//
-// page     - Which page to get.
-// callback - A block to call after listing the threads, which takes as parameters:
-//              error   - An error on failure, or nil on success.
-//              threads - A list of AwfulThread on success, or nil on failure.
-//
-// Returns the enqueued network operation.
+/**
+ * @param callback A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
-// Gets the posts in a thread, optionally restricted to a single author.
-//
-// threadID     - Which thread to list.
-// page         - Which page to get. First page is 1; AwfulPageNextUnread and AwfulPageLast are
-//                also available.
-// singleUserID - An author's user ID to filter the thread. If nil, get posts from all authors.
-// callback - A block to call after listing the posts, which takes as parameters:
-//              error             - An error on failure, or nil on success.
-//              posts             - The posts gleaned from the page.
-//              firstUnreadPost   - Which post in the posts array is the first unread.
-//                                  Only set if the page requested was AwfulPageNextUnread.
-//              advertisementHTML - The ad at the bottom of the page.
-//
-// N.B. If you've never read a thread before (or marked it unread), the "next unread" page is the
-//      last page of the thread. (It's an SA thing, I don't get it either.)
-//
-// Returns the enqueued network operation.
-- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(AwfulThreadPage)page
-                            singleUserID:(NSString *)singleUserID
-                                 andThen:(void (^)(NSError *error,
-                                                   NSArray *posts,
-                                                   NSUInteger firstUnreadPost,
-                                                   NSString *advertisementHTML))callback;
+/**
+ * @param author   An AwfulUser object whose posts are the only ones listed. If nil, posts from all authors are listed.
+ * @param callback A block to call after listing posts, which takes as parameters: an NSError object on failure, or nil on success; an array of AwfulPost objects on success, or nil on failure; the index of the first unread post in the posts array on success; and the banner ad HTML on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)listPostsInThread:(AwfulThread *)thread
+                         writtenBy:(AwfulUser *)author
+                            onPage:(AwfulThreadPage)page
+                           andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
-// Get the logged-in user's name and ID.
-//
-// callback - A block to call after getting the user's info, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              user - An AwfulUser object on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
+/**
+ * @param callback A block to call after learning user info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object for the logged-in user on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
-// Add or remove a bookmark for a thread.
-//
-// threadID     - The ID of the thread to add.
-// isBookmarked - YES if a bookmark should be added for the thread, or NO if it should be removed.
-// callback     - A block to call after removing the thread, which takes as parameters:
-//                  error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)setThreadWithID:(NSString *)threadID
-                    isBookmarked:(BOOL)isBookmarked
-                         andThen:(void (^)(NSError *error))callback;
+/**
+ * @param callback A block to call after (un)bookmarking the thread, which takes an NSError object as a parameter on failure, or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)setThread:(AwfulThread *)thread
+              isBookmarked:(BOOL)isBookmarked
+                   andThen:(void (^)(NSError *error))callback;
 
-// Get the forum hierarchy.
-//
-// callback - A block to call after updating all categories, forums, and subforums, which takes as parameters:
-//              error      - An error on failure, or nil on succes.
-//              categories - An array of AwfulCategory objects on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)listForumHierarchyAndThen:(void (^)(NSError *error, NSArray *categories))callback;
+/**
+ * @param callback A block to call after finding the forum hierarchy which takes as parameters: an NSError object on failure or nil on success; and an array of AwfulCategory objects on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *categories))callback;
 
-// Posts a new reply to a thread.
-//
-// threadID - The ID of the thread to reply to.
-// text     - The bbcode-formatted reply.
-// callback - A block to call after sending the reply, which takes as parameters:
-//              error  - An error on failure, or nil on success.
-//              postID - The ID of the new post, or nil if it's the last post in the thread.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)replyToThreadWithID:(NSString *)threadID
-                                text:(NSString *)text
-                             andThen:(void (^)(NSError *error, NSString *postID))callback;
+/**
+ * @param callback A block to call after sending the reply, which takes as parameters: an NSError object on failure, or nil on success; and the newly-created AwfulPost object on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)replyToThread:(AwfulThread *)thread
+                    withBBcode:(NSString *)text
+                       andThen:(void (^)(NSError *error, AwfulPost *post))callback;
 
-// Get the text of a post, for editing.
-//
-// postID   - The ID of the post.
-// callback - A block to call after getting the text of the post, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//              text  - The text content of the post, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)getTextOfPostWithID:(NSString *)postID
-                             andThen:(void (^)(NSError *error, NSString *text))callback;
+/**
+ * @param callback A block to call after finding the text of the post, which takes as parameters: an NSError object on failure, or nil on success; and the BBcode text of the post on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
+                                    andThen:(void (^)(NSError *error, NSString *text))callback;
 
-// Get the text of a post, for quoting.
-//
-// postID - The ID of the post.
-// callback - A block to call after getting the quoted text of the post, which takes as parameters:
-//              error      - An error on failure, or nil on success.
-//              quotedText - The quoted text content of the post, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
-                               andThen:(void (^)(NSError *error, NSString *quotedText))callback;
+/**
+ * @param callback A block to call after finding the quoted text of the post, which takes as parameters: an NSError object on failure, or nil on success; and the BBcode quoted text of the post on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
+                                     andThen:(void (^)(NSError *error, NSString *quotedText))callback;
 
-// Edit a post's content.
-//
-// postID - The post to edit.
-// text   - The new content for the post.
-// callback - A block to call after editing the post, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)editPostWithID:(NSString *)postID
-                           text:(NSString *)text
-                        andThen:(void (^)(NSError *error))callback;
+/**
+ * @param callback A block to call after editing the post, which takes as a parameter an NSError object on failure or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)editPost:(AwfulPost *)post
+                setBBcode:(NSString *)text
+                  andThen:(void (^)(NSError *error))callback;
 
-// Rate a thread.
-//
-// threadID - Which thread to rate.
-// rating   - A rating from 1 to 5, inclusive.
-// callback - A block to call after voting, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)rateThreadWithID:(NSString *)threadID
-                           rating:(NSInteger)rating
+/**
+ * @param callback A block to call after rating the thread, which takes as a parameter an NSError object on failure or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)rateThread:(AwfulThread *)thread
+                           :(NSInteger)rating
+                    andThen:(void (^)(NSError *error))callback;
+
+/**
+ * @param callback A block to call after marking the thread read, which takes as a parameter an NSError object on failure or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
+                                andThen:(void (^)(NSError *error))callback;
+
+/**
+ * @param callback A block to call after marking the thread unread, which takes as a parameter an NSError object on failure or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)markThreadUnread:(AwfulThread *)thread
                           andThen:(void (^)(NSError *error))callback;
 
-// Mark a thread as read up to a point.
-//
-// threadID - Which thread to mark.
-// index    - How many posts to mark as read.
-// callback - A block to call after marking, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)markThreadWithID:(NSString *)threadID
-              readUpToPostAtIndex:(NSString *)index
-                          andThen:(void (^)(NSError *error))callback;
-
-// Mark an entire thread as unread.
-//
-// threadID - Which thread to mark.
-// callback - A block to call after marking, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)forgetReadPostsInThreadWithID:(NSString *)threadID
-                                       andThen:(void (^)(NSError *error))callback;
-
-// Logs in to the Forums, setting a cookie for future requests.
-//
-// username - Who to log in as.
-// password - Their password.
-// callback - A block to call after logging in, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//              user  - An AwfulUser object with userID, username, and canReceivePrivateMessages keys set on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)logInAsUsername:(NSString *)username
-                    withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error, AwfulUser *user))callback;
-
-// Finds the thread and page where a post appears.
-//
-// postID   - The ID of the post to locate.
-// callback - A block to call after locating the post, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              threadID - The ID of the thread containing the post, or nil on failure.
-//              page     - The page number where the post appears, or NSIntegerMax if the post
-//                         appears on the last page, or 0 on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)locatePostWithID:(NSString *)postID
-    andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback;
-
-// Find a user's profile.
-//
-// userID   - The ID of the user to update with their profile info.
-// callback - A block to call after updating the user info, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//              user  - The updated user on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)profileUserWithID:(NSString *)userID
+/**
+ * @param callback A block to call after logging in, which takes as parameters: an NSError object on failure, or nil on success; and an AwfulUser object on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)logInWithUsername:(NSString *)username
+                          password:(NSString *)password
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
-// List probations, bans, and permabans from the Leper's Colony.
-//
-// page     - Which page of the Leper's Colony to list. First page is page 1.
-// user     - An AwfulUser to filter the punishments by, or nil for no filter.
-// callback - A block to call after listing punishments, which takes as parameters:
-//              error - An error on failure, or nil on success.
-//              bans  - An array of AwfulBan objects on success, or nil on failure.
-//
-// Returns the enqueued network operation.
+/**
+ * @param postID   The post's ID. Specified directly in case no such post exists, which would make for a useless AwfulPost object.
+ * @param callback A block to call after locating the post, which takes as parameters: an NSError object on failure or nil on success; an AwfulPost object on success or nil on failure; and the page containing the post (may be AwfulThreadPageLast).
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)locatePostWithID:(NSString *)postID
+                          andThen:(void (^)(NSError *error, AwfulPost *post, AwfulThreadPage page))callback;
+
+/**
+ * @param callback A block to call after learning of the user's info, which takes as a parameter an NSError object on failure or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)profileUser:(AwfulUser *)user
+                     andThen:(void (^)(NSError *error))callback;
+
+/**
+ * @param callback A block to call after listing bans and probations, which takes as parameters: an NSError object on failure or nil on success; and an array of AwfulBan objects on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
-// List private messages in the logged-in user's Inbox.
-//
-// callback - A block to call after listing messages, which takes as parameters:
-//              error    - An error on failure, or nil on success.
-//              messages - An array of AwfulPrivateMessage objects on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback;
+/**
+ * @param callback A block to call after listing the logged-in user's PM inbox, which takes as parameters: an NSError object on failure, or nil on success; and an array of AwfulPrivateMessage objects on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)listPrivateMessageInboxAndThen:(void (^)(NSError *error, NSArray *messages))callback;
 
-// Delete a private message.
-//
-// messageID - The ID of the message to delete.
-// callback  - A block to call after deleting the message, which takes as parameters:
-//               error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
-                                    andThen:(void (^)(NSError *error))callback;
+/**
+ * @param callback A block to call after deleting the message, which takes as a parameter an NSError object on failure, or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)deletePrivateMessage:(AwfulPrivateMessage *)message
+                              andThen:(void (^)(NSError *error))callback;
 
-// Read a private message.
-//
-// messageID - The ID of the message to read.
-// callback  - A block to call after reading the message, which takes as parameters:
-//               error   - An error on failure, or nil on success.
-//               message - The message on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
-                                  andThen:(void (^)(NSError *error,
-                                                    AwfulPrivateMessage *message))callback;
+/**
+ * @param callback A block to call after reading the message, which takes as a parameter an NSError object on failure, or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)readPrivateMessage:(AwfulPrivateMessage *)message
+                            andThen:(void (^)(NSError *error))callback;
 
-// Quote a private message.
-//
-// messageID - The ID of the message to quote.
-// callback  - A block to call after quoting the message, which takes as parameters:
-//               error  - An error on failure, or nil on success.
-//               bbcode - The quoted message on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
-                                   andThen:(void (^)(NSError *error, NSString *bbcode))callback;
+/**
+ * @param callback A block to call after quoting the message, which takes as parameters: an NSError object on failure or nil on success; and the quoted BBcode contents on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(AwfulPrivateMessage *)message
+                                             andThen:(void (^)(NSError *error, NSString *BBcode))callback;
 
-// List post icons usable for private messages.
-//
-// callback - A block to call after listing post icons, which takes as parameters:
-//              error     - An error on failure, or nil on success.
-//              postIcons - An array of AwfulThreadTag instances on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error,
-                                                                       NSArray *postIcons))callback;
+/**
+ * @param callback A block to call after listing thread tags, which takes as parameters: an NSError object on failure, or nil on success; and an array of AwfulThreadTag objects on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)listAvailablePrivateMessageThreadTagsAndThen:(void (^)(NSError *error, NSArray *threadTags))callback;
 
-// Send a private message.
-//
-// username         - The user who will receive the message.
-// subject          - The subject of the message.
-// iconID           - The ID of the post icon to use, or nil for no icon.
-// text             - The BBCode text of the message.
-// replyMessageID   - The message ID of the message this is regarding, or nil if not a reply.
-// forwardMessageID - The message ID of the message this is a forward of, or nil of not a forward.
-// callback         - A block to call after sending the message, which takes as parameters:
-//                      error - An error on failure, or nil on success.
-//
-// Returns the enqueued network operation.
+/**
+ * @param username         Requiring an AwfulUser is unhelpful as the username is typed in and may not actually exist.
+ * @param threadTag        Can be nil.
+ * @param regardingMessage Can be nil. Should be nil if forwardedMessage is non-nil.
+ * @param forwardedMessage Can be nil. Should be nil if regardingMessage is non-nil.
+ * @param callback         A block to call after sending the message, which takes as a parameter an NSError on failure, or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
-                              subject:(NSString *)subject
-                                 icon:(NSString *)iconID
-                                 text:(NSString *)text
-               asReplyToMessageWithID:(NSString *)replyMessageID
-           forwardedFromMessageWithID:(NSString *)forwardMessageID
+                          withSubject:(NSString *)subject
+                            threadTag:(AwfulThreadTag *)threadTag
+                               BBcode:(NSString *)text
+                     asReplyToMessage:(AwfulPrivateMessage *)regardingMessage
+                 forwardedFromMessage:(AwfulPrivateMessage *)forwardedMessage
                               andThen:(void (^)(NSError *error))callback;
 
 // List post icons usable for a new thread in a forum.
@@ -321,26 +233,20 @@
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error, AwfulForm *form))callback;
 
-// Post a new thread in a forum.
-//
-// forumID          - Which forum to post in. Cannot be nil.
-// subject          - What the thread is about. Cannot be nil.
-// iconID           - The ID of the post icon to use, or nil for the default icon.
-// secondaryIconID  - The ID of the secondary post icon to use, or nil if no icon is required.
-// secondaryIconKey - The key passed in to the callback block of
-//                    -listAvailablePostIconsForForumWithID..., or nil if no icon is required.
-// text             - The contents of the original post. Cannot be nil.
-// callback         - A block to call after posting the thread, which takes as parameters:
-//                      error    - An error on failure, or nil on success.
-//                      threadID - The ID of the newly-created thread on success, or nil on failure.
-//
-// Returns the enqueued network operation.
-- (NSOperation *)postThreadInForumWithID:(NSString *)forumID
-                                 subject:(NSString *)subject
-                                    icon:(NSString *)iconID
-                           secondaryIcon:(NSString *)secondaryIconID
-                        secondaryIconKey:(NSString *)secondaryIconKey
-                                    text:(NSString *)text
-                                 andThen:(void (^)(NSError *error, NSString *threadID))callback;
+/**
+ * @param threadTag           Can be nil.
+ * @param secondaryTag        Can be nil.
+ * @param secondaryTagFormKey The key passed in to the callback block of -listAvailablePostIconsForForumWithID...
+ * @param callback            A block to call after posting the thread, which takes as parameters: an NSError object on failure or nil on success; and the new AwfulThread object on success, or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)postThreadInForum:(AwfulForum *)forum
+                       withSubject:(NSString *)subject
+                         threadTag:(AwfulThreadTag *)threadTag
+                      secondaryTag:(AwfulThreadTag *)secondaryTag
+               secondaryTagFormKey:(NSString *)secondaryTagFormKey
+                            BBcode:(NSString *)text
+                           andThen:(void (^)(NSError *error, AwfulThread *thread))callback;
 
 @end

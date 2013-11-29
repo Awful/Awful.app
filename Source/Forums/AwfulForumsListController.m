@@ -186,7 +186,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 - (void)refresh
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listForumHierarchyAndThen:^(NSError *error, NSArray *categories) {
+    [[AwfulHTTPClient client] taxonomizeForumsAndThen:^(NSError *error, NSArray *categories) {
         __typeof__(self) self = weakSelf;
         if (!error) {
             self.lastRefresh = [NSDate date];

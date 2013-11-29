@@ -101,7 +101,7 @@
     [self.tableView reloadData];
     
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] learnUserInfoAndThen:^(NSError *error, AwfulUser *user) {
+    [[AwfulHTTPClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);

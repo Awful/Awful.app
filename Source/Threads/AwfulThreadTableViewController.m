@@ -164,20 +164,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulHTTPClient client] setThreadWithID:thread.threadID
-                                     isBookmarked:!thread.bookmarked
-                                          andThen:^(NSError *error)
-         {
-             if (error) {
-                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-             } else {
-                 NSString *status = @"Removed Bookmark";
-                 if (thread.bookmarked) {
-                     status = @"Added Bookmark";
-                 }
-                 [SVProgressHUD showSuccessWithStatus:status];
-             }
-         }];
+        [[AwfulHTTPClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            } else {
+                NSString *status = thread.bookmarked ? @"Added Bookmark" : @"Removed Bookmark";
+                [SVProgressHUD showSuccessWithStatus:status];
+            }
+        }];
     }]];
     if ([thread.author.userID length] > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
@@ -212,7 +206,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             if (!thread.threadID) {
                 return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
             }
-            [[AwfulHTTPClient client] forgetReadPostsInThreadWithID:thread.threadID andThen:^(NSError *error) {
+            [[AwfulHTTPClient client] markThreadUnread:thread andThen:^(NSError *error) {
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                 } else {

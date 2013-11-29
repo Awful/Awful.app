@@ -99,9 +99,9 @@
         }
     }
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listAvailablePrivateMessagePostIconsAndThen:^(NSError *error, NSArray *postIcons) {
+    [[AwfulHTTPClient client] listAvailablePrivateMessageThreadTagsAndThen:^(NSError *error, NSArray *threadTags) {
         __typeof__(self) self = weakSelf;
-        self->_availableThreadTags = [postIcons copy];
+        self->_availableThreadTags = [threadTags copy];
         [_postIconPicker reloadData];
     }];
 }
@@ -182,11 +182,11 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL))completionHandler
 {
     [[AwfulHTTPClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
-                                           subject:self.fieldView.subjectField.textField.text
-                                              icon:self.threadTag.threadTagID
-                                              text:composition
-                            asReplyToMessageWithID:self.regardingMessage.messageID
-                        forwardedFromMessageWithID:self.forwardingMessage.messageID
+                                       withSubject:self.fieldView.subjectField.textField.text
+                                         threadTag:self.threadTag
+                                            BBcode:composition
+                                  asReplyToMessage:self.regardingMessage
+                              forwardedFromMessage:self.forwardingMessage
                                            andThen:^(NSError *error)
     {
         if (error) {

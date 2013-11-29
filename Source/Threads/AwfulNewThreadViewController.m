@@ -173,21 +173,22 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
 {
-    [[AwfulHTTPClient client] postThreadInForumWithID:self.forum.forumID
-                                              subject:self.fieldView.subjectField.textField.text
-                                                 icon:_threadTag.threadTagID
-                                        secondaryIcon:_secondaryThreadTag.threadTagID
-                                     secondaryIconKey:_secondaryIconKey
-                                                 text:composition
-                                              andThen:^(NSError *error, NSString *threadID)
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulHTTPClient client] postThreadInForum:self.forum
+                                    withSubject:self.fieldView.subjectField.textField.text
+                                      threadTag:_threadTag
+                                   secondaryTag:_secondaryThreadTag
+                            secondaryTagFormKey:_secondaryIconKey
+                                         BBcode:composition
+                                        andThen:^(NSError *error, AwfulThread *thread)
     {
+        __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK" completion:^{
                 completionHandler(NO);
             }];
         } else {
-            _thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                         inManagedObjectContext:self.forum.managedObjectContext];
+            self->_thread = thread;
             completionHandler(YES);
         }
     }];

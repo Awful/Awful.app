@@ -193,15 +193,12 @@
     }];
 }
 
-- (NSOperation *)listPostsInThreadWithID:(NSString *)threadID
-                                  onPage:(AwfulThreadPage)page
-                            singleUserID:(NSString *)singleUserID
-                                 andThen:(void (^)(NSError *error,
-                                                   NSArray *posts,
-                                                   NSUInteger firstUnreadPost,
-                                                   NSString *advertisementHTML))callback
+- (NSOperation *)listPostsInThread:(AwfulThread *)thread
+                         writtenBy:(AwfulUser *)author
+                            onPage:(AwfulThreadPage)page
+                           andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback
 {
-    NSMutableDictionary *parameters = [@{ @"threadid": threadID,
+    NSMutableDictionary *parameters = [@{ @"threadid": thread.threadID,
                                           @"perpage": @40 } mutableCopy];
     if (page == AwfulThreadPageNextUnread) {
         parameters[@"goto"] = @"newpost";
@@ -210,8 +207,8 @@
     } else {
         parameters[@"pagenumber"] = @(page);
     }
-    if (singleUserID) {
-        parameters[@"userid"] = singleUserID;
+    if (author.userID) {
+        parameters[@"userid"] = author.userID;
     }
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"showthread.php"
@@ -246,7 +243,7 @@
     }];
 }
 
-- (NSOperation *)learnUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
+- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"member.php"
@@ -267,25 +264,24 @@
     }];
 }
 
-- (NSOperation *)setThreadWithID:(NSString *)threadID
-                    isBookmarked:(BOOL)isBookmarked
-                         andThen:(void (^)(NSError *error))callback
+- (NSOperation *)setThread:(AwfulThread *)thread
+              isBookmarked:(BOOL)isBookmarked
+                   andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"bookmarkthreads.php"
                    parameters:@{ @"json": @"1",
                                  @"action": isBookmarked ? @"add" : @"remove",
-                                 @"threadid": threadID }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          AwfulThread *thread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
-                                                                          matchingPredicateFormat:@"threadID = %@", threadID];
-                          thread.bookmarked = isBookmarked;
-                          if (callback) callback(nil);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (callback) callback(error);
-                      }];
+                                 @"threadid": thread.threadID }
+                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        thread.bookmarked = isBookmarked;
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
-- (NSOperation *)listForumHierarchyAndThen:(void (^)(NSError *error, NSArray *categories))callback
+- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *categories))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
@@ -307,14 +303,14 @@
     }];
 }
 
-- (NSOperation *)replyToThreadWithID:(NSString *)threadID
-                                text:(NSString *)text
-                             andThen:(void (^)(NSError *error, NSString *postID))callback
+- (NSOperation *)replyToThread:(AwfulThread *)thread
+                    withBBcode:(NSString *)text
+                       andThen:(void (^)(NSError *error, AwfulPost *post))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newreply.php"
                   parameters:@{ @"action" : @"newreply",
-                                @"threadid" : threadID }
+                                @"threadid" : thread.threadID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -333,15 +329,29 @@
             }
             AwfulForm *form = forms[0];
             NSMutableDictionary *parameters = [form recommendedParameters];
-            if (!parameters[@"formkey"] || !parameters[@"form_cookie"]) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.threadIsClosed
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Thread will not accept new replies from you. It may be closed." }];
-                if (callback) callback(error, nil);
+            NSString *formkey = parameters[@"formkey"];
+            NSString *form_cookie = parameters[@"form_cookie"];
+            if (!formkey || !form_cookie) {
+                if (callback) {
+                    NSInteger code;
+                    NSString *extra;
+                    if (thread.closed) {
+                        code = AwfulErrorCodes.threadIsClosed;
+                        extra = @"It may be closed.";
+                    } else {
+                        code = AwfulErrorCodes.parseError;
+                        NSString *missingParameter = formkey ? @"form_cookie" : @"formkey";
+                        extra = [NSString stringWithFormat:@"Missing %@.", missingParameter];
+                    }
+                    NSString *description = [NSString stringWithFormat:@"Thread will not accept new replies from you. %@", extra];
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:code
+                                            userInfo:@{ NSLocalizedDescriptionKey: description }];
+                    callback(error, nil);
+                }
                 return;
             }
             [parameters removeObjectForKey:@"preview"];
-            parameters[@"threadid"] = threadID;
             parameters[@"message"] = text;
             [_HTTPManager POST:@"newreply.php"
                     parameters:parameters
@@ -354,7 +364,8 @@
                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                     postID = URL.queryDictionary[@"postid"];
                 }
-                if (callback) callback(nil, postID);
+                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+                if (callback) callback(nil, post);
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];
@@ -364,13 +375,13 @@
     }];
 }
 
-- (NSOperation *)getTextOfPostWithID:(NSString *)postID
-                             andThen:(void (^)(NSError *error, NSString *text))callback
+- (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
+                                    andThen:(void (^)(NSError *error, NSString *text))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"editpost.php"
                   parameters:@{ @"action": @"editpost",
-                                @"postid": postID }
+                                @"postid": post.postID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -404,38 +415,39 @@
     }];
 }
 
-- (NSOperation *)quoteTextOfPostWithID:(NSString *)postID
-                               andThen:(void (^)(NSError *error, NSString *quotedText))callback
+- (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
+                                     andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
     return [_HTTPManager GET:@"newreply.php"
                   parameters:@{ @"action": @"newreply",
-                                @"postid": postID,
+                                @"postid": post.postID,
                                 @"json": @1 }
-                     success:^(AFHTTPRequestOperation *operation, NSDictionary *json) {
-                         if (!callback) return;
-                         // If you quote a post from a thread that's been moved to the Gas Chamber, you don't get a post body. That's an error, even though the HTTP operation succeeded.
-                         if (json[@"body"]) {
-                             callback(nil, json[@"body"]);
-                         } else {
-                             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Missing quoted post body" };
-                             NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                                  code:AwfulErrorCodes.parseError
-                                                              userInfo:userInfo];
-                             callback(error, nil);
-                         }
-                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         if (callback) callback(error, nil);
-                     }];
+                     success:^(AFHTTPRequestOperation *operation, NSDictionary *json)
+    {
+        if (!callback) return;
+        // If you quote a post from a thread that's been moved to the Gas Chamber, you don't get a post body. That's an error, even though the HTTP operation succeeded.
+        if (json[@"body"]) {
+            callback(nil, json[@"body"]);
+        } else {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Missing quoted post body" };
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:userInfo];
+            callback(error, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
 }
 
-- (NSOperation *)editPostWithID:(NSString *)postID
-                           text:(NSString *)text
-                        andThen:(void (^)(NSError *error))callback
+- (NSOperation *)editPost:(AwfulPost *)post
+                setBBcode:(NSString *)text
+                  andThen:(void (^)(NSError *error))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"editpost.php"
                   parameters:@{ @"action": @"editpost",
-                                @"postid": postID }
+                                @"postid": post.postID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -454,7 +466,6 @@
             }
             AwfulForm *form = forms[0];
             NSMutableDictionary *parameters = [form recommendedParameters];
-            parameters[@"postid"] = postID;
             parameters[@"message"] = text;
             [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"editpost.php"
@@ -470,13 +481,13 @@
     }];
 }
 
-- (NSOperation *)rateThreadWithID:(NSString *)threadID
-                           rating:(NSInteger)rating
-                          andThen:(void (^)(NSError *error))callback
+- (NSOperation *)rateThread:(AwfulThread *)thread
+                           :(NSInteger)rating
+                    andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"threadrate.php"
                    parameters:@{ @"vote": @(MAX(5, MIN(1, rating))),
-                                 @"threadid": threadID }
+                                 @"threadid": thread.threadID }
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                           if (callback) callback(nil);
                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -484,38 +495,39 @@
                       }];
 }
 
-- (NSOperation *)markThreadWithID:(NSString *)threadID
-              readUpToPostAtIndex:(NSString *)index
-                          andThen:(void (^)(NSError *error))callback
+- (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
+                                andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager GET:@"showthread.php"
                   parameters:@{ @"action": @"setseen",
-                                @"threadid": threadID,
-                                @"index": index }
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         if (callback) callback(nil);
-                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         if (callback) callback(error);
-                     }];
+                                @"threadid": post.thread.threadID,
+                                @"index": @(post.threadIndex) }
+                     success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
-- (NSOperation *)forgetReadPostsInThreadWithID:(NSString *)threadID
-                                       andThen:(void (^)(NSError *error))callback
+- (NSOperation *)markThreadUnread:(AwfulThread *)thread
+                          andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"showthread.php"
-                   parameters:@{ @"threadid": threadID,
+                   parameters:@{ @"threadid": thread.threadID,
                                  @"action": @"resetseen",
                                  @"json": @"1" }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          if (callback) callback(nil);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (callback) callback(error);
-                      }];
+                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
-- (NSOperation *)logInAsUsername:(NSString *)username
-                    withPassword:(NSString *)password
-                         andThen:(void (^)(NSError *error, AwfulUser *user))callback
+- (NSOperation *)logInWithUsername:(NSString *)username
+                          password:(NSString *)password
+                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager POST:@"account.php?json=1"
@@ -553,7 +565,7 @@
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-                          andThen:(void (^)(NSError *error, NSString *threadID, AwfulThreadPage page))callback
+                          andThen:(void (^)(NSError *error, AwfulPost *post, AwfulThreadPage page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
@@ -590,7 +602,6 @@
                 callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
             });
         } else {
-            NSDictionary *query = [request.URL queryDictionary];
             NSString *missingInfo = query[@"threadid"] ? @"page number" : @"thread ID";
             NSString *message = [NSString stringWithFormat:@"The %@ could not be found",
                                  missingInfo];
@@ -607,26 +618,26 @@
     return op;
 }
 
-- (NSOperation *)profileUserWithID:(NSString *)userID
-                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
+- (NSOperation *)profileUser:(AwfulUser *)user
+                     andThen:(void (^)(NSError *error))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"member.php"
                   parameters:@{ @"action": @"getinfo",
-                                @"userid": userID }
+                                @"userid": user.userID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper new];
             NSError *error;
-            AwfulUser *user = [scraper scrapeDocument:document
-                                              fromURL:operation.response.URL
-                             intoManagedObjectContext:managedObjectContext
-                                                error:&error];
-            if (callback) callback(error, user);
+            [scraper scrapeDocument:document
+                            fromURL:operation.response.URL
+           intoManagedObjectContext:managedObjectContext
+                              error:&error];
+            if (callback) callback(error);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error, nil);
+        if (callback) callback(error);
     }];
 }
 
@@ -657,7 +668,7 @@
     }];
 }
 
-- (NSOperation *)listPrivateMessagesAndThen:(void (^)(NSError *error, NSArray *messages))callback
+- (NSOperation *)listPrivateMessageInboxAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
@@ -678,50 +689,51 @@
     }];
 }
 
-- (NSOperation *)deletePrivateMessageWithID:(NSString *)messageID
-                                    andThen:(void (^)(NSError *error))callback
+- (NSOperation *)deletePrivateMessage:(AwfulPrivateMessage *)message
+                              andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"private.php"
                    parameters:@{ @"action": @"dodelete",
-                                 @"privatemessageid": messageID,
+                                 @"privatemessageid": message.messageID,
                                  @"delete": @"yes" }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          if (callback) callback(nil);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (callback) callback(error);
-                      }];
+                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
-- (NSOperation *)readPrivateMessageWithID:(NSString *)messageID
-                                  andThen:(void (^)(NSError *error, AwfulPrivateMessage *message))callback
+- (NSOperation *)readPrivateMessage:(AwfulPrivateMessage *)message
+                            andThen:(void (^)(NSError *error))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
                   parameters:@{ @"action": @"show",
-                                @"privatemessageid": messageID }
+                                @"privatemessageid": message.messageID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper new];
             NSError *error;
-            AwfulPrivateMessage *message = [scraper scrapeDocument:document
-                                                           fromURL:operation.response.URL
-                                          intoManagedObjectContext:managedObjectContext
-                                                             error:&error];
-            if (callback) callback(error, message);
+            [scraper scrapeDocument:document
+                            fromURL:operation.response.URL
+           intoManagedObjectContext:managedObjectContext
+                              error:&error];
+            if (callback) callback(error);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error, nil);
+        if (callback) callback(error);
     }];
 }
 
-- (NSOperation *)quotePrivateMessageWithID:(NSString *)messageID
-                                   andThen:(void (^)(NSError *error, NSString *bbcode))callback
+- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(AwfulPrivateMessage *)message
+                                             andThen:(void (^)(NSError *error, NSString *BBcode))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
                   parameters:@{ @"action": @"newmessage",
-                                @"privatemessageid": messageID }
+                                @"privatemessageid": message.messageID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -755,7 +767,7 @@
     }];
 }
 
-- (NSOperation *)listAvailablePrivateMessagePostIconsAndThen:(void (^)(NSError *error, NSArray *postIcons))callback
+- (NSOperation *)listAvailablePrivateMessageThreadTagsAndThen:(void (^)(NSError *error, NSArray *threadTags))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
@@ -785,22 +797,23 @@
 }
 
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
-                              subject:(NSString *)subject
-                                 icon:(NSString *)iconID
-                                 text:(NSString *)text
-               asReplyToMessageWithID:(NSString *)replyMessageID
-           forwardedFromMessageWithID:(NSString *)forwardMessageID
+                          withSubject:(NSString *)subject
+                            threadTag:(AwfulThreadTag *)threadTag
+                               BBcode:(NSString *)text
+                     asReplyToMessage:(AwfulPrivateMessage *)regardingMessage
+                 forwardedFromMessage:(AwfulPrivateMessage *)forwardedMessage
                               andThen:(void (^)(NSError *error))callback
-{    NSMutableDictionary *parameters = [@{ @"touser": username,
+{
+    NSMutableDictionary *parameters = [@{ @"touser": username,
                                            @"title": subject,
-                                           @"iconid": iconID ?: @"0",
+                                           @"iconid": threadTag.threadTagID ?: @"0",
                                            @"message": text,
                                            @"action": @"dosend",
-                                           @"forward": forwardMessageID ? @"true" : @"",
+                                           @"forward": forwardedMessage.messageID ? @"true" : @"",
                                            @"savecopy": @"yes",
                                            @"submit": @"Send Message" } mutableCopy];
-    if (replyMessageID || forwardMessageID) {
-        parameters[@"prevmessageid"] = replyMessageID ?: forwardMessageID;
+    if (regardingMessage || forwardedMessage) {
+        parameters[@"prevmessageid"] = regardingMessage.messageID ?: forwardedMessage.messageID;
     }
     return [_HTTPManager POST:@"private.php"
                    parameters:parameters
@@ -841,22 +854,18 @@
     }];
 }
 
-- (NSOperation *)postThreadInForumWithID:(NSString *)forumID
-                                 subject:(NSString *)subject
-                                    icon:(NSString *)iconID
-                           secondaryIcon:(NSString *)secondaryIconID
-                        secondaryIconKey:(NSString *)secondaryIconKey
-                                    text:(NSString *)text
-                                 andThen:(void (^)(NSError *error, NSString *threadID))callback
+- (NSOperation *)postThreadInForum:(AwfulForum *)forum
+                       withSubject:(NSString *)subject
+                         threadTag:(AwfulThreadTag *)threadTag
+                      secondaryTag:(AwfulThreadTag *)secondaryTag
+               secondaryTagFormKey:(NSString *)secondaryTagFormKey
+                            BBcode:(NSString *)text
+                           andThen:(void (^)(NSError *error, AwfulThread *thread))callback
 {
-    NSParameterAssert([forumID length] > 0);
-    NSParameterAssert([subject length] > 0);
-    NSParameterAssert([text length] > 0);
-    
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
-                                @"forumid": forumID }
+                                @"forumid": forum.forumID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -876,10 +885,10 @@
             AwfulForm *form = forms[0];
             NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"subject"] = [subject copy];
-            parameters[form.threadTagName] = iconID ?: @"0";
+            parameters[form.threadTagName] = threadTag.threadTagID ?: @"0";
             parameters[@"message"] = [text copy];
-            if (secondaryIconID.length > 0) {
-                parameters[form.secondaryThreadTagName] = secondaryIconID;
+            if (secondaryTag) {
+                parameters[form.secondaryThreadTagName] = secondaryTag.threadTagID;
             }
             [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"newthread.php"
@@ -889,7 +898,8 @@
                 HTMLElementNode *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 NSString *threadID = URL.queryDictionary[@"threadid"];
-                if (callback) callback(nil, threadID);
+                AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
+                if (callback) callback(nil, thread);
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
             }];

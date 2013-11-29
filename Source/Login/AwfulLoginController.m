@@ -194,9 +194,9 @@
                   withRowAnimation:UITableViewRowAnimationNone];
     self.tableView.userInteractionEnabled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] logInAsUsername:self.username
-                                 withPassword:self.password
-                                      andThen:^(NSError *error, AwfulUser *user)
+    [[AwfulHTTPClient client] logInWithUsername:self.username
+                                       password:self.password
+                                        andThen:^(NSError *error, AwfulUser *user)
     {
         __typeof__(self) self = weakSelf;
         if (error) {

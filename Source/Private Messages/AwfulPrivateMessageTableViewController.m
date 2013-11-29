@@ -187,7 +187,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)deleteObject:(AwfulPrivateMessage *)pm
 {
-    [[AwfulHTTPClient client] deletePrivateMessageWithID:pm.messageID andThen:^(NSError *error) {
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulHTTPClient client] deletePrivateMessage:pm andThen:^(NSError *error) {
+        __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Delete Message" error:error buttonTitle:@"OK"];
         } else {

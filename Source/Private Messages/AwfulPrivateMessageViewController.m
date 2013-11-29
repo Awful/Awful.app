@@ -101,10 +101,9 @@
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
-        [[AwfulHTTPClient client] readPrivateMessageWithID:self.privateMessage.messageID
-                                                   andThen:^(NSError *error,
-                                                             AwfulPrivateMessage *message)
-         {
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulHTTPClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
+            __typeof__(self) self = weakSelf;
              [self.postsView reloadPostAtIndex:0];
              [self.loadingView removeFromSuperview];
              self.loadingView = nil;
@@ -155,14 +154,14 @@
                        self.privateMessage.from.username];
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     [sheet addButtonWithTitle:@"Reply" block:^{
-        [[AwfulHTTPClient client] quotePrivateMessageWithID:self.privateMessage.messageID
-                                                    andThen:^(NSError *error, NSString *bbcode)
-        {
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulHTTPClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+            __typeof__(self) self = weakSelf;
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
                                   buttonTitle:@"OK"];
             } else {
-                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage initialContents:bbcode];
+                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage initialContents:BBcode];
                 newPrivateMessageViewController.delegate = self;
                 [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
                                    animated:YES
@@ -171,13 +170,13 @@
         }];
     }];
     [sheet addButtonWithTitle:@"Forward" block:^{
-        [[AwfulHTTPClient client] quotePrivateMessageWithID:self.privateMessage.messageID
-                                                    andThen:^(NSError *error, NSString *bbcode)
-        {
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulHTTPClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+            __typeof__(self) self = weakSelf;
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage initialContents:bbcode];
+                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage initialContents:BBcode];
                 newPrivateMessageViewController.delegate = self;
                 [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
                                    animated:YES

@@ -424,7 +424,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     SetCrashlyticsUsername();
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;
-    [[AwfulHTTPClient client] listForumHierarchyAndThen:nil];
+    [[AwfulHTTPClient client] taxonomizeForumsAndThen:nil];
     [UIView transitionWithView:self.window
                       duration:0.3
                        options:UIViewAnimationOptionTransitionCrossDissolve

@@ -102,7 +102,7 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
 {
     if (self.post) {
-        [[AwfulHTTPClient client] editPostWithID:self.post.postID text:composition andThen:^(NSError *error) {
+        [[AwfulHTTPClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
             if (error) {
                 completionHandler(NO);
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -112,19 +112,15 @@
         }];
     } else if (self.thread) {
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulHTTPClient client] replyToThreadWithID:self.thread.threadID
-                                                 text:composition
-                                              andThen:^(NSError *error, NSString *postID)
-        {
+        [[AwfulHTTPClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, AwfulPost *post) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
             } else {
                 completionHandler(YES);
-                if (postID) {
-                    _reply = [AwfulPost firstOrNewPostWithPostID:postID
-                                          inManagedObjectContext:self.thread.managedObjectContext];
+                if (post) {
+                    self->_reply = post;
                 }
             }
         }];

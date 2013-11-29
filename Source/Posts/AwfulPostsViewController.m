@@ -248,9 +248,8 @@
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
             [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                [[AwfulHTTPClient client] rateThreadWithID:self.thread.threadID
-                                                    rating:i
-                                                   andThen:^(NSError *error)
+                [[AwfulHTTPClient client] rateThread:self.thread :i
+                                             andThen:^(NSError *error)
                  {
                      if (error) {
                          [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
@@ -272,9 +271,9 @@
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulHTTPClient client] setThreadWithID:self.thread.threadID
-                                     isBookmarked:!self.thread.bookmarked
-                                          andThen:^(NSError *error)
+        [[AwfulHTTPClient client] setThread:self.thread
+                               isBookmarked:!self.thread.bookmarked
+                                    andThen:^(NSError *error)
          {
              if (error) {
                  NSLog(@"error %@bookmarking thread %@: %@",
@@ -535,13 +534,10 @@
 - (void)fetchPage:(AwfulThreadPage)page completionHandler:(void (^)(NSError *error))completionHandler
 {
     __weak __typeof__(self) weakSelf = self;
-    id op = [[AwfulHTTPClient client] listPostsInThreadWithID:self.thread.threadID
-                                                       onPage:page
-                                                 singleUserID:self.author.userID
-                                                      andThen:^(NSError *error,
-                                                                NSArray *posts,
-                                                                NSUInteger firstUnreadPost,
-                                                                NSString *advertisementHTML)
+    id op = [[AwfulHTTPClient client] listPostsInThread:self.thread
+                                              writtenBy:self.author
+                                                 onPage:page
+                                                andThen:^(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML)
              {
                  __typeof__(self) self = weakSelf;
                  
@@ -897,76 +893,67 @@ static char KVOContext;
         }];
     }]];
     if (!self.author) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere
-                                                  action:^
-        {
-            [[AwfulHTTPClient client] markThreadWithID:self.thread.threadID
-                                   readUpToPostAtIndex:[@(post.threadIndex) stringValue]
-                                               andThen:^(NSError *error)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Mark Read"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                 } else {
-                     [SVProgressHUD showSuccessWithStatus:@"Marked"];
-                     post.thread.seenPosts = post.threadIndex;
-                 }
-             }];
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
+            [[AwfulHTTPClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Mark Read"
+                                            error:error
+                                      buttonTitle:@"Alright"];
+                } else {
+                    [SVProgressHUD showSuccessWithStatus:@"Marked"];
+                    post.thread.seenPosts = post.threadIndex;
+                }
+            }];
         }]];
     }
     if (post.editable) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
-            [[AwfulHTTPClient client] getTextOfPostWithID:post.postID
-                                                  andThen:^(NSError *error, NSString *text)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                     return;
-                 }
-                 self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
-                 self.replyViewController.restorationIdentifier = @"Edit composition";
-                 self.replyViewController.delegate = self;
-                 UINavigationController *nav = [self.replyViewController enclosingNavigationController];
-                 nav.restorationIdentifier = @"Edit composition navigation controller";
-                 [self presentViewController:nav animated:YES completion:nil];
-             }];
+            [[AwfulHTTPClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Edit Post"
+                                            error:error
+                                      buttonTitle:@"Alright"];
+                    return;
+                }
+                self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
+                self.replyViewController.restorationIdentifier = @"Edit composition";
+                self.replyViewController.delegate = self;
+                UINavigationController *nav = [self.replyViewController enclosingNavigationController];
+                nav.restorationIdentifier = @"Edit composition navigation controller";
+                [self presentViewController:nav animated:YES completion:nil];
+            }];
         }]];
     }
     if (!self.thread.closed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
-            [[AwfulHTTPClient client] quoteTextOfPostWithID:post.postID
-                                                    andThen:^(NSError *error, NSString *quotedText)
-             {
-                 if (error) {
-                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
-                                             error:error
-                                       buttonTitle:@"Alright"];
-                     return;
-                 }
-                 if (self.replyViewController) {
-                     UITextView *textView = self.replyViewController.textView;
-                     void (^appendString)(NSString *) = ^(NSString *string) {
-                         UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument
-                                                                      toPosition:textView.endOfDocument];
-                         [textView replaceRange:endRange withText:string];
-                     };
-                     while (![textView.text hasSuffix:@"\n\n"]) {
-                         appendString(@"\n");
-                     }
-                     appendString(quotedText);
-                 } else {
-                     self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread
-                                                                                      quotedText:quotedText];
-                     self.replyViewController.delegate = self;
-                     self.replyViewController.restorationIdentifier = @"Reply composition";
-                 }
-                 UINavigationController *nav = [self.replyViewController enclosingNavigationController];
-                 nav.restorationIdentifier = @"Reply composition navigation controller";
-                 [self presentViewController:nav animated:YES completion:nil];
-             }];
+            [[AwfulHTTPClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Quote Post"
+                                            error:error
+                                      buttonTitle:@"Alright"];
+                    return;
+                }
+                if (self.replyViewController) {
+                    UITextView *textView = self.replyViewController.textView;
+                    void (^appendString)(NSString *) = ^(NSString *string) {
+                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument
+                                                                     toPosition:textView.endOfDocument];
+                        [textView replaceRange:endRange withText:string];
+                    };
+                    while (![textView.text hasSuffix:@"\n\n"]) {
+                        appendString(@"\n");
+                    }
+                    appendString(quotedText);
+                } else {
+                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread
+                                                                                     quotedText:quotedText];
+                    self.replyViewController.delegate = self;
+                    self.replyViewController.restorationIdentifier = @"Reply composition";
+                }
+                UINavigationController *nav = [self.replyViewController enclosingNavigationController];
+                nav.restorationIdentifier = @"Reply composition navigation controller";
+                [self presentViewController:nav animated:YES completion:nil];
+            }];
         }]];
     }
     [sheet showFromRect:rect inView:self.postsView animated:YES];
