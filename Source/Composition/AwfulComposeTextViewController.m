@@ -103,6 +103,10 @@
             
             // The extra 4 pushes the caret a couple points above the inputView/inputAccessoryView.
             contentOffset.y += remainder + 4;
+            
+            // Getting a hard-to-reproduce crash here, trying to figure out what's up.
+            NSAssert(!isnan(contentOffset.y), @"weird content offset; caret = %@, visible = %@",
+                     NSStringFromCGRect(caretRect), NSStringFromCGRect(visibleRect));
             [UIView animateWithDuration:0.2 animations:^{
                 [self.textView setContentOffset:contentOffset animated:NO];
             }];
