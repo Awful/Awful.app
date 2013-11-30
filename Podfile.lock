@@ -23,6 +23,7 @@ PODS:
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
+  - PSMenuItem (0.0.1)
   - SVProgressHUD (1.0)
   - SVPullToRefresh (HEAD based on 0.4.1)
   - WYPopoverController (0.1.7)
@@ -33,6 +34,7 @@ DEPENDENCIES:
   - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - JLRoutes (= 1.4)
   - PocketAPI (= 1.0.2)
+  - PSMenuItem (= 0.0.1)
   - SVProgressHUD (= 1.0)
   - SVPullToRefresh (HEAD)
   - WYPopoverController (= 0.1.7)
@@ -48,6 +50,7 @@ SPEC CHECKSUMS:
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
+  PSMenuItem: 59e411188ca4478b89c45ec6a58dcdb41b623587
   SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
   WYPopoverController: 729963b2405c7763c99393a254021de9bffde763
