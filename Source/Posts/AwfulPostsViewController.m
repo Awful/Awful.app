@@ -1138,35 +1138,45 @@ static char KVOContext;
 
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
+                  shouldKeepDraft:(BOOL)keepDraft
 {
     if ([composeTextViewController isEqual:self.replyViewController]) {
-        [self replyViewController:(AwfulReplyViewController *)composeTextViewController didFinishWithSuccessfulSubmission:success];
+        [self replyViewController:(AwfulReplyViewController *)composeTextViewController
+didFinishWithSuccessfulSubmission:success
+                  shouldKeepDraft:keepDraft];
     } else {
         [self newPrivateMessageViewController:(AwfulNewPrivateMessageViewController *)composeTextViewController
-            didFinishWithSuccessfulSubmission:success];
+            didFinishWithSuccessfulSubmission:success
+                              shouldKeepDraft:keepDraft];
     }
 }
 
-- (void)replyViewController:(AwfulReplyViewController *)replyViewController didFinishWithSuccessfulSubmission:(BOOL)success
+- (void)replyViewController:(AwfulReplyViewController *)replyViewController
+didFinishWithSuccessfulSubmission:(BOOL)success
+            shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        if (!success) return;
-        if (replyViewController.thread) {
-            self.page = AwfulThreadPageNextUnread;
-        } else {
-            if (self.author) {
-                self.page = replyViewController.post.singleUserPage;
+        if (success) {
+            if (replyViewController.thread) {
+                self.page = AwfulThreadPageNextUnread;
             } else {
-                self.page = replyViewController.post.page;
+                if (self.author) {
+                    self.page = replyViewController.post.singleUserPage;
+                } else {
+                    self.page = replyViewController.post.page;
+                }
+                self.topPost = replyViewController.post;
             }
-            self.topPost = replyViewController.post;
         }
-        self.replyViewController = nil;
+        if (!keepDraft) {
+            self.replyViewController = nil;
+        }
     }];
 }
 
 - (void)newPrivateMessageViewController:(AwfulNewPrivateMessageViewController *)newPrivateMessageViewController
       didFinishWithSuccessfulSubmission:(BOOL)success
+                        shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

@@ -59,6 +59,11 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler;
 
 /**
+ * Called when the cancel button is tapped and no submission is in progress. The default implementation simply informs the delegate; overridden implementations can do so directly or call super as desired.
+ */
+- (void)cancel;
+
+/**
  * A view that perches atop the textView, housing additional fields like a "Subject" field or a thread tag picker.
  */
 @property (strong, nonatomic) UIView <AwfulComposeCustomView> *customView;
@@ -83,9 +88,11 @@
 /**
  * Sent to the delegate when composition is either submitted or cancelled.
  *
- * @param success YES if the submission was successful, otherwise NO.
+ * @param success   YES if the submission was successful, otherwise NO.
+ * @param keepDraft YES if the view controller should be kept around, otherwise NO.
  */
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
-didFinishWithSuccessfulSubmission:(BOOL)success;
+didFinishWithSuccessfulSubmission:(BOOL)success
+                  shouldKeepDraft:(BOOL)keepDraft;
 
 @end

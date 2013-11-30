@@ -179,6 +179,7 @@
 
 - (void)composeTextViewController:(AwfulNewThreadViewController *)newThreadViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
+                  shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:^{
         if (success) {
@@ -187,6 +188,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
             postsViewController.page = 1;
             [self showPostsViewController:postsViewController];
+        }
+        if (!keepDraft) {
+            _newThreadViewController = nil;
         }
     }];
 }

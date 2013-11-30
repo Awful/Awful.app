@@ -154,7 +154,7 @@
         [self submitComposition:submission.string completionHandler:^(BOOL success) {
             [SVProgressHUD dismiss];
             if (success) {
-                [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES];
+                [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
             } else {
                 [self enableEverything];
                 [self focusInitialFirstResponder];
@@ -218,6 +218,11 @@
     [self doesNotRecognizeSelector:_cmd];
 }
 
+- (void)cancel
+{
+    [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
+}
+
 - (void)setCustomView:(UIView<AwfulComposeCustomView> *)customView
 {
     UIEdgeInsets textContainerInset = self.textView.textContainerInset;
@@ -268,7 +273,7 @@
         [SVProgressHUD dismiss];
         [self enableEverything];
     } else {
-        [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO];
+        [self cancel];
     }
 }
 

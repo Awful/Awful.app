@@ -324,6 +324,7 @@
 
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
+                  shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

@@ -231,7 +231,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController didFinishWithSuccessfulSubmission:(BOOL)success
+- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+didFinishWithSuccessfulSubmission:(BOOL)success
+                  shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
