@@ -417,11 +417,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 - (void)loginController:(AwfulLoginController *)login
          didLogInAsUser:(AwfulUser *)user
 {
-    NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
     AwfulSettings *settings = [AwfulSettings settings];
-    settings.lastForcedUserInfoUpdateVersion = appVersion;
     settings.username = user.username;
-    SetCrashlyticsUsername();
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;
     [[AwfulHTTPClient client] taxonomizeForumsAndThen:nil];

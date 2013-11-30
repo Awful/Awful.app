@@ -39,8 +39,6 @@
 
 @property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
 
-@property (copy, nonatomic) NSString *lastForcedUserInfoUpdateVersion;
-
 @property (copy, nonatomic) NSString *customBaseURL;
 
 @property (copy, nonatomic) NSString *instapaperUsername;
@@ -81,7 +79,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
-    __unsafe_unretained NSString *lastForcedUserInfoUpdateVersion;
     __unsafe_unretained NSString *customBaseURL;
     __unsafe_unretained NSString *instapaperUsername;
 } AwfulSettingsKeys;

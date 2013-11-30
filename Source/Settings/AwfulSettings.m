@@ -191,16 +191,6 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.lastOfferedPasteboardURL] = lastOfferedPasteboardURL;
 }
 
-- (NSString *)lastForcedUserInfoUpdateVersion
-{
-    return self[AwfulSettingsKeys.lastForcedUserInfoUpdateVersion];
-}
-
-- (void)setLastForcedUserInfoUpdateVersion:(NSString *)lastForcedUserInfoUpdateVersion
-{
-    self[AwfulSettingsKeys.lastForcedUserInfoUpdateVersion] = lastForcedUserInfoUpdateVersion;
-}
-
 - (NSString *)customBaseURL
 {
     return self[AwfulSettingsKeys.customBaseURL];
@@ -333,7 +323,6 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showThreadTags = @"show_thread_tags",
     .favoriteForums = @"favorite_forums",
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
-    .lastForcedUserInfoUpdateVersion = @"last_forced_user_info_update_version",
     .customBaseURL = @"custom_base_URL",
     .instapaperUsername = @"instapaper_username",
 };
