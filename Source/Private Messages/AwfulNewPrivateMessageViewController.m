@@ -136,7 +136,7 @@
 - (void)updateThreadTagButtonImage
 {
     UIImage *image;
-    if (self.threadTag) {
+    if (self.threadTag.imageName) {
         image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
     } else {
         image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
@@ -220,7 +220,11 @@
         return [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+        if (tag.imageName) {
+            return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+        } else {
+            return [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+        }
     }
 }
 
