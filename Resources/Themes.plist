@@ -64,6 +64,8 @@
 		<string>#56a4ae</string>
 		<key>tellBadgeColor</key>
 		<string>#cba719</string>
+		<key>keyboardAppearance</key>
+		<string>Light</string>
 	</dict>
 	<key>dark</key>
 	<dict>

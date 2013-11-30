@@ -84,6 +84,13 @@ static NSString * const DefaultTitle = @"New Thread";
     }];
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.fieldView.subjectField.textField.textColor = self.textView.textColor;
+    self.fieldView.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+}
+
 - (AwfulNewThreadFieldView *)fieldView
 {
     if (_fieldView) return _fieldView;

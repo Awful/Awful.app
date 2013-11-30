@@ -68,6 +68,15 @@
     self.customView = self.fieldView;
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.fieldView.toField.textField.textColor = self.textView.textColor;
+    self.fieldView.toField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    self.fieldView.subjectField.textField.textColor = self.textView.textColor;
+    self.fieldView.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
