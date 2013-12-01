@@ -69,18 +69,19 @@ static id _instance;
     [UIView transitionWithView:self.window
                       duration:0.3
                        options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{
-                        [UIView performWithoutAnimation:^{
-                            self.window.rootViewController = [AwfulLaunchImageViewController new];
-                        }];
-                    } completion:^(BOOL finished) {
-                        AwfulLoginController *loginController = [AwfulLoginController new];
-                        loginController.delegate = self;
-                        [self.window.rootViewController presentViewController:[loginController enclosingNavigationController] animated:YES completion:nil];
-                        
-                        // If we delete the store earlier, the root view controller's still hanging around in an autorelease pool somewhere. If a posts view was open when logging out (which can happen on iPad), it'll crash when the store disappears out from under the managed object context. This seems like a reasonable time to delete the store, as it's not like anyone can do anything in the meantime.
-                        [_dataStack deleteStoreAndResetStack];
-                    }];
+                    animations:^
+    {
+        [UIView performWithoutAnimation:^{
+            self.window.rootViewController = [AwfulLaunchImageViewController new];
+        }];
+    } completion:^(BOOL finished) {
+        AwfulLoginController *loginController = [AwfulLoginController new];
+        loginController.delegate = self;
+        [self.window.rootViewController presentViewController:[loginController enclosingNavigationController] animated:YES completion:nil];
+        
+        // If we delete the store earlier, the root view controller's still hanging around in an autorelease pool somewhere. If a posts view was open when logging out (which can happen on iPad), it'll crash when the store disappears out from under the managed object context. This seems like a reasonable time to delete the store, as it's not like anyone can do anything in the meantime.
+        [_dataStack deleteStoreAndResetStack];
+    }];
 }
 
 - (NSManagedObjectContext *)managedObjectContext
@@ -111,7 +112,6 @@ static id _instance;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     if ([AwfulHTTPClient client].loggedIn) {
         self.window.rootViewController = [self createRootViewControllerStack];
-        [self themeDidChange];
     } else {
         self.window.rootViewController = [AwfulLaunchImageViewController new];
     }

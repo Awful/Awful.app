@@ -9,17 +9,18 @@
 
 - (void)themeDidChange
 {
-	for (UIViewController *child in self.childViewControllers) {
-		if ([child isViewLoaded]) {
-			[child themeDidChange];
-		}
-	}
-	UIViewController *presented = self.presentedViewController;
-	if (presented) {
-		if ([presented isViewLoaded]) {
-			[presented themeDidChange];
-		}
-	}
+    NSMutableSet *dependants = [NSMutableSet new];
+    [dependants addObjectsFromArray:self.childViewControllers];
+    if (self.presentedViewController) {
+        [dependants addObject:self.presentedViewController];
+    }
+    if ([self respondsToSelector:@selector(viewControllers)]) {
+        NSArray *viewControllers = ((UINavigationController *)self).viewControllers;
+        [dependants addObjectsFromArray:viewControllers];
+    }
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isViewLoaded = YES"];
+    [dependants filterUsingPredicate:predicate];
+    [dependants makeObjectsPerformSelector:@selector(themeDidChange)];
 }
 
 @end

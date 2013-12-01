@@ -153,6 +153,19 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     _dataSource.updatesTableView = NO;
 }
 
+- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    [super themeCell:cell atIndexPath:indexPath];
+    AwfulPrivateMessage *message = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    [self themeCell:cell withObject:message];
+}
+
+- (void)themeCell:(UITableViewCell *)cell withObject:(AwfulPrivateMessage *)message
+{
+    cell.backgroundColor = self.theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = self.theme[@"listTextColor"];
+}
+
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
@@ -178,6 +191,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     }
     cell.textLabel.text = pm.subject;
     cell.detailTextLabel.text = pm.from.username;
+    [self themeCell:cell withObject:pm];
 }
 
 - (BOOL)canDeleteObject:(AwfulPrivateMessage *)object atIndexPath:(NSIndexPath *)indexPath

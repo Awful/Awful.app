@@ -51,11 +51,9 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     return self;
 }
 
--(void)themeDidChange
+- (void)themeDidChange
 {
-	for (UIViewController *controller in self.viewControllers) {
-		[controller themeDidChange];
-	}
+    [self.viewControllers makeObjectsPerformSelector:@selector(themeDidChange)];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers
