@@ -50,6 +50,7 @@
 + (instancetype)firstOrNewPostWithPostID:(NSString *)postID
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
+    NSParameterAssert(postID.length > 0);
     AwfulPost *post = [self fetchArbitraryInManagedObjectContext:managedObjectContext
                                          matchingPredicateFormat:@"postID = %@", postID];
     if (!post) {
