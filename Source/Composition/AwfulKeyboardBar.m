@@ -69,7 +69,11 @@
             button.layer.shadowColor = [UIColor blackColor].CGColor;
         }
     } else {
-        self.backgroundColor = [UIColor colorWithRed:0.812 green:0.824 blue:0.835 alpha:1];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.backgroundColor = [UIColor colorWithRed:0.812 green:0.824 blue:0.835 alpha:1];
+        } else {
+            self.backgroundColor = [UIColor colorWithRed:0.863 green:0.875 blue:0.886 alpha:1];
+        }
         for (AwfulKeyboardButton *button in _buttons) {
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             button.backgroundColor = [UIColor colorWithRed:0.988 green:0.988 blue:0.992 alpha:1];
@@ -81,11 +85,13 @@
 
 - (void)layoutSubviews
 {
-    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 57 : 44;
-    const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 12 : 5;
+    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 57 : 26;
+    const CGFloat height = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? width : 38;
+    const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 12 : 6;
+    const CGFloat topMargin = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 7 : 2;
     CGFloat x = floorf((CGRectGetWidth(self.bounds) - (width * _buttons.count) - (between * (_buttons.count - 1))) / 2);
     for (UIButton *button in _buttons) {
-        button.frame = CGRectMake(x, 7, width, width);
+        button.frame = CGRectMake(x, topMargin, width, height);
         x += width + between;
     }
 }
@@ -109,7 +115,10 @@
     self = [super init];
     if (!self) return nil;
     [self setTitle:string forState:UIControlStateNormal];
-    self.titleLabel.font = [UIFont systemFontOfSize:22];
+    self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        self.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 5, 0);
+    }
     self.layer.cornerRadius = 4;
     self.layer.borderWidth = 0;
     self.layer.shadowOpacity = 1;
