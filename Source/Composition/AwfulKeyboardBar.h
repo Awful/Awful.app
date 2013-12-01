@@ -6,8 +6,10 @@
 
 @interface AwfulKeyboardBar : UIView <UIInputViewAudioFeedback>
 
-@property (copy, nonatomic) NSArray *characters;
+@property (copy, nonatomic) NSArray *strings;
 
 @property (weak, nonatomic) id <UIKeyInput> keyInputView;
+
+@property (assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
 
 @end

@@ -6,32 +6,29 @@
 
 @interface AwfulKeyboardButton : UIButton
 
-@property (readonly, copy, nonatomic) NSString *character;
+- (id)initWithString:(NSString *)string;
 
-- (instancetype)initWithCharacter:(NSString *)character;
+@property (readonly, copy, nonatomic) NSString *string;
 
-@end
-
-
-@interface AwfulKeyboardBar ()
-
-@property (weak, nonatomic) CAGradientLayer *gradient;
+@property (strong, nonatomic) UIColor *highlightedBackgroundColor;
 
 @end
-
 
 @implementation AwfulKeyboardBar
-
-- (void)setCharacters:(NSArray *)characters
 {
-    if ([_characters isEqualToArray:characters]) return;
-    _characters = [characters copy];
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    for (NSString *character in characters) {
-        AwfulKeyboardButton *button = [[AwfulKeyboardButton alloc] initWithCharacter:character];
-        [button addTarget:self action:@selector(keyPressed:)
-         forControlEvents:UIControlEventTouchUpInside];
+    NSMutableArray *_buttons;
+}
+
+- (void)setStrings:(NSArray *)strings
+{
+    _strings = [strings copy];
+    [_buttons makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [_buttons removeAllObjects];
+    for (NSString *string in strings) {
+        AwfulKeyboardButton *button = [[AwfulKeyboardButton alloc] initWithString:string];
+        [button addTarget:self action:@selector(keyPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
+        [_buttons addObject:button];
     }
     [self setNeedsLayout];
 }
@@ -39,31 +36,56 @@
 - (void)keyPressed:(AwfulKeyboardButton *)button
 {
     [[UIDevice currentDevice] playInputClick];
-    [self.keyInputView insertText:button.character];
+    [self.keyInputView insertText:button.string];
+}
+
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
+{
+    _keyboardAppearance = keyboardAppearance;
+    [self updateColors];
 }
 
 #pragma mark - UIView
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-	self.backgroundColor = [UIColor colorWithRed:0.863 green:0.871 blue:0.886 alpha:1];
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
+    _buttons = [NSMutableArray new];
     self.opaque = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [self updateColors];
     return self;
+}
+
+- (void)updateColors
+{
+    if (self.keyboardAppearance == UIKeyboardAppearanceDark) {
+        self.backgroundColor = [UIColor colorWithWhite:0.078 alpha:1];
+        for (AwfulKeyboardButton *button in _buttons) {
+            [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor colorWithWhite:0.353 alpha:1];
+            button.highlightedBackgroundColor = [UIColor colorWithWhite:0.149 alpha:1];
+            button.layer.shadowColor = [UIColor blackColor].CGColor;
+        }
+    } else {
+        self.backgroundColor = [UIColor colorWithRed:0.812 green:0.824 blue:0.835 alpha:1];
+        for (AwfulKeyboardButton *button in _buttons) {
+            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor colorWithRed:0.988 green:0.988 blue:0.992 alpha:1];
+            button.highlightedBackgroundColor = [UIColor colorWithRed:0.831 green:0.839 blue:0.847 alpha:1];
+            button.layer.shadowColor = [UIColor grayColor].CGColor;
+        }
+    }
 }
 
 - (void)layoutSubviews
 {
-    self.gradient.frame = (CGRect){ .size = self.bounds.size };
-    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 60 : 44;
-    const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 10 : 5;
-    CGFloat x = floorf((CGRectGetWidth(self.bounds) -
-                        (width * [self.characters count]) -
-                        (between * ([self.characters count] - 1)))
-                       / 2);
-    for (NSUInteger i = 0; i < [self.characters count]; i++) {
-        [self.subviews[i] setFrame:CGRectMake(x, 2, width, CGRectGetHeight(self.bounds) - 4)];
+    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 57 : 44;
+    const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 12 : 5;
+    CGFloat x = floorf((CGRectGetWidth(self.bounds) - (width * _buttons.count) - (between * (_buttons.count - 1))) / 2);
+    for (UIButton *button in _buttons) {
+        button.frame = CGRectMake(x, 7, width, width);
         x += width + between;
     }
 }
@@ -77,25 +99,46 @@
 
 @end
 
-
 @implementation AwfulKeyboardButton
 {
-    NSString *_character;
+    UIColor *_normalBackgroundColor;
 }
 
-- (id)initWithCharacter:(NSString *)character
+- (id)initWithString:(NSString *)string
 {
-    if (!(self = [super init])) return nil;
-    _character = [character copy];
-    [self setTitle:_character forState:UIControlStateNormal];
-		[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
+    self = [super init];
+    if (!self) return nil;
+    [self setTitle:string forState:UIControlStateNormal];
     self.titleLabel.font = [UIFont systemFontOfSize:22];
-    
-		self.backgroundColor = [UIColor colorWithRed:0.992 green:0.992 blue:0.996 alpha:1];
-		self.layer.cornerRadius = 3.5;
+    self.layer.cornerRadius = 4;
     self.layer.borderWidth = 0;
+    self.layer.shadowOpacity = 1;
+    self.layer.shadowOffset = CGSizeMake(0, 1);
+    self.layer.shadowRadius = 0;
     return self;
+}
+
+- (NSString *)string
+{
+    return [self titleForState:UIControlStateNormal];
+}
+
+#pragma mark - UIButton
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:backgroundColor];
+    _normalBackgroundColor = backgroundColor;
+}
+
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    if (highlighted) {
+        super.backgroundColor = self.highlightedBackgroundColor;
+    } else {
+        super.backgroundColor = _normalBackgroundColor;
+    }
 }
 
 @end

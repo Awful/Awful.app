@@ -29,9 +29,10 @@
     if (_BBcodeBar) return _BBcodeBar;
     _BBcodeBar = [AwfulKeyboardBar new];
     _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
-                                  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 63 : 36);
-    _BBcodeBar.characters = @[ @"[", @"=", @":", @"/", @"]" ];
+                                  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 36);
+    _BBcodeBar.strings = @[ @"[", @"=", @":", @"/", @"]" ];
     _BBcodeBar.keyInputView = self;
+    _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
     return _BBcodeBar;
 }
 
@@ -315,6 +316,14 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     if ([viewController isEqual:navigationController.viewControllers.firstObject]) {
         viewController.navigationItem.title = @"Insert Image";
     }
+}
+
+#pragma mark - UITextInputTraits
+
+- (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
+{
+    [super setKeyboardAppearance:keyboardAppearance];
+    _BBcodeBar.keyboardAppearance = keyboardAppearance;
 }
 
 #pragma mark - UIResponder
