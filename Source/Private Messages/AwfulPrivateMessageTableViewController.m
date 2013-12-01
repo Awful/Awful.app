@@ -27,6 +27,7 @@
 @implementation AwfulPrivateMessageTableViewController
 {
     AwfulFetchedResultsControllerDataSource *_dataSource;
+    AwfulNewPrivateMessageViewController *_composeViewController;
 }
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -67,10 +68,12 @@
 
 - (void)didTapCompose
 {
-    AwfulNewPrivateMessageViewController *compose = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
-    compose.restorationIdentifier = @"Message compose view";
-    compose.delegate = self;
-    UINavigationController *nav = [compose enclosingNavigationController];
+    if (!_composeViewController) {
+        _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
+        _composeViewController.restorationIdentifier = @"Message compose view";
+        _composeViewController.delegate = self;
+    }
+    UINavigationController *nav = [_composeViewController enclosingNavigationController];
     nav.restorationIdentifier = @"Message compose nav view";
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -108,6 +111,12 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    [_composeViewController themeDidChange];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -250,6 +259,26 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+    if (!keepDraft) {
+        _composeViewController = nil;
+    }
 }
+
+#pragma mark - State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    _composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
+    _composeViewController.delegate = self;
+}
+
+static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 
 @end

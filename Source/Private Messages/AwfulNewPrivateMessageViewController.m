@@ -53,6 +53,7 @@
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.title = @"Private Message";
     self.submitButtonItem.title = @"Send";
+    self.restorationClass = self.class;
     return self;
 }
 

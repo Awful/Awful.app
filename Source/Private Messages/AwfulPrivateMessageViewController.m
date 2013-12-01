@@ -27,13 +27,16 @@
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
 
-@property (nonatomic) AwfulPrivateMessage *privateMessage;
-@property (readonly) AwfulPostsView *postsView;
-@property (nonatomic) AwfulLoadingView *loadingView;
+@property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
+@property (readonly, strong, nonatomic) AwfulPostsView *postsView;
+@property (strong, nonatomic) AwfulLoadingView *loadingView;
 
 @end
 
 @implementation AwfulPrivateMessageViewController
+{
+    AwfulNewPrivateMessageViewController *_composeViewController;
+}
 
 - (instancetype)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
 {
@@ -161,11 +164,10 @@
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
                                   buttonTitle:@"OK"];
             } else {
-                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage initialContents:BBcode];
-                newPrivateMessageViewController.delegate = self;
-                [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
-                                   animated:YES
-                                 completion:nil];
+                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage
+                                                                                                initialContents:BBcode];
+                _composeViewController.delegate = self;
+                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
             }
         }];
     }];
@@ -176,11 +178,10 @@
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage initialContents:BBcode];
-                newPrivateMessageViewController.delegate = self;
-                [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
-                                   animated:YES
-                                 completion:nil];
+                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage
+                                                                                                 initialContents:BBcode];
+                _composeViewController.delegate = self;
+                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
             }
         }];
     }];
@@ -327,6 +328,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+    _composeViewController = nil;
 }
 
 #pragma mark State preservation and restoration
@@ -342,6 +344,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.privateMessage.messageID forKey:MessageIDKey];
+    [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -351,8 +354,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     self.privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
                                                             matchingPredicateFormat:@"messageID = %@", messageID];
     [self.postsView reloadData];
+    _composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
+    _composeViewController.delegate = self;
 }
 
 static NSString * const MessageIDKey = @"AwfulMessageID";
+static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 
 @end
