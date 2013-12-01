@@ -7,6 +7,8 @@
 @interface AwfulExpandingSplitViewController () <UINavigationControllerDelegate>
 
 @property (strong, nonatomic) NSLayoutConstraint *expandedDetailViewControllerConstraint;
+@property (strong, nonatomic) UIView *divider;
+@property (strong, nonatomic) UIView *fakeNavBar;
 
 @end
 
@@ -26,6 +28,20 @@
 - (void)loadView
 {
     self.view = [UIView new];
+    [self.view addSubview:self.divider];
+    [self.view addSubview:self.fakeNavBar];
+    NSDictionary *views = @{ @"divider": self.divider,
+                             @"fakeNavBar": self.fakeNavBar };
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[fakeNavBar(64)][divider]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[fakeNavBar(divider)]"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
     _masterViewControllerConstraints = [NSMutableArray new];
     _detailViewControllerConstraints = [NSMutableArray new];
     if (self.viewControllers.count > 0) {
@@ -36,10 +52,28 @@
     }
 }
 
+- (UIView *)divider
+{
+    if (_divider) return _divider;
+    _divider = [UIView new];
+    _divider.translatesAutoresizingMaskIntoConstraints = NO;
+    return _divider;
+}
+
+- (UIView *)fakeNavBar
+{
+    if (_fakeNavBar) return _fakeNavBar;
+    _fakeNavBar = [UIView new];
+    _fakeNavBar.translatesAutoresizingMaskIntoConstraints = NO;
+    return _fakeNavBar;
+}
+
 - (void)themeDidChange
 {
     [super themeDidChange];
     self.view.backgroundColor = self.theme[@"splitViewBackgroundColor"];
+    _divider.backgroundColor = self.theme[@"splitDividerColor"];
+    self.fakeNavBar.backgroundColor = self.theme[@"navigationBarTintColor"];
 }
 
 - (void)setViewControllers:(NSArray *)viewControllers
@@ -88,9 +122,16 @@
     newMasterViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
     newMasterViewController.view.clipsToBounds = YES;
     [self.view insertSubview:newMasterViewController.view atIndex:0];
-    NSDictionary *views = @{ @"master": newMasterViewController.view };
+    NSDictionary *views = @{ @"master": newMasterViewController.view,
+                             @"divider": self.divider,
+                             @"fakeNavBar": self.fakeNavBar };
     [_masterViewControllerConstraints addObjectsFromArray:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[master(==384)]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[master][fakeNavBar(1)]"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [_masterViewControllerConstraints addObjectsFromArray:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[master(383)][divider(1)]"
                                              options:0
                                              metrics:nil
                                                views:views]];
@@ -198,12 +239,6 @@
     } else {
         self.viewControllers = @[ self.viewControllers[0] ];
     }
-}
-
-- (UITabBarItem *)tabBarItem
-{
-    UIViewController *masterViewController = self.viewControllers[0];
-    return masterViewController.tabBarItem;
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle

@@ -14,6 +14,8 @@
 @implementation AwfulVerticalTabBarController
 {
     NSMutableArray *_selectedViewControllerConstraints;
+    UIView *_fakeNavBar;
+    UIView *_divider;
 }
 
 - (id)initWithViewControllers:(NSArray *)viewControllers
@@ -64,33 +66,45 @@
     self.tabBar.selectedItem = self.selectedViewController.tabBarItem;
     self.tabBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tabBar];
-    NSDictionary *views = @{ @"tabBar": self.tabBar };
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tabBar(==64)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tabBar]|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
+    _fakeNavBar = [UIView new];
+    _fakeNavBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_fakeNavBar];
+    _divider = [UIView new];
+    _divider.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_divider];
+    NSDictionary *views = @{ @"tabBar": self.tabBar,
+                             @"fakeNavBar": _fakeNavBar,
+                             @"divider": _divider };
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[fakeNavBar(63)]"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tabBar(62)][divider(1)]"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[fakeNavBar(64)][tabBar]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[fakeNavBar][divider]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
     [self replaceMainViewController:nil withViewController:self.selectedViewController];
-}
-
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    id <UILayoutSupport> topLayoutGuide = self.topLayoutGuide;
-    if (self.parentViewController) {
-        topLayoutGuide = self.parentViewController.topLayoutGuide;
-    }
-    self.tabBar.insets = UIEdgeInsetsMake(topLayoutGuide.length, 0, 0, 0);
 }
 
 - (void)themeDidChange
 {
     [super themeDidChange];
+    _fakeNavBar.backgroundColor = self.theme[@"navigationBarTintColor"];
     self.tabBar.tintColor = self.theme[@"tintColor"];
     self.tabBar.backgroundColor = self.theme[@"tabBarBackgroundColor"];
+    _divider.backgroundColor = self.theme[@"splitDividerColor"];
 }
 
 - (void)replaceMainViewController:(UIViewController *)oldViewController
@@ -103,10 +117,10 @@
     [oldViewController.view removeFromSuperview];
     newViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:newViewController.view];
-    NSDictionary *views = @{ @"tabBar": self.tabBar,
-                             @"main": newViewController.view };
+    NSDictionary *views = @{ @"main": newViewController.view,
+                             @"divider": _divider };
     [_selectedViewControllerConstraints addObjectsFromArray:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"[tabBar][main]|" options:0 metrics:nil views:views]];
+     [NSLayoutConstraint constraintsWithVisualFormat:@"[divider][main]|" options:0 metrics:nil views:views]];
     [_selectedViewControllerConstraints addObjectsFromArray:
      [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[main]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:_selectedViewControllerConstraints];

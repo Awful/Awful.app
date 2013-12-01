@@ -17,6 +17,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
+#import "AwfulNavigationController.h"
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -185,7 +186,8 @@ static inline void SetCrashlyticsUsername(void)
     } else {
         self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:viewControllers];
         self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
-        AwfulExpandingSplitViewController *splitViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:@[ self.verticalTabBarController ]];
+        NSArray *viewControllers = @[ self.verticalTabBarController, [AwfulNavigationController new]];
+        AwfulExpandingSplitViewController *splitViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:viewControllers];
         splitViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
         rootViewController = splitViewController;
     }
