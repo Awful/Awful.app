@@ -38,6 +38,10 @@
 		<string>#ffffff</string>
 		<key>postsViewCSS</key>
 		<string>posts-view.css</string>
+		<key>postsTopBarTextColor</key>
+		<string>#000000</string>
+		<key>postsTopBarBackgroundColor</key>
+		<string>#f9f9f9</string>
 		<key>splitViewBackgroundColor</key>
 		<string>#1e84af</string>
 		<key>tabBarBackgroundColor</key>
@@ -71,6 +75,8 @@
 	<dict>
 		<key>description</key>
 		<string>Dark</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
 		<key>scrollIndicatorStyle</key>
 		<string>White</string>
 		<key>backgroundColor</key>
@@ -79,11 +85,17 @@
 		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>
 		<string>#000000</string>
-		<key>descriptiveColor</key>
-		<string>#000000</string>
 		<key>navigationBarTintColor</key>
 		<string>#000000</string>
+		<key>toolbarTextColor</key>
+		<string>#ffffff</string>
+		<key>toolbarTintColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewTintColor</key>
+		<string>#000000</string>
+		<key>postsTopBarTextColor</key>
+		<string>#ffffff</string>
+		<key>postsTopBarBackgroundColor</key>
 		<string>#000000</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>

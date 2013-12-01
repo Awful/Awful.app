@@ -103,7 +103,7 @@
     return [self initWithThread:thread author:nil];
 }
 
--(AwfulTheme *)theme
+- (AwfulTheme *)theme
 {
 	return [AwfulTheme currentThemeForForum:self.thread.forum];
 }
@@ -307,6 +307,15 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
+    self.topBar.backgroundColor = self.theme[@"postsTopBarBackgroundColor"];
+    void (^configureButton)(UIButton *) = ^(UIButton *button){
+        [button setTitleColor:self.theme[@"postsTopBarTextColor"] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        button.backgroundColor = self.theme[@"postsTopBarBackgroundColor"];
+    };
+    configureButton(self.topBar.goToForumButton);
+    configureButton(self.topBar.loadReadPostsButton);
+    configureButton(self.topBar.scrollToBottomButton);
     [self configurePostsViewSettings];
     [self.replyViewController themeDidChange];
 }
@@ -690,9 +699,7 @@
                                forControlEvents:UIControlEventTouchUpInside];
     [self.postsView.scrollView addSubview:self.topBar];
     
-    self.topBar.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton,
-                          self.topBar.scrollToBottomButton ];
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
         [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];

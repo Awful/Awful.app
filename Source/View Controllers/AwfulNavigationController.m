@@ -36,8 +36,11 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-	self.navigationBar.tintColor = AwfulTheme.currentTheme[@"navigationBarTextColor"];
-    self.navigationBar.barTintColor = AwfulTheme.currentTheme[@"navigationBarTintColor"];
+    AwfulTheme *theme = [AwfulTheme currentTheme];
+	self.navigationBar.tintColor = theme[@"navigationBarTextColor"];
+    self.navigationBar.barTintColor = theme[@"navigationBarTintColor"];
+    self.toolbar.tintColor = theme[@"toolbarTextColor"];
+    self.toolbar.barTintColor = theme[@"toolbarTintColor"];
 }
 
 #pragma mark - UIViewControllerRestoration
