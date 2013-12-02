@@ -320,38 +320,20 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
+            AwfulForm *firstForm = forms.firstObject;
+            NSMutableDictionary *parameters = [firstForm recommendedParameters];
+            if (!parameters[@"threadid"]) {
+                NSString *extra = @"";
+                if (thread.closed) {
+                    extra = @". The thread may be closed";
+                }
+                NSString *description = [NSString stringWithFormat:@"Failed to reply; could not find form%@", extra];
                 error = [NSError errorWithDomain:AwfulErrorDomain
                                             code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to reply; could not find form" }];
+                                        userInfo:@{ NSLocalizedDescriptionKey: description }];
                 if (callback) callback(error, nil);
                 return;
             }
-            AwfulForm *form = forms[0];
-            NSMutableDictionary *parameters = [form recommendedParameters];
-            NSString *formkey = parameters[@"formkey"];
-            NSString *form_cookie = parameters[@"form_cookie"];
-            if (!formkey || !form_cookie) {
-                if (callback) {
-                    NSInteger code;
-                    NSString *extra;
-                    if (thread.closed) {
-                        code = AwfulErrorCodes.threadIsClosed;
-                        extra = @"It may be closed.";
-                    } else {
-                        code = AwfulErrorCodes.parseError;
-                        NSString *missingParameter = formkey ? @"form_cookie" : @"formkey";
-                        extra = [NSString stringWithFormat:@"Missing %@.", missingParameter];
-                    }
-                    NSString *description = [NSString stringWithFormat:@"Thread will not accept new replies from you. %@", extra];
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:code
-                                            userInfo:@{ NSLocalizedDescriptionKey: description }];
-                    callback(error, nil);
-                }
-                return;
-            }
-            [parameters removeObjectForKey:@"preview"];
             parameters[@"message"] = text;
             [_HTTPManager POST:@"newreply.php"
                     parameters:parameters
