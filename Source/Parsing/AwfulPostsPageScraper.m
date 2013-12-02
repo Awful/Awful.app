@@ -181,6 +181,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     if (firstUnseenPost && !singleUser) {
         thread.seenPosts = firstUnseenPost.threadIndex - 1;
     }
+    if (numberOfPages > 0 && currentPage == numberOfPages && !singleUser) {
+        AwfulPost *lastPost = posts.lastObject;
+        thread.lastPostDate = lastPost.postDate;
+        thread.lastPostAuthorName = lastPost.author.username;
+    }
     [managedObjectContext save:error];
     return posts;
 }

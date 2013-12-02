@@ -90,4 +90,12 @@
     XCTAssertEqual(last.page, (NSInteger)2);
 }
 
+- (void)testLastPage
+{
+    [self scrapeFixtureNamed:@"showthread-last"];
+    AwfulThread *thread = [[AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext] lastObject];
+    XCTAssertEqualObjects(thread.lastPostAuthorName, @"Ashmole");
+    XCTAssertEqual(thread.lastPostDate.timeIntervalSince1970, 1357586460.0);
+}
+
 @end
