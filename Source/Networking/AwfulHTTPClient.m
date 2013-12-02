@@ -320,14 +320,21 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            AwfulForm *firstForm = forms.firstObject;
-            NSMutableDictionary *parameters = [firstForm recommendedParameters];
-            if (!parameters[@"threadid"]) {
-                NSString *extra = @"";
-                if (thread.closed) {
-                    extra = @". The thread may be closed";
+            NSMutableDictionary *parameters;
+            for (AwfulForm *form in forms) {
+                NSMutableDictionary *possibleParameters = [form recommendedParameters];
+                if (possibleParameters[@"threadid"]) {
+                    parameters = possibleParameters;
+                    break;
                 }
-                NSString *description = [NSString stringWithFormat:@"Failed to reply; could not find form%@", extra];
+            }
+            if (!parameters) {
+                NSString *description;
+                if (thread.closed) {
+                    description = @"Could not reply; the thread may be closed.";
+                } else {
+                    description = @"Could not reply; failed to find the form.";
+                }
                 error = [NSError errorWithDomain:AwfulErrorDomain
                                             code:AwfulErrorCodes.parseError
                                         userInfo:@{ NSLocalizedDescriptionKey: description }];
@@ -375,23 +382,17 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find form" }];
-                if (callback) callback(error, nil);
-                return;
-            }
-            AwfulForm *form = forms[0];
-            for (AwfulFormItem *text in form.texts) {
-                if ([text.name isEqualToString:@"message"]) {
-                    if (callback) callback(error, text.value);
-                    return;
+            for (AwfulForm *form in forms) {
+                for (AwfulFormItem *text in form.texts) {
+                    if ([text.name isEqualToString:@"message"]) {
+                        if (callback) callback(error, text.value);
+                        return;
+                    }
                 }
             }
             error = [NSError errorWithDomain:AwfulErrorDomain
                                         code:AwfulErrorCodes.parseError
-                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find text box" }];
+                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find form" }];
             if (callback) callback(error, nil);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -441,17 +442,22 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
+            NSMutableDictionary *parameters;
+            for (AwfulForm *form in forms) {
+                NSMutableDictionary *possibleParameters = [form recommendedParameters];
+                if (possibleParameters[@"postid"]) {
+                    parameters = possibleParameters;
+                    break;
+                }
+            }
+            if (!parameters) {
                 error = [NSError errorWithDomain:AwfulErrorDomain
                                             code:AwfulErrorCodes.parseError
                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
                 if (callback) callback(error);
                 return;
             }
-            AwfulForm *form = forms[0];
-            NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"message"] = text;
-            [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"editpost.php"
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, id responseObject)
@@ -728,18 +734,12 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed quoting private message; could not find form" }];
-                if (callback) callback(error, nil);
-                return;
-            }
-            AwfulForm *form = forms[0];
-            for (AwfulFormItem *text in form.texts) {
-                if ([text.name isEqualToString:@"message"]) {
-                    if (callback) callback(error, text.value);
-                    return;
+            for (AwfulForm *form in forms) {
+                for (AwfulFormItem *text in form.texts) {
+                    if ([text.name isEqualToString:@"message"]) {
+                        if (callback) callback(error, text.value);
+                        return;
+                    }
                 }
             }
             error = [NSError errorWithDomain:AwfulErrorDomain
@@ -766,15 +766,17 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed scraping thread tags from new private message form" }];
-                if (callback) callback(error, nil);
-                return;
+            for (AwfulForm *form in forms) {
+                NSArray *tags = form.threadTags;
+                if (tags.count > 0) {
+                    if (callback) callback(error, tags);
+                    return;
+                }
             }
-            AwfulForm *form = forms[0];
-            if (callback) callback(error, form.threadTags);
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.parseError
+                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed scraping thread tags from new private message form" }];
+            if (callback) callback(error, nil);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
@@ -825,14 +827,16 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing new thread form" }];
-                if (callback) callback(error, nil);
-                return;
+            for (AwfulForm *form in forms) {
+                if (form.threadTags.count > 0) {
+                    if (callback) callback(error, form);
+                    return;
+                }
             }
-            if (callback) callback(error, forms[0]);
+            error = [NSError errorWithDomain:AwfulErrorDomain
+                                        code:AwfulErrorCodes.parseError
+                                    userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing new thread form" }];
+            if (callback) callback(error, nil);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
@@ -860,15 +864,23 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
-            if (forms.count < 1) {
+            AwfulForm *form;
+            NSMutableDictionary *parameters;
+            for (AwfulForm *possibleForm in forms) {
+                NSMutableDictionary *possibleParameters = [possibleForm recommendedParameters];
+                if (possibleParameters[@"forumid"]) {
+                    form = possibleForm;
+                    parameters = possibleParameters;
+                    break;
+                }
+            }
+            if (!parameters) {
                 error = [NSError errorWithDomain:AwfulErrorDomain
                                             code:AwfulErrorCodes.parseError
                                         userInfo:@{ NSLocalizedDescriptionKey: @"Failed to scrape new thread form" }];
                 if (callback) callback(error, nil);
                 return;
             }
-            AwfulForm *form = forms[0];
-            NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"subject"] = [subject copy];
             parameters[form.threadTagName] = threadTag.threadTagID ?: @"0";
             parameters[@"message"] = [text copy];

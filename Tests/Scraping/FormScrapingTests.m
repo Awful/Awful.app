@@ -36,6 +36,14 @@
     XCTAssertNil(parameters[@"signature"]);
 }
 
+- (void)testReplyWithAmazonSearch
+{
+    NSArray *forms = [self scrapeFixtureNamed:@"newreply-amazon-form"];
+    XCTAssertEqual(forms.count, (NSUInteger)2);
+    AwfulForm *replyForm = forms[1];
+    XCTAssertNotNil([replyForm recommendedParameters][@"threadid"]);
+}
+
 - (void)testThread
 {
     NSArray *forms = [self scrapeFixtureNamed:@"newthread"];
