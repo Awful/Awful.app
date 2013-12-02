@@ -339,14 +339,16 @@
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
-                NSString *postID;
+                AwfulPost *post;
                 HTMLElementNode *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
                                          [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
-                    postID = URL.queryDictionary[@"postid"];
+                    NSString *postID = URL.queryDictionary[@"postid"];
+                    if (postID.length > 0) {
+                        post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+                    }
                 }
-                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
                 if (callback) callback(nil, post);
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 if (callback) callback(error, nil);
@@ -452,11 +454,12 @@
             [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"editpost.php"
                     parameters:parameters
-                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                           if (callback) callback(nil);
-                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                           if (callback) callback(error);
-                       }];
+                       success:^(AFHTTPRequestOperation *operation, id responseObject)
+            {
+                if (callback) callback(nil);
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                if (callback) callback(error);
+            }];
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
