@@ -28,6 +28,7 @@
 #import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
 #import <Crashlytics/Crashlytics.h>
+#import <GRMustache/GRMustache.h>
 #import <PocketAPI/PocketAPI.h>
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate, UINavigationControllerDelegate>
@@ -98,6 +99,7 @@ static id _instance;
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
     [[AwfulSettings settings] migrateOldSettings];
+    [GRMustache preventNSUndefinedKeyExceptionAttack];
     
     NSURL *storeURL = [NSFileManager.defaultManager.documentDirectory URLByAppendingPathComponent:@"AwfulData.sqlite"];
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
