@@ -581,6 +581,7 @@
             if (callback) callback(error, nil, 0);
         }
     }];
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     __weak AFHTTPRequestOperation *weakOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
         AFHTTPRequestOperation *op = weakOp;
@@ -590,9 +591,13 @@
         if (!callback) return nil;
         NSDictionary *query = [request.URL queryDictionary];
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
-            dispatch_async(op.completionQueue ?: dispatch_get_main_queue(), ^{
-                callback(nil, query[@"threadid"], [query[@"pagenumber"] integerValue]);
-            });
+            [managedObjectContext performBlock:^{
+                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+                post.thread = [AwfulThread firstOrNewThreadWithThreadID:query[@"threadid"] inManagedObjectContext:managedObjectContext];
+                dispatch_async(op.completionQueue ?: dispatch_get_main_queue(), ^{
+                    callback(nil, post, [query[@"pagenumber"] integerValue]);
+                });
+            }];
         } else {
             NSString *missingInfo = query[@"threadid"] ? @"page number" : @"thread ID";
             NSString *message = [NSString stringWithFormat:@"The %@ could not be found",
