@@ -151,12 +151,13 @@
                           andThen:(void (^)(NSError *error, AwfulPost *post, AwfulThreadPage page))callback;
 
 /**
- * @param callback A block to call after learning of the user's info, which takes as a parameter an NSError object on failure or nil on success.
+ * @param userID   The user's ID. Specified directly in case no such user exists, which would make for a useless AwfulUser object.
+ * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)profileUser:(AwfulUser *)user
-                     andThen:(void (^)(NSError *error))callback;
+- (NSOperation *)profileUserWithID:(NSString *)userID
+                           andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 /**
  * @param callback A block to call after listing bans and probations, which takes as parameters: an NSError object on failure or nil on success; and an array of AwfulBan objects on success, or nil on failure.

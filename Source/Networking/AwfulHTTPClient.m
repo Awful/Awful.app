@@ -615,26 +615,26 @@
     return op;
 }
 
-- (NSOperation *)profileUser:(AwfulUser *)user
-                     andThen:(void (^)(NSError *error))callback
+- (NSOperation *)profileUserWithID:(NSString *)userID
+                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"member.php"
                   parameters:@{ @"action": @"getinfo",
-                                @"userid": user.userID }
+                                @"userid": userID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper new];
             NSError *error;
-            [scraper scrapeDocument:document
-                            fromURL:operation.response.URL
-           intoManagedObjectContext:managedObjectContext
-                              error:&error];
-            if (callback) callback(error);
+            AwfulUser *user = [scraper scrapeDocument:document
+                                              fromURL:operation.response.URL
+                             intoManagedObjectContext:managedObjectContext
+                                                error:&error];
+            if (callback) callback(error, user);
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error);
+        if (callback) callback(error, nil);
     }];
 }
 

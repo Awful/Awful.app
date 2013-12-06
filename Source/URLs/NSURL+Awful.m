@@ -20,16 +20,20 @@
     }
     
     NSDictionary *query = self.queryDictionary;
+    
     // Thread or post.
     if ([self.path caseInsensitiveCompare:@"/showthread.php"] == NSOrderedSame) {
+        
         // Link to specific post.
         if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]]];
         }
+        
         // Link to specific post.
         else if ([self.fragment hasPrefix:@"post"] && self.fragment.length > 4) {
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", [self.fragment substringFromIndex:4]]];
         }
+        
         // Link to page on specific thread.
         else if (query[@"threadid"] && query[@"pagenumber"]) {
             NSString *extra = @"";
@@ -41,6 +45,7 @@
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@/pages/%@%@",
                                          query[@"threadid"], query[@"pagenumber"], extra]];
         }
+        
         // Link to specific thread.
         else if (query[@"threadid"]) {
             NSString *extra = @"";
@@ -50,12 +55,21 @@
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@/pages/1%@", query[@"threadid"], extra]];
         }
     }
+    
     // Forum.
     else if ([self.path caseInsensitiveCompare:@"/forumdisplay.php"] == NSOrderedSame) {
         if (query[@"forumid"]) {
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://forums/%@", query[@"forumid"]]];
         }
     }
+    
+    // Profile.
+    else if ([self.path caseInsensitiveCompare:@"/member.php"] == NSOrderedSame) {
+        if ([query[@"action"] isEqual:@"getinfo"] && query[@"userid"]) {
+            return [NSURL URLWithString:[NSString stringWithFormat:@"awful://users/%@", query[@"userid"]]];
+        }
+    }
+    
     return nil;
 }
 

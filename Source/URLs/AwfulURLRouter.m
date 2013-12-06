@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulURLRouter.h"
+#import "AwfulAlertView.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulForumThreadTableViewController.h"
@@ -10,6 +11,7 @@
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulPrivateMessageTableViewController.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulSettingsViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import <SVProgressHUD/SVProgressHUD.h>
@@ -103,7 +105,40 @@
         return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulSettingsViewController class]];
     }];
     
+    [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
+        __typeof__(self) self = weakSelf;
+        void (^success)(AwfulUser *) = ^(AwfulUser *user) {
+            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                  target:self
+                                                                                  action:@selector(doneWithProfile)];
+            profile.navigationItem.leftBarButtonItem = item;
+            [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+        };
+        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:parameters[@"userID"] username:nil inManagedObjectContext:self.managedObjectContext];
+        if (user) {
+            success(user);
+            return YES;
+        }
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulHTTPClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+            __typeof__(self) self = weakSelf;
+            if (user) {
+                AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+                [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+            } else if (error) {
+                [AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+            }
+        }];
+        return YES;
+    }];
+    
     return _routes;
+}
+
+- (void)doneWithProfile
+{
+    [self.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)jumpToForum:(AwfulForum *)forum
