@@ -86,6 +86,7 @@
                              ({
                                  AwfulHTMLResponseSerializer *serializer = [AwfulHTMLResponseSerializer new];
                                  serializer.stringEncoding = NSWindowsCP1252StringEncoding;
+                                 serializer.fallbackEncoding = NSISOLatin1StringEncoding;
                                  serializer;
                              }),
                              ];

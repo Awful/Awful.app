@@ -10,4 +10,9 @@
  */
 @interface AwfulHTMLResponseSerializer : AFHTTPResponseSerializer
 
+/**
+ * If data cannot be decoded using stringEncoding, the fallbackEncoding is then tried. Default is 0 meaning "no fallback".
+ */
+@property (assign, nonatomic) NSStringEncoding fallbackEncoding;
+
 @end

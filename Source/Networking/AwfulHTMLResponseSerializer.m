@@ -18,6 +18,9 @@
 {
     data = [super responseObjectForResponse:response data:data error:error];
     NSString *string = [[NSString alloc] initWithData:data encoding:self.stringEncoding];
+    if (!string && self.fallbackEncoding) {
+        string = [[NSString alloc] initWithData:data encoding:self.fallbackEncoding];
+    }
     if (!string) {
         if (error) {
             *error = [NSError errorWithDomain:AwfulErrorDomain
