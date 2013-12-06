@@ -364,6 +364,13 @@ willDisplayHeaderView:(UITableViewHeaderFooterView *)header
                                 action:@selector(toggleFavorite:)
                       forControlEvents:UIControlEventTouchUpInside];
     }
+    NSInteger subforumLevel = 0;
+    AwfulForum *currentForum = forum.parentForum;
+    while (currentForum) {
+        subforumLevel++;
+        currentForum = currentForum.parentForum;
+    }
+    cell.subforumLevel = subforumLevel;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

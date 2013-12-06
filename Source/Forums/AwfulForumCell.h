@@ -37,4 +37,9 @@
  */
 @property (readonly, strong, nonatomic) UIButton *favoriteButton;
 
+/**
+ * How deep the forum is in the hierarchy. Set to the number of forums above the cell's forum in the hierarchy.
+ */
+@property (assign, nonatomic) NSInteger subforumLevel;
+
 @end
