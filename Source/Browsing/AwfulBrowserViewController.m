@@ -31,24 +31,34 @@
     [self hideNetworkIndicator];
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithURL:(NSURL *)URL
 {
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    self.URL = URL;
     self.title = @"Awful Browser";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.navigationItem.rightBarButtonItems = @[ self.actionItem, self.forwardItem, self.backItem ];
+        self.hidesBottomBarWhenPushed = YES;
     } else {
-        self.toolbarItems = @[ self.backItem, self.forwardItem, UIBarButtonItem.flexibleSpace, self.actionItem ];
+        self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem flexibleSpace], self.actionItem ];
     }
     [self updateBackForwardItemEnabledState];
     return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self initWithURL:nil];
 }
 
 - (void)setURL:(NSURL *)URL
 {
     if (_URL == URL) return;
     _URL = URL;
-    [self.webView loadRequest:[NSURLRequest requestWithURL:URL]];
+    if ([self isViewLoaded]) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:URL]];
+    }
 }
 
 - (UIWebView *)webView
@@ -59,9 +69,7 @@
 - (UIBarButtonItem *)actionItem
 {
     if (_actionItem) return _actionItem;
-    _actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                target:self
-                                                                action:@selector(actOnCurrentPage:)];
+    _actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actOnCurrentPage:)];
     return _actionItem;
 }
 
@@ -100,10 +108,8 @@
 - (UIBarButtonItem *)backItem
 {
     if (_backItem) return _backItem;
-    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"]
-                                                 style:UIBarButtonItemStylePlain
-                                                target:self
-                                                action:@selector(goBack)];
+    UIImage *image = [UIImage imageNamed:@"arrowleft"];
+    _backItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
     _backItem.accessibilityLabel = @"Back";
     return _backItem;
 }
@@ -116,10 +122,8 @@
 - (UIBarButtonItem *)forwardItem
 {
     if (_forwardItem) return _forwardItem;
-    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:self
-                                                   action:@selector(goForward)];
+    UIImage *image = [UIImage imageNamed:@"arrowright"];
+    _forwardItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
     _forwardItem.accessibilityLabel = @"Forward";
     return _forwardItem;
 }
@@ -177,9 +181,15 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.toolbarItems.count > 0) {
-        [self.navigationController setToolbarHidden:NO animated:animated];
+    if (self.presentingViewController) {
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(dismiss)];
+        self.navigationItem.leftBarButtonItem = item;
     }
+}
+
+- (void)dismiss
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidLoad
@@ -206,7 +216,7 @@
     [self hideNetworkIndicator];
     _URL = webView.request.URL;
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.title = [title length] > 0 ? title : @"Awful Browser";
+    self.title = title.length > 0 ? title : @"Awful Browser";
     [self preventDefaultLongTapMenu];
     [self updateBackForwardItemEnabledState];
 }

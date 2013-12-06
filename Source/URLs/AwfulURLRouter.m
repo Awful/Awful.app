@@ -109,10 +109,6 @@
         __typeof__(self) self = weakSelf;
         void (^success)(AwfulUser *) = ^(AwfulUser *user) {
             AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                  target:self
-                                                                                  action:@selector(doneWithProfile)];
-            profile.navigationItem.leftBarButtonItem = item;
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
         AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:parameters[@"userID"] username:nil inManagedObjectContext:self.managedObjectContext];
@@ -120,12 +116,9 @@
             success(user);
             return YES;
         }
-        __weak __typeof__(self) weakSelf = self;
         [[AwfulHTTPClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
-            __typeof__(self) self = weakSelf;
             if (user) {
-                AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-                [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+                success(user);
             } else if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
             }

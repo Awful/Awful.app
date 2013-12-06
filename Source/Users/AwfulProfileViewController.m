@@ -20,12 +20,11 @@
 
 @interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate, AwfulComposeTextViewControllerDelegate>
 
-@property (readonly, nonatomic) UIWebView *webView;
+@property (readonly, strong, nonatomic) UIWebView *webView;
 @property (copy, nonatomic) NSArray *services;
-@property (nonatomic) BOOL skipFetchingAndRenderingProfileOnAppear;
+@property (assign, nonatomic) BOOL skipFetchingAndRenderingProfileOnAppear;
 
 @end
-
 
 @implementation AwfulProfileViewController
 
@@ -33,6 +32,7 @@
 {
     if (!(self = [super init])) return nil;
     _user = user;
+    self.hidesBottomBarWhenPushed = YES;
     return self;
 }
 
@@ -171,10 +171,8 @@
         //
         // TODO test this on iOS 7.
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.45 * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
-                               animated:YES
-                             completion:nil];
+        dispatch_after(popTime, dispatch_get_main_queue(), ^{
+            [self presentViewController:[newPrivateMessageViewController enclosingNavigationController] animated:YES completion:nil];
         });
     } else {
         self.skipFetchingAndRenderingProfileOnAppear = NO;
@@ -215,6 +213,11 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    if (self.presentingViewController) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(dismiss)];
+    }
     [self updateDarkTheme];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsChanged:)
@@ -234,6 +237,11 @@
          }
         [self renderUser];
      }];
+}
+
+- (void)dismiss
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

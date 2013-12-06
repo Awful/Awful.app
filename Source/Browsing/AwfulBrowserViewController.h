@@ -5,9 +5,11 @@
 #import "UIViewController+AwfulTheme.h"
 
 /**
- * An AwfulBrowserViewController displays web content with a minimal browser interface.
+ * An AwfulBrowserViewController displays web content with a minimal browser interface. If presented, the left navigation item is a "Close" button that dismisses the view controller.
  */
 @interface AwfulBrowserViewController : AwfulViewController
+
+- (id)initWithURL:(NSURL *)URL;
 
 /**
  * The URL of the current page.

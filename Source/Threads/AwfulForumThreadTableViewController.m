@@ -175,7 +175,7 @@
     }
 }
 
-#pragma mark - AwfulComposeTextViewController
+#pragma mark - AwfulComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(AwfulNewThreadViewController *)newThreadViewController
 didFinishWithSuccessfulSubmission:(BOOL)success

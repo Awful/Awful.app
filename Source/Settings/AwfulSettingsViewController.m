@@ -343,8 +343,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         } else {
             AwfulInstapaperLogInController *logIn = [AwfulInstapaperLogInController new];
             logIn.delegate = self;
-            [self presentViewController:[logIn enclosingNavigationController]
-                               animated:YES completion:nil];
+            [self presentViewController:[logIn enclosingNavigationController] animated:YES completion:nil];
         }
     } else if ([action isEqualToString:@"PocketLogIn"]) {
         if ([[PocketAPI sharedAPI] isLoggedIn]) {

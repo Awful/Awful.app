@@ -5,9 +5,14 @@
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
 
+/**
+ * An AwfulProfileViewController shows a user's profile. If it's presented, it'll add a "Done" button as its left navigation item.
+ */
 @interface AwfulProfileViewController : AwfulViewController
 
-// Designated initializer.
+/**
+ * Returns an initialized AwfulProfileViewController. This is the designated initializer.
+ */
 - (id)initWithUser:(AwfulUser *)user;
 
 @property (readonly, strong, nonatomic) AwfulUser *user;

@@ -11,4 +11,9 @@
  */
 + (instancetype)flexibleSpace;
 
+/**
+ * Returns a UIBarButtonItem with an empty title that, used as -[UINavigationItem backBarButtonItem], shows just the arrow for a back button.
+ */
++ (instancetype)emptyBackBarButtonItem;
+
 @end

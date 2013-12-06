@@ -644,16 +644,7 @@
 - (void)showProfileWithUser:(AwfulUser *)user
 {
     AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                          target:self
-                                                                          action:@selector(doneWithProfile)];
-    profile.navigationItem.leftBarButtonItem = item;
     [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
-}
-
-- (void)doneWithProfile
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)showRapSheetWithUser:(AwfulUser *)user
@@ -662,11 +653,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
     } else {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:nil
-                                                                action:nil];
-        self.navigationItem.backBarButtonItem = item;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
         [self.navigationController pushViewController:rapSheet animated:YES];
     }
 }
@@ -852,19 +839,15 @@ static char KVOContext;
     }
 }
 
-- (void)openURLInBuiltInBrowser:(NSURL *)url
+- (void)openURLInBuiltInBrowser:(NSURL *)URL
 {
-    AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
-    browser.URL = url;
-    browser.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                             target:self
-                                                                                             action:@selector(doneWithBrowser)];
-    [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
-}
-
-- (void)doneWithBrowser
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:URL];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
+    } else {
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+        [self.navigationController pushViewController:browser animated:YES];
+    }
 }
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
@@ -984,10 +967,8 @@ static char KVOContext;
         user.canReceivePrivateMessages &&
         ![user.userID isEqual:[AwfulSettings settings].userID]) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-            AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
-            [self presentViewController:[newPrivateMessageViewController enclosingNavigationController]
-                               animated:YES
-                             completion:nil];
+            AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+            [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
         }]];
 	}
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
@@ -998,25 +979,24 @@ static char KVOContext;
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
 {
-    NSURL *url;
+    NSURL *URL;
     CGRect rect;
-    if ((url = [postsView URLOfSpoiledImageForPoint:point])) {
-        AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc]
-                                                    initWithURL:url];
+    if ((URL = [postsView URLOfSpoiledImageForPoint:point])) {
+        AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:URL];
         preview.title = self.title;
         UINavigationController *nav = [preview enclosingNavigationController];
         nav.navigationBar.translucent = YES;
         [self presentViewController:nav animated:YES completion:nil];
-    } else if ((url = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
-        [self showMenuForLinkToURL:url fromRect:rect];
-    } else if ((url = [postsView URLOfSpoiledVideoForPoint:point rect:&rect])) {
+    } else if ((URL = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
+        [self showMenuForLinkToURL:URL fromRect:rect];
+    } else if ((URL = [postsView URLOfSpoiledVideoForPoint:point rect:&rect])) {
         NSURL *safariURL;
-        if ([url.host hasSuffix:@"youtube-nocookie.com"]) {
-            NSString *youtubeVideoID = url.lastPathComponent;
+        if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
+            NSString *youtubeVideoID = URL.lastPathComponent;
             safariURL = [NSURL URLWithString:[NSString stringWithFormat:
                                               @"http://www.youtube.com/watch?v=%@", youtubeVideoID]];
-        } else if ([url.host hasSuffix:@"player.vimeo.com"]) {
-            NSString *vimeoVideoID = url.lastPathComponent;
+        } else if ([URL.host hasSuffix:@"player.vimeo.com"]) {
+            NSString *vimeoVideoID = URL.lastPathComponent;
             safariURL = [NSURL URLWithString:[NSString stringWithFormat:
                                               @"http://vimeo.com/%@", vimeoVideoID]];
         }

@@ -161,8 +161,7 @@
         [[AwfulHTTPClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error
-                                  buttonTitle:@"OK"];
+                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
                 _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage
                                                                                                 initialContents:BBcode];
@@ -187,15 +186,10 @@
     }];
     [sheet addButtonWithTitle:@"User Profile" block:^{
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:self.privateMessage.from];
-        UIBarButtonItem *item;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                 target:self
-                                                                 action:@selector(doneWithProfile)];
-            profile.navigationItem.leftBarButtonItem = item;
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {
-            profile.hidesBottomBarWhenPushed = YES;
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
             [self.navigationController pushViewController:profile animated:YES];
         }
     }];
@@ -210,22 +204,19 @@
 	sheet.title = [NSString stringWithFormat:@"%@", user.username];
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                              target:self
-                                                                              action:@selector(doneWithProfile)];
-        profile.navigationItem.leftBarButtonItem = item;
-        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+        } else {
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+            [self.navigationController pushViewController:profile animated:YES];
+        }
 	}]];
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
         AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
         } else {
-            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                                     style:UIBarButtonItemStylePlain
-                                                                    target:nil
-                                                                    action:nil];
-            self.navigationItem.backBarButtonItem = item;
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
             [self.navigationController pushViewController:rapSheet animated:YES];
         }
 
@@ -299,15 +290,14 @@
 
 - (void)openURLInBuiltInBrowser:(NSURL *)url
 {
-    AwfulBrowserViewController *browser = [AwfulBrowserViewController new];
-    browser.URL = url;
-    browser.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:browser animated:YES];
-    UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithTitle:@"Back"
-                                                             style:UIBarButtonItemStyleBordered
-                                                            target:nil
-                                                            action:NULL];
-    self.navigationItem.backBarButtonItem = back;
+    AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:url];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
+    } else {
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+        [self.navigationController pushViewController:browser animated:YES];
+    }
 }
 
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url

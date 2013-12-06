@@ -176,16 +176,10 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     if ([thread.author.userID length] > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
             AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
-            profile.hidesBottomBarWhenPushed = YES;
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                UIBarButtonItem *done;
-                done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                     target:self
-                                                                     action:@selector(doneWithProfile)];
-                profile.navigationItem.leftBarButtonItem = done;
-                [self presentViewController:[profile enclosingNavigationController]
-                                   animated:YES completion:nil];
+                [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
             } else {
+                self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
                 [self.navigationController pushViewController:profile animated:YES];
             }
         }];
