@@ -216,8 +216,7 @@ static NSString * const InstapaperUsernameKey = @"username";
 
 - (NSString *)instapaperPassword
 {
-    // Note nonstandard use of the NSError reference here: it's nilled out if the item could not be
-    // found in the keychain.
+    // Note nonstandard use of the NSError reference here: it's nilled out if the item could not be found in the keychain.
     NSError *error;
     NSString *password = [SFHFKeychainUtils getPasswordForUsername:InstapaperUsernameKey
                                                     andServiceName:InstapaperServiceName
@@ -271,11 +270,9 @@ static NSString * const InstapaperUsernameKey = @"username";
 {
     NSParameterAssert(key);
     [self setObject:object withoutNotifyingForKey:key];
-    NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingsKey : @[ key ] };
+    NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingKey : key };
     void (^notify)(void) = ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification
-                                                            object:self
-                                                          userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification object:self userInfo:userInfo];
     };
     if ([NSThread isMainThread]) {
         notify();
@@ -310,7 +307,7 @@ static NSString * const InstapaperUsernameKey = @"username";
 
 NSString * const AwfulSettingsDidChangeNotification = @"com.awfulapp.Awful.SettingsDidChange";
 
-NSString * const AwfulSettingsDidChangeSettingsKey = @"settings";
+NSString * const AwfulSettingsDidChangeSettingKey = @"setting";
 
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",

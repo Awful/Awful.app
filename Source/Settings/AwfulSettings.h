@@ -6,7 +6,9 @@
 
 @interface AwfulSettings : NSObject
 
-// Singleton instance.
+/**
+ * Returns a convenient singleton instance.
+ */
 + (AwfulSettings *)settings;
 
 - (void)registerDefaults;
@@ -53,21 +55,28 @@
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
 
-// Clears all settings.
+/**
+ * Clear all settings.
+ */
 - (void)reset;
 
 @end
 
-// Sent to default center whenever a setting changes. The userInfo dictionary has a value for
-// AwfulSettingsDidChangeSettingsKey.
+/**
+ * Sent to default center whenever a setting changes. The userInfo dictionary has a value for AwfulSettingsDidChangeSettingKey.
+ */
 extern NSString * const AwfulSettingsDidChangeNotification;
 
-// An NSArray of settings keys (see AwfulSettingsKeys) that changed.
-extern NSString * const AwfulSettingsDidChangeSettingsKey;
+/**
+ * One of the values in AwfulSettingsKeys indicating which setting changed.
+ */
+extern NSString * const AwfulSettingsDidChangeSettingKey;
 
-// Possible values in the AwfulSettingsDidChangeSettingsKey collection, and keys for subscripting.
-// Undocumented here:
-//   - "theme-X", where X is a forum ID.
+/**
+ * Possible values for AwfulSettingsDidChangeSettingKey, and keys for subscripting.
+ *
+ * N.B. Undocumented here are the "theme-X" keys, where X is a forum ID.
+ */
 extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
     __unsafe_unretained NSString *showImages;

@@ -95,8 +95,7 @@
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys containsObject:AwfulSettingsKeys.customBaseURL]) {
+    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.customBaseURL]) {
         [self reset];
     }
 }

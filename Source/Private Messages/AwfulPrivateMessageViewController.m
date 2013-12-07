@@ -38,13 +38,19 @@
     AwfulNewPrivateMessageViewController *_composeViewController;
 }
 
-- (instancetype)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;;
     _privateMessage = privateMessage;
     self.restorationClass = self.class;
     self.title = privateMessage.subject;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     return self;
@@ -59,21 +65,15 @@
 - (void)settingsDidChange:(NSNotification *)note
 {
     if (![self isViewLoaded]) return;
-    NSArray *relevant = @[ AwfulSettingsKeys.showAvatars,
-                           AwfulSettingsKeys.showImages ];
-    if ([note.userInfo[AwfulSettingsDidChangeSettingsKey] firstObjectCommonWithArray:relevant]) {
+    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] || [changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
         [self configurePostsViewSettings];
     }
 }
 
 - (AwfulPostsView *)postsView
 {
-    return (id)self.view;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    return (AwfulPostsView *)self.view;
 }
 
 #pragma mark - UIViewController

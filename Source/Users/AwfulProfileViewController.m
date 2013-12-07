@@ -75,15 +75,15 @@
 
 - (void)updateDarkTheme
 {
-    NSString *js = [NSString stringWithFormat:@"Awful.dark(%@)",
-                    [AwfulSettings settings].darkTheme ? @"true" : @"false"];
+    NSString *js = [NSString stringWithFormat:@"Awful.dark(%@)", [AwfulSettings settings].darkTheme ? @"true" : @"false"];
     [self.webView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void)settingsChanged:(NSNotification *)note
 {
-    NSArray *changed = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([changed containsObject:AwfulSettingsKeys.darkTheme]) [self updateDarkTheme];
+    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.darkTheme]) {
+        [self updateDarkTheme];
+    }
 }
 
 #pragma mark - UIViewController

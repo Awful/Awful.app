@@ -252,8 +252,8 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    NSArray *changes = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([changes containsObject:AwfulSettingsKeys.canSendPrivateMessages]) {
+    NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([setting isEqualToString:AwfulSettingsKeys.canSendPrivateMessages]) {
         
         // Add the private message list if it's needed, or remove it if it isn't.
         NSMutableArray *roots = [(self.basementViewController ?: self.verticalTabBarController) mutableArrayValueForKey:@"viewControllers"];
@@ -270,29 +270,21 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
                 [roots removeObjectAtIndex:i];
             }
         }
-    }
-    
-    if ([changes containsObject:AwfulSettingsKeys.username]) {
+    } else if ([setting isEqualToString:AwfulSettingsKeys.username]) {
         SetCrashlyticsUsername();
-    }
-    
-	for (NSString *change in changes) {
-		if ([change isEqualToString:AwfulSettingsKeys.darkTheme] || [change hasPrefix:@"theme"]) {
-			
-			// When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
-			UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
-			[self.window addSubview:snapshot];
-			[self themeDidChange];
-			[UIView transitionFromView:snapshot
-                                toView:nil
-                              duration:0.2
-                               options:UIViewAnimationOptionTransitionCrossDissolve
-                            completion:^(BOOL finished)
-            {
-				[snapshot removeFromSuperview];
-			}];
-            break;
-		}
+    } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
+        // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
+        UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
+        [self.window addSubview:snapshot];
+        [self themeDidChange];
+        [UIView transitionFromView:snapshot
+                            toView:nil
+                          duration:0.2
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        completion:^(BOOL finished)
+         {
+             [snapshot removeFromSuperview];
+         }];
 	}
 }
 

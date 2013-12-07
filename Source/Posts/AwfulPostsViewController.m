@@ -293,13 +293,10 @@
 - (void)settingsDidChange:(NSNotification *)note
 {
     if (![self isViewLoaded]) return;
-    NSArray *importantKeys = @[
-        AwfulSettingsKeys.showAvatars,
-        AwfulSettingsKeys.showImages,
-        AwfulSettingsKeys.username
-    ];
-    NSArray *keys = note.userInfo[AwfulSettingsDidChangeSettingsKey];
-    if ([keys firstObjectCommonWithArray:importantKeys]) {
+    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] ||
+        [changedSetting isEqualToString:AwfulSettingsKeys.showImages] ||
+        [changedSetting isEqualToString:AwfulSettingsKeys.username]) {
         [self configurePostsViewSettings];
     }
 }

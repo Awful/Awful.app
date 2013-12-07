@@ -72,16 +72,16 @@
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    NSArray *changedSettings = note.userInfo[AwfulSettingsDidChangeSettingsKey];
+    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
     
     // Refresh the forum list after changing servers.
-    if ([changedSettings containsObject:AwfulSettingsKeys.customBaseURL]) {
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.customBaseURL]) {
         self.lastRefresh = nil;
     }
     
     if (self.userDrivenChange) return;
     
-    if ([changedSettings containsObject:AwfulSettingsKeys.favoriteForums]) {
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.favoriteForums]) {
         [self.favoriteForums setArray:[self fetchFavoriteForumsWithIDsFromSettings]];
         [self showOrHideEditButton];
         [self.tableView reloadData];
