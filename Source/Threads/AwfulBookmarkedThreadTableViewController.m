@@ -21,7 +21,7 @@
     _managedObjectContext = managedObjectContext;
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks"];
-    self.navigationItem.backBarButtonItem = self.backBarItem;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     return self;
 }
 

@@ -29,6 +29,7 @@
     _user = user;
     _bans = [NSMutableOrderedSet new];
     self.title = user ? @"Rap Sheet" : @"Leper's Colony";
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.hidesBottomBarWhenPushed = YES;

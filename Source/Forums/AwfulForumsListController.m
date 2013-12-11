@@ -36,12 +36,11 @@
     if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
     _managedObjectContext = managedObjectContext;
     self.title = @"Forums";
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
     [self showOrHideEditButton];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
     return self;
 }
 

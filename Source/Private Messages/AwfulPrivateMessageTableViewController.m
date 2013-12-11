@@ -36,7 +36,7 @@
     _managedObjectContext = managedObjectContext;
     self.title = @"Private Messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
-    self.navigationItem.backBarButtonItem = self.backItem;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
@@ -45,16 +45,6 @@
                        name:AwfulNewPrivateMessagesNotification
                      object:nil];
     return self;
-}
-
-- (UIBarButtonItem *)backItem
-{
-    if (_backItem) return _backItem;
-    _backItem = [[UIBarButtonItem alloc] initWithTitle:@"PMs"
-                                                 style:UIBarButtonItemStyleBordered
-                                                target:nil
-                                                action:nil];
-    return _backItem;
 }
 
 - (UIBarButtonItem *)composeItem
