@@ -28,11 +28,6 @@
     _imagesEnabledSwitch.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_imagesEnabledSwitch];
     
-    _themeLabel = [UILabel new];
-    _themeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _themeLabel.text = @"Theme";
-    [self addSubview:_themeLabel];
-    
     _themePicker = [AwfulThemePicker new];
     _themePicker.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_themePicker];
@@ -47,7 +42,6 @@
                              @"avatarsSwitch": self.avatarsEnabledSwitch,
                              @"imagesLabel": self.imagesLabel,
                              @"imagesSwitch": self.imagesEnabledSwitch,
-                             @"themeLabel": self.themeLabel,
                              @"themePicker": self.themePicker };
     [self addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[avatarsLabel]-[avatarsSwitch]"
@@ -60,13 +54,18 @@
                                              metrics:nil
                                                views:views]];
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[themeLabel]-[themePicker]"
-                                             options:NSLayoutFormatAlignAllCenterY
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[themePicker]"
+                                             options:0
                                              metrics:nil
                                                views:views]];
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[avatarsSwitch]-[imagesSwitch]-[themePicker]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[avatarsSwitch]-[imagesSwitch]"
                                              options:NSLayoutFormatAlignAllLeft
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imagesSwitch]-[themePicker]"
+                                             options:0
                                              metrics:nil
                                                views:views]];
     [super updateConstraints];
