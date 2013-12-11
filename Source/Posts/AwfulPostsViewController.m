@@ -132,7 +132,7 @@
 - (UIBarButtonItem *)settingsItem
 {
     if (_settingsItem) return _settingsItem;
-    _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"font-size"]
+    _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"]
                                                      style:UIBarButtonItemStylePlain
                                                     target:self
                                                     action:@selector(toggleSettings:)];
