@@ -616,7 +616,7 @@
 
 - (void)setTopPost:(AwfulPost *)topPost
 {
-    if (self.loadingView) {
+    if (![self isViewLoaded] || self.loadingView) {
         self.topPostAfterLoad = topPost;
         return;
     }
