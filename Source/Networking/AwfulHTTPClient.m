@@ -646,7 +646,7 @@
 {
     NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
     if (user.userID) {
-        parameters[@"pagenumber"] = @(page);
+        parameters[@"userid"] = user.userID;
     }
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"banlist.php"
