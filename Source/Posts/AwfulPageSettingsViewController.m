@@ -44,6 +44,7 @@
 {
     self.selectedTheme = self.themes[themePicker.selectedThemeIndex];
     [self.delegate pageSettingsSelectedThemeDidChange:self];
+    [self themeDidChange];
 }
 
 - (void)viewDidLoad
@@ -51,6 +52,18 @@
     [super viewDidLoad];
     _settingsView.avatarsEnabledSwitch.on = [AwfulSettings settings].showAvatars;
     _settingsView.imagesEnabledSwitch.on = [AwfulSettings settings].showImages;
+    [self themeDidChange];
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    AwfulTheme *theme = self.selectedTheme;
+    _settingsView.backgroundColor = theme[@"backgroundColor"];
+    _settingsView.avatarsLabel.textColor = theme[@"listTextColor"];
+    _settingsView.imagesLabel.textColor = theme[@"listTextColor"];
+    _settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
+    _settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
 }
 
 - (CGSize)preferredContentSize
