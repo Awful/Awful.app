@@ -101,9 +101,16 @@
         UIViewController *root = ((UINavigationController *)self.detailViewController).viewControllers.firstObject;
         navigationItem = root.navigationItem;
     }
-    navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                     target:self
-                                                                                     action:@selector(toggleDetailExpanded)];
+    navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[self expandContractImage]
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(toggleDetailExpanded)];
+}
+
+- (UIImage *)expandContractImage
+{
+    NSString *imageName = self.detailExpanded ? @"contract" : @"expand";
+    return [UIImage imageNamed:imageName];
 }
 
 - (void)toggleDetailExpanded
@@ -225,6 +232,12 @@
         [self.view layoutIfNeeded];
     }];
     [self setNeedsStatusBarAppearanceUpdate];
+    for (UINavigationController *navigationController in self.viewControllers) {
+        if (![navigationController isKindOfClass:[UINavigationController class]]) continue;
+        UIViewController *root = navigationController.viewControllers.firstObject;
+        UIBarButtonItem *expandContractBarButtonItem = root.navigationItem.leftBarButtonItem;
+        expandContractBarButtonItem.image = [self expandContractImage];
+    }
 }
 
 - (UIViewController *)detailViewController
