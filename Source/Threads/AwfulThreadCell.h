@@ -43,6 +43,11 @@
 @property (readonly, strong, nonatomic) UILabel *badgeLabel;
 
 /**
+ * YES if the badge label should be lighter. Default is NO.
+ */
+@property (assign, nonatomic) BOOL lightenBadgeLabel;
+
+/**
  * An image view on the top right of the cell, for indicating a sticky thread.
  */
 @property (readonly, strong, nonatomic) UIImageView *stickyImageView;

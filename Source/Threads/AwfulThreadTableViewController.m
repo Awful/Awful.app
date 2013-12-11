@@ -123,8 +123,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     cell.numberOfPagesLabel.text = @(thread.numberOfPages).stringValue;
     if (thread.beenSeen) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
-        NSInteger unreadPosts = thread.totalReplies + 1 - thread.seenPosts;
-        cell.badgeLabel.text = @(unreadPosts).stringValue;
+        cell.badgeLabel.text = @(thread.unreadPosts).stringValue;
     } else {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
         cell.badgeLabel.text = nil;
@@ -240,11 +239,17 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 {
     cell.backgroundColor = self.theme[@"listBackgroundColor"];
     cell.textLabel.textColor = self.theme[@"listTextColor"];
-    switch (thread.starCategory) {
-        case AwfulStarCategoryOrange: cell.badgeLabel.textColor = self.theme[@"unreadBadgeOrangeColor"]; break;
-        case AwfulStarCategoryRed: cell.badgeLabel.textColor = self.theme[@"unreadBadgeRedColor"]; break;
-        case AwfulStarCategoryYellow: cell.badgeLabel.textColor = self.theme[@"unreadBadgeYellowColor"]; break;
-        default: cell.badgeLabel.textColor = self.theme[@"tintColor"]; break;
+    if (thread.unreadPosts == 0) {
+        cell.badgeLabel.textColor = [UIColor grayColor];
+        cell.lightenBadgeLabel = YES;
+    } else {
+        switch (thread.starCategory) {
+            case AwfulStarCategoryOrange: cell.badgeLabel.textColor = self.theme[@"unreadBadgeOrangeColor"]; break;
+            case AwfulStarCategoryRed: cell.badgeLabel.textColor = self.theme[@"unreadBadgeRedColor"]; break;
+            case AwfulStarCategoryYellow: cell.badgeLabel.textColor = self.theme[@"unreadBadgeYellowColor"]; break;
+            default: cell.badgeLabel.textColor = self.theme[@"tintColor"]; break;
+        }
+        cell.lightenBadgeLabel = NO;
     }
     AwfulThreadTag *secondaryThreadTag = thread.secondaryThreadTag;
     if ([secondaryThreadTag.imageName isEqualToString:@"icon-37-selling"]) {

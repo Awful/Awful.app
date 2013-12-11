@@ -163,4 +163,14 @@
     [super updateConstraints];
 }
 
+- (void)setLightenBadgeLabel:(BOOL)lightenBadgeLabel
+{
+    _lightenBadgeLabel = lightenBadgeLabel;
+    if (lightenBadgeLabel) {
+        self.badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:_textLabel.font.pointSize];
+    } else {
+        self.badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:_textLabel.font.pointSize];
+    }
+}
+
 @end

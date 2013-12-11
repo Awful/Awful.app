@@ -49,6 +49,16 @@
     return [NSSet setWithObject:@"seenPosts"];
 }
 
+- (int32_t)unreadPosts
+{
+    return self.totalReplies + 1 - self.seenPosts;
+}
+
++ (NSSet *)keyPathsForValuesAffectingUnreadPosts
+{
+    return [NSSet setWithObjects:@"totalReplies", @"seenPosts", nil];
+}
+
 + (instancetype)firstOrNewThreadWithThreadID:(NSString *)threadID
                       inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
