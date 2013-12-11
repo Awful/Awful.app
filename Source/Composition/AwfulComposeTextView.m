@@ -4,6 +4,7 @@
 
 #import "AwfulComposeTextView.h"
 #import "AwfulKeyboardBar.h"
+#import "AwfulTextAttachment.h"
 #import <PSMenuItem/PSMenuItem.h>
 
 @interface AwfulComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -252,15 +253,8 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     // For whatever reason we get the default font after inserting an image, so keep our current font for later.
     UIFont *font = self.font;
     
-    NSTextAttachment *attachment = [NSTextAttachment new];
+    AwfulTextAttachment *attachment = [AwfulTextAttachment new];
     attachment.image = image;
-    CGFloat widthRatio = image.size.width / RequiresThumbnailImageSize.width;
-    CGFloat heightRatio = image.size.height / RequiresThumbnailImageSize.height;
-    CGFloat screenRatio = image.size.width / (CGRectGetWidth([UIScreen mainScreen].bounds) - 8);
-    if (widthRatio > 1 || heightRatio > 1 || screenRatio > 1) {
-        CGFloat ratio = MAX(widthRatio, MAX(heightRatio, screenRatio));
-        attachment.bounds = CGRectIntegral(CGRectMake(0, 0, image.size.width / ratio, image.size.height / ratio));
-    }
     NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attachment];
     [self.textStorage replaceCharactersInRange:self.selectedRange withAttributedString:string];
     UITextPosition *afterImage = [self positionFromPosition:self.selectedTextRange.end offset:1];

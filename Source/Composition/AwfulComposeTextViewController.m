@@ -382,6 +382,7 @@
 {
     [super decodeRestorableStateWithCoder:coder];
     self.textView.attributedText = [coder decodeObjectForKey:AttributedTextKey];
+    [self updateSubmitButtonItem];
 }
 
 static NSString * const AttributedTextKey = @"AwfulAttributedText";
