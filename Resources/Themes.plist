@@ -34,6 +34,8 @@
 		<string>#ffffff</string>
 		<key>navigationBarTintColor</key>
 		<string>#1483b1</string>
+		<key>toolbarTextColor</key>
+		<string>#1e84af</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#ffffff</string>
 		<key>postsViewCSS</key>
