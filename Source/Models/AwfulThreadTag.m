@@ -9,6 +9,8 @@
 @dynamic explanation;
 @dynamic imageName;
 @dynamic threadTagID;
+@dynamic forums;
+@dynamic secondaryForums;
 @dynamic messages;
 @dynamic secondaryThreads;
 @dynamic threads;

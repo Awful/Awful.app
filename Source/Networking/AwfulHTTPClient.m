@@ -137,16 +137,19 @@
 }
 
 - (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+                      withThreadTag:(AwfulThreadTag *)threadTag
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
+    // TODO secondary thread tag (I bet this has several different possible form keys so we need to scrape that too)
+    NSMutableDictionary *parameters = [@{ @"forumid": forum.forumID,
+                                          @"perpage": @40,
+                                          @"pagenumber": @(page) } mutableCopy];
+    if (threadTag.threadTagID.length > 0) {
+        parameters[@"posticon"] = threadTag.threadTagID;
+    }
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"forumdisplay.php"
-                  parameters:@{ @"forumid": forum.forumID,
-                                @"perpage": @40,
-                                @"pagenumber": @(page) }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
-    {
+    return [_HTTPManager GET:@"forumdisplay.php" parameters:parameters success:^(AFHTTPRequestOperation *operation, HTMLDocument *document) {
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
             NSError *error;

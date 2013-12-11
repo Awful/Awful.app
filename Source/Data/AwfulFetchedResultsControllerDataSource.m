@@ -30,14 +30,20 @@
 {
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = fetchedResultsController;
-    _fetchedResultsController.delegate = self;
+    _completedFirstFetch = NO;
+    [self fetchAndSetDelegateForTableView];
 }
 
 - (void)setUpdatesTableView:(BOOL)updatesTableView
 {
-    if (updatesTableView == _updatesTableView) return;
+    if (_updatesTableView == updatesTableView) return;
     _updatesTableView = updatesTableView;
-    if (updatesTableView) {
+    [self fetchAndSetDelegateForTableView];
+}
+
+- (void)fetchAndSetDelegateForTableView
+{
+    if (self.updatesTableView) {
         _fetchedResultsController.delegate = self;
         if (!_completedFirstFetch) {
             NSError *error;
@@ -102,12 +108,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (type == NSFetchedResultsChangeInsert) {
         [_sectionInsertions addIndex:sectionIndex];
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
     } else if (type == NSFetchedResultsChangeDelete) {
         [_sectionDeletions addIndex:sectionIndex];
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                      withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
 

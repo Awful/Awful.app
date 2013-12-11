@@ -135,6 +135,14 @@
                                            @"XyloJW",
                                            @"Zikan",
                                            ]));
+    NSOrderedSet *tags = debateAndDiscussion.threadTags;
+    XCTAssertEqual(tags.count, 106U);
+    AwfulThreadTag *firstTag = tags.firstObject;
+    XCTAssertEqualObjects(firstTag.threadTagID, @"357");
+    XCTAssertEqualObjects(firstTag.imageName, @"dd-offmeds");
+    AwfulThreadTag *lastTag = tags.lastObject;
+    XCTAssertEqualObjects(lastTag.threadTagID, @"245");
+    XCTAssertEqualObjects(lastTag.imageName, @"tcc-weed");
     
     AwfulThread *rulesThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                          matchingPredicateFormat:@"title CONTAINS 'Improved Rules'"];

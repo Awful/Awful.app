@@ -22,9 +22,13 @@
     AwfulFetchedResultsControllerDataSource *_threadDataSource;
 }
 
-- (NSFetchedResultsController *)fetchedResultsController
+- (AwfulFetchedResultsControllerDataSource *)threadDataSource
 {
-    return [self doesNotRecognizeSelector:_cmd], nil;
+    if (_threadDataSource) return _threadDataSource;
+    _threadDataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView
+                                                                           reuseIdentifier:ThreadCellIdentifier];
+    _threadDataSource.delegate = self;
+    return _threadDataSource;
 }
 
 - (void)loadView
@@ -33,15 +37,6 @@
     [self.tableView registerClass:[AwfulThreadCell class] forCellReuseIdentifier:ThreadCellIdentifier];
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
     [self.tableView awful_hideExtraneousSeparators];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    _threadDataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView
-                                                                           reuseIdentifier:ThreadCellIdentifier];
-    _threadDataSource.delegate = self;
-    _threadDataSource.fetchedResultsController = self.fetchedResultsController;
 }
 
 static NSString * const ThreadCellIdentifier = @"Thread Cell";
@@ -270,7 +265,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 - (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     [super themeCell:cell atIndexPath:indexPath];
-    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
+    AwfulThread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
     [self themeCell:cell withObject:thread];
 }
 
@@ -283,7 +279,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulThread *thread = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
+    AwfulThread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
     AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
     postsViewController.restorationIdentifier = @"AwfulPostsViewController";
     

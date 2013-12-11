@@ -25,6 +25,11 @@
 @property (strong, nonatomic) NSDate *lastRefresh;
 
 /**
+ * Ditto.
+ */
+@property (strong, nonatomic) NSDate *lastFilteredRefresh;
+
+/**
  * The name of the forum shown in the big list of forums or in its parent forum.
  */
 @property (copy, nonatomic) NSString *name;
@@ -53,6 +58,16 @@
  * A set of AwfulThread objects representing the forum's threads.
  */
 @property (strong, nonatomic) NSSet *threads;
+
+/**
+ * A set of AwfulThreadTag objects that may be used by the forum's threads.
+ */
+@property (copy, nonatomic) NSOrderedSet *threadTags;
+
+/**
+ * A set of AwfulThreadTag objects that may be used as a secondary tag by the forum's threads.
+ */
+@property (copy, nonatomic) NSOrderedSet *secondaryThreadTags;
 
 /**
  * Returns an AwfulForum with the given forum ID, inserting one if necessary.

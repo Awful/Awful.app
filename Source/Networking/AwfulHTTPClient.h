@@ -23,11 +23,13 @@
 @property (readonly, getter=isLoggedIn, nonatomic) BOOL loggedIn;
 
 /**
- * @param callback A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
+ * @param threadTag A thread tag to use for filtering forums, or nil for no filtering.
+ * @param callback  A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+                      withThreadTag:(AwfulThreadTag *)threadTag
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback;
 

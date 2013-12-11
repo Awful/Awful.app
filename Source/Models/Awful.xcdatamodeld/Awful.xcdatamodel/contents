@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13A603" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
@@ -9,12 +9,15 @@
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
+        <attribute name="lastFilteredRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulThreadTag" inverseName="secondaryForums" inverseEntity="AwfulThreadTag" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulThreadTag" inverseName="forums" inverseEntity="AwfulThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulPost" representedClassName="AwfulPost" syncable="YES">
         <attribute name="attachmentID" optional="YES" attributeType="String" syncable="YES"/>
@@ -74,8 +77,10 @@
         <attribute name="explanation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="threadTagID" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPrivateMessage" inverseName="threadTag" inverseEntity="AwfulPrivateMessage" syncable="YES"/>
-        <relationship name="secondaryThreads" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="secondaryForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="secondaryThreadTags" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="secondaryThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
@@ -113,7 +118,7 @@
         <element name="AwfulPrivateMessage" positionX="0" positionY="0" width="0" height="0"/>
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="0" height="0"/>
         <element name="AwfulThread" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="AwfulUser" positionX="0" positionY="0" width="0" height="0"/>
         <element name="AwfulThreadTag" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulUser" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

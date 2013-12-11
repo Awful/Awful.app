@@ -4,6 +4,7 @@
 
 #import "AwfulPostIconPickerController.h"
 #import "AwfulImageCollectionViewCell.h"
+#import "AwfulPopoverBackgroundView.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
@@ -88,6 +89,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     if (!self.popover) {
         self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
         self.popover.delegate = self;
+        self.popover.popoverBackgroundViewClass = [AwfulPopoverBackgroundView class];
     }
     [self.popover presentPopoverFromRect:rect inView:view
                 permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];

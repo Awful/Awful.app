@@ -17,22 +17,26 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
+#import "AwfulPostIconPickerController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
+@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
 @property (strong, nonatomic) UIBarButtonItem *abbreviatedBackButtonItem;
+@property (strong, nonatomic) UIButton *filterButton;
+@property (strong, nonatomic) AwfulThreadTag *filterThreadTag;
+@property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
 
 @end
 
 @implementation AwfulForumThreadTableViewController
 {
-    NSFetchedResultsController *_fetchedResultsController;
     NSInteger _mostRecentlyLoadedPage;
     AwfulNewThreadViewController *_newThreadViewController;
+    BOOL _justLoaded;
 }
 
 - (id)initWithForum:(AwfulForum *)forum
@@ -74,24 +78,42 @@
     return _abbreviatedBackButtonItem;
 }
 
-- (NSFetchedResultsController *)fetchedResultsController
+- (void)updateFilter
 {
-    if (_fetchedResultsController) return _fetchedResultsController;
+    if ([self isViewLoaded]) {
+        self.threadDataSource.fetchedResultsController = [self createFetchedResultsController];
+    }
+}
+
+- (AwfulPostIconPickerController *)postIconPicker
+{
+    if (_postIconPicker) return _postIconPicker;
+    _postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
+    _postIconPicker.title = @"Filter Threads";
+    [_postIconPicker reloadData];
+    return _postIconPicker;
+}
+
+- (NSFetchedResultsController *)createFetchedResultsController
+{
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
     request.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@", self.forum];
+    if (self.filterThreadTag) {
+        NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"threadTag == %@", self.filterThreadTag];
+        request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[ request.predicate, filterPredicate ]];
+    }
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
                                  [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
-    NSManagedObjectContext *context = self.forum.managedObjectContext;
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                    managedObjectContext:context
-                                                                      sectionNameKeyPath:nil
-                                                                               cacheName:nil];
-    return _fetchedResultsController;
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                               managedObjectContext:self.forum.managedObjectContext
+                                                 sectionNameKeyPath:nil
+                                                          cacheName:nil];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.threadDataSource.fetchedResultsController = [self createFetchedResultsController];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     __weak __typeof__(self) weakSelf = self;
@@ -99,6 +121,58 @@
         __typeof__(self) self = weakSelf;
         [self loadPage:self->_mostRecentlyLoadedPage + 1];
     }];
+    self.tableView.tableHeaderView = self.filterButton;
+    _justLoaded = YES;
+}
+
+- (UIButton *)filterButton
+{
+    if (_filterButton) return _filterButton;
+    _filterButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    CGRect frame = _filterButton.frame;
+    frame.size.height = _filterButton.intrinsicContentSize.height + 8;
+    _filterButton.frame = frame;
+    [_filterButton addTarget:self action:@selector(showFilterPicker:) forControlEvents:UIControlEventTouchUpInside];
+    [self updateFilterButtonText];
+    return _filterButton;
+}
+
+- (void)showFilterPicker:(UIButton *)button
+{
+    if (self.filterThreadTag) {
+        self.postIconPicker.selectedIndex = [self.forum.threadTags indexOfObject:self.filterThreadTag] + 1;
+    } else {
+        self.postIconPicker.selectedIndex = 0;
+    }
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.postIconPicker showFromRect:button.bounds inView:button];
+    } else {
+        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES completion:nil];
+    }
+}
+
+- (void)updateFilterButtonText
+{
+    if (self.filterThreadTag) {
+        [self.filterButton setTitle:@"Change filter" forState:UIControlStateNormal];
+    } else {
+        [self.filterButton setTitle:@"Filter by tag" forState:UIControlStateNormal];
+    }
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.filterButton.tintColor = self.theme[@"tintColor"];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (_justLoaded) {
+        [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.tableView.tableHeaderView.frame)) animated:NO];
+        _justLoaded = NO;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -107,15 +181,22 @@
     if ([self shouldRefreshOnAppear]) {
         [self refresh];
     }
-    self.tableView.showsInfiniteScrolling = self.fetchedResultsController.fetchedObjects.count > 0;
+    NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
+    self.tableView.showsInfiniteScrolling = fetchedResultsController.fetchedObjects.count > 0;
 }
 
 - (BOOL)shouldRefreshOnAppear
 {
     if (![AwfulHTTPClient client].reachable) return NO;
-    if (!self.forum.lastRefresh) return YES;
-    if ([self.fetchedResultsController.fetchedObjects count] == 0) return YES;
-    return [[NSDate date] timeIntervalSinceDate:self.forum.lastRefresh] > 60 * 15;
+    if (!self.filterThreadTag && !self.forum.lastRefresh) return YES;
+    if (self.filterThreadTag && !self.forum.lastFilteredRefresh) return YES;
+    NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
+    if ([fetchedResultsController.fetchedObjects count] == 0) return YES;
+    if (!self.filterThreadTag) {
+        return [[NSDate date] timeIntervalSinceDate:self.forum.lastRefresh] > 60 * 15;
+    } else {
+        return [[NSDate date] timeIntervalSinceDate:self.forum.lastFilteredRefresh] > 60 * 15;
+    }
 }
 
 - (void)refresh
@@ -127,7 +208,7 @@
 - (void)loadPage:(NSInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listThreadsInForum:self.forum onPage:page andThen:^(NSError *error, NSArray *threads) {
+    [AwfulHTTPClient.client listThreadsInForum:self.forum withThreadTag:self.filterThreadTag onPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -141,7 +222,11 @@
                 self.tableView.showsInfiniteScrolling = YES;
             }
             [threads setValue:@NO forKey:@"hideFromList"];
-            self.forum.lastRefresh = [NSDate date];
+            if (self.filterThreadTag) {
+                self.forum.lastFilteredRefresh = [NSDate date];
+            } else {
+                self.forum.lastRefresh = [NSDate date];
+            }
             NSError *error;
             BOOL ok = [self.forum.managedObjectContext save:&error];
             if (!ok) {
@@ -195,6 +280,63 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }];
 }
 
+#pragma mark - AwfulPostIconPickerControllerDelegate
+
+- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+{
+    // +1 for empty thread tag (aka "no filter").
+    return self.forum.threadTags.count + 1;
+}
+
+- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
+{
+    if (index == 0) {
+        return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+    } else {
+        AwfulThreadTag *threadTag = self.forum.threadTags[index - 1];
+        return [[AwfulThreadTagLoader loader] imageNamed:threadTag.imageName];
+    }
+}
+
+- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return;
+    NSInteger index = picker.selectedIndex;
+    if (index == 0) {
+        self.filterThreadTag = nil;
+    } else {
+        self.filterThreadTag = self.forum.threadTags[index - 1];
+    }
+    [self refreshForFilterChange];
+    [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.tableView.tableHeaderView.frame)) animated:NO];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
+{
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return;
+    if (index == 0) {
+        self.filterThreadTag = nil;
+    } else {
+        self.filterThreadTag = self.forum.threadTags[index - 1];
+    }
+    [self refreshForFilterChange];
+}
+
+- (void)refreshForFilterChange
+{
+    [self updateFilterButtonText];
+    self.forum.lastFilteredRefresh = nil;
+    self.forum.lastRefresh = nil;
+    [self updateFilter];
+    [self refresh];
+}
+
 #pragma mark - State preservation and restoration
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
@@ -212,6 +354,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
     [coder encodeObject:_newThreadViewController forKey:NewThreadViewControllerKey];
+    [coder encodeObject:self.filterThreadTag.threadTagID forKey:FilterThreadTagIDKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -219,9 +362,16 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super decodeRestorableStateWithCoder:coder];
     _newThreadViewController = [coder decodeObjectForKey:NewThreadViewControllerKey];
     _newThreadViewController.delegate = self;
+    NSString *filterThreadTagID = [coder decodeObjectForKey:FilterThreadTagIDKey];
+    if (filterThreadTagID) {
+        self.filterThreadTag = [AwfulThreadTag fetchArbitraryInManagedObjectContext:self.forum.managedObjectContext
+                                                            matchingPredicateFormat:@"threadTagID = %@", filterThreadTagID];
+        [self updateFilterButtonText];
+    }
 }
 
 static NSString * const ForumIDKey = @"AwfulForumID";
 static NSString * const NewThreadViewControllerKey = @"AwfulNewThreadViewController";
+static NSString * const FilterThreadTagIDKey = @"AwfulFilterThreadTagID";
 
 @end

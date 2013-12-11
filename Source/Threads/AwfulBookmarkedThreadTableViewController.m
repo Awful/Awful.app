@@ -11,7 +11,6 @@
 
 @implementation AwfulBookmarkedThreadTableViewController
 {
-    NSFetchedResultsController *_fetchedResultsController;
     NSInteger _mostRecentlyLoadedPage;
     UIBarButtonItem *_backBarItem;
 }
@@ -40,6 +39,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
+    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
+    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                         managedObjectContext:self.managedObjectContext
+                                                                                           sectionNameKeyPath:nil
+                                                                                                    cacheName:nil];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     __weak __typeof__(self) weakSelf = self;
@@ -107,21 +113,6 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
         [self.tableView.infiniteScrollingView stopAnimating];
         self.tableView.showsInfiniteScrolling = threads.count >= 40;
     }];
-}
-
-#pragma mark - AwfulThreadTableViewController
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (_fetchedResultsController) return _fetchedResultsController;
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
-    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
-    _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                    managedObjectContext:self.managedObjectContext
-                                                                      sectionNameKeyPath:nil
-                                                                               cacheName:nil];
-    return _fetchedResultsController;
 }
 
 @end

@@ -16,9 +16,9 @@
 @interface AwfulThreadTableViewController : AwfulTableViewController <AwfulFetchedResultsControllerDataSourceDelegate>
 
 /**
- * The fetched results controller that provides the AwfulThreadTableViewController's threads. The default implementation raises an exception.
+ * The data source that provides the threads. Set its fetched results controller if you want data!
  */
-@property (readonly, strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (readonly, strong, nonatomic) AwfulFetchedResultsControllerDataSource *threadDataSource;
 
 
 /**

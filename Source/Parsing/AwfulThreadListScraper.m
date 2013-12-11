@@ -73,6 +73,22 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     
     // TODO parse number of pages so we know whether to enable pull-for-more.
     
+    HTMLElementNode *threadTagsDiv = [document firstNodeMatchingSelector:@"div.thread_tags"];
+    if (threadTagsDiv) {
+        NSMutableOrderedSet *threadTags = [NSMutableOrderedSet new];
+        for (HTMLElementNode *link in [threadTagsDiv nodesMatchingSelector:@"a[href*='posticon']"]) {
+            NSURL *URL = [NSURL URLWithString:link[@"href"]];
+            NSString *threadTagID = URL.queryDictionary[@"posticon"];
+            HTMLElementNode *image = [link firstNodeMatchingSelector:@"img"];
+            NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
+            AwfulThreadTag *threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
+                                                                              threadTagURL:imageURL
+                                                                    inManagedObjectContext:managedObjectContext];
+            [threadTags addObject:threadTag];
+        }
+        forum.threadTags = threadTags;
+    }
+    
     NSArray *threadLinks = [document nodesMatchingSelector:@"tr.thread"];
     NSMutableArray *threads = [NSMutableArray new];
     int32_t stickyIndex = -(int32_t)threadLinks.count;

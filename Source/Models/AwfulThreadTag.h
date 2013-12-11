@@ -25,6 +25,16 @@
 @property (copy, nonatomic) NSString *threadTagID;
 
 /**
+ * A set of AwfulForum objects whose threads may use the thread tag.
+ */
+@property (copy, nonatomic) NSSet *forums;
+
+/**
+ * A set of AwfulForum objects whose threads may use the thread tag as a secondary thread tag.
+ */
+@property (copy, nonatomic) NSSet *secondaryForums;
+
+/**
  * A set of AwfulPrivateMessage objects with the thread tag.
  */
 @property (copy, nonatomic) NSSet *messages;

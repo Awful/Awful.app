@@ -9,11 +9,14 @@
 @dynamic forumID;
 @dynamic index;
 @dynamic lastRefresh;
+@dynamic lastFilteredRefresh;
 @dynamic name;
 @dynamic category;
 @dynamic children;
 @dynamic parentForum;
 @dynamic threads;
+@dynamic threadTags;
+@dynamic secondaryThreadTags;
 
 - (NSString *)abbreviatedName
 {
