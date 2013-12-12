@@ -111,6 +111,17 @@
     return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
 }
 
+- (NSDate*)loginCookieExpiryDate
+{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:_HTTPManager.baseURL];
+    for (NSHTTPCookie *cookie in cookies) {
+        if ([cookie.name isEqualToString:@"bbuserid"]) {
+            return cookie.expiresDate;
+        }
+    }
+    return nil;
+}
+
 - (void)networkingOperationDidStart:(NSNotification *)note
 {
     // Only subscribe for notifications if we're logged in.

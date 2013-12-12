@@ -237,6 +237,8 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     }
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
+
+    [self showPromptIfLoginCookieExpiresSoon];
     
     [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -309,6 +311,33 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
                                                      error:&error];
     if (!ok) {
         NSLog(@"error setting shared audio session category: %@", error);
+    }
+}
+
+
+static NSString * const kLastExpiringCookiePromptDate = @"com.awfulapp.Awful.LastCookieExpiringPromptDate";
+static const NSTimeInterval kCookieExpiringSoonThreshold = 60 * 60 * 24 * 7; // One week
+static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 48 Hours
+
+- (void)showPromptIfLoginCookieExpiresSoon
+{
+    NSDate *loginCookieExpiryDate = [AwfulHTTPClient client].loginCookieExpiryDate;
+    if (loginCookieExpiryDate && [loginCookieExpiryDate timeIntervalSinceNow] < kCookieExpiringSoonThreshold) {
+        NSDate *lastPromptDate = [[NSUserDefaults standardUserDefaults] objectForKey:kLastExpiringCookiePromptDate];
+        if (!lastPromptDate || [lastPromptDate timeIntervalSinceNow] > kCookieExpiryPromptFrequency) {
+
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+            NSString *dateString = [dateFormatter stringFromDate:loginCookieExpiryDate];
+            NSString *message = [NSString stringWithFormat:@"Your login cookie expires on %@", dateString];
+
+            [AwfulAlertView showWithTitle:@"Login Expiring Soon"
+                                  message:message
+                              buttonTitle:@"OK"
+                               completion:^{
+                                   [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
+                               }];
+        }
     }
 }
 

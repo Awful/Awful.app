@@ -22,6 +22,9 @@
 // Returns YES if someone is currently logged in to the SA Forums.
 @property (readonly, getter=isLoggedIn, nonatomic) BOOL loggedIn;
 
+// Returns the date on which the login cookie will expire.
+@property (readonly, nonatomic) NSDate* loginCookieExpiryDate;
+
 /**
  * @param threadTag A thread tag to use for filtering forums, or nil for no filtering.
  * @param callback  A block to call after listing the threads which takes two parameters: an NSError object on failure or nil on success; and an array of AwfulThread objects on success or nil on failure.
