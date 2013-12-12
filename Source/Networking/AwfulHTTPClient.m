@@ -141,7 +141,6 @@
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    // TODO secondary thread tag (I bet this has several different possible form keys so we need to scrape that too)
     NSMutableDictionary *parameters = [@{ @"forumid": forum.forumID,
                                           @"perpage": @40,
                                           @"pagenumber": @(page) } mutableCopy];
