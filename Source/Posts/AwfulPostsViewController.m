@@ -499,7 +499,9 @@
         [self prepareForNewPage];
     }
     [self.postsView reloadData];
-    if (self.topPostAfterLoad) {
+    if (self.posts.count == 0) {
+        [self refreshCurrentPage];
+    } else if (self.topPostAfterLoad) {
         self.topPost = self.topPostAfterLoad;
         self.topPostAfterLoad = nil;
     }
