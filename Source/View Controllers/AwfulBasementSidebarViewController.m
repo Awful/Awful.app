@@ -5,10 +5,6 @@
 #import "AwfulBasementSidebarViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
-@interface AwfulBasementSidebarViewController ()
-
-@end
-
 @implementation AwfulBasementSidebarViewController
 
 - (void)dealloc
@@ -43,11 +39,6 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)updateThemedProperties
 {
     self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
-	if (CGColorGetAlpha([self.theme[@"basementBackgroundColor"] CGColor]) < 1.0) {
-		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDarkBlur];
-	} else {
-		[[UIApplication sharedApplication] setBackgroundMode:UIBackgroundStyleDefault];
-	}
 }
 
 - (void)viewDidLoad

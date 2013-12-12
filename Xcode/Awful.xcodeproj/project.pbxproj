@@ -223,7 +223,6 @@
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
-		839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */ = {isa = PBXBuildFile; fileRef = 839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
 		8C220D9E1814D61100F188AE /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C220D9D1814D61100F188AE /* clock.png */; };
@@ -576,8 +575,6 @@
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F3DF9C27054D9A93B744A1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+Style.h"; sourceTree = "<group>"; };
-		839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+Style.m"; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C220D9D1814D61100F188AE /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
@@ -1229,8 +1226,6 @@
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
-				839EFE3C17FAACA300C558B9 /* UIApplication+Style.h */,
-				839EFE3D17FAACA300C558B9 /* UIApplication+Style.m */,
 				1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */,
 				1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
@@ -1764,7 +1759,6 @@
 				1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
-				839EFE3E17FAACA300C558B9 /* UIApplication+Style.m in Sources */,
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */,

@@ -9,7 +9,6 @@
 #import "NSURL+OpensInBrowser.h"
 #import "NSURL+Punycode.h"
 #import "NSURL+QueryDictionary.h"
-#import "UIApplication+Style.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIPasteboard+AwfulStringyURLs.h"
