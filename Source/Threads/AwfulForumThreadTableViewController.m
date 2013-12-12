@@ -302,7 +302,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return;
     NSInteger index = picker.selectedIndex;
-    if (index == 0) {
+    if (index == 0 || index == NSNotFound) {
         self.filterThreadTag = nil;
     } else {
         self.filterThreadTag = self.forum.threadTags[index - 1];
