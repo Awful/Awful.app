@@ -7,10 +7,7 @@
 // Data-specific date formatters that appear on many screens.
 @interface AwfulDateFormatters : NSObject
 
-// Singleton instance.
-+ (instancetype)formatters;
-
-@property (readonly, nonatomic) NSDateFormatter *postDateFormatter;
-@property (readonly, nonatomic) NSDateFormatter *regDateFormatter;
++(NSDateFormatter*) postDateFormatter;
++(NSDateFormatter*) regDateFormatter;
 
 @end

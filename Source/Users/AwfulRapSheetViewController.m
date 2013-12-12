@@ -175,7 +175,7 @@
     NSString *banDescription = @"banned";
     if (ban.punishment == AwfulPunishmentProbation) banDescription = @"probated";
     else if (ban.punishment == AwfulPunishmentPermaban) banDescription = @"permabanned";
-    NSString *readableBanDate = [self.readableBanDateFormatter stringFromDate:ban.date];
+    NSString *readableBanDate = [self.banDateFormatter stringFromDate:ban.date];
     cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”",
                                ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
     return cell;
@@ -183,22 +183,12 @@
 
 - (NSDateFormatter *)banDateFormatter
 {
-    static NSDateFormatter *banDateFormatter;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        banDateFormatter = [NSDateFormatter new];
-        [banDateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-        [banDateFormatter setDateFormat:@"MM/dd/yy HH:mm"];
-    });
-    return banDateFormatter;
-}
-
-- (NSDateFormatter *)readableBanDateFormatter
-{
     static NSDateFormatter *readableBanDateFormatter;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         readableBanDateFormatter = [NSDateFormatter new];
+		
+		// Jan 2, 2003 16:05
         readableBanDateFormatter.dateStyle = NSDateFormatterMediumStyle;
         readableBanDateFormatter.timeStyle = NSDateFormatterShortStyle;
     });

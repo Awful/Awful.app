@@ -127,9 +127,9 @@
     dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
     dict[@"beenSeen"] = @(self.privateMessage.seen) ?: @NO;
     dict[@"postDate"] = self.privateMessage.sentDate ?: [NSNull null];
-    dict[@"postDateFormat"] = AwfulDateFormatters.formatters.postDateFormatter;
+    dict[@"postDateFormat"] = AwfulDateFormatters.postDateFormatter;
     dict[@"author"] = self.privateMessage.from;
-    dict[@"regDateFormat"] = AwfulDateFormatters.formatters.regDateFormatter;
+    dict[@"regDateFormat"] = AwfulDateFormatters.regDateFormatter;
     NSError *error;
     NSString *html = [GRMustacheTemplate renderObject:dict
                                          fromResource:@"Post"

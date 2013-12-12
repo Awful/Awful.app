@@ -28,20 +28,35 @@
 
 - (NSDateFormatter *)postDateFormat
 {
-    return AwfulDateFormatters.formatters.postDateFormatter;
+    return AwfulDateFormatters.postDateFormatter;
 }
 
 - (NSDateFormatter *)regDateFormat
 {
-    return AwfulDateFormatters.formatters.regDateFormatter;
+    return AwfulDateFormatters.regDateFormatter;
 }
 
 - (NSDateFormatter *)editDateFormat
 {
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    // Jan 2, 2003 around 4:05
-    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    formatter.dateFormat = @"MMM d, yyy 'around' HH:mm";
+	static NSDateFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [NSDateFormatter new];
+		
+		NSDateFormatter *dateFormatter = [NSDateFormatter new];
+		dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+		
+		NSDateFormatter *timeFormatter = [NSDateFormatter new];
+		timeFormatter.dateStyle = NSDateFormatterNoStyle;
+        timeFormatter.timeStyle = kCFDateFormatterShortStyle;
+
+		
+		// Jan 2, 2003 around 4:05
+		NSString *aroundFormatString = [NSString stringWithFormat:@"%@ 'around' %@", dateFormatter.dateFormat, timeFormatter.dateFormat];
+		
+		formatter.dateFormat = aroundFormatString;
+    });
     return formatter;
 }
 

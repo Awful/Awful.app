@@ -23,15 +23,12 @@
 
 - (NSDateFormatter *)regDateFormat
 {
-    return AwfulDateFormatters.formatters.regDateFormatter;
+    return AwfulDateFormatters.regDateFormatter;
 }
 
 - (NSDateFormatter *)lastPostDateFormat
 {
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    formatter.locale = self.regDateFormat.locale;
-    formatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return formatter;
+	return AwfulDateFormatters.postDateFormatter;
 }
 
 - (NSArray *)contactInfo

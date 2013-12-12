@@ -14,34 +14,32 @@
 
 @implementation AwfulDateFormatters
 
-+ (instancetype)formatters
++ (NSDateFormatter *)postDateFormatter
 {
-    static AwfulDateFormatters *instance = nil;
+	static NSDateFormatter *formatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [self new];
+        formatter = [NSDateFormatter new];
+		
+		// Jan 2, 2003 16:05
+        formatter.dateStyle = NSDateFormatterMediumStyle;
+        formatter.timeStyle = NSDateFormatterShortStyle;
     });
-    return instance;
+    return formatter;
 }
 
-- (NSDateFormatter *)postDateFormatter
++ (NSDateFormatter *)regDateFormatter
 {
-    if (_postDateFormatter) return _postDateFormatter;
-    _postDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003 16:05
-    _postDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _postDateFormatter.dateFormat = @"MMM d, yyyy HH:mm";
-    return _postDateFormatter;
-}
-
-- (NSDateFormatter *)regDateFormatter
-{
-    if (_regDateFormatter) return _regDateFormatter;
-    _regDateFormatter = [NSDateFormatter new];
-    // Jan 2, 2003
-    _regDateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
-    _regDateFormatter.dateFormat = @"MMM d, yyyy";
-    return _regDateFormatter;
+	static NSDateFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [NSDateFormatter new];
+		
+		// Jan 2, 2003
+        formatter.dateStyle = NSDateFormatterMediumStyle;
+        formatter.timeStyle = NSDateFormatterNoStyle;
+    });
+    return formatter;
 }
 
 @end
