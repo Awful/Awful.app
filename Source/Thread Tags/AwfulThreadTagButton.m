@@ -6,10 +6,9 @@
 
 @interface AwfulThreadTagButton ()
 
-@property (nonatomic) UIImageView *secondaryTagImageView;
+@property (strong, nonatomic) UIImageView *secondaryTagImageView;
 
 @end
-
 
 @implementation AwfulThreadTagButton
 
@@ -22,20 +21,30 @@
 {
     if (secondaryTagImage && !self.secondaryTagImageView) {
         self.secondaryTagImageView = [UIImageView new];
+        self.secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:self.secondaryTagImageView];
-        [self setNeedsLayout];
+        [self setNeedsUpdateConstraints];
     }
-    self.secondaryTagImageView.image = secondaryTagImage;
+    UIImage *ensureRetina = [UIImage imageWithCGImage:secondaryTagImage.CGImage scale:2 orientation:secondaryTagImage.imageOrientation];
+    self.secondaryTagImageView.image = ensureRetina;
 }
 
-- (void)layoutSubviews
+- (void)updateConstraints
 {
-    [super layoutSubviews];
-    CGRect tagFrame = self.imageView.frame;
-    self.secondaryTagImageView.frame = (CGRect){
-        .origin = tagFrame.origin,
-        .size = { CGRectGetWidth(tagFrame) / 2, CGRectGetHeight(tagFrame) / 2 },
-    };
+    if (self.secondaryTagImageView) {
+        NSDictionary *views = @{ @"secondary": self.secondaryTagImageView };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+    }
+    [super updateConstraints];
 }
 
 @end

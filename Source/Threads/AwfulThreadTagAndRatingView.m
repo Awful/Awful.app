@@ -7,26 +7,51 @@
 @implementation AwfulThreadTagAndRatingView
 {
     UIImageView *_tagImageView;
+    UIImageView *_secondaryTagImageView;
     UIImageView *_ratingImageView;
     CGFloat _gap;
-    BOOL _addedInitialConstraints;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
     _tagImageView = [UIImageView new];
     _tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_tagImageView];
     
-    _secondaryThreadTagBadge = [UILabel new];
-    _secondaryThreadTagBadge.translatesAutoresizingMaskIntoConstraints = NO;
-    _secondaryThreadTagBadge.layer.cornerRadius = badgeRadius;
-    _secondaryThreadTagBadge.clipsToBounds = YES;
-    _secondaryThreadTagBadge.font = [UIFont systemFontOfSize:10];
-    _secondaryThreadTagBadge.textAlignment = NSTextAlignmentCenter;
-    _secondaryThreadTagBadge.textColor = [UIColor whiteColor];
-    [_tagImageView addSubview:_secondaryThreadTagBadge];
+    _secondaryTagImageView = [UIImageView new];
+    _secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_secondaryTagImageView];
+    
+    NSDictionary *views = @{ @"tag": _tagImageView,
+                             @"secondary": _secondaryTagImageView };
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-0@500-|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraint:
+     [NSLayoutConstraint constraintWithItem:_secondaryTagImageView
+                                  attribute:NSLayoutAttributeRight
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:_tagImageView
+                                  attribute:NSLayoutAttributeRight
+                                 multiplier:1
+                                   constant:0]];
+    [self addConstraint:
+     [NSLayoutConstraint constraintWithItem:_secondaryTagImageView
+                                  attribute:NSLayoutAttributeBottom
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:_tagImageView
+                                  attribute:NSLayoutAttributeBottom
+                                 multiplier:1
+                                   constant:0]];
     return self;
 }
 
@@ -34,32 +59,6 @@ static const CGFloat badgeRadius = 7;
 
 - (void)updateConstraints
 {
-    if (!_addedInitialConstraints) {
-        NSDictionary *views = @{ @"tag": _tagImageView,
-                                 @"secondary": _secondaryThreadTagBadge };
-        NSDictionary *metrics = @{ @"badgeWidth": @(badgeRadius * 2) };
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-0@500-|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
-        [_tagImageView addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary(badgeWidth)]|"
-                                                 options:0
-                                                 metrics:metrics
-                                                   views:views]];
-        [_tagImageView addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary(badgeWidth)]|"
-                                                 options:0
-                                                 metrics:metrics
-                                                   views:views]];
-        _addedInitialConstraints = YES;
-    }
     if (_ratingImageView) {
         NSDictionary *views = @{ @"tag": _tagImageView,
                                  @"rating": _ratingImageView };
@@ -90,6 +89,17 @@ static const CGFloat badgeRadius = 7;
 {
     _tagImageView.image = threadTag;
     [self invalidateIntrinsicContentSize];
+}
+
+- (UIImage *)secondaryThreadTag
+{
+    return _secondaryTagImageView.image;
+}
+
+- (void)setSecondaryThreadTag:(UIImage *)secondaryThreadTag
+{
+    UIImage *ensureRetina = [UIImage imageWithCGImage:secondaryThreadTag.CGImage scale:2 orientation:secondaryThreadTag.imageOrientation];
+    _secondaryTagImageView.image = ensureRetina;
 }
 
 - (UIImage *)ratingImage

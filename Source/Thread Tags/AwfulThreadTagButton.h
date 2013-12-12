@@ -6,6 +6,6 @@
 
 @interface AwfulThreadTagButton : UIButton
 
-@property (nonatomic) UIImage *secondaryTagImage;
+@property (strong, nonatomic) UIImage *secondaryTagImage;
 
 @end

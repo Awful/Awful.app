@@ -60,18 +60,6 @@
 		<string>#ff0000</string>
 		<key>unreadBadgeYellowColor</key>
 		<string>#ffff00</string>
-		<key>auctionBadgeColor</key>
-		<string>#ffbf02</string>
-		<key>buyingBadgeColor</key>
-		<string>#025d22</string>
-		<key>sellingBadgeColor</key>
-		<string>#cb0001</string>
-		<key>tradingBadgeColor</key>
-		<string>#77cf26</string>
-		<key>askBadgeColor</key>
-		<string>#56a4ae</string>
-		<key>tellBadgeColor</key>
-		<string>#cba719</string>
 		<key>keyboardAppearance</key>
 		<string>Light</string>
 	</dict>

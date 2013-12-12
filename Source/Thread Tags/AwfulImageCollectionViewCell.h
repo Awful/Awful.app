@@ -6,7 +6,7 @@
 
 @interface AwfulImageCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic) UIImage *icon;
-@property (nonatomic) UIImage *secondaryIcon;
+@property (strong, nonatomic) UIImage *icon;
+@property (strong, nonatomic) UIImage *secondaryIcon;
 
 @end

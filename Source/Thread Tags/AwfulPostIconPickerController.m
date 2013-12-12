@@ -159,8 +159,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
     UIImage *selectedIconImage = [self selectedIconImage];
     for (NSIndexPath *indexPath in [self.collectionView indexPathsForVisibleItems]) {
         if (indexPath.section == 0) {
-            AwfulImageCollectionViewCell *cell = (id)[self.collectionView cellForItemAtIndexPath:
-                                                      indexPath];
+            AwfulImageCollectionViewCell *cell = (AwfulImageCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
             cell.icon = selectedIconImage;
         }
     }
@@ -196,9 +195,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulImageCollectionViewCell *cell;
-    cell = (id)[collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier
-                                                         forIndexPath:indexPath];
+    AwfulImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier forIndexPath:indexPath];
     cell.backgroundColor = [UIColor whiteColor];
     cell.layer.cornerRadius = 2;
     cell.layer.shadowOpacity = 0.5;
@@ -210,8 +207,9 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         cell.icon = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
     }
     if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
-        cell.secondaryIcon = [self.delegate postIconPicker:self
-                                      secondaryIconAtIndex:indexPath.item];
+        UIImage *secondaryIcon = [self.delegate postIconPicker:self secondaryIconAtIndex:indexPath.item];
+        UIImage *ensureRetina = [UIImage imageWithCGImage:secondaryIcon.CGImage scale:2 orientation:secondaryIcon.imageOrientation];
+        cell.secondaryIcon = ensureRetina;
     } else {
         cell.secondaryIcon = nil;
     }

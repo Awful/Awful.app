@@ -10,17 +10,17 @@
 @interface AwfulThreadTagAndRatingView : UIView
 
 /**
- * The thread tag to show on top.
+ * The thread tag to show in the top two thirds.
  */
 @property (strong, nonatomic) UIImage *threadTag;
 
 /**
- * The secondary thread tag badge.
+ * The secondary thread tag badge. If non-nil, laid over the bottom right corner of the thread tag.
  */
-@property (readonly, strong, nonatomic) UILabel *secondaryThreadTagBadge;
+@property (strong, nonatomic) UIImage *secondaryThreadTag;
 
 /**
- * The rating image to show below. May be nil.
+ * The rating image to show in the bottom third. May be nil.
  */
 @property (strong, nonatomic) UIImage *ratingImage;
 

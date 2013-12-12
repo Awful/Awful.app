@@ -6,11 +6,11 @@
 
 @interface AwfulThreadTagView : UIView
 
-@property (nonatomic) UIImage *tagImage;
+@property (strong, nonatomic) UIImage *tagImage;
 
 - (void)setTagBorderColor:(UIColor *)borderColor width:(CGFloat)width;
 
-// Occupies the top-left quadrant of the tag.
-@property (nonatomic) UIImage *secondaryTagImage;
+// Overlays the bottom-right corner of the tag.
+@property (strong, nonatomic) UIImage *secondaryTagImage;
 
 @end

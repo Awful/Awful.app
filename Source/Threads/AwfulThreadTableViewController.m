@@ -72,23 +72,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
         cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
     }
-    
-    cell.tagAndRatingView.secondaryThreadTagBadge.hidden = NO;
-    AwfulThreadTag *secondaryThreadTag = thread.secondaryThreadTag;
-    if ([secondaryThreadTag.imageName isEqualToString:@"icon-37-selling"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"S";
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-46-trading"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-38-buying"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"B";
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-52-trading"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"ama"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"A";
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"tma"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.text = @"T";
+    if (thread.secondaryThreadTag) {
+        UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
+        cell.tagAndRatingView.secondaryThreadTag = secondaryThreadTag;
     } else {
-        cell.tagAndRatingView.secondaryThreadTagBadge.hidden = YES;
+        cell.tagAndRatingView.secondaryThreadTag = nil;
     }
     
     // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
@@ -245,20 +233,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             default: cell.badgeLabel.textColor = self.theme[@"tintColor"]; break;
         }
         cell.lightenBadgeLabel = NO;
-    }
-    AwfulThreadTag *secondaryThreadTag = thread.secondaryThreadTag;
-    if ([secondaryThreadTag.imageName isEqualToString:@"icon-37-selling"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"sellingBadgeColor"];
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-46-trading"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"tradingBadgeColor"];
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-38-buying"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"buyingBadgeColor"];
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"icon-52-trading"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"auctionBadgeColor"];
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"ama"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"askBadgeColor"];
-    } else if ([secondaryThreadTag.imageName isEqualToString:@"tma"]) {
-        cell.tagAndRatingView.secondaryThreadTagBadge.backgroundColor = self.theme[@"tellBadgeColor"];
     }
 }
 

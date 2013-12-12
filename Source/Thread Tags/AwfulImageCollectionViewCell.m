@@ -7,10 +7,9 @@
 
 @interface AwfulImageCollectionViewCell ()
 
-@property (nonatomic) AwfulThreadTagView *tagView;
+@property (strong, nonatomic) AwfulThreadTagView *tagView;
 
 @end
-
 
 @implementation AwfulImageCollectionViewCell
 

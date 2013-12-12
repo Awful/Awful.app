@@ -6,11 +6,10 @@
 
 @interface AwfulThreadTagView ()
 
-@property (nonatomic) UIImageView *tagImageView;
-@property (nonatomic) UIImageView *secondaryTagImageView;
+@property (strong, nonatomic) UIImageView *tagImageView;
+@property (strong, nonatomic) UIImageView *secondaryTagImageView;
 
 @end
-
 
 @implementation AwfulThreadTagView
 
@@ -18,7 +17,20 @@
 {
     if (!(self = [super initWithFrame:frame])) return nil;
     self.tagImageView = [UIImageView new];
+    self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:self.tagImageView];
+    
+    NSDictionary *views = @{ @"tag": self.tagImageView };
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
     return self;
 }
 
@@ -53,24 +65,34 @@
     if (secondaryTagImage) {
         if (!self.secondaryTagImageView) {
             self.secondaryTagImageView = [UIImageView new];
+            self.secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
             [self addSubview:self.secondaryTagImageView];
-            [self setNeedsLayout];
+            [self setNeedsUpdateConstraints];
         }
-        self.secondaryTagImageView.image = secondaryTagImage;
+        UIImage *ensureRetina = [UIImage imageWithCGImage:secondaryTagImage.CGImage scale:2 orientation:secondaryTagImage.imageOrientation];
+        self.secondaryTagImageView.image = ensureRetina;
     } else {
         [self.secondaryTagImageView removeFromSuperview];
         self.secondaryTagImageView = nil;
     }
 }
 
-- (void)layoutSubviews
+- (void)updateConstraints
 {
-    CGRect tagFrame = (CGRect){ .size = self.bounds.size };
-    self.tagImageView.frame = tagFrame;
-    self.secondaryTagImageView.frame = (CGRect){
-        .origin = {-1, -1},
-        .size = { CGRectGetWidth(tagFrame) / 2, CGRectGetHeight(tagFrame) / 2 },
-    };
+    if (self.secondaryTagImageView) {
+        NSDictionary *views = @{ @"secondary": self.secondaryTagImageView };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:[secondary]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[secondary]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+    }
+    [super updateConstraints];
 }
 
 @end
