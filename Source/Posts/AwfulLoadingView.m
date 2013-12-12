@@ -69,7 +69,7 @@
 
 - (void)retheme
 {
-    self.messageLabel.font = [UIFont boldSystemFontOfSize:13];
+    self.messageLabel.font = [UIFont systemFontOfSize:13];
 }
 
 #pragma mark - UIView
@@ -120,9 +120,7 @@
         self.messageLabel.shadowColor = nil;
     } else {
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-        self.messageLabel.textColor = [UIColor darkGrayColor];
-        self.messageLabel.shadowColor = [UIColor whiteColor];
-        self.messageLabel.shadowOffset = CGSizeMake(0, 1);
+        self.messageLabel.textColor = [UIColor blackColor];
     }
     self.messageLabel.backgroundColor = self.backgroundColor;
 }
@@ -176,13 +174,13 @@
     self.backgroundColor = [UIColor blackColor];
     
     self.asciiSpinner = [UILabel new];
-    self.asciiSpinner.font = [UIFont fontWithName:@"CourierNewPS-BoldMT" size:15];
+    self.asciiSpinner.font = [UIFont fontWithName:@"Menlo" size:15];
     self.asciiSpinner.backgroundColor = self.backgroundColor;
     [self advanceSpinner];
     [self addSubview:self.asciiSpinner];
     
     self.messageLabel.backgroundColor = self.backgroundColor;
-    self.messageLabel.font = [UIFont fontWithName:@"CourierNewPS-BoldMT" size:13];
+    self.messageLabel.font = [UIFont fontWithName:@"Menlo" size:13];
     return self;
 }
 
