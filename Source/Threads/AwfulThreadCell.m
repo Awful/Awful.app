@@ -120,16 +120,16 @@
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pages]-2-[pagesIcon]-4-[detail]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pages]-2-[pagesIcon]-5-[detail]"
                                              options:0
                                              metrics:nil
                                                views:views]];
     [self.contentView addConstraint:
      [NSLayoutConstraint constraintWithItem:views[@"pagesIcon"]
-                                  attribute:NSLayoutAttributeCenterY
+                                  attribute:NSLayoutAttributeBottom
                                   relatedBy:NSLayoutRelationEqual
                                      toItem:views[@"pages"]
-                                  attribute:NSLayoutAttributeCenterY
+                                  attribute:NSLayoutAttributeBaseline
                                  multiplier:1
                                    constant:0]];
     [self.contentView addConstraint:
