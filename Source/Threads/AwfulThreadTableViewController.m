@@ -35,6 +35,7 @@
 {
     [super loadView];
     [self.tableView registerClass:[AwfulThreadCell class] forCellReuseIdentifier:ThreadCellIdentifier];
+    self.tableView.rowHeight = 75;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
     [self.tableView awful_hideExtraneousSeparators];
 }
@@ -247,11 +248,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 }
 
 #pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 75;
-}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
