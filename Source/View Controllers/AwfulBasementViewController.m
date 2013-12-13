@@ -86,10 +86,12 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 
 - (UIBarButtonItem *)createShowSidebarItem
 {
-    return [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowback"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self
-                                           action:@selector(showSidebar)];
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowback"]
+                                                             style:UIBarButtonItemStylePlain
+                                                            target:self
+                                                            action:@selector(showSidebar)];
+    item.imageInsets = UIEdgeInsetsMake(0, -8.5, -2, 0);
+    return item;
 }
 
 - (void)showSidebar
