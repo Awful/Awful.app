@@ -194,9 +194,10 @@
         else if (self.page == AwfulThreadPageLast && relevantNumberOfPages > 0) {
             jump.selectedPage = relevantNumberOfPages;
         }
-        UINavigationController *nav = [jump enclosingNavigationController];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:jump];
         self.jumpToPagePopover = [[WYPopoverController alloc] initWithContentViewController:nav];
         self.jumpToPagePopover.delegate = self;
+        self.jumpToPagePopover.wantsDefaultContentAppearance = YES;
     }
     [self.jumpToPagePopover presentPopoverFromBarButtonItem:sender
                                    permittedArrowDirections:WYPopoverArrowDirectionAny
