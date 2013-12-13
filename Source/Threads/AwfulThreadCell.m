@@ -31,25 +31,23 @@
     _textLabel = [UILabel new];
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.numberOfLines = 2;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     [_textLabel setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
     [self.contentView addSubview:_textLabel];
     
     _numberOfPagesLabel = [UILabel new];
     _numberOfPagesLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _numberOfPagesLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    _numberOfPagesLabel.enabled = NO;
     [self.contentView addSubview:_numberOfPagesLabel];
     
-    _pagesIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pages"]];
+    UIImage *pageTemplateImage = [[UIImage imageNamed:@"pages"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    _pagesIconImageView = [[UIImageView alloc] initWithImage:pageTemplateImage];
     _pagesIconImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_pagesIconImageView];
     
     _detailTextLabel = [UILabel new];
     _detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
-    _detailTextLabel.enabled = NO;
     [self.contentView addSubview:_detailTextLabel];
+    
+    [self setFontName:nil];
     
     _badgeLabel = [UILabel new];
     _badgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -65,17 +63,6 @@
     _bottomSpacer.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_bottomSpacer];
     
-    [self setNeedsUpdateConstraints];
-    return self;
-}
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    return [self initWithReuseIdentifier:reuseIdentifier];
-}
-
-- (void)updateConstraints
-{
     NSDictionary *views = @{ @"tagAndRating": self.tagAndRatingView,
                              @"name": self.textLabel,
                              @"pages": self.numberOfPagesLabel,
@@ -160,7 +147,12 @@
                                              options:0
                                              metrics:nil
                                                views:views]];
-    [super updateConstraints];
+    return self;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    return [self initWithReuseIdentifier:reuseIdentifier];
 }
 
 - (void)setLightenBadgeLabel:(BOOL)lightenBadgeLabel
@@ -171,6 +163,29 @@
     } else {
         self.badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:_textLabel.font.pointSize];
     }
+}
+
+- (void)tintColorDidChange
+{
+    [super tintColorDidChange];
+    self.numberOfPagesLabel.textColor = self.tintColor;
+    self.detailTextLabel.textColor = self.tintColor;
+    _pagesIconImageView.tintColor = self.tintColor;
+}
+
+- (NSString *)fontName
+{
+    return self.textLabel.font.fontName;
+}
+
+- (void)setFontName:(NSString *)fontName
+{
+    UIFontDescriptor *textLabelDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleSubheadline];
+    _textLabel.font = [UIFont fontWithName:fontName size:textLabelDescriptor.pointSize];
+    UIFontDescriptor *numberOfPagesDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleCaption1];
+    _numberOfPagesLabel.font = [UIFont fontWithName:fontName size:numberOfPagesDescriptor.pointSize];
+    UIFontDescriptor *detailTextLabelDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleCaption2];
+    _detailTextLabel.font = [UIFont fontWithName:fontName size:detailTextLabelDescriptor.pointSize];
 }
 
 @end

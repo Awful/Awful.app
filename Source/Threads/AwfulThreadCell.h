@@ -52,4 +52,9 @@
  */
 @property (readonly, strong, nonatomic) UIImageView *stickyImageView;
 
+/**
+ * The font name used by the textLabel, numberOfPagesLabel, and detailTextLabel. (Set badgeLabel's font individually.)
+ */
+@property (strong, nonatomic) NSString *fontName;
+
 @end

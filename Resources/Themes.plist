@@ -54,6 +54,8 @@
 		<string>#ffffff</string>
 		<key>listTextColor</key>
 		<string>#000000</string>
+		<key>listDetailColor</key>
+		<string>#999999</string>
 		<key>unreadBadgeOrangeColor</key>
 		<string>#ff8000</string>
 		<key>unreadBadgeRedColor</key>
@@ -208,6 +210,8 @@
 		<string>#000000</string>
 		<key>listTextColor</key>
 		<string>#57FF57</string>
+		<key>listFontName</key>
+		<string>Menlo</string>
 		<key>autocorrection</key>
 		<false/>
 		<key>autocapitalization</key>
