@@ -86,7 +86,7 @@
         info.thread = self;
         info.author = singleUser;
     }
-    info.numberOfPages = numberOfPages;
+    info.numberOfPages = (int32_t)numberOfPages;
 }
 
 #pragma mark - _AwfulThread

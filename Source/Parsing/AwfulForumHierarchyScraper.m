@@ -51,7 +51,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             if (itemName.length > 0) {
                 category.name = itemName;
             }
-            category.index = categories.count;
+            category.index = (int32_t)categories.count;
             [categories addObject:category];
         } else {
             AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:itemID];

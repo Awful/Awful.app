@@ -174,11 +174,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         HTMLElementNode *repliesCell = [row firstNodeMatchingSelector:@"td.replies"];
         if (repliesCell) {
             HTMLElementNode *repliesLink = [repliesCell firstNodeMatchingSelector:@"a"];
-            thread.totalReplies = (repliesLink ?: repliesCell).innerHTML.integerValue;
+            thread.totalReplies = (int32_t)(repliesLink ?: repliesCell).innerHTML.integerValue;
         }
         HTMLElementNode *unreadLink = [row firstNodeMatchingSelector:@"a.count b"];
         if (unreadLink) {
-            thread.seenPosts = thread.totalReplies + 1 - unreadLink.innerHTML.integerValue;
+            thread.seenPosts = (int32_t)(thread.totalReplies + 1 - unreadLink.innerHTML.integerValue);
         } else if ([row firstNodeMatchingSelector:@"a.x"]) {
             thread.seenPosts = thread.totalReplies + 1;
         } else {

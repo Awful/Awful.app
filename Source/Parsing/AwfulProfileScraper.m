@@ -112,7 +112,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         AwfulScanner *scanner = [AwfulScanner scannerWithString:postCountText.data];
         BOOL ok = [scanner scanInteger:&postCount];
         if (ok) {
-            user.postCount = postCount;
+            user.postCount = (int32_t)postCount;
         }
     }
     HTMLElementNode *postRateDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(3)"];
