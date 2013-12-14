@@ -4,6 +4,7 @@
 
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulDateFormatters.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
@@ -188,8 +189,11 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     } else {
         cell.overlayImageView.image = nil;
     }
+	
+	NSString *detailText = [NSString stringWithFormat:@"%@ - %@", pm.from.username, [AwfulDateFormatters.postDateFormatter stringFromDate:pm.sentDate]];
+	
     cell.textLabel.text = pm.subject;
-    cell.detailTextLabel.text = pm.from.username;
+    cell.detailTextLabel.text = detailText;
     [self themeCell:cell withObject:pm];
 }
 
