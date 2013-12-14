@@ -55,8 +55,6 @@
     return self;
 }
 
-static const CGFloat badgeRadius = 7;
-
 - (void)updateConstraints
 {
     if (_ratingImageView) {
