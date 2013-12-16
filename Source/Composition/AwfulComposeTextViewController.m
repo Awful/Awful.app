@@ -5,6 +5,7 @@
 #import "AwfulComposeTextViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
+#import <Crashlytics/Crashlytics.h>
 #import "ImgurHTTPClient.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 
@@ -105,8 +106,8 @@
             contentOffset.y += remainder + 4;
             
             // Getting a hard-to-reproduce crash here, trying to figure out what's up.
-            NSAssert(!isnan(contentOffset.y), @"weird content offset; caret = %@, visible = %@",
-                     NSStringFromCGRect(caretRect), NSStringFromCGRect(visibleRect));
+            CLSLog(@"caret = %@, visible = %@, remainder = %f, target offset = %@",
+                   NSStringFromCGRect(caretRect), NSStringFromCGRect(visibleRect), remainder, NSStringFromCGPoint(contentOffset));
             [UIView animateWithDuration:0.2 animations:^{
                 [self.textView setContentOffset:contentOffset animated:NO];
             }];

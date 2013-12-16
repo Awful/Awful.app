@@ -6,7 +6,7 @@ Awful
 Development talk about Awful 2 and other technobabble can go in the [project.log][] thread for now.
 
 <p align="center">
-  <img src="screenshot.png" width="320" height="460" alt="Screenshot of Awful as it appears on a pre-5 iPhone">
+  <img src="screenshot.png" width="320" height="568" alt="Screenshot of Awful as it appears on an iPhone">
 </p>
 
 [App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
