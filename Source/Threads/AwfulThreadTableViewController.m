@@ -64,48 +64,48 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [cell addGestureRecognizer:longPress];
     
 	if (AwfulSettings.settings.showThreadTags) {
-	
-    // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
-    // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
-    // the empty thread tag for anyone lame enough to pick the same tag twice.
-    UIImage *emptyTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
-    if ([thread.threadTag isEqual:thread.secondaryThreadTag]) {
-        cell.tagAndRatingView.threadTag = emptyTag;
-    } else {
-        UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
-        cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
-    }
-    if (thread.secondaryThreadTag) {
-        UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
-        cell.tagAndRatingView.secondaryThreadTag = secondaryThreadTag;
-    } else {
-        cell.tagAndRatingView.secondaryThreadTag = nil;
-    }
-    
-    // Hardcode Film Dump to never show ratings; its thread tags are the ratings.
-    if ([thread.forum.forumID isEqualToString:@"133"]) {
-        cell.tagAndRatingView.ratingImage = nil;
-    } else {
-        NSInteger rating = lroundf(thread.rating.floatValue);
-        if (rating <= 0) {
-            cell.tagAndRatingView.ratingImage = nil;
-        } else {
-            if (rating < 1) {
-                rating = 1;
-            } else if (rating > 5) {
-                rating = 5;
-            }
-            cell.tagAndRatingView.ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
-        }
-    }
+		
+		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
+		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
+		// the empty thread tag for anyone lame enough to pick the same tag twice.
+		UIImage *emptyTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+		if ([thread.threadTag isEqual:thread.secondaryThreadTag]) {
+			cell.tagAndRatingView.threadTag = emptyTag;
+		} else {
+			UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
+			cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
+		}
+		if (thread.secondaryThreadTag) {
+			UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
+			cell.tagAndRatingView.secondaryThreadTag = secondaryThreadTag;
+		} else {
+			cell.tagAndRatingView.secondaryThreadTag = nil;
+		}
+		
+		// Hardcode Film Dump to never show ratings; its thread tags are the ratings.
+		if ([thread.forum.forumID isEqualToString:@"133"]) {
+			cell.tagAndRatingView.ratingImage = nil;
+		} else {
+			NSInteger rating = lroundf(thread.rating.floatValue);
+			if (rating <= 0) {
+				cell.tagAndRatingView.ratingImage = nil;
+			} else {
+				if (rating < 1) {
+					rating = 1;
+				} else if (rating > 5) {
+					rating = 5;
+				}
+				cell.tagAndRatingView.ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
+			}
+		}
 	}
 	else {
 		cell.tagAndRatingView.threadTag = nil;
 		cell.tagAndRatingView.secondaryThreadTag = nil;
 		cell.tagAndRatingView.ratingImage = nil;
 	}
-		
-		
+	
+	
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.sticky || !thread.closed) {
         cell.tagAndRatingView.alpha = 1;
