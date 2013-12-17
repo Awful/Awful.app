@@ -170,15 +170,21 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-    AwfulThreadTag *threadTag = pm.threadTag;
-    if (threadTag) {
-        cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
-    } else {
-        // TODO handle updated thread tags
-        cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
-    }
+	if (AwfulSettings.settings.showThreadTags) {
+		AwfulThreadTag *threadTag = pm.threadTag;
+		if (threadTag) {
+			cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
+		} else {
+			// TODO handle updated thread tags
+			cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+		}
+	}
+	else {
+		cell.imageView.image = nil;
+	}
+	
     // TODO this is more convoluted than necessary
-    if (pm.replied || pm.forwarded || !pm.seen) {
+    if (AwfulSettings.settings.showThreadTags && (pm.replied || pm.forwarded || !pm.seen)) {
         if (pm.replied) {
             cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
         } else if (pm.forwarded) {

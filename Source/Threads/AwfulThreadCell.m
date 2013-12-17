@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadCell.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulThreadCell
 {
@@ -24,9 +25,9 @@
     _stickyImageView.contentMode = UIViewContentModeTopRight;
     [self.contentView addSubview:_stickyImageView];
     
-    _tagAndRatingView = [AwfulThreadTagAndRatingView new];
-    _tagAndRatingView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_tagAndRatingView];
+	_tagAndRatingView = [AwfulThreadTagAndRatingView new];
+	_tagAndRatingView.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.contentView addSubview:_tagAndRatingView];
     
     _textLabel = [UILabel new];
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -73,14 +74,6 @@
                              @"topSpacer": _topSpacer,
                              @"bottomSpacer": _bottomSpacer };
     [self.contentView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"tagAndRating"]
-                                  attribute:NSLayoutAttributeCenterY
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.contentView
-                                  attribute:NSLayoutAttributeCenterY
-                                 multiplier:1
-                                   constant:0]];
-    [self.contentView addConstraint:
      [NSLayoutConstraint constraintWithItem:views[@"badge"]
                                   attribute:NSLayoutAttributeCenterY
                                   relatedBy:NSLayoutRelationEqual
@@ -88,11 +81,33 @@
                                   attribute:NSLayoutAttributeCenterY
                                  multiplier:1
                                    constant:0]];
-    [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tagAndRating(45)]-9-[name]-6-[badge]-8-|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
+	
+	if (AwfulSettings.settings.showThreadTags) {
+		
+		[self.contentView addConstraint:
+		 [NSLayoutConstraint constraintWithItem:views[@"tagAndRating"]
+									  attribute:NSLayoutAttributeCenterY
+									  relatedBy:NSLayoutRelationEqual
+										 toItem:self.contentView
+									  attribute:NSLayoutAttributeCenterY
+									 multiplier:1
+									   constant:0]];
+		
+		[self.contentView addConstraints:
+		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tagAndRating(45)]-9-[name]-6-[badge]-8-|"
+												 options:0
+												 metrics:nil
+												   views:views]];
+	}
+	else
+	{
+		[self.contentView addConstraints:
+		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[name]-6-[badge]-8-|"
+												 options:0
+												 metrics:nil
+												   views:views]];
+	}
+	
     [self.contentView addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][name][pages][bottomSpacer(topSpacer)]|"
                                              options:0

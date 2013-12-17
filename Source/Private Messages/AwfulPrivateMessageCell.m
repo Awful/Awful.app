@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessageCell.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulPrivateMessageCell
 {
@@ -65,11 +66,23 @@
                              @"overlay": self.overlayImageView,
                              @"topSpacer": _topSpacer,
                              @"bottomSpacer": _bottomSpacer };
-    [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[subject]-(>=5,==5@900)-|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
+	
+	if (AwfulSettings.settings.showThreadTags) {
+		[self.contentView addConstraints:
+		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[subject]-(>=5,==5@900)-|"
+												 options:0
+												 metrics:nil
+												   views:views]];
+	}
+	else {
+		[self.contentView addConstraints:
+		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[subject]-(>=5,==5@900)-|"
+												 options:0
+												 metrics:nil
+												   views:views]];
+	}
+	
+
     [self.contentView addConstraint:
      [NSLayoutConstraint constraintWithItem:views[@"tag"]
                                   attribute:NSLayoutAttributeCenterY

@@ -63,6 +63,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [longPress addTarget:self action:@selector(showThreadActions:)];
     [cell addGestureRecognizer:longPress];
     
+	if (AwfulSettings.settings.showThreadTags) {
+	
     // It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
     // Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
     // the empty thread tag for anyone lame enough to pick the same tag twice.
@@ -96,6 +98,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             cell.tagAndRatingView.ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
         }
     }
+	}
+	else {
+		cell.tagAndRatingView.threadTag = nil;
+		cell.tagAndRatingView.secondaryThreadTag = nil;
+		cell.tagAndRatingView.ratingImage = nil;
+	}
+		
+		
     cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.sticky || !thread.closed) {
         cell.tagAndRatingView.alpha = 1;
