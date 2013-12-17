@@ -316,6 +316,10 @@
     configureButton(self.topBar.scrollToBottomButton);
     [self configurePostsViewSettings];
     [self.replyViewController themeDidChange];
+	
+	//Theming for WYPopoverController via UIAppearance properties
+	WYPopoverBackgroundView.appearance.fillBottomColor = self.theme[@"backgroundColor"];
+	WYPopoverBackgroundView.appearance.fillTopColor = self.theme[@"backgroundColor"];
 }
 
 - (void)setThread:(AwfulThread *)thread
