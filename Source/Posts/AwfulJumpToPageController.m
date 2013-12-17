@@ -94,7 +94,6 @@
 - (void)loadView
 {
     self.view = [UIView new];
-    self.view.backgroundColor = [UIColor whiteColor];
     self.picker = [UIPickerView new];
     self.picker.translatesAutoresizingMaskIntoConstraints = NO;
     self.picker.dataSource = self;
@@ -123,7 +122,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.tintColor = self.theme[@"tintColor"];
+	
+	AwfulTheme *theme = AwfulTheme.currentTheme;
+	
+	self.view.backgroundColor = theme[@"backgroundColor"];
+	self.navigationController.navigationBar.tintColor = theme[@"navigationBarTextColor"];
+    self.navigationController.navigationBar.barTintColor = theme[@"navigationBarTintColor"];
 }
 
 // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
@@ -147,11 +151,11 @@ const CGFloat pickerHeight = 162;
     return self.numberOfPages;
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView
-             titleForRow:(NSInteger)row
+- (NSAttributedString *)pickerView:(UIPickerView *)pickerView
+             attributedTitleForRow:(NSInteger)row
             forComponent:(NSInteger)component
 {
-    return [@(row + 1) stringValue];
+    return [[NSAttributedString alloc] initWithString:[@(row + 1) stringValue] attributes:@{NSForegroundColorAttributeName:	AwfulTheme.currentTheme[@"listTextColor"]}];;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView
