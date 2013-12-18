@@ -253,12 +253,12 @@ static NSString * const InstapaperUsernameKey = @"username";
 
 - (NSString *)themeNameForForumID:(NSString *)forumID
 {
-    return self[[NSString stringWithFormat:@"theme-%@", forumID]];
+    return self[[NSString stringWithFormat:@"theme%@", forumID]];
 }
 
 - (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID
 {
-    self[[NSString stringWithFormat:@"theme-%@", forumID]] = themeName;
+    self[[NSString stringWithFormat:@"theme%@", forumID]] = themeName;
 }
 
 - (id)objectForKeyedSubscript:(id)key
