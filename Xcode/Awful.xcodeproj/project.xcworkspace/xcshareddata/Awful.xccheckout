@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B533F94B-9752-4A87-B6BC-225BC2C7B697</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Awful</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>8DEBCDEA-BEBA-4524-8795-EE332E1B1B01</key>
+		<string>https://github.com/Awful/Awful.app.git</string>
+		<key>98A936E2-06A0-4DC5-B648-A78E9DAFA88F</key>
+		<string>https://github.com/Awful/thread-tags</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Xcode/Awful.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>8DEBCDEA-BEBA-4524-8795-EE332E1B1B01</key>
+		<string>../../..</string>
+		<key>98A936E2-06A0-4DC5-B648-A78E9DAFA88F</key>
+		<string>../../../Resources/Thread Tags</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Awful/Awful.app.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>8DEBCDEA-BEBA-4524-8795-EE332E1B1B01</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>8DEBCDEA-BEBA-4524-8795-EE332E1B1B01</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Awful</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>98A936E2-06A0-4DC5-B648-A78E9DAFA88F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Thread Tags</string>
+		</dict>
+	</array>
+</dict>
+</plist>

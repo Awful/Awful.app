@@ -74,7 +74,7 @@
 		<key>scrollIndicatorStyle</key>
 		<string>White</string>
 		<key>backgroundColor</key>
-		<string>#151515</string>
+		<string>#262626</string>
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
 		<key>listSecondaryTextColor</key>
@@ -84,9 +84,9 @@
 		<key>splitViewBackgroundColor</key>
 		<string>#151515</string>
 		<key>splitDividerColor</key>
-		<string>#4c4c4c</string>
+		<string>#111111</string>
 		<key>navigationBarTintColor</key>
-		<string>#151515</string>
+		<string>#000000</string>
 		<key>toolbarTextColor</key>
 		<string>#ffffff</string>
 		<key>toolbarTintColor</key>
@@ -96,15 +96,15 @@
 		<key>postsTopBarTextColor</key>
 		<string>#ffffff</string>
 		<key>postsTopBarBackgroundColor</key>
-		<string>#151515</string>
+		<string>#262626</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>
 		<key>settingsSwitchColor</key>
 		<string>#222222</string>
 		<key>listBackgroundColor</key>
-		<string>#111111</string>
+		<string>#333333</string>
 		<key>listSeparatorColor</key>
-		<string>#151515</string>
+		<string>#111111</string>
 		<key>listTextColor</key>
 		<string>#ffffff</string>
 		<key>keyboardAppearance</key>
