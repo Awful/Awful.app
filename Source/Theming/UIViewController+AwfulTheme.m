@@ -27,10 +27,10 @@
 
 @implementation AwfulViewController
 
-- (void)viewDidLoad
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    [self themeDidChange];
+	[super viewWillAppear:animated];
+	[self themeDidChange];
 }
 
 - (AwfulTheme *)theme
@@ -42,10 +42,10 @@
 
 @implementation AwfulTableViewController
 
-- (void)viewDidLoad
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    [self themeDidChange];
+	[super viewWillAppear:animated];
+	[self themeDidChange];
 }
 
 - (void)themeDidChange
@@ -72,10 +72,10 @@
 
 @implementation AwfulCollectionViewController
 
-- (void)viewDidLoad
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    [self themeDidChange];
+	[super viewWillAppear:animated];
+	[self themeDidChange];
 }
 
 - (void)themeDidChange
