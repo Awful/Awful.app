@@ -158,8 +158,8 @@ header {
 }
 .bbc-block.mention,
 .bbc-block.mention h4 a {
-  color: #b837ed;
-  border-color: #b837ed;
+  color: #7409a0;
+  border-color: #7409a0;
 }
 code,
 pre,
@@ -239,7 +239,7 @@ body {
   border-bottom: 8px solid #222222;
 }
 .post.seen {
-  background-color: rgba(3, 3, 48, 0.75);
+  background-color: #343b46;
 }
 header {
   border-bottom: none;
@@ -280,6 +280,11 @@ header {
 .bbc-block h4,
 .bbc-block h5 {
   color: #999;
+}
+.bbc-block.mention,
+.bbc-block.mention h4 a {
+  color: #b837ed;
+  border-color: #b837ed;
 }
 footer {
   margin-top: 0.6em;
