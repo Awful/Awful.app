@@ -239,7 +239,8 @@ body {
 }
 .post {
   background-color: #191919;
-  border-bottom: 8px solid #8c7b2e;
+  border-top: 7px solid #8c7b2e;
+  border-bottom: 1px solid #8c7b2e;
 }
 .post.seen {
   background-color: #2d270c;
