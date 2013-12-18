@@ -30,6 +30,10 @@
 		<string>#808080</string>
 		<key>jumpToPageBackgroundColor</key>
 		<string>#ffffff</string>
+		<key>jumpToPageNavigationBarTextColor</key>
+		<string>#1483b1</string>
+		<key>jumpToPageNavigationBarTintColor</key>
+		<string>#f9f9f9</string>
 		<key>navigationBarTextColor</key>
 		<string>#ffffff</string>
 		<key>navigationBarTintColor</key>
@@ -67,6 +71,8 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>jumpToPageNavigationBarTintColor</key>
+		<string>#000000</string>
 		<key>description</key>
 		<string>Dark</string>
 		<key>descriptiveColor</key>
