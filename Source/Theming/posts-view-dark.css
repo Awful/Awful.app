@@ -235,9 +235,8 @@ body {
   background-color: #000000;
 }
 .post {
-  background-color: transparent;
-  border-top: 7px solid #222222;
-  border-bottom: 1px solid #222222;
+  background-color: #333333;
+  border-bottom: 8px solid #181818;
 }
 .post.seen {
   background-color: #343b46;
