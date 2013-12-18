@@ -250,8 +250,9 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 - (void)insertImage:(UIImage *)image
 {
-    // For whatever reason we get the default font after inserting an image, so keep our current font for later.
+    // For whatever reason we get the default font/text color after inserting an image, so keep our current font for later.
     UIFont *font = self.font;
+	UIColor *textColor = self.textColor;
     
     AwfulTextAttachment *attachment = [AwfulTextAttachment new];
     attachment.image = image;
@@ -261,6 +262,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     self.selectedTextRange = [self textRangeFromPosition:afterImage toPosition:afterImage];
     
     self.font = font;
+	self.textColor = textColor;
 }
 
 - (void)showFormattingSubmenu
