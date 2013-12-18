@@ -19,6 +19,8 @@
 
 - (NSDictionary *)infoForSettingWithKey:(NSString *)key;
 
+@property (assign, nonatomic) BOOL isMigrated;
+
 @property (assign, nonatomic) BOOL showAvatars;
 
 @property (assign, nonatomic) BOOL showImages;
@@ -78,6 +80,7 @@ extern NSString * const AwfulSettingsDidChangeSettingKey;
  * N.B. Undocumented here are the "theme-X" keys, where X is a forum ID.
  */
 extern const struct AwfulSettingsKeys {
+	__unsafe_unretained NSString *isMigrated;
     __unsafe_unretained NSString *showAvatars;
     __unsafe_unretained NSString *showImages;
     __unsafe_unretained NSString *confirmNewPosts;

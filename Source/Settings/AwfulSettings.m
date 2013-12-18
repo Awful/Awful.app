@@ -62,35 +62,45 @@ struct {
 
 - (void)migrateOldSettings
 {
+	if (self.isMigrated) return;
+	
     NSString *YOSPOSStyle = self[OldSettingsKeys.yosposStyle];
-    if ([YOSPOSStyle isEqualToString:@"green"]) {
-        self[@"theme-219"] = @"YOSPOS";
+	NSString *newYOSPOSStyle;
+    if ([YOSPOSStyle isEqualToString:@"green"] || YOSPOSStyle == nil) {
+        newYOSPOSStyle = @"YOSPOS";
     } else if ([YOSPOSStyle isEqualToString:@"amber"]) {
-        self[@"theme-219"] = @"YOSPOS (amber)";
+        newYOSPOSStyle = @"YOSPOS (amber)";
     } else if ([YOSPOSStyle isEqualToString:@"macinyos"]) {
-        self[@"theme-219"] = @"Macinyos";
+       newYOSPOSStyle = @"Macinyos";
     } else if ([YOSPOSStyle isEqualToString:@"winpos95"]) {
-        self[@"theme-219"] = @"Winpos 95";
-    }
-    if (YOSPOSStyle) {
+        newYOSPOSStyle = @"Winpos 95";
+    } else {
         self[OldSettingsKeys.yosposStyle] = nil;
     }
+	[self setThemeName:newYOSPOSStyle forForumID:@"219"];
+	
     
     NSString *FYADStyle = self[OldSettingsKeys.fyadStyle];
-    if ([FYADStyle isEqualToString:@"pink"]) {
-        self[@"theme-26"] = @"FYAD";
+	NSString *newFYADStyle = nil;
+    if ([FYADStyle isEqualToString:@"pink"] || FYADStyle == nil) {
+        newFYADStyle = @"FYAD";
+    } else {
+        newFYADStyle = nil;
     }
-    if (FYADStyle) {
-        self[OldSettingsKeys.fyadStyle] = nil;
-    }
+	[self setThemeName:newFYADStyle forForumID:@"26"];
+
     
     NSString *gasChamberStyle = self[OldSettingsKeys.gasChamberStyle];
-    if ([gasChamberStyle isEqualToString:@"sickly"]) {
-        self[@"theme-25"] = @"Gas Chamber";
+	NSString *newGasChamberStyle;
+    if ([gasChamberStyle isEqualToString:@"sickly"] || gasChamberStyle == nil) {
+       newGasChamberStyle = @"Gas Chamber";
+    } else {
+        newGasChamberStyle = nil;
     }
-    if (gasChamberStyle) {
-        self[OldSettingsKeys.gasChamberStyle] = nil;
-    }
+	[self setThemeName:newGasChamberStyle forForumID:@"25"];
+
+	
+	self.isMigrated = YES;
 }
 
 @synthesize sections = _sections;
@@ -117,6 +127,8 @@ struct {
 { \
     self[AwfulSettingsKeys.__get] = @(val); \
 }
+
+BOOL_PROPERTY(isMigrated, setIsMigrated)
 
 BOOL_PROPERTY(showAvatars, setShowAvatars)
 
@@ -253,12 +265,12 @@ static NSString * const InstapaperUsernameKey = @"username";
 
 - (NSString *)themeNameForForumID:(NSString *)forumID
 {
-    return self[[NSString stringWithFormat:@"theme%@", forumID]];
+    return self[[NSString stringWithFormat:@"theme-%@", forumID]];
 }
 
 - (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID
 {
-    self[[NSString stringWithFormat:@"theme%@", forumID]] = themeName;
+    self[[NSString stringWithFormat:@"theme-%@", forumID]] = themeName;
 }
 
 - (id)objectForKeyedSubscript:(id)key
@@ -310,6 +322,7 @@ NSString * const AwfulSettingsDidChangeNotification = @"com.awfulapp.Awful.Setti
 NSString * const AwfulSettingsDidChangeSettingKey = @"setting";
 
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
+	.isMigrated = @"is_migrated_2_0",
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
     .confirmNewPosts = @"confirm_before_replying",
