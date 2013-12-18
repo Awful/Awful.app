@@ -239,7 +239,7 @@ body {
   border-bottom: 8px solid #222222;
 }
 .post.seen {
-  background-color: #343b46;
+  background-color: rgba(3, 3, 48, 0.75);
 }
 header {
   border-bottom: none;
