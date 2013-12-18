@@ -232,17 +232,15 @@ footer:after {
 }
 body {
   color: #ffffff;
-  background-color: #333333;
+  background-color: #000000;
 }
 .post {
   background-color: transparent;
-  border-bottom: 8px solid #222;
-  }
+  border-bottom: 8px solid #222222;
+}
 .post.seen {
   background-color: #030330;
 }
-
-
 header {
   border-bottom: none;
 }
