@@ -126,8 +126,8 @@
 	AwfulTheme *theme = AwfulTheme.currentTheme;
 	
 	self.view.backgroundColor = theme[@"backgroundColor"];
-	self.navigationController.navigationBar.tintColor = theme[@"navigationBarTextColor"];
-    self.navigationController.navigationBar.barTintColor = theme[@"navigationBarTintColor"];
+	self.navigationController.navigationBar.tintColor = theme[@"jumpToPageNavigationBarTextColor"];
+    self.navigationController.navigationBar.barTintColor = theme[@"jumpToPageNavigationBarTintColor"];
 }
 
 // UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
