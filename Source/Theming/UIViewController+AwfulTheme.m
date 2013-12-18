@@ -53,10 +53,9 @@
 	[super themeDidChange];
 	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
 	self.refreshControl.tintColor = self.theme[@"listTextColor"];
+	self.tableView.separatorColor = self.theme[@"listSeparatorColor"];
 	self.tableView.indicatorStyle = self.theme.scrollIndicatorStyle;
-	for (UITableViewCell *cell in self.tableView.visibleCells) {
-		[self themeCell:cell atIndexPath:[self.tableView indexPathForCell:cell]];
-	}
+	[self.tableView reloadData];
 }
 
 -(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -83,9 +82,8 @@
 {
 	[super themeDidChange];
 	self.collectionView.indicatorStyle = self.theme.scrollIndicatorStyle;
-	for (UICollectionViewCell *cell in self.collectionView.visibleCells) {
-		[self themeCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
-	}
+	[self.collectionView reloadData];
+
 }
 
 - (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath

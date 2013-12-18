@@ -53,14 +53,6 @@
 
 #pragma mark - UIViewController
 
-- (void)themeDidChange
-{
-	[super themeDidChange];
-	
-	self.tableView.separatorColor = self.theme[@"listSeparatorColor"];
-	self.tableView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -284,6 +276,18 @@ typedef NS_ENUM(NSUInteger, SettingType)
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
+{
+    // Background color
+    view.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
+{
+    // Background color
+    view.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
+}
+
 - (void)hitSwitch:(UISwitch *)switchView
 {
     NSIndexPath *indexPath = self.switches[switchView.tag];
@@ -404,7 +408,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     NSDictionary *sectionInfo = self.sections[section];
-    return sectionInfo[@"Explanation"];
+    return sectionInfo[@"Explanation"] ?: @" ";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
