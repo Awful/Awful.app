@@ -149,34 +149,4 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
     }
 }
 
-- (UITextAutocorrectionType)autocorrectionType
-{
-    id value = self[@"autocorrection"];
-    if (value) {
-        return [value boolValue] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-    } else {
-        return UITextAutocorrectionTypeDefault;
-    }
-}
-
-- (UITextAutocapitalizationType)autocapitalizationType
-{
-    id value = self[@"autocapitalization"];
-    if (value && ![value boolValue]) {
-        return UITextAutocapitalizationTypeNone;
-    } else {
-        return UITextAutocapitalizationTypeSentences;
-    }
-}
-
-- (UITextSpellCheckingType)spellCheckingType
-{
-    id value = self[@"checkSpelling"];
-    if (value) {
-        return [value boolValue] ? UITextSpellCheckingTypeYes : UITextSpellCheckingTypeNo;
-    } else {
-        return UITextSpellCheckingTypeDefault;
-    }
-}
-
 @end

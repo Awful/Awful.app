@@ -6,6 +6,7 @@
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulForumTweaks.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
@@ -23,6 +24,7 @@
     _originalText = [originalText copy];
     self.title = post.thread.title;
     self.submitButtonItem.title = @"Save";
+	[self updateTweaks];
     return self;
 }
 
@@ -33,6 +35,7 @@
     _quotedText = [quotedText copy];
     self.title = thread.title;
     self.submitButtonItem.title = @"Post";
+	[self updateTweaks];
     return self;
 }
 
@@ -41,6 +44,16 @@
     if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
     self.restorationClass = self.class;
     return self;
+}
+
+- (void)updateTweaks
+{
+	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumId:self.forum.forumID];
+	
+	//Apply autocorrection tweaks to text view
+	self.textView.autocapitalizationType = tweaks.autocapitalizationType;
+    self.textView.autocorrectionType = tweaks.autocorrectionType;
+    self.textView.spellCheckingType = tweaks.spellCheckingType;
 }
 
 - (void)setTitle:(NSString *)title

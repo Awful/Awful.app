@@ -168,12 +168,6 @@
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
-		<key>autocorrection</key>
-		<true/>
-		<key>autocapitalization</key>
-		<false/>
-		<key>checkSpelling</key>
-		<true/>
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
@@ -187,12 +181,6 @@
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
-		<key>autocorrection</key>
-		<true/>
-		<key>autocapitalization</key>
-		<false/>
-		<key>checkSpelling</key>
-		<true/>
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
@@ -218,12 +206,6 @@
 		<string>#57FF57</string>
 		<key>listFontName</key>
 		<string>Menlo</string>
-		<key>autocorrection</key>
-		<true/>
-		<key>autocapitalization</key>
-		<false/>
-		<key>checkSpelling</key>
-		<true/>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>

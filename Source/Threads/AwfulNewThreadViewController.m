@@ -5,6 +5,7 @@
 #import "AwfulNewThreadViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulForumTweaks.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulNewThreadFieldView.h"
 #import "AwfulPostIconPickerController.h"
@@ -89,6 +90,21 @@ static NSString * const DefaultTitle = @"New Thread";
     [super themeDidChange];
     self.fieldView.subjectField.textField.textColor = self.textView.textColor;
     self.fieldView.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+}
+
+- (void)updateTweaks
+{
+	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumId:self.forum.forumID];
+	
+	//Apply autocorrection tweaks to subject field
+	self.fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType;
+    self.fieldView.subjectField.textField.autocorrectionType = tweaks.autocorrectionType;
+    self.fieldView.subjectField.textField.spellCheckingType = tweaks.spellCheckingType;
+	
+	//Apply autocorrection tweaks to main text view
+	self.textView.autocapitalizationType = tweaks.autocapitalizationType;
+    self.textView.autocorrectionType = tweaks.autocorrectionType;
+    self.textView.spellCheckingType = tweaks.spellCheckingType;
 }
 
 - (AwfulNewThreadFieldView *)fieldView

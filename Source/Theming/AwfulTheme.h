@@ -64,21 +64,6 @@
 @property (readonly, assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
 
 /**
- * Returns whether text views should autocorrect.
- */
-@property (readonly, assign, nonatomic) UITextAutocorrectionType autocorrectionType;
-
-/**
- * Returns whether text views should autocapitalize.
- */
-@property (readonly, assign, nonatomic) UITextAutocapitalizationType autocapitalizationType;
-
-/**
- * Returns whether text views should check spelling.
- */
-@property (readonly, assign, nonatomic) UITextSpellCheckingType spellCheckingType;
-
-/**
  * An AwfulTheme to use for looking up values not set by this theme.
  *
  * In the plist, the key is "parent"  and the value is the name of another theme. Defaults to the theme called "default".

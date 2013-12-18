@@ -223,6 +223,8 @@
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
+		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
+		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
 		8C220D9E1814D61100F188AE /* clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C220D9D1814D61100F188AE /* clock.png */; };
@@ -575,6 +577,9 @@
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F3DF9C27054D9A93B744A1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		837D67ED1861C25000464055 /* ForumTweaks.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumTweaks.plist; sourceTree = "<group>"; };
+		837D67EF1861C3D700464055 /* AwfulForumTweaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTweaks.h; sourceTree = "<group>"; };
+		837D67F01861C3D700464055 /* AwfulForumTweaks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTweaks.m; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
 		8C220D9D1814D61100F188AE /* clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clock.png; sourceTree = "<group>"; };
@@ -1196,11 +1201,12 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
+				837D67EF1861C3D700464055 /* AwfulForumTweaks.h */,
+				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
 				1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */,
 				1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */,
 				1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */,
 				1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */,
-				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
 				1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */,
 				1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */,
@@ -1208,6 +1214,7 @@
 				1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */,
 				1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */,
 				1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */,
+				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1CDD48C917EE8FB400E4DAE3 /* UIViewController+AwfulTheme.h */,
 				1CDD48CA17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m */,
 			);
@@ -1305,15 +1312,16 @@
 			children = (
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				1CF0D618164B0A7C00CFA137 /* Forum Abbreviations.plist */,
-				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
+				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				8CCD503B15B783FC00E5893B /* Images */,
+				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1C41918C1763C6EA00EADE07 /* JavaScript */,
+				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1C3447E2175D9CCE007377C5 /* Templates */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
-				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			name = Resources;
@@ -1493,6 +1501,7 @@
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */,
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
+				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
@@ -1759,6 +1768,7 @@
 				1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
+				837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */,
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */,

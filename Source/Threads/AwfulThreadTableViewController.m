@@ -4,6 +4,7 @@
 
 #import "AwfulThreadTableViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulForumTweaks.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulIconActionSheet.h"
 #import "AwfulPostsViewController.h"
@@ -83,7 +84,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 		}
 		
 		// Hardcode Film Dump to never show ratings; its thread tags are the ratings.
-		if ([thread.forum.forumID isEqualToString:@"133"]) {
+		if ([AwfulForumTweaks tweaksForForumId:thread.forum.forumID].showRatings) {
 			cell.tagAndRatingView.ratingImage = nil;
 		} else {
 			NSInteger rating = lroundf(thread.rating.floatValue);
