@@ -36,6 +36,7 @@
     self.title = DefaultTitle;
     self.submitButtonItem.title = @"Post";
     self.restorationClass = self.class;
+	[self updateTweaks];
     return self;
 }
 
