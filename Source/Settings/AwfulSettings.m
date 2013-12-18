@@ -62,11 +62,9 @@ struct {
 
 - (void)migrateOldSettings
 {
-	if (self.isMigrated) return;
-	
     NSString *YOSPOSStyle = self[OldSettingsKeys.yosposStyle];
-	NSString *newYOSPOSStyle;
-    if ([YOSPOSStyle isEqualToString:@"green"] || YOSPOSStyle == nil) {
+	NSString *newYOSPOSStyle = [self themeNameForForumID:@"219"];
+    if ([YOSPOSStyle isEqualToString:@"green"] || (!YOSPOSStyle && !newYOSPOSStyle)) { //Defaults to green YOSPOS if nothing was ever set
         newYOSPOSStyle = @"YOSPOS";
     } else if ([YOSPOSStyle isEqualToString:@"amber"]) {
         newYOSPOSStyle = @"YOSPOS (amber)";
@@ -74,33 +72,30 @@ struct {
        newYOSPOSStyle = @"Macinyos";
     } else if ([YOSPOSStyle isEqualToString:@"winpos95"]) {
         newYOSPOSStyle = @"Winpos 95";
-    } else {
-        self[OldSettingsKeys.yosposStyle] = nil;
     }
+	
 	[self setThemeName:newYOSPOSStyle forForumID:@"219"];
+	self[OldSettingsKeys.yosposStyle] = nil;
 	
     
     NSString *FYADStyle = self[OldSettingsKeys.fyadStyle];
-	NSString *newFYADStyle = nil;
-    if ([FYADStyle isEqualToString:@"pink"] || FYADStyle == nil) {
+	NSString *newFYADStyle = [self themeNameForForumID:@"26"];
+    if ([FYADStyle isEqualToString:@"pink"] || (!FYADStyle && !newFYADStyle)) { //Defaults to pink FYAD if nothing was ever set
         newFYADStyle = @"FYAD";
-    } else {
-        newFYADStyle = nil;
     }
+	
 	[self setThemeName:newFYADStyle forForumID:@"26"];
+	self[OldSettingsKeys.fyadStyle] = nil;
 
     
     NSString *gasChamberStyle = self[OldSettingsKeys.gasChamberStyle];
-	NSString *newGasChamberStyle;
-    if ([gasChamberStyle isEqualToString:@"sickly"] || gasChamberStyle == nil) {
+	NSString *newGasChamberStyle = [self themeNameForForumID:@"25"];
+    if ([gasChamberStyle isEqualToString:@"sickly"] || (!gasChamberStyle && !newGasChamberStyle)) { //Defaults to sickly Gas Chamber if nothing was ever set
        newGasChamberStyle = @"Gas Chamber";
-    } else {
-        newGasChamberStyle = nil;
     }
-	[self setThemeName:newGasChamberStyle forForumID:@"25"];
-
 	
-	self.isMigrated = YES;
+	[self setThemeName:newGasChamberStyle forForumID:@"25"];
+	self[OldSettingsKeys.gasChamberStyle] = nil;
 }
 
 @synthesize sections = _sections;
@@ -127,8 +122,6 @@ struct {
 { \
     self[AwfulSettingsKeys.__get] = @(val); \
 }
-
-BOOL_PROPERTY(isMigrated, setIsMigrated)
 
 BOOL_PROPERTY(showAvatars, setShowAvatars)
 
@@ -322,7 +315,6 @@ NSString * const AwfulSettingsDidChangeNotification = @"com.awfulapp.Awful.Setti
 NSString * const AwfulSettingsDidChangeSettingKey = @"setting";
 
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
-	.isMigrated = @"is_migrated_2_0",
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
     .confirmNewPosts = @"confirm_before_replying",
