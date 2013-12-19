@@ -17,7 +17,7 @@
 		<key>actionSheetBackgroundColor</key>
 		<string>#000000cc</string>
 		<key>basementBackgroundColor</key>
-		<string>#00000000</string>
+		<string>#000000</string>
 		<key>basementLabelColor</key>
 		<string>#ffffff</string>
 		<key>basementBadgeColor</key>
