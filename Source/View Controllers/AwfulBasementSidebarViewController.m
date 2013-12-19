@@ -24,7 +24,6 @@
     
     // Leaving `scrollsToTop` set to its default `YES` prevents the basement's main content view from ever scrolling to top when someone taps the status bar. (If multiple scroll views can scroll to top, none of them actually will.) We set it to `NO` so main content views work as expected. Any sidebar with enough items to make scrolling to top a valuable behaviour is probably ill-conceived anyway, so this is a reasonable setting.
     self.tableView.scrollsToTop = NO;
-    [self updateThemedProperties];
 }
 
 static NSString * const CellIdentifier = @"Cell";
@@ -32,13 +31,8 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)themeDidChange
 {
     [super themeDidChange];
-    [self updateThemedProperties];
-    [self.tableView reloadData];
-}
-
-- (void)updateThemedProperties
-{
     self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
+    [self.tableView reloadData];
 }
 
 - (void)viewDidLoad
