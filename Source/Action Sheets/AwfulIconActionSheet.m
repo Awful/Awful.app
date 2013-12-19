@@ -7,8 +7,9 @@
 #import "AwfulIconActionItem.h"
 #import "AwfulPopoverBackgroundView.h"
 #import "AwfulTheme.h"
+#import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverControllerDelegate>
+@interface AwfulIconActionSheet () <UICollectionViewDataSource, UICollectionViewDelegate, WYPopoverControllerDelegate>
 
 @end
 
@@ -21,8 +22,7 @@
     UICollectionView *_collectionView;
     UIView *_bottomDivider;
     UIButton *_cancelButton;
-    UIView *_overlay;
-    UIPopoverController *_popover;
+    WYPopoverController *_popover;
     NSLayoutConstraint *_gridHeightConstraint;
 }
 
@@ -31,12 +31,10 @@
     if (!(self = [super initWithFrame:frame])) return nil;
     _items = [NSMutableArray new];
     
-    if ([self needsOwnBlurryBackground]) {
-        _toolbar = [UIToolbar new];
-        _toolbar.translatesAutoresizingMaskIntoConstraints = NO;
-        _toolbar.barTintColor = [AwfulTheme.currentTheme[@"actionSheetBackgroundColor"] colorWithAlphaComponent:1];
-        [self addSubview:_toolbar];
-    }
+    _toolbar = [UIToolbar new];
+    _toolbar.translatesAutoresizingMaskIntoConstraints = NO;
+    _toolbar.barTintColor = [AwfulTheme.currentTheme[@"actionSheetBackgroundColor"] colorWithAlphaComponent:1];
+    [self addSubview:_toolbar];
     
     _titleLabel = [UILabel new];
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -95,11 +93,6 @@
     [self dismissAnimated:YES];
 }
 
-- (BOOL)needsOwnBlurryBackground
-{
-    return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad;
-}
-
 - (BOOL)needsCancelButton
 {
     return UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad;
@@ -119,7 +112,8 @@
 {
     NSDictionary *views = @{ @"title": _titleLabel,
                              @"topDivider": _topDivider,
-                             @"grid": _collectionView };
+                             @"grid": _collectionView,
+                             @"background": _toolbar };
     NSDictionary *metrics = @{ @"margin": @10 };
     [self addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-margin-[title]-14-[topDivider(==1)]-[grid]"
@@ -167,19 +161,16 @@
                                                  metrics:metrics
                                                    views:views]];
     }
-    if ([self needsOwnBlurryBackground]) {
-        NSDictionary *extraViews = @{ @"background": _toolbar };
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[background]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:extraViews]];
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[background]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:extraViews]];
-    }
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[background]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[background]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
     if ([self onlyShowsOneRowOfIcons]) {
         UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)_collectionView.collectionViewLayout;
         [_collectionView addConstraint:[NSLayoutConstraint constraintWithItem:_collectionView
@@ -232,90 +223,26 @@ static const CGFloat LeftRightMargin = 8;
 
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view animated:(BOOL)animated
 {
+    [self createAndConfigurePopover];
     if ([self showsInPopover]) {
-        [self createAndConfigurePopover];
         [_popover presentPopoverFromRect:rect
                                   inView:view
-                permittedArrowDirections:UIPopoverArrowDirectionAny
+                permittedArrowDirections:WYPopoverArrowDirectionAny
                                 animated:animated];
     } else {
-        [self showInView:view animated:animated];
+        [_popover presentPopoverAsDialogAnimated:animated];
     }
 }
 
 - (void)showFromBarButtonItem:(UIBarButtonItem *)barButtonItem animated:(BOOL)animated
 {
+    [self createAndConfigurePopover];
     if ([self showsInPopover]) {
-        [self createAndConfigurePopover];
         [_popover presentPopoverFromBarButtonItem:barButtonItem
-                         permittedArrowDirections:UIPopoverArrowDirectionAny
+                         permittedArrowDirections:WYPopoverArrowDirectionAny
                                          animated:animated];
     } else {
-        [self showInView:[barButtonItem valueForKeyPath:@"view.superview.superview"] animated:animated];
-    }
-}
-
-- (void)showInView:(UIView *)view animated:(BOOL)animated
-{
-    self.translatesAutoresizingMaskIntoConstraints = NO;
-    self.layer.cornerRadius = 5;
-    self.clipsToBounds = YES;
-    UIView *overlay = [UIView new];
-    _overlay = overlay;
-    overlay.translatesAutoresizingMaskIntoConstraints = NO;
-    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-    
-    // Need to let touches go to the collection view so cell selection still works.
-    tap.cancelsTouchesInView = NO;
-    
-    [tap addTarget:self action:@selector(didTapOverlay:)];
-    [overlay addGestureRecognizer:tap];
-    [overlay addSubview:self];
-    [view.window addSubview:overlay];
-    [view.window addConstraint:
-     [NSLayoutConstraint constraintWithItem:self
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:view
-                                  attribute:NSLayoutAttributeLeft
-                                 multiplier:1
-                                   constant:LeftRightMargin]];
-    [view.window addConstraint:
-     [NSLayoutConstraint constraintWithItem:self
-                                  attribute:NSLayoutAttributeRight
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:view
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1
-                                   constant:-LeftRightMargin]];
-    [view.window addConstraint:
-     [NSLayoutConstraint constraintWithItem:_collectionView
-                                  attribute:NSLayoutAttributeCenterY
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:view
-                                  attribute:NSLayoutAttributeCenterY
-                                 multiplier:1
-                                   constant:0]];
-    NSDictionary *views = @{ @"overlay": overlay };
-    [view.window addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[overlay]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [view.window addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[overlay]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-}
-
-- (void)didTapOverlay:(UITapGestureRecognizer *)tap
-{
-    if (tap.state == UIGestureRecognizerStateEnded) {
-        CGPoint point = [tap locationInView:self.superview];
-        if (!CGRectContainsPoint(self.frame, point)) {
-            [self dismissAnimated:NO];
-        }
+        [_popover presentPopoverAsDialogAnimated:animated];
     }
 }
 
@@ -337,15 +264,12 @@ static const CGFloat LeftRightMargin = 8;
                                                           constant:layout.collectionViewContentSize.height];
     [_collectionView addConstraint:_gridHeightConstraint];
     contentViewController.preferredContentSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-    _popover = [[UIPopoverController alloc] initWithContentViewController:contentViewController];
-    _popover.popoverBackgroundViewClass = [AwfulPopoverBackgroundView class];
+    _popover = [[WYPopoverController alloc] initWithContentViewController:contentViewController];
     _popover.delegate = self;
 }
 
 - (void)dismissAnimated:(BOOL)animated
 {
-    [_overlay removeFromSuperview];
-    _overlay = nil;
     [_popover dismissPopoverAnimated:animated];
     _popover = nil;
     [_collectionView removeConstraint:_gridHeightConstraint];
