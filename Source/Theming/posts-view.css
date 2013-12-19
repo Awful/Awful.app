@@ -53,13 +53,14 @@ header:after {
 }
 .username {
   margin: 0;
-  padding-top: .2em;
+  padding-top: .3em;
 }
 .ipad .username {
   padding-top: .5em;
 }
 .postdate {
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
   float: left;
   margin: .6em 0;
@@ -72,7 +73,9 @@ header:after {
 .regdate {
   display: block;
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
+  margin: -0.4em 0 0;
 }
 .ipad .regdate {
   padding-bottom: .75em;
@@ -235,13 +238,11 @@ body {
 }
 .post {
   background-color: transparent;
-  border-top: 7px solid #e2e2e2;
-  border-bottom: 1px solid #e2e2e2;
+  border-bottom: 8px solid #e0e0e0;
 }
 .post.seen {
   background-color: #eaebf1;
-  border-top: 7px solid #c4c4c4;
-  border-bottom: 1px solid #c4c4c4;
+  border-bottom: 8px solid #c4c4c4;
 }
 header {
   border-bottom: 0;

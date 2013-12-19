@@ -53,13 +53,14 @@ header:after {
 }
 .username {
   margin: 0;
-  padding-top: .2em;
+  padding-top: .3em;
 }
 .ipad .username {
   padding-top: .5em;
 }
 .postdate {
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
   float: left;
   margin: .6em 0;
@@ -72,7 +73,9 @@ header:after {
 .regdate {
   display: block;
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
+  margin: -0.4em 0 0;
 }
 .ipad .regdate {
   padding-bottom: .75em;
@@ -230,17 +233,13 @@ footer:after {
   line-height: 1;
   margin-bottom: 10px;
 }
-html {
-  font-family: menlo;
-}
 body {
   color: #57ff57;
   background-color: #000;
 }
 .post {
-  background-color: #191919;
-  border-top: 7px solid #395339;
-  border-bottom: 1px solid #395339;
+  background-color: #171717;
+  border-bottom: 8px solid #000000;
 }
 .post.seen {
   background-color: #0b2d0b;
@@ -279,19 +278,7 @@ body {
   color: #57ff57;
 }
 .postdate {
-  background-image: url('clock-green.png');
-}
-.postdate,
-.regdate,
-.username,
-.bbc-block h4,
-.bbc-block h5,
-blockquote,
-.bbc-block.code pre,
-.editedby,
-footer,
-.postbody {
-  font-family: menlo;
+  background-image: url('clock.png');
 }
 .bbc-spoiler {
   color: #57ff57;
@@ -322,4 +309,13 @@ footer,
 }
 blockquote {
   border-left-color: #57ff57;
+}
+.postdate {
+  color: #474747;
+}
+.seen {
+  border-bottom: 8px solid #061701;
+}
+.seen .postdate {
+  color: #226603;
 }

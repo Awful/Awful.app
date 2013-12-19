@@ -53,13 +53,14 @@ header:after {
 }
 .username {
   margin: 0;
-  padding-top: .2em;
+  padding-top: .3em;
 }
 .ipad .username {
   padding-top: .5em;
 }
 .postdate {
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
   float: left;
   margin: .6em 0;
@@ -72,7 +73,9 @@ header:after {
 .regdate {
   display: block;
   font: -apple-system-subheadline;
+  font-size: .8em;
   font-weight: lighter;
+  margin: -0.4em 0 0;
 }
 .ipad .regdate {
   padding-bottom: .75em;
