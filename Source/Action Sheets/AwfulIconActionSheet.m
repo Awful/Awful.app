@@ -263,7 +263,11 @@ static const CGFloat LeftRightMargin = 8;
                                                         multiplier:1
                                                           constant:layout.collectionViewContentSize.height];
     [_collectionView addConstraint:_gridHeightConstraint];
-    contentViewController.preferredContentSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    CGSize contentSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+    if (contentSize.width < 312) {
+        contentSize.width = 312;
+    }
+    contentViewController.preferredContentSize = contentSize;
     _popover = [[WYPopoverController alloc] initWithContentViewController:contentViewController];
     _popover.delegate = self;
 }
