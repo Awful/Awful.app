@@ -94,7 +94,9 @@
         CGRect caretRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
         CGRect visibleRect = UIEdgeInsetsInsetRect(self.textView.bounds, self.textView.contentInset);
         CGFloat remainder = CGRectGetMaxY(caretRect) - CGRectGetMaxY(visibleRect);
-        if (remainder > 0) {
+        
+        // Sometimes the caret origin is {inf, inf}, which makes remainder inf. Pending further investigation, guard against the crash that comes with sending inf as a coordinate to Core Animation.
+        if (remainder > 0 && !isinf(remainder)) {
             
             // 2. We're below the visible text. This animated scroll seems to work better than -setContentOffset:animated:YES.
             CGPoint contentOffset = self.textView.contentOffset;
@@ -102,9 +104,6 @@
             // The extra 4 pushes the caret a couple points above the inputView/inputAccessoryView.
             contentOffset.y += remainder + 4;
             
-            // Getting a hard-to-reproduce crash here, trying to figure out what's up.
-            CLSLog(@"caret = %@, visible = %@, remainder = %f, target offset = %@",
-                   NSStringFromCGRect(caretRect), NSStringFromCGRect(visibleRect), remainder, NSStringFromCGPoint(contentOffset));
             [UIView animateWithDuration:0.2 animations:^{
                 [self.textView setContentOffset:contentOffset animated:NO];
             }];
