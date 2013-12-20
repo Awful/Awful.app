@@ -24,6 +24,10 @@ body {
   padding: 1.07em;
   padding-bottom: 0;
 }
+.post:last-of-type,
+.post.seen:last-of-type {
+  border-bottom: none;
+}
 header {
   margin: .25em 0;
 }
@@ -235,7 +239,7 @@ footer:after {
 }
 body {
   color: #ffffff;
-  background-color: #000000;
+  background-color: #181818;
 }
 .post {
   background-color: #333333;
