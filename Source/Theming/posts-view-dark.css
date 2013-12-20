@@ -14,7 +14,12 @@ body {
   word-wrap: break-word;
 }
 .post {
-  margin: 0;
+  margin: 8px 0;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.post:first-child {
+  margin-top: 0;
 }
 .iphone .post {
   padding: .6em;
@@ -243,7 +248,8 @@ body {
 }
 .post {
   background-color: #333333;
-  border-bottom: 8px solid #181818;
+  border-bottom-color: #181818;
+  border-top-color: #181818;
 }
 .post.seen {
   background-color: #343b46;

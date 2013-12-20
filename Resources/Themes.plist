@@ -184,6 +184,8 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>listFontName</key>
+		<string>Menlo</string>
 		<key>listSecondaryTextColor</key>
 		<string>ff00ff</string>
 		<key>parent</key>
@@ -207,6 +209,8 @@
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>listFontName</key>
+		<string>Menlo</string>
 		<key>listSecondaryTextColor</key>
 		<string>#57FF57</string>
 		<key>parent</key>

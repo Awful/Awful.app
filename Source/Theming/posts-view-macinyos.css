@@ -14,7 +14,12 @@ body {
   word-wrap: break-word;
 }
 .post {
-  margin: 0;
+  margin: 8px 0;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.post:first-child {
+  margin-top: 0;
 }
 .iphone .post {
   padding: .6em;

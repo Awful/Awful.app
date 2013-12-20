@@ -14,7 +14,12 @@ body {
   word-wrap: break-word;
 }
 .post {
-  margin: 0;
+  margin: 8px 0;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.post:first-child {
+  margin-top: 0;
 }
 .iphone .post {
   padding: .6em;
@@ -238,15 +243,15 @@ footer:after {
   margin-bottom: 10px;
 }
 body {
-  background-color: #ddd;
+  background-color: #f4f3f3;
 }
 .post {
   background-color: #f5f5f5;
-  border-bottom: 8px solid #ddd;
+  border-bottom-color: #ddd;
+  border-top-color: #ddd;
 }
 .post.seen {
   background-color: #e7e8f1;
-  border-bottom: 8px solid #c4c4c4;
 }
 header {
   border-bottom: 0;
