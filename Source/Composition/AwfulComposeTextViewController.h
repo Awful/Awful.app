@@ -6,7 +6,7 @@
 @protocol AwfulComposeCustomView;
 @protocol AwfulComposeTextViewControllerDelegate;
 
-@interface AwfulComposeTextViewController : AwfulViewController
+@interface AwfulComposeTextViewController : AwfulViewController <UITextViewDelegate>
 
 /**
  * The composition text view. Set its text or attributedText property as appropriate.

@@ -58,6 +58,7 @@
     UITextView *textView = [AwfulComposeTextView new];
     textView.restorationIdentifier = @"AwfulComposeTextView";
     textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+	textView.delegate = self;
     self.view = textView;
 }
 
@@ -68,6 +69,22 @@
     self.textView.textColor = self.theme[@"listTextColor"];
     self.textView.indicatorStyle = self.theme.scrollIndicatorStyle;
     self.textView.keyboardAppearance = self.theme.keyboardAppearance;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+	//Avoid capitalization in autocorrect options by looking for autocorrections (text replacements not on the current cursor)
+	if (textView.autocapitalizationType == UITextAutocapitalizationTypeNone
+		&& range.location != textView.selectedRange.location
+		&& [text rangeOfCharacterFromSet:[NSCharacterSet uppercaseLetterCharacterSet] options:0].length != 0) {
+		
+			//replace the autocorrected text with a lowercase version of that text
+			textView.text = [textView.text stringByReplacingCharactersInRange:range withString:[text lowercaseString]];
+		
+			return NO;
+	}
+	
+	return YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
