@@ -5,19 +5,19 @@
 
 @import "base.less";
 
-html {
-  font-family: menlo;
-}
+//html {
+//  font-family: menlo;
+//}
 
 body {
   color: @color;
-  background-color: @seencolor;
+  background-color: #000000;
 }
 
 .post {
   background-color: #171717;
-  border-bottom-color: @bordercolor;
-  border-top-color: @bordercolor;
+  border-bottom-color: #000;
+  border-top-color: #000;
   
   &.seen {
     background-color: @seencolor;
@@ -66,22 +66,26 @@ body {
 }
 
 .postdate {
-  color: @color;
+  color: #474747;
   background-image: @clockimage; 
 }
 
-.postdate,
-.regdate,
-.username,
-.bbc-block h4,
-.bbc-block h5,
-blockquote,
-.bbc-block.code pre,
-.editedby,
-footer,
-.postbody {
-  font-family: menlo; 
+.seen .postdate {
+  color:#257a26;
 }
+
+//.postdate,
+//.regdate,
+//.username,
+//.bbc-block h4,
+//.bbc-block h5,
+//blockquote,
+//.bbc-block.code pre,
+//.editedby,
+//footer,
+//.postbody {
+//  font-family: menlo; 
+//}
 
 @import "spoilers.less";
 .spoilers(@color);

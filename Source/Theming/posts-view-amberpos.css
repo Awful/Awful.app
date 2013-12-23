@@ -238,17 +238,14 @@ footer:after {
   line-height: 1;
   margin-bottom: 10px;
 }
-html {
-  font-family: menlo;
-}
 body {
   color: #eacf4c;
-  background-color: #2d270c;
+  background-color: #000000;
 }
 .post {
   background-color: #171717;
-  border-bottom-color: #756826;
-  border-top-color: #756826;
+  border-bottom-color: #000;
+  border-top-color: #000;
 }
 .post.seen {
   background-color: #2d270c;
@@ -287,20 +284,11 @@ body {
   color: #eacf4c;
 }
 .postdate {
-  color: #eacf4c;
-  background-image: url('clock-amber.png');
+  color: #474747;
+  background-image: url('clock.png');
 }
-.postdate,
-.regdate,
-.username,
-.bbc-block h4,
-.bbc-block h5,
-blockquote,
-.bbc-block.code pre,
-.editedby,
-footer,
-.postbody {
-  font-family: menlo;
+.seen .postdate {
+  color: #257a26;
 }
 .bbc-spoiler {
   color: #eacf4c;
@@ -331,4 +319,7 @@ footer,
 }
 blockquote {
   border-left-color: #eacf4c;
+}
+.seen .postdate {
+  color: #675b1f;
 }

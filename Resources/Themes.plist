@@ -184,12 +184,12 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
-		<key>listFontName</key>
-		<string>Menlo</string>
-		<key>listSecondaryTextColor</key>
-		<string>ff00ff</string>
 		<key>parent</key>
 		<string>dark</string>
+		<key>backgroundColor</key>
+		<string>#000000</string>
+		<key>listSecondaryTextColor</key>
+		<string>#ff00ff</string>
 		<key>description</key>
 		<string>Green console</string>
 		<key>descriptiveColor</key>
@@ -203,7 +203,7 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 		<key>listBackgroundColor</key>
-		<string>#000000</string>
+		<string>#171717</string>
 		<key>listTextColor</key>
 		<string>#57FF57</string>
 	</dict>
