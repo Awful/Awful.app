@@ -325,9 +325,12 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulPrivateMessageViewController *messageView = [self new];
-    messageView.restorationIdentifier = identifierComponents.lastObject;
-    return messageView;
+    NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
+    AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
+                                                                            matchingPredicateFormat:@"messageID = %@", messageID];
+    AwfulPrivateMessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
+    messageViewController.restorationIdentifier = identifierComponents.lastObject;
+    return messageViewController;
 }
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
@@ -340,10 +343,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    self.privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext
-                                                            matchingPredicateFormat:@"messageID = %@", messageID];
-    [self.postsView reloadData];
     _composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
     _composeViewController.delegate = self;
 }
