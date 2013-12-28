@@ -69,12 +69,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
 		// the empty thread tag for anyone lame enough to pick the same tag twice.
-		UIImage *emptyTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
-		if ([thread.threadTag isEqual:thread.secondaryThreadTag]) {
-			cell.tagAndRatingView.threadTag = emptyTag;
-		} else {
+		if (thread.threadTag.imageName.length > 0 && ![thread.threadTag isEqual:thread.secondaryThreadTag]) {
 			UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
-			cell.tagAndRatingView.threadTag = threadTag ?: emptyTag;
+			cell.tagAndRatingView.threadTag = threadTag;
+		} else {
+            cell.tagAndRatingView.threadTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
 		}
 		if (thread.secondaryThreadTag) {
 			UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
