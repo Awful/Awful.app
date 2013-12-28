@@ -100,7 +100,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([self.privateMessage.innerHTML length] == 0) {
+    if (self.privateMessage.innerHTML.length == 0) {
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
