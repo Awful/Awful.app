@@ -140,7 +140,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         [posts addObject:post];
         post.thread = thread;
-        int32_t index = (currentPage - 1) * 40 + (int32_t)i;
+        int32_t index = (currentPage - 1) * 40 + (int32_t)i + 1;
         NSInteger indexAttribute = [table[@"data-idx"] integerValue];
         if (indexAttribute > 0) {
             index = (int32_t)indexAttribute;

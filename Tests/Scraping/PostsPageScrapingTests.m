@@ -90,6 +90,22 @@
     XCTAssertEqual(last.page, (NSInteger)2);
 }
 
+- (void)testFYADThreadPageOne
+{
+    NSArray *posts = [self scrapeFixtureNamed:@"showthread-fyad2"];
+    XCTAssertEqual(posts.count, (NSUInteger)40);
+    AwfulPost *first = posts.firstObject;
+    XCTAssertEqualObjects(first.author.username, @"BiG TrUcKs !!!");
+    XCTAssertEqual(first.postDate.timeIntervalSince1970, 1388525460.0);
+    XCTAssertNotEqual([first.innerHTML rangeOfString:@"twitter assholes"].location, NSNotFound);
+    XCTAssertEqual(first.threadIndex, 1);
+    AwfulPost *second = posts[1];
+    XCTAssertEqualObjects(second.author.username, @"syxxcowz");
+    XCTAssertEqual(second.postDate.timeIntervalSince1970, 1388525580.0);
+    XCTAssertNotEqual([first.innerHTML rangeOfString:@"hate twiter"].location, NSNotFound);
+    XCTAssertEqual(second.threadIndex, 2);
+}
+
 - (void)testLastPage
 {
     [self scrapeFixtureNamed:@"showthread-last"];
