@@ -45,9 +45,13 @@ header {
 }
 
 .bbc-block { 
-  &.mention, &.mention h4 a {
+  &.mention, &.mention h4, &.mention h4 a {
     color: #b837ed;
     border-color: #b837ed;
+  }
+    
+  &.mention h4 .mention{
+    color: #dd89ff;     
   }
 }
 
@@ -57,7 +61,10 @@ footer {
 .postdate, .regdate {
   color: #8e8e8e;
 }
-
+.editedby .mention { 
+  color: #dd89ff;
+}
+    
 #end {
   color: #ffffff;
   line-height: 3em;

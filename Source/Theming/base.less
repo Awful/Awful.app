@@ -94,7 +94,7 @@ header {
   font-size: .8em;
   font-weight: lighter;
   float: left;
-  margin: .6em 0;
+  margin: .7em 0;
   background-image: ~"url('clock.png')";
   background-position: left center;
   background-repeat: no-repeat;
@@ -208,14 +208,20 @@ header {
 // h4 is "pokeyman posted:" above a quote.
 // h5 is "code" above a code block.
 .bbc-block {
+  
+  border-left: 2px solid #999;
+  font: -apple-system-caption1;
+  margin: 5px 0;
+  padding: 0 10px 5px;
+  
+  
   h4 {
     margin: 0;
-    padding: 1px 0 2px;
-    font: -apple-system-footnote;
+    padding: 1px 0px 2px;
+    font-weight: bold;
   }
   h5 {
     margin: 0;
-    font: -apple-system-caption1;
   }
   
   .ipad & {
@@ -230,6 +236,7 @@ header {
 
 code, pre, tt {
 	font-family: menlo;
+	font-size:.9em; 
 }
 
 span.mention {
@@ -243,9 +250,6 @@ span.mention {
 
 blockquote {
   margin: 0;
-  padding: 0 10px;
-  font: -apple-system-caption1;
-  border-left: 1px solid #999;
   
   // Shrink quoted images. You can always long-tap to see the real thing.
   img {
@@ -270,11 +274,10 @@ blockquote {
 
 .bbc-block.code pre {
   margin: 0;
-  font: -apple-system-caption1;
 }
 
 .editedby {
-  margin-top: 5px;
+  margin-top: 15px;
   font: -apple-system-caption1;
   font-style: italic;
 }

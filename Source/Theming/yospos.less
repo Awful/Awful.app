@@ -90,6 +90,21 @@ body {
 @import "spoilers.less";
 .spoilers(@color);
 
-blockquote {
+.bbc-block {
   border-left-color: @color;
+}
+
+.bbc-block { 
+  &.mention, &.mention h4, &.mention h4 a {
+    color: #b837ed;
+    border-color: #b837ed;
+  }
+    
+  &.mention h4 .mention{
+    color: #dd89ff;     
+  }
+}
+
+.editedby .mention { 
+  color: #dd89ff;
 }

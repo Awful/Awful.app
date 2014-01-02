@@ -92,9 +92,9 @@
 		<key>splitDividerColor</key>
 		<string>#111111</string>
 		<key>navigationBarTextColor</key>
-		<string>#1483b1</string>
+		<string>#ffffff</string>
 		<key>navigationBarTintColor</key>
-		<string>#000000</string>
+		<string>#0f4f70</string>
 		<key>toolbarTintColor</key>
 		<string>#000000</string>
 		<key>postsLoadingViewTintColor</key>

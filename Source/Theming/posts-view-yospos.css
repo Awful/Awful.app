@@ -68,7 +68,7 @@ header:after {
   font-size: .8em;
   font-weight: lighter;
   float: left;
-  margin: .6em 0;
+  margin: .7em 0;
   background-image: url('clock.png');
   background-position: left center;
   background-repeat: no-repeat;
@@ -152,14 +152,19 @@ header {
 .iphone .postbody {
   padding: .36em 0;
 }
+.bbc-block {
+  border-left: 2px solid #999;
+  font: -apple-system-caption1;
+  margin: 5px 0;
+  padding: 0 10px 5px;
+}
 .bbc-block h4 {
   margin: 0;
-  padding: 1px 0 2px;
-  font: -apple-system-footnote;
+  padding: 1px 0px 2px;
+  font-weight: bold;
 }
 .bbc-block h5 {
   margin: 0;
-  font: -apple-system-caption1;
 }
 .ipad .bbc-block {
   margin: 0 10px 1em 10px;
@@ -173,6 +178,7 @@ code,
 pre,
 tt {
   font-family: menlo;
+  font-size: .9em;
 }
 span.mention {
   color: #7409a0;
@@ -182,9 +188,6 @@ span.mention {
 }
 blockquote {
   margin: 0;
-  padding: 0 10px;
-  font: -apple-system-caption1;
-  border-left: 1px solid #999;
 }
 blockquote img {
   max-width: 160px;
@@ -200,10 +203,9 @@ blockquote img {
 }
 .bbc-block.code pre {
   margin: 0;
-  font: -apple-system-caption1;
 }
 .editedby {
-  margin-top: 5px;
+  margin-top: 15px;
   font: -apple-system-caption1;
   font-style: italic;
 }
@@ -317,6 +319,18 @@ body {
 .bbc-spoiler.spoiled img {
   visibility: visible;
 }
-blockquote {
+.bbc-block {
   border-left-color: #57ff57;
+}
+.bbc-block.mention,
+.bbc-block.mention h4,
+.bbc-block.mention h4 a {
+  color: #b837ed;
+  border-color: #b837ed;
+}
+.bbc-block.mention h4 .mention {
+  color: #dd89ff;
+}
+.editedby .mention {
+  color: #dd89ff;
 }
