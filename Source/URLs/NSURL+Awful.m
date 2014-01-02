@@ -15,7 +15,8 @@
     if ([self.scheme caseInsensitiveCompare:@"awful"] == NSOrderedSame) {
         return self;
     }
-    if ([self.host caseInsensitiveCompare:@"forums.somethingawful.com"] != NSOrderedSame) {
+    if (   [self.host caseInsensitiveCompare:@"forums.somethingawful.com"] != NSOrderedSame
+		&& [self.host caseInsensitiveCompare:@"archives.somethingawful.com"] != NSOrderedSame) {
         return nil;
     }
     
