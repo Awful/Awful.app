@@ -25,7 +25,6 @@
 @interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
-@property (strong, nonatomic) UIBarButtonItem *abbreviatedBackButtonItem;
 @property (strong, nonatomic) UIButton *filterButton;
 @property (strong, nonatomic) AwfulThreadTag *filterThreadTag;
 @property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
@@ -43,8 +42,8 @@
 {
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     _forum = forum;
-    self.title = _forum.name;
-    self.navigationItem.backBarButtonItem = self.abbreviatedBackButtonItem;
+    self.title = _forum.abbreviatedName;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     return self;
 }
@@ -66,16 +65,6 @@
     UINavigationController *nav = [_newThreadViewController enclosingNavigationController];
     nav.restorationIdentifier = @"New thread composition navigation";
     [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (UIBarButtonItem *)abbreviatedBackButtonItem
-{
-    if (_abbreviatedBackButtonItem) return _abbreviatedBackButtonItem;
-    _abbreviatedBackButtonItem = [[UIBarButtonItem alloc] initWithTitle:self.forum.abbreviatedName
-                                                                  style:UIBarButtonItemStylePlain
-                                                                 target:nil
-                                                                 action:nil];
-    return _abbreviatedBackButtonItem;
 }
 
 - (void)updateFilter
