@@ -84,6 +84,7 @@
     _author = author;
     self.restorationClass = self.class;
     self.navigationItem.rightBarButtonItem = self.composeItem;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.toolbarItems = @[ self.settingsItem,
                            [UIBarButtonItem flexibleSpace],
                            self.backItem,

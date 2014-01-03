@@ -96,15 +96,20 @@
 
 - (void)ensureToggleDetailExpandedLeftBarButtonItem
 {
-    UINavigationItem *navigationItem = self.detailViewController.navigationItem;
     if ([self.detailViewController isKindOfClass:[UINavigationController class]]) {
         UIViewController *root = ((UINavigationController *)self.detailViewController).viewControllers.firstObject;
-        navigationItem = root.navigationItem;
+        [self ensureToggleDetailExpandedLeftBarButtonItemForViewController:root];
+    } else {
+        [self ensureToggleDetailExpandedLeftBarButtonItemForViewController:self.detailViewController];
     }
-    navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[self expandContractImage]
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(toggleDetailExpanded)];
+}
+
+- (void)ensureToggleDetailExpandedLeftBarButtonItemForViewController:(UIViewController *)viewController
+{
+    viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[self expandContractImage]
+                                                                                       style:UIBarButtonItemStylePlain
+                                                                                      target:self
+                                                                                      action:@selector(toggleDetailExpanded)];
 }
 
 - (UIImage *)expandContractImage
@@ -270,6 +275,7 @@
                     animated:(BOOL)animated
 {
     [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
+    [self ensureToggleDetailExpandedLeftBarButtonItemForViewController:viewController];
 }
 
 #pragma mark - State preservation and restoration

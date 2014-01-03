@@ -210,8 +210,14 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     postsViewController.restorationIdentifier = @"Posts from URL";
     if ([self.rootViewController isKindOfClass:[AwfulExpandingSplitViewController class]]) {
         AwfulExpandingSplitViewController *split = (AwfulExpandingSplitViewController *)self.rootViewController;
-        split.detailViewController = postsViewController.enclosingNavigationController;
-        split.detailViewController.restorationIdentifier = @"Navigation";
+        if ([split.detailViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navigationController = (UINavigationController *)split.detailViewController;
+            postsViewController.navigationItem.leftItemsSupplementBackButton = YES;
+            [navigationController pushViewController:postsViewController animated:YES];
+        } else {
+            split.detailViewController = [postsViewController enclosingNavigationController];
+            split.detailViewController.restorationIdentifier = @"Navigation";
+        }
         return YES;
     }
     if (![self.rootViewController respondsToSelector:@selector(selectedViewController)]) return NO;
