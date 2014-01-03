@@ -151,11 +151,16 @@
 
 - (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
-    if (![self.rootViewController respondsToSelector:@selector(viewControllers)]) return NO;
-    if (![self.rootViewController respondsToSelector:@selector(setSelectedViewController:)]) return NO;
-    for (UIViewController *topmost in [self.rootViewController valueForKey:@"viewControllers"]) {
+    UIViewController *root = self.rootViewController;
+    if ([root isKindOfClass:[AwfulExpandingSplitViewController class]]) {
+        AwfulExpandingSplitViewController *split = (AwfulExpandingSplitViewController *)root;
+        root = split.viewControllers.firstObject;
+    }
+    if (![root respondsToSelector:@selector(viewControllers)]) return NO;
+    if (![root respondsToSelector:@selector(setSelectedViewController:)]) return NO;
+    for (UIViewController *topmost in [root valueForKey:@"viewControllers"]) {
         if (FindViewControllerOfClass(topmost, class)) {
-            [self.rootViewController setValue:topmost forKey:@"selectedViewController"];
+            [root setValue:topmost forKey:@"selectedViewController"];
             return YES;
         }
     }
