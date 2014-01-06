@@ -24,6 +24,11 @@
     
     // Leaving `scrollsToTop` set to its default `YES` prevents the basement's main content view from ever scrolling to top when someone taps the status bar. (If multiple scroll views can scroll to top, none of them actually will.) We set it to `NO` so main content views work as expected. Any sidebar with enough items to make scrolling to top a valuable behaviour is probably ill-conceived anyway, so this is a reasonable setting.
     self.tableView.scrollsToTop = NO;
+    
+    // Fix randomly-disappearing cell separators.
+    UIEdgeInsets separatorInset = self.tableView.separatorInset;
+    separatorInset.left += 1;
+    self.tableView.separatorInset = separatorInset;
 }
 
 static NSString * const CellIdentifier = @"Cell";
