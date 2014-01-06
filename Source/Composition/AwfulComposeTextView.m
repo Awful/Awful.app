@@ -25,6 +25,22 @@
     UIPopoverController *_imagePickerPopover;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame textContainer:(NSTextContainer *)textContainer
+{
+    self = [super initWithFrame:frame textContainer:textContainer];
+    if (!self) return nil;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textDidChange_iOS7Fixes)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:nil];
+    return self;
+}
+
 - (AwfulKeyboardBar *)BBcodeBar
 {
     if (_BBcodeBar) return _BBcodeBar;
@@ -352,33 +368,60 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     return !_showingSubmenu && [super canPerformAction:action withSender:sender];
 }
 
-#pragma mark - iOS 7 Workarounds
+#pragma mark - iOS 7 Fixes
 
-- (UITextPosition *)closestPositionToPoint:(CGPoint)point
+// Found this stuff at https://github.com/Exile90/ICTextView/blob/master/ICTextView/ICTextView.m
+// Not totally sure which parts fix which issues.
+
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
 {
-    if (self.text.length == 0) return [super positionFromPosition:self.beginningOfDocument offset:0];
-    
-    // Fixes tapping after the end of a line, even if the line consists entirely of a newline.
-    // Hybrid solution from examples at https://devforums.apple.com/message/899221#899221 and https://gist.github.com/agiletortoise/a24ccbf2d33aafb2abc1
-    point.x -= self.textContainerInset.left;
-    point.y -= self.textContainerInset.top;
-    CGRect bottomCaretRect;
-    if ([self.text characterAtIndex:self.text.length - 1] == '\n') {
-        bottomCaretRect = [self caretRectForPosition:[self positionFromPosition:self.endOfDocument offset:-1]];
-        bottomCaretRect.origin.y += self.font.lineHeight;
-    } else {
-        bottomCaretRect = [self caretRectForPosition:[self positionFromPosition:self.endOfDocument offset:0]];
+    [super setSelectedTextRange:selectedTextRange];
+    if (selectedTextRange) {
+        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
     }
-    NSUInteger characterIndex = 0;
-    // TODO this presumably fails on RTL or bidi text.
-    if (point.x >= CGRectGetMinX(bottomCaretRect) && point.y >= CGRectGetMinY(bottomCaretRect)) {
-        characterIndex = [self offsetFromPosition:self.beginningOfDocument toPosition:self.endOfDocument];
-    } else {
-        characterIndex = [self.layoutManager characterIndexForPoint:point
-                                                    inTextContainer:self.textContainer
-                           fractionOfDistanceBetweenInsertionPoints:nil];
+}
+
+- (void)textDidChange_iOS7Fixes
+{
+    UITextRange *selectedTextRange = self.selectedTextRange;
+    if (selectedTextRange) {
+        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
     }
-    return [self positionFromPosition:self.beginningOfDocument offset:characterIndex];
+}
+
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
+{
+    if (considerInsets) {
+        CGRect bounds = self.bounds;
+        UIEdgeInsets contentInset = self.contentInset;
+        CGRect visibleRect = [self visibleRectConsideringInsets:YES];
+        if (!CGRectContainsRect(visibleRect, rect)) {
+            CGPoint contentOffset = self.contentOffset;
+            if (rect.origin.y < visibleRect.origin.y) {
+                contentOffset.y = rect.origin.y - contentInset.top;
+            } else {
+                contentOffset.y = rect.origin.y + contentInset.bottom + rect.size.height - bounds.size.height;
+            }
+            [self setContentOffset:contentOffset animated:animated];
+        }
+    } else {
+        [super scrollRectToVisible:rect animated:animated];
+    }
+}
+
+- (CGRect)visibleRectConsideringInsets:(BOOL)considerInsets
+{
+    if (considerInsets) {
+        UIEdgeInsets contentInset = self.contentInset;
+        CGRect visibleRect = self.bounds;
+        visibleRect.origin.x += contentInset.left;
+        visibleRect.origin.y += contentInset.top;
+        visibleRect.size.width -= (contentInset.left + contentInset.right);
+        visibleRect.size.height -= (contentInset.top + contentInset.bottom);
+        return visibleRect;
+    } else {
+        return self.bounds;
+    }
 }
 
 @end

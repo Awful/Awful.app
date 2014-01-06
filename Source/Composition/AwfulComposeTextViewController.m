@@ -13,7 +13,6 @@
 {
     UIBarButtonItem *_submitButtonItem;
     UIBarButtonItem *_cancelButtonItem;
-    id _textDidChangeObserver;
     id _keyboardWillShowObserver;
     id _keyboardWillHideObserver;
     id <ImgurHTTPClientCancelToken> _imageUploadCancelToken;
@@ -93,39 +92,6 @@
     [self updateSubmitButtonItem];
     [self beginObservingKeyboardNotifications];
     [self focusInitialFirstResponder];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    _textDidChangeObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UITextViewTextDidChangeNotification
-                                                                               object:self.textView
-                                                                                queue:[NSOperationQueue mainQueue]
-                                                                           usingBlock:^(NSNotification *note)
-    {
-        [self updateSubmitButtonItem];
-        
-        // Fix iOS 7's disappearing caret after pressing return at the end of the document.
-        // http://stackoverflow.com/a/19277383/1063051
-        // 1. Figure out how far the caret is beyond the currently-visible area.
-        CGRect caretRect = [self.textView caretRectForPosition:self.textView.selectedTextRange.end];
-        CGRect visibleRect = UIEdgeInsetsInsetRect(self.textView.bounds, self.textView.contentInset);
-        CGFloat remainder = CGRectGetMaxY(caretRect) - CGRectGetMaxY(visibleRect);
-        
-        // Sometimes the caret origin is {inf, inf}, which makes remainder inf. Pending further investigation, guard against the crash that comes with sending inf as a coordinate to Core Animation.
-        if (remainder > 0 && !isinf(remainder)) {
-            
-            // 2. We're below the visible text. This animated scroll seems to work better than -setContentOffset:animated:YES.
-            CGPoint contentOffset = self.textView.contentOffset;
-            
-            // The extra 4 pushes the caret a couple points above the inputView/inputAccessoryView.
-            contentOffset.y += remainder + 4;
-            
-            [UIView animateWithDuration:0.2 animations:^{
-                [self.textView setContentOffset:contentOffset animated:NO];
-            }];
-        }
-    }];
 }
 
 - (void)updateSubmitButtonItem
@@ -380,7 +346,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:_textDidChangeObserver], _textDidChangeObserver = nil;
     [self endObservingKeyboardNotifications];
 }
 
