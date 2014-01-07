@@ -835,8 +835,6 @@
 		1C3447DE175D995E007377C5 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
-				1C3447DF175D9991007377C5 /* AwfulPostViewModel.h */,
-				1C3447E0175D9991007377C5 /* AwfulPostViewModel.m */,
 				1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */,
 				1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */,
 			);
@@ -1149,6 +1147,8 @@
 				1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */,
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
+				1C3447DF175D9991007377C5 /* AwfulPostViewModel.h */,
+				1C3447E0175D9991007377C5 /* AwfulPostViewModel.m */,
 				1CBC74AC181A16040076234E /* AwfulReplyViewController.h */,
 				1CBC74AD181A16040076234E /* AwfulReplyViewController.m */,
 				1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */,
