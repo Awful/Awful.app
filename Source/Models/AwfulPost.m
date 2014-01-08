@@ -6,9 +6,7 @@
 
 @implementation AwfulPost
 
-@dynamic attachmentID;
 @dynamic editable;
-@dynamic editDate;
 @dynamic innerHTML;
 @dynamic postDate;
 @dynamic postID;

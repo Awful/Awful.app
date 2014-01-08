@@ -10,19 +10,9 @@
 @interface AwfulPost : AwfulManagedObject
 
 /**
- * The post's attached image ID.
- */
-@property (copy, nonatomic) NSString *attachmentID;
-
-/**
  * YES if the post is editable by the currently logged-in user.
  */
 @property (assign, nonatomic) BOOL editable;
-
-/**
- * The most recent date on which the post was edited.
- */
-@property (strong, nonatomic) NSDate *editDate;
 
 /**
  * The raw HTML contents of the post.
