@@ -160,24 +160,6 @@
 					<key>Key</key>
 					<string>show_avatars</string>
 				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Font Size</string>
-					<key>Type</key>
-					<string>Stepper</string>
-					<key>Default</key>
-					<integer>15</integer>
-					<key>Minimum</key>
-					<integer>3</integer>
-					<key>Maximum</key>
-					<integer>200</integer>
-					<key>Maximum~ipad</key>
-					<integer>550</integer>
-					<key>Increment</key>
-					<integer>1</integer>
-					<key>Key</key>
-					<string>font_size</string>
-				</dict>
 			</array>
 		</dict>
 	</array>
