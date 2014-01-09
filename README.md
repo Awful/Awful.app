@@ -1,9 +1,9 @@
 Awful
 =====
 
-[Awful][App Store] is an iOS app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS 7 app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
-Development talk about Awful 2 and other technobabble can go in the [project.log][] thread for now.
+Development talk usually ends up in the [project.log][] thread, but we're not fussy.
 
 <p align="center">
   <img src="screenshot.png" width="320" height="568" alt="Screenshot of Awful as it appears on an iPhone">
@@ -96,16 +96,16 @@ Awful's Core Data store is a cache of content from the Forums. Any user info spe
 Theming
 -------
 
-Awful's [posts view][] is fully customizable using CSS. There's a [default theme][], as well as themes for specific forums such as [YOSPOS][YOSPOS CSS theme] and [FYAD][FYAD CSS theme]. Users can include their own custom themes by adding specially-named CSS files to the application Documents directory; [more info][custom CSS readme]. Internally, we use LESS to generate our CSS, so if you are editing built-in themes please edit the `.less` files. (LESS installation instructions are above.)
+Awful's [posts view][] is fully customizable using CSS. There's a [default theme][], as well as themes for specific forums such as [YOSPOS][YOSPOS CSS theme] and [FYAD][FYAD CSS theme]. Internally, we use LESS to generate our CSS, so if you are editing built-in themes please edit the `.less` files. (LESS installation instructions are above.) Then commit both the modified `.less` files and any resulting changes to `.css` files, so others don't need LESS to build Awful.
 
-The rest of Awful's screens support much more limited theming for the "dark mode" setting. The color schemes are set in [AwfulTheme][]; there is no way to override them.
+The rest of Awful is themed in a a [big plist][theme plist]. If you can't find a theme key you'd like to use, ask and we'll add it!
 
 [posts view]: Source/Posts/AwfulPostsView.h
 [default theme]: Source/Theming/posts-view.css
 [YOSPOS CSS theme]: Source/Theming/posts-view-219.less
 [FYAD CSS theme]: Source/Theming/posts-view-26.less
-[custom CSS readme]: Resources/Custom%20CSS%20README.txt
 [AwfulTheme]: Source/Theming/AwfulTheme.h
+[theme plist]: Resources/Themes.plist
 
 Thread Tags
 -----------
@@ -129,20 +129,6 @@ Assembling the AwfulPostsView
 The posts view uses [zepto.js][] (the default build) and some custom JavaScript, which get concatenated into `Resources/JavaScript/combined.js` during the Xcode build.
 
 [zepto.js]: http://zeptojs.com/
-
-Compatibility
--------------
-
-Awful is loosely compatible with iOS 5. That means:
-
-- It shouldn't crash. Use the [version category on UIDevice][UIDevice+OperatingSystemVersion] or feature detection to run code on certain versions of iOS.
-- It should be usable. A toolbar has the wrong background? Not a big deal. The toolbar doesn't appear at all? We'll fix that.
-- Polyfills/shims are great! (e.g. [PSTCollectionView][] provides UICollectionView on iOS 5.)
-
-That said, if a compelling new feature requires iOS 6, and no polyfill is available, it's probably worth requiring iOS 6. So don't be afraid of suggesting/implementing such a feature!
-
-[PSTCollectionView]: Vendor/PSTCollectionView
-[UIDevice+OperatingSystemVersion]: Source/UIKit%20and%20Foundation/UIDevice+OperatingSystemVersion.h
 
 License
 -------
