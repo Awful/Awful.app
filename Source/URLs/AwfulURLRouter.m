@@ -12,6 +12,7 @@
 #import "AwfulPostsViewController.h"
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulProfileViewController.h"
+#import "AwfulRapSheetViewController.h"
 #import "AwfulSettingsViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import <SVProgressHUD/SVProgressHUD.h>
@@ -125,6 +126,39 @@
         }];
         return YES;
     }];
+	
+	[_routes addRoute:@"/banlist" handler:^BOOL(NSDictionary *parameters) {
+		__typeof__(self) self = weakSelf;
+		
+		AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:nil];
+		[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+		
+		return YES;
+	}];
+	
+	
+	[_routes addRoute:@"/banlist/:userID" handler:^BOOL(NSDictionary *parameters) {
+		__typeof__(self) self = weakSelf;
+		
+		void (^success)(AwfulUser *) = ^(AwfulUser *user) {
+			AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+		};
+		AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:parameters[@"userID"] username:nil inManagedObjectContext:self.managedObjectContext];
+		if (user) {
+			success(user);
+			return YES;
+		}
+		
+		[[AwfulHTTPClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+			if (user) {
+				success(user);
+			} else if (error) {
+				[AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+			}
+		}];
+		return YES;
+	}];
     
     return _routes;
 }

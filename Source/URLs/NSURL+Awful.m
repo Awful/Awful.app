@@ -70,6 +70,17 @@
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://users/%@", query[@"userid"]]];
         }
     }
+	
+	// Rap Sheet/Lepers Colony.
+    else if ([self.path caseInsensitiveCompare:@"/banlist.php"] == NSOrderedSame) {
+		NSString *userId = query[@"userid"];
+        if (userId) {
+            return [NSURL URLWithString:[NSString stringWithFormat:@"awful://banlist/%@", query[@"userid"]]];
+        }
+		else {
+			return [NSURL URLWithString:@"awful://banlist"];
+		}
+    }
     
     return nil;
 }
