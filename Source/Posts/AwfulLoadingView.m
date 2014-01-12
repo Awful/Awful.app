@@ -112,7 +112,7 @@
     CGFloat whiteness = 1;
     BOOL ok = [tint getWhite:&whiteness alpha:nil];
     if (!ok) {
-        ok = [tint getRed:&whiteness green:nil blue:nil alpha:nil];
+        [tint getRed:&whiteness green:nil blue:nil alpha:nil];
     }
     if (whiteness < 0.1) {
         self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;

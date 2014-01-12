@@ -19,7 +19,6 @@
     // We need to parse the host ourselves. Assume a scheme terminated by "://".
     NSScanner *scanner = [NSScanner scannerWithString:string];
     BOOL ok = [scanner scanUpToString:@"://" intoString:NULL];
-    ok = [scanner scanString:@"://" intoString:NULL];
     if (!ok) return nil;
     
     // Remember where the host is in the string, for later replacement.
