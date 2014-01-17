@@ -12,6 +12,10 @@
 
 + (AwfulForumTweaks*)tweaksForForumId:(NSString*)forumId;
 
+/**
+ * Returns a custom post button title
+ */
+@property (readonly) NSString *postButton;
 
 /**
  * Returns whether text views should autocorrect.

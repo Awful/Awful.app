@@ -102,7 +102,9 @@
     [alert addCancelButtonWithTitle:@"No" block:^{
         handler(NO);
     }];
-    [alert addButtonWithTitle:(self.thread ? @"Post" : @"Save") block:^{
+	
+	NSString *customButton = [AwfulForumTweaks tweaksForForumId:self.thread.forum.forumID ?: self.post.thread.forum.forumID].postButton;
+    [alert addButtonWithTitle:customButton ?: (self.thread ? @"Post" : @"Save") block:^{
         handler(YES);
     }];
     [alert show];

@@ -102,6 +102,11 @@
 	return [self objectForKey:key];
 }
 
+- (NSString *)postButton
+{
+	return self[@"postButton"];
+}
+
 - (UITextAutocorrectionType)autocorrectionType
 {
     id value = self[@"autocorrection"];
