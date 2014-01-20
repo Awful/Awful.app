@@ -769,8 +769,7 @@
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 			);
-			name = Scraping;
-			path = Parsing;
+			path = Scraping;
 			sourceTree = "<group>";
 		};
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
