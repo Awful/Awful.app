@@ -8,6 +8,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulPrivateMessageScraper ()
@@ -39,7 +40,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
     NSString *messageID;
-    HTMLElementNode *replyLink = [document firstNodeMatchingSelector:@"div.buttons a"];
+    HTMLElementNode *replyLink = [document awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];
     messageID = replyLinkURL.queryDictionary[@"privatemessageid"];
     if (messageID.length == 0) {
@@ -52,13 +53,13 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     }
     AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
                                                                        inManagedObjectContext:managedObjectContext];
-    HTMLElementNode *breadcrumbs = [document firstNodeMatchingSelector:@"div.breadcrumbs b"];
+    HTMLElementNode *breadcrumbs = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
     HTMLTextNode *subjectText = breadcrumbs.childNodes.lastObject;
     if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
         message.subject = [subjectText.data gtm_stringByUnescapingFromHTML];
     }
-    HTMLElementNode *postDateCell = [document firstNodeMatchingSelector:@"td.postdate"];
-    HTMLElementNode *iconImage = [postDateCell firstNodeMatchingSelector:@"img"];
+    HTMLElementNode *postDateCell = [document awful_firstNodeMatchingCachedSelector:@"td.postdate"];
+    HTMLElementNode *iconImage = [postDateCell awful_firstNodeMatchingCachedSelector:@"img"];
     if (iconImage) {
         NSString *src = iconImage[@"src"];
         message.seen = [src rangeOfString:@"newpm"].location == NSNotFound;
@@ -72,7 +73,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             message.sentDate = sentDate;
         }
     }
-    HTMLElementNode *postBodyCell = [document firstNodeMatchingSelector:@"td.postbody"];
+    HTMLElementNode *postBodyCell = [document awful_firstNodeMatchingCachedSelector:@"td.postbody"];
     if (postBodyCell) {
         message.innerHTML = postBodyCell.innerHTML;
     }

@@ -4,6 +4,7 @@
 
 #import "AwfulFormScraper.h"
 #import "AwfulForm.h"
+#import "HTMLNode+CachedSelector.h"
 
 @implementation AwfulFormScraper
 
@@ -15,12 +16,12 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
     NSMutableArray *forms = [NSMutableArray new];
-    for (HTMLElementNode *formNode in [document nodesMatchingSelector:@"form"]) {
+    for (HTMLElementNode *formNode in [document awful_nodesMatchingCachedSelector:@"form"]) {
         AwfulForm *form = [[AwfulForm alloc] initWithName:formNode[@"name"]];
-        for (HTMLElementNode *threadTagDiv in [formNode nodesMatchingSelector:@"div.posticon"]) {
-            HTMLElementNode *input = [threadTagDiv firstNodeMatchingSelector:@"input"];
+        for (HTMLElementNode *threadTagDiv in [formNode awful_nodesMatchingCachedSelector:@"div.posticon"]) {
+            HTMLElementNode *input = [threadTagDiv awful_firstNodeMatchingCachedSelector:@"input"];
             form.threadTagName = input[@"name"];
-            HTMLElementNode *image = [threadTagDiv firstNodeMatchingSelector:@"img"];
+            HTMLElementNode *image = [threadTagDiv awful_firstNodeMatchingCachedSelector:@"img"];
             NSURL *URL = [NSURL URLWithString:image[@"href"] relativeToURL:documentURL];
             AwfulThreadTag *threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:input[@"value"]
                                                                               threadTagURL:URL
@@ -32,8 +33,8 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             [form addThreadTag:threadTag];
         }
         {
-            NSArray *secondaryIconInputs = [formNode nodesMatchingSelector:@"input[type='radio']:not([name='iconid'])"];
-            NSArray *secondaryIconImages = [formNode nodesMatchingSelector:@"input[type='radio']:not([name='iconid']) + img"];
+            NSArray *secondaryIconInputs = [formNode awful_nodesMatchingCachedSelector:@"input[type='radio']:not([name='iconid'])"];
+            NSArray *secondaryIconImages = [formNode awful_nodesMatchingCachedSelector:@"input[type='radio']:not([name='iconid']) + img"];
             if (secondaryIconInputs.count > 0 && secondaryIconInputs.count == secondaryIconImages.count) {
                 [secondaryIconInputs enumerateObjectsUsingBlock:^(HTMLElementNode *input, NSUInteger i, BOOL *stop) {
                     HTMLElementNode *image = secondaryIconImages[i];
@@ -46,22 +47,22 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 }];
             }
         }
-        for (HTMLElementNode *input in [formNode nodesMatchingSelector:@"input[type='hidden']"]) {
+        for (HTMLElementNode *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='hidden']"]) {
             [form addHidden:[AwfulFormItem itemWithName:input[@"name"] value:input[@"value"]]];
         }
-        for (HTMLElementNode *input in [formNode nodesMatchingSelector:@"input[type='checkbox']"]) {
+        for (HTMLElementNode *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='checkbox']"]) {
             [form addCheckbox:[AwfulFormCheckbox checkboxWithName:input[@"name"] value:input[@"value"] checked:!!input[@"checked"]]];
         }
-        for (HTMLElementNode *input in [formNode nodesMatchingSelector:@"input[type='text']"]) {
+        for (HTMLElementNode *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='text']"]) {
             [form addText:[AwfulFormItem itemWithName:input[@"name"] value:input[@"value"]]];
         }
-        for (HTMLElementNode *textarea in [formNode nodesMatchingSelector:@"textarea[name]"]) {
+        for (HTMLElementNode *textarea in [formNode awful_nodesMatchingCachedSelector:@"textarea[name]"]) {
             [form addText:[AwfulFormItem itemWithName:textarea[@"name"] value:textarea.innerHTML]];
         }
-        for (HTMLElementNode *input in [formNode nodesMatchingSelector:@"input[type='submit']"]) {
+        for (HTMLElementNode *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='submit']"]) {
             [form addSubmit:[AwfulFormItem itemWithName:input[@"name"] value:input[@"value"]]];
         }
-        for (HTMLElementNode *file in [formNode nodesMatchingSelector:@"input[type='file']"]) {
+        for (HTMLElementNode *file in [formNode awful_nodesMatchingCachedSelector:@"input[type='file']"]) {
             [form addFile:file[@"name"]];
         }
         [forms addObject:form];

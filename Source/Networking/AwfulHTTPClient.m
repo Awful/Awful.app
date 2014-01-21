@@ -21,6 +21,7 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulThreadTag.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "HTMLNode+CachedSelector.h"
 
 @interface AwfulHTTPRequestOperationManager : AFHTTPRequestOperationManager
 
@@ -360,8 +361,8 @@
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
                 AwfulPost *post;
-                HTMLElementNode *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
-                                         [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
+                HTMLElementNode *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
+                                         [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                     NSString *postID = URL.queryDictionary[@"postid"];
@@ -910,7 +911,7 @@
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
-                HTMLElementNode *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
+                HTMLElementNode *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 NSString *threadID = URL.queryDictionary[@"threadid"];
                 AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];

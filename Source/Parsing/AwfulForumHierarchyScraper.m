@@ -5,6 +5,7 @@
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 
 @implementation AwfulForumHierarchyScraper
 
@@ -32,7 +33,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     NSMutableArray *categories = [NSMutableArray new];
     NSMutableArray *forumStack = [NSMutableArray new];
     int32_t forumIndex = 0;
-    NSArray *options = [document nodesMatchingSelector:@"select[name = 'forumid'] option"];
+    NSArray *options = [document awful_nodesMatchingCachedSelector:@"select[name = 'forumid'] option"];
     for (HTMLElementNode *option in options) {
         NSString *itemID = option[@"value"];
         if (itemID.integerValue <= 0) continue;

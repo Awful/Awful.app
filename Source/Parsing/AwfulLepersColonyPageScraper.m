@@ -5,6 +5,7 @@
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulLepersColonyPageScraper ()
@@ -32,16 +33,16 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError *__autoreleasing *)error
 {
     NSMutableArray *bans = [NSMutableArray new];
-    NSArray *rows = [document nodesMatchingSelector:@"table.standard tr"];
+    NSArray *rows = [document awful_nodesMatchingCachedSelector:@"table.standard tr"];
     
     // First row just has headers.
     rows = [rows subarrayWithRange:NSMakeRange(1, rows.count - 1)];
     
     for (HTMLElementNode *row in rows) {
         AwfulBan *ban = [AwfulBan new];
-        HTMLElementNode *typeCell = [row firstNodeMatchingSelector:@"td:nth-of-type(1)"];
+        HTMLElementNode *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
         {
-            HTMLElementNode *typeLink = [typeCell firstNodeMatchingSelector:@"a"];
+            HTMLElementNode *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
             if (postID) {
@@ -59,14 +60,14 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *dateCell = [row firstNodeMatchingSelector:@"td:nth-of-type(2)"];
+            HTMLElementNode *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
             NSDate *date = [self.dateParser dateFromString:dateCell.innerHTML];
             if (date) {
                 ban.date = date;
             }
         }
         {
-            HTMLElementNode *userLink = [row firstNodeMatchingSelector:@"td:nth-of-type(3) a"];
+            HTMLElementNode *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
@@ -78,11 +79,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *reasonCell = [row firstNodeMatchingSelector:@"td:nth-of-type(4)"];
+            HTMLElementNode *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
             ban.reasonHTML = reasonCell.innerHTML;
         }
         {
-            HTMLElementNode *requesterLink = [row firstNodeMatchingSelector:@"td:nth-of-type(5) a"];
+            HTMLElementNode *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
@@ -94,7 +95,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *approverLink = [row firstNodeMatchingSelector:@"td:nth-of-type(6) a"];
+            HTMLElementNode *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];

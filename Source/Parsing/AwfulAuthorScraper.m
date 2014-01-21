@@ -5,6 +5,7 @@
 #import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulAuthorScraper ()
@@ -27,18 +28,18 @@
            intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSString *userID; {
-        HTMLElementNode *profileLink = [node firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'userid']"];
+        HTMLElementNode *profileLink = [node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
         
         // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
         if (profileLink) {
             NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
             userID = URL.queryDictionary[@"userid"];
         } else {
-            HTMLElementNode *userIDInput = [node firstNodeMatchingSelector:@"input[name = 'userid']"];
+            HTMLElementNode *userIDInput = [node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
             userID = userIDInput[@"value"];
         }
     }
-    HTMLElementNode *authorTerm = [node firstNodeMatchingSelector:@"dt.author"];
+    HTMLElementNode *authorTerm = [node awful_firstNodeMatchingCachedSelector:@"dt.author"];
     NSString *username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
     if (userID.length == 0 && username.length == 0) {
         return nil;
@@ -47,17 +48,17 @@
                                                  username:username
                                    inManagedObjectContext:managedObjectContext];
     if (authorTerm[@"class"]) {
-        user.administrator = !![authorTerm firstNodeMatchingSelector:@".role-admin"];
-        user.moderator = !![authorTerm firstNodeMatchingSelector:@".role-mod"];
+        user.administrator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-admin"];
+        user.moderator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-mod"];
     }
     NSDate *regdate; {
-        HTMLElementNode *regdateDefinition = [node firstNodeMatchingSelector:@"dd.registered"];
+        HTMLElementNode *regdateDefinition = [node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
         regdate = [self.regdateDateParser dateFromString:regdateDefinition.innerHTML];
     }
     if (regdate) {
         user.regdate = regdate;
     }
-    HTMLElementNode *customTitleDefinition = [node firstNodeMatchingSelector:@"dl.userinfo dd.title"];
+    HTMLElementNode *customTitleDefinition = [node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
     if (customTitleDefinition) {
         user.customTitleHTML = customTitleDefinition.innerHTML;
     }

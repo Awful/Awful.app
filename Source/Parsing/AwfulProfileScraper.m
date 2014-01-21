@@ -8,6 +8,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 
 @interface AwfulProfileScraper ()
 
@@ -47,7 +48,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         return nil;
     }
-    HTMLElementNode *infoParagraph = [document firstNodeMatchingSelector:@"td.info p:first-of-type"];
+    HTMLElementNode *infoParagraph = [document awful_firstNodeMatchingCachedSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:infoParagraph.innerHTML];
         [scanner scanUpToString:@"claims to be a " intoString:nil];
@@ -58,13 +59,13 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.gender = gender;
         }
     }
-    HTMLElementNode *aboutParagraph = [document firstNodeMatchingSelector:@"td.info p:nth-of-type(2)"];
+    HTMLElementNode *aboutParagraph = [document awful_firstNodeMatchingCachedSelector:@"td.info p:nth-of-type(2)"];
     if (aboutParagraph) {
         user.aboutMe = aboutParagraph.innerHTML;
     }
-    HTMLElementNode *messageLink = [document firstNodeMatchingSelector:@"dl.contacts dt.pm + dd a"];
+    HTMLElementNode *messageLink = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.pm + dd a"];
     user.canReceivePrivateMessages = !!messageLink;
-    HTMLElementNode *ICQDefinition = [document firstNodeMatchingSelector:@"dl.contacts dt.icq + dd"];
+    HTMLElementNode *ICQDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.icq + dd"];
     if (ICQDefinition) {
         HTMLTextNode *ICQText = ICQDefinition.childNodes.firstObject;
         if (ICQDefinition.childNodes.count == 1 && [ICQText isKindOfClass:[HTMLTextNode class]]) {
@@ -73,7 +74,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.icqName = nil;
         }
     }
-    HTMLElementNode *AIMDefinition = [document firstNodeMatchingSelector:@"dl.contacts dt.aim + dd"];
+    HTMLElementNode *AIMDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.aim + dd"];
     if (AIMDefinition) {
         HTMLTextNode *AIMText = AIMDefinition.childNodes.firstObject;
         if (AIMDefinition.childNodes.count == 1 && [AIMText isKindOfClass:[HTMLTextNode class]]) {
@@ -82,7 +83,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.aimName = nil;
         }
     }
-    HTMLElementNode *yahooDefinition = [document firstNodeMatchingSelector:@"dl.contacts dt.yahoo + dd"];
+    HTMLElementNode *yahooDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.yahoo + dd"];
     if (yahooDefinition) {
         HTMLTextNode *yahooText = yahooDefinition.childNodes.firstObject;
         if (yahooDefinition.childNodes.count == 1 && [yahooText isKindOfClass:[HTMLTextNode class]]) {
@@ -91,7 +92,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.yahooName = nil;
         }
     }
-    HTMLElementNode *homepageDefinition = [document firstNodeMatchingSelector:@"dl.contacts dt.homepage + dd"];
+    HTMLElementNode *homepageDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.homepage + dd"];
     if (homepageDefinition) {
         HTMLTextNode *homepageText = homepageDefinition.childNodes.firstObject;
         if (homepageDefinition.childNodes.count == 1 && [homepageText isKindOfClass:[HTMLTextNode class]]) {
@@ -100,12 +101,12 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.homepageURL = nil;
         }
     }
-    HTMLElementNode *userPictureImage = [document firstNodeMatchingSelector:@"div.userpic img"];
+    HTMLElementNode *userPictureImage = [document awful_firstNodeMatchingCachedSelector:@"div.userpic img"];
     if (userPictureImage) {
         user.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"] relativeToURL:documentURL];
     }
-    HTMLElementNode *additionalList = [document firstNodeMatchingSelector:@"dl.additional"];
-    HTMLElementNode *postCountDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(2)"];
+    HTMLElementNode *additionalList = [document awful_firstNodeMatchingCachedSelector:@"dl.additional"];
+    HTMLElementNode *postCountDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(2)"];
     HTMLTextNode *postCountText = postCountDefinition.childNodes.firstObject;
     if ([postCountText isKindOfClass:[HTMLTextNode class]]) {
         NSInteger postCount;
@@ -115,7 +116,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.postCount = (int32_t)postCount;
         }
     }
-    HTMLElementNode *postRateDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(3)"];
+    HTMLElementNode *postRateDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(3)"];
     HTMLTextNode *postRateText = postRateDefinition.childNodes.firstObject;
     if ([postRateText isKindOfClass:[HTMLTextNode class]]) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText.data];
@@ -124,7 +125,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.postRate = [scanner.string substringToIndex:scanner.scanLocation];
         }
     }
-    HTMLElementNode *lastPostDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(4)"];
+    HTMLElementNode *lastPostDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(4)"];
     HTMLTextNode *lastPostText = lastPostDefinition.childNodes.firstObject;
     if ([lastPostText isKindOfClass:[HTMLTextNode class]]) {
         NSDate *lastPostDate = [self.postDateParser dateFromString:lastPostText.data];

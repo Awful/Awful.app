@@ -9,6 +9,7 @@
 #import "AwfulModels.h"
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulPostsPageScraper ()
@@ -41,17 +42,17 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     AwfulThread *thread;
     AwfulForum *forum;
-    HTMLElementNode *body = [document firstNodeMatchingSelector:@"body"];
+    HTMLElementNode *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
     thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:managedObjectContext];
     forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
     thread.forum = forum;
     
-    HTMLElementNode *breadcrumbsDiv = [body firstNodeMatchingSelector:@"div.breadcrumbs"];
+    HTMLElementNode *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
     // Last hierarchy link is the thread.
     // First hierarchy link is the category.
     // Intervening hierarchy links are forums/subforums.
-    NSArray *hierarchyLinks = [breadcrumbsDiv nodesMatchingSelector:@"a[href *= 'id=']"];
+    NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'id=']"];
     
     HTMLElementNode *threadLink = hierarchyLinks.lastObject;
     thread.title = [threadLink.innerHTML gtm_stringByUnescapingFromHTML];
@@ -76,7 +77,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
     }
     
-    HTMLElementNode *closedImage = [body firstNodeMatchingSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
+    HTMLElementNode *closedImage = [body awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
     thread.closed = !!closedImage;
     
     NSString *singleUserID = documentURL.queryDictionary[@"userid"];
@@ -85,16 +86,16 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         singleUser = [AwfulUser firstOrNewUserWithUserID:singleUserID username:nil inManagedObjectContext:managedObjectContext];
     }
     
-    HTMLElementNode *pagesDiv = [body firstNodeMatchingSelector:@"div.pages"];
-    HTMLElementNode *pagesSelect = [pagesDiv firstNodeMatchingSelector:@"select"];
+    HTMLElementNode *pagesDiv = [body awful_firstNodeMatchingCachedSelector:@"div.pages"];
+    HTMLElementNode *pagesSelect = [pagesDiv awful_firstNodeMatchingCachedSelector:@"select"];
     int32_t numberOfPages = 0;
     int32_t currentPage = 0;
     if (pagesDiv) {
         if (pagesSelect) {
-            HTMLElementNode *lastOption = [pagesSelect nodesMatchingSelector:@"option"].lastObject;
+            HTMLElementNode *lastOption = [pagesSelect awful_nodesMatchingCachedSelector:@"option"].lastObject;
             NSString *pageValue = lastOption[@"value"];
             numberOfPages = (int32_t)pageValue.integerValue;
-            HTMLElementNode *selectedOption = [pagesSelect firstNodeMatchingSelector:@"option[selected]"];
+            HTMLElementNode *selectedOption = [pagesSelect awful_firstNodeMatchingCachedSelector:@"option[selected]"];
             NSString *selectedPageValue = selectedOption[@"value"];
             currentPage = (int32_t)selectedPageValue.integerValue;
         } else {
@@ -107,7 +108,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     } else {
         thread.numberOfPages = numberOfPages;
     }
-    HTMLElementNode *bookmarkButton = [body firstNodeMatchingSelector:@"div.threadbar img.thread_bookmark"];
+    HTMLElementNode *bookmarkButton = [body awful_firstNodeMatchingCachedSelector:@"div.threadbar img.thread_bookmark"];
     if (bookmarkButton) {
         NSArray *bookmarkClasses = [bookmarkButton[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([bookmarkClasses containsObject:@"unbookmark"] && thread.starCategory == AwfulStarCategoryNone) {
@@ -120,7 +121,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     // TODO scrape ad
     
     NSMutableArray *posts = [NSMutableArray new];
-    NSArray *postTables = [document nodesMatchingSelector:@"table.post"];
+    NSArray *postTables = [document awful_nodesMatchingCachedSelector:@"table.post"];
     __block AwfulPost *firstUnseenPost;
     [postTables enumerateObjectsUsingBlock:^(HTMLElementNode *table, NSUInteger i, BOOL *stop) {
         NSString *postID;
@@ -152,7 +153,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 post.threadIndex = index;
             }
         }
-        HTMLElementNode *postDateCell = [table firstNodeMatchingSelector:@"td.postdate"];
+        HTMLElementNode *postDateCell = [table awful_firstNodeMatchingCachedSelector:@"td.postdate"];
         if (postDateCell) {
             HTMLTextNode *postDateText = postDateCell.childNodes.lastObject;
             NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -161,19 +162,19 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         AwfulUser *author = [self.authorScraper scrapeAuthorFromNode:table intoManagedObjectContext:managedObjectContext];
         if (author) {
             post.author = author;
-            if ([table firstNodeMatchingSelector:@"dt.author.op"]) {
+            if ([table awful_firstNodeMatchingCachedSelector:@"dt.author.op"]) {
                 thread.author = author;
             }
         }
-        HTMLElementNode *privateMessageLink = [table firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'private.php']"];
+        HTMLElementNode *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'private.php']"];
         author.canReceivePrivateMessages = !!privateMessageLink;
-        HTMLElementNode *editButton = [table firstNodeMatchingSelector:@"ul.postbuttons a[href *= 'editpost.php']"];
+        HTMLElementNode *editButton = [table awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'editpost.php']"];
         post.editable = !!editButton;
-        HTMLElementNode *seenRow = [table firstNodeMatchingSelector:@"tr.seen1"] ?: [table firstNodeMatchingSelector:@"tr.seen2"];
+        HTMLElementNode *seenRow = [table awful_firstNodeMatchingCachedSelector:@"tr.seen1"] ?: [table awful_firstNodeMatchingCachedSelector:@"tr.seen2"];
         if (!seenRow && !firstUnseenPost) {
             firstUnseenPost = post;
         }
-        HTMLElementNode *postBodyElement = [table firstNodeMatchingSelector:@"div.complete_shit"] ?: [table firstNodeMatchingSelector:@"td.postbody"];
+        HTMLElementNode *postBodyElement = [table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?: [table awful_firstNodeMatchingCachedSelector:@"td.postbody"];
         if (postBodyElement) {
             post.innerHTML = postBodyElement.innerHTML;
         }

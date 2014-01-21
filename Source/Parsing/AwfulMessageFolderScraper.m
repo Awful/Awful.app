@@ -6,6 +6,7 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "GTMNSString+HTML.h"
+#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulMessageFolderScraper ()
@@ -34,9 +35,9 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError *__autoreleasing *)error
 {
     NSMutableArray *messages = [NSMutableArray new];
-    NSArray *rows = [document nodesMatchingSelector:@"table.standard tbody tr"];
+    NSArray *rows = [document awful_nodesMatchingCachedSelector:@"table.standard tbody tr"];
     for (HTMLElementNode *row in rows) {
-        HTMLElementNode *titleLink = [row firstNodeMatchingSelector:@"td.title a"];
+        HTMLElementNode *titleLink = [row awful_firstNodeMatchingCachedSelector:@"td.title a"];
         NSString *messageID; {
             NSURL *URL = [NSURL URLWithString:titleLink[@"href"]];
             messageID = URL.queryDictionary[@"privatemessageid"];
@@ -52,14 +53,14 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:managedObjectContext];
         message.subject = [titleLink.innerHTML gtm_stringByUnescapingFromHTML];
         {
-            HTMLElementNode *seenImage = [row firstNodeMatchingSelector:@"td.status img"];
+            HTMLElementNode *seenImage = [row awful_firstNodeMatchingCachedSelector:@"td.status img"];
             NSString *src = seenImage[@"src"];
             message.seen = [src rangeOfString:@"newpm"].location == NSNotFound;
             message.replied = [src rangeOfString:@"replied"].location != NSNotFound;
             message.forwarded = [src rangeOfString:@"forwarded"].location != NSNotFound;
         }
         {
-            HTMLElementNode *threadTagImage = [row firstNodeMatchingSelector:@"td.icon img"];
+            HTMLElementNode *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
             if (threadTagImage) {
                 NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
                 message.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
@@ -70,7 +71,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *fromCell = [row firstNodeMatchingSelector:@"td.sender"];
+            HTMLElementNode *fromCell = [row awful_firstNodeMatchingCachedSelector:@"td.sender"];
             NSString *fromUsername = [fromCell.innerHTML gtm_stringByUnescapingFromHTML];
             if (fromUsername.length > 0) {
                 message.from = [AwfulUser firstOrNewUserWithUserID:nil
@@ -79,7 +80,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *sentDateCell = [row firstNodeMatchingSelector:@"td.date"];
+            HTMLElementNode *sentDateCell = [row awful_firstNodeMatchingCachedSelector:@"td.date"];
             NSDate *sentDate = [self.sentDateParser dateFromString:sentDateCell.innerHTML];
             if (sentDate) {
                 message.sentDate = sentDate;
