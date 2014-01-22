@@ -973,6 +973,7 @@ static char KVOContext;
         ![user.userID isEqual:[AwfulSettings settings].userID]) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
             AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+            messageViewController.delegate = self;
             [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
         }]];
 	}
