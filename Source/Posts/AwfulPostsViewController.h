@@ -26,6 +26,11 @@
 - (id)initWithThread:(AwfulThread *)thread;
 
 /**
+ * Set the currently-visible post.
+ */
+- (void)setTopPost:(AwfulPost*)topPost;
+
+/**
  * The thread whose posts are shown.
  */
 @property (readonly, strong, nonatomic) AwfulThread *thread;
@@ -44,10 +49,5 @@
  * An array of AwfulPost objects of the currently-visible posts.
  */
 @property (readonly, copy, nonatomic) NSArray *posts;
-
-/**
- * The currently-visible post.
- */
-@property (strong, nonatomic) AwfulPost *topPost;
 
 @end
