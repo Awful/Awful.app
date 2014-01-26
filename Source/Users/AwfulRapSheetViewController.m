@@ -134,6 +134,7 @@
     nothing.frame = (CGRect){ .size = self.view.bounds.size };
     nothing.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     nothing.textAlignment = NSTextAlignmentCenter;
+	nothing.textColor = self.theme[@"listTextColor"];
     [self.view addSubview:nothing];
 }
 
