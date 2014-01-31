@@ -6,6 +6,9 @@
 
 @interface UINavigationItem (TwoLineTitle)
 
-@property (readonly, nonatomic) UILabel *titleLabel;
+/**
+ * A replacement label for the title that shows two lines.
+ */
+@property (readonly, strong, nonatomic) UILabel *titleLabel;
 
 @end

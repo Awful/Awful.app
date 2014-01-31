@@ -4,13 +4,6 @@
 
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface UINavigationItem ()
-
-@property (readonly, nonatomic) UILabel *titleLabel;
-
-@end
-
-
 @implementation UINavigationItem (TwoLineTitle)
 
 - (UILabel *)titleLabel
