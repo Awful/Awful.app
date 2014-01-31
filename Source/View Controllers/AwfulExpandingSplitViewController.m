@@ -114,8 +114,7 @@
 
 - (UIImage *)expandContractImage
 {
-    NSString *imageName = self.detailExpanded ? @"contract" : @"expand";
-    return [UIImage imageNamed:imageName];
+    return [UIImage imageNamed:@"hamburger-button"];
 }
 
 - (void)toggleDetailExpanded
