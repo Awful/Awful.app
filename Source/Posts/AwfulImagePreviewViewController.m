@@ -115,20 +115,10 @@
 {
     [self.automaticallyHideBarsTimer invalidate];
     if (self.navigationController.navigationBarHidden) {
-        self.scrollView.contentInset = UIEdgeInsetsZero;
-        [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                                withAnimation:UIStatusBarAnimationNone];
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
     } else {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES
-                                                withAnimation:UIStatusBarAnimationFade];
-        CGFloat oldAlpha = self.navigationController.navigationBar.alpha;
-        [UIView animateWithDuration:UINavigationControllerHideShowBarDuration animations:^{
-            self.navigationController.navigationBar.alpha = 0;
-        } completion:^(BOOL finished) {
-            [self.navigationController setNavigationBarHidden:YES animated:NO];
-            self.navigationController.navigationBar.alpha = oldAlpha;
-        }];
+		[self.navigationController setNavigationBarHidden:YES animated:YES];
+
     }
 }
 
@@ -264,8 +254,6 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.automaticallyHideBarsTimer invalidate];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                            withAnimation:UIStatusBarAnimationNone];
     [super viewWillDisappear:animated];
 }
 
@@ -277,6 +265,16 @@
         self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
     }
     [self centerImageInScrollView];
+}
+
+-(BOOL)prefersStatusBarHidden
+{
+	return self.navigationController.navigationBarHidden;
+}
+
+-(UIStatusBarAnimation)preferredStatusBarUpdateAnimation
+{
+	return UIStatusBarAnimationSlide;
 }
 
 #pragma mark - UIScrollViewDelegate
