@@ -15,8 +15,15 @@
     UIBarButtonItem *_cancelButtonItem;
     id _keyboardWillShowObserver;
     id _keyboardWillHideObserver;
+    id _textDidChangeObserver;
     id <ImgurHTTPClientCancelToken> _imageUploadCancelToken;
     NSLayoutConstraint *_customViewWidthConstraint;
+}
+
+- (void)dealloc
+{
+    [self endObservingKeyboardNotifications];
+    [self endObservingTextChangeNotification];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -94,6 +101,12 @@
     [self focusInitialFirstResponder];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self beginObservingTextChangeNotification];
+}
+
 - (void)updateSubmitButtonItem
 {
     self.submitButtonItem.enabled = self.canSubmitComposition;
@@ -102,6 +115,25 @@
 - (BOOL)canSubmitComposition
 {
     return self.textView.text.length > 0;
+}
+
+- (void)beginObservingTextChangeNotification
+{
+    _textDidChangeObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UITextViewTextDidChangeNotification
+                                                                               object:self.textView
+                                                                                queue:[NSOperationQueue mainQueue]
+                                                                           usingBlock:^(NSNotification *note)
+    {
+        [self updateSubmitButtonItem];
+    }];
+}
+
+- (void)endObservingTextChangeNotification
+{
+    if (_textDidChangeObserver) {
+        [[NSNotificationCenter defaultCenter] removeObserver:_textDidChangeObserver];
+        _textDidChangeObserver = nil;
+    }
 }
 
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
@@ -300,8 +332,14 @@
 - (void)endObservingKeyboardNotifications
 {
     NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter removeObserver:_keyboardWillShowObserver], _keyboardWillShowObserver = nil;
-    [noteCenter removeObserver:_keyboardWillHideObserver], _keyboardWillHideObserver = nil;
+    if (_keyboardWillShowObserver) {
+        [noteCenter removeObserver:_keyboardWillShowObserver];
+        _keyboardWillShowObserver = nil;
+    }
+    if (_keyboardWillHideObserver) {
+        [noteCenter removeObserver:_keyboardWillHideObserver];
+        _keyboardWillHideObserver = nil;
+    }
 }
 
 - (void)keyboardWillThingy:(NSNotification *)note
@@ -347,6 +385,7 @@
 {
     [super viewDidDisappear:animated];
     [self endObservingKeyboardNotifications];
+    [self endObservingTextChangeNotification];
 }
 
 #pragma mark - UIViewControllerRestoration
