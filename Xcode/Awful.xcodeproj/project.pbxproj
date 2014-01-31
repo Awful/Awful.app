@@ -114,6 +114,7 @@
 		1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73921F17DFC0FA00089248 /* AwfulFavoriteForumCell.m */; };
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
+		1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */; };
 		1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */; };
 		1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */; };
@@ -1726,6 +1727,7 @@
 				1CFE985118293786003DBBC2 /* AwfulPost.m in Sources */,
 				1C9FDE5C16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1CFE985518293786003DBBC2 /* AwfulUser.m in Sources */,
+				1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */,
 				1CE694AF182FF87F00B24928 /* AwfulBan.m in Sources */,
 				1C6D2EB4182FE1E400785766 /* MessageFolderScrapingTests.m in Sources */,
 				1CFE985318293786003DBBC2 /* AwfulSingleUserThreadInfo.m in Sources */,
