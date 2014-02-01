@@ -156,8 +156,20 @@ header {
     color: #006699;
   }
   
+  @-webkit-keyframes idiotKingStar {
+  	0% {color: grey;}
+  	49% {color: grey;}
+	50% {color: yellow;}
+	100% {color: yellow;}
+	}
+  .role-ik &:before {
+    -webkit-animation: idiotKingStar 20s;
+    -webkit-animation-iteration-count: infinite;
+  }
+  
   .role-admin &:before,
-  .role-mod &:before {
+  .role-mod &:before,
+  .role-ik &:before {
     content: '★'; 
   }
   

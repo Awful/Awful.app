@@ -121,8 +121,27 @@ header {
 .role-mod .username:before {
   color: #006699;
 }
+@-webkit-keyframes idiotKingStar {
+  0% {
+    color: grey;
+  }
+  49% {
+    color: grey;
+  }
+  50% {
+    color: yellow;
+  }
+  100% {
+    color: yellow;
+  }
+}
+.role-ik .username:before {
+  -webkit-animation: idiotKingStar 20s;
+  -webkit-animation-iteration-count: infinite;
+}
 .role-admin .username:before,
-.role-mod .username:before {
+.role-mod .username:before,
+.role-ik .username:before {
   content: '★';
 }
 .role-op .username {

@@ -1,4 +1,4 @@
-<article id="{{ postID }}" class="post {{# beenSeen }}seen{{/ }} {{# authorIsOP }}role-op{{/ }} {{# author.moderator }}role-mod{{/ }} {{# author.administrator }}role-admin{{/ }} {{^ author.avatarURL }}no-avatar{{/ }}">
+<article id="{{ postID }}" class="post {{# beenSeen }}seen{{/ }} {{# authorIsOP }}role-op{{/ }} {{# author.moderator }}role-mod{{/ }} {{# author.administrator }}role-admin{{/ }} {{# author.idiotKing }}role-ik{{/ }} {{^ author.avatarURL }}no-avatar{{/ }}">
   <header>
     {{# author.avatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/}}
     <h1 class="username">{{ author.username }}<div id="bracket"></div></h1>

@@ -49,7 +49,8 @@
                                    inManagedObjectContext:managedObjectContext];
     if (authorTerm[@"class"]) {
         user.administrator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-admin"];
-        user.moderator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-mod"];
+			user.moderator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-mod"];
+			user.idiotKing = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-ik"];
     }
     NSDate *regdate; {
         HTMLElementNode *regdateDefinition = [node awful_firstNodeMatchingCachedSelector:@"dd.registered"];

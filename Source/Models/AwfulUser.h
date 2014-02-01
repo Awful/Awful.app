@@ -70,6 +70,11 @@
 @property (assign, nonatomic) BOOL moderator;
 
 /**
+ * YES if the user is an idiot king.
+ */
+@property (assign, nonatomic) BOOL idiotKing;
+
+/**
  * A brief user-supplied description of their job.
  */
 @property (copy, nonatomic) NSString *occupation;

@@ -16,6 +16,7 @@
 @dynamic gender;
 @dynamic homepageURL;
 @dynamic icqName;
+@dynamic idiotKing;
 @dynamic interests;
 @dynamic lastPost;
 @dynamic location;
