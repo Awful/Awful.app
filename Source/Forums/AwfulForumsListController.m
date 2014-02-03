@@ -486,9 +486,9 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     }
     NSIndexSet *sections = [NSIndexSet indexSetWithIndex:index];
     if (changeType == AwfulForumTreeControllerChangeTypeDelete) {
-        [self.tableView deleteSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView deleteSections:sections withRowAnimation:UITableViewRowAnimationFade];
     } else if (changeType == AwfulForumTreeControllerChangeTypeInsert) {
-        [self.tableView insertSections:sections withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView insertSections:sections withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
@@ -501,15 +501,15 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     }
     switch (changeType) {
         case AwfulForumTreeControllerChangeTypeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case AwfulForumTreeControllerChangeTypeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView insertRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case AwfulForumTreeControllerChangeTypeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
