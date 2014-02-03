@@ -47,6 +47,10 @@
 
 @property (copy, nonatomic) NSString *instapaperPassword;
 
+- (BOOL)childrenExpandedForForumWithID:(NSString *)forumID;
+
+- (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID;
+
 - (NSString *)themeNameForForumID:(NSString *)forumID;
 
 - (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID;

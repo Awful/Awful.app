@@ -256,6 +256,16 @@ static NSString * const InstapaperUsernameKey = @"username";
     }
 }
 
+- (BOOL)childrenExpandedForForumWithID:(NSString *)forumID
+{
+	return [self[[NSString stringWithFormat:@"forum-expanded-%@", forumID]] boolValue];
+}
+
+- (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID
+{
+	self[[NSString stringWithFormat:@"forum-expanded-%@", forumID]] = @(shouldHide);
+}
+
 - (NSString *)themeNameForForumID:(NSString *)forumID
 {
     return self[[NSString stringWithFormat:@"theme-%@", forumID]];

@@ -15,6 +15,7 @@
     NSMutableIndexSet *_newlyInsertedSections;
 }
 
+
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super init])) return nil;
@@ -37,22 +38,28 @@
         return nil;
     }
     for (id <NSFetchedResultsSectionInfo> section in _frc.sections) {
-        [_hiddenForumsInCategory addObject:[self initialHiddenForumsWithSection:section]];
+        [_hiddenForumsInCategory addObject:[self hiddenForumsInSection:section]];
     }
     return self;
 }
 
-static NSString * const HiddenForumsKey = @"HiddenForums";
-
-- (NSMutableIndexSet *)initialHiddenForumsWithSection:(id <NSFetchedResultsSectionInfo>)section
+- (NSIndexSet *)hiddenForumsInSection:(id <NSFetchedResultsSectionInfo>)section
 {
-    NSMutableIndexSet *hiddenForums = [NSMutableIndexSet new];
+	NSMutableIndexSet *hiddenForums = [NSMutableIndexSet new];
     [section.objects enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger i, BOOL *stop) {
-        if (forum.parentForum) {
-            [hiddenForums addIndex:i];
-        }
+		
+		while (forum != nil) {
+			forum = forum.parentForum;
+			
+			if (forum && !forum.childrenExpanded) {
+				[hiddenForums addIndex:i];
+				break;
+			}
+		}
+		
     }];
-    return hiddenForums;
+	
+	return hiddenForums;
 }
 
 - (NSInteger)numberOfCategories
@@ -111,9 +118,7 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
 {
     NSIndexPath *realIndexPath = [self realIndexPathForVisibleIndexPath:indexPath];
     AwfulForum *forum = [_frc objectAtIndexPath:realIndexPath];
-    if (forum.children.count == 0) return NO;
-    NSIndexSet *hiddenForums = _hiddenForumsInCategory[indexPath.section];
-    return ![hiddenForums containsIndex:realIndexPath.row + 1];
+    return forum.childrenExpanded;
 }
 
 - (void)toggleVisibleForumExpandedAtIndexPath:(NSIndexPath *)indexPath
@@ -122,66 +127,72 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
     if (forum.children.count == 0) {
         return;
     }
-    NSIndexPath *realIndexPath = [_frc indexPathForObject:forum];
-    NSMutableIndexSet *hiddenForums = _hiddenForumsInCategory[indexPath.section];
-    [self.delegate forumTreeControllerWillUpdate:self];
-    if ([hiddenForums containsIndex:realIndexPath.row + 1]) {
-        // Expand (show all children of) this forum.
-        [forum.children enumerateObjectsUsingBlock:^(AwfulForum *subforum, NSUInteger i, BOOL *stop) {
-            [hiddenForums removeIndex:[_frc indexPathForObject:subforum].row];
-            NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:indexPath.row + i + 1
-                                                              inSection:indexPath.section];
-            [self.delegate forumTreeController:self
-                       visibleForumAtIndexPath:insertIndexPath
-                                     didChange:AwfulForumTreeControllerChangeTypeInsert];
-        }];
-    } else {
-        // Collapse (hide all ancestors of) this forum.
-        AwfulForum *lastAncestor = forum;
-        while (lastAncestor.children.count > 0) {
-            lastAncestor = lastAncestor.children.lastObject;
-        }
-        NSIndexPath *lastRealIndexPath = [_frc indexPathForObject:lastAncestor];
-        NSRange range = NSMakeRange(realIndexPath.row + 1, lastRealIndexPath.row - realIndexPath.row);
-        NSMutableIndexSet *deleteRows = [NSMutableIndexSet indexSetWithIndexesInRange:range];
-        [deleteRows removeIndexes:hiddenForums];
-        [hiddenForums addIndexesInRange:range];
-        for (NSUInteger i = 0; i < deleteRows.count; i++) {
-            NSIndexPath *deleteIndexPath = [NSIndexPath indexPathForRow:indexPath.row + i + 1
-                                                              inSection:indexPath.section];
-            [self.delegate forumTreeController:self
-                       visibleForumAtIndexPath:deleteIndexPath
-                                     didChange:AwfulForumTreeControllerChangeTypeDelete];
-        }
-    }
+	
+	//Toggle the forum's children being hidden
+	forum.childrenExpanded = !forum.childrenExpanded;	
+	
+	id <NSFetchedResultsSectionInfo> section = _frc.sections[indexPath.section];
+	
+	NSIndexSet *oldHiddenForums = _hiddenForumsInCategory[indexPath.section];
+    NSIndexSet *newHiddenForums = [self hiddenForumsInSection:section];
+	_hiddenForumsInCategory[indexPath.section] = newHiddenForums; //Update the cached hidden forums set for this section
+	
+	
+	NSMutableIndexSet *visibleForums = [[[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, section.objects.count)] indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+		
+		return ![oldHiddenForums containsIndex:idx];
+		
+	}] mutableCopy];
+	
+	
+	//Begin delegate update
+	[self.delegate forumTreeControllerWillUpdate:self];
+	
+	
+	//Add all forums that were hidden and aren't any longer
+	NSIndexSet *addedIndexes = [oldHiddenForums indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+		return ![newHiddenForums containsIndex:idx];
+	}];
+	
+	[addedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		
+		NSUInteger visbleForumsBelow = [visibleForums countOfIndexesInRange:NSMakeRange(0, idx)];
+		
+		NSIndexPath *insertIndexPath = [NSIndexPath indexPathForRow:visbleForumsBelow
+														  inSection:indexPath.section];
+		
+		[visibleForums addIndex:idx];
+		
+		[self.delegate forumTreeController:self
+				   visibleForumAtIndexPath:insertIndexPath
+								 didChange:AwfulForumTreeControllerChangeTypeInsert];
+		
+	}];
+	
+	
+	//Remove all forums that were visible and are now being hidden
+	NSIndexSet *removedIndexes = [newHiddenForums indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+		return ![oldHiddenForums containsIndex:idx];
+	}];
+	
+	[removedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		
+		NSUInteger visbleForumsBelow = [visibleForums countOfIndexesInRange:NSMakeRange(0, idx)];
+		
+		
+		NSIndexPath *removeIndexPath = [NSIndexPath indexPathForRow:visbleForumsBelow
+														  inSection:indexPath.section];
+		
+		[self.delegate forumTreeController:self
+				   visibleForumAtIndexPath:removeIndexPath
+								 didChange:AwfulForumTreeControllerChangeTypeDelete];
+		
+	}];
+		
+	//End delegate update
     [self.delegate forumTreeControllerDidUpdate:self];
 }
 
-- (id <NSCoding>)preservedState
-{
-    NSMutableSet *hiddenForumIDs = [NSMutableSet new];
-    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
-        NSIndexSet *hiddenSet = _hiddenForumsInCategory[i];
-        NSArray *forums = [section.objects objectsAtIndexes:hiddenSet];
-        [hiddenForumIDs addObjectsFromArray:[forums valueForKey:@"forumID"]];
-    }];
-    return hiddenForumIDs;
-}
-
-- (void)restoreState:(id <NSCoding>)state
-{
-    NSSet *hiddenForumIDs = (NSSet *)state;
-    [_frc.sections enumerateObjectsUsingBlock:^(id <NSFetchedResultsSectionInfo> section, NSUInteger i, BOOL *stop) {
-        NSMutableIndexSet *hiddenSet = _hiddenForumsInCategory[i];
-        [section.objects enumerateObjectsUsingBlock:^(AwfulForum *forum, NSUInteger forumIndex, BOOL *stop) {
-            if ([hiddenForumIDs containsObject:forum.forumID]) {
-                [hiddenSet addIndex:forumIndex];
-            } else {
-                [hiddenSet removeIndex:forumIndex];
-            }
-        }];
-    }];
-}
 
 #pragma mark NSFetchedResultsControllerDelegate
 
@@ -203,7 +214,7 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
         }
         
         // We need a fully-initialized set of hidden forums so we can correctly compute the visible index path as the rows are inserted.
-        NSMutableIndexSet *hiddenForums = [self initialHiddenForumsWithSection:section];
+        NSIndexSet *hiddenForums = [self hiddenForumsInSection:section];
         
         // Remember that we've done this so we don't update the hidden forums set a second time.
         [_newlyInsertedSections addIndex:index];
@@ -233,8 +244,6 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
     switch (changeType) {
         case NSFetchedResultsChangeDelete: {
             NSIndexPath *visibleIndexPath = [self indexPathForVisibleForum:forum];
-            NSMutableIndexSet *hiddenForums = _hiddenForumsInCategory[indexPath.section];
-            [hiddenForums shiftIndexesStartingAtIndex:(indexPath.row + 1) by:-1];
             if (visibleIndexPath) {
                 [self.delegate forumTreeController:self
                            visibleForumAtIndexPath:visibleIndexPath
@@ -244,16 +253,7 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
         }
             
         case NSFetchedResultsChangeInsert: {
-            
-            // The hidden forums set is already up-to-date for new sections.
-            if (![_newlyInsertedSections containsIndex:newIndexPath.section]) {
-                NSMutableIndexSet *hiddenForums = _hiddenForumsInCategory[newIndexPath.section];
-                [hiddenForums shiftIndexesStartingAtIndex:newIndexPath.row by:1];
-                if (forum.parentForum) {
-                    [hiddenForums addIndex:newIndexPath.row];
-                }
-            }
-            
+			
             NSIndexPath *visibleIndexPath = [self indexPathForVisibleForum:forum];
             if (visibleIndexPath) {
                 [self.delegate forumTreeController:self
@@ -286,6 +286,17 @@ static NSString * const HiddenForumsKey = @"HiddenForums";
             break;
         }
     }
+	
+	
+	switch (changeType) {
+		case NSFetchedResultsChangeDelete:
+        case NSFetchedResultsChangeInsert:
+        case NSFetchedResultsChangeMove:
+			_hiddenForumsInCategory[indexPath.section] = [self hiddenForumsInSection:_frc.sections[indexPath.section]];
+
+		default:
+			break;
+	}
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller

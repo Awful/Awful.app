@@ -524,13 +524,11 @@ moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.treeController.preservedState forKey:TreeControllerStateKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    [self.treeController restoreState:[coder decodeObjectForKey:TreeControllerStateKey]];
     if ([self isViewLoaded]) {
         [self.tableView reloadData];
     }

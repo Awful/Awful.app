@@ -69,18 +69,6 @@
  */
 @property (weak, nonatomic) id <AwfulForumTreeControllerDelegate> delegate;
 
-/**
- * Returns an object that encapsulates the current state of the tree controller.
- */
-- (id <NSCoding>)preservedState;
-
-/**
- * Sets the tree controller's state.
- *
- * @param state An object previously obtained by calling -preservedState.
- */
-- (void)restoreState:(id <NSCoding>)state;
-
 @end
 
 /**
