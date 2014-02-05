@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForum.h"
-#import "AwfulSettings.h"
 
 @implementation AwfulForum
 
@@ -29,16 +28,6 @@
     });
     if (!self.forumID) return nil;
     return abbreviations[self.forumID] ?: self.name;
-}
-
-- (BOOL)childrenExpanded
-{
-	return [[AwfulSettings settings] childrenExpandedForForumWithID:self.forumID];
-}
-
-- (void)setChildrenExpanded:(BOOL)childrenExpanded
-{
-	[[AwfulSettings settings] setChildrenExpanded:childrenExpanded forForumWithID:self.forumID];
 }
 
 + (instancetype)fetchOrInsertForumInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext

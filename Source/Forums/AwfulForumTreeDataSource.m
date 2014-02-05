@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumTreeDataSource.h"
+#import "AwfulSettings.h"
 #import <objc/runtime.h>
 
 @interface AwfulForumTreeDataSource () <NSFetchedResultsControllerDelegate>
@@ -81,7 +82,7 @@
 
 - (BOOL)forumChildrenExpanded:(AwfulForum *)forum
 {
-    return forum.childrenExpanded;
+    return [[AwfulSettings settings] childrenExpandedForForumWithID:forum.forumID];
 }
 
 - (void)setForum:(AwfulForum *)forum childrenExpanded:(BOOL)childrenExpanded
@@ -105,7 +106,9 @@
     };
     
     NSArray *previouslyVisible = [self visibleForumsInSectionAtIndex:sectionIndex];
-    forum.childrenExpanded = childrenExpanded;
+    
+    [[AwfulSettings settings] setChildrenExpanded:childrenExpanded forForumWithID:forum.forumID];
+    
     NSArray *newlyVisible = [self visibleForumsInSectionAtIndex:sectionIndex];
     
     if (childrenExpanded) {
@@ -155,7 +158,7 @@
         for (;;) {
             forum = forum.parentForum;
             if (!forum) return YES;
-            if (!forum.childrenExpanded) return NO;
+            if (![self forumChildrenExpanded:forum]) return NO;
         }
     }];
     return [forums objectsAtIndexes:visibleForumIndexes];

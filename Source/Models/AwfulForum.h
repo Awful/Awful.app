@@ -45,11 +45,6 @@
 @property (strong, nonatomic) AwfulCategory *category;
 
 /**
- * Should the children of this forum be hidden
- */
-@property (assign, nonatomic) BOOL childrenExpanded;
-
-/**
  * A set of AwfulForum objects representing the forum's subforums.
  */
 @property (copy, nonatomic) NSOrderedSet *children;
