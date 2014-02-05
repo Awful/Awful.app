@@ -79,7 +79,9 @@ extern NSString * const AwfulSettingsDidChangeSettingKey;
 /**
  * Possible values for AwfulSettingsDidChangeSettingKey, and keys for subscripting.
  *
- * N.B. Undocumented here are the "theme-X" keys, where X is a forum ID.
+ * N.B. Undocumented here are:
+ *   - "theme-X" keys, where X is a forum ID.
+ *   - "forum-expanded-X" keys, where X is a forum ID.
  */
 extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
