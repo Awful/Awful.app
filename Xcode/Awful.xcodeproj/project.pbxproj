@@ -75,7 +75,6 @@
 		1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */; };
 		1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */; };
 		1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */; };
-		1C5F6FF417D731DC005ABD6F /* AwfulForumTreeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */; };
 		1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */; };
 		1C5F700417D853AA005ABD6F /* AwfulBasementSidebarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
@@ -115,6 +114,7 @@
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
 		1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
+		1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */; };
 		1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */; };
 		1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */; };
 		1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */; };
@@ -347,8 +347,6 @@
 		1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageTopBar.m; sourceTree = "<group>"; };
 		1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewTopBar.m; sourceTree = "<group>"; };
-		1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTreeController.h; sourceTree = "<group>"; };
-		1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeController.m; sourceTree = "<group>"; };
 		1C5F6FF517D738BF005ABD6F /* Awful.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Awful.xcdatamodel; sourceTree = "<group>"; };
 		1C5F6FFF17D8521F005ABD6F /* AwfulBasementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBasementViewController.h; sourceTree = "<group>"; };
 		1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBasementViewController.m; sourceTree = "<group>"; };
@@ -405,6 +403,8 @@
 		1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagAndRatingView.m; sourceTree = "<group>"; };
 		1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulKeyboardBar.h; sourceTree = "<group>"; };
 		1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulKeyboardBar.m; sourceTree = "<group>"; };
+		1C7C7F0218A16E74008A1B2E /* AwfulForumTreeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTreeDataSource.h; sourceTree = "<group>"; };
+		1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeDataSource.m; sourceTree = "<group>"; };
 		1C7D22ED173B3335008A802C /* InstapaperAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstapaperAPIClient.h; sourceTree = "<group>"; };
 		1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstapaperAPIClient.m; sourceTree = "<group>"; };
 		1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulInstapaperStatusTransformer.h; sourceTree = "<group>"; };
@@ -900,8 +900,6 @@
 				1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */,
 				1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */,
 				1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */,
-				1C5F6FF217D731DC005ABD6F /* AwfulForumTreeController.h */,
-				1C5F6FF317D731DC005ABD6F /* AwfulForumTreeController.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1108,6 +1106,8 @@
 				1C73921917DF350F00089248 /* AwfulForumCell.m */,
 				1CC780161612D8AF002AF958 /* AwfulForumsListController.h */,
 				1CC780171612D8AF002AF958 /* AwfulForumsListController.m */,
+				1C7C7F0218A16E74008A1B2E /* AwfulForumTreeDataSource.h */,
+				1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */,
 			);
 			path = Forums;
 			sourceTree = "<group>";
@@ -1762,7 +1762,6 @@
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
 				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
 				1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */,
-				1C5F6FF417D731DC005ABD6F /* AwfulForumTreeController.m in Sources */,
 				1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */,
 				1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */,
 				1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */,
@@ -1863,6 +1862,7 @@
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 				1C6D2EA8182E81B000785766 /* AwfulPrivateMessageScraper.m in Sources */,
 				1CE694AB182FF0E500B24928 /* AwfulLepersColonyPageScraper.m in Sources */,
+				1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */,
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
 				1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */,
