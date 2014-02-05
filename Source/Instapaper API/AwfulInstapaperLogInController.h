@@ -8,16 +8,17 @@
 @interface AwfulInstapaperLogInController : AwfulTableViewController
 
 @property (copy, nonatomic) NSString *username;
+
 @property (copy, nonatomic) NSString *password;
 
 @property (weak, nonatomic) id <AwfulInstapaperLogInControllerDelegate> delegate;
 
 @end
 
-
 @protocol AwfulInstapaperLogInControllerDelegate <NSObject>
 
 - (void)instapaperLogInControllerDidSucceed:(AwfulInstapaperLogInController *)logIn;
+
 - (void)instapaperLogInControllerDidCancel:(AwfulInstapaperLogInController *)logIn;
 
 @end

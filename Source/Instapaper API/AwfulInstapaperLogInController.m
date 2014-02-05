@@ -10,15 +10,18 @@
 @interface AwfulInstapaperLogInController () <UITextFieldDelegate>
 
 @property (nonatomic) UIBarButtonItem *cancelButtonItem;
-@property (nonatomic) BOOL loggingIn;
 
 @end
 
 @implementation AwfulInstapaperLogInController
+{
+    BOOL _loggingIn;
+}
 
 - (id)init
 {
-    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (!self) return nil;
     self.title = @"Log In to Instapaper";
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
     self.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -28,9 +31,9 @@
 - (UIBarButtonItem *)cancelButtonItem
 {
     if (_cancelButtonItem) return _cancelButtonItem;
-    _cancelButtonItem = [[UIBarButtonItem alloc]
-                         initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                         target:self action:@selector(didTapCancel)];
+    _cancelButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                      target:self
+                                                                      action:@selector(didTapCancel)];
     return _cancelButtonItem;
 }
 
@@ -39,7 +42,20 @@
     [self.delegate instapaperLogInControllerDidCancel:self];
 }
 
-#pragma mark - UIViewController
+- (void)themeDidChange
+{
+    [super themeDidChange];
+}
+
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView registerClass:[AwfulTextEntryCell class] forCellReuseIdentifier:TextFieldIdentifier];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:ButtonIdentifier];
+}
+
+static NSString * const TextFieldIdentifier = @"TextField";
+static NSString * const ButtonIdentifier = @"Button";
 
 - (void)viewDidLoad
 {
@@ -67,54 +83,59 @@
     return section == 0 ? 2 : 1;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString * const TextField = @"TextField";
-    static NSString * const Button = @"Button";
-    NSString *identifier = indexPath.section == 0 ? TextField : Button;
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell) {
-        if (identifier == TextField) {
-            cell = [[AwfulTextEntryCell alloc] initWithReuseIdentifier:identifier];
-            UITextField *textField = [(AwfulTextEntryCell *)cell textField];
-            [textField addTarget:self action:@selector(textFieldDidChangeValue:)
-                forControlEvents:UIControlEventEditingChanged];
-        } else {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                          reuseIdentifier:Button];
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+    NSString *identifier = indexPath.section == 0 ? TextFieldIdentifier : ButtonIdentifier;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
+    
+    if (identifier == TextFieldIdentifier) {
+        AwfulTextEntryCell *textEntryCell = (AwfulTextEntryCell *)cell;
+        UITextField *textField = textEntryCell.textField;
+        textField.textColor = [UIColor grayColor];
+        if (![textField actionsForTarget:self forControlEvent:UIControlEventEditingChanged]) {
+            [textField addTarget:self action:@selector(textFieldDidChangeValue:) forControlEvents:UIControlEventEditingChanged];
         }
+    } else if (identifier == ButtonIdentifier) {
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     if (indexPath.section == 0) {
-        AwfulTextEntryCell *entryCell = (id)cell;
-        entryCell.textField.delegate = self;
-        entryCell.textField.tag = indexPath.row;
-        entryCell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        entryCell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        AwfulTextEntryCell *textEntryCell = (AwfulTextEntryCell *)cell;
+        textEntryCell.textField.delegate = self;
+        textEntryCell.textField.tag = indexPath.row;
+        textEntryCell.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        textEntryCell.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+        NSDictionary *placeholderAttributes = @{ NSForegroundColorAttributeName: [UIColor grayColor] };
         if (indexPath.row == 0) {
-            entryCell.textLabel.text = @"Username";
-            entryCell.textField.placeholder = @"Email or username";
-            entryCell.textField.text = self.username;
-            entryCell.textField.secureTextEntry = NO;
+            textEntryCell.textLabel.text = @"Username";
+            textEntryCell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Email or username"
+                                                                                            attributes:placeholderAttributes];
+            textEntryCell.textField.text = self.username;
+            textEntryCell.textField.secureTextEntry = NO;
         } else if (indexPath.row == 1) {
-            entryCell.textLabel.text = @"Password";
-            entryCell.textField.placeholder = @"If you have one";
-            entryCell.textField.text = self.password;
-            entryCell.textField.secureTextEntry = YES;
+            textEntryCell.textLabel.text = @"Password";
+            textEntryCell.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"If you have one"
+                                                                                            attributes:placeholderAttributes];
+            textEntryCell.textField.text = self.password;
+            textEntryCell.textField.secureTextEntry = YES;
         }
     } else if (indexPath.section == 1) {
         cell.textLabel.text = @"Log in";
-        if (self.loggingIn || ![self formIsValid]) {
-            cell.textLabel.textColor = [UIColor grayColor];
-        } else {
-            cell.textLabel.textColor = [UIColor blackColor];
-        }
+        cell.textLabel.enabled = !_loggingIn && [self formIsValid];
     }
+    
+    [self themeCell:cell atIndexPath:indexPath];
+    
     return cell;
+}
+
+- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    AwfulTheme *theme = self.theme;
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
 }
 
 - (void)textFieldDidChangeValue:(UITextField *)textField
@@ -124,17 +145,15 @@
     } else {
         self.password = textField.text;
     }
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                  withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (BOOL)formIsValid
 {
-    return [self.username length] > 0;
+    return self.username.length > 0;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView
-  willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return indexPath.section == 1 && [self formIsValid] ? indexPath : nil;
 }
@@ -149,19 +168,15 @@
 
 - (void)login
 {
-    self.loggingIn = YES;
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1]
-                  withRowAnimation:UITableViewRowAnimationNone];
+    _loggingIn = YES;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     self.tableView.userInteractionEnabled = NO;
-    [[InstapaperAPIClient client] validateUsername:self.username
-                                          password:self.password
-                                           andThen:^(NSError *error)
-    {
-        self.loggingIn = NO;
+    __weak __typeof__(self) weakSelf = self;
+    [[InstapaperAPIClient client] validateUsername:self.username password:self.password andThen:^(NSError *error) {
+        __typeof__(self) self = weakSelf;
+        _loggingIn = NO;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Could Not Log In to Instapaper"
-                                    error:error
-                              buttonTitle:@"OK"];
+            [AwfulAlertView showWithTitle:@"Could Not Log In to Instapaper" error:error buttonTitle:@"OK"];
         } else {
             [self.delegate instapaperLogInControllerDidSucceed:self];
         }
