@@ -25,6 +25,11 @@
     if (!(self = [super init])) return nil;
     NSURL *baseURL = [NSURL URLWithString:@"https://www.instapaper.com/api/"];
     _HTTPManager = [[AFHTTPSessionManager alloc] initWithBaseURL:baseURL];
+    AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSMutableSet *acceptableContentTypes = [responseSerializer.acceptableContentTypes mutableCopy];
+    [acceptableContentTypes addObject:@"text/plain"];
+    responseSerializer.acceptableContentTypes = acceptableContentTypes;
+    _HTTPManager.responseSerializer = responseSerializer;
     return self;
 }
 
@@ -64,8 +69,8 @@
     NSURLRequest *request = [requestSerializer requestWithMethod:@"POST"
                                                        URLString:requestURL.absoluteString
                                                       parameters:@{ @"url": url.absoluteString }];
-    [_HTTPManager dataTaskWithRequest:request
-                    completionHandler:^(NSURLResponse *response, id responseObject, NSError *underlyingError)
+    NSURLSessionDataTask *task = [_HTTPManager dataTaskWithRequest:request
+                                                 completionHandler:^(NSURLResponse *response, id responseObject, NSError *underlyingError)
     {
         if (!callback) return;
         if (!underlyingError) {
@@ -88,6 +93,7 @@
                                          userInfo:userInfo];
         callback(error);
     }];
+    [task resume];
 }
 
 @end
