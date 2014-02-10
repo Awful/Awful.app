@@ -22,6 +22,10 @@
 
 
 @implementation AwfulPostIconPickerController
+{
+    NSInteger _selectedIndex;
+    NSInteger _selectedSecondaryIndex;
+}
 
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate
 {
@@ -81,6 +85,8 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         self.numberOfSecondaryIcons = 0;
     }
     [self.collectionView reloadData];
+    self.selectedIndex = _selectedIndex;
+    self.secondarySelectedIndex = _selectedSecondaryIndex;
 }
 
 - (void)showFromRect:(CGRect)rect inView:(UIView *)view
@@ -119,6 +125,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex
 {
+    _selectedIndex = selectedIndex;
     NSInteger section = self.numberOfSecondaryIcons > 0 ? 1 : 0;
     UICollectionViewScrollPosition scroll = UICollectionViewScrollPositionCenteredVertically;
     for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
@@ -143,6 +150,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (void)setSecondarySelectedIndex:(NSInteger)secondarySelectedIndex
 {
     if (self.numberOfSecondaryIcons == 0) return;
+    _selectedSecondaryIndex = secondarySelectedIndex;
     for (NSIndexPath *indexPath in [self.collectionView indexPathsForSelectedItems]) {
         if (indexPath.section == 0) {
             [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];

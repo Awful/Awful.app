@@ -63,6 +63,7 @@
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
 @property (strong, nonatomic) AwfulReplyViewController *replyViewController;
+@property (strong, nonatomic) AwfulNewPrivateMessageViewController *messageViewController;
 
 @end
 
@@ -845,6 +846,7 @@ static char KVOContext;
 - (void)openURLInBuiltInBrowser:(NSURL *)URL
 {
     AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:URL];
+    browser.restorationIdentifier = @"Awful browser from posts view";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
     } else {
@@ -966,9 +968,10 @@ static char KVOContext;
         user.canReceivePrivateMessages &&
         ![user.userID isEqual:[AwfulSettings settings].userID]) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-            AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
-            messageViewController.delegate = self;
-            [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
+            self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+            self.messageViewController.delegate = self;
+            self.messageViewController.restorationIdentifier = @"New PM from posts view";
+            [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
         }]];
 	}
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
@@ -1242,6 +1245,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeObject:self.author.userID forKey:AuthorUserIDKey];
     [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
     [coder encodeObject:self.replyViewController forKey:ReplyViewControllerKey];
+    [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
 }
 
@@ -1250,6 +1254,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super decodeRestorableStateWithCoder:coder];
     self.replyViewController = [coder decodeObjectForKey:ReplyViewControllerKey];
     self.replyViewController.delegate = self;
+    self.messageViewController = [coder decodeObjectForKey:MessageViewControllerKey];
+    self.messageViewController.delegate = self;
     [self loadCachedPostsFromPage:[coder decodeIntegerForKey:PageKey]];
     self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
@@ -1261,6 +1267,7 @@ static NSString * const PageKey = @"AwfulCurrentPage";
 static NSString * const AuthorUserIDKey = @"AwfulAuthorUserID";
 static NSString * const HiddenPostsKey = @"AwfulHiddenPosts";
 static NSString * const ReplyViewControllerKey = @"AwfulReplyViewController";
+static NSString * const MessageViewControllerKey = @"AwfulMessageViewController";
 static NSString * const AdvertisementHTMLKey = @"AwfulAdvertisementHTML";
 
 @end

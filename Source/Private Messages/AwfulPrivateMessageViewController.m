@@ -166,6 +166,7 @@
                 _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage
                                                                                                 initialContents:BBcode];
                 _composeViewController.delegate = self;
+                _composeViewController.restorationIdentifier = @"New private message replying to private message";
                 [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
             }
         }];
@@ -180,6 +181,7 @@
                 _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage
                                                                                                  initialContents:BBcode];
                 _composeViewController.delegate = self;
+                _composeViewController.restorationIdentifier = @"New private message forwarding private message";
                 [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
             }
         }];

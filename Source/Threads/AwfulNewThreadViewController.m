@@ -80,7 +80,9 @@ static NSString * const DefaultTitle = @"New Thread";
         __typeof__(self) self = weakSelf;
         _availableThreadTags = [form.threadTags copy];
         _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
-        self.secondaryThreadTag = _availableSecondaryThreadTags.firstObject;
+        if (!self.secondaryThreadTag) {
+            self.secondaryThreadTag = _availableSecondaryThreadTags.firstObject;
+        }
         _secondaryIconKey = [form.secondaryThreadTagName copy];
         [_postIconPicker reloadData];
     }];
@@ -132,7 +134,6 @@ static NSString * const DefaultTitle = @"New Thread";
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
-        // TODO grab new style from AwfulThreadTableViewController
         AwfulThreadTag *tag = self.secondaryThreadTag;
         image = [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
     } else {
@@ -144,7 +145,7 @@ static NSString * const DefaultTitle = @"New Thread";
 - (void)didTapThreadTagButton:(UIButton *)button
 {
     if (self.threadTag) {
-        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag];
+        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag] + 1;
     } else {
         self.postIconPicker.selectedIndex = 0;
     }
