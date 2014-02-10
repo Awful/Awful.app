@@ -332,9 +332,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         postsView.restorationIdentifier = @"Awful's Thread";
         postsView.page = AwfulThreadPageNextUnread;
         if (self.expandingSplitViewController) {
-            UINavigationController * nav = [postsView enclosingNavigationController];
-            nav.restorationIdentifier = @"Navigation";
-            self.expandingSplitViewController.detailViewController = nav;
+            self.expandingSplitViewController.detailViewController = [postsView enclosingNavigationController];
         } else {
             [self.navigationController pushViewController:postsView animated:YES];
         }

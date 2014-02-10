@@ -221,9 +221,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 - (void)showPostsViewController:(AwfulPostsViewController *)postsViewController
 {
     if (self.expandingSplitViewController) {
-        UINavigationController *nav = [postsViewController enclosingNavigationController];
-        nav.restorationIdentifier = @"Navigation";
-        self.expandingSplitViewController.detailViewController = nav;
+        self.expandingSplitViewController.detailViewController = [postsViewController enclosingNavigationController];
     } else {
         [self.navigationController pushViewController:postsViewController animated:YES];
     }

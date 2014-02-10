@@ -255,7 +255,6 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
             [navigationController pushViewController:postsViewController animated:YES];
         } else {
             split.detailViewController = [postsViewController enclosingNavigationController];
-            split.detailViewController.restorationIdentifier = @"Navigation";
         }
         return YES;
     }

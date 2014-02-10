@@ -125,9 +125,7 @@
         self.replyViewController.delegate = self;
         self.replyViewController.restorationIdentifier = @"Reply composition";
     }
-    UINavigationController *nav = [self.replyViewController enclosingNavigationController];
-    nav.restorationIdentifier = @"Reply composition navigation controller";
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (UIBarButtonItem *)settingsItem
@@ -913,9 +911,7 @@ static char KVOContext;
                 self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
                 self.replyViewController.restorationIdentifier = @"Edit composition";
                 self.replyViewController.delegate = self;
-                UINavigationController *nav = [self.replyViewController enclosingNavigationController];
-                nav.restorationIdentifier = @"Edit composition navigation controller";
-                [self presentViewController:nav animated:YES completion:nil];
+                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
             }];
         }]];
     }
@@ -945,9 +941,7 @@ static char KVOContext;
                     self.replyViewController.delegate = self;
                     self.replyViewController.restorationIdentifier = @"Reply composition";
                 }
-                UINavigationController *nav = [self.replyViewController enclosingNavigationController];
-                nav.restorationIdentifier = @"Reply composition navigation controller";
-                [self presentViewController:nav animated:YES completion:nil];
+                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
             }];
         }]];
     }

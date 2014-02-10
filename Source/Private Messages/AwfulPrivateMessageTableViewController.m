@@ -64,9 +64,7 @@
         _composeViewController.restorationIdentifier = @"Message compose view";
         _composeViewController.delegate = self;
     }
-    UINavigationController *nav = [_composeViewController enclosingNavigationController];
-    nav.restorationIdentifier = @"Message compose nav view";
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification
@@ -244,9 +242,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
     vc.restorationIdentifier = @"Private Message";
     if (self.expandingSplitViewController) {
-        UINavigationController *nav = [vc enclosingNavigationController];
-        nav.restorationIdentifier = @"Navigation";
-        self.expandingSplitViewController.detailViewController = nav;
+        self.expandingSplitViewController.detailViewController = [vc enclosingNavigationController];
     } else {
         [self.navigationController pushViewController:vc animated:YES];
     }

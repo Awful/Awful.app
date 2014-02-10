@@ -12,6 +12,9 @@
     if (self.navigationController) return self.navigationController;
     UINavigationController *nav = [[AwfulNavigationController alloc] initWithRootViewController:self];
     nav.modalPresentationStyle = self.modalPresentationStyle;
+    if (self.restorationIdentifier.length > 0) {
+        nav.restorationIdentifier = [self.restorationIdentifier stringByAppendingString:@" navigation"];
+    }
     return nav;
 }
 

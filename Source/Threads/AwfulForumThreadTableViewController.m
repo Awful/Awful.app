@@ -62,9 +62,7 @@
     _newThreadViewController = [[AwfulNewThreadViewController alloc] initWithForum:self.forum];
     _newThreadViewController.restorationIdentifier = @"New thread composition";
     _newThreadViewController.delegate = self;
-    UINavigationController *nav = [_newThreadViewController enclosingNavigationController];
-    nav.restorationIdentifier = @"New thread composition navigation";
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:[_newThreadViewController enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)updateFilter
