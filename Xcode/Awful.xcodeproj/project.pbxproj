@@ -366,7 +366,7 @@
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
 		1C6474B41569989800C72657 /* AwfulThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThread.h; sourceTree = "<group>"; };
 		1C6474B51569989800C72657 /* AwfulThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThread.m; sourceTree = "<group>"; };
-		1C6AA33318A1F8940094D1E3 /* Awful 2.0.3 beta 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Awful 2.0.3 beta 3.xcdatamodel"; sourceTree = "<group>"; };
+		1C6AA33318A1F8940094D1E3 /* Awful 2.0.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.3.xcdatamodel"; sourceTree = "<group>"; };
 		1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileScraper.m; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileScrapingTests.m; sourceTree = "<group>"; };
@@ -451,7 +451,6 @@
 		1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulExternalBrowser.h; sourceTree = "<group>"; };
 		1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExternalBrowser.m; sourceTree = "<group>"; };
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
-		1C9D2503187DF5E6003486AA /* Awful 2.0.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.3.xcdatamodel"; sourceTree = "<group>"; };
 		1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverBackgroundView.h; sourceTree = "<group>"; };
@@ -2341,11 +2340,10 @@
 		1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				1C6AA33318A1F8940094D1E3 /* Awful 2.0.3 beta 3.xcdatamodel */,
-				1C9D2503187DF5E6003486AA /* Awful 2.0.3.xcdatamodel */,
+				1C6AA33318A1F8940094D1E3 /* Awful 2.0.3.xcdatamodel */,
 				1C5F6FF517D738BF005ABD6F /* Awful.xcdatamodel */,
 			);
-			currentVersion = 1C6AA33318A1F8940094D1E3 /* Awful 2.0.3 beta 3.xcdatamodel */;
+			currentVersion = 1C6AA33318A1F8940094D1E3 /* Awful 2.0.3.xcdatamodel */;
 			path = Awful.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
