@@ -32,6 +32,7 @@
 @dynamic threadTag;
 @dynamic title;
 @dynamic totalReplies;
+@dynamic unreadPosts;
 @dynamic author;
 @dynamic forum;
 @dynamic posts;
@@ -47,11 +48,6 @@
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
     return [NSSet setWithObject:@"seenPosts"];
-}
-
-- (int32_t)unreadPosts
-{
-    return self.totalReplies + 1 - self.seenPosts;
 }
 
 + (NSSet *)keyPathsForValuesAffectingUnreadPosts

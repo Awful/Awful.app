@@ -6,6 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulModels.h"
+#import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
@@ -41,7 +42,14 @@
     [super viewDidLoad];
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
     request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+	
+	
+	if (AwfulSettings.settings.bookmarksSortedByUnread) {
+		request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO]];
+	}
+	else {
+		request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
+	}
     self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                          managedObjectContext:self.managedObjectContext
                                                                                            sectionNameKeyPath:nil
