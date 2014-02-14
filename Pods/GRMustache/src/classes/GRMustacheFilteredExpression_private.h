@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,24 +35,6 @@
     GRMustacheExpression *_argumentExpression;
     BOOL _curry;
 }
-
-/**
- * Returns a filtered expression, given an expression that returns a filter, and
- * an expression that return the filter argument.
- *
- * For example, the Mustache tag `{{ f(x) }}` contains a filtered expression,
- * whose filterExpression is a GRMustacheIdentifierExpression (for the
- * identifier `f`), and whose argumentExpression is a
- * GRMustacheIdentifierExpression (for the identifier `x`).
- *
- * @param filterExpression    An expression whose value is an object conforming
- *                            to the <GRMustacheFilter> protocol.
- * @param argumentExpression  An expression whose value is the argument of the
- *                            filter.
- *
- * @return A GRMustacheFilteredExpression.
- */
-+ (instancetype)expressionWithFilterExpression:(GRMustacheExpression *)filterExpression argumentExpression:(GRMustacheExpression *)argumentExpression GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a filtered expression, given an expression that returns a filter, and

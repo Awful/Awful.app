@@ -1,6 +1,6 @@
 // The MIT License
 //
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,18 @@
 // THE SOFTWARE.
 
 #import "GRMustacheCompiler_private.h"
-#import "GRMustacheTemplate_private.h"
+#import "GRMustachePartial_private.h"
 #import "GRMustacheTemplateRepository_private.h"
 #import "GRMustacheTextComponent_private.h"
 #import "GRMustacheVariableTag_private.h"
 #import "GRMustacheSectionTag_private.h"
-#import "GRMustacheTemplateOverride_private.h"
-#import "GRMustacheError.h"
+#import "GRMustachePartialOverride_private.h"
 #import "GRMustacheExpressionParser_private.h"
 #import "GRMustacheExpression_private.h"
 #import "GRMustacheToken_private.h"
-
-#pragma mark - GRMustacheAST
-
-@interface GRMustacheAST()
-- (id)initWithTemplateComponents:(NSArray *)templateComponents contentType:(GRMustacheContentType)contentType;
-@end
-
-
-#pragma mark - GRMustacheCompiler
+#import "GRMustacheAST_private.h"
+#import "GRMustacheConfiguration_private.h"
+#import "GRMustacheError.h"
 
 @interface GRMustacheCompiler()
 
@@ -142,6 +135,7 @@
 @implementation GRMustacheCompiler
 @synthesize fatalError=_fatalError;
 @synthesize templateRepository=_templateRepository;
+@synthesize baseTemplateID=_baseTemplateID;
 @synthesize currentOpeningToken=_currentOpeningToken;
 @synthesize openingTokenStack=_openingTokenStack;
 @synthesize currentTagValue=_currentTagValue;
@@ -189,7 +183,7 @@
     }
     
     // Success
-    return [[[GRMustacheAST alloc] initWithTemplateComponents:_currentComponents contentType:_contentType] autorelease];
+    return [GRMustacheAST ASTWithTemplateComponents:_currentComponents contentType:_contentType];
 }
 
 - (void)dealloc
@@ -198,6 +192,7 @@
     [_componentsStack release];
     [_tagValueStack release];
     [_openingTokenStack release];
+    [_baseTemplateID release];
     [super dealloc];
 }
 
@@ -504,25 +499,30 @@
                     }
                     
                     // Ask templateRepository for overridable template
-                    NSError *templateError;
-                    GRMustacheTemplate *template = [_templateRepository templateNamed:(NSString *)_currentTagValue error:&templateError];
-                    if (template == nil) {
-                        [self failWithFatalError:templateError];
+                    GRMustachePartial *partial = [_templateRepository partialNamed:(NSString *)_currentTagValue relativeToTemplateID:_baseTemplateID error:&partialError];
+                    if (partial == nil) {
+                        [self failWithFatalError:partialError];
                         return NO;
                     }
                     
                     // Check for consistency of HTML safety
                     //
-                    // If template.components is nil, this means that we are actually
+                    // If partial.AST.templateComponents is nil, this means that we are actually
                     // compiling it, and that template simply recursively refers to itself.
-                    // Consistency of HTML safety is this guaranteed.
-                    if (template.components && template.contentType != _contentType) {
+                    // Consistency of HTML safety is thus guaranteed.
+                    //
+                    // However, if partial.AST.templateComponents is not nil, then we must
+                    // ensure content type compatibility: an HTML template can not override a
+                    // text one, and vice versa.
+                    //
+                    // See test "HTML template can not override TEXT template" in GRMustacheSuites/text_rendering.json
+                    if (partial.AST.templateComponents && partial.AST.contentType != _contentType) {
                         [self failWithFatalError:[self parseErrorAtToken:_currentOpeningToken description:@"HTML safety mismatch"]];
                         return NO;
                     }
                     
-                    // Success: create new GRMustacheTemplateOverride
-                    wrapperComponent = [GRMustacheTemplateOverride templateOverrideWithTemplate:template components:_currentComponents];
+                    // Success: create new GRMustachePartialOverride
+                    wrapperComponent = [GRMustachePartialOverride partialOverrideWithPartial:partial components:_currentComponents];
                 } break;
                     
                 default:
@@ -545,7 +545,7 @@
             
             
         case GRMustacheTokenTypePartial: {
-            // Template name validation
+            // Partial name validation
             NSError *partialError;
             NSString *partialName = [parser parseTemplateName:token.tagInnerContent empty:NULL error:&partialError];
             if (partialName == nil) {
@@ -554,15 +554,14 @@
             }
             
             // Ask templateRepository for partial template
-            NSError *templateError;
-            GRMustacheTemplate *template = [_templateRepository templateNamed:partialName error:&templateError];
-            if (template == nil) {
-                [self failWithFatalError:templateError];
+            GRMustachePartial *partial = [_templateRepository partialNamed:partialName relativeToTemplateID:_baseTemplateID error:&partialError];
+            if (partial == nil) {
+                [self failWithFatalError:partialError];
                 return NO;
             }
             
             // Success: append template component
-            [_currentComponents addObject:template];
+            [_currentComponents addObject:partial];
             
             // lock _contentType
             _contentTypeLocked = YES;
@@ -570,7 +569,7 @@
             
             
         case GRMustacheTokenTypeOverridablePartial: {
-            // Template name validation
+            // Partial name validation
             NSError *partialError;
             NSString *partialName = [parser parseTemplateName:token.tagInnerContent empty:NULL error:&partialError];
             if (partialName == nil) {
@@ -627,31 +626,6 @@
     return [NSError errorWithDomain:GRMustacheErrorDomain
                                code:GRMustacheErrorCodeParseError
                            userInfo:[NSDictionary dictionaryWithObject:localizedDescription forKey:NSLocalizedDescriptionKey]];
-}
-
-@end
-
-
-#pragma mark - GRMustacheAST
-
-@implementation GRMustacheAST
-@synthesize templateComponents=_templateComponents;
-@synthesize contentType=_contentType;
-
-- (void)dealloc
-{
-    [_templateComponents release];
-    [super dealloc];
-}
-
-- (id)initWithTemplateComponents:(NSArray *)templateComponents contentType:(GRMustacheContentType)contentType
-{
-    self = [super init];
-    if (self) {
-        _templateComponents = [templateComponents retain];
-        _contentType = contentType;
-    }
-    return self;
 }
 
 @end

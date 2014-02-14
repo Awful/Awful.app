@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,9 @@
 
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheConfiguration_private.h"
+#import "GRMustacheContentType.h"
 
 @class GRMustacheContext;
-@class GRMustacheTemplateRepository;
 
 /**
  * The protocol for "template components".
@@ -82,7 +81,7 @@
  * component.
  *
  * All classes conforming to the GRMustacheTemplateComponent protocol return
- * _component_, but GRMustacheSectionTag, GRMustacheTemplateOverride, and
+ * _component_, but GRMustacheSectionTag, GRMustachePartialOverride, and
  * GRMustacheTemplate.
  *
  * @param component  A template component
@@ -92,7 +91,7 @@
  *
  * @see GRMustacheSectionTag
  * @see GRMustacheTemplate
- * @see GRMustacheTemplateOverride
+ * @see GRMustachePartialOverride
  */
 - (id<GRMustacheTemplateComponent>)resolveTemplateComponent:(id<GRMustacheTemplateComponent>)component GRMUSTACHE_API_INTERNAL;
 @end

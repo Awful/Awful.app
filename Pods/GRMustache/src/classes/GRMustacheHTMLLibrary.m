@@ -1,6 +1,6 @@
 // The MIT License
 //
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 #import "GRMustacheHTMLLibrary_private.h"
 #import "GRMustacheTag_private.h"
 #import "GRMustacheContext_private.h"
-#import "GRMustache_private.h"
+#import "GRMustacheHTMLEscape_private.h"
 
 // =============================================================================
 #pragma mark - GRMustacheHTMLEscapeFilter
@@ -46,7 +46,7 @@
     // Turns other objects into strings, and escape
     
     NSString *string = [object description];
-    return [GRMustache escapeHTML:string];
+    return [GRMustacheHTMLEscape escapeHTML:string];
 }
 
 

@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,10 @@
 // THE SOFTWARE.
 
 #import "GRMustacheVariableTag_private.h"
-#import "GRMustacheExpression_private.h"
-#import "GRMustacheTemplate_private.h"
-#import "GRMustacheContext_private.h"
-#import "GRMustacheSectionTag_private.h"
-#import "GRMustacheImplicitIteratorExpression_private.h"
-#import "GRMustacheRendering.h"
-#import "GRMustache_private.h"
 
 @interface GRMustacheVariableTag()
 - (id)initWithTemplateRepository:(GRMustacheTemplateRepository *)templateRepository expression:(GRMustacheExpression *)expression contentType:(GRMustacheContentType)contentType escapesHTML:(BOOL)escapesHTML;
 @end
-
 
 @implementation GRMustacheVariableTag
 

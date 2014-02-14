@@ -1,6 +1,6 @@
 // The MIT License
 //
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <objc/message.h>
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheTagDelegate.h"
 
 @protocol GRMustacheTagDelegate;
 @protocol GRMustacheTemplateComponent;
-@class GRMustacheTemplateOverride;
-
-#if !defined(NS_BLOCK_ASSERTIONS)
-/**
- * This global variable is used by GRPreventNSUndefinedKeyExceptionAttackTest.
- */
-extern BOOL GRMustacheContextDidCatchNSUndefinedKeyException;
-#endif
+@class GRMustachePartialOverride;
 
 /**
  * The GRMustacheContext maintains the following stacks:
@@ -43,7 +34,7 @@ extern BOOL GRMustacheContextDidCatchNSUndefinedKeyException;
  * - a protected context stack,
  * - a hidden context stack,
  * - a tag delegate stack,
- * - a template override stack.
+ * - a partial override stack.
  *
  * As such, it is able to:
  *
@@ -92,37 +83,15 @@ extern BOOL GRMustacheContextDidCatchNSUndefinedKeyException;
     GRMustacheContext *_tagDelegateParent;
     id<GRMustacheTagDelegate> _tagDelegate;
     
-    // Template override stack
+    // Partial override stack
     //
-    // If _templateOverride is nil, the stack is empty.
-    // If _templateOverride is not nil, the top of the stack is _templateOverride, and the rest of the stack is _templateOverrideParent.
-    GRMustacheContext *_templateOverrideParent;
-    GRMustacheTemplateOverride *_templateOverride;
+    // If _partialOverride is nil, the stack is empty.
+    // If _partialOverride is not nil, the top of the stack is _partialOverride, and the rest of the stack is _partialOverrideParent.
+    GRMustacheContext *_partialOverrideParent;
+    GRMustachePartialOverride *_partialOverride;
 
     NSDictionary *_depthsForAncestors;
 }
-
-/**
- * Avoids most NSUndefinedException to be raised by the invocation of
- * `valueForKey:inObject:`.
- *
- * @see valueForKey:inObject:
- */
-+ (void)preventNSUndefinedKeyExceptionAttack GRMUSTACHE_API_INTERNAL;
-
-/**
- * Sends the `valueForKey:` message to _object_ with the provided _key_, and
- * returns the result.
- *
- * Should `valueForKey:` raise an NSUndefinedKeyException, returns nil.
- *
- * @param key     The searched key
- * @param object  The queried object
- *
- * @return `[object valueForKey:key]`, or nil should an NSUndefinedKeyException
- *         be raised.
- */
-+ (id)valueForKey:(NSString *)key inObject:(id)object GRMUSTACHE_API_INTERNAL;
 
 // Documented in GRMustacheContext.h
 + (instancetype)context GRMUSTACHE_API_PUBLIC;
@@ -188,16 +157,16 @@ extern BOOL GRMustacheContextDidCatchNSUndefinedKeyException;
 
 /**
  * Returns a GRMustacheContext object identical to the receiver, but for the
- * template override stack that is extended with _templateOverride_.
+ * partial override stack that is extended with _partialOverride_.
  *
- * @param templateOverride  A template override object
+ * @param partialOverride  A partial template override object
  *
  * @return A GRMustacheContext object.
  *
- * @see GRMustacheTemplateOverride
- * @see [GRMustacheTemplateOverride renderWithContext:inBuffer:error:]
+ * @see GRMustachePartialOverride
+ * @see [GRMustachePartialOverride renderWithContext:inBuffer:error:]
  */
-- (instancetype)contextByAddingTemplateOverride:(GRMustacheTemplateOverride *)templateOverride GRMUSTACHE_API_INTERNAL;
+- (instancetype)contextByAddingPartialOverride:(GRMustachePartialOverride *)partialOverride GRMUSTACHE_API_INTERNAL;
 
 /**
  * Performs a key lookup in the receiver's context stack, and returns the found

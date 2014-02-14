@@ -1,6 +1,6 @@
 // The MIT License
 //
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,11 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 #import "GRMustacheParser_private.h"
-#import "GRMustache_private.h"
-#import "GRMustacheConfiguration_private.h"
+#import "GRMustacheContentType.h"
 
-
-@class GRMustacheCompiler;
+@class GRMustacheConfiguration;
 @class GRMustacheTemplateRepository;
-@protocol GRMustacheTemplateComponent;
-
-/**
- * The GRMustacheAST represents the abstract syntax tree of a template.
- */
-@interface GRMustacheAST : NSObject {
-@private
-    NSArray *_templateComponents;
-    GRMustacheContentType _contentType;
-}
-
-/**
- * An NSArray containing <GRMustacheTemplateComponent> instances
- */
-@property (nonatomic, retain, readonly) NSArray *templateComponents GRMUSTACHE_API_INTERNAL;
-
-/**
- * The content type of the AST
- */
-@property (nonatomic, readonly) GRMustacheContentType contentType GRMUSTACHE_API_INTERNAL;
-@end
+@class GRMustacheAST;
 
 /**
  * The GRMustacheCompiler interprets GRMustacheTokens provided by a
@@ -75,6 +53,7 @@
     NSMutableArray *_tagValueStack;
     
     GRMustacheTemplateRepository *_templateRepository;
+    id _baseTemplateID;
     GRMustacheContentType _contentType;
     BOOL _contentTypeLocked;
 }
@@ -83,6 +62,11 @@
  * The template repository that provides partial templates to the compiler.
  */
 @property (nonatomic, assign) GRMustacheTemplateRepository *templateRepository GRMUSTACHE_API_INTERNAL;
+
+/**
+ * ID of the currently compiled template
+ */
+@property (nonatomic, retain) id baseTemplateID GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns an initialized compiler.

@@ -5,7 +5,7 @@ GRMustache is a flexible and production-ready implementation of [Mustache](http:
 
 GRMustache targets iOS down to version 4.3, MacOS down to 10.6 Snow Leopard (with or without garbage collection), and only depends on the Foundation framework.
 
-**October 19, 2013: GRMustache 6.8.3 is out.** [Release notes](RELEASE_NOTES.md)
+**February 3, 2014: GRMustache 6.9.1 is out.** [Release notes](RELEASE_NOTES.md)
 
 Get release announcements and usage tips: follow [@GRMustache on Twitter](http://twitter.com/GRMustache).
 
@@ -101,55 +101,57 @@ Check the [FAQ](#faq) right below.
 FAQ
 ---
 
-- **Q: I get "unrecognized selector sent to instance" errors.**
+- **I get "unrecognized selector sent to instance" errors.**
     
-    A: Check that you have added the `-ObjC` option in the "Other Linker Flags" of your target ([how to](http://developer.apple.com/library/mac/#qa/qa1490/_index.html)).
+    Check that you have added the `-ObjC` option in the "Other Linker Flags" of your target ([how to](http://developer.apple.com/library/mac/#qa/qa1490/_index.html)).
 
-- **Q: Is it possible to render array indexes? Customize first and last elements? Distinguish odd and even items, play fizzbuzz?**
+- **is GRMustache thread-safe?**
     
-    A: [Yes, yes, and yes](Guides/sample_code/indexes.md)
+    Thread-safety of non-mutating methods is guaranteed. Thread-safety of mutating methods is not guaranteed.
 
-- **Q: Is it possible to format numbers and dates?**
+- **Is it possible to render array indexes? Customize first and last elements? Distinguish odd and even items, play fizzbuzz?**
     
-    A: Yes. Use [NSNumberFormatter and NSDateFormatter](Guides/NSFormatter.md).
+    [Yes, yes, and yes](Guides/sample_code/indexes.md).
 
-- **Q: Is it possible to pluralize/singularize strings?**
+- **Is it possible to format numbers and dates?**
     
-    A: Yes. You have some [sample code](https://github.com/groue/GRMustache/issues/50#issuecomment-16197912) in issue #50. You may check [@mattt's InflectorKit](https://github.com/mattt/InflectorKit) for actual inflection methods.
+    Yes. Use [NSNumberFormatter and NSDateFormatter](Guides/NSFormatter.md).
 
-- **Q: Is it possible to write Handlebars-like helpers?**
+- **Is it possible to pluralize/singularize strings?**
     
-    A: [Yes](Guides/rendering_objects.md)
+    Yes. You have some [sample code](https://github.com/groue/GRMustache/issues/50#issuecomment-16197912) in issue #50. You may check [@mattt's InflectorKit](https://github.com/mattt/InflectorKit) for actual inflection methods.
 
-- **Q: Is it possible to localize templates?**
-
-    A: [Yes](Guides/standard_library.md#localize)
-
-- **Q: Is it possible to embed partial templates whose name is only known at runtime?**
-
-    A: [Yes](Guides/rendering_objects.md)
-
-- **Q: Does GRMustache provide any layout or template inheritance facility?**
+- **Is it possible to write Handlebars-like helpers?**
     
-    A: [Yes](Guides/partials.md)
+    [Yes](Guides/rendering_objects.md)
 
-- **Q: Is it possible to render a default value for missing keys?**
+- **Is it possible to localize templates?**
 
-    A: [Yes](Guides/view_model.md#default-values).
+    [Yes](Guides/standard_library.md#localize)
 
-- **Q: Is it possible to disable HTML escaping?**
+- **Is it possible to embed partial templates whose name is only known at runtime?**
 
-    A: [Yes](Guides/html_vs_text.md)
+    [Yes](Guides/rendering_objects.md)
 
-- **Q: What is this NSUndefinedKeyException stuff?**
-
-    A: When GRMustache has to try several objects until it finds the one that provides a `{{key}}`, several NSUndefinedKeyException may be raised and caught. It's likely that you wish Xcode would stop breaking on those exceptions: see the [Runtime Guide](Guides/runtime.md#nsundefinedkeyexception-prevention).
-
-- **Q: Why does GRMustache need JRSwizzle?**
-
-    A: GRMustache does not need it, and does not swizzle anything unless you explicitly ask for it. `[GRMustache preventNSUndefinedKeyExceptionAttack]` swizzles NSObject's `valueForUndefinedKey:` in order to prevent NSUndefinedKeyException during template rendering.
+- **Does GRMustache provide any layout or template inheritance facility?**
     
-    You will debug your application without Xcode's exception breakpoint disturbing you. You may even improve rendering performances. See the [Runtime Guide](Guides/runtime.md#nsundefinedkeyexception-prevention).
+    [Yes](Guides/partials.md)
+
+- **Is it possible to render a default value for missing keys?**
+
+    [Yes](Guides/view_model.md#default-values)
+
+- **Is it possible to disable HTML escaping?**
+
+    [Yes](Guides/html_vs_text.md)
+
+- **What are those NSUndefinedKeyException?**
+
+    When GRMustache has to try several objects until it finds the one that provides a `{{key}}`, several NSUndefinedKeyException may be raised and caught. Those exceptions are part of the normal template rendering. You can be prevent them, though: see the [Runtime Guide](Guides/runtime.md#detailed-description-of-grmustache-handling-of-valueforkey).
+
+- **Why does GRMustache need JRSwizzle?**
+
+    GRMustache does not need it, and does not swizzle anything unless you explicitly ask for it. `[GRMustache preventNSUndefinedKeyExceptionAttack]` swizzles NSObject's `valueForUndefinedKey:` in order to prevent NSUndefinedKeyException during template rendering. See the [Runtime Guide](Guides/runtime.md#detailed-description-of-grmustache-handling-of-valueforkey) for a detailed discussion.
 
 What other people say
 ---------------------
@@ -188,11 +190,21 @@ What other people say
 
 
 Who's using GRMustache
-----------------------------------------
+----------------------
 
+### Open-source software
+
+* [bnickel/AMYServer](https://github.com/bnickel/AMYServer): A mock server fully integrated with KIF-next.
 * [tomaz/appledoc](https://github.com/tomaz/appledoc): Objective-c code Apple style documentation set generator.
+* [stevestreza/Barista](https://github.com/stevestreza/Barista): A modular, embeddable web server for Objective-C.
 * [mapbox/mapbox-ios-sdk](https://github.com/mapbox/mapbox-ios-sdk): MapBox iOS SDK, an open source alternative to MapKit.
+* [Objective-Cloud/OCFWeb](https://github.com/Objective-Cloud/OCFWeb): A small and imperfect web application framework written in Objective-C.
+* [RESTmagic](http://restmagic.org): RESTmagic is a framework for that framework you already deployed, your RESTFUL/RESTish api.
 * [CarterA/Tribo](https://github.com/CarterA/Tribo): Extremely fast static site generator written in Objective-C.
+
+### Closed-source software
+
+* [1Password](https://agilebits.com/onepassword/mac), a password manager that integrates directly with your web browser.
 * [AutoLib](http://itunes.com/apps/autolib) uses GRMustache and [spullara/mustache.java](https://github.com/spullara/mustache.java) for rendering an identical set of Mustache templates on iOS and Android.
 * [Bee](http://www.neat.io/bee): Bee is a desktop bug tracker for the Mac. It currently syncs with GitHub Issues, JIRA and FogBugz.
 * [CinéObs](http://itunes.com/apps/cineobs) uses GRMustache for RSS feeds rendering.
@@ -200,6 +212,7 @@ Who's using GRMustache
 * [FunGolf GPS](http://itunes.com/apps/fungolf), a golf app with 3D maps.
 * [KosmicTask](http://www.mugginsoft.com/kosmictask), an integrated scripting environment for OS X that supports more than 20 scripting languages.
 * [MyInvoice](http://www.myinvoice.biz/en), an invoicing iOS app.
+* [Objective-Cloud](http://objective-cloud.com), a service that runs your Objective-C code in the cloud.
 * [Servus](https://servus.io) can turn any file on your computer into a branded download page hosted on Dropbox.
 
 Do you use GRMustache? [Tweet me your story and your link](http://twitter.com/GRMustache).

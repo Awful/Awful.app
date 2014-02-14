@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@
 
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros.h"
-#import "GRMustache.h"
 
 @class GRMustacheTemplate;
 @class GRMustacheTemplateRepository;
@@ -133,8 +132,7 @@
 @interface GRMustacheTemplateRepository : NSObject {
 @private
     id<GRMustacheTemplateRepositoryDataSource> _dataSource;
-    NSMutableDictionary *_templateForTemplateID;
-    id _currentlyParsedTemplateID;
+    NSMutableDictionary *_partialForTemplateID;
     GRMustacheConfiguration *_configuration;
 }
 
@@ -406,6 +404,9 @@
 /**
  * Returns a GRMustacheTemplateRepository that loads Mustache template strings
  * from a dictionary whose keys are template names, and values template strings.
+ *
+ * The dictionary is deeply copied: once template repository is initialized,
+ * any change to the original dictionary is ignored.
  * 
  * For example:
  * 
