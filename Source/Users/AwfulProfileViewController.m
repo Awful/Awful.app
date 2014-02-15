@@ -15,6 +15,7 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 
@@ -43,12 +44,9 @@
     AwfulProfileViewModel *viewModel = [AwfulProfileViewModel newWithUser:self.user];
     self.services = viewModel.contactInfo;
     NSError *error;
-    NSString *html = [GRMustacheTemplate renderObject:viewModel
-                                         fromResource:@"Profile"
-                                               bundle:nil
-                                                error:&error];
+    NSString *html = [GRMustacheTemplate renderObject:viewModel fromResource:@"Profile" bundle:nil error:&error];
     if (!html) {
-        NSLog(@"error rendering profile for %@: %@", self.user.username, error);
+        CLSNSLog(@"%s error rendering profile for %@: %@", __PRETTY_FUNCTION__, self.user.username, error);
         return;
     }
     NSData *data = [NSJSONSerialization dataWithJSONObject:@[ html ] options:0 error:&error];
