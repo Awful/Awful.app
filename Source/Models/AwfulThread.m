@@ -96,6 +96,7 @@
     if (minimumNumberOfPages > self.numberOfPages) {
         self.numberOfPages = minimumNumberOfPages;
     }
+	self.unreadPosts = self.totalReplies + 1 - self.seenPosts;
 }
 
 - (void)setSeenPosts:(int32_t)seenPosts
@@ -106,6 +107,7 @@
     if (self.seenPosts > self.totalReplies + 1) {
         self.totalReplies = self.seenPosts - 1;
     }
+	self.unreadPosts = self.totalReplies + 1 - self.seenPosts;
 }
 
 @end

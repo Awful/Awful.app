@@ -185,7 +185,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         } else {
             thread.seenPosts = 0;
         }
-		thread.unreadPosts = thread.totalReplies + 1 - thread.seenPosts;
         HTMLElementNode *ratingImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img"];
         if (ratingImage) {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:ratingImage[@"title"]];
