@@ -220,8 +220,10 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)showPostsViewController:(AwfulPostsViewController *)postsViewController
 {
-    if (self.expandingSplitViewController) {
-        self.expandingSplitViewController.detailViewController = [postsViewController enclosingNavigationController];
+    if (self.splitViewController) {
+        [self.splitViewController setDetailViewController:[postsViewController enclosingNavigationController]
+                                            sidebarHidden:YES
+                                                 animated:YES];
     } else {
         [self.navigationController pushViewController:postsViewController animated:YES];
     }

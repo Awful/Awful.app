@@ -77,6 +77,25 @@
 		</dict>
 		<dict>
 			<key>Title</key>
+			<string>iPad</string>
+			<key>Device</key>
+			<string>iPad</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Hide sidebar in landscape</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>hide_sidebar_in_landscape</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
 			<string>Posting</string>
 			<key>Settings</key>
 			<array>

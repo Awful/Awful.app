@@ -6,7 +6,6 @@
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"

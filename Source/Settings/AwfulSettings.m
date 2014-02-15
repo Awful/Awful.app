@@ -54,10 +54,24 @@ struct {
     __unsafe_unretained NSString *yosposStyle;
     __unsafe_unretained NSString *fyadStyle;
     __unsafe_unretained NSString *gasChamberStyle;
+    __unsafe_unretained NSString *keepSidebarOpen;
 } OldSettingsKeys = {
     .yosposStyle = @"yospos_style",
     .fyadStyle = @"fyad_style",
     .gasChamberStyle = @"gas_chamber_style",
+    .keepSidebarOpen = @"keep_sidebar_open",
+};
+
+struct {
+    __unsafe_unretained NSString *Never;
+    __unsafe_unretained NSString *InLandscape;
+    __unsafe_unretained NSString *InPortrait;
+    __unsafe_unretained NSString *Always;
+} AwfulKeepSidebarOpenValues = {
+    @"never",
+    @"landscape",
+    @"portrait",
+    @"always",
 };
 
 - (void)migrateOldSettings
@@ -96,6 +110,11 @@ struct {
 	
 	[self setThemeName:newGasChamberStyle forForumID:@"25"];
 	self[OldSettingsKeys.gasChamberStyle] = nil;
+    
+    NSString *keepSidebarOpen = self[OldSettingsKeys.keepSidebarOpen];
+    if ([keepSidebarOpen isEqualToString:AwfulKeepSidebarOpenValues.Never] || [keepSidebarOpen isEqualToString:AwfulKeepSidebarOpenValues.InPortrait]) {
+        self[AwfulSettingsKeys.hideSidebarInLandscape] = @YES;
+    }
 }
 
 @synthesize sections = _sections;
@@ -258,6 +277,8 @@ static NSString * const InstapaperUsernameKey = @"username";
     }
 }
 
+BOOL_PROPERTY(hideSidebarInLandscape, setHideSidebarInLandscape)
+
 - (BOOL)childrenExpandedForForumWithID:(NSString *)forumID
 {
 	return [self[[NSString stringWithFormat:@"forum-expanded-%@", forumID]] boolValue];
@@ -340,4 +361,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .lastOfferedPasteboardURL = @"last_offered_pasteboard_URL",
     .customBaseURL = @"custom_base_URL",
     .instapaperUsername = @"instapaper_username",
+    .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
 };

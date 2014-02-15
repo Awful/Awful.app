@@ -186,8 +186,8 @@
 - (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
     UIViewController *root = self.rootViewController;
-    if ([root isKindOfClass:[AwfulExpandingSplitViewController class]]) {
-        AwfulExpandingSplitViewController *split = (AwfulExpandingSplitViewController *)root;
+    if ([root isKindOfClass:[AwfulSplitViewController class]]) {
+        AwfulSplitViewController *split = (AwfulSplitViewController *)root;
         root = split.viewControllers.firstObject;
     }
     if (![root respondsToSelector:@selector(viewControllers)]) return NO;
@@ -247,14 +247,14 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
 - (BOOL)showPostsViewController:(AwfulPostsViewController *)postsViewController
 {
     postsViewController.restorationIdentifier = @"Posts from URL";
-    if ([self.rootViewController isKindOfClass:[AwfulExpandingSplitViewController class]]) {
-        AwfulExpandingSplitViewController *split = (AwfulExpandingSplitViewController *)self.rootViewController;
-        if ([split.detailViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *navigationController = (UINavigationController *)split.detailViewController;
+    if ([self.rootViewController isKindOfClass:[AwfulSplitViewController class]]) {
+        AwfulSplitViewController *split = (AwfulSplitViewController *)self.rootViewController;
+        UINavigationController *navigationController = split.viewControllers.lastObject;
+        if ([navigationController isKindOfClass:[UINavigationController class]]) {
             postsViewController.navigationItem.leftItemsSupplementBackButton = YES;
             [navigationController pushViewController:postsViewController animated:YES];
         } else {
-            split.detailViewController = [postsViewController enclosingNavigationController];
+            [split setDetailViewController:[postsViewController enclosingNavigationController] sidebarHidden:YES animated:YES];
         }
         return YES;
     }

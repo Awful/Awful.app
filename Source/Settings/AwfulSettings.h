@@ -49,6 +49,8 @@
 
 @property (copy, nonatomic) NSString *instapaperPassword;
 
+@property (assign, nonatomic) BOOL hideSidebarInLandscape;
+
 - (BOOL)childrenExpandedForForumWithID:(NSString *)forumID;
 
 - (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID;
@@ -99,4 +101,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *customBaseURL;
     __unsafe_unretained NSString *instapaperUsername;
+    __unsafe_unretained NSString *hideSidebarInLandscape;
 } AwfulSettingsKeys;

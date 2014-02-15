@@ -5,7 +5,6 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulExpandingSplitViewController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
@@ -331,8 +330,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
         AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsView.restorationIdentifier = @"Awful's Thread";
         postsView.page = AwfulThreadPageNextUnread;
-        if (self.expandingSplitViewController) {
-            self.expandingSplitViewController.detailViewController = [postsView enclosingNavigationController];
+        if (self.splitViewController) {
+            [self.splitViewController setDetailViewController:[postsView enclosingNavigationController] sidebarHidden:YES animated:YES];
         } else {
             [self.navigationController pushViewController:postsView animated:YES];
         }

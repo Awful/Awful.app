@@ -10,7 +10,7 @@
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
-#import "AwfulExpandingSplitViewController.h"
+#import "AwfulEmptyViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulHTTPClient.h"
 #import "AwfulLaunchImageViewController.h"
@@ -23,6 +23,7 @@
 #import "AwfulRapSheetViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
+#import "AwfulSplitViewController.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulURLRouter.h"
@@ -35,6 +36,7 @@
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
+@property (strong, nonatomic) AwfulSplitViewController *splitViewController;
 
 @end
 
@@ -188,10 +190,13 @@ static inline void SetCrashlyticsUsername(void)
     } else {
         self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:viewControllers];
         self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
-        NSArray *viewControllers = @[ self.verticalTabBarController, [AwfulNavigationController new]];
-        AwfulExpandingSplitViewController *splitViewController = [[AwfulExpandingSplitViewController alloc] initWithViewControllers:viewControllers];
-        splitViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
-        rootViewController = splitViewController;
+        self.splitViewController = [AwfulSplitViewController new];
+        AwfulEmptyViewController *emptyViewController = [AwfulEmptyViewController new];
+        UINavigationController *detailViewController = [emptyViewController enclosingNavigationController];
+        self.splitViewController.viewControllers = @[ self.verticalTabBarController, detailViewController ];
+        self.splitViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
+        [self configureSplitViewControllerSettings];
+        rootViewController = self.splitViewController;
     }
     
     _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:rootViewController
@@ -274,6 +279,8 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
         }
     } else if ([setting isEqualToString:AwfulSettingsKeys.username]) {
         SetCrashlyticsUsername();
+    } else if ([setting isEqualToString:AwfulSettingsKeys.hideSidebarInLandscape]) {
+        [self configureSplitViewControllerSettings];
     } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
         // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
         UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
@@ -288,6 +295,12 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
              [snapshot removeFromSuperview];
          }];
 	}
+}
+
+- (void)configureSplitViewControllerSettings
+{
+    UIInterfaceOrientationMask mask = [AwfulSettings settings].hideSidebarInLandscape ? 0 : UIInterfaceOrientationMaskLandscape;
+    self.splitViewController.stickySidebarInterfaceOrientationMask = mask;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
