@@ -60,12 +60,12 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Thread</string>
+			<string>Bookmarks</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Sort Bookmarks By Unread</string>
+					<string>Sort by unread posts</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
