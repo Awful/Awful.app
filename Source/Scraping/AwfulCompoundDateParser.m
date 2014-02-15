@@ -31,6 +31,7 @@
 
 - (NSDate *)dateFromString:(NSString *)string
 {
+	string = [string stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
     for (NSDateFormatter *formatter in _formatters) {
         NSDate *parsedDate = [formatter dateFromString:string];
         if (parsedDate) return parsedDate;
