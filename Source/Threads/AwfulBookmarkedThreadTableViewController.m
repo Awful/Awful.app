@@ -68,7 +68,9 @@
     request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
 	
 	if ([AwfulSettings settings].bookmarksSortedByUnread) {
-		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO] ];
+		//Sort by unread count first, then last post date
+		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO],
+									 [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
 	} else {
 		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
 	}
