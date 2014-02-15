@@ -2,6 +2,8 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@import SafariServices;
+
 #import "AwfulReadLaterService.h"
 #import "AwfulAlertView.h"
 #import "AwfulSettings.h"
@@ -11,6 +13,7 @@
 
 @interface InstapaperReadLaterService : AwfulReadLaterService @end
 @interface PocketReadLaterService : AwfulReadLaterService @end
+@interface ReadingListReadLaterService : AwfulReadLaterService @end
 
 
 @interface AwfulReadLaterService ()
@@ -41,6 +44,7 @@
     return [@[
         [InstapaperReadLaterService new],
         [PocketReadLaterService new],
+		[ReadingListReadLaterService new],
     ] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"ready = YES"]];
 }
 
@@ -135,6 +139,46 @@
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [self done:error];
     }];
+}
+
+@end
+
+
+@implementation ReadingListReadLaterService
+
+- (BOOL)isReady
+{
+    return YES;
+}
+
+- (NSString *)callToAction
+{
+    return @"Add to Reading List";
+}
+
+- (NSString *)ongoingStatusText
+{
+    return @"Adding…";
+}
+
+- (NSString *)successfulStatusText
+{
+    return @"Added";
+}
+
+- (void)saveURL:(NSURL *)url
+{
+	[self showProgressHUD];
+	
+	NSError *error = nil;
+	
+	[[SSReadingList defaultReadingList] addReadingListItemWithURL:url
+															title:nil
+													  previewText:nil
+															error:&error];
+	
+	
+	[self done:error];
 }
 
 @end

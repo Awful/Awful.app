@@ -60,6 +60,23 @@
 		</dict>
 		<dict>
 			<key>Title</key>
+			<string>Thread</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Sort Bookmarks By Unread</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>bookmarks_sorted_unread</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
 			<string>Posting</string>
 			<key>Settings</key>
 			<array>

@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,7 @@
 // THE SOFTWARE.
 
 #import "GRMustacheSectionTag_private.h"
-#import "GRMustacheExpression_private.h"
-#import "GRMustacheTemplateComponent_private.h"
-#import "GRMustacheTemplate_private.h"
 #import "GRMustacheAccumulatorTag_private.h"
-#import "GRMustacheTagDelegate.h"
-#import "GRMustacheContext_private.h"
-#import "GRMustacheRendering.h"
-#import "GRMustache_private.h"
 
 @interface GRMustacheSectionTag()
 
@@ -68,7 +61,7 @@
     NSMutableString *buffer = [NSMutableString string];
     
     for (id<GRMustacheTemplateComponent> component in _components) {
-        // component may be overriden by a GRMustacheTemplateOverride: resolve it.
+        // component may be overriden by a GRMustachePartialOverride: resolve it.
         component = [context resolveTemplateComponent:component];
         
         // render

@@ -109,7 +109,7 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 /**
  * The number of unread posts in the thread, including the OP.
  */
-@property (readonly, assign, nonatomic) int32_t unreadPosts;
+@property (assign, nonatomic) int32_t unreadPosts;
 
 /**
  * Who posted the thread.

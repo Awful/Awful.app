@@ -1,6 +1,6 @@
 // The MIT License
 //
-// Copyright (c) 2013 Gwendal Roué
+// Copyright (c) 2014 Gwendal Roué
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,8 @@
 #import "GRMustacheToken_private.h"
 #import "GRMustacheContext_private.h"
 #import "GRMustache_private.h"
+#import "GRMustacheHTMLEscape_private.h"
+#import "GRMustacheTagDelegate.h"
 #import "GRMustacheRendering.h"
 
 @implementation GRMustacheTag
@@ -206,7 +208,7 @@
                 
                 if (rendering.length > 0) {
                     if ((requiredContentType == GRMustacheContentTypeHTML) && !objectHTMLSafe && self.escapesHTML) {
-                        rendering = [GRMustache escapeHTML:rendering];
+                        rendering = [GRMustacheHTMLEscape escapeHTML:rendering];
                     }
                     [buffer appendString:rendering];
                 }

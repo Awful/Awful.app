@@ -172,6 +172,8 @@ struct {
     }
 }
 
+BOOL_PROPERTY(bookmarksSortedByUnread, setBookmarksSortedByUnread)
+
 BOOL_PROPERTY(canSendPrivateMessages, setCanSendPrivateMessages)
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
@@ -327,6 +329,7 @@ NSString * const AwfulSettingsDidChangeSettingKey = @"setting";
 const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
+	.bookmarksSortedByUnread = @"bookmarks_sorted_unread",
     .confirmNewPosts = @"confirm_before_replying",
 	.darkTheme = @"dark_theme",
     .username = @"username",
