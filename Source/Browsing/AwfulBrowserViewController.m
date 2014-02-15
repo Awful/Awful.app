@@ -9,6 +9,7 @@
 #import "AwfulPageBarBackgroundView.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
+#import "AwfulURLActivity.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulBrowserViewController () <UIWebViewDelegate>
@@ -75,34 +76,9 @@
 
 - (void)actOnCurrentPage:(UIBarButtonItem *)sender
 {
-    NSURL *url = self.webView.request.URL;
-    if (url.absoluteString.length == 0) {
-        url = self.URL;
-    }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Open in Safari" block:^{
-        [[UIApplication sharedApplication] openURL:url];
-    }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        NSURL *url = self.webView.request.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: [url absoluteString]
-        } ];
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromBarButtonItem:sender animated:YES];
+	[self presentViewController:[AwfulURLActivity activityControllerForUrl:self.webView.request.URL]
+					   animated:YES
+					 completion:nil];
 }
 
 - (UIBarButtonItem *)backItem

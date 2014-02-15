@@ -4,16 +4,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AwfulExternalBrowser : NSObject
+#import "AwfulURLActivity.h"
 
-+ (NSArray *)installedBrowsers;
+@interface AwfulExternalBrowser : AwfulURLActivity
 
-@property (readonly, copy, nonatomic) NSString *title;
-
-- (BOOL)isInstalled;
-
-- (void)openURL:(NSURL *)url;
-
-- (BOOL)canOpenURL:(NSURL *)url;
++ (NSArray *)availableBrowserActivities;
 
 @end
