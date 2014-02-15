@@ -16,6 +16,11 @@
     UIBarButtonItem *_backBarItem;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (!(self = [super initWithNibName:Nil bundle:nil])) return nil;
@@ -40,20 +45,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
-    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
-	
-	
-	if (AwfulSettings.settings.bookmarksSortedByUnread) {
-		request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO]];
-	}
-	else {
-		request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
-	}
-    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                                         managedObjectContext:self.managedObjectContext
-                                                                                           sectionNameKeyPath:nil
-                                                                                                    cacheName:nil];
+    [self configureFetchedResultsController];
+
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     __weak __typeof__(self) weakSelf = self;
@@ -62,6 +55,35 @@
         [self loadPage:self->_mostRecentlyLoadedPage + 1];
     }];
     self.tableView.showsInfiniteScrolling = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeSettingKey
+                                               object:nil];
+}
+
+- (void)configureFetchedResultsController
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
+    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
+	
+	if ([AwfulSettings settings].bookmarksSortedByUnread) {
+		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO] ];
+	} else {
+		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+	}
+    
+    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                         managedObjectContext:self.managedObjectContext
+                                                                                           sectionNameKeyPath:nil
+                                                                                                    cacheName:nil];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.bookmarksSortedByUnread]) {
+        [self configureFetchedResultsController];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
