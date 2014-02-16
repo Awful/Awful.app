@@ -17,6 +17,11 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 @interface AwfulThread : AwfulManagedObject
 
 /**
+ * YES if this thread has any unread posts, otherwise NO.
+ */
+@property (readonly, assign, nonatomic) BOOL anyUnreadPosts;
+
+/**
  * YES if the thread appears in the archives, otherwise NO.
  */
 @property (assign, nonatomic) BOOL archived;
@@ -109,7 +114,7 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 /**
  * The number of unread posts in the thread, including the OP.
  */
-@property (assign, nonatomic) int32_t unreadPosts;
+@property (readonly, assign, nonatomic) int32_t unreadPosts;
 
 /**
  * Who posted the thread.

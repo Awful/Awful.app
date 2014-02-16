@@ -58,7 +58,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeSettingKey
+                                                 name:AwfulSettingsDidChangeNotification
                                                object:nil];
 }
 
@@ -66,14 +66,12 @@
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
     request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
-	
+    
+    NSMutableArray *sortDescriptors = [@[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ] mutableCopy];
 	if ([AwfulSettings settings].bookmarksSortedByUnread) {
-		//Sort by unread count first, then last post date
-		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"unreadPosts" ascending:NO],
-									 [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
-	} else {
-		request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+        [sortDescriptors insertObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO] atIndex:0];
 	}
+    request.sortDescriptors = sortDescriptors;
     
     self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                          managedObjectContext:self.managedObjectContext

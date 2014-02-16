@@ -48,6 +48,7 @@
         <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="singleUserThreadInfos" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
+        <attribute name="anyUnreadPosts" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="bookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="closed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -64,7 +65,6 @@
         <attribute name="threadID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="unreadPosts" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulPost" inverseName="thread" inverseEntity="AwfulPost" syncable="YES"/>
@@ -112,13 +112,13 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="AwfulForum" positionX="0" positionY="0" width="128" height="210"/>
-        <element name="AwfulPost" positionX="0" positionY="0" width="128" height="180"/>
-        <element name="AwfulPrivateMessage" positionX="0" positionY="0" width="128" height="195"/>
-        <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="AwfulThread" positionX="0" positionY="0" width="128" height="388"/>
-        <element name="AwfulThreadTag" positionX="0" positionY="0" width="128" height="165"/>
-        <element name="AwfulUser" positionX="0" positionY="0" width="128" height="450"/>
+        <element name="AwfulCategory" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulForum" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulPost" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulPrivateMessage" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulThread" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulThreadTag" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="AwfulUser" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

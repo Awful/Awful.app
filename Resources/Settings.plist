@@ -65,7 +65,7 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Sort by unread posts</string>
+					<string>Sort unread threads first</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>

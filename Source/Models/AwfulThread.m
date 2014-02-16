@@ -6,6 +6,8 @@
 
 @interface AwfulThread ()
 
+@property (assign, nonatomic) BOOL anyUnreadPosts;
+
 @property (strong, nonatomic) NSNumber *primitiveTotalReplies;
 
 @property (strong, nonatomic) NSNumber *primitiveSeenPosts;
@@ -14,6 +16,7 @@
 
 @implementation AwfulThread
 
+@dynamic anyUnreadPosts;
 @dynamic archived;
 @dynamic bookmarked;
 @dynamic closed;
@@ -32,7 +35,6 @@
 @dynamic threadTag;
 @dynamic title;
 @dynamic totalReplies;
-@dynamic unreadPosts;
 @dynamic author;
 @dynamic forum;
 @dynamic posts;
@@ -48,6 +50,11 @@
 + (NSSet *)keyPathsForValuesAffectingBeenSeen
 {
     return [NSSet setWithObject:@"seenPosts"];
+}
+
+- (int32_t)unreadPosts
+{
+    return self.totalReplies + 1 - self.seenPosts;
 }
 
 + (NSSet *)keyPathsForValuesAffectingUnreadPosts
@@ -96,7 +103,7 @@
     if (minimumNumberOfPages > self.numberOfPages) {
         self.numberOfPages = minimumNumberOfPages;
     }
-	self.unreadPosts = self.totalReplies + 1 - self.seenPosts;
+    self.anyUnreadPosts = self.unreadPosts > 0;
 }
 
 - (void)setSeenPosts:(int32_t)seenPosts
@@ -107,7 +114,7 @@
     if (self.seenPosts > self.totalReplies + 1) {
         self.totalReplies = self.seenPosts - 1;
     }
-	self.unreadPosts = self.totalReplies + 1 - self.seenPosts;
+    self.anyUnreadPosts = self.unreadPosts > 0;
 }
 
 @end
