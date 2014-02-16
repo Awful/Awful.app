@@ -11,6 +11,8 @@
 
 /**
  * An array of two view controllers: the master view controller and the detail view controller. Setting is equivalent to calling -setViewControllers:animated: and passing NO for the second parameter.
+ *
+ * Any UINavigationController in the viewControllers array without a delegate are assigned the split view controller. The split view controller does this in order to hide or show the toolbar as appropriate.
  */
 @property (copy, nonatomic) NSArray *viewControllers;
 

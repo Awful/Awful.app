@@ -5,7 +5,7 @@
 #import "AwfulSplitViewController.h"
 #import "AwfulSplitView.h"
 
-@interface AwfulSplitViewController () <AwfulSplitViewDelegate>
+@interface AwfulSplitViewController () <AwfulSplitViewDelegate, UINavigationControllerDelegate>
 
 @property (readonly, strong, nonatomic) AwfulSplitView *splitView;
 
@@ -43,7 +43,22 @@
     NSArray *oldViewControllers = _viewControllers;
     _viewControllers = [viewControllers copy];
     
+    UIViewController *masterViewController = _viewControllers.firstObject;
+    if ([masterViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = (UINavigationController *)masterViewController;
+        if (!navigationController.delegate) {
+            navigationController.delegate = self;
+        }
+    }
+    
     UIViewController *detailViewController = _viewControllers.lastObject;
+    if ([detailViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = (UINavigationController *)detailViewController;
+        if (!navigationController.delegate) {
+            navigationController.delegate = self;
+        }
+    }
+    
     _detailViewControllerIsInconsequential = [detailViewController conformsToProtocol:@protocol(AwfulSplitViewControllerInconsequentialDetail)];
     if (!_detailViewControllerIsInconsequential && [detailViewController respondsToSelector:@selector(viewControllers)]) {
         UINavigationController *container = (UINavigationController *)detailViewController;
@@ -250,6 +265,15 @@
 - (void)splitViewDidSwipeToShowMasterView:(AwfulSplitView *)splitView
 {
     [self setSidebarHidden:NO animated:YES];
+}
+
+#pragma mark - UINavigationControllerDelegate
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
 }
 
 @end
