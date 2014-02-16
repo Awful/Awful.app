@@ -18,8 +18,8 @@
 	NSArray *exteralBrowserActivities = [AwfulExternalBrowser availableBrowserActivities];
 	NSArray *readLaterActivities = [AwfulReadLaterService availableServices];
 	
-	UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:[exteralBrowserActivities
-																																		 arrayByAddingObjectsFromArray:readLaterActivities]];
+	UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:[readLaterActivities
+																																		 arrayByAddingObjectsFromArray:exteralBrowserActivities]];
 	return activityController;
 }
 

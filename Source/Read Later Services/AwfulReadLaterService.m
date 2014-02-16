@@ -68,11 +68,6 @@
     }
 }
 
-+ (UIActivityCategory)activityCategory
-{
-	return UIActivityCategoryShare;
-}
-
 @end
 
 
