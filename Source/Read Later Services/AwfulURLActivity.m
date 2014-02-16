@@ -20,15 +20,6 @@
 	
 	UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:[exteralBrowserActivities
 																																		 arrayByAddingObjectsFromArray:readLaterActivities]];
-	//Hide mail on the iPhone if there's read later services available,
-	//hide mail so read services show up without swiping
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && readLaterActivities.count > 0) {
-		activityController.excludedActivityTypes = @[UIActivityTypeAirDrop, UIActivityTypeMail];
-	}
-	else {
-		activityController.excludedActivityTypes = @[UIActivityTypeAirDrop];
-	}
-	
 	return activityController;
 }
 
