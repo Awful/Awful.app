@@ -276,6 +276,36 @@
     [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
 }
 
+#pragma mark - State preservation and restoration
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    NSArray *viewControllers = [coder decodeObjectForKey:ViewControllersKey];
+    if (viewControllers) {
+        self.viewControllers = viewControllers;
+    }
+}
+
+- (void)applicationFinishedRestoringState
+{
+    [super applicationFinishedRestoringState];
+    
+    // If the detail view controller is a UINavigationController, it has no child view controllers as of -decodeRestorableStateWithCoder:. So it doesn't get its left bar button item set. Seems lame, but if we do this stuff here then it works.
+    [self updateToggleSidebarItemOnDetailViewController];
+    if (!_detailViewControllerIsInconsequential) {
+        self.sidebarHidden = YES;
+    }
+}
+
+static NSString * const ViewControllersKey = @"AwfulViewControllers";
+
 @end
 
 @implementation UIViewController (AwfulSplitViewControllerAccess)

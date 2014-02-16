@@ -208,6 +208,7 @@ static inline void SetCrashlyticsUsername(void)
 {
     self.basementViewController = nil;
     self.verticalTabBarController = nil;
+    self.splitViewController = nil;
     self.window.rootViewController = nil;
     _awfulURLRouter = nil;
 }
