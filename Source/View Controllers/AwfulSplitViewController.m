@@ -288,7 +288,7 @@
 {
     [super decodeRestorableStateWithCoder:coder];
     NSArray *viewControllers = [coder decodeObjectForKey:ViewControllersKey];
-    if (viewControllers) {
+    if (viewControllers.count > 0) {
         self.viewControllers = viewControllers;
     }
 }
