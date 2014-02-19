@@ -16,7 +16,6 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulURLActivity.h"
-#import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 
@@ -47,12 +46,12 @@
     NSError *error;
     NSString *html = [GRMustacheTemplate renderObject:viewModel fromResource:@"Profile" bundle:nil error:&error];
     if (!html) {
-        CLSNSLog(@"%s error rendering profile for %@: %@", __PRETTY_FUNCTION__, self.user.username, error);
+        NSLog(@"%s error rendering profile for %@: %@", __PRETTY_FUNCTION__, self.user.username, error);
         return;
     }
     NSData *data = [NSJSONSerialization dataWithJSONObject:@[ html ] options:0 error:&error];
     if (!data) {
-        NSLog(@"error serializing profile json for %@: %@", self.user.username, error);
+        NSLog(@"%s error serializing profile json for %@: %@", __PRETTY_FUNCTION__, self.user.username, error);
         return;
     }
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
