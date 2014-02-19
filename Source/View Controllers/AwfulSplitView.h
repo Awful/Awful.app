@@ -38,8 +38,13 @@
 - (void)splitViewDidTapDetailViewWhenMasterViewVisible:(AwfulSplitView *)splitView;
 
 /**
- * Informs the delegate that the detail view was swiped while the master view was hidden.
+ * Informs the delegate that the detail view was swiped right while the master view was hidden.
  */
 - (void)splitViewDidSwipeToShowMasterView:(AwfulSplitView *)splitView;
+
+/**
+ * Informs the delegate that the detail view was swiped right while the master view was visible.
+ */
+- (void)splitViewDidSwipeToPopNavigationController:(AwfulSplitView *)splitView;
 
 @end

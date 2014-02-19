@@ -6,9 +6,7 @@
 
 @interface AwfulSplitView ()
 
-@property (strong, nonatomic) UITapGestureRecognizer *tapToHideMasterViewGestureRecognizer;
-
-@property (strong, nonatomic) UISwipeGestureRecognizer *swipeToShowMasterViewGestureRecognizer;
+@property (strong, nonatomic) UIView *detailCoverView;
 
 @end
 
@@ -17,6 +15,8 @@
     BOOL _masterViewHidden;
     UIView *_masterContainerView;
     UIView *_detailContainerView;
+    UIView *_detailCoverView;
+    NSArray *_detailCoverConstraints;
     NSArray *_stuckVisibleConstraints;
     NSLayoutConstraint *_masterViewHiddenConstraint;
 }
@@ -37,6 +37,10 @@
     _detailContainerView.clipsToBounds = YES;
     _detailContainerView.backgroundColor = [UIColor blackColor];
     [self insertSubview:_detailContainerView belowSubview:_masterContainerView];
+    
+    UISwipeGestureRecognizer *swipeGestureRecognizer = [UISwipeGestureRecognizer new];
+    [swipeGestureRecognizer addTarget:self action:@selector(didSwipeToShowMasterView:)];
+    [_detailContainerView addGestureRecognizer:swipeGestureRecognizer];
     
     NSDictionary *views = @{ @"master": _masterContainerView,
                              @"detail": _detailContainerView };
@@ -112,7 +116,6 @@
         }];
     }
     
-    _detailView.userInteractionEnabled = YES;
     [_detailView removeFromSuperview];
     _detailView = detailView;
     _detailView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -121,8 +124,6 @@
     
     // Immediately lay out new datail view so it doesn't animate into position.
     [_detailContainerView layoutIfNeeded];
-    
-    detailView.userInteractionEnabled = self.masterViewHidden || self.masterViewStuckVisible;
 }
 
 - (BOOL)masterViewHidden
@@ -135,8 +136,8 @@
     if (self.masterViewStuckVisible) return;
     _masterViewHidden = masterViewHidden;
     [self removeConstraint:_masterViewHiddenConstraint];
+    [self updateCoverView];
     [self setNeedsUpdateConstraints];
-    [self updateGestureRecognizers];
 }
 
 - (void)setMasterViewStuckVisible:(BOOL)masterViewStuckVisible
@@ -144,16 +145,31 @@
     _masterViewStuckVisible = masterViewStuckVisible;
     [self removeConstraints:_stuckVisibleConstraints];
     [self removeConstraint:_masterViewHiddenConstraint];
+    [self updateCoverView];
     [self setNeedsUpdateConstraints];
-    [self updateGestureRecognizers];
 }
 
-- (UITapGestureRecognizer *)tapToHideMasterViewGestureRecognizer
+- (UIView *)detailCoverView
 {
-    if (_tapToHideMasterViewGestureRecognizer) return _tapToHideMasterViewGestureRecognizer;
-    _tapToHideMasterViewGestureRecognizer = [UITapGestureRecognizer new];
-    [_tapToHideMasterViewGestureRecognizer addTarget:self action:@selector(didTapToHideDetailView:)];
-    return _tapToHideMasterViewGestureRecognizer;
+    if (_detailCoverView) return _detailCoverView;
+    _detailCoverView = [UIView new];
+    _detailCoverView.translatesAutoresizingMaskIntoConstraints = NO;
+    _detailCoverView.backgroundColor = [UIColor clearColor];
+    
+    UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer new];
+    [tapGestureRecognizer addTarget:self action:@selector(didTapToHideDetailView:)];
+    [_detailCoverView addGestureRecognizer:tapGestureRecognizer];
+    
+    UISwipeGestureRecognizer *swipeLeftGestureRecognizer = [UISwipeGestureRecognizer new];
+    [swipeLeftGestureRecognizer addTarget:self action:@selector(didSwipeToPopNavigationController:)];
+    [_detailCoverView addGestureRecognizer:swipeLeftGestureRecognizer];
+    return _detailCoverView;
+}
+
+- (void)setDetailCoverView:(UIView *)detailCoverView
+{
+    [_detailCoverView removeFromSuperview];
+    _detailCoverView = detailCoverView;
 }
 
 - (void)didTapToHideDetailView:(UITapGestureRecognizer *)sender
@@ -163,29 +179,35 @@
     }
 }
 
-- (UISwipeGestureRecognizer *)swipeToShowMasterViewGestureRecognizer
-{
-    if (_swipeToShowMasterViewGestureRecognizer) return _swipeToShowMasterViewGestureRecognizer;
-    _swipeToShowMasterViewGestureRecognizer = [UISwipeGestureRecognizer new];
-    [_swipeToShowMasterViewGestureRecognizer addTarget:self action:@selector(didSwipeToShowMasterView:)];
-    return _swipeToShowMasterViewGestureRecognizer;
-}
-
 - (void)didSwipeToShowMasterView:(UISwipeGestureRecognizer *)sender
 {
-    [self.delegate splitViewDidSwipeToShowMasterView:self];
+    if (self.masterViewHidden) {
+        [self.delegate splitViewDidSwipeToShowMasterView:self];
+    }
 }
 
-- (void)updateGestureRecognizers
+- (void)didSwipeToPopNavigationController:(UISwipeGestureRecognizer *)sender
+{
+    [self.delegate splitViewDidSwipeToPopNavigationController:self];
+}
+
+- (void)updateCoverView
 {
     if (self.masterViewHidden) {
-        self.detailView.userInteractionEnabled = YES;
-        [_detailContainerView removeGestureRecognizer:self.tapToHideMasterViewGestureRecognizer];
-        [_detailContainerView addGestureRecognizer:self.swipeToShowMasterViewGestureRecognizer];
+        self.detailCoverView = nil;
     } else {
-        self.detailView.userInteractionEnabled = NO;
-        [_detailContainerView addGestureRecognizer:self.tapToHideMasterViewGestureRecognizer];
-        [_detailContainerView removeGestureRecognizer:self.swipeToShowMasterViewGestureRecognizer];
+        [_detailContainerView addSubview:self.detailCoverView];
+        NSDictionary *views = @{ @"cover": _detailCoverView };
+        [_detailContainerView addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[cover]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [_detailContainerView addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[cover]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
     }
 }
 

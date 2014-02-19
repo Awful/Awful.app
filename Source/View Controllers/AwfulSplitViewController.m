@@ -267,6 +267,20 @@
     [self setSidebarHidden:NO animated:YES];
 }
 
+- (void)splitViewDidSwipeToPopNavigationController:(AwfulSplitView *)splitView
+{
+    // Search the master view controller hierarchy for a navigation controller to pop. It's OK if we don't find one, but we should try.
+    UINavigationController *navigationController = self.viewControllers.firstObject;
+    while (navigationController && ![navigationController isKindOfClass:[UINavigationController class]]) {
+        if ([navigationController respondsToSelector:@selector(viewControllers)]) {
+            navigationController = navigationController.viewControllers.firstObject;
+        } else {
+            navigationController = nil;
+        }
+    }
+    [navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController
