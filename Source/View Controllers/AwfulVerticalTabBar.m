@@ -50,7 +50,8 @@
                 context:KVOContext];
     [_buttons enumerateObjectsUsingBlock:^(AwfulTabBarButton *button, NSUInteger i, BOOL *stop) {
         UITabBarItem *item = _items[i];
-        [button setImage:item.image];
+        button.accessibilityLabel = item.title;
+        button.image = item.image;
     }];
     [self removeAllConstraints];
     [self setNeedsUpdateConstraints];

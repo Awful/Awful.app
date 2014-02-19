@@ -34,6 +34,7 @@
     _managedObjectContext = managedObjectContext;
     self.title = @"Settings";
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.tabBarItem.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog"];
     return self;
 }
@@ -171,10 +172,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
         style = UITableViewCellStyleDefault;
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:style 
-                                      reuseIdentifier:identifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:style  reuseIdentifier:identifier];
         if (settingType == OnOffSetting) {
             UISwitch *switchView = [UISwitch new];
             [switchView addTarget:self
@@ -183,12 +182,15 @@ typedef NS_ENUM(NSUInteger, SettingType)
             cell.accessoryView = switchView;
         } else if (settingType == ChoiceSetting) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.accessibilityTraits |= UIAccessibilityTraitButton;
         } else if (settingType == StepperSetting) {
             UIStepper *stepperView = [UIStepper new];
             [stepperView addTarget:self
                            action:@selector(stepperPressed:)
                  forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = stepperView;
+        } else if (settingType == ButtonSetting) {
+            cell.accessibilityTraits |= UIAccessibilityTraitButton;
         }
     }
     if (style == UITableViewCellStyleValue1) {

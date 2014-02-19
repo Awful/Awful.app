@@ -155,6 +155,8 @@
     _detailCoverView = [UIView new];
     _detailCoverView.translatesAutoresizingMaskIntoConstraints = NO;
     _detailCoverView.backgroundColor = [UIColor clearColor];
+    _detailCoverView.isAccessibilityElement = YES;
+    _detailCoverView.accessibilityHint = @"Double tap to dismiss sidebar";
     
     UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer new];
     [tapGestureRecognizer addTarget:self action:@selector(didTapToHideDetailView:)];

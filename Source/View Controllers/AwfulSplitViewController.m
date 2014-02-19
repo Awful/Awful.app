@@ -140,9 +140,19 @@
 - (void)setSidebarHidden:(BOOL)sidebarHidden animated:(BOOL)animated
 {
     if ([self isViewLoaded]) {
+        BOOL wasHidden = self.splitView.masterViewHidden;
         if (!(sidebarHidden && _detailViewControllerIsInconsequential)) {
             self.splitView.masterViewHidden = sidebarHidden;
             [self layoutSplitViewAnimated:animated];
+        }
+        if (wasHidden != sidebarHidden) {
+            UIViewController *interactingViewController;
+            if (sidebarHidden) {
+                interactingViewController = self.viewControllers.lastObject;
+            } else {
+                interactingViewController = self.viewControllers.firstObject;
+            }
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, interactingViewController.view);
         }
     } else {
         _whenLoadedSidebarHidden = sidebarHidden;

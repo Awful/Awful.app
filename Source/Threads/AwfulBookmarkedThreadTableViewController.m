@@ -26,6 +26,7 @@
     if (!(self = [super initWithNibName:Nil bundle:nil])) return nil;
     _managedObjectContext = managedObjectContext;
     self.title = @"Bookmarks";
+    self.tabBarItem.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks"];
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     return self;
