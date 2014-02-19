@@ -30,6 +30,7 @@
 {
     _fetchedResultsController.delegate = nil;
     _fetchedResultsController = fetchedResultsController;
+    fetchedResultsController.delegate = self;
     _completedFirstFetch = NO;
     [self fetchAndSetDelegateForTableView];
 }
@@ -44,7 +45,6 @@
 - (void)fetchAndSetDelegateForTableView
 {
     if (self.updatesTableView) {
-        _fetchedResultsController.delegate = self;
         if (!_completedFirstFetch) {
             NSError *error;
             BOOL ok = [self.fetchedResultsController performFetch:&error];
@@ -54,8 +54,6 @@
             _completedFirstFetch = ok;
         }
         [self.tableView reloadData];
-    } else {
-        _fetchedResultsController.delegate = nil;
     }
 }
 
@@ -98,6 +96,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
+    if (!self.updatesTableView) return;
     [self.tableView beginUpdates];
 }
 
@@ -106,6 +105,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type
 {
+    if (!self.updatesTableView) return;
     if (type == NSFetchedResultsChangeInsert) {
         [_sectionInsertions addIndex:sectionIndex];
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -121,6 +121,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
+    if (!self.updatesTableView) return;
     if (type == NSFetchedResultsChangeInsert) {
         if (![_sectionInsertions containsIndex:newIndexPath.section]) {
             [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -143,6 +144,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    if (!self.updatesTableView) return;
     [self.tableView endUpdates];
     [_sectionInsertions removeAllIndexes];
     [_sectionDeletions removeAllIndexes];
