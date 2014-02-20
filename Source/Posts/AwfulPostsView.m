@@ -211,8 +211,10 @@ static NSString * JSONizeBool(BOOL aBool)
 {
     va_list args;
     va_start(args, script);
-    NSString *js = [[NSString alloc] initWithFormat:script arguments:args];
+    NSMutableString *js = [[NSMutableString alloc] initWithFormat:script arguments:args];
     va_end(args);
+    [js replaceOccurrencesOfString:@"\u2028" withString:@"\\u2028" options:0 range:NSMakeRange(0, js.length)];
+    [js replaceOccurrencesOfString:@"\u2029" withString:@"\\u2029" options:0 range:NSMakeRange(0, js.length)];
     return [self.webView stringByEvaluatingJavaScriptFromString:js];
 }
 
