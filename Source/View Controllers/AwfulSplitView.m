@@ -4,7 +4,7 @@
 
 #import "AwfulSplitView.h"
 
-@interface AwfulSplitView ()
+@interface AwfulSplitView () <UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) UIView *detailCoverView;
 
@@ -19,12 +19,24 @@
     NSArray *_detailCoverConstraints;
     NSArray *_stuckVisibleConstraints;
     NSLayoutConstraint *_masterViewHiddenConstraint;
+    UIPanGestureRecognizer *_panGestureRecognizer;
+    UISwipeGestureRecognizer *_swipeGestureRecognizer;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (!self) return nil;
+    
+    _panGestureRecognizer = [UIPanGestureRecognizer new];
+    _panGestureRecognizer.delegate = self;
+    [_panGestureRecognizer addTarget:self action:@selector(didPanToShowMasterView:)];
+    [self addGestureRecognizer:_panGestureRecognizer];
+    
+    _swipeGestureRecognizer = [UISwipeGestureRecognizer new];
+    _swipeGestureRecognizer.delegate = self;
+    [_swipeGestureRecognizer addTarget:self action:@selector(didSwipeToPopNavigationController:)];
+    [self addGestureRecognizer:_swipeGestureRecognizer];
     
     _masterContainerView = [UIView new];
     _masterContainerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -37,10 +49,6 @@
     _detailContainerView.clipsToBounds = YES;
     _detailContainerView.backgroundColor = [UIColor blackColor];
     [self insertSubview:_detailContainerView belowSubview:_masterContainerView];
-    
-    UISwipeGestureRecognizer *swipeGestureRecognizer = [UISwipeGestureRecognizer new];
-    [swipeGestureRecognizer addTarget:self action:@selector(didSwipeToShowMasterView:)];
-    [_detailContainerView addGestureRecognizer:swipeGestureRecognizer];
     
     NSDictionary *views = @{ @"master": _masterContainerView,
                              @"detail": _detailContainerView };
@@ -147,6 +155,13 @@
     [self removeConstraint:_masterViewHiddenConstraint];
     [self updateCoverView];
     [self setNeedsUpdateConstraints];
+    if (masterViewStuckVisible) {
+        [self removeGestureRecognizer:_swipeGestureRecognizer];
+        [self removeGestureRecognizer:_panGestureRecognizer];
+    } else {
+        [self addGestureRecognizer:_swipeGestureRecognizer];
+        [self addGestureRecognizer:_panGestureRecognizer];
+    }
 }
 
 - (UIView *)detailCoverView
@@ -161,10 +176,6 @@
     UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer new];
     [tapGestureRecognizer addTarget:self action:@selector(didTapToHideDetailView:)];
     [_detailCoverView addGestureRecognizer:tapGestureRecognizer];
-    
-    UISwipeGestureRecognizer *swipeLeftGestureRecognizer = [UISwipeGestureRecognizer new];
-    [swipeLeftGestureRecognizer addTarget:self action:@selector(didSwipeToPopNavigationController:)];
-    [_detailCoverView addGestureRecognizer:swipeLeftGestureRecognizer];
     return _detailCoverView;
 }
 
@@ -181,16 +192,54 @@
     }
 }
 
-- (void)didSwipeToShowMasterView:(UISwipeGestureRecognizer *)sender
+- (void)didPanToShowMasterView:(UIPanGestureRecognizer *)sender
 {
-    if (self.masterViewHidden) {
-        [self.delegate splitViewDidSwipeToShowMasterView:self];
+    if (self.masterViewStuckVisible) {
+        sender.enabled = NO;
+        sender.enabled = YES;
+        return;
+    }
+    
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        CGPoint location = [sender locationInView:_masterContainerView];
+        if (CGRectContainsPoint(_masterContainerView.bounds, location)) {
+            sender.enabled = NO;
+            sender.enabled = YES;
+            return;
+        }
+    }
+    
+    CGPoint distance = [sender translationInView:_detailContainerView];
+    
+    // Only vaguely horizontal swipes are relevant.
+    if (fabs(distance.y) > 32) {
+        sender.enabled = NO;
+        sender.enabled = YES;
+        return;
+    }
+    
+    // Swipe right with master view hidden, or left with master view visible, allowing continuous swiping.
+    if (sender.state == UIGestureRecognizerStateChanged) {
+        const CGFloat threshold = 10;
+        if (self.masterViewHidden && distance.x > threshold) {
+            [self.delegate splitViewDidSwipeToShowMasterView:self];
+        } else if (!self.masterViewHidden && distance.x < -threshold) {
+            [self.delegate splitViewDidTapDetailViewWhenMasterViewVisible:self];
+        }
+        if (fabs(distance.x) > threshold) {
+            [sender setTranslation:CGPointMake(0, distance.y) inView:_detailContainerView];
+        }
     }
 }
 
 - (void)didSwipeToPopNavigationController:(UISwipeGestureRecognizer *)sender
 {
-    [self.delegate splitViewDidSwipeToPopNavigationController:self];
+    if (!self.masterViewHidden && !self.masterViewStuckVisible) {
+        CGPoint location = [sender locationInView:_masterContainerView];
+        if (!CGRectContainsPoint(_masterContainerView.bounds, location)) {
+            [self.delegate splitViewDidSwipeToPopNavigationController:self];
+        }
+    }
 }
 
 - (void)updateCoverView
@@ -222,6 +271,13 @@
         [self addConstraint:_masterViewHiddenConstraint];
     }
     [super updateConstraints];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return gestureRecognizer.delegate == otherGestureRecognizer.delegate;
 }
 
 @end
