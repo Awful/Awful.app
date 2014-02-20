@@ -213,8 +213,11 @@ static NSString * JSONizeBool(BOOL aBool)
     va_start(args, script);
     NSMutableString *js = [[NSMutableString alloc] initWithFormat:script arguments:args];
     va_end(args);
+    
+    // JavaScript considers U+2028 and U+2029 "line terminators", but JSON does not require them to be escaped. Left unescaped, they trigger automatic semicolon insertion, which means syntax errors in our JavaScript code.
     [js replaceOccurrencesOfString:@"\u2028" withString:@"\\u2028" options:0 range:NSMakeRange(0, js.length)];
     [js replaceOccurrencesOfString:@"\u2029" withString:@"\\u2029" options:0 range:NSMakeRange(0, js.length)];
+    
     return [self.webView stringByEvaluatingJavaScriptFromString:js];
 }
 
