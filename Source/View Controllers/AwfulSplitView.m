@@ -244,7 +244,7 @@
 
 - (void)updateCoverView
 {
-    if (self.masterViewHidden) {
+    if (self.masterViewHidden || self.masterViewStuckVisible) {
         self.detailCoverView = nil;
     } else {
         [_detailContainerView addSubview:self.detailCoverView];

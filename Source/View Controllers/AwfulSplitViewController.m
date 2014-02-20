@@ -252,6 +252,9 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     self.splitView.masterViewStuckVisible = self.sidebarShouldStickVisible;
+    if (_detailViewControllerIsInconsequential) {
+        self.sidebarHidden = NO;
+    }
     [self updateToggleSidebarItemOnDetailViewController];
 }
 
