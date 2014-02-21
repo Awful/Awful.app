@@ -151,6 +151,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     
     [self.tableView beginUpdates];
     
+    [_treeDataSource reloadRowWithForum:forum];
+    
     if (isFavorite) {
         NSInteger row = [self.favoriteForums indexOfObject:forum];
         [self.favoriteForums removeObjectAtIndex:row];
@@ -171,9 +173,6 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
             NSIndexPath *newRowPath = [NSIndexPath indexPathForRow:(self.favoriteForums.count - 1) inSection:0];
             [self.tableView insertRowsAtIndexPaths:@[ newRowPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
-    }
-    if (!isFavorite) {
-        [_treeDataSource reloadRowWithForum:forum];
     }
     
     [self.tableView endUpdates];
