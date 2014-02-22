@@ -217,7 +217,7 @@
     
     // Swipe right with master view hidden, or left with master view visible, allowing continuous swiping.
     if (sender.state == UIGestureRecognizerStateChanged) {
-        const CGFloat threshold = 10;
+        const CGFloat threshold = 20;
         if (self.masterViewHidden && distance.x > threshold) {
             [self.delegate splitViewDidSwipeToShowMasterView:self];
         } else if (!self.masterViewHidden && distance.x < -threshold) {
