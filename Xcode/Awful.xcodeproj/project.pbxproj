@@ -244,7 +244,6 @@
 		8C88139F1849289F0058009E /* clock-green.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88139D1849289F0058009E /* clock-green.png */; };
 		8C8813A01849289F0058009E /* clock-amber.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C88139E1849289F0058009E /* clock-amber.png */; };
 		8C8813A218492AC80058009E /* mac-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8813A118492AC70058009E /* mac-watch.png */; };
-		8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C8AB94F16DC49BA00D85404 /* CustomBadge.m */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
@@ -614,8 +613,6 @@
 		8C88139D1849289F0058009E /* clock-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock-green.png"; sourceTree = "<group>"; };
 		8C88139E1849289F0058009E /* clock-amber.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock-amber.png"; sourceTree = "<group>"; };
 		8C8813A118492AC70058009E /* mac-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mac-watch.png"; sourceTree = "<group>"; };
-		8C8AB94E16DC49BA00D85404 /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
-		8C8AB94F16DC49BA00D85404 /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* AwfulRapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRapSheetViewController.h; sourceTree = "<group>"; };
 		8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulRapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -694,7 +691,6 @@
 				FF54849D34B84496B062B479 /* Pods.xcconfig */,
 				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
-				8C8AB94A16DC499400D85404 /* CustomBadge */,
 				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
 				1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
@@ -1330,15 +1326,6 @@
 			path = AnimatedGif;
 			sourceTree = "<group>";
 		};
-		8C8AB94A16DC499400D85404 /* CustomBadge */ = {
-			isa = PBXGroup;
-			children = (
-				8C8AB94E16DC49BA00D85404 /* CustomBadge.h */,
-				8C8AB94F16DC49BA00D85404 /* CustomBadge.m */,
-			);
-			path = CustomBadge;
-			sourceTree = "<group>";
-		};
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1857,7 +1844,6 @@
 				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
 				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
-				8C8AB95016DC49BA00D85404 /* CustomBadge.m in Sources */,
 				1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
 				1CE694A8182FEF8D00B24928 /* AwfulBan.m in Sources */,
