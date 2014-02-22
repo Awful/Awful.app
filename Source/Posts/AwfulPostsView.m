@@ -25,6 +25,7 @@
 @implementation AwfulPostsView
 {
     BOOL _onceOnFirstLoad;
+    UILongPressGestureRecognizer *_longPressGestureRecognizer;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -46,10 +47,10 @@
     tap.delegate = self;
     [tap addTarget:self action:@selector(didTapWebView:)];
     [self addGestureRecognizer:tap];
-    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
-    longPress.delegate = self;
-    [longPress addTarget:self action:@selector(didLongPressWebView:)];
-    [self addGestureRecognizer:longPress];
+    _longPressGestureRecognizer = [UILongPressGestureRecognizer new];
+    _longPressGestureRecognizer.delegate = self;
+    [_longPressGestureRecognizer addTarget:self action:@selector(didLongPressWebView:)];
+    [self addGestureRecognizer:_longPressGestureRecognizer];
     return self;
 }
 
@@ -465,10 +466,22 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 
 #pragma mark - UIGestureRecognizerDelegate
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    return !self.scrollView.dragging;
+    // None of our taps or presses should trigger while scrolling.
+    if (self.scrollView.dragging) {
+        return NO;
+    }
+    
+    // If we use our long press gesture recognizer to show a share sheet, the UIWebView's own long press gesture recognizers trigger as well, registering as a click on the link. Now seems like an opportune time to get at UIWebView's recognizers and fail them.
+    if (gestureRecognizer == _longPressGestureRecognizer && gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        if ([otherGestureRecognizer.view isDescendantOfView:self.webView]) {
+            otherGestureRecognizer.enabled = NO;
+            otherGestureRecognizer.enabled = YES;
+        }
+    }
+    
+    return YES;
 }
 
 @end
