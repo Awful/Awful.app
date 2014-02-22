@@ -37,14 +37,18 @@
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
-    if (_selectedViewController == selectedViewController) return;
-    NSParameterAssert([self.viewControllers containsObject:selectedViewController]);
-    UIViewController *oldViewController = _selectedViewController;
-    _selectedViewController = selectedViewController;
-    if ([self isViewLoaded]) {
-        [self replaceMainViewController:oldViewController withViewController:_selectedViewController];
-        self.tabBar.selectedItem = _selectedViewController.tabBarItem;
-    }
+    if (_selectedViewController == selectedViewController && [_selectedViewController isKindOfClass:[UINavigationController class]]){
+		//Pop back to root view if button is tapped again while already on view
+		[(UINavigationController *)selectedViewController popToRootViewControllerAnimated:YES];
+	} else if (_selectedViewController != selectedViewController) {
+		NSParameterAssert([self.viewControllers containsObject:selectedViewController]);
+		UIViewController *oldViewController = _selectedViewController;
+		_selectedViewController = selectedViewController;
+		if ([self isViewLoaded]) {
+			[self replaceMainViewController:oldViewController withViewController:_selectedViewController];
+			self.tabBar.selectedItem = _selectedViewController.tabBarItem;
+		}
+	}
 }
 
 - (NSUInteger)selectedIndex
