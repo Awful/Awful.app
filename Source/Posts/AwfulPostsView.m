@@ -476,8 +476,7 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     // If we use our long press gesture recognizer to show a share sheet, the UIWebView's own long press gesture recognizers trigger as well, registering as a click on the link. Now seems like an opportune time to get at UIWebView's recognizers and fail them.
     if (gestureRecognizer == _longPressGestureRecognizer && gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         if ([otherGestureRecognizer.view isDescendantOfView:self.webView]) {
-            otherGestureRecognizer.enabled = NO;
-            otherGestureRecognizer.enabled = YES;
+            [otherGestureRecognizer awful_failImmediately];
         }
     }
     

@@ -195,16 +195,14 @@
 - (void)didPanToShowMasterView:(UIPanGestureRecognizer *)sender
 {
     if (self.masterViewStuckVisible) {
-        sender.enabled = NO;
-        sender.enabled = YES;
+        [sender awful_failImmediately];
         return;
     }
     
     if (sender.state == UIGestureRecognizerStateBegan) {
         CGPoint location = [sender locationInView:_masterContainerView];
         if (CGRectContainsPoint(_masterContainerView.bounds, location)) {
-            sender.enabled = NO;
-            sender.enabled = YES;
+            [sender awful_failImmediately];
             return;
         }
     }
@@ -213,8 +211,7 @@
     
     // Only vaguely horizontal swipes are relevant.
     if (fabs(distance.y) > 32) {
-        sender.enabled = NO;
-        sender.enabled = YES;
+        [sender awful_failImmediately];
         return;
     }
     

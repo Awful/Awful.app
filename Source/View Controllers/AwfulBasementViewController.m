@@ -325,9 +325,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 {
     if (pan.state == UIGestureRecognizerStateBegan) {
         if (!(CGRectContainsPoint(self.mainContainerView.frame, [pan locationInView:self.view]))) {
-            // Cancel the pan.
-            pan.enabled = NO;
-            pan.enabled = YES;
+            [pan awful_failImmediately];
             return;
         }
         CGPoint start = CGPointMake(CGRectGetMinX(self.mainContainerView.frame), 0);

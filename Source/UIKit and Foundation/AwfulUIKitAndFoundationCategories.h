@@ -10,6 +10,7 @@
 #import "NSURL+Punycode.h"
 #import "NSURL+QueryDictionary.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
+#import "UIGestureRecognizer+AwfulConvenience.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIPasteboard+AwfulStringyURLs.h"
 #import "UITableView+HideStuff.h"
