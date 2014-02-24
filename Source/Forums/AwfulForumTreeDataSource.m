@@ -52,7 +52,7 @@
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                     managedObjectContext:managedObjectContext
                                                                       sectionNameKeyPath:@"category.index"
-                                                                               cacheName:@"Forum tree data source"];
+                                                                               cacheName:nil];
 }
 
 - (void)setUpdatesTableView:(BOOL)updatesTableView
