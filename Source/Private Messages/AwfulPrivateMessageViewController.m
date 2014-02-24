@@ -21,9 +21,8 @@
 #import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulTheme.h"
 #import "AwfulUIKitAndFoundationCategories.h"
-#import "AwfulURLActivity.h"
+#import "AwfulTheme.h"
 #import <GRMustache/GRMustache.h>
 
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
@@ -255,9 +254,40 @@
 
 - (void)showMenuForLinkToURL:(NSURL *)url fromRect:(CGRect)rect
 {
-	[self presentViewController:[AwfulURLActivity activityControllerForUrl:url]
-					   animated:YES
-					 completion:nil];
+    if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = url.absoluteString;
+    [sheet addButtonWithTitle:@"Open" block:^{
+        if ([url awfulURL]) {
+            [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
+        } else {
+            [self openURLInBuiltInBrowser:url];
+        }
+    }];
+    [sheet addButtonWithTitle:@"Open in Safari"
+                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
+    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
+        [sheet addButtonWithTitle:service.callToAction block:^{
+            [service saveURL:url];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: url,
+            (id)kUTTypePlainText: url.absoluteString
+        }];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    rect = [self.postsView.superview convertRect:rect fromView:self.postsView];
+    [sheet showFromRect:rect inView:self.postsView.superview animated:YES];
 }
 
 - (void)openURLInBuiltInBrowser:(NSURL *)url

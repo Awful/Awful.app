@@ -4,16 +4,6 @@
 <array>
 	<dict>
 		<key>Title</key>
-		<string>Safari</string>
-		<key>http</key>
-		<string>http</string>
-		<key>https</key>
-		<string>https</string>
-		<key>icon</key>
-		<string>browser-safari</string>
-	</dict>
-	<dict>
-		<key>Title</key>
 		<string>1Password</string>
 		<key>http</key>
 		<string>ophttp</string>
@@ -39,8 +29,6 @@
 	<dict>
 		<key>Title</key>
 		<string>Chrome</string>
-		<key>icon</key>
-		<string>browser-chrome</string>
 		<key>http</key>
 		<string>googlechrome</string>
 		<key>https</key>

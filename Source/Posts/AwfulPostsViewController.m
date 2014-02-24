@@ -28,7 +28,6 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
-#import "AwfulURLActivity.h"
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
@@ -1005,17 +1004,50 @@ static char KVOContext;
                                               @"http://vimeo.com/%@", vimeoVideoID]];
         }
         if (!safariURL) return;
-		[self presentViewController:[AwfulURLActivity activityControllerForUrl:safariURL]
-						   animated:YES
-						 completion:nil];
+        AwfulActionSheet *sheet = [AwfulActionSheet new];
+        [sheet addButtonWithTitle:@"Open in Safari" block:^{
+            [[UIApplication sharedApplication] openURL:safariURL];
+        }];
+        [sheet addCancelButtonWithTitle:@"Cancel"];
+        [sheet showFromRect:rect inView:self.postsView animated:YES];
     }
 }
 
 - (void)showMenuForLinkToURL:(NSURL *)url fromRect:(CGRect)rect
 {
-	[self presentViewController:[AwfulURLActivity activityControllerForUrl:url]
-					   animated:YES
-					 completion:nil];
+    if (![url opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return;
+    }
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    sheet.title = url.absoluteString;
+    [sheet addButtonWithTitle:@"Open" block:^{
+        if ([url awfulURL]) {
+            [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
+        } else {
+            [self openURLInBuiltInBrowser:url];
+        }
+    }];
+    [sheet addButtonWithTitle:@"Open in Safari"
+                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
+        if (![browser canOpenURL:url]) continue;
+        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
+                            block:^{ [browser openURL:url]; }];
+    }
+    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
+        [sheet addButtonWithTitle:service.callToAction block:^{
+            [service saveURL:url];
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy URL" block:^{
+        [UIPasteboard generalPasteboard].items = @[ @{
+            (id)kUTTypeURL: url,
+            (id)kUTTypePlainText: url.absoluteString,
+        } ];
+    }];
+    [sheet addCancelButtonWithTitle:@"Cancel"];
+    [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

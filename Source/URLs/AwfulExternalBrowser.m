@@ -8,8 +8,6 @@
 
 @property (copy, nonatomic) NSString *title;
 
-@property (copy, nonatomic) NSString *iconName;
-
 @property (copy, nonatomic) NSString *httpScheme;
 
 @property (copy, nonatomic) NSString *httpsScheme;
@@ -18,17 +16,15 @@
 
 @end
 
-
 @implementation AwfulExternalBrowser
 
-+ (NSArray *)availableBrowserActivities
++ (NSArray *)installedBrowsers
 {
-	NSMutableArray *listOfBrowsers = [NSMutableArray new];
+    NSMutableArray *listOfBrowsers = [NSMutableArray new];
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"Browsers" withExtension:@"plist"];
     for (NSDictionary *dict in [NSArray arrayWithContentsOfURL:url]) {
         AwfulExternalBrowser *browser = [AwfulExternalBrowser new];
         browser.title = dict[@"Title"];
-		browser.iconName = dict[@"icon"];
         browser.httpScheme = dict[@"http"];
         browser.httpsScheme = dict[@"https"];
         browser.ftpScheme = dict[@"ftp"];
@@ -37,43 +33,19 @@
     return listOfBrowsers;
 }
 
-- (NSString *)activityType
-{
-	return [NSString stringWithFormat:@"%@-%@", self.class, self.title];
-}
-
-- (NSString *)activityTitle
-{
-	return [NSString stringWithFormat:@"Open in %@", self.title];
-}
-
-- (UIImage *)activityImage
-{
-	return [UIImage imageNamed:self.iconName] ?: [UIImage imageNamed:@"browser-safari"];
-}
-
-+ (UIActivityCategory)activityCategory
-{
-	return UIActivityCategoryAction;
-}
-
-
 - (BOOL)isInstalled
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://", self.httpScheme]];
     return [[UIApplication sharedApplication] canOpenURL:url];
 }
 
-
-- (void)performActivity
+- (void)openURL:(NSURL *)url
 {
-	NSString *absoluteString = [self.url absoluteString];
+    NSString *absoluteString = [url absoluteString];
     NSRange colon = [absoluteString rangeOfString:@":"];
     NSString *schemeless = [absoluteString substringFromIndex:colon.location];
-    NSString *redirect = [[self adaptedSchemeForURL:self.url] stringByAppendingString:schemeless];
-    BOOL completed = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:redirect]];
-	
-	[self activityDidFinish:completed];
+    NSString *redirect = [[self adaptedSchemeForURL:url] stringByAppendingString:schemeless];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:redirect]];
 }
 
 - (BOOL)canOpenURL:(NSURL *)url
@@ -89,6 +61,5 @@
     if ([scheme isEqualToString:@"ftp"]) return self.ftpScheme;
     return nil;
 }
-
 
 @end

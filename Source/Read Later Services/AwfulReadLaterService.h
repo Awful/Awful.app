@@ -4,14 +4,15 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AwfulExternalBrowser.h"
-
 // A "Read Later" Service is a third-party service that stores and formats website contents.
-@interface AwfulReadLaterService : AwfulURLActivity
+@interface AwfulReadLaterService : NSObject
 
 // Returns an array of instances of AwfulReadLaterService, one for each known "Read Later" service
 // that can save a URL.
 + (NSArray *)availableServices;
+
+// Text appropriate for a button that sends a URL to the service.
+@property (readonly, nonatomic) NSString *callToAction;
 
 // Attempt to send a URL to the service.
 //

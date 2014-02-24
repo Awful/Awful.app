@@ -13,6 +13,7 @@
 
 @interface InstapaperReadLaterService : AwfulReadLaterService @end
 @interface PocketReadLaterService : AwfulReadLaterService @end
+@interface ReadingListReadLaterService : AwfulReadLaterService @end
 
 
 @interface AwfulReadLaterService ()
@@ -43,6 +44,7 @@
     return [@[
         [InstapaperReadLaterService new],
         [PocketReadLaterService new],
+		[ReadingListReadLaterService new],
     ] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"ready = YES"]];
 }
 
@@ -61,10 +63,8 @@
     if (error) {
         [SVProgressHUD dismiss];
         [AwfulAlertView showWithTitle:@"Could Not Send Link" error:error buttonTitle:@"OK"];
-		[self activityDidFinish:NO];
     } else {
          [SVProgressHUD showSuccessWithStatus:self.successfulStatusText];
-		[self activityDidFinish:YES];
     }
 }
 
@@ -78,14 +78,9 @@
     return !![AwfulSettings settings].instapaperUsername;
 }
 
-- (NSString *)activityTitle
+- (NSString *)callToAction
 {
     return @"Send to Instapaper";
-}
-
-- (UIImage *)activityImage
-{
-	return [UIImage imageNamed:@"share-instapaper"];
 }
 
 - (NSString *)ongoingStatusText
@@ -98,11 +93,11 @@
     return @"Sent";
 }
 
-- (void)performActivity
+- (void)saveURL:(NSURL *)url
 {
     [self showProgressHUD];
     AwfulSettings *settings = [AwfulSettings settings];
-    [[InstapaperAPIClient client] addURL:self.url
+    [[InstapaperAPIClient client] addURL:url
                              forUsername:settings.instapaperUsername
                                 password:settings.instapaperPassword
                                  andThen:^(NSError *error)
@@ -121,14 +116,9 @@
     return [[PocketAPI sharedAPI] isLoggedIn];
 }
 
-- (NSString *)activityTitle
+- (NSString *)callToAction
 {
     return @"Save to Pocket";
-}
-
-- (UIImage *)activityImage
-{
-	return [UIImage imageNamed:@"share-pocket"];
 }
 
 - (NSString *)ongoingStatusText
@@ -141,17 +131,54 @@
     return @"Saved";
 }
 
-- (void)performActivity
+- (void)saveURL:(NSURL *)url
 {
-	[self showProgressHUD];
+    [self showProgressHUD];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [[PocketAPI sharedAPI] saveURL:self.url handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+    [[PocketAPI sharedAPI] saveURL:url handler:^(PocketAPI *api, NSURL *url, NSError *error) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         [self done:error];
     }];
 }
 
-
-
 @end
 
+
+@implementation ReadingListReadLaterService
+
+- (BOOL)isReady
+{
+    return YES;
+}
+
+- (NSString *)callToAction
+{
+    return @"Add to Reading List";
+}
+
+- (NSString *)ongoingStatusText
+{
+    return @"Adding…";
+}
+
+- (NSString *)successfulStatusText
+{
+    return @"Added";
+}
+
+- (void)saveURL:(NSURL *)url
+{
+	[self showProgressHUD];
+	
+	NSError *error = nil;
+	
+	[[SSReadingList defaultReadingList] addReadingListItemWithURL:url
+															title:nil
+													  previewText:nil
+															error:&error];
+	
+	
+	[self done:error];
+}
+
+@end
