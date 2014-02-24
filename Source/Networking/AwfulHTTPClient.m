@@ -22,6 +22,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "HTMLNode+CachedSelector.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface AwfulHTTPRequestOperationManager : AFHTTPRequestOperationManager
 
@@ -681,11 +682,14 @@
 - (NSOperation *)listPrivateMessageInboxAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    CLSLog(@"%s fetching list into %@", __PRETTY_FUNCTION__, managedObjectContext);
     return [_HTTPManager GET:@"private.php"
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
+        CLSLog(@"%s fetch succeeded, ready to insert into %@", __PRETTY_FUNCTION__, managedObjectContext);
         [managedObjectContext performBlock:^{
+            CLSLog(@"%s inserting into %@", __PRETTY_FUNCTION__, managedObjectContext);
             AwfulMessageFolderScraper *scraper = [AwfulMessageFolderScraper new];
             NSError *error;
             NSArray *messages = [scraper scrapeDocument:document

@@ -55,6 +55,8 @@ static id _instance;
 
 - (void)logOut
 {
+    CLSLog(@"%s it's happening", __PRETTY_FUNCTION__);
+    
     // Destroy root view controller before deleting data store so there's no lingering references to persistent objects or their controllers.
     [self destroyRootViewControllerStack];
     
