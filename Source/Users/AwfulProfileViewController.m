@@ -21,17 +21,29 @@
 @interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
+
 @property (copy, nonatomic) NSArray *services;
+
 @property (assign, nonatomic) BOOL skipFetchingAndRenderingProfileOnAppear;
 
 @end
 
 @implementation AwfulProfileViewController
 
+- (void)dealloc
+{
+    if ([self isViewLoaded]) {
+        self.webView.delegate = nil;
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (id)initWithUser:(AwfulUser *)user
 {
     if (!(self = [super init])) return nil;
     _user = user;
+    self.title = @"Profile";
+    self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.hidesBottomBarWhenPushed = YES;
     return self;
 }
@@ -63,34 +75,10 @@
     return (UIWebView *)self.view;
 }
 
-- (void)stopObserving
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AwfulSettingsDidChangeNotification
-                                                  object:nil];
-}
-
 - (void)updateDarkTheme
 {
-    NSString *js = [NSString stringWithFormat:@"Awful.dark(%@)", [AwfulSettings settings].darkTheme ? @"true" : @"false"];
+    NSString *js = [NSString stringWithFormat:@"Awful.profile.dark(%@)", [AwfulSettings settings].darkTheme ? @"true" : @"false"];
     [self.webView stringByEvaluatingJavaScriptFromString:js];
-}
-
-- (void)settingsChanged:(NSNotification *)note
-{
-    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.darkTheme]) {
-        [self updateDarkTheme];
-    }
-}
-
-#pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.title = @"Profile";
-    self.modalPresentationStyle = UIModalPresentationFormSheet;
-    return self;
 }
 
 - (void)loadView
@@ -207,6 +195,23 @@
     }
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self updateDarkTheme];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsDidChange:)
+                                                 name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.darkTheme]) {
+        [self updateDarkTheme];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -215,7 +220,6 @@
                                                                                               target:self
                                                                                               action:@selector(dismiss)];
     }
-    [self updateDarkTheme];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsChanged:)
                                                  name:AwfulSettingsDidChangeNotification
@@ -245,18 +249,6 @@
 {
     [super viewDidAppear:animated];
     [self.webView.scrollView flashScrollIndicators];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [self stopObserving];
-    [super viewWillDisappear:animated];
-}
-
-- (void)dealloc
-{
-    if ([self isViewLoaded]) self.webView.delegate = nil;
-    [self stopObserving];
 }
 
 #pragma mark - UIWebViewDelegate

@@ -273,6 +273,10 @@ Awful.profile = {
       rect.top -= window.pageYOffset
       return JSON.stringify({ rect: rect, serviceIndex: tr.index() })
     }
+  },
+  
+  dark: function(dark){
+    $('body').toggleClass('dark', dark);
   }
 }
 
