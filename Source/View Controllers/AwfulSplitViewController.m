@@ -239,17 +239,21 @@
     }
 }
 
-- (void)viewDidLoad
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    self.splitView.masterViewStuckVisible = self.sidebarShouldStickVisible;
-    if (_detailViewControllerIsInconsequential) {
-        self.sidebarHidden = NO;
-    }
-    [self updateToggleSidebarItemOnDetailViewController];
+    [super viewWillAppear:animated];
+    
+    // Interface orientation may have changed since disappearing. For example, fullscreen a video in portrait, then rotate to landscape, then dismiss the video. We won't get any rotation callbacks in that case, but we still need to react to the new interface orientation.
+    [self updateStateThatChangesWithInterfaceOrientation];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self updateStateThatChangesWithInterfaceOrientation];
+}
+
+- (void)updateStateThatChangesWithInterfaceOrientation
 {
     self.splitView.masterViewStuckVisible = self.sidebarShouldStickVisible;
     if (_detailViewControllerIsInconsequential) {
