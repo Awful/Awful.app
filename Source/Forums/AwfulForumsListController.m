@@ -42,7 +42,7 @@
     
     self.title = @"Forums";
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
-    self.tabBarItem.title = @"Forums list";
+    self.tabBarItem.accessibilityLabel = @"Forums list";
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
     [self showOrHideEditButton];
     

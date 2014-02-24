@@ -34,7 +34,6 @@
     _managedObjectContext = managedObjectContext;
     self.title = @"Settings";
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
-    self.tabBarItem.title = @"Settings";
     self.tabBarItem.image = [UIImage imageNamed:@"cog"];
     return self;
 }

@@ -36,7 +36,7 @@
     if (!(self = [super init])) return nil;
     _managedObjectContext = managedObjectContext;
     self.title = @"Private Messages";
-    self.tabBarItem.title = @"Private messages";
+    self.tabBarItem.accessibilityLabel = @"Private messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.composeItem;
