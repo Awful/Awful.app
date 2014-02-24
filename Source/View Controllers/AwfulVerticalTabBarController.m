@@ -37,18 +37,14 @@
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
-    if (_selectedViewController == selectedViewController && [_selectedViewController isKindOfClass:[UINavigationController class]]){
-		//Pop back to root view if button is tapped again while already on view
-		[(UINavigationController *)selectedViewController popToRootViewControllerAnimated:YES];
-	} else if (_selectedViewController != selectedViewController) {
-		NSParameterAssert([self.viewControllers containsObject:selectedViewController]);
-		UIViewController *oldViewController = _selectedViewController;
-		_selectedViewController = selectedViewController;
-		if ([self isViewLoaded]) {
-			[self replaceMainViewController:oldViewController withViewController:_selectedViewController];
-			self.tabBar.selectedItem = _selectedViewController.tabBarItem;
-		}
-	}
+    if (_selectedViewController == selectedViewController) return;
+    NSParameterAssert([self.viewControllers containsObject:selectedViewController]);
+    UIViewController *oldViewController = _selectedViewController;
+    _selectedViewController = selectedViewController;
+    if ([self isViewLoaded]) {
+        [self replaceMainViewController:oldViewController withViewController:_selectedViewController];
+        self.tabBar.selectedItem = _selectedViewController.tabBarItem;
+    }
 }
 
 - (NSUInteger)selectedIndex
@@ -142,7 +138,15 @@
 
 - (void)tabBar:(AwfulVerticalTabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    self.selectedIndex = [tabBar.items indexOfObject:item];
+    NSUInteger index = [tabBar.items indexOfObject:item];
+    if (index == self.selectedIndex) {
+        UINavigationController *navigationController = (UINavigationController *)self.selectedViewController;
+        if ([navigationController isKindOfClass:[UINavigationController class]]) {
+            [navigationController popToRootViewControllerAnimated:YES];
+        }
+    } else {
+        self.selectedIndex = index;
+    }
 }
 
 #pragma mark State preservation and restoration
