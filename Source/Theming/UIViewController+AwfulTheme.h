@@ -58,6 +58,6 @@
 /**
  * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
  */
-- (void)themeCell:(UICollectionViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)themeCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end

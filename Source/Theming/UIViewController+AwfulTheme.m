@@ -58,9 +58,9 @@
 	[self.tableView reloadData];
 }
 
--(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	
+	// noop
 }
 
 - (AwfulTheme *)theme
@@ -86,9 +86,9 @@
 
 }
 
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)themeCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	
+	// noop
 }
 
 - (AwfulTheme *)theme
