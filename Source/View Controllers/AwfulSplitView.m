@@ -20,7 +20,6 @@
     NSArray *_stuckVisibleConstraints;
     NSLayoutConstraint *_masterViewHiddenConstraint;
     UIPanGestureRecognizer *_panGestureRecognizer;
-    UISwipeGestureRecognizer *_swipeGestureRecognizer;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -32,11 +31,6 @@
     _panGestureRecognizer.delegate = self;
     [_panGestureRecognizer addTarget:self action:@selector(didPanToShowMasterView:)];
     [self addGestureRecognizer:_panGestureRecognizer];
-    
-    _swipeGestureRecognizer = [UISwipeGestureRecognizer new];
-    _swipeGestureRecognizer.delegate = self;
-    [_swipeGestureRecognizer addTarget:self action:@selector(didSwipeToPopNavigationController:)];
-    [self addGestureRecognizer:_swipeGestureRecognizer];
     
     _masterContainerView = [UIView new];
     _masterContainerView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -156,10 +150,8 @@
     [self updateCoverView];
     [self setNeedsUpdateConstraints];
     if (masterViewStuckVisible) {
-        [self removeGestureRecognizer:_swipeGestureRecognizer];
         [self removeGestureRecognizer:_panGestureRecognizer];
     } else {
-        [self addGestureRecognizer:_swipeGestureRecognizer];
         [self addGestureRecognizer:_panGestureRecognizer];
     }
 }
@@ -176,6 +168,12 @@
     UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer new];
     [tapGestureRecognizer addTarget:self action:@selector(didTapToHideDetailView:)];
     [_detailCoverView addGestureRecognizer:tapGestureRecognizer];
+    
+    UISwipeGestureRecognizer *swipeGestureRecognizer = [UISwipeGestureRecognizer new];
+    swipeGestureRecognizer.delegate = self;
+    [swipeGestureRecognizer addTarget:self action:@selector(didSwipeToPopNavigationController:)];
+    [_detailCoverView addGestureRecognizer:swipeGestureRecognizer];
+    
     return _detailCoverView;
 }
 
@@ -231,11 +229,9 @@
 
 - (void)didSwipeToPopNavigationController:(UISwipeGestureRecognizer *)sender
 {
-    if (!self.masterViewHidden && !self.masterViewStuckVisible) {
-        CGPoint location = [sender locationInView:_masterContainerView];
-        if (!CGRectContainsPoint(_masterContainerView.bounds, location)) {
-            [self.delegate splitViewDidSwipeToPopNavigationController:self];
-        }
+    CGPoint location = [sender locationInView:_masterContainerView];
+    if (!CGRectContainsPoint(_masterContainerView.bounds, location)) {
+        [self.delegate splitViewDidSwipeToPopNavigationController:self];
     }
 }
 
@@ -274,7 +270,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    return gestureRecognizer.delegate == otherGestureRecognizer.delegate;
+    return gestureRecognizer.delegate == self && otherGestureRecognizer.delegate == self;
 }
 
 @end
