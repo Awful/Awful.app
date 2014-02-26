@@ -32,6 +32,8 @@
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
+		1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */; };
+		1C22EE7E18BE64EC00ED5289 /* AwfulHoleyDimmingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */; };
 		1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* posts-view.html in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* posts-view.html */; };
 		1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */; };
@@ -286,6 +288,10 @@
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
 		1C20562E1806700500A84C6D /* AwfulManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulManagedObject.m; sourceTree = "<group>"; };
+		1C22EE7918BE57CA00ED5289 /* AwfulSemiModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSemiModalViewController.h; sourceTree = "<group>"; };
+		1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSemiModalViewController.m; sourceTree = "<group>"; };
+		1C22EE7C18BE64EC00ED5289 /* AwfulHoleyDimmingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHoleyDimmingView.h; sourceTree = "<group>"; };
+		1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHoleyDimmingView.m; sourceTree = "<group>"; };
 		1C23A0A0163E6C40006C7F39 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C23A0A1163E6C40006C7F39 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* posts-view.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "posts-view.html"; sourceTree = "<group>"; };
@@ -712,6 +718,8 @@
 			children = (
 				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
 				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
+				1C22EE7C18BE64EC00ED5289 /* AwfulHoleyDimmingView.h */,
+				1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */,
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
 				1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */,
@@ -737,6 +745,8 @@
 				1CC0A44A1845FC1300A6F3FE /* AwfulLaunchImageViewController.m */,
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
+				1C22EE7918BE57CA00ED5289 /* AwfulSemiModalViewController.h */,
+				1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */,
 				1C89A78F18AA12CB00D75854 /* AwfulSplitView.h */,
 				1C89A79018AA12CB00D75854 /* AwfulSplitView.m */,
 				1C89A78C18AA084500D75854 /* AwfulSplitViewController.h */,
@@ -1835,6 +1845,7 @@
 				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
 				1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
+				1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */,
 				1CE694A8182FEF8D00B24928 /* AwfulBan.m in Sources */,
 				1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */,
 				1C9FDAFF16E486A600C665B5 /* AwfulImageCollectionViewCell.m in Sources */,
@@ -1860,6 +1871,7 @@
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
 				1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */,
+				1C22EE7E18BE64EC00ED5289 /* AwfulHoleyDimmingView.m in Sources */,
 				1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */,
 				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
 				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
