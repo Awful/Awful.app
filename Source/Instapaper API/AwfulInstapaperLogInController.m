@@ -136,6 +136,8 @@ static NSString * const ButtonIdentifier = @"Button";
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
+    cell.selectedBackgroundView = [[UIView alloc] init];
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
 }
 
 - (void)textFieldDidChangeValue:(UITextField *)textField

@@ -163,6 +163,8 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 {
     cell.backgroundColor = self.theme[@"listBackgroundColor"];
     cell.textLabel.textColor = self.theme[@"listTextColor"];
+    cell.selectedBackgroundView = [[UIView alloc] init];
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate

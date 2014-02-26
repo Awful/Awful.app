@@ -235,6 +235,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     cell.textLabel.textColor = self.theme[@"listTextColor"];
     cell.tintColor = self.theme[@"listDetailColor"];
     cell.fontName = self.theme[@"listFontName"];
+    cell.selectedBackgroundView = [[UIView alloc] init];
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
     if (thread.unreadPosts == 0) {
         cell.badgeLabel.textColor = [UIColor grayColor];
         cell.lightenBadgeLabel = YES;

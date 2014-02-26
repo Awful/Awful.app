@@ -274,6 +274,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 {
 	cell.backgroundColor = self.theme[@"listBackgroundColor"];
 	cell.textLabel.textColor = self.theme[@"listTextColor"];
+    cell.selectedBackgroundView = [[UIView alloc] init];
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
 }
 
 - (void)saveFavoriteForumsToSettings

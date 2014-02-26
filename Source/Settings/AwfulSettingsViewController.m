@@ -138,6 +138,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
 {
 	cell.backgroundColor = self.theme[@"listBackgroundColor"];
 	cell.textLabel.textColor = self.theme[@"listTextColor"];
+    cell.selectedBackgroundView = [[UIView alloc] init];
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
 	
 	if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
 		UIColor *color = self.theme[@"settingsSwitchColor"];
