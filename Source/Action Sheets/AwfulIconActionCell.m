@@ -6,88 +6,19 @@
 
 @interface AwfulIconActionCell ()
 
-@property (nonatomic) UILabel *titleLabel;
-@property (nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) UIImageView *iconImageView;
+
+@property (strong, nonatomic) UILabel *titleLabel;
 
 @end
 
 @implementation AwfulIconActionCell
 
-- (NSString *)title
-{
-    return self.titleLabel.text;
-}
-
-- (void)setTitle:(NSString *)title
-{
-    self.titleLabel.text = title;
-}
-
-- (void)setIcon:(UIImage *)icon
-{
-    if (_icon == icon) return;
-    _icon = icon;
-    [self updateImage];
-}
-
-- (void)setTintColor:(UIColor *)tintColor
-{
-    if (_tintColor == tintColor) return;
-    _tintColor = tintColor;
-    [self updateImage];
-}
-
-- (void)updateImage
-{
-    if (!self.tintColor) {
-        self.imageView.image = nil;
-        self.imageView.highlightedImage = nil;
-        return;
-    }
-    
-    void (^drawIcon)(void) = ^{
-        if (self.icon) {
-            CGRect rect = (CGRect){ .size = self.icon.size };
-            rect.origin.x = (ImageSize.width - CGRectGetWidth(rect)) / 2;
-            rect.origin.y = (ImageSize.height - CGRectGetHeight(rect)) / 2;
-            [self.icon drawInRect:rect];
-        }
-    };
-    
-    UIGraphicsBeginImageContextWithOptions(ImageSize, NO, 0);
-    
-    [self.tintColor set];
-  
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:(CGRect){ .size = ImageSize }];
-    path.lineWidth = 2;
-    [path addClip];
-    
-    [path stroke];
-    drawIcon();
-    self.imageView.highlightedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
-    [path fill];
-    drawIcon();
-    self.imageView.image = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-}
-
-const CGSize ImageSize = {56, 56};
-
-#pragma mark - UICollectionViewCell
-
-- (void)setHighlighted:(BOOL)highlighted
-{
-    [super setHighlighted:highlighted];
-    self.imageView.highlighted = highlighted;
-}
-
-#pragma mark - UIView
-
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
+    
     self.titleLabel = [UILabel new];
     self.titleLabel.backgroundColor = nil;
     self.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -96,22 +27,49 @@ const CGSize ImageSize = {56, 56};
     self.titleLabel.numberOfLines = 2;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.titleLabel];
-    self.imageView = [UIImageView new];
-    [self.contentView addSubview:self.imageView];
+    
+    self.iconImageView = [UIImageView new];
+    self.iconImageView.contentMode = UIViewContentModeCenter;
+    [self.contentView addSubview:self.iconImageView];
+    
     return self;
+}
+
+- (void)setTintColor:(UIColor *)tintColor
+{
+    if (_tintColor == tintColor) return;
+    _tintColor = tintColor;
+    if (!self.highlighted) {
+        self.iconImageView.tintColor = tintColor;
+    }
+}
+
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    if (highlighted) {
+        self.iconImageView.tintColor = [UIColor whiteColor];
+    } else {
+        self.iconImageView.tintColor = self.tintColor;
+    }
 }
 
 - (void)layoutSubviews
 {
-    CGRect imageFrame, titleFrame;
-    CGRectDivide(self.contentView.bounds, &imageFrame, &titleFrame, ImageSize.width, CGRectMinYEdge);
-    imageFrame.origin.x += (CGRectGetWidth(imageFrame) - ImageSize.width) / 2;
-    imageFrame.size.width = ImageSize.width;
-    self.imageView.frame = imageFrame;
+    CGRect iconFrame;
+    CGRect titleFrame;
+    CGRectDivide(self.contentView.bounds, &iconFrame, &titleFrame, ImageSize.height, CGRectMinYEdge);
+    
+    iconFrame.origin.x += (CGRectGetWidth(iconFrame) - ImageSize.width) / 2;
+    iconFrame.size.width = ImageSize.width;
+    self.iconImageView.frame = iconFrame;
+    
     self.titleLabel.frame = titleFrame;
     [self.titleLabel sizeToFit];
     titleFrame.size.height = CGRectGetHeight(self.titleLabel.frame);
     self.titleLabel.frame = titleFrame;
 }
+
+static const CGSize ImageSize = { 56, 56 };
 
 @end

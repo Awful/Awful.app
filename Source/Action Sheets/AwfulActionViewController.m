@@ -84,8 +84,8 @@
 {
     AwfulIconActionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     AwfulIconActionItem *item = _items[indexPath.item];
-    cell.title = item.title;
-    cell.icon = item.icon;
+    cell.titleLabel.text = item.title;
+    cell.iconImageView.image = item.icon;
     cell.tintColor = item.tintColor;
     cell.isAccessibilityElement = YES;
     cell.accessibilityLabel = item.title;

@@ -109,7 +109,7 @@
             icon = [UIImage imageNamed:@"vote"];
             break;
     }
-    return [[self alloc] initWithTitle:title icon:icon tintColor:tintColor action:action];
+    return [[self alloc] initWithTitle:title icon:[icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] tintColor:tintColor action:action];
 }
 
 @end
