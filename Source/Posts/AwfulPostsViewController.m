@@ -4,13 +4,13 @@
 
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet.h"
+#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulIconActionSheet.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
@@ -232,7 +232,7 @@
 
 - (void)showThreadActionsFromBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = self.title;
     AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
@@ -288,7 +288,15 @@
              }
          }];
     }]];
-    [sheet showFromBarButtonItem:barButtonItem animated:NO];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromBarButtonItem:barButtonItem];
+    } else {
+        UINavigationController *navigationController = self.navigationController;
+        [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+            UIToolbar *toolbar = navigationController.toolbar;
+            return [view convertRect:toolbar.bounds fromView:toolbar];
+        }];
+    }
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -865,7 +873,7 @@ static char KVOContext;
         [self showActionsForPost:post fromRect:rect];
     } else if (usersPostIndex != NSNotFound) {
         AwfulPost *post = self.fetchedResultsController.fetchedObjects[usersPostIndex + self.hiddenPosts];
-        [self showActionsForUser:post.author fromRect:rect];
+        [self showActionsForAuthorOfPost:post fromRect:rect];
     }
 }
 
@@ -875,7 +883,7 @@ static char KVOContext;
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
     }
-    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+    AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
@@ -947,13 +955,24 @@ static char KVOContext;
             }];
         }]];
     }
-    [sheet showFromRect:rect inView:self.postsView animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:^(UIView *view) {
+            return [self.postsView rectOfActionButtonForPostWithID:post.postID];
+        }];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:^(UIView *view) {
+            CGRect rect = [self.postsView rectOfFooterForPostWithID:post.postID];
+            rect.origin.x = 0;
+            rect.size.width = CGRectGetWidth(self.postsView.bounds);
+            return rect;
+        }];
+    }
 }
 
-- (void)showActionsForUser:(AwfulUser *)user fromRect:(CGRect)rect
+- (void)showActionsForAuthorOfPost:(AwfulPost *)post fromRect:(CGRect)rect
 {
-	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
-	sheet.title = [NSString stringWithFormat:@"%@", user.username];
+    AwfulUser *user = post.author;
+	AwfulActionViewController *sheet = [AwfulActionViewController new];
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
 		[self showProfileWithUser:user];
 	}]];
@@ -977,7 +996,18 @@ static char KVOContext;
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
 		[self showRapSheetWithUser:user];
 	}]];
-    [sheet showFromRect:rect inView:self.postsView animated:YES];
+    
+    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
+        CGRect rect = [self.postsView rectOfHeaderForPostWithID:post.postID];
+        rect.origin.x = 0;
+        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
+        return rect;
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
+    }
 }
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point

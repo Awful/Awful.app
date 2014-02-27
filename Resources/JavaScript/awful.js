@@ -103,6 +103,27 @@ Awful.postWithUserNameForPoint = function(x, y){
 	}
 }
 
+Awful.headerForPostWithID = function(postID){
+  var post = $('#' + postID)
+  if (post.length) {
+    return JSON.stringify(rectOf(post.find('header')))
+  }
+}
+
+Awful.footerForPostWithID = function(postID){
+  var post = $('#' + postID)
+  if (post.length) {
+    return JSON.stringify(rectOf(post.find('footer')))
+  }
+}
+
+Awful.actionButtonForPostWithID = function(postID){
+  var post = $('#' + postID)
+  if (post.length) {
+    return JSON.stringify(rectOf(post.find('footer button')))
+  }
+}
+
 function rectOf(el) {
   var rect = el.offset()
   rect.left -= window.pageXOffset

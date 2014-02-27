@@ -76,6 +76,12 @@
 //         in the posts view's frame coordinates on success.
 - (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect;
 
+- (CGRect)rectOfHeaderForPostWithID:(NSString *)postID;
+
+- (CGRect)rectOfFooterForPostWithID:(NSString *)postID;
+
+- (CGRect)rectOfActionButtonForPostWithID:(NSString *)postID;
+
 @end
 
 

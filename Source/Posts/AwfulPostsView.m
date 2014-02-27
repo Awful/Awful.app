@@ -425,6 +425,24 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     return [NSURL awful_URLWithString:videoInfo[@"url"]];
 }
 
+- (CGRect)rectOfHeaderForPostWithID:(NSString *)postID
+{
+    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.headerForPostWithID(%@)", postID];
+    return [self rectOfElementWithRectDictionary:rectDict];
+}
+
+- (CGRect)rectOfFooterForPostWithID:(NSString *)postID
+{
+    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.footerForPostWithID(%@)", postID];
+    return [self rectOfElementWithRectDictionary:rectDict];
+}
+
+- (CGRect)rectOfActionButtonForPostWithID:(NSString *)postID
+{
+    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.actionButtonForPostWithID(%@)", postID];
+    return [self rectOfElementWithRectDictionary:rectDict];
+}
+
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView

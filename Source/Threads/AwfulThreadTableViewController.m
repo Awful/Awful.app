@@ -3,10 +3,10 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTableViewController.h"
+#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulIconActionSheet.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
@@ -136,8 +136,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
 {
-    AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
-    sheet.title = [thread.title stringByCollapsingWhitespace];
+    AwfulActionViewController *sheet = [AwfulActionViewController new];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
@@ -210,7 +209,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     NSIndexPath *indexPath = [_threadDataSource.fetchedResultsController indexPathForObject:thread];
     // The cell can be nil if it's invisible or out of range. The table view is an acceptable fallback.
     UIView *view = [self.tableView cellForRowAtIndexPath:indexPath] ?: self.tableView;
-    [sheet showFromRect:view.frame inView:self.tableView animated:YES];
+    [sheet presentFromView:view highlightingRegionReturnedByBlock:nil];
 }
 
 - (void)doneWithProfile

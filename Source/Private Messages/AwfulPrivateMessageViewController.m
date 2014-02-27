@@ -4,6 +4,7 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulActionSheet.h"
+#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
@@ -11,7 +12,6 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulIconActionSheet.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
@@ -130,6 +130,7 @@
     dict[@"postDateFormat"] = AwfulDateFormatters.postDateFormatter;
     dict[@"author"] = self.privateMessage.from;
     dict[@"regDateFormat"] = AwfulDateFormatters.regDateFormatter;
+    dict[@"postID"] = self.privateMessage.messageID;
     NSError *error;
     NSString *html = [GRMustacheTemplate renderObject:dict
                                          fromResource:@"Post"
@@ -201,9 +202,8 @@
 
 - (void)showUserActionsFromRect:(CGRect)rect
 {
-	AwfulIconActionSheet *sheet = [AwfulIconActionSheet new];
+	AwfulActionViewController *sheet = [AwfulActionViewController new];
     AwfulUser *user = self.privateMessage.from;
-	sheet.title = [NSString stringWithFormat:@"%@", user.username];
 	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -223,7 +223,15 @@
         }
 
 	}]];
-    [sheet showFromRect:rect inView:self.postsView animated:YES];
+    
+    AwfulSemiModalRectInViewBlock headerBlock = ^(UIView *view) {
+        return [self.postsView rectOfHeaderForPostWithID:self.privateMessage.messageID];
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerBlock];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerBlock];
+    }
 }
 
 - (void)doneWithProfile
