@@ -7,7 +7,6 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulHTTPClient.h"
-#import "AwfulIconActionSheet.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulNewThreadViewController.h"
