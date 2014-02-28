@@ -100,10 +100,7 @@ static NSString * const CellIdentifier = @"IconActionCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulIconActionItem *item = _items[indexPath.item];
-    if (item.action) {
-        item.action();
-    }
-    [self dismiss];
+    [self dismissCompletion:item.action];
 }
 
 @end

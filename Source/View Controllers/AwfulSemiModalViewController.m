@@ -86,13 +86,16 @@ static inline UIViewController * ViewControllerForView(UIView *view)
     return nil;
 }
 
-- (void)dismiss
+- (void)dismissCompletion:(void (^)(void))completionBlock
 {
     if ([self isShowingInPopover]) {
         [self.popoverController dismissPopoverAnimated:YES];
         self.popoverController = nil;
+        if (completionBlock) {
+            completionBlock();
+        }
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:YES completion:completionBlock];
     }
 }
 

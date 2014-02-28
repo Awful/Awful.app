@@ -32,8 +32,10 @@ typedef CGRect (^AwfulSemiModalRectInViewBlock)(UIView *view);
 
 /**
  * Dismisses the semi-modal view controller, regardless of how it was presented.
+ *
+ * @param completionBlock A block to call after dismissing the semi-modal view controller.
  */
-- (void)dismiss;
+- (void)dismissCompletion:(void (^)(void))completionBlock;
 
 /**
  * Subclasses must override and return a size that considers the view's current size a maximum in both dimensions. If it is impossible to fulfill those constraints, break them as minimally as possible.
