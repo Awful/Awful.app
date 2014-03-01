@@ -3,7 +3,7 @@ xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
 link_with 'Awful', 'Imgur API Test'
 inhibit_all_warnings!
 
-pod 'AFNetworking', '2.0.3'
+pod 'AFNetworking', '2.2.0'
 pod 'GRMustache', '6.9.2'
 pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
 pod 'JLRoutes', '1.4'

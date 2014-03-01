@@ -92,7 +92,8 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
                             relativeToURL:_HTTPManager.baseURL];
         NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
                                                                         URLString:URL.absoluteString
-                                                                       parameters:nil];
+                                                                       parameters:nil
+																			error:nil];
         NSURLSessionTask *task = [_HTTPManager downloadTaskWithRequest:request
                                                               progress:nil
                                                            destination:^(NSURL *targetPath, NSURLResponse *response)

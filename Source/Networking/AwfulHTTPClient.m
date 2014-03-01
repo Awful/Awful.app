@@ -579,7 +579,8 @@
     NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
                                                                     URLString:URL.absoluteString
                                                                    parameters:@{ @"goto" : @"post",
-                                                                                 @"postid" : postID }];
+                                                                                 @"postid" : postID }
+																		error:nil];
     __block BOOL didSucceed = NO;
     AFHTTPRequestOperation *op = [_HTTPManager HTTPRequestOperationWithRequest:request success:^(id _, id __) {
         // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
