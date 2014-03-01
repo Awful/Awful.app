@@ -5,7 +5,7 @@ GRMustache is a flexible and production-ready implementation of [Mustache](http:
 
 GRMustache targets iOS down to version 4.3, MacOS down to 10.6 Snow Leopard (with or without garbage collection), and only depends on the Foundation framework.
 
-**February 3, 2014: GRMustache 6.9.1 is out.** [Release notes](RELEASE_NOTES.md)
+**February 28, 2014: GRMustache 6.9.2 is out.** [Release notes](RELEASE_NOTES.md)
 
 Get release announcements and usage tips: follow [@GRMustache on Twitter](http://twitter.com/GRMustache).
 
@@ -196,10 +196,13 @@ Who's using GRMustache
 
 * [bnickel/AMYServer](https://github.com/bnickel/AMYServer): A mock server fully integrated with KIF-next.
 * [tomaz/appledoc](https://github.com/tomaz/appledoc): Objective-c code Apple style documentation set generator.
+* [Awful/Awful.app](https://github.com/Awful/Awful.app): Something Awful Forums browser for iOS
 * [stevestreza/Barista](https://github.com/stevestreza/Barista): A modular, embeddable web server for Objective-C.
 * [mapbox/mapbox-ios-sdk](https://github.com/mapbox/mapbox-ios-sdk): MapBox iOS SDK, an open source alternative to MapKit.
 * [Objective-Cloud/OCFWeb](https://github.com/Objective-Cloud/OCFWeb): A small and imperfect web application framework written in Objective-C.
+* [as-cii/PdfReportKit](https://github.com/as-cii/PdfReportKit): A library that generates a pdf report starting with HTML code.
 * [RESTmagic](http://restmagic.org): RESTmagic is a framework for that framework you already deployed, your RESTFUL/RESTish api.
+* [Codeux/Textual](https://github.com/Codeux/Textual): A lightweight IRC client for Mac OS X.
 * [CarterA/Tribo](https://github.com/CarterA/Tribo): Extremely fast static site generator written in Objective-C.
 
 ### Closed-source software

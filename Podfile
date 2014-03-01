@@ -4,7 +4,7 @@ link_with 'Awful', 'Imgur API Test'
 inhibit_all_warnings!
 
 pod 'AFNetworking', '2.0.3'
-pod 'GRMustache', '6.9.1'
+pod 'GRMustache', '6.9.2'
 pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
 pod 'JLRoutes', '1.4'
 pod 'PocketAPI', '1.0.2'
