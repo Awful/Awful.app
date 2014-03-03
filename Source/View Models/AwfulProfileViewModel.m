@@ -54,11 +54,6 @@
     return contactInfo;
 }
 
-- (BOOL)anyContactInfo
-{
-    return self.contactInfo.count > 0;
-}
-
 - (NSArray *)additionalInfo
 {
     NSMutableArray *additionalInfo = [NSMutableArray new];

@@ -68,7 +68,8 @@
     NSURL *requestURL = [NSURL URLWithString:@"add" relativeToURL:_HTTPManager.baseURL];
     NSURLRequest *request = [requestSerializer requestWithMethod:@"POST"
                                                        URLString:requestURL.absoluteString
-                                                      parameters:@{ @"url": url.absoluteString }];
+                                                      parameters:@{ @"url": url.absoluteString }
+														   error:nil];
     NSURLSessionDataTask *task = [_HTTPManager dataTaskWithRequest:request
                                                  completionHandler:^(NSURLResponse *response, id responseObject, NSError *underlyingError)
     {

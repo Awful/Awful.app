@@ -186,8 +186,9 @@
 - (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
     UIViewController *root = self.rootViewController;
+    AwfulSplitViewController *split = nil;
     if ([root isKindOfClass:[AwfulSplitViewController class]]) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)root;
+        split = (AwfulSplitViewController *)root;
         root = split.viewControllers.firstObject;
     }
     if (![root respondsToSelector:@selector(viewControllers)]) return NO;
@@ -195,6 +196,9 @@
     for (UIViewController *topmost in [root valueForKey:@"viewControllers"]) {
         if (FindViewControllerOfClass(topmost, class)) {
             [root setValue:topmost forKey:@"selectedViewController"];
+            if (split) {
+                [split setSidebarHidden:NO animated:YES];
+            }
             return YES;
         }
     }
