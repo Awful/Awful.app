@@ -46,7 +46,7 @@
     
     CGRect dimmingRect = self.dimRect;
     if (CGRectIsInfinite(dimmingRect)) {
-        dimmingRect = self.bounds;
+        dimmingRect = bounds;
     }
     UIBezierPath *path = [UIBezierPath bezierPathWithRect:dimmingRect];
     
