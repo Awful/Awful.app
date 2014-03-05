@@ -32,13 +32,13 @@
             break;
         
         case AwfulIconActionItemTypeCopyURL:
-            title = @"Copy URL";
+            title = @"Copy\nURL";
             tintColor = [UIColor colorWithHue:0.590 saturation:0.630 brightness:0.890 alpha:1];
             icon = [UIImage imageNamed:@"copy-url"];
             break;
             
         case AwfulIconActionItemTypeEditPost:
-            title = @"Edit Post";
+            title = @"Edit\nPost";
             tintColor = [UIColor colorWithHue:0.068 saturation:0.808 brightness:0.573 alpha:1];
             icon = [UIImage imageNamed:@"edit-post"];
             break;
@@ -68,13 +68,13 @@
             break;
 
         case AwfulIconActionItemTypeQuotePost:
-            title = @"Quote";
-            tintColor = [UIColor colorWithWhite:0.325 alpha:1];
+            title = @"Quote\nPost";
+            tintColor = [UIColor colorWithWhite:0.7 alpha:1];
             icon = [UIImage imageNamed:@"quote-post"];
             break;
 
         case AwfulIconActionItemTypeRapSheet:
-            title = @"Rap Sheet";
+            title = @"Rap\nSheet";
             tintColor = [UIColor colorWithHue:0.117 saturation:1.0 brightness:0.96 alpha:1];
             icon = [UIImage imageNamed:@"rap-sheet"];
             break;
@@ -86,7 +86,7 @@
             break;
             
         case AwfulIconActionItemTypeSendPrivateMessage:
-            title = @"Send PM";
+            title = @"Send\nPM";
             tintColor = [UIColor colorWithHue:0.133 saturation:0.78 brightness:0.89 alpha:1];
             icon = [UIImage imageNamed:@"send-private-message"];
             break;
@@ -98,13 +98,13 @@
             break;
         
         case AwfulIconActionItemTypeUserProfile:
-            title = @"Profile";
+            title = @"User\nProfile";
             tintColor = [UIColor colorWithHue:0.633 saturation:0.055 brightness:0.718 alpha:1];
             icon = [UIImage imageNamed:@"user-profile"];
             break;
         
         case AwfulIconActionItemTypeVote:
-            title = @"Vote";
+            title = @"Vote\nThread";
             tintColor = [UIColor colorWithHue:0.081 saturation:0.843 brightness:0.898 alpha:1];
             icon = [UIImage imageNamed:@"vote"];
             break;
