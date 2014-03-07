@@ -121,10 +121,27 @@ static inline UIViewController * ViewControllerForView(UIView *view)
     CGRect contextRegion = [self contextRegion];
     _dimmingView.hole = [_dimmingView convertRect:contextRegion fromView:self.contextView];
     
-    // Calculate our frame relative to the contextView. Since our superview's transform is suspect, work with our view's bounds and judiciously -convertRect:....
-    CGRect frame = CGRectMake(0, 0, CGRectGetWidth(_presentingViewController.view.bounds), 0);
-    self.view.bounds = frame;
-    frame.size.height = self.preferredContentSize.height;
+    // Calculate our frame relative to the contextView. Since our superview's transform is suspect, work with our view's bounds and judiciously use -convertRect:....
+    CGRect frame = CGRectMake(0, 0, CGRectGetWidth(presentingView.bounds), 0);
+    if ([[self.view class] requiresConstraintBasedLayout] || self.view.constraints.count > 0) {
+        
+        // If we use auto layout we must replicate how the auto layout system calculates a frame:
+        //   1. Start with the intrinsic content size.
+        //   2. Do a layout pass.
+        //   3. Use the resulting intrinsic content size.
+        CGFloat (^calculateHeight)(void) = ^{
+            CGRect alignmentRect = (CGRect){ .size = self.view.intrinsicContentSize };
+            CGRect frameForRect = [self.view frameForAlignmentRect:alignmentRect];
+            return CGRectGetHeight(frameForRect);
+        };
+        frame.size.height = calculateHeight();
+        self.view.bounds = frame;
+        [self.view layoutIfNeeded];
+        frame.size.height = calculateHeight();
+    } else {
+        self.view.bounds = frame;
+        frame.size.height = self.preferredContentSize.height;
+    }
     
     // If there's not enough room to show below the context region, show above it instead.
     frame.origin.y = CGRectGetMaxY(contextRegion);
@@ -144,7 +161,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
 
 - (CGSize)preferredContentSize
 {
-    // Subclasses must override.
+    // Subclasses must override, if they claim not to require auto layout.
     [self doesNotRecognizeSelector:_cmd];
     return CGSizeMake(0, 0);
 }

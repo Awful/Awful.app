@@ -38,8 +38,13 @@ typedef CGRect (^AwfulSemiModalRectInViewBlock)(UIView *view);
 - (void)dismissCompletion:(void (^)(void))completionBlock;
 
 /**
- * Subclasses must override and return a size that considers the view's current size a maximum in both dimensions. If it is impossible to fulfill those constraints, break them as minimally as possible.
+ * Subclasses must override -preferredContentSize if they do not use auto layout. Return a size that considers the view's current size a maximum in both dimensions. If it is impossible to fulfill those constraints, try not to stray too far.
  */
 - (CGSize)preferredContentSize;
+
+/**
+ * Handy reminder to call super.
+ */
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration __attribute__((objc_requires_super));
 
 @end
