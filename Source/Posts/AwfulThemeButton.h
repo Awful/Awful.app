@@ -4,6 +4,13 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ * An AwfulThemeButton represents a selectable theme.
+ */
 @interface AwfulThemeButton : UIButton
+
+- (id)initWithThemeColor:(UIColor *)themeColor;
+
+@property (readonly, strong, nonatomic) UIColor *themeColor;
 
 @end

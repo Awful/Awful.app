@@ -33,7 +33,7 @@
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration, AwfulPageSettingsViewControllerDelegate>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -135,21 +135,22 @@
     _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"]
                                                      style:UIBarButtonItemStylePlain
                                                     target:self
-                                                    action:@selector(toggleSettings:)];
+                                                    action:@selector(didTapSettingsItem:)];
     return _settingsItem;
 }
 
-- (void)toggleSettings:(UIBarButtonItem *)sender
+- (void)didTapSettingsItem:(UIBarButtonItem *)sender
 {
-    AwfulPageSettingsViewController *settings = [AwfulPageSettingsViewController new];
-    settings.delegate = self;
-    settings.themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.thread.forum.forumID];
+    AwfulPageSettingsViewController *settings = [[AwfulPageSettingsViewController alloc] initWithForum:self.thread.forum];
     settings.selectedTheme = self.theme;
-    self.pageSettingsPopover = [[WYPopoverController alloc] initWithContentViewController:settings];
-    self.pageSettingsPopover.delegate = self;
-    [self.pageSettingsPopover presentPopoverFromBarButtonItem:sender
-                                     permittedArrowDirections:WYPopoverArrowDirectionAny
-                                                     animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [settings presentInPopoverFromBarButtonItem:sender];
+    } else {
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        [settings presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+            return [view convertRect:toolbar.bounds fromView:toolbar];
+        }];
+    }
 }
 
 - (UIBarButtonItem *)backItem

@@ -5,29 +5,69 @@
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPageSettingsView.h"
 #import "AwfulSettings.h"
+#import "AwfulThemeLoader.h"
+
+@interface AwfulPageSettingsViewController ()
+
+@property (readonly, strong, nonatomic) AwfulPageSettingsView *settingsView;
+
+@property (readonly, copy, nonatomic) NSArray *themes;
+
+@end
 
 @implementation AwfulPageSettingsViewController
 {
-    AwfulPageSettingsView *_settingsView;
+    NSArray *_themes;
+}
+
+- (id)initWithForum:(AwfulForum *)forum
+{
+    self = [super init];
+    if (!self) return nil;
+    _forum = forum;
+    self.title = @"Formatting Options";
+    return self;
+}
+
+- (AwfulPageSettingsView *)settingsView
+{
+    return (AwfulPageSettingsView *)self.view;
+}
+
+- (NSArray *)themes
+{
+    if (_themes) return _themes;
+    _themes = [[AwfulThemeLoader sharedLoader] themesForForumWithID:self.forum.forumID];
+    return _themes;
+}
+
+- (void)setSelectedTheme:(AwfulTheme *)selectedTheme
+{
+    _selectedTheme = selectedTheme;
+    if ([self isViewLoaded]) {
+        self.settingsView.themePicker.selectedThemeIndex = [self.themes indexOfObject:selectedTheme];
+    }
 }
 
 - (void)loadView
 {
-    _settingsView = [AwfulPageSettingsView new];
-    [_settingsView.avatarsEnabledSwitch addTarget:self
-                                           action:@selector(didTapAvatarsEnabledSwitch:)
-                                 forControlEvents:UIControlEventValueChanged];
-    [_settingsView.imagesEnabledSwitch addTarget:self
-                                          action:@selector(didTapImagesEnabledSwitch:)
+    AwfulPageSettingsView *settingsView = [AwfulPageSettingsView new];
+    [settingsView.avatarsEnabledSwitch addTarget:self
+                                          action:@selector(didTapAvatarsEnabledSwitch:)
                                 forControlEvents:UIControlEventValueChanged];
-    [_settingsView.themePicker addTarget:self
-                                  action:@selector(didTapThemePicker:)
-                        forControlEvents:UIControlEventValueChanged];
+    [settingsView.imagesEnabledSwitch addTarget:self
+                                         action:@selector(didTapImagesEnabledSwitch:)
+                               forControlEvents:UIControlEventValueChanged];
+    [settingsView.themePicker addTarget:self
+                                 action:@selector(didTapThemePicker:)
+                       forControlEvents:UIControlEventValueChanged];
     [self.themes enumerateObjectsUsingBlock:^(AwfulTheme *theme, NSUInteger i, BOOL *stop) {
-        [_settingsView.themePicker insertThemeWithColor:theme.descriptiveColor atIndex:i];
+        UIColor *color = theme.descriptiveColor;
+        color.accessibilityLabel = theme.descriptiveName;
+        [settingsView.themePicker insertThemeWithColor:color atIndex:i];
     }];
-    _settingsView.themePicker.selectedThemeIndex = [self.themes indexOfObject:self.selectedTheme];
-    self.view = _settingsView;
+    settingsView.themePicker.selectedThemeIndex = [self.themes indexOfObject:self.selectedTheme];
+    self.view = settingsView;
 }
 
 - (void)didTapAvatarsEnabledSwitch:(UISwitch *)avatarsEnabledSwitch
@@ -42,33 +82,42 @@
 
 - (void)didTapThemePicker:(AwfulThemePicker *)themePicker
 {
-    self.selectedTheme = self.themes[themePicker.selectedThemeIndex];
-    [self.delegate pageSettingsSelectedThemeDidChange:self];
-    [self themeDidChange];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    _settingsView.avatarsEnabledSwitch.on = [AwfulSettings settings].showAvatars;
-    _settingsView.imagesEnabledSwitch.on = [AwfulSettings settings].showImages;
-    [self themeDidChange];
+    AwfulTheme *theme = self.themes[themePicker.selectedThemeIndex];
+    self.selectedTheme = theme;
+    if (theme.forumSpecific) {
+        [[AwfulSettings settings] setThemeName:theme.name forForumID:self.forum.forumID];
+    } else {
+        [[AwfulSettings settings] setThemeName:nil forForumID:self.forum.forumID];
+        [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
+    }
 }
 
 - (void)themeDidChange
 {
     [super themeDidChange];
-    AwfulTheme *theme = self.selectedTheme;
-    _settingsView.backgroundColor = theme[@"backgroundColor"];
-    _settingsView.avatarsLabel.textColor = theme[@"listTextColor"];
-    _settingsView.imagesLabel.textColor = theme[@"listTextColor"];
-    _settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
-    _settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
+    AwfulTheme *theme = self.theme;
+    self.settingsView.backgroundColor = theme[@"backgroundColor"];
+    self.settingsView.avatarsLabel.textColor = theme[@"listTextColor"];
+    self.settingsView.imagesLabel.textColor = theme[@"listTextColor"];
+    self.settingsView.themeLabel.textColor = theme[@"listTextColor"];
+    self.settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
+    self.settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
+    self.settingsView.tintColor = theme[@"tintColor"];
 }
 
-- (CGSize)preferredContentSize
+- (void)viewWillAppear:(BOOL)animated
 {
-    return [self.view sizeThatFits:CGSizeMake(300, 1100)];
+    [super viewWillAppear:animated];
+    self.settingsView.avatarsEnabledSwitch.on = [AwfulSettings settings].showAvatars;
+    self.settingsView.imagesEnabledSwitch.on = [AwfulSettings settings].showImages;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    AwfulThemePicker *themePicker = self.settingsView.themePicker;
+    themePicker.preferredMaxLayoutWidth = CGRectGetWidth(themePicker.bounds);
+    [self.settingsView layoutIfNeeded];
 }
 
 @end

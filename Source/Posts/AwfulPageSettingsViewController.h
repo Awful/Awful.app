@@ -2,36 +2,17 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "UIViewController+AwfulTheme.h"
-@protocol AwfulPageSettingsViewControllerDelegate;
+#import "AwfulSemiModalViewController.h"
 
 /**
  * An AwfulPageSettingsViewController allows changing relevant settings on a page of posts.
  */
-@interface AwfulPageSettingsViewController : AwfulViewController
+@interface AwfulPageSettingsViewController : AwfulSemiModalViewController
 
-/**
- * An array of AwfulTheme objects that can be selected.
- */
-@property (copy, nonatomic) NSArray *themes;
+- (id)initWithForum:(AwfulForum *)forum;
 
-/**
- * The currently-selected theme. Must be contained in the themes array.
- */
+@property (readonly, strong, nonatomic) AwfulForum *forum;
+
 @property (strong, nonatomic) AwfulTheme *selectedTheme;
-
-/**
- * The delegate.
- */
-@property (weak, nonatomic) id <AwfulPageSettingsViewControllerDelegate> delegate;
-
-@end
-
-@protocol AwfulPageSettingsViewControllerDelegate <NSObject>
-
-/**
- * Informs the delegate that the currently-selected theme has changed. Consult the selectedTheme property on the page settings controller.
- */
-- (void)pageSettingsSelectedThemeDidChange:(AwfulPageSettingsViewController *)pageSettings;
 
 @end

@@ -7,14 +7,17 @@
 
 @implementation AwfulThemePicker
 {
-    NSMutableArray *_constraints;
+    NSMutableArray *_buttons;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
+    
     _selectedThemeIndex = UISegmentedControlNoSegment;
-    _constraints = [NSMutableArray new];
+    _buttons = [NSMutableArray new];
+    
     return self;
 }
 
@@ -22,32 +25,33 @@
 {
     if (_selectedThemeIndex == index) return;
     if (_selectedThemeIndex != UISegmentedControlNoSegment) {
-        UIButton *wasSelected = self.subviews[_selectedThemeIndex];
+        UIButton *wasSelected = _buttons[_selectedThemeIndex];
         wasSelected.selected = NO;
     }
     _selectedThemeIndex = index;
     if (index != UISegmentedControlNoSegment) {
-        UIButton *nowSelected = self.subviews[index];
+        UIButton *nowSelected = _buttons[index];
         nowSelected.selected = YES;
     }
 }
 
 - (void)insertThemeWithColor:(UIColor *)color atIndex:(NSInteger)index
 {
-    AwfulThemeButton *button = [AwfulThemeButton new];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    button.backgroundColor = color;
-    button.accessibilityLabel = color.accessibilityLabel;
-    [button addTarget:self action:@selector(didTapThemeButton:)
-     forControlEvents:UIControlEventTouchUpInside];
-    if (index > (NSInteger)[self.subviews count]) {
-        index = [self.subviews count];
+    AwfulThemeButton *button = [[AwfulThemeButton alloc] initWithThemeColor:color];
+    [button addTarget:self action:@selector(didTapThemeButton:) forControlEvents:UIControlEventTouchUpInside];
+    if (index > (NSInteger)self.subviews.count) {
+        index = self.subviews.count;
     }
     [self insertSubview:button atIndex:index];
+    [_buttons addObject:button];
+    [self setNeedsLayout];
+}
+
+- (void)setPreferredMaxLayoutWidth:(CGFloat)preferredMaxLayoutWidth
+{
+    if (_preferredMaxLayoutWidth == preferredMaxLayoutWidth) return;
+    _preferredMaxLayoutWidth = preferredMaxLayoutWidth;
     [self invalidateIntrinsicContentSize];
-    [self removeConstraints:_constraints];
-    [_constraints removeAllObjects];
-    [self setNeedsUpdateConstraints];
 }
 
 - (void)didTapThemeButton:(UIButton *)button
@@ -56,49 +60,48 @@
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
-static const CGFloat Padding = 8;
+- (void)layoutSubviews
+{
+    UIButton *button = _buttons.firstObject;
+    CGSize buttonSize = button.intrinsicContentSize;
+    
+    CGRect bounds = self.bounds;
+    CGRect buttonFrame = (CGRect){ .size = buttonSize };
+    for (UIButton *button in _buttons) {
+        button.frame = buttonFrame;
+        buttonFrame.origin.x = margin + CGRectGetMaxX(buttonFrame);
+        if (CGRectGetMaxX(buttonFrame) > CGRectGetMaxX(bounds)) {
+            buttonFrame.origin.x = 0;
+            buttonFrame.origin.y = margin + CGRectGetMaxY(buttonFrame);
+        }
+    }
+}
+
+static const CGFloat margin = 6;
 
 - (CGSize)intrinsicContentSize
 {
-    NSUInteger numberOfButtons = self.subviews.count;
-    if (numberOfButtons == 0) return CGSizeZero;
-    UIView *button = self.subviews.firstObject;
-    return CGSizeMake(CGRectGetWidth(button.frame) * numberOfButtons + Padding * (numberOfButtons - 1),
-                      CGRectGetHeight(button.frame));
-}
-
-- (void)updateConstraints
-{
-    UIView *previous;
-    for (UIView *subview in self.subviews) {
-        [_constraints addObjectsFromArray:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[subview]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:NSDictionaryOfVariableBindings(subview)]];
-        if (!previous) {
-            [_constraints addObject:
-             [NSLayoutConstraint constraintWithItem:subview
-                                          attribute:NSLayoutAttributeLeft
-                                          relatedBy:NSLayoutRelationEqual
-                                             toItem:self
-                                          attribute:NSLayoutAttributeLeft
-                                         multiplier:1
-                                           constant:0]];
-        } else {
-            [_constraints addObject:
-             [NSLayoutConstraint constraintWithItem:subview
-                                          attribute:NSLayoutAttributeLeft
-                                          relatedBy:NSLayoutRelationEqual
-                                             toItem:previous
-                                          attribute:NSLayoutAttributeRight
-                                         multiplier:1
-                                           constant:Padding]];
-        }
-        previous = subview;
+    NSInteger numberOfButtons = _buttons.count;
+    UIButton *firstButton = _buttons.firstObject;
+    CGSize buttonSize = firstButton.intrinsicContentSize;
+    
+    if (self.preferredMaxLayoutWidth <= 0) {
+        CGFloat width = buttonSize.width * numberOfButtons + (numberOfButtons - 1) * margin;
+        CGSize contentSize = CGSizeMake(width, buttonSize.height);
+        return contentSize;
     }
-    [self addConstraints:_constraints];
-    [super updateConstraints];
+    
+    CGFloat maximumWidth = self.preferredMaxLayoutWidth;
+    NSAssert(maximumWidth >= buttonSize.width, @"can't lay out theme buttons in a view narrower than a single button");
+    CGFloat remainingWidth = maximumWidth - buttonSize.width;
+    NSInteger buttonsPerLine = 1 + floor(remainingWidth / (margin + buttonSize.width));
+    NSInteger numberOfLines = numberOfButtons / buttonsPerLine;
+    if (numberOfButtons % buttonsPerLine > 0) {
+        numberOfLines++;
+    }
+    CGSize contentSize = CGSizeMake(buttonsPerLine * buttonSize.width + (buttonsPerLine - 1) * margin,
+                                    numberOfLines * buttonSize.height + (numberOfLines - 1) * margin);
+    return contentSize;
 }
 
 @end

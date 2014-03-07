@@ -31,7 +31,12 @@
 @property (readonly, strong, nonatomic) UISwitch *imagesEnabledSwitch;
 
 /**
- * Chooses the currently-selected theme. By default, shows two themes: light and dark. Add more as appropriate.
+ * Describes the themePicker. Default text is "Theme".
+ */
+@property (readonly, strong, nonatomic) UILabel *themeLabel;
+
+/**
+ * Chooses the currently-selected theme.
  */
 @property (readonly, strong, nonatomic) AwfulThemePicker *themePicker;
 

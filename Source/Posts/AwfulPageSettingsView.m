@@ -8,10 +8,12 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
     
     _avatarsLabel = [UILabel new];
     _avatarsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_avatarsLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
     _avatarsLabel.text = @"Avatars";
     [self addSubview:_avatarsLabel];
     
@@ -28,58 +30,59 @@
     _imagesEnabledSwitch.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_imagesEnabledSwitch];
     
+    _themeLabel = [UILabel new];
+    _themeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_themeLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+    _themeLabel.text = @"Theme";
+    [self addSubview:_themeLabel];
+    
     _themePicker = [AwfulThemePicker new];
     _themePicker.translatesAutoresizingMaskIntoConstraints = NO;
+    [_themePicker setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
     [self addSubview:_themePicker];
     
-    [self setNeedsUpdateConstraints];
+    NSDictionary *views = @{ @"avatarsLabel": _avatarsLabel,
+                             @"avatarsSwitch": _avatarsEnabledSwitch,
+                             @"imagesLabel": _imagesLabel,
+                             @"imagesSwitch": _imagesEnabledSwitch,
+                             @"themeLabel": _themeLabel,
+                             @"themePicker": _themePicker };
+    NSDictionary *metrics = @{ @"hspace": @(innerMargins.width),
+                               @"vspace": @(innerMargins.height),
+                               @"hmargin": @(outerMargins.width),
+                               @"vmargin": @(outerMargins.height) };
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-hmargin-[avatarsLabel(>=themeLabel)]-hspace-[avatarsSwitch]-(>=1)-[imagesLabel]-hspace-[imagesSwitch]-hmargin-|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:metrics
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-hmargin-[themeLabel(>=avatarsLabel)]-hspace-[themePicker]-hmargin-|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:metrics
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    
     return self;
 }
 
-- (void)updateConstraints
+static const CGSize outerMargins = {32, 20};
+static const CGSize innerMargins = {8, 18};
+
+- (CGSize)intrinsicContentSize
 {
-    NSDictionary *views = @{ @"avatarsLabel": self.avatarsLabel,
-                             @"avatarsSwitch": self.avatarsEnabledSwitch,
-                             @"imagesLabel": self.imagesLabel,
-                             @"imagesSwitch": self.imagesEnabledSwitch,
-                             @"themePicker": self.themePicker };
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[avatarsLabel]-[avatarsSwitch]"
-                                             options:NSLayoutFormatAlignAllCenterY
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imagesLabel]-[imagesSwitch]"
-                                             options:NSLayoutFormatAlignAllCenterY
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[themePicker]"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[avatarsSwitch]-[imagesSwitch]"
-                                             options:NSLayoutFormatAlignAllLeft
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imagesSwitch]-[themePicker]"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [super updateConstraints];
+    CGSize switchSize = _avatarsEnabledSwitch.intrinsicContentSize;
+    CGSize themePickerSize = _themePicker.intrinsicContentSize;
+    return CGSizeMake(UIViewNoIntrinsicMetric, outerMargins.height * 2 + switchSize.height + innerMargins.height + themePickerSize.height);
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
++ (BOOL)requiresConstraintBasedLayout
 {
-    [self layoutIfNeeded];
-    CGRect all = self.avatarsLabel.frame;
-    for (UIView *subview in self.subviews) {
-        all = CGRectUnion(all, subview.frame);
-    }
-    return CGSizeMake(CGRectGetMaxX(all) + CGRectGetMinX(all),
-                      CGRectGetMaxY(all) + CGRectGetMinY(all));
+    return YES;
 }
 
 @end
