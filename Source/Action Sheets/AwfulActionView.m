@@ -14,7 +14,7 @@
 
 @implementation AwfulActionView
 {
-    UILabel *_titleLabel;
+    UIView *_titleBackgroundView;
     UICollectionViewFlowLayout *_collectionViewLayout;
 }
 
@@ -23,13 +23,17 @@
     self = [super initWithFrame:frame];
     if (!self) return nil;
     
+    _titleBackgroundView = [UIView new];
+    _titleBackgroundView.backgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
+    [self addSubview:_titleBackgroundView];
+    
     self.titleLabel = [UILabel new];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
-    self.titleLabel.backgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
+    self.titleLabel.backgroundColor = _titleBackgroundView.backgroundColor;
     self.titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
-    [self addSubview:self.titleLabel];
+    [_titleBackgroundView addSubview:self.titleLabel];
     
     _collectionViewLayout = [UICollectionViewFlowLayout new];
     _collectionViewLayout.itemSize = CGSizeMake(70, 90);
@@ -42,10 +46,12 @@
     return self;
 }
 
+static const CGSize titleMargin = {32, 0};
+
 - (void)layoutSubviews
 {
     CGRect bounds = self.bounds;
-    CGRect titleFrame = CGRectMake(0, 0, CGRectGetWidth(bounds), 0);
+    CGRect titleFrame = CGRectMake(titleMargin.width, 0, CGRectGetWidth(bounds) - titleMargin.width * 2, 0);
     _titleLabel.frame = titleFrame;
     [_titleLabel sizeToFit];
     CGFloat desiredHeight = CGRectGetHeight(_titleLabel.frame);
@@ -53,6 +59,7 @@
         titleFrame.size.height = desiredHeight + 16;
     }
     _titleLabel.frame = titleFrame;
+    _titleBackgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(bounds), CGRectGetHeight(titleFrame));
     
     CGRect gridFrame = CGRectMake(0, CGRectGetMaxY(_titleLabel.frame), CGRectGetWidth(bounds), 0);
     self.collectionView.frame = gridFrame;
