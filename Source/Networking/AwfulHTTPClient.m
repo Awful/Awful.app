@@ -93,6 +93,7 @@
                              }),
                              ];
     _HTTPManager.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:serializers];
+    [_HTTPManager.reachabilityManager startMonitoring];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
