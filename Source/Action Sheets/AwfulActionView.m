@@ -73,12 +73,10 @@
     self.collectionView.frame = gridFrame;
 }
 
-- (void)sizeToFit
+- (CGSize)sizeThatFits:(CGSize)size
 {
     [self layoutIfNeeded];
-    CGRect bounds = self.bounds;
-    bounds.size.height = CGRectGetMaxY(self.collectionView.frame);
-    self.bounds = bounds;
+    return CGSizeMake(size.width, CGRectGetMaxY(self.collectionView.frame));
 }
 
 @end
