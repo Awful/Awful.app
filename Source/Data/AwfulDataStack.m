@@ -3,7 +3,12 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulDataStack.h"
-#import <Crashlytics/Crashlytics.h>
+#ifndef DEBUG
+    #import <Crashlytics/Crashlytics.h>
+#else
+    #define CLSLog NSLog
+    #define CLSNSLog NSLog
+#endif
 
 @implementation AwfulDataStack
 {
