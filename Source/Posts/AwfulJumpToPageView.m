@@ -74,6 +74,14 @@
                                              options:0
                                              metrics:metrics
                                                views:views]];
+    [_buttonsBackgroundView addConstraint:
+     [NSLayoutConstraint constraintWithItem:_jumpButton
+                                  attribute:NSLayoutAttributeCenterY
+                                  relatedBy:NSLayoutRelationEqual
+                                     toItem:_buttonsBackgroundView
+                                  attribute:NSLayoutAttributeCenterY
+                                 multiplier:1
+                                   constant:0]];
     
     return self;
 }
