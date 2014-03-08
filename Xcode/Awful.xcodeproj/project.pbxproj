@@ -248,6 +248,8 @@
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
+		8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100518CAACF9002E92DA /* posts-view-byob.css */; };
+		8CE6100818CAAF74002E92DA /* cat.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100718CAAF74002E92DA /* cat.gif */; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -621,6 +623,8 @@
 		8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulRapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Xcode/Info.plist; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
+		8CE6100518CAACF9002E92DA /* posts-view-byob.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-byob.css"; sourceTree = "<group>"; };
+		8CE6100718CAAF74002E92DA /* cat.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cat.gif; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -1232,6 +1236,7 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
+				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				837D67EF1861C3D700464055 /* AwfulForumTweaks.h */,
 				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
 				1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */,
@@ -1355,6 +1360,7 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8CE6100718CAAF74002E92DA /* cat.gif */,
 				8C220D9D1814D61100F188AE /* clock.png */,
 				8C88139D1849289F0058009E /* clock-green.png */,
 				8C88139E1849289F0058009E /* clock-amber.png */,
@@ -1499,6 +1505,7 @@
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
 				8C88139F1849289F0058009E /* clock-green.png in Resources */,
 				1CF0D619164B0A7C00CFA137 /* Forum Abbreviations.plist in Resources */,
+				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
@@ -1525,6 +1532,7 @@
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */,
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
+				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,

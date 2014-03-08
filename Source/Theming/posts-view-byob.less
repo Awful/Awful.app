@@ -1,0 +1,31 @@
+/*
+ posts-view-byob.css
+ Awful
+ 
+ Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+@import "base.less";
+
+.postbody {
+	font-family: ChalkboardSE-Regular;
+}
+
+body {
+	background-image: ~"url('cat.gif')";
+	background-repeat: no-repeat;
+	padding-top: 80px;
+}
+
+.post {
+	
+	&:nth-of-type(even) {
+		background-color:#ccf;
+	}
+	&:nth-of-type(odd) {
+		background-color:#b9e7e7;
+	}
+}
+time.regdate {
+	display: none;
+}

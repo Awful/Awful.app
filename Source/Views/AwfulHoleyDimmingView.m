@@ -14,7 +14,7 @@
     self = [super initWithFrame:frame];
     if (!self) return nil;
     
-    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.95];
     self.opaque = NO;
     
     self.dimRect = CGRectInfinite;
