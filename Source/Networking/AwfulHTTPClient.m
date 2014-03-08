@@ -227,9 +227,17 @@
         parameters[@"userid"] = author.userID;
     }
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"showthread.php"
-                  parameters:parameters
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:_HTTPManager.baseURL];
+    NSError *error;
+    NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters error:&error];
+    if (!request) {
+        if (callback) {
+            callback(error, nil, 0, nil);
+            return nil;
+        }
+    }
+    AFHTTPRequestOperation *operation = [_HTTPManager HTTPRequestOperationWithRequest:request
+                                                                              success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper new];
@@ -257,6 +265,24 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil, NSNotFound, nil);
     }];
+    
+    // We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
+    [operation setRedirectResponseBlock:^(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+        NSURL *URL = request.URL;
+        NSMutableDictionary *queryDictionary = [URL.queryDictionary mutableCopy];
+        queryDictionary[@"perpage"] = @"40";
+        NSMutableArray *queryParts = [NSMutableArray new];
+        for (id key in queryDictionary) {
+            [queryParts addObject:[NSString stringWithFormat:@"%@=%@", key, queryDictionary[key]]];
+        }
+        NSURLComponents *components = [NSURLComponents componentsWithURL:URL resolvingAgainstBaseURL:YES];
+        components.percentEncodedQuery = [queryParts componentsJoinedByString:@"&"];
+        NSMutableURLRequest *updatedRequest = [request mutableCopy];
+        updatedRequest.URL = components.URL;
+        return updatedRequest;
+    }];
+    [operation start];
+    return operation;
 }
 
 - (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
