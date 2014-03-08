@@ -41,27 +41,26 @@ header:after {
   clear: both;
 }
 .avatar {
-  float: left;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
 }
 .iphone .avatar {
   max-height: 2.5em;
   max-width: 2.5em;
-  margin: 6px 5px 0 0;
 }
 .ipad .avatar {
   max-height: 4em;
-  margin-right: 8px;
-  margin-bottom: .5em;
+}
+.nameanddate {
+  display: inline-block;
+  vertical-align: middle;
 }
 .action-button {
   float: right;
 }
 .username {
   margin: 0;
-  padding-top: .3em;
-}
-.ipad .username {
-  padding-top: .5em;
 }
 .postdate {
   font: -apple-system-subheadline;
