@@ -2,6 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BYOB</key>
+	<dict>
+		<key>jumpToPageNavigationBarTintColor</key>
+		<string>#9999ff</string>
+		<key>listSecondaryTextColor</key>
+		<string>#9999ff</string>
+		<key>backgroundColor</key>
+		<string>#9999ff</string>
+		<key>postsViewCSS</key>
+		<string>posts-view-byob.css</string>
+		<key>listTextColor</key>
+		<string>#006666</string>
+		<key>listSeparatorColor</key>
+		<string>#003333</string>
+		<key>listBackgroundColor</key>
+		<string>#ccccff</string>
+		<key>relevantForumID</key>
+		<string>268</string>
+		<key>descriptiveColor</key>
+		<string>#9999ff</string>
+	</dict>
 	<key>default</key>
 	<dict>
 		<key>description</key>
