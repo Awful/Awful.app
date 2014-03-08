@@ -49,9 +49,18 @@
     }
 }
 
+- (void)setTitle:(NSString *)title
+{
+    [super setTitle:title];
+    if ([self isViewLoaded]) {
+        self.settingsView.titleLabel.text = self.title;
+    }
+}
+
 - (void)loadView
 {
     AwfulPageSettingsView *settingsView = [AwfulPageSettingsView new];
+    settingsView.titleLabel.text = self.title;
     [settingsView.avatarsEnabledSwitch addTarget:self
                                           action:@selector(didTapAvatarsEnabledSwitch:)
                                 forControlEvents:UIControlEventValueChanged];
@@ -115,6 +124,8 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    UILabel *titleLabel = self.settingsView.titleLabel;
+    titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(titleLabel.bounds);
     AwfulThemePicker *themePicker = self.settingsView.themePicker;
     themePicker.preferredMaxLayoutWidth = CGRectGetWidth(themePicker.bounds);
     [self.settingsView layoutIfNeeded];

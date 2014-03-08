@@ -5,11 +5,28 @@
 #import "AwfulPageSettingsView.h"
 
 @implementation AwfulPageSettingsView
+{
+    UIView *_titleBackgroundView;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (!self) return nil;
+    
+    _titleBackgroundView = [UIView new];
+    _titleBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleBackgroundView.backgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
+    [self addSubview:_titleBackgroundView];
+    
+    _titleLabel = [UILabel new];
+    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleLabel.numberOfLines = 0;
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.textColor = [UIColor whiteColor];
+    _titleLabel.backgroundColor = _titleBackgroundView.backgroundColor;
+    _titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
+    [_titleBackgroundView addSubview:_titleLabel];
     
     _avatarsLabel = [UILabel new];
     _avatarsLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -41,7 +58,9 @@
     [_themePicker setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
     [self addSubview:_themePicker];
     
-    NSDictionary *views = @{ @"avatarsLabel": _avatarsLabel,
+    NSDictionary *views = @{ @"titleLabel": _titleLabel,
+                             @"titleBackground": _titleBackgroundView,
+                             @"avatarsLabel": _avatarsLabel,
                              @"avatarsSwitch": _avatarsEnabledSwitch,
                              @"imagesLabel": _imagesLabel,
                              @"imagesSwitch": _imagesEnabledSwitch,
@@ -50,7 +69,19 @@
     NSDictionary *metrics = @{ @"hspace": @(innerMargins.width),
                                @"vspace": @(innerMargins.height),
                                @"hmargin": @(outerMargins.width),
-                               @"vmargin": @(outerMargins.height) };
+                               @"vmargin": @(outerMargins.height),
+                               @"titlehmargin": @32,
+                               @"titlevmargin": @8 };
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[titleBackground]-0-|"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    [_titleBackgroundView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-titlehmargin-[titleLabel]-titlehmargin-|"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
     [self addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-hmargin-[avatarsLabel(>=themeLabel)]-hspace-[avatarsSwitch]-(>=1)-[imagesLabel]-hspace-[imagesSwitch]-hmargin-|"
                                              options:NSLayoutFormatAlignAllCenterY
@@ -62,7 +93,12 @@
                                              metrics:metrics
                                                views:views]];
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-vmargin-[titleBackground]-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
+                                             options:0
+                                             metrics:metrics
+                                               views:views]];
+    [_titleBackgroundView addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-titlevmargin-[titleLabel]-titlevmargin-|"
                                              options:0
                                              metrics:metrics
                                                views:views]];
@@ -75,14 +111,10 @@ static const CGSize innerMargins = {8, 18};
 
 - (CGSize)intrinsicContentSize
 {
+    CGSize titleSize = self.titleLabel.intrinsicContentSize;
     CGSize switchSize = _avatarsEnabledSwitch.intrinsicContentSize;
     CGSize themePickerSize = _themePicker.intrinsicContentSize;
-    return CGSizeMake(UIViewNoIntrinsicMetric, outerMargins.height * 2 + switchSize.height + innerMargins.height + themePickerSize.height);
-}
-
-+ (BOOL)requiresConstraintBasedLayout
-{
-    return YES;
+    return CGSizeMake(UIViewNoIntrinsicMetric, outerMargins.height * 3 + titleSize.height + switchSize.height + innerMargins.height + themePickerSize.height);
 }
 
 @end

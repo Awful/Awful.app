@@ -11,6 +11,11 @@
 @interface AwfulPageSettingsView : UIView
 
 /**
+ * A title shown atop the view.
+ */
+@property (readonly, strong, nonatomic) UILabel *titleLabel;
+
+/**
  * Describes the avatarsEnabledSwitch. Default text is "Avatars".
  */
 @property (readonly, strong, nonatomic) UILabel *avatarsLabel;
