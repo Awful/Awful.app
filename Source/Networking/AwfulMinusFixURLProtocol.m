@@ -13,7 +13,7 @@
     NSURLConnection *_connection;
 }
 
-// Minus checks the HTTP Referer for inlined images and redirects to an HTML page if it doesn't like what it finds. Threads on the Forums are allowed through, but in Awful the requests don't have the right referrer. This simple protocol fixes that oversight.
+// SA: Minus checks the HTTP Referer for inlined images and redirects to an HTML page if it doesn't like what it finds. Threads on the Forums are allowed through, but in Awful the requests don't have the right referrer. This simple protocol fixes that oversight.
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request
 {

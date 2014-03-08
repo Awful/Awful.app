@@ -267,7 +267,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
     postsViewController.restorationIdentifier = @"AwfulPostsViewController";
     
-    // For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
+    // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
     postsViewController.page = thread.beenSeen ? AwfulThreadPageNextUnread : 1;
     
     [self showPostsViewController:postsViewController];
