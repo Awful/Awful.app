@@ -120,4 +120,16 @@
     [self.settingsView layoutIfNeeded];
 }
 
+- (CGSize)preferredContentSize
+{
+    CGRect bounds = self.view.bounds;
+    if (CGRectGetWidth(bounds) < 320) {
+        bounds.size.width = 320;
+    }
+    self.view.bounds = bounds;
+    [self.view layoutIfNeeded];
+    CGSize contentSize = self.settingsView.intrinsicContentSize;
+    return CGSizeMake(320, contentSize.height);
+}
+
 @end

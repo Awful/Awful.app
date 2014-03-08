@@ -161,7 +161,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
 
 - (CGSize)preferredContentSize
 {
-    // Subclasses must override, if they claim not to require auto layout.
+    // Subclasses must override.
     [self doesNotRecognizeSelector:_cmd];
     return CGSizeMake(0, 0);
 }
