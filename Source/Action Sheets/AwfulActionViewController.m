@@ -56,6 +56,18 @@
     self.view = actionView;
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    AwfulTheme *theme = self.theme;
+    AwfulActionView *actionView = self.actionView;
+    actionView.tintColor = theme[@"tintColor"];
+    actionView.backgroundColor = theme[@"sheetBackgroundColor"];
+    actionView.titleLabel.textColor = theme[@"sheetTitleColor"];
+    actionView.titleBackgroundColor = theme[@"sheetTitleBackgroundColor"];
+    [actionView.collectionView reloadItemsAtIndexPaths:[actionView.collectionView indexPathsForVisibleItems]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -85,6 +97,7 @@
     AwfulIconActionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     AwfulIconActionItem *item = _items[indexPath.item];
     cell.titleLabel.text = item.title;
+    cell.titleLabel.textColor = self.theme[@"sheetTextColor"];
     cell.iconImageView.image = item.icon;
     cell.tintColor = item.tintColor;
     cell.isAccessibilityElement = YES;

@@ -105,13 +105,16 @@
 {
     [super themeDidChange];
     AwfulTheme *theme = self.theme;
-    self.settingsView.backgroundColor = theme[@"backgroundColor"];
-    self.settingsView.avatarsLabel.textColor = theme[@"listTextColor"];
-    self.settingsView.imagesLabel.textColor = theme[@"listTextColor"];
-    self.settingsView.themeLabel.textColor = theme[@"listTextColor"];
-    self.settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
-    self.settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
-    self.settingsView.tintColor = theme[@"tintColor"];
+    AwfulPageSettingsView *settingsView = self.settingsView;
+    settingsView.tintColor = theme[@"tintColor"];
+    settingsView.backgroundColor = theme[@"sheetBackgroundColor"];
+    settingsView.titleLabel.textColor = theme[@"sheetTitleColor"];
+    settingsView.titleBackgroundColor = theme[@"sheetTitleBackgroundColor"];
+    settingsView.avatarsLabel.textColor = theme[@"sheetTextColor"];
+    settingsView.imagesLabel.textColor = theme[@"sheetTextColor"];
+    settingsView.themeLabel.textColor = theme[@"sheetTextColor"];
+    settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
+    settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
 }
 
 - (void)viewWillAppear:(BOOL)animated

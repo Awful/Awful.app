@@ -48,11 +48,14 @@
 {
     [super themeDidChange];
     AwfulTheme *theme = self.theme;
-    self.jumpToPageView.backgroundColor = theme[@"backgroundColor"];
-    [self.jumpToPageView.firstPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
-    [self.jumpToPageView.jumpButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
-    [self.jumpToPageView.lastPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
-    [self.jumpToPageView.pickerView reloadAllComponents];
+    AwfulJumpToPageView *jumpToPageView = self.jumpToPageView;
+    jumpToPageView.tintColor = theme[@"tintColor"];
+    jumpToPageView.backgroundColor = theme[@"sheetBackgroundColor"];
+    jumpToPageView.buttonRowBackgroundColor = theme[@"sheetTitleBackgroundColor"];
+    [jumpToPageView.firstPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [jumpToPageView.jumpButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [jumpToPageView.lastPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [jumpToPageView.pickerView reloadAllComponents];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -113,7 +116,7 @@
              attributedTitleForRow:(NSInteger)row
                       forComponent:(NSInteger)component
 {
-    NSDictionary *attributes = @{ NSForegroundColorAttributeName: self.theme[@"listTextColor"] };
+    NSDictionary *attributes = @{ NSForegroundColorAttributeName: self.theme[@"sheetTextColor"] };
     return [[NSAttributedString alloc] initWithString:[@(row + 1) stringValue] attributes:attributes];
 }
 

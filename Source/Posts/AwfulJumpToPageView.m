@@ -86,4 +86,14 @@
 static const CGFloat buttonRowHeight = 40;
 static const CGFloat pickerHeight = 162;
 
+- (UIColor *)buttonRowBackgroundColor
+{
+    return _buttonsBackgroundView.backgroundColor;
+}
+
+- (void)setButtonRowBackgroundColor:(UIColor *)buttonRowBackgroundColor
+{
+    _buttonsBackgroundView.backgroundColor = buttonRowBackgroundColor;
+}
+
 @end

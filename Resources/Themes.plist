@@ -91,6 +91,16 @@
 		<string>#ffff00</string>
 		<key>keyboardAppearance</key>
 		<string>Light</string>
+		<key>sheetBackgroundColor</key>
+		<string>#f4f3f3</string>
+		<key>sheetTitleColor</key>
+		<string>#000000</string>
+		<key>sheetTitleBackgroundColor</key>
+		<string>#e9e9e9</string>
+		<key>sheetTextColor</key>
+		<string>#000000</string>
+		<key>sheetDimColor</key>
+		<string>#000000ba</string>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -140,6 +150,14 @@
 		<string>#dddddd</string>
 		<key>keyboardAppearance</key>
 		<string>Dark</string>
+		<key>sheetBackgroundColor</key>
+		<string>#0c0c0c</string>
+		<key>sheetTitleColor</key>
+		<string>#ffffff</string>
+		<key>sheetTitleBackgroundColor</key>
+		<string>#161616</string>
+		<key>sheetTextColor</key>
+		<string>#ffffff</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>

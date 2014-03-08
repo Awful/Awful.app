@@ -15,6 +15,11 @@
 @property (readonly, strong, nonatomic) UILabel *titleLabel;
 
 /**
+ * The background color of the title row. Setting the titleLabel.backgroundColor will not color the entire width of the action view.
+ */
+@property (strong, nonatomic) UIColor *titleBackgroundColor;
+
+/**
  * The collectionView's delegate and dataSource need to be set, and cell classes must be registered. Layout is manged by the AwfulActionView.
  */
 @property (readonly, strong, nonatomic) UICollectionView *collectionView;

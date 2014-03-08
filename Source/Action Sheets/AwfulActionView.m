@@ -24,25 +24,25 @@
     if (!self) return nil;
     
     _titleBackgroundView = [UIView new];
-    _titleBackgroundView.backgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
     [self addSubview:_titleBackgroundView];
     
     self.titleLabel = [UILabel new];
     self.titleLabel.numberOfLines = 0;
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
-    self.titleLabel.backgroundColor = _titleBackgroundView.backgroundColor;
     self.titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
     [_titleBackgroundView addSubview:self.titleLabel];
+    
+    self.titleBackgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
     
     _collectionViewLayout = [UICollectionViewFlowLayout new];
     _collectionViewLayout.itemSize = CGSizeMake(70, 90);
     _collectionViewLayout.sectionInset = UIEdgeInsetsMake(12, 0, 12, 0);
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_collectionViewLayout];
-    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.047 alpha:1];
     [self addSubview:self.collectionView];
     
-    self.backgroundColor = self.collectionView.backgroundColor;
+    self.backgroundColor = [UIColor colorWithWhite:0.047 alpha:1];
+    
     return self;
 }
 
@@ -84,6 +84,23 @@ static const CGSize titleMargin = {32, 0};
 {
     [self layoutIfNeeded];
     return CGSizeMake(size.width, CGRectGetMaxY(self.collectionView.frame));
+}
+
+- (UIColor *)titleBackgroundColor
+{
+    return _titleBackgroundView.backgroundColor;
+}
+
+- (void)setTitleBackgroundColor:(UIColor *)titleBackgroundColor
+{
+    _titleBackgroundView.backgroundColor = titleBackgroundColor;
+    self.titleLabel.backgroundColor = titleBackgroundColor;
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:backgroundColor];
+    self.collectionView.backgroundColor = backgroundColor;
 }
 
 @end

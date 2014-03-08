@@ -15,6 +15,8 @@
 
 @property (readonly, strong, nonatomic) UIButton *lastPageButton;
 
+@property (strong, nonatomic) UIColor *buttonRowBackgroundColor;
+
 @property (readonly, strong, nonatomic) UIPickerView *pickerView;
 
 @end

@@ -166,6 +166,12 @@ static inline UIViewController * ViewControllerForView(UIView *view)
     return CGSizeMake(0, 0);
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    _dimmingView.backgroundColor = self.theme[@"sheetDimColor"];
+}
+
 #pragma mark - UIViewControllerTransitioningDelegate
 
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
@@ -204,6 +210,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
         _dimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapDimmingView:)];
         [_dimmingView addGestureRecognizer:tap];
+        _dimmingView.backgroundColor = self.theme[@"sheetDimColor"];
         [fromViewController.view addSubview:_dimmingView];
         
         [self positionViewAndPunchHole];
