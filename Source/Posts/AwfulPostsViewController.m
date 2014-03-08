@@ -31,9 +31,8 @@
 #import <GRMustache/GRMustache.h>
 #import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
-#import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -41,8 +40,6 @@
 
 @property (nonatomic) AwfulPageTopBar *topBar;
 @property (strong, nonatomic) AwfulPostsView *postsView;
-@property (strong, nonatomic) WYPopoverController *jumpToPagePopover;
-@property (strong, nonatomic) WYPopoverController *pageSettingsPopover;
 @property (nonatomic) UIBarButtonItem *composeItem;
 
 @property (strong, nonatomic) UIBarButtonItem *settingsItem;
@@ -315,10 +312,6 @@
     configureButton(self.topBar.scrollToBottomButton);
     [self configurePostsViewSettings];
     [self.replyViewController themeDidChange];
-	
-	//Theming for WYPopoverController via UIAppearance properties
-	WYPopoverBackgroundView.appearance.fillBottomColor = self.theme[@"backgroundColor"];
-	WYPopoverBackgroundView.appearance.fillTopColor = self.theme[@"backgroundColor"];
 }
 
 - (void)setThread:(AwfulThread *)thread
@@ -1123,28 +1116,6 @@ static char KVOContext;
     [self updateUserInterface];
 }
 
-#pragma mark - AwfulJumpToPageControllerDelegate
-
-- (void)jumpToPageController:(AwfulJumpToPageController *)jump didSelectPage:(AwfulThreadPage)page
-{
-    if (page != AwfulThreadPageNone) {
-        if (self.author && page == AwfulThreadPageLast) {
-            page = [self.thread numberOfPagesForSingleUser:self.author];
-        }
-        self.page = page;
-    }
-    [self.jumpToPagePopover dismissPopoverAnimated:NO];
-    self.jumpToPagePopover = nil;
-}
-
-#pragma mark - WYPopoverControllerDelegate
-
-- (void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController
-{
-    self.jumpToPagePopover = nil;
-    self.pageSettingsPopover = nil;
-}
-
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
@@ -1223,21 +1194,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [self.postsView beginUpdates];
     [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
     [self.postsView endUpdates];
-}
-
-#pragma mark - AwfulPageSettingsViewControllerDelegate
-
-- (void)pageSettingsSelectedThemeDidChange:(AwfulPageSettingsViewController *)pageSettings
-{
-    AwfulTheme *theme = pageSettings.selectedTheme;
-    if (theme.forumSpecific) {
-        [[AwfulSettings settings] setThemeName:theme.name forForumID:self.thread.forum.forumID];
-    } else {
-        [[AwfulSettings settings] setThemeName:nil forForumID:self.thread.forum.forumID];
-        [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
-    }
-	
-	[self themeDidChange];
 }
 
 #pragma mark - State Preservation and Restoration

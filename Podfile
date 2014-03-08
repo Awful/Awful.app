@@ -11,7 +11,6 @@ pod 'PocketAPI', '1.0.2'
 pod 'PSMenuItem', '0.0.1'
 pod 'SVProgressHUD', '1.0'
 pod 'SVPullToRefresh', :head
-pod 'WYPopoverController', '0.1.7'
 
 target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
