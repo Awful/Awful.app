@@ -3,143 +3,99 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulJumpToPageController.h"
+#import "AwfulJumpToPageView.h"
 
 @interface AwfulJumpToPageController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
-@property (strong, nonatomic) UIPickerView *picker;
-@property (strong, nonatomic) UIBarButtonItem *firstPageItem;
-@property (strong, nonatomic) UIBarButtonItem *lastPageItem;
-@property (strong, nonatomic) UIBarButtonItem *jumpToPageItem;
+@property (readonly, strong, nonatomic) AwfulJumpToPageView *jumpToPageView;
 
 @end
 
 @implementation AwfulJumpToPageController
 
-- (id)initWithDelegate:(id <AwfulJumpToPageControllerDelegate>)delegate
+- (id)initWithPostsViewController:(AwfulPostsViewController *)postsViewController
 {
-    if (!(self = [super initWithNibName:nil bundle:nil])) return self;
-    _delegate = delegate;
-    _numberOfPages = 1;
-    _selectedPage = 1;
-    self.navigationItem.leftBarButtonItems = @[ self.firstPageItem, self.lastPageItem ];
-    self.navigationItem.rightBarButtonItem = self.jumpToPageItem;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    _postsViewController = postsViewController;
     return self;
 }
 
-- (UIBarButtonItem *)firstPageItem
+- (AwfulJumpToPageView *)jumpToPageView
 {
-    if (_firstPageItem) return _firstPageItem;
-    _firstPageItem = [[UIBarButtonItem alloc] initWithTitle:@"First"
-                                                      style:UIBarButtonItemStylePlain
-                                                     target:self
-                                                     action:@selector(didTapFirstPage)];
-    return _firstPageItem;
-}
-
-- (void)didTapFirstPage
-{
-    [self.delegate jumpToPageController:self didSelectPage:1];
-}
-
-- (UIBarButtonItem *)lastPageItem
-{
-    if (_lastPageItem) return _lastPageItem;
-    _lastPageItem = [[UIBarButtonItem alloc] initWithTitle:@"Last"
-                                                     style:UIBarButtonItemStylePlain
-                                                    target:self
-                                                    action:@selector(didTapLastPage)];
-    _lastPageItem.possibleTitles = [NSSet setWithObject:@"First"];
-    return _lastPageItem;
-}
-
-- (void)didTapLastPage
-{
-    [self.delegate jumpToPageController:self didSelectPage:AwfulThreadPageLast];
-}
-
-- (UIBarButtonItem *)jumpToPageItem
-{
-    if (_jumpToPageItem) return _jumpToPageItem;
-    _jumpToPageItem = [[UIBarButtonItem alloc] initWithTitle:@"Go"
-                                                       style:UIBarButtonItemStyleDone
-                                                      target:self
-                                                      action:@selector(didTapJumpToPage)];
-    return _jumpToPageItem;
-}
-
-- (void)didTapJumpToPage
-{
-    [self.delegate jumpToPageController:self didSelectPage:self.selectedPage];
+    return (AwfulJumpToPageView *)self.view;
 }
 
 - (CGSize)preferredContentSize
 {
-    return CGSizeMake(180, pickerHeight);
-}
-
-- (void)setSelectedPage:(NSInteger)selectedPage
-{
-    if (_selectedPage == selectedPage) return;
-    _selectedPage = selectedPage;
-    [self.picker selectRow:selectedPage - 1 inComponent:0 animated:YES];
-}
-
-#pragma mark - UIViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self initWithDelegate:nil];
+    return self.jumpToPageView.intrinsicContentSize;
 }
 
 - (void)loadView
 {
-    self.view = [UIView new];
-    self.picker = [UIPickerView new];
-    self.picker.translatesAutoresizingMaskIntoConstraints = NO;
-    self.picker.dataSource = self;
-    self.picker.delegate = self;
-    self.picker.showsSelectionIndicator = YES;
-    [self.view addSubview:self.picker];
-    NSDictionary *views = @{ @"picker": self.picker };
-    [self.view addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[picker]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self.view addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[picker]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
+    AwfulJumpToPageView *jumpToPageView = [AwfulJumpToPageView new];
+    self.view = jumpToPageView;
+    
+    [jumpToPageView.firstPageButton addTarget:self action:@selector(didTapFirstPageButton) forControlEvents:UIControlEventTouchUpInside];
+    [jumpToPageView.jumpButton addTarget:self action:@selector(didTapJumpButton) forControlEvents:UIControlEventTouchUpInside];
+    [jumpToPageView.lastPageButton addTarget:self action:@selector(didTapLastPageButton) forControlEvents:UIControlEventTouchUpInside];
+    
+    jumpToPageView.pickerView.dataSource = self;
+    jumpToPageView.pickerView.delegate = self;
 }
 
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"jumpToPageBackgroundColor"];
+    AwfulTheme *theme = self.theme;
+    self.jumpToPageView.backgroundColor = theme[@"backgroundColor"];
+    [self.jumpToPageView.firstPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [self.jumpToPageView.jumpButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [self.jumpToPageView.lastPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [self.jumpToPageView.pickerView reloadAllComponents];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-	
-	AwfulTheme *theme = AwfulTheme.currentTheme;
-	
-	self.view.backgroundColor = theme[@"backgroundColor"];
-	self.navigationController.navigationBar.tintColor = theme[@"jumpToPageNavigationBarTextColor"];
-    self.navigationController.navigationBar.barTintColor = theme[@"jumpToPageNavigationBarTintColor"];
+    AwfulThreadPage currentPage = self.postsViewController.page;
+    if (currentPage < 0) {
+        currentPage = self.postsViewController.relevantNumberOfPagesInThread;
+    }
+    [self.jumpToPageView.pickerView selectRow:currentPage - 1 inComponent:0 animated:NO];
+    [self updateJumpButtonTitle];
 }
 
-// UIPickerView is rather picky (lol) about its height. Make sure you pick a value it likes.
-const CGFloat pickerHeight = 162;
-
-- (void)viewDidLoad
+- (void)didTapFirstPageButton
 {
-    [super viewDidLoad];
-    [self.picker selectRow:self.selectedPage - 1 inComponent:0 animated:NO];
+    self.postsViewController.page = 1;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - UIPickerViewDataSource and UIPickerViewDelegate
+- (void)didTapJumpButton
+{
+    AwfulThreadPage page = [self.jumpToPageView.pickerView selectedRowInComponent:0] + 1;
+    self.postsViewController.page = page;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)didTapLastPageButton
+{
+    self.postsViewController.page = AwfulThreadPageLast;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)updateJumpButtonTitle
+{
+    AwfulThreadPage selectedPage = [self.jumpToPageView.pickerView selectedRowInComponent:0] + 1;
+    if (selectedPage == self.postsViewController.page) {
+        [self.jumpToPageView.jumpButton setTitle:@"Reload" forState:UIControlStateNormal];
+    } else {
+        [self.jumpToPageView.jumpButton setTitle:@"Jump" forState:UIControlStateNormal];
+    }
+}
+
+#pragma mark - UIPickerViewDataSource
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
@@ -148,21 +104,22 @@ const CGFloat pickerHeight = 162;
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.numberOfPages;
+    return self.postsViewController.relevantNumberOfPagesInThread;
 }
+
+#pragma mark - UIPickerViewDelegate
 
 - (NSAttributedString *)pickerView:(UIPickerView *)pickerView
              attributedTitleForRow:(NSInteger)row
-            forComponent:(NSInteger)component
+                      forComponent:(NSInteger)component
 {
-    return [[NSAttributedString alloc] initWithString:[@(row + 1) stringValue] attributes:@{NSForegroundColorAttributeName:	AwfulTheme.currentTheme[@"listTextColor"]}];;
+    NSDictionary *attributes = @{ NSForegroundColorAttributeName: self.theme[@"listTextColor"] };
+    return [[NSAttributedString alloc] initWithString:[@(row + 1) stringValue] attributes:attributes];
 }
 
-- (void)pickerView:(UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row
-       inComponent:(NSInteger)component
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    self.selectedPage = row + 1;
+    [self updateJumpButtonTitle];
 }
 
 @end

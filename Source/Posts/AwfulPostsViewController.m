@@ -33,7 +33,7 @@
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <WYPopoverController/WYPopoverController.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulJumpToPageControllerDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, WYPopoverControllerDelegate, UIViewControllerRestoration>
 
 @property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -176,33 +176,23 @@
     _currentPageItem = [[UIBarButtonItem alloc] initWithTitle:@""
                                                         style:UIBarButtonItemStylePlain
                                                        target:self
-                                                       action:@selector(toggleJumpToPageSheet:)];
+                                                       action:@selector(showJumpToPageSheet:)];
     _currentPageItem.possibleTitles = [NSSet setWithObject:@"2345 / 2345"];
     return _currentPageItem;
 }
 
-- (void)toggleJumpToPageSheet:(UIBarButtonItem *)sender
+- (void)showJumpToPageSheet:(UIBarButtonItem *)sender
 {
     if (self.loadingView) return;
-    if (!self.jumpToPagePopover) {
-        NSInteger relevantNumberOfPages = [self relevantNumberOfPagesInThread];
-        if (relevantNumberOfPages < 1) return;
-        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithDelegate:self];
-        jump.numberOfPages = relevantNumberOfPages;
-        if (self.page > 0) {
-            jump.selectedPage = self.page;
-        }
-        else if (self.page == AwfulThreadPageLast && relevantNumberOfPages > 0) {
-            jump.selectedPage = relevantNumberOfPages;
-        }
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:jump];
-        self.jumpToPagePopover = [[WYPopoverController alloc] initWithContentViewController:nav];
-        self.jumpToPagePopover.delegate = self;
-        self.jumpToPagePopover.wantsDefaultContentAppearance = YES;
+    AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithPostsViewController:self];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [jump presentInPopoverFromBarButtonItem:sender];
+    } else {
+        UIToolbar *toolbar = self.navigationController.toolbar;
+        [jump presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+            return [view convertRect:toolbar.bounds fromView:toolbar];
+        }];
     }
-    [self.jumpToPagePopover presentPopoverFromBarButtonItem:sender
-                                   permittedArrowDirections:WYPopoverArrowDirectionAny
-                                                   animated:YES];
 }
 
 - (UIBarButtonItem *)forwardItem

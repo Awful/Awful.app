@@ -46,6 +46,11 @@
 @property (assign, nonatomic) AwfulThreadPage page;
 
 /**
+ * The number of pages in the thread, taking any filters into account.
+ */
+@property (readonly, assign, nonatomic) NSInteger relevantNumberOfPagesInThread;
+
+/**
  * An array of AwfulPost objects of the currently-visible posts.
  */
 @property (readonly, copy, nonatomic) NSArray *posts;
