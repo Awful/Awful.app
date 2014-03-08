@@ -16,7 +16,6 @@
     
     _titleBackgroundView = [UIView new];
     _titleBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    _titleBackgroundView.backgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
     [self addSubview:_titleBackgroundView];
     
     _titleLabel = [UILabel new];
@@ -24,9 +23,10 @@
     _titleLabel.numberOfLines = 0;
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.textColor = [UIColor whiteColor];
-    _titleLabel.backgroundColor = _titleBackgroundView.backgroundColor;
     _titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader;
     [_titleBackgroundView addSubview:_titleLabel];
+    
+    self.titleBackgroundColor = [UIColor colorWithWhite:0.086 alpha:1];
     
     _avatarsLabel = [UILabel new];
     _avatarsLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -71,7 +71,7 @@
                                @"hmargin": @(outerMargins.width),
                                @"vmargin": @(outerMargins.height),
                                @"titlehmargin": @32,
-                               @"titlevmargin": @8 };
+                               @"titleHeight": @(titleHeight) };
     [self addConstraints:
      [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[titleBackground]-0-|"
                                              options:0
@@ -93,12 +93,12 @@
                                              metrics:metrics
                                                views:views]];
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-vmargin-[titleBackground]-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleBackground(titleHeight)]-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
                                              options:0
                                              metrics:metrics
                                                views:views]];
     [_titleBackgroundView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-titlevmargin-[titleLabel]-titlevmargin-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleLabel]-0-|"
                                              options:0
                                              metrics:metrics
                                                views:views]];
@@ -108,13 +108,25 @@
 
 static const CGSize outerMargins = {32, 20};
 static const CGSize innerMargins = {8, 18};
+static const CGFloat titleHeight = 38;
 
 - (CGSize)intrinsicContentSize
 {
-    CGSize titleSize = self.titleLabel.intrinsicContentSize;
     CGSize switchSize = _avatarsEnabledSwitch.intrinsicContentSize;
     CGSize themePickerSize = _themePicker.intrinsicContentSize;
-    return CGSizeMake(UIViewNoIntrinsicMetric, outerMargins.height * 3 + titleSize.height + switchSize.height + innerMargins.height + themePickerSize.height);
+    CGFloat margins = outerMargins.height * 2 + innerMargins.height;
+    return CGSizeMake(UIViewNoIntrinsicMetric, titleHeight + switchSize.height + themePickerSize.height + margins);
+}
+
+- (UIColor *)titleBackgroundColor
+{
+    return _titleBackgroundView.backgroundColor;
+}
+
+- (void)setTitleBackgroundColor:(UIColor *)titleBackgroundColor
+{
+    _titleBackgroundView.backgroundColor = titleBackgroundColor;
+    self.titleLabel.backgroundColor = titleBackgroundColor;
 }
 
 @end

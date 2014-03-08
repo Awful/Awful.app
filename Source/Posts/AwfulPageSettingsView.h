@@ -16,6 +16,11 @@
 @property (readonly, strong, nonatomic) UILabel *titleLabel;
 
 /**
+ * The color of the top row of the settings view, where the title lives. Setting the titleLabel.backgroundColor won't set the background color of the whole row.
+ */
+@property (strong, nonatomic) UIColor *titleBackgroundColor;
+
+/**
  * Describes the avatarsEnabledSwitch. Default text is "Avatars".
  */
 @property (readonly, strong, nonatomic) UILabel *avatarsLabel;
