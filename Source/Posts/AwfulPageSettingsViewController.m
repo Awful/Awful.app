@@ -93,10 +93,8 @@
 {
     AwfulTheme *theme = self.themes[themePicker.selectedThemeIndex];
     self.selectedTheme = theme;
-    if (theme.forumSpecific) {
-        [[AwfulSettings settings] setThemeName:theme.name forForumID:self.forum.forumID];
-    } else {
-        [[AwfulSettings settings] setThemeName:nil forForumID:self.forum.forumID];
+    [[AwfulSettings settings] setThemeName:theme.name forForumID:self.forum.forumID];
+    if (!theme.forumSpecific) {
         [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
     }
 }

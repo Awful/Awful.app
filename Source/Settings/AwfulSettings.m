@@ -78,7 +78,7 @@ struct {
 {
     NSString *YOSPOSStyle = self[OldSettingsKeys.yosposStyle];
 	NSString *newYOSPOSStyle = [self themeNameForForumID:@"219"];
-    if ([YOSPOSStyle isEqualToString:@"green"] || (!YOSPOSStyle && !newYOSPOSStyle)) { //Defaults to green YOSPOS if nothing was ever set
+    if ([YOSPOSStyle isEqualToString:@"green"]) {
         newYOSPOSStyle = @"YOSPOS";
     } else if ([YOSPOSStyle isEqualToString:@"amber"]) {
         newYOSPOSStyle = @"YOSPOS (amber)";
@@ -87,27 +87,22 @@ struct {
     } else if ([YOSPOSStyle isEqualToString:@"winpos95"]) {
         newYOSPOSStyle = @"Winpos 95";
     }
-	
 	[self setThemeName:newYOSPOSStyle forForumID:@"219"];
 	self[OldSettingsKeys.yosposStyle] = nil;
 	
-    
     NSString *FYADStyle = self[OldSettingsKeys.fyadStyle];
 	NSString *newFYADStyle = [self themeNameForForumID:@"26"];
     if ([FYADStyle isEqualToString:@"pink"] || (!FYADStyle && !newFYADStyle)) { //Defaults to pink FYAD if nothing was ever set
         newFYADStyle = @"FYAD";
     }
-	
 	[self setThemeName:newFYADStyle forForumID:@"26"];
 	self[OldSettingsKeys.fyadStyle] = nil;
 
-    
     NSString *gasChamberStyle = self[OldSettingsKeys.gasChamberStyle];
 	NSString *newGasChamberStyle = [self themeNameForForumID:@"25"];
     if ([gasChamberStyle isEqualToString:@"sickly"] || (!gasChamberStyle && !newGasChamberStyle)) { //Defaults to sickly Gas Chamber if nothing was ever set
        newGasChamberStyle = @"Gas Chamber";
     }
-	
 	[self setThemeName:newGasChamberStyle forForumID:@"25"];
 	self[OldSettingsKeys.gasChamberStyle] = nil;
     
@@ -281,22 +276,45 @@ BOOL_PROPERTY(hideSidebarInLandscape, setHideSidebarInLandscape)
 
 - (BOOL)childrenExpandedForForumWithID:(NSString *)forumID
 {
-	return [self[[NSString stringWithFormat:@"forum-expanded-%@", forumID]] boolValue];
+	return [self[ExpandedSettingsKeyForForumID(forumID)] boolValue];
 }
 
 - (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID
 {
-	self[[NSString stringWithFormat:@"forum-expanded-%@", forumID]] = @(shouldHide);
+	self[ExpandedSettingsKeyForForumID(forumID)] = @(shouldHide);
+}
+
+static inline NSString * ExpandedSettingsKeyForForumID(NSString *forumID)
+{
+    return [@"forum-expanded-" stringByAppendingString:forumID];
 }
 
 - (NSString *)themeNameForForumID:(NSString *)forumID
 {
-    return self[[NSString stringWithFormat:@"theme-%@", forumID]];
+    return self[ThemeSettingsKeyForForumID(forumID)];
 }
 
 - (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID
 {
-    self[[NSString stringWithFormat:@"theme-%@", forumID]] = themeName;
+    NSDictionary *defaults = [[NSUserDefaults standardUserDefaults] volatileDomainForName:NSRegistrationDomain];
+    NSString *key = ThemeSettingsKeyForForumID(forumID);
+    if (defaults[key] && [defaults[key] isEqual:themeName]) {
+        self[key] = nil;
+    } else if (!defaults[key] && ThemeNameIsDefaultTheme(themeName)) {
+        self[key] = nil;
+    } else {
+        self[key] = themeName;
+    }
+}
+
+static inline NSString * ThemeSettingsKeyForForumID(NSString *forumID)
+{
+    return [@"theme-" stringByAppendingString:forumID];
+}
+
+static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
+{
+    return themeName.length == 0 || [themeName isEqualToString:@"default"] || [themeName isEqualToString:@"dark"];
 }
 
 - (id)objectForKeyedSubscript:(id)key

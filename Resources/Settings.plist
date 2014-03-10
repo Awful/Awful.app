@@ -196,6 +196,38 @@
 					<key>Key</key>
 					<string>show_avatars</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>BYOB Theme</string>
+					<key>Key</key>
+					<string>theme-268</string>
+					<key>Default</key>
+					<string>BYOB</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>FYAD Theme</string>
+					<key>Key</key>
+					<string>theme-26</string>
+					<key>Default</key>
+					<string>FYAD</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>YOSPOS Theme</string>
+					<key>Key</key>
+					<string>theme-219</string>
+					<key>Default</key>
+					<string>YOSPOS</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Gas Chamber Theme</string>
+					<key>Key</key>
+					<string>theme-25</string>
+					<key>Default</key>
+					<string>Gas Chamber</string>
+				</dict>
 			</array>
 		</dict>
 	</array>

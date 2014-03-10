@@ -4,6 +4,8 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>description</key>
+		<string>yob</string>
 		<key>jumpToPageNavigationBarTintColor</key>
 		<string>#9999ff</string>
 		<key>listSecondaryTextColor</key>
