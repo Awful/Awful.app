@@ -4,6 +4,10 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>sheetTitleColor</key>
+		<string>#ff00ff</string>
+		<key>sheetBackgroundColor</key>
+		<string>#acaaeb</string>
 		<key>description</key>
 		<string>yob</string>
 		<key>jumpToPageNavigationBarTintColor</key>
@@ -94,15 +98,15 @@
 		<key>keyboardAppearance</key>
 		<string>Light</string>
 		<key>sheetBackgroundColor</key>
-		<string>#f4f3f3</string>
+		<string>#eeeeee</string>
 		<key>sheetTitleColor</key>
-		<string>#000000</string>
+		<string>#ffffff</string>
 		<key>sheetTitleBackgroundColor</key>
-		<string>#e9e9e9</string>
+		<string>#666666</string>
 		<key>sheetTextColor</key>
 		<string>#000000</string>
 		<key>sheetDimColor</key>
-		<string>#000000ba</string>
+		<string>777777f0</string>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -157,9 +161,11 @@
 		<key>sheetTitleColor</key>
 		<string>#ffffff</string>
 		<key>sheetTitleBackgroundColor</key>
-		<string>#161616</string>
+		<string>#151515</string>
 		<key>sheetTextColor</key>
 		<string>#ffffff</string>
+		<key>sheetDimColor</key>
+		<string>#202020f2</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
