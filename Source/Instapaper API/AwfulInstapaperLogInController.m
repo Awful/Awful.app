@@ -42,11 +42,6 @@
     [self.delegate instapaperLogInControllerDidCancel:self];
 }
 
-- (void)themeDidChange
-{
-    [super themeDidChange];
-}
-
 - (void)loadView
 {
     [super loadView];

@@ -37,7 +37,6 @@ static NSString * const CellIdentifier = @"Cell";
 {
     [super themeDidChange];
     self.view.backgroundColor = self.theme[@"basementBackgroundColor"];
-    [self.tableView reloadData];
 }
 
 - (void)viewDidLoad

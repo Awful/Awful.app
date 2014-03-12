@@ -58,7 +58,6 @@
     self.switches = [NSMutableArray new];
     self.steppers = [NSMutableArray new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-	[self themeDidChange];
 }
 
 - (void)reloadSections
