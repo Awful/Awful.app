@@ -7,8 +7,7 @@
 
 @implementation AwfulPopoverBackgroundView
 {
-    UIImageView *_backgroundImageView;
-    UIImageView *_arrowImageView;
+    CAShapeLayer *_maskLayer;
 }
 
 @synthesize arrowOffset = _arrowOffset;
@@ -20,13 +19,10 @@
     self = [super initWithFrame:frame];
     if (!self) return nil;
     
-    UIImage *backgroundImage = [[UIImage imageNamed:@"popover-background"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    _backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
-    [self addSubview:_backgroundImageView];
-    
-    UIImage *arrowImage = [[UIImage imageNamed:@"popover-arrow"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    _arrowImageView = [[UIImageView alloc] initWithImage:arrowImage];
-    [self addSubview:_arrowImageView];
+    _maskLayer = [CAShapeLayer new];
+    _maskLayer.frame = (CGRect){ .size = frame.size };
+    _maskLayer.fillColor = [UIColor blackColor].CGColor;
+    self.layer.mask = _maskLayer;
     
     [self themeDidChange];
     
@@ -46,9 +42,7 @@
 
 - (void)themeDidChange
 {
-    AwfulTheme *theme = self.theme;
-    _backgroundImageView.tintColor = theme[@"sheetBackgroundColor"];
-    _arrowImageView.tintColor = theme[@"sheetBackgroundColor"];
+    self.backgroundColor = self.theme[@"sheetBackgroundColor"];
 }
 
 + (UIEdgeInsets)contentViewInsets
@@ -78,39 +72,68 @@
     [self setNeedsLayout];
 }
 
+- (UIBezierPath *)arrowPathMaskInRect:(CGRect)container
+{
+    CGFloat base = [[self class] arrowBase];
+    CGFloat height = [[self class] arrowHeight];
+    UIBezierPath *path = [UIBezierPath new];
+    [path moveToPoint:CGPointMake(0, height)];
+    [path addCurveToPoint:CGPointMake(base / 2, 0)
+            controlPoint1:CGPointMake(base * 0.35, height * 1.1)
+            controlPoint2:CGPointMake(base * 0.35, 0)];
+    [path addCurveToPoint:CGPointMake(base, height)
+            controlPoint1:CGPointMake(base * 0.65, 0)
+            controlPoint2:CGPointMake(base * 0.65, height * 1.1)];
+    [path closePath];
+    [path applyTransform:CGAffineTransformMakeTranslation(-base / 2, -height / 2)];
+    
+    UIPopoverArrowDirection direction = self.arrowDirection;
+    [path applyTransform:RotationTransformForArrowDirection(direction)];
+    CGFloat offset = self.arrowOffset;
+    switch (direction) {
+        default:
+            [path applyTransform:CGAffineTransformMakeTranslation(CGRectGetMidX(container) + offset, height / 2 + CGRectGetMinY(container))];
+            break;
+            
+        case UIPopoverArrowDirectionLeft:
+        case UIPopoverArrowDirectionRight:
+            [path applyTransform:CGAffineTransformMakeTranslation(height / 2 + CGRectGetMinX(container), CGRectGetMidY(container) + offset)];
+            break;
+    }
+    return path;
+}
+
+static inline CGAffineTransform RotationTransformForArrowDirection(UIPopoverArrowDirection arrowDirection)
+{
+    switch (arrowDirection) {
+        case UIPopoverArrowDirectionUp: return CGAffineTransformIdentity;
+        case UIPopoverArrowDirectionLeft: return CGAffineTransformMakeRotation(M_PI_2);
+        case UIPopoverArrowDirectionRight: return CGAffineTransformMakeRotation(-M_PI_2);
+        default: return CGAffineTransformMakeRotation(M_PI);
+    }
+}
+
 - (void)layoutSubviews
 {
-    CGRect arrowFrame;
-    CGRect backgroundFrame;
-    CGRectEdge arrowEdge;
-    switch (self.arrowDirection) {
-        case UIPopoverArrowDirectionUp: arrowEdge = CGRectMinYEdge; break;
-        case UIPopoverArrowDirectionLeft: arrowEdge = CGRectMinXEdge; break;
-        case UIPopoverArrowDirectionRight: arrowEdge = CGRectMaxXEdge; break;
-        case UIPopoverArrowDirectionDown: arrowEdge = CGRectMaxYEdge; break;
-        
-        // We're at the mercy of UIPopoverController, so no point complaining about invalid arrow directions. Just make it work.
-        default: arrowEdge = CGRectMaxYEdge; break;
-    }
+    CGRect bounds = self.bounds;
+    _maskLayer.frame = (CGRect){ .size = bounds.size };
     
-    CGFloat arrowHeight = self.class.arrowHeight;
-    CGFloat arrowBase = self.class.arrowBase;
-    CGRectDivide(self.bounds, &arrowFrame, &backgroundFrame, arrowHeight, arrowEdge);
-    if (arrowEdge == CGRectMinYEdge || arrowEdge == CGRectMaxYEdge) {
-        arrowFrame = CGRectInset(arrowFrame, (CGRectGetWidth(arrowFrame) - arrowBase) / 2, 0);
-        arrowFrame = CGRectOffset(arrowFrame, self.arrowOffset, 0);
-    } else {
-        arrowFrame = CGRectInset(arrowFrame, 0, CGRectGetHeight(arrowFrame) - arrowBase);
-        arrowFrame = CGRectOffset(arrowFrame, 0, self.arrowOffset);
-    }
-    _arrowImageView.frame = arrowFrame;
-    _backgroundImageView.frame = backgroundFrame;
-    
-    switch (arrowEdge) {
-        case CGRectMinYEdge: _arrowImageView.transform = CGAffineTransformMakeRotation(0); break;
-        case CGRectMaxYEdge: _arrowImageView.transform = CGAffineTransformMakeRotation(M_PI); break;
-        case CGRectMinXEdge: _arrowImageView.transform = CGAffineTransformMakeRotation(M_PI_2); break;
-        case CGRectMaxXEdge: _arrowImageView.transform = CGAffineTransformMakeRotation(-M_PI_2); break;
+    CGRect contentRect;
+    CGRect arrowContainer;
+    CGRectEdge arrowEdge = RectEdgeForArrowDirection(self.arrowDirection);
+    CGRectDivide(bounds, &arrowContainer, &contentRect, [[self class] arrowHeight], arrowEdge);
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:contentRect cornerRadius:11];
+    [path appendPath:[self arrowPathMaskInRect:arrowContainer]];
+    _maskLayer.path = path.CGPath;
+}
+
+static inline CGRectEdge RectEdgeForArrowDirection(UIPopoverArrowDirection arrowDirection)
+{
+    switch (arrowDirection) {
+        case UIPopoverArrowDirectionUp: return CGRectMinYEdge; break;
+        case UIPopoverArrowDirectionLeft: return CGRectMinXEdge; break;
+        case UIPopoverArrowDirectionRight: return CGRectMaxXEdge; break;
+        default: return CGRectMaxYEdge; break;
     }
 }
 
