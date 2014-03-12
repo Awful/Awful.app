@@ -12,6 +12,8 @@
 
 @property (copy, nonatomic) AwfulSemiModalRectInViewBlock regionBlock;
 
+@property (weak, nonatomic) UIViewController *directlyPresentingViewController;
+
 // UIViewController has a private _popoverController ivar and property, but nothing named popoverController (yet?).
 @property (strong, nonatomic) UIPopoverController *popoverController;
 
@@ -21,7 +23,6 @@
 {
     BOOL _presenting;
     AwfulHoleyDimmingView *_dimmingView;
-    __weak UIViewController *_presentingViewController;
 }
 
 // _popoverController ivar collides with UIViewController.
@@ -34,11 +35,11 @@
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.transitioningDelegate = self;
     
-    _presentingViewController = ViewControllerForView(view);
-    if (!_presentingViewController) {
+    self.directlyPresentingViewController = ViewControllerForView(view);
+    if (!self.directlyPresentingViewController) {
         [NSException raise:NSInternalInconsistencyException format:@"Semi-modal view controllers must be presented from a view within a view controller"];
     }
-    [_presentingViewController presentViewController:self animated:YES completion:nil];
+    [self.directlyPresentingViewController presentViewController:self animated:YES completion:nil];
 }
 
 - (void)presentInPopoverFromBarButtonItem:(UIBarButtonItem *)barButtonItem
@@ -60,6 +61,14 @@
     _awful_popoverController.popoverBackgroundViewClass = [AwfulPopoverBackgroundView class];
     _awful_popoverController.delegate = self;
     return _awful_popoverController;
+}
+
+- (void)setDirectlyPresentingViewController:(UIViewController *)directlyPresentingViewController
+{
+    _directlyPresentingViewController = directlyPresentingViewController;
+    if ([self isViewLoaded]) {
+        [self themeDidChange];
+    }
 }
 
 - (BOOL)isShowingInPopover
@@ -116,7 +125,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
 
 - (void)positionViewAndPunchHole
 {
-    UIView *presentingView = _presentingViewController.view;
+    UIView *presentingView = self.directlyPresentingViewController.view;
     _dimmingView.dimRect = [_dimmingView convertRect:presentingView.bounds fromView:presentingView];
     CGRect contextRegion = [self contextRegion];
     _dimmingView.hole = [_dimmingView convertRect:contextRegion fromView:self.contextView];
@@ -164,6 +173,15 @@ static inline UIViewController * ViewControllerForView(UIView *view)
     // Subclasses must override.
     [self doesNotRecognizeSelector:_cmd];
     return CGSizeMake(0, 0);
+}
+
+- (AwfulTheme *)theme
+{
+    if ([self.directlyPresentingViewController respondsToSelector:@selector(theme)]) {
+        return ((AwfulViewController *)self.directlyPresentingViewController).theme;
+    } else {
+        return [super theme];
+    }
 }
 
 - (void)themeDidChange
