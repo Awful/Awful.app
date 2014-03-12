@@ -20,6 +20,9 @@
 
 + (instancetype)currentThemeForForum:(AwfulForum *)forum
 {
+    if (!forum) {
+        return self.currentTheme;
+    }
 	NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:forum.forumID];
     if (specificThemeName) {
         return [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
