@@ -50,9 +50,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 	[self themeDidChange];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     _threadDataSource.updatesTableView = NO;
 }
 

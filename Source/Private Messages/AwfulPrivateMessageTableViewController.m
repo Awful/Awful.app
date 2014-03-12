@@ -146,9 +146,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
                                       animated:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     _dataSource.updatesTableView = NO;
 }
 

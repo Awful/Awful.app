@@ -113,7 +113,6 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     _treeDataSource.delegate = self;
 }
 
-
 - (void)showOrHideEditButton
 {
     UIBarButtonItem *item = self.favoriteForums.count > 0 ? self.editButtonItem : nil;
@@ -256,9 +255,9 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     _observingReachability = NO;
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     _treeDataSource.updatesTableView = NO;
 }
 
