@@ -831,8 +831,6 @@
 				1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */,
 				1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */,
 				1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */,
-				1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */,
-				1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */,
 			);
 			path = "Action Sheets";
 			sourceTree = "<group>";
@@ -1244,6 +1242,8 @@
 				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				837D67EF1861C3D700464055 /* AwfulForumTweaks.h */,
 				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
+				1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */,
+				1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */,
 				1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */,
 				1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */,
 				1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */,

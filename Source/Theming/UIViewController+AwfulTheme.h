@@ -22,7 +22,7 @@
 @interface AwfulViewController : UIViewController
 
 /**
- * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
 
@@ -34,9 +34,9 @@
 @interface AwfulTableViewController : UITableViewController 
 
 /**
- * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
-@property (readonly) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 /**
  * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
@@ -51,13 +51,22 @@
 @interface AwfulCollectionViewController : UICollectionViewController 
 
 /**
- * The theme to use for the view controller. Defaults to `AwfulTheme.currentTheme`.
+ * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
-@property (readonly) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 /**
  * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
  */
 - (void)themeCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
+/**
+ * An AwfulPopoverController takes on its contentViewController's theme and uses an AwfulPopoverBackgroundView, sending -themeDidChange to both as appropriate.
+ */
+@interface AwfulPopoverController : UIPopoverController
+
+@property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 @end

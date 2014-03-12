@@ -4,7 +4,6 @@
 
 #import "AwfulSemiModalViewController.h"
 #import "AwfulHoleyDimmingView.h"
-#import "AwfulPopoverBackgroundView.h"
 
 @interface AwfulSemiModalViewController () <UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, UIPopoverControllerDelegate>
 
@@ -15,7 +14,7 @@
 @property (weak, nonatomic) UIViewController *directlyPresentingViewController;
 
 // UIViewController has a private _popoverController ivar and property, but nothing named popoverController (yet?).
-@property (strong, nonatomic) UIPopoverController *popoverController;
+@property (strong, nonatomic) AwfulPopoverController *popoverController;
 
 @end
 
@@ -54,11 +53,10 @@
     [self.popoverController presentPopoverFromRect:[self contextRegion] inView:view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
-- (UIPopoverController *)popoverController
+- (AwfulPopoverController *)popoverController
 {
     if (_awful_popoverController) return _awful_popoverController;
-    _awful_popoverController = [[UIPopoverController alloc] initWithContentViewController:self];
-    _awful_popoverController.popoverBackgroundViewClass = [AwfulPopoverBackgroundView class];
+    _awful_popoverController = [[AwfulPopoverController alloc] initWithContentViewController:self];
     _awful_popoverController.delegate = self;
     return _awful_popoverController;
 }

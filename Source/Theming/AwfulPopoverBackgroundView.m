@@ -13,10 +13,12 @@
 
 @synthesize arrowOffset = _arrowOffset;
 @synthesize arrowDirection = _arrowDirection;
+@synthesize theme = _theme;
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"popover-background"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     _backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
@@ -26,8 +28,27 @@
     _arrowImageView = [[UIImageView alloc] initWithImage:arrowImage];
     [self addSubview:_arrowImageView];
     
-    self.tintColor = AwfulTheme.currentTheme[@"actionSheetBackgroundColor"];
+    [self themeDidChange];
+    
     return self;
+}
+
+- (AwfulTheme *)theme
+{
+    return _theme ?: [AwfulTheme currentTheme];
+}
+
+- (void)setTheme:(AwfulTheme *)theme
+{
+    _theme = theme;
+    [self themeDidChange];
+}
+
+- (void)themeDidChange
+{
+    AwfulTheme *theme = self.theme;
+    _backgroundImageView.tintColor = theme[@"sheetBackgroundColor"];
+    _arrowImageView.tintColor = theme[@"sheetBackgroundColor"];
 }
 
 + (UIEdgeInsets)contentViewInsets
@@ -55,12 +76,6 @@
 {
     _arrowDirection = arrowDirection;
     [self setNeedsLayout];
-}
-
-- (void)tintColorDidChange
-{
-    _backgroundImageView.tintColor = self.tintColor;
-    _arrowImageView.tintColor = self.tintColor;
 }
 
 - (void)layoutSubviews
