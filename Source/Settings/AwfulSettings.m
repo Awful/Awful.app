@@ -76,40 +76,27 @@ struct {
 
 - (void)migrateOldSettings
 {
-    NSString *YOSPOSStyle = self[OldSettingsKeys.yosposStyle];
-	NSString *newYOSPOSStyle = [self themeNameForForumID:@"219"];
-    if ([YOSPOSStyle isEqualToString:@"green"]) {
-        newYOSPOSStyle = @"YOSPOS";
-    } else if ([YOSPOSStyle isEqualToString:@"amber"]) {
-        newYOSPOSStyle = @"YOSPOS (amber)";
-    } else if ([YOSPOSStyle isEqualToString:@"macinyos"]) {
-       newYOSPOSStyle = @"Macinyos";
-    } else if ([YOSPOSStyle isEqualToString:@"winpos95"]) {
-        newYOSPOSStyle = @"Winpos 95";
+    NSString *oldYOSPOSStyle = self[OldSettingsKeys.yosposStyle];
+    if (oldYOSPOSStyle) {
+        NSString *newYOSPOSStyle;
+        if ([oldYOSPOSStyle isEqualToString:@"green"]) {
+            newYOSPOSStyle = @"YOSPOS";
+        } else if ([oldYOSPOSStyle isEqualToString:@"amber"]) {
+            newYOSPOSStyle = @"YOSPOS (amber)";
+        } else if ([oldYOSPOSStyle isEqualToString:@"macinyos"]) {
+            newYOSPOSStyle = @"Macinyos";
+        } else if ([oldYOSPOSStyle isEqualToString:@"winpos95"]) {
+            newYOSPOSStyle = @"Winpos 95";
+        }
+        [self setThemeName:newYOSPOSStyle forForumID:@"219"];
+        self[OldSettingsKeys.yosposStyle] = nil;
     }
-	[self setThemeName:newYOSPOSStyle forForumID:@"219"];
-	self[OldSettingsKeys.yosposStyle] = nil;
-	
-    NSString *FYADStyle = self[OldSettingsKeys.fyadStyle];
-	NSString *newFYADStyle = [self themeNameForForumID:@"26"];
-    if ([FYADStyle isEqualToString:@"pink"] || (!FYADStyle && !newFYADStyle)) { //Defaults to pink FYAD if nothing was ever set
-        newFYADStyle = @"FYAD";
-    }
-	[self setThemeName:newFYADStyle forForumID:@"26"];
-	self[OldSettingsKeys.fyadStyle] = nil;
-
-    NSString *gasChamberStyle = self[OldSettingsKeys.gasChamberStyle];
-	NSString *newGasChamberStyle = [self themeNameForForumID:@"25"];
-    if ([gasChamberStyle isEqualToString:@"sickly"] || (!gasChamberStyle && !newGasChamberStyle)) { //Defaults to sickly Gas Chamber if nothing was ever set
-       newGasChamberStyle = @"Gas Chamber";
-    }
-	[self setThemeName:newGasChamberStyle forForumID:@"25"];
-	self[OldSettingsKeys.gasChamberStyle] = nil;
     
     NSString *keepSidebarOpen = self[OldSettingsKeys.keepSidebarOpen];
     if ([keepSidebarOpen isEqualToString:AwfulKeepSidebarOpenValues.Never] || [keepSidebarOpen isEqualToString:AwfulKeepSidebarOpenValues.InPortrait]) {
         self[AwfulSettingsKeys.hideSidebarInLandscape] = @YES;
     }
+    self[OldSettingsKeys.keepSidebarOpen] = nil;
 }
 
 @synthesize sections = _sections;
