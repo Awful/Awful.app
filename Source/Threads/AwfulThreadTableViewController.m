@@ -209,7 +209,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     NSIndexPath *indexPath = [_threadDataSource.fetchedResultsController indexPathForObject:thread];
     // The cell can be nil if it's invisible or out of range. The table view is an acceptable fallback.
     UIView *view = [self.tableView cellForRowAtIndexPath:indexPath] ?: self.tableView;
-    [sheet presentFromView:view highlightingRegionReturnedByBlock:nil];
+    [sheet presentFromView:view highlightingRegionReturnedByBlock:^(UIView *view) {
+        return CGRectInset(view.bounds, 0, 1);
+    }];
 }
 
 - (void)doneWithProfile
