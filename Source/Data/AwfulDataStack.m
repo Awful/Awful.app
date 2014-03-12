@@ -42,6 +42,12 @@
                                                                                  options:options
                                                                                    error:&error];
     if (!store) {
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileReadCorruptFileError) {
+            CLSNSLog(@"%s corrupt database (mismatched store and write-ahead log?): %@", __PRETTY_FUNCTION__, error);
+            [self deleteStoreAndResetStack];
+            return;
+        }
+        
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && (error.code == NSMigrationMissingSourceModelError ||
                                                                   error.code == NSMigrationMissingMappingModelError)) {
             CLSNSLog(@"%s automatic migration failed", __PRETTY_FUNCTION__);
@@ -58,33 +64,55 @@
     return [self initWithStoreURL:nil modelURL:nil];
 }
 
+- (BOOL)isInMemoryStore
+{
+    return !!_storeURL;
+}
+
 - (void)deleteStoreAndResetStack
 {
     CLSLog(@"%s it's happening", __PRETTY_FUNCTION__);
     NSPersistentStoreCoordinator *persistentStoreCoordinator = _managedObjectContext.persistentStoreCoordinator;
-    NSFileManager *fileManager = [NSFileManager new];
-    NSError *error;
-    BOOL ok;
     for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
-        ok = [persistentStoreCoordinator removePersistentStore:store error:&error];
+        NSError *error;
+        BOOL ok = [persistentStoreCoordinator removePersistentStore:store error:&error];
         if (!ok) {
             CLSNSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
         }
+        
         if (_storeURL && ![store.URL isEqual:_storeURL]) {
-            ok = [fileManager removeItemAtURL:store.URL error:&error];
+            DeleteDataStoreAtURL(store.URL);
+        }
+    }
+    DeleteDataStoreAtURL(_storeURL);
+    
+    [self addPersistentStore];
+    CLSLog(@"%s it's done", __PRETTY_FUNCTION__);
+}
+
+void DeleteDataStoreAtURL(NSURL *storeURL)
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error];
+    if (!ok) {
+        CLSNSLog(@"%s error deleting SQLite store at %@: %@", __PRETTY_FUNCTION__, storeURL, error);
+    }
+
+    NSURL *directory = [storeURL URLByDeletingLastPathComponent];
+    NSArray *possibleDetritus = [fileManager contentsOfDirectoryAtURL:directory includingPropertiesForKeys:nil options:0 error:nil];
+    NSString *extension = storeURL.pathExtension;
+    NSArray *extensionsToDelete = @[ [extension stringByAppendingString:@"-shm"],
+                                     [extension stringByAppendingString:@"-wal"] ];
+    for (NSURL *detritusURL in possibleDetritus) {
+        if ([detritusURL.path hasPrefix:storeURL.path] && [extensionsToDelete containsObject:detritusURL.pathExtension]) {
+            NSError *error;
+            BOOL ok = [fileManager removeItemAtURL:detritusURL error:&error];
             if (!ok) {
-                CLSNSLog(@"%s error deleting store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
+                CLSNSLog(@"%s error deleting SQLite store detritus at %@: %@", __PRETTY_FUNCTION__, detritusURL, error);
             }
         }
     }
-    if (_storeURL) {
-        ok = [fileManager removeItemAtURL:_storeURL error:&error];
-        if (!ok) {
-            CLSNSLog(@"%s error deleting main store at %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
-        }
-    }
-    [self addPersistentStore];
-    CLSLog(@"%s it's done", __PRETTY_FUNCTION__);
 }
 
 @end
