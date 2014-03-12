@@ -72,7 +72,7 @@
 		<key>postsTopBarTextColor</key>
 		<string>#000000</string>
 		<key>postsTopBarBackgroundColor</key>
-		<string>fafafa</string>
+		<string>#fafafa</string>
 		<key>splitViewBackgroundColor</key>
 		<string>#f5f5f5</string>
 		<key>splitDividerColor</key>
@@ -104,7 +104,7 @@
 		<key>sheetTextColor</key>
 		<string>#000000</string>
 		<key>sheetDimColor</key>
-		<string>777777f0</string>
+		<string>#777777f0</string>
 	</dict>
 	<key>dark</key>
 	<dict>
