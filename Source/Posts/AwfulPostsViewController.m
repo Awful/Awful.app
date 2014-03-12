@@ -602,14 +602,14 @@
 - (void)startObservingThreadSeenPosts
 {
     if (self.observingThreadSeenPosts) return;
-    [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:&KVOContext];
+    [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:KVOContext];
     self.observingThreadSeenPosts = YES;
 }
 
 - (void)stopObservingThreadSeenPosts
 {
     if (!self.observingThreadSeenPosts) return;
-    [self removeObserver:self forKeyPath:@"thread.seenPosts" context:&KVOContext];
+    [self removeObserver:self forKeyPath:@"thread.seenPosts" context:KVOContext];
     self.observingThreadSeenPosts = NO;
 }
 
@@ -736,7 +736,7 @@
                                 forKeyPath:@"contentSize"
                                    options:(NSKeyValueObservingOptionOld |
                                             NSKeyValueObservingOptionNew)
-                                   context:&KVOContext];
+                                   context:KVOContext];
 }
 
 - (void)scrollToBottom
@@ -761,7 +761,7 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-    if (context != &KVOContext) {
+    if (context != KVOContext) {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
         return;
     }
@@ -777,14 +777,14 @@
     }
 }
 
-static char KVOContext;
+static void *KVOContext = &KVOContext;
 
 - (void)stopObservingScrollViewContentSize
 {
     if (_observingScrollViewSize && [self isViewLoaded]) {
         [self.postsView.scrollView removeObserver:self
                                        forKeyPath:@"contentSize"
-                                          context:&KVOContext];
+                                          context:KVOContext];
         _observingScrollViewSize = NO;
     }
 }
