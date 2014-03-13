@@ -1,10 +1,6 @@
-//
 //  HTMLNode+CachedSelector.h
-//  Awful
 //
-//  Created by Chris Williams on 1/21/14.
-//  Copyright (c) 2014 Awful Contributors. All rights reserved.
-//
+//  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <HTMLReader/HTMLReader.h>
 
