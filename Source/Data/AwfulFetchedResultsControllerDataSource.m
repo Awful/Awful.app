@@ -15,6 +15,11 @@
     BOOL _completedFirstFetch;
 }
 
+- (void)dealloc
+{
+    self.tableView.dataSource = nil;
+}
+
 - (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
 {
     if (!(self = [super init])) return nil;

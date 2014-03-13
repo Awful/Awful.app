@@ -25,6 +25,11 @@
     NSFetchedResultsController *_fetchedResultsController;
 }
 
+- (void)dealloc
+{
+    self.tableView.dataSource = nil;
+}
+
 - (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super init];
