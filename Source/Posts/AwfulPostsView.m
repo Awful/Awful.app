@@ -27,6 +27,12 @@
     BOOL _onceOnFirstLoad;
 }
 
+- (void)dealloc
+{
+    [self.webView stopLoading];
+    self.webView.delegate = nil;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     if (!(self = [super initWithFrame:frame])) return nil;
@@ -75,11 +81,6 @@
         }
         [self.delegate postsView:self didReceiveLongTapAtPoint:location];
     }
-}
-
-- (void)dealloc
-{
-    self.webView.delegate = nil;
 }
 
 static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)

@@ -172,6 +172,14 @@
     self.view = webView;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (self.URL) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
+    }
+}
+
 - (void)themeDidChange
 {
     [super themeDidChange];
@@ -192,12 +200,12 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewDidLoad
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidLoad];
-    if (self.URL) {
-        [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
-    }
+    [super viewWillDisappear:animated];
+    
+    // We're seeing crashes in the WebThread in `-[_WebSafeForwarder forwardInvocation:]`, and calling -[UIWebView stopLoading] is a commonly-cited fix (along with nilling out the delegate, which we do up in -dealloc). Feels a bit cargo culty, but since I can't think of any ill effects from an unnecessary call to -stopLoading, here we go.
+    [self.webView stopLoading];
 }
 
 #pragma mark - UIWebViewDelegate
