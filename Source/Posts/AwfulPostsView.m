@@ -44,7 +44,6 @@
     webView.scalesPageToFit = YES;
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
-    RemoveShadowFromAboveAndBelowWebView(webView);
     self.webView = webView;
     [self addSubview:self.webView];
     
@@ -80,15 +79,6 @@
             location.y += self.scrollView.contentOffset.y;
         }
         [self.delegate postsView:self didReceiveLongTapAtPoint:location];
-    }
-}
-
-static void RemoveShadowFromAboveAndBelowWebView(UIWebView *webView)
-{
-    for (UIView *view in [webView.scrollView subviews]) {
-        if ([view isKindOfClass:[UIImageView class]]) {
-            view.hidden = YES;
-        }
     }
 }
 
