@@ -149,6 +149,7 @@
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
+		1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
 		1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */; };
 		1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */; };
 		1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */; };
@@ -471,6 +472,8 @@
 		1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulExternalBrowser.h; sourceTree = "<group>"; };
 		1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExternalBrowser.m; sourceTree = "<group>"; };
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
+		1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPRequestOperationManager.h; sourceTree = "<group>"; };
+		1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPRequestOperationManager.m; sourceTree = "<group>"; };
 		1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverBackgroundView.h; sourceTree = "<group>"; };
@@ -1149,6 +1152,8 @@
 				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
 				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
 				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
+				1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */,
+				1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */,
 				1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */,
 				1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */,
 				836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */,
@@ -1881,6 +1886,7 @@
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C5F701217D9B2BD005ABD6F /* AwfulTabBarButton.m in Sources */,
+				1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */,
 				1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */,
 				1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,

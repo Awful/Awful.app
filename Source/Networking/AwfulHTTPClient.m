@@ -3,13 +3,11 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulHTTPClient.h"
-#import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulFormScraper.h"
 #import "AwfulForumHierarchyScraper.h"
-#import "AwfulHTMLRequestSerializer.h"
-#import "AwfulHTMLResponseSerializer.h"
+#import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulMessageFolderScraper.h"
 #import "AwfulModels.h"
@@ -23,10 +21,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "HTMLNode+CachedSelector.h"
 #import <Crashlytics/Crashlytics.h>
-
-@interface AwfulHTTPRequestOperationManager : AFHTTPRequestOperationManager
-
-@end
 
 @implementation AwfulHTTPClient
 {
@@ -78,22 +72,6 @@
         urlString = @"http://forums.somethingawful.com/";
     }
     _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
-    _HTTPManager.requestSerializer = ({
-        AwfulHTMLRequestSerializer *serializer = [AwfulHTMLRequestSerializer new];
-        serializer.stringEncoding = NSWindowsCP1252StringEncoding;
-        serializer;
-    });
-    NSArray *serializers = @[
-                             [AFJSONResponseSerializer new],
-                             ({
-                                 AwfulHTMLResponseSerializer *serializer = [AwfulHTMLResponseSerializer new];
-                                 serializer.stringEncoding = NSWindowsCP1252StringEncoding;
-                                 serializer.fallbackEncoding = NSISOLatin1StringEncoding;
-                                 serializer;
-                             }),
-                             ];
-    _HTTPManager.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:serializers];
-    [_HTTPManager.reachabilityManager startMonitoring];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -955,38 +933,6 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
-}
-
-@end
-
-@implementation AwfulHTTPRequestOperationManager
-
-#pragma mark -
-
-- (AFHTTPRequestOperation *)HTTPRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                                                    success:(void (^)(AFHTTPRequestOperation *, id))success
-                                                    failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
-{
-    // NSURLConnection will, absent relevant HTTP headers, cache responses for an unknown and unfortunately long time.
-    // http://blackpixel.com/blog/2012/05/caching-and-nsurlconnection.html
-    // This came up when using Awful from some public wi-fi that redirected to a login page. Six hours and a different network later, the same login page was being served up from the cache.
-    AFHTTPRequestOperation *op = [super HTTPRequestOperationWithRequest:urlRequest
-                                                                success:success
-                                                                failure:failure];
-    if ([[urlRequest HTTPMethod] compare:@"GET" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        [op setCacheResponseBlock:^(NSURLConnection *connection, NSCachedURLResponse *cachedResponse) {
-            if ([connection currentRequest].cachePolicy == NSURLRequestUseProtocolCachePolicy) {
-                NSHTTPURLResponse *response = (id)[cachedResponse response];
-                NSDictionary *headers = [response allHeaderFields];
-                if (!(headers[@"Cache-Control"] || headers[@"Expires"])) {
-                    NSLog(@"refusing to cache response to %@", urlRequest.URL);
-                    return (NSCachedURLResponse *)nil;
-                }
-            }
-            return cachedResponse;
-        }];
-    }
-    return op;
 }
 
 @end
