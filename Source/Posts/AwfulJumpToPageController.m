@@ -52,9 +52,9 @@
     jumpToPageView.tintColor = theme[@"tintColor"];
     jumpToPageView.backgroundColor = theme[@"sheetBackgroundColor"];
     jumpToPageView.buttonRowBackgroundColor = theme[@"sheetTitleBackgroundColor"];
-    [jumpToPageView.firstPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
-    [jumpToPageView.jumpButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
-    [jumpToPageView.lastPageButton setTitleColor:theme[@"tintColor"] forState:UIControlStateNormal];
+    [jumpToPageView.firstPageButton setTitleColor:theme[@"sheetTitleColor"] forState:UIControlStateNormal];
+    [jumpToPageView.jumpButton setTitleColor:theme[@"sheetTitleColor"] forState:UIControlStateNormal];
+    [jumpToPageView.lastPageButton setTitleColor:theme[@"sheetTitleColor"] forState:UIControlStateNormal];
     [jumpToPageView.pickerView reloadAllComponents];
 }
 
@@ -72,20 +72,20 @@
 - (void)didTapFirstPageButton
 {
     self.postsViewController.page = 1;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissCompletion:nil];
 }
 
 - (void)didTapJumpButton
 {
     AwfulThreadPage page = [self.jumpToPageView.pickerView selectedRowInComponent:0] + 1;
     self.postsViewController.page = page;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissCompletion:nil];
 }
 
 - (void)didTapLastPageButton
 {
     self.postsViewController.page = AwfulThreadPageLast;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissCompletion:nil];
 }
 
 - (void)updateJumpButtonTitle
