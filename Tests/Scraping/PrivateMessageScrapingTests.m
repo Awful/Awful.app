@@ -30,7 +30,7 @@
     XCTAssertFalse(message.replied);
     XCTAssertFalse(message.forwarded);
     XCTAssertEqual(message.sentDate.timeIntervalSince1970, 1352408160.);
-    XCTAssertNotEqual([message.innerHTML rangeOfString:@"awesome app"].location, NSNotFound);
+    XCTAssertNotEqual([message.innerHTML rangeOfString:@"awesome app"].location, (NSUInteger)NSNotFound);
     AwfulUser *from = message.from;
     XCTAssertEqualObjects(from.userID, @"47395");
     XCTAssertEqualObjects(from.username, @"InFlames235");

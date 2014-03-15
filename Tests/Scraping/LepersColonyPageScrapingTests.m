@@ -31,7 +31,7 @@
     XCTAssertEqual(first.date.timeIntervalSince1970, 1384078200.);
     XCTAssertEqualObjects(first.user.username, @"Kheldragar");
     XCTAssertEqualObjects(first.user.userID, @"202925");
-    XCTAssertNotEqual([first.reasonHTML rangeOfString:@"shitty as you"].location, NSNotFound);
+    XCTAssertNotEqual([first.reasonHTML rangeOfString:@"shitty as you"].location, (NSUInteger)NSNotFound);
     XCTAssertEqualObjects(first.requester.username, @"Ralp");
     XCTAssertEqualObjects(first.requester.userID, @"61644");
     XCTAssertEqualObjects(first.approver, first.requester);

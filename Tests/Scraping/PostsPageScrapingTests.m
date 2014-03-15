@@ -37,7 +37,7 @@
     
     AwfulPost *firstPost = posts[0];
     XCTAssertEqualObjects(firstPost.postID, @"407741839");
-    XCTAssertNotEqual([firstPost.innerHTML rangeOfString:@"more I think about it"].location, NSNotFound);
+    XCTAssertNotEqual([firstPost.innerHTML rangeOfString:@"more I think about it"].location, (NSUInteger)NSNotFound);
     XCTAssertEqual(firstPost.threadIndex, 161);
     XCTAssertEqual(firstPost.postDate.timeIntervalSince1970, 1348139760.);
     XCTAssertTrue(firstPost.beenSeen);
@@ -48,11 +48,11 @@
     XCTAssertEqualObjects(majuju.userID, @"108110");
     XCTAssertTrue(majuju.canReceivePrivateMessages);
     XCTAssertEqual(majuju.regdate.timeIntervalSince1970, 1167350400.);
-    XCTAssertNotEqual([majuju.customTitleHTML rangeOfString:@"AAA"].location, NSNotFound);
+    XCTAssertNotEqual([majuju.customTitleHTML rangeOfString:@"AAA"].location, (NSUInteger)NSNotFound);
     
     AwfulPost *accentAiguPost = posts[10];
     XCTAssertEqualObjects(accentAiguPost.postID, @"407751664");
-    XCTAssertNotEqual([accentAiguPost.innerHTML rangeOfString:@"Québec"].location, NSNotFound);
+    XCTAssertNotEqual([accentAiguPost.innerHTML rangeOfString:@"Québec"].location, (NSUInteger)NSNotFound);
     
     AwfulPost *opPost = posts[12];
     XCTAssertEqualObjects(opPost.postID, @"407751956");
@@ -77,7 +77,7 @@
     XCTAssertEqual(posts.count, (NSUInteger)40);
     AwfulPost *ganker = posts[24];
     XCTAssertEqualObjects(ganker.author.username, @"Ganker");
-    XCTAssertNotEqual([ganker.author.customTitleHTML rangeOfString:@"forced meme"].location, NSNotFound);
+    XCTAssertNotEqual([ganker.author.customTitleHTML rangeOfString:@"forced meme"].location, (NSUInteger)NSNotFound);
     AwfulPost *brylcreem = posts[25];
     XCTAssertEqualObjects(brylcreem.author.username, @"brylcreem");
 }
@@ -97,12 +97,12 @@
     AwfulPost *first = posts.firstObject;
     XCTAssertEqualObjects(first.author.username, @"BiG TrUcKs !!!");
     XCTAssertEqual(first.postDate.timeIntervalSince1970, 1388525460.0);
-    XCTAssertNotEqual([first.innerHTML rangeOfString:@"twitter assholes"].location, NSNotFound);
+    XCTAssertNotEqual([first.innerHTML rangeOfString:@"twitter assholes"].location, (NSUInteger)NSNotFound);
     XCTAssertEqual(first.threadIndex, 1);
     AwfulPost *second = posts[1];
     XCTAssertEqualObjects(second.author.username, @"syxxcowz");
     XCTAssertEqual(second.postDate.timeIntervalSince1970, 1388525580.0);
-    XCTAssertNotEqual([first.innerHTML rangeOfString:@"hate twiter"].location, NSNotFound);
+    XCTAssertNotEqual([first.innerHTML rangeOfString:@"hate twiter"].location, (NSUInteger)NSNotFound);
     XCTAssertEqual(second.threadIndex, 2);
 }
 

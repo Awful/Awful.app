@@ -29,7 +29,7 @@
     XCTAssertEqualObjects(parameters[@"formkey"], @"0253d85a945b60daa0165f718df82b8a");
     XCTAssertEqualObjects(parameters[@"form_cookie"], @"80c74b48f557");
     XCTAssertNotNil(parameters[@"message"]);
-    XCTAssertNotEqual([parameters[@"message"] rangeOfString:@"terrible"].location, NSNotFound);
+    XCTAssertNotEqual([parameters[@"message"] rangeOfString:@"terrible"].location, (NSUInteger)NSNotFound);
     XCTAssertNotNil(parameters[@"parseurl"]);
     XCTAssertNotNil(parameters[@"bookmark"]);
     XCTAssertNil(parameters[@"disablesmilies"]);
@@ -102,7 +102,7 @@
         }
     }
     XCTAssertNotNil(messageItem);
-    XCTAssertNotEqual([messageItem.value rangeOfString:@"InFlames235 wrote"].location, NSNotFound);
+    XCTAssertNotEqual([messageItem.value rangeOfString:@"InFlames235 wrote"].location, (NSUInteger)NSNotFound);
 }
 
 @end
