@@ -102,7 +102,7 @@
     AwfulPost *second = posts[1];
     XCTAssertEqualObjects(second.author.username, @"syxxcowz");
     XCTAssertEqual(second.postDate.timeIntervalSince1970, 1388525580.0);
-    XCTAssertNotEqual([first.innerHTML rangeOfString:@"hate twiter"].location, (NSUInteger)NSNotFound);
+    XCTAssertNotEqual([second.innerHTML rangeOfString:@"hate twiter"].location, (NSUInteger)NSNotFound);
     XCTAssertEqual(second.threadIndex, 2);
 }
 
