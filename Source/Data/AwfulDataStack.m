@@ -84,7 +84,9 @@
             DeleteDataStoreAtURL(store.URL);
         }
     }
-    DeleteDataStoreAtURL(_storeURL);
+    if (_storeURL) {
+        DeleteDataStoreAtURL(_storeURL);
+    }
     
     [self addPersistentStore];
     CLSLog(@"%s it's done", __PRETTY_FUNCTION__);
