@@ -85,8 +85,8 @@
 
 - (void)layoutSubviews
 {
-    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 57 : 26;
-    const CGFloat height = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? width : 38;
+    const CGFloat width = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 57 : 40;
+    const CGFloat height = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? width : 32;
     const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 12 : 6;
     const CGFloat topMargin = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 7 : 2;
     CGFloat x = floorf((CGRectGetWidth(self.bounds) - (width * _buttons.count) - (between * (_buttons.count - 1))) / 2);
