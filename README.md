@@ -146,6 +146,7 @@ Awful includes contributions from:
 - [enigma105](http://forums.somethingawful.com/member.php?action=getinfo&userid=51258)
 - [Froist](http://forums.somethingawful.com/member.php?action=getinfo&userid=56411)
 - [hardstyle](http://forums.somethingawful.com/member.php?action=getinfo&userid=51070)
+- [JamesOff](http://forums.somethingawful.com/member.php?action=getinfo&userid=32221)
 - [Jose Valasquez](http://forums.somethingawful.com/member.php?action=getinfo&userid=77039)
 - [Malcolm XML](http://forums.somethingawful.com/member.php?action=getinfo&userid=154586)
 - [OHIO](http://forums.somethingawful.com/member.php?action=getinfo&userid=82915)
