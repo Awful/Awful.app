@@ -5,9 +5,17 @@
 	<key>BYOB</key>
 	<dict>
 		<key>sheetTitleColor</key>
-		<string>#ff00ff</string>
+		<string>#ffffff</string>
+		<key>sheetTitleBackgroundColor</key>
+		<string>#5492c1</string>
 		<key>sheetBackgroundColor</key>
-		<string>#acaaeb</string>
+		<string>#e7e7ff</string>
+		<key>sheetDimColor</key>
+		<string>#494875f0</string>
+		<key>sheetTextColor</key>
+		<string>#000000</string>
+		<key>listSelectedBackgroundColor</key>
+		<string>#e7e7ff</string>
 		<key>description</key>
 		<string>yob</string>
 		<key>jumpToPageNavigationBarTintColor</key>
@@ -167,6 +175,16 @@
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>sheetTitleColor</key>
+		<string>#ffffff</string>
+		<key>sheetTitleBackgroundColor</key>
+		<string>#ac72b2</string>
+		<key>sheetBackgroundColor</key>
+		<string>#cea8ce</string>
+		<key>sheetDimColor</key>
+		<string>#b24c4bf0</string>
+		<key>sheetTextColor</key>
+		<string>#000000</string>
 		<key>description</key>
 		<string>Pink</string>
 		<key>postsLoadingViewTintColor</key>
