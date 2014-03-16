@@ -7,7 +7,7 @@
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulForumThreadTableViewController.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulPrivateMessageTableViewController.h"
@@ -75,7 +75,7 @@
         
         [SVProgressHUD showWithStatus:@"Locating Post"];
         __weak __typeof__(self) weakSelf = self;
-        [AwfulHTTPClient.client locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
+        [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
@@ -117,7 +117,7 @@
             success(user);
             return YES;
         }
-        [[AwfulHTTPClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
             if (user) {
                 success(user);
             } else if (error) {
@@ -150,7 +150,7 @@
 			return YES;
 		}
 		
-		[[AwfulHTTPClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
 			if (user) {
 				success(user);
 			} else if (error) {

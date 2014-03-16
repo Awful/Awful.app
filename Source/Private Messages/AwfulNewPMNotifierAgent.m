@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulNewPMNotifierAgent.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulPrivateMessage.h"
 
 @interface AwfulNewPMNotifierAgent ()
@@ -41,7 +41,7 @@ static NSString * const kLastMessageCheckDate = @"com.awfulapp.Awful.LastMessage
 - (void)checkForNewMessages
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listPrivateMessageInboxAndThen:^(NSError *error, NSArray *messages) {
+    [[AwfulForumsClient client] listPrivateMessageInboxAndThen:^(NSError *error, NSArray *messages) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"error checking for new private messages: %@", error);

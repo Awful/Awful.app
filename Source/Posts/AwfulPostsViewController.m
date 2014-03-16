@@ -10,7 +10,7 @@
 #import "AwfulBrowserViewController.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
@@ -237,7 +237,7 @@
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
             [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                [[AwfulHTTPClient client] rateThread:self.thread :i
+                [[AwfulForumsClient client] rateThread:self.thread :i
                                              andThen:^(NSError *error)
                  {
                      if (error) {
@@ -260,7 +260,7 @@
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulHTTPClient client] setThread:self.thread
+        [[AwfulForumsClient client] setThread:self.thread
                                isBookmarked:!self.thread.bookmarked
                                     andThen:^(NSError *error)
          {
@@ -481,7 +481,7 @@
     [self fetchPage:page completionHandler:^(NSError *error) {
         if (error) {
             // Poor man's offline mode.
-            if (AwfulHTTPClient.client.reachable || ![error.domain isEqualToString:NSURLErrorDomain]) {
+            if ([AwfulForumsClient client].reachable || ![error.domain isEqualToString:NSURLErrorDomain]) {
                 [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
             }
         }
@@ -539,7 +539,7 @@
 - (void)fetchPage:(AwfulThreadPage)page completionHandler:(void (^)(NSError *error))completionHandler
 {
     __weak __typeof__(self) weakSelf = self;
-    id op = [[AwfulHTTPClient client] listPostsInThread:self.thread
+    id op = [[AwfulForumsClient client] listPostsInThread:self.thread
                                               writtenBy:self.author
                                                  onPage:page
                                                 andThen:^(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML)
@@ -881,7 +881,7 @@ static void *KVOContext = &KVOContext;
     }]];
     if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
-            [[AwfulHTTPClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
+            [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Mark Read"
                                             error:error
@@ -895,7 +895,7 @@ static void *KVOContext = &KVOContext;
     }
     if (post.editable) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
-            [[AwfulHTTPClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
+            [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Edit Post"
                                             error:error
@@ -911,7 +911,7 @@ static void *KVOContext = &KVOContext;
     }
     if (!self.thread.closed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
-            [[AwfulHTTPClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
+            [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Quote Post"
                                             error:error

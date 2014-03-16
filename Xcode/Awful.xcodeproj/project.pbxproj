@@ -179,7 +179,7 @@
 		1CC45267180B7C1A00F5F043 /* AwfulThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */; };
 		1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
-		1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulHTTPClient.m */; };
+		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
 		1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */; };
 		1CD8728318CAE64C00B2D0B9 /* AwfulJumpToPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8728218CAE64C00B2D0B9 /* AwfulJumpToPageView.m */; };
@@ -532,8 +532,8 @@
 		1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarkedThreadTableViewController.m; sourceTree = "<group>"; };
 		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
 		1CC780171612D8AF002AF958 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumsListController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1CC780201612D989002AF958 /* AwfulHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPClient.h; sourceTree = "<group>"; };
-		1CC780211612D989002AF958 /* AwfulHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPClient.m; sourceTree = "<group>"; };
+		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
+		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
 		1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewController.h; sourceTree = "<group>"; };
 		1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewController.m; sourceTree = "<group>"; };
 		1CC7804C1612DA8E002AF958 /* AwfulForumThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumThreadTableViewController.h; sourceTree = "<group>"; };
@@ -1150,8 +1150,8 @@
 				1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */,
 				1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */,
 				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
-				1CC780201612D989002AF958 /* AwfulHTTPClient.h */,
-				1CC780211612D989002AF958 /* AwfulHTTPClient.m */,
+				1CC780201612D989002AF958 /* AwfulForumsClient.h */,
+				1CC780211612D989002AF958 /* AwfulForumsClient.m */,
 				1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */,
 				1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */,
 				1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */,
@@ -1793,7 +1793,7 @@
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
 				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
-				1CC780231612D989002AF958 /* AwfulHTTPClient.m in Sources */,
+				1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */,
 				1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */,
 				1C5F700917D87863005ABD6F /* AwfulVerticalTabBarController.m in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,

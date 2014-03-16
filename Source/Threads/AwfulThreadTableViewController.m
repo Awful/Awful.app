@@ -6,7 +6,7 @@
 #import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
@@ -156,7 +156,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulHTTPClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
+        [[AwfulForumsClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
             if (error) {
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
             } else {
@@ -192,7 +192,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             if (!thread.threadID) {
                 return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
             }
-            [[AwfulHTTPClient client] markThreadUnread:thread andThen:^(NSError *error) {
+            [[AwfulForumsClient client] markThreadUnread:thread andThen:^(NSError *error) {
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
                 } else {

@@ -11,8 +11,8 @@
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
 #import "AwfulEmptyViewController.h"
+#import "AwfulForumsClient.h"
 #import "AwfulForumsListController.h"
-#import "AwfulHTTPClient.h"
 #import "AwfulLaunchImageViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
@@ -61,7 +61,7 @@ static id _instance;
     [self destroyRootViewControllerStack];
     
     // Reset the HTTP client so it gets remade (if necessary) with the default URL.
-    [[AwfulHTTPClient client] reset];
+    [[AwfulForumsClient client] reset];
     
     // Logging out doubles as an "empty cache" button.
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -109,7 +109,7 @@ static id _instance;
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
     _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
     
-    [AwfulHTTPClient client].managedObjectContext = _dataStack.managedObjectContext;
+    [AwfulForumsClient client].managedObjectContext = _dataStack.managedObjectContext;
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
@@ -117,7 +117,7 @@ static id _instance;
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    if ([AwfulHTTPClient client].loggedIn) {
+    if ([AwfulForumsClient client].loggedIn) {
         self.window.rootViewController = [self createRootViewControllerStack];
     } else {
         self.window.rootViewController = [AwfulLaunchImageViewController new];
@@ -238,7 +238,7 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    if (![AwfulHTTPClient client].loggedIn) {
+    if (![AwfulForumsClient client].loggedIn) {
         AwfulLoginController *login = [AwfulLoginController new];
         login.delegate = self;
         [self.window.rootViewController presentViewController:[login enclosingNavigationController] animated:NO completion:nil];
@@ -337,7 +337,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)showPromptIfLoginCookieExpiresSoon
 {
-    NSDate *loginCookieExpiryDate = [AwfulHTTPClient client].loginCookieExpiryDate;
+    NSDate *loginCookieExpiryDate = [AwfulForumsClient client].loginCookieExpiryDate;
     if (loginCookieExpiryDate && [loginCookieExpiryDate timeIntervalSinceNow] < kCookieExpiringSoonThreshold) {
         NSDate *lastPromptDate = [[NSUserDefaults standardUserDefaults] objectForKey:kLastExpiringCookiePromptDate];
         if (!lastPromptDate || [lastPromptDate timeIntervalSinceNow] > kCookieExpiryPromptFrequency) {
@@ -359,7 +359,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if (![AwfulHTTPClient client].loggedIn) return;
+    if (![AwfulForumsClient client].loggedIn) return;
     
 	// Get a URL from the pasteboard. Check the pasteboard's string too in case some app is a big jerk.
     NSURL *URL = [UIPasteboard generalPasteboard].URL ?: [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
@@ -401,7 +401,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
-    return [AwfulHTTPClient client].isLoggedIn;
+    return [AwfulForumsClient client].isLoggedIn;
 }
 
 - (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
@@ -412,7 +412,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 - (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
     NSNumber *userInterfaceIdiom = [coder decodeObjectForKey:UIApplicationStateRestorationUserInterfaceIdiomKey];
-    return userInterfaceIdiom.integerValue == UI_USER_INTERFACE_IDIOM() && [AwfulHTTPClient client].loggedIn;
+    return userInterfaceIdiom.integerValue == UI_USER_INTERFACE_IDIOM() && [AwfulForumsClient client].loggedIn;
 }
 
 - (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
@@ -441,7 +441,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
-    if (!AwfulHTTPClient.client.loggedIn) return NO;
+    if (![AwfulForumsClient client].loggedIn) return NO;
     if ([URL.scheme caseInsensitiveCompare:@"awfulhttp"] == NSOrderedSame) {
         return [self openAwfulURL:URL.awfulURL];
     }
@@ -462,7 +462,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     settings.username = user.username;
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;
-    [[AwfulHTTPClient client] taxonomizeForumsAndThen:nil];
+    [[AwfulForumsClient client] taxonomizeForumsAndThen:nil];
     [UIView transitionWithView:self.window
                       duration:0.3
                        options:UIViewAnimationOptionTransitionCrossDissolve

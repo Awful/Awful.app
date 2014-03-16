@@ -5,7 +5,7 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
@@ -92,7 +92,7 @@
     [self.tableView reloadData];
     
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
+    [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"failed refreshing user info: %@", error);

@@ -1,4 +1,4 @@
-//  AwfulHTTPClient.h
+//  AwfulForumsClient.h
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,10 +6,10 @@
 #import "AwfulForm.h"
 #import "AwfulModels.h"
 
-@interface AwfulHTTPClient : NSObject
+@interface AwfulForumsClient : NSObject
 
 // Singleton instance.
-+ (AwfulHTTPClient *)client;
++ (AwfulForumsClient *)client;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 

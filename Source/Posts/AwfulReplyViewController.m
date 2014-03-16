@@ -7,7 +7,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
@@ -118,7 +118,7 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
 {
     if (self.post) {
-        [[AwfulHTTPClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
+        [[AwfulForumsClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
             if (error) {
                 completionHandler(NO);
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -128,7 +128,7 @@
         }];
     } else if (self.thread) {
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulHTTPClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, AwfulPost *post) {
+        [[AwfulForumsClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, AwfulPost *post) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);

@@ -11,7 +11,7 @@
 #import "AwfulDataStack.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
@@ -105,7 +105,7 @@
         self.loadingView.message = @"Loading…";
         [self.postsView addSubview:self.loadingView];
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulHTTPClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
+        [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
             __typeof__(self) self = weakSelf;
              [self.postsView reloadPostAtIndex:0];
              [self.loadingView removeFromSuperview];
@@ -159,7 +159,7 @@
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
     [sheet addButtonWithTitle:@"Reply" block:^{
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulHTTPClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
@@ -174,7 +174,7 @@
     }];
     [sheet addButtonWithTitle:@"Forward" block:^{
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulHTTPClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];

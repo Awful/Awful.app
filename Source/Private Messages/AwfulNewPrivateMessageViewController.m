@@ -5,7 +5,7 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulNewPrivateMessageFieldView.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
@@ -109,7 +109,7 @@
         }
     }
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listAvailablePrivateMessageThreadTagsAndThen:^(NSError *error, NSArray *threadTags) {
+    [[AwfulForumsClient client] listAvailablePrivateMessageThreadTagsAndThen:^(NSError *error, NSArray *threadTags) {
         __typeof__(self) self = weakSelf;
         self->_availableThreadTags = [threadTags copy];
         [_postIconPicker reloadData];
@@ -191,7 +191,7 @@
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL))completionHandler
 {
-    [[AwfulHTTPClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
+    [[AwfulForumsClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
                                        withSubject:self.fieldView.subjectField.textField.text
                                          threadTag:self.threadTag
                                             BBcode:composition

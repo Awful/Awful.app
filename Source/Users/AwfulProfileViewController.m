@@ -7,7 +7,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPostsView.h"
@@ -227,7 +227,7 @@
     if (self.skipFetchingAndRenderingProfileOnAppear) return;
     [self renderUser];
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] profileUserWithID:self.user.userID andThen:^(NSError *error, AwfulUser *user) {
+    [[AwfulForumsClient client] profileUserWithID:self.user.userID andThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
          if (error) {
              NSLog(@"error fetching user profile for %@: %@", self.user.userID, error);

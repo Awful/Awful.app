@@ -10,7 +10,7 @@
 #import "AwfulForumCell.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulForumTreeDataSource.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
@@ -195,7 +195,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 - (void)refresh
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] taxonomizeForumsAndThen:^(NSError *error, NSArray *categories) {
+    [[AwfulForumsClient client] taxonomizeForumsAndThen:^(NSError *error, NSArray *categories) {
         if (!error) {
             weakSelf.lastRefresh = [NSDate date];
         }
@@ -204,7 +204,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (BOOL)refreshOnAppear
 {
-    if (![AwfulHTTPClient client].loggedIn) return NO;
+    if (![AwfulForumsClient client].loggedIn) return NO;
     if (!self.lastRefresh) return YES;
     if (self.tableView.numberOfSections < 2) return YES;
     if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
@@ -224,7 +224,7 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
         [self refresh];
     }
     
-    if (![AwfulHTTPClient client].reachable) {
+    if (![AwfulForumsClient client].reachable) {
         [self refreshOnceServerIsReachable];
     }
 }

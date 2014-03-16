@@ -1,8 +1,8 @@
-//  AwfulHTTPClient.m
+//  AwfulForumsClient.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulFormScraper.h"
@@ -22,7 +22,7 @@
 #import "HTMLNode+CachedSelector.h"
 #import <Crashlytics/Crashlytics.h>
 
-@implementation AwfulHTTPClient
+@implementation AwfulForumsClient
 {
     AwfulHTTPRequestOperationManager *_HTTPManager;
 }
@@ -49,12 +49,12 @@
     return self;
 }
 
-+ (AwfulHTTPClient *)client
++ (AwfulForumsClient *)client
 {
-    static AwfulHTTPClient *instance;
+    static AwfulForumsClient *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [AwfulHTTPClient new];
+        instance = [AwfulForumsClient new];
     });
     return instance;
 }

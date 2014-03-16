@@ -6,7 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulNewThreadFieldView.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
@@ -76,7 +76,7 @@ static NSString * const DefaultTitle = @"New Thread";
     [super viewDidLoad];
     [self updateThreadTagButtonImage];
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
+    [[AwfulForumsClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
         __typeof__(self) self = weakSelf;
         _availableThreadTags = [form.threadTags copy];
         _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
@@ -199,7 +199,7 @@ static NSString * const DefaultTitle = @"New Thread";
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] postThreadInForum:self.forum
+    [[AwfulForumsClient client] postThreadInForum:self.forum
                                     withSubject:self.fieldView.subjectField.textField.text
                                       threadTag:_threadTag
                                    secondaryTag:_secondaryThreadTag

@@ -5,7 +5,7 @@
 #import "AwfulRapSheetViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulPunishmentCell.h"
 #import "AwfulUIKitAndFoundationCategories.h"
@@ -97,7 +97,7 @@
 - (void)loadPage:(NSUInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listBansOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *bans) {
+    [[AwfulForumsClient client] listBansOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *bans) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];

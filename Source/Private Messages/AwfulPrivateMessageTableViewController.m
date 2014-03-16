@@ -6,7 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulNewPrivateMessageViewController.h"
@@ -212,7 +212,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 - (void)deleteObject:(AwfulPrivateMessage *)pm
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] deletePrivateMessage:pm andThen:^(NSError *error) {
+    [[AwfulForumsClient client] deletePrivateMessage:pm andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Could Not Delete Message" error:error buttonTitle:@"OK"];

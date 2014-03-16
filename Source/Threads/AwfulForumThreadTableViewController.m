@@ -6,7 +6,7 @@
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulNewThreadViewController.h"
@@ -172,7 +172,7 @@
 
 - (BOOL)shouldRefreshOnAppear
 {
-    if (![AwfulHTTPClient client].reachable) return NO;
+    if (![AwfulForumsClient client].reachable) return NO;
     if (!self.filterThreadTag && !self.forum.lastRefresh) return YES;
     if (self.filterThreadTag && !self.forum.lastFilteredRefresh) return YES;
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
@@ -193,7 +193,7 @@
 - (void)loadPage:(NSInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listThreadsInForum:self.forum withThreadTag:self.filterThreadTag onPage:page andThen:^(NSError *error, NSArray *threads) {
+    [[AwfulForumsClient client] listThreadsInForum:self.forum withThreadTag:self.filterThreadTag onPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];

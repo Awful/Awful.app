@@ -4,7 +4,7 @@
 
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulAlertView.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
@@ -96,7 +96,7 @@
 
 - (BOOL)shouldRefreshOnAppear
 {
-    if (!AwfulHTTPClient.client.reachable) return NO;
+    if (![AwfulForumsClient client].reachable) return NO;
     if ([self.tableView numberOfRowsInSection:0] == 0) return YES;
     if (!self.lastRefreshDate) return YES;
     return [[NSDate date] timeIntervalSinceDate:self.lastRefreshDate] > 60 * 10;
@@ -123,7 +123,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
 - (void)loadPage:(NSInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [AwfulHTTPClient.client listBookmarkedThreadsOnPage:page andThen:^(NSError *error, NSArray *threads) {
+    [[AwfulForumsClient client] listBookmarkedThreadsOnPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];

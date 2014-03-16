@@ -4,7 +4,7 @@
 
 #import "AwfulLoginController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulHTTPClient.h"
+#import "AwfulForumsClient.h"
 #import "AwfulTextEntryCell.h"
 
 @interface AwfulLoginController () <UITextFieldDelegate>
@@ -194,7 +194,7 @@
                   withRowAnimation:UITableViewRowAnimationNone];
     self.tableView.userInteractionEnabled = NO;
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulHTTPClient client] logInWithUsername:self.username
+    [[AwfulForumsClient client] logInWithUsername:self.username
                                        password:self.password
                                         andThen:^(NSError *error, AwfulUser *user)
     {
