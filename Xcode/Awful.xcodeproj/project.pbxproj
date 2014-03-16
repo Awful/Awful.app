@@ -178,6 +178,7 @@
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC45267180B7C1A00F5F043 /* AwfulThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */; };
 		1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */; };
+		1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m */; };
 		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
@@ -530,6 +531,8 @@
 		1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTableViewController.m; sourceTree = "<group>"; };
 		1CC45268180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarkedThreadTableViewController.h; sourceTree = "<group>"; };
 		1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarkedThreadTableViewController.m; sourceTree = "<group>"; };
+		1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AwfulConvenience.h"; sourceTree = "<group>"; };
+		1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
 		1CC780171612D8AF002AF958 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumsListController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
@@ -1158,6 +1161,8 @@
 				1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */,
 				836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */,
 				836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */,
+				1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.h */,
+				1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -1835,6 +1840,7 @@
 				1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */,
 				1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */,
 				1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */,
+				1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m in Sources */,
 				1C89A79A18B0D14900D75854 /* AwfulExpandingSplitViewController.m in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,

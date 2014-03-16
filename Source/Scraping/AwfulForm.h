@@ -29,7 +29,7 @@
 /**
  * An array of AwfulThreadTag objects, or nil if none are available.
  */
-@property (readonly, copy, nonatomic) NSArray *threadTags;
+@property (copy, nonatomic) NSArray *threadTags;
 
 - (void)addThreadTag:(AwfulThreadTag *)threadTag;
 
