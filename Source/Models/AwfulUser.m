@@ -40,9 +40,9 @@
 {
     if (self.customTitleHTML.length == 0) return nil;
     HTMLDocument *document = [HTMLDocument documentWithString:self.customTitleHTML];
-    HTMLElementNode *avatarImage = ([document awful_firstNodeMatchingCachedSelector:@"div > img:first-child"] ?:
-                                    [document awful_firstNodeMatchingCachedSelector:@"body > img:first-child"] ?:
-                                    [document awful_firstNodeMatchingCachedSelector:@"a > img:first-child"]);
+    HTMLElement *avatarImage = ([document awful_firstNodeMatchingCachedSelector:@"div > img:first-child"] ?:
+                                [document awful_firstNodeMatchingCachedSelector:@"body > img:first-child"] ?:
+                                [document awful_firstNodeMatchingCachedSelector:@"a > img:first-child"]);
     return [NSURL URLWithString:avatarImage[@"src"]];
 }
 

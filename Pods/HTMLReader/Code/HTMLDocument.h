@@ -3,56 +3,40 @@
 //  Public domain. https://github.com/nolanw/HTMLReader
 
 #import <Foundation/Foundation.h>
+#import "HTMLDocumentType.h"
+#import "HTMLElement.h"
 #import "HTMLNode.h"
-
-/**
- * HTMLDocumentQuirksMode can change parts of the parsing algorithm.
- */
-typedef NS_ENUM(NSInteger, HTMLDocumentQuirksMode)
-{
-    /**
-     * The default quirks mode.
-     */
-    HTMLNoQuirksMode,
-    
-    /**
-     * A quirks mode for old versions of HTML.
-     */
-    HTMLQuirksMode,
-    
-    /**
-     * A quirks mode for (XHTML 1.0 or HTML 4.01) (Frameset or Transitional).
-     */
-    HTMLLimitedQuirksMode,
-};
+#import "HTMLQuirksMode.h"
 
 /**
  * An HTMLDocument is the root of a tree of nodes representing parsed HTML.
+ *
+ * For more information, see http://www.whatwg.org/specs/web-apps/current-work/multipage/syntax.html#writing
  */
 @interface HTMLDocument : HTMLNode
 
 /**
- * Parses a string of HTML.
- *
- * @param string Some HTML.
- *
- * @return An initialized HTMLDocument.
+ * Parses an HTML string into a document.
  */
 + (instancetype)documentWithString:(NSString *)string;
 
 /**
  * The document type node.
+ *
+ * The setter replaces the existing documentType, if there is one; otherwise, the new documentType will be placed immediately before the rootElement, if there is one; otherwise the new documentType is added as the last child.
  */
-@property (nonatomic) HTMLDocumentTypeNode *doctype;
+@property (strong, nonatomic) HTMLDocumentType *documentType;
 
 /**
  * The document's quirks mode.
  */
-@property (nonatomic) HTMLDocumentQuirksMode quirksMode;
+@property (assign, nonatomic) HTMLQuirksMode quirksMode;
 
 /**
- * The root node (usually the <html> element node), ignoring the document type node and any root-level comment nodes.
+ * The first element in tree order. Typically the `<html>` element.
+ *
+ * The setter replaces the existing rootElement, if there is one; otherwise, the new rootElement is added as the last child.
  */
-@property (readonly, strong, nonatomic) HTMLElementNode *rootNode;
+@property (strong, nonatomic) HTMLElement *rootElement;
 
 @end

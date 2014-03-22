@@ -37,22 +37,22 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
     AwfulForum *forum;
-    HTMLElementNode *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
+    HTMLElement *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
     if (body[@"data-forum"]) {
         forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
     }
     
-    HTMLElementNode *breadcrumbsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
+    HTMLElement *breadcrumbsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
     // The first hierarchy link (if any) is the category. The rest are forums/subforums.
     NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'forumdisplay.php']"];
 
-    HTMLElementNode *forumLink = hierarchyLinks.lastObject;
+    HTMLElement *forumLink = hierarchyLinks.lastObject;
     if (forumLink) {
         forum.name = [forumLink.innerHTML gtm_stringByUnescapingFromHTML];
     }
     if (hierarchyLinks.count > 0) {
-        HTMLElementNode *categoryLink = hierarchyLinks.firstObject;
+        HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID
@@ -60,7 +60,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
         AwfulForum *currentForum;
-        for (HTMLElementNode *subforumLink in subforumLinks.reverseObjectEnumerator) {
+        for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
             AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext
@@ -74,13 +74,13 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     
     // TODO parse number of pages so we know whether to enable pull-for-more.
     
-    HTMLElementNode *threadTagsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.thread_tags"];
+    HTMLElement *threadTagsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.thread_tags"];
     if (threadTagsDiv) {
         NSMutableOrderedSet *threadTags = [NSMutableOrderedSet new];
-        for (HTMLElementNode *link in [threadTagsDiv awful_nodesMatchingCachedSelector:@"a[href*='posticon']"]) {
+        for (HTMLElement *link in [threadTagsDiv awful_nodesMatchingCachedSelector:@"a[href*='posticon']"]) {
             NSURL *URL = [NSURL URLWithString:link[@"href"]];
             NSString *threadTagID = URL.queryDictionary[@"posticon"];
-            HTMLElementNode *image = [link awful_firstNodeMatchingCachedSelector:@"img"];
+            HTMLElement *image = [link awful_firstNodeMatchingCachedSelector:@"img"];
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
             AwfulThreadTag *threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
                                                                               threadTagURL:imageURL
@@ -93,7 +93,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     NSArray *threadLinks = [document awful_nodesMatchingCachedSelector:@"tr.thread"];
     NSMutableArray *threads = [NSMutableArray new];
     int32_t stickyIndex = -(int32_t)threadLinks.count;
-    for (HTMLElementNode *row in threadLinks) {
+    for (HTMLElement *row in threadLinks) {
         NSString *threadID;
         {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:row[@"id"]];
@@ -110,7 +110,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
         [threads addObject:thread];
-        HTMLElementNode *stickyCell = [row awful_firstNodeMatchingCachedSelector:@"td.title_sticky"];
+        HTMLElement *stickyCell = [row awful_firstNodeMatchingCachedSelector:@"td.title_sticky"];
         thread.sticky = !!stickyCell;
         if (forum) {
             thread.forum = forum;
@@ -121,11 +121,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 thread.stickyIndex = 0;
             }
         }
-        HTMLElementNode *titleLink = [row awful_firstNodeMatchingCachedSelector:@"a.thread_title"];
+        HTMLElement *titleLink = [row awful_firstNodeMatchingCachedSelector:@"a.thread_title"];
         if (titleLink) {
             thread.title = [titleLink.innerHTML gtm_stringByUnescapingFromHTML];
         }
-        HTMLElementNode *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
+        HTMLElement *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
         if (!threadTagImage) {
             threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img[src*='/rate/reviews']"];
         }
@@ -136,7 +136,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                                                      threadTagURL:URL
                                                            inManagedObjectContext:managedObjectContext];
         }
-        HTMLElementNode *secondaryThreadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon2 img"];
+        HTMLElement *secondaryThreadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon2 img"];
         if (secondaryThreadTagImage) {
             NSURL *URL = [NSURL URLWithString:secondaryThreadTagImage[@"src"] relativeToURL:documentURL];
             NSString *threadTagID = URL.fragment;
@@ -144,7 +144,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                                                                               threadTagURL:URL
                                                                     inManagedObjectContext:managedObjectContext];
         }
-        HTMLElementNode *authorProfileLink = [row awful_firstNodeMatchingCachedSelector:@"td.author a"];
+        HTMLElement *authorProfileLink = [row awful_firstNodeMatchingCachedSelector:@"td.author a"];
         if (authorProfileLink) {
             NSString *authorUsername = [[authorProfileLink innerHTML] gtm_stringByUnescapingFromHTML];
             NSURL *profileURL = [NSURL URLWithString:authorProfileLink[@"href"]];
@@ -159,7 +159,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
         NSArray *rowClasses = [row[@"class"] componentsSeparatedByCharactersInSet:whitespace];
         thread.closed = [rowClasses containsObject:@"closed"];
-        HTMLElementNode *bookmarkStarCell = [row awful_firstNodeMatchingCachedSelector:@"td.star"];
+        HTMLElement *bookmarkStarCell = [row awful_firstNodeMatchingCachedSelector:@"td.star"];
         if (bookmarkStarCell) {
             NSArray *starClasses = [bookmarkStarCell[@"class"] componentsSeparatedByCharactersInSet:whitespace];
             if ([starClasses containsObject:@"bm0"]) {
@@ -172,12 +172,12 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 thread.starCategory = AwfulStarCategoryNone;
             }
         }
-        HTMLElementNode *repliesCell = [row awful_firstNodeMatchingCachedSelector:@"td.replies"];
+        HTMLElement *repliesCell = [row awful_firstNodeMatchingCachedSelector:@"td.replies"];
         if (repliesCell) {
-            HTMLElementNode *repliesLink = [repliesCell awful_firstNodeMatchingCachedSelector:@"a"];
+            HTMLElement *repliesLink = [repliesCell awful_firstNodeMatchingCachedSelector:@"a"];
             thread.totalReplies = (int32_t)(repliesLink ?: repliesCell).innerHTML.integerValue;
         }
-        HTMLElementNode *unreadLink = [row awful_firstNodeMatchingCachedSelector:@"a.count b"];
+        HTMLElement *unreadLink = [row awful_firstNodeMatchingCachedSelector:@"a.count b"];
         if (unreadLink) {
             thread.seenPosts = (int32_t)(thread.totalReplies + 1 - unreadLink.innerHTML.integerValue);
         } else if ([row awful_firstNodeMatchingCachedSelector:@"a.x"]) {
@@ -185,7 +185,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         } else {
             thread.seenPosts = 0;
         }
-        HTMLElementNode *ratingImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img"];
+        HTMLElement *ratingImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img"];
         if (ratingImage) {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:ratingImage[@"title"]];
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
@@ -201,14 +201,14 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 thread.rating = [NSDecimalNumber decimalNumberWithDecimal:average];
             }
         }
-        HTMLElementNode *lastPostDateDiv = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost div.date"];
+        HTMLElement *lastPostDateDiv = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost div.date"];
         if (lastPostDateDiv) {
             NSDate *lastPostDate = [self.lastPostDateParser dateFromString:lastPostDateDiv.innerHTML];
             if (lastPostDate) {
                 thread.lastPostDate = lastPostDate;
             }
         }
-        HTMLElementNode *lastPostAuthorLink = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost a.author"];
+        HTMLElement *lastPostAuthorLink = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost a.author"];
         if (lastPostAuthorLink) {
             thread.lastPostAuthorName = lastPostAuthorLink.innerHTML;
         }

@@ -25,7 +25,7 @@ You have choices:
    `pod "HTMLReader", :git => "https://github.com/nolanw/HTMLReader"`
 * Clone this repository (perhaps add it as a submodule), add `HTMLReader.xcodeproj` to your project/workspace, and add `libHTMLReader.a` to your iOS target or `HTMLReader.framework` to your OS X target.
 
-HTMLReader has no dependencies other than Foundation. It is set to deploy on iOS 5 and OS X 10.7, though it's only tested regularly on iOS 7 and OS X 10.9.
+HTMLReader has no dependencies other than Foundation.
 
 [CocoaPods]: http://docs.cocoapods.org/podfile.html#pod
 
@@ -35,25 +35,32 @@ I needed to scrape HTML like a browser. I couldn't find a good choice for iOS.
 
 ## The Alternatives
 
-[libxml2][] ships with iOS. It parses a variant of HTML 4 and does not handle broken markup like a browser.
+[libxml2][] ships with iOS. It parses a variant of HTML 4 and does not handle broken markup like a modern browser.
 
-Other Objective-C libraries I came across (e.g. [hpple][]) use libxml2 and inherit its shortcomings.
+Other Objective-C libraries I came across (e.g. [hpple][] and [Ono][]) use libxml2 and inherit its shortcomings.
 
 There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle data to and from Objective-C.
 
-WebKit ships with iOS, but its HTML parsing abilities are considered private API. I consider a round-trip through UIWebView inappropriate for parsing HTML. And I didn't make it very far into building my own copy of WebCore.
+[WebKit][] ships with iOS, but its HTML parsing abilities are considered private API. I consider a round-trip through UIWebView inappropriate for parsing HTML. And I didn't make it very far into building my own copy of WebCore.
 
 [Gumbo]: https://github.com/google/gumbo-parser
 [hpple]: https://github.com/topfunky/hpple
 [Hubbub]: http://www.netsurf-browser.org/projects/hubbub/
 [libxml2]: http://www.xmlsoft.org/
+[Ono]: https://github.com/mattt/Ono
+[WebKit]: https://www.webkit.org/building/checkout.html
 
-## Testing
+## Does it work?
 
-HTMLReader uses [html5lib's tests][html5lib-tests] for tokenization and tree construction. It adds some of its own tests too.
+HTMLReader continually runs [html5lib][html5lib-tests]'s tokenization and tree construction tests, ignoring the tests for `<template>` (which HTMLReader does not implement).
 
-Tests run continually. Currently, [![Build Status](https://travis-ci.org/nolanw/HTMLReader.png)](https://travis-ci.org/nolanw/HTMLReader).
+HTMLReader is continually tested on iOS 7 and OS X versions 10.8 and 10.9. It is continually built (but not tested, due to XCTest's availability) on iOS versions 6.1 and 5.1.
 
+Given all that:  [![Build Status](https://travis-ci.org/nolanw/HTMLReader.png?branch=master)](https://travis-ci.org/nolanw/HTMLReader)
+
+HTMLReader is used by at least [one shipping app][Awful].
+
+[Awful]: https://github.com/Awful/Awful.app
 [html5lib-tests]: https://github.com/html5lib/html5lib-tests
 
 ## License

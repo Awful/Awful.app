@@ -38,11 +38,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     // First row just has headers.
     rows = [rows subarrayWithRange:NSMakeRange(1, rows.count - 1)];
     
-    for (HTMLElementNode *row in rows) {
+    for (HTMLElement *row in rows) {
         AwfulBan *ban = [AwfulBan new];
-        HTMLElementNode *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
+        HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
         {
-            HTMLElementNode *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
+            HTMLElement *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
             if (postID) {
@@ -60,14 +60,14 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
+            HTMLElement *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
             NSDate *date = [self.dateParser dateFromString:dateCell.innerHTML];
             if (date) {
                 ban.date = date;
             }
         }
         {
-            HTMLElementNode *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
+            HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
@@ -79,11 +79,11 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
+            HTMLElement *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
             ban.reasonHTML = reasonCell.innerHTML;
         }
         {
-            HTMLElementNode *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
+            HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
@@ -95,7 +95,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             }
         }
         {
-            HTMLElementNode *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
+            HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];

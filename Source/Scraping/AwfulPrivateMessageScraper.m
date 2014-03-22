@@ -9,6 +9,7 @@
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
+#import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulPrivateMessageScraper ()
@@ -40,7 +41,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                error:(out NSError **)error
 {
     NSString *messageID;
-    HTMLElementNode *replyLink = [document awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
+    HTMLElement *replyLink = [document awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];
     messageID = replyLinkURL.queryDictionary[@"privatemessageid"];
     if (messageID.length == 0) {
@@ -53,27 +54,27 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     }
     AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
                                                                        inManagedObjectContext:managedObjectContext];
-    HTMLElementNode *breadcrumbs = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
-    HTMLTextNode *subjectText = breadcrumbs.childNodes.lastObject;
+    HTMLElement *breadcrumbs = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
+    HTMLTextNode *subjectText = breadcrumbs.children.lastObject;
     if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
         message.subject = [subjectText.data gtm_stringByUnescapingFromHTML];
     }
-    HTMLElementNode *postDateCell = [document awful_firstNodeMatchingCachedSelector:@"td.postdate"];
-    HTMLElementNode *iconImage = [postDateCell awful_firstNodeMatchingCachedSelector:@"img"];
+    HTMLElement *postDateCell = [document awful_firstNodeMatchingCachedSelector:@"td.postdate"];
+    HTMLElement *iconImage = [postDateCell awful_firstNodeMatchingCachedSelector:@"img"];
     if (iconImage) {
         NSString *src = iconImage[@"src"];
         message.seen = [src rangeOfString:@"newpm"].location == NSNotFound;
         message.replied = [src rangeOfString:@"replied"].location != NSNotFound;
         message.forwarded = [src rangeOfString:@"forwarded"].location != NSNotFound;
     }
-    HTMLTextNode *sentDateText = postDateCell.childNodes.lastObject;
+    HTMLTextNode *sentDateText = postDateCell.children.lastObject;
     if ([sentDateText isKindOfClass:[HTMLTextNode class]]) {
         NSDate *sentDate = [self.sentDateParser dateFromString:sentDateText.data];
         if (sentDate) {
             message.sentDate = sentDate;
         }
     }
-    HTMLElementNode *postBodyCell = [document awful_firstNodeMatchingCachedSelector:@"td.postbody"];
+    HTMLElement *postBodyCell = [document awful_firstNodeMatchingCachedSelector:@"td.postbody"];
     if (postBodyCell) {
         message.innerHTML = postBodyCell.innerHTML;
     }

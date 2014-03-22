@@ -34,7 +34,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     NSMutableArray *forumStack = [NSMutableArray new];
     int32_t forumIndex = 0;
     NSArray *options = [document awful_nodesMatchingCachedSelector:@"select[name = 'forumid'] option"];
-    for (HTMLElementNode *option in options) {
+    for (HTMLElement *option in options) {
         NSString *itemID = option[@"value"];
         if (itemID.integerValue <= 0) continue;
         AwfulScanner *scanner = [AwfulScanner scannerWithString:option.innerHTML];

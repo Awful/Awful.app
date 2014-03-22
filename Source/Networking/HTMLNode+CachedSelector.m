@@ -37,7 +37,7 @@
 	return [self nodesMatchingParsedSelector:[HTMLSelector cachedSelectorForString:selectorString]];
 }
 
-- (HTMLElementNode *)awful_firstNodeMatchingCachedSelector:(NSString *)selectorString
+- (HTMLElement *)awful_firstNodeMatchingCachedSelector:(NSString *)selectorString
 {
 	return [self firstNodeMatchingParsedSelector:[HTMLSelector cachedSelectorForString:selectorString]];
 }

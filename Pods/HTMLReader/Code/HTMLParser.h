@@ -3,59 +3,35 @@
 //  Public domain. https://github.com/nolanw/HTMLReader
 
 #import <Foundation/Foundation.h>
-#import "HTMLAttribute.h"
 #import "HTMLDocument.h"
-#import "HTMLNode.h"
+#import "HTMLElement.h"
 
 /**
- * An HTMLParser parses HTML. It implements the tree construction phase.
+ * An HTMLParser turns a string into an HTMLDocument.
+ *
+ * For more information, see http://www.whatwg.org/specs/web-apps/current-work/multipage/tree-construction.html
+ *
+ * @see HTMLTokenizer
  */
 @interface HTMLParser : NSObject
 
 /**
- * Returns a parsed HTML document, or nil on error.
+ * This is a designated initializer.
  *
- * @param string The unparsed HTML document.
+ * @param string  A string of HTML.
+ * @param context A context element used for parsing a fragment of HTML, or nil if the fragment parsing algorithm is not to be used.
+ *
+ * For more information on the context parameter, see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-end.html#parsing-html-fragments
  */
-+ (HTMLDocument*)documentForString:(NSString *)string;
+- (id)initWithString:(NSString *)string context:(HTMLElement *)context;
 
 /**
- * Returns an HTMLParser initialized for parsing a full HTML document.
- *
- * @param string The unparsed HTML document.
- */
-+ (instancetype)parserForString:(NSString *)string;
-
-/**
- * Returns an HTMLParser initialized for parsing a full HTML document. This is a designated initializer.
- *
- * @param string The unparsed HTML document.
- */
-- (id)initWithString:(NSString *)string;
-
-/**
- * Returns an HTMLParser initialized for parsing an HTML fragment.
- *
- * @param string The unparsed HTML fragment.
- * @param context A context element, or nil if there is no context.
- */
-+ (instancetype)parserForString:(NSString *)string context:(HTMLElementNode *)context;
-
-/**
- * Returns an HTMLParser initialized for parsing an HTML fragment. This is a designated initializer.
- *
- * @param string The unparsed HTML fragment.
- * @param context A context element, or nil if there is no context.
- */
-- (id)initWithString:(NSString *)string context:(HTMLElementNode *)context;
-
-/**
- * All encountered parse errors.
+ * Instances of NSString representing the errors encountered while parsing the document.
  */
 @property (readonly, copy, nonatomic) NSArray *errors;
 
 /**
- * The parsed document.
+ * The parsed document. Lazily created on first access.
  */
 @property (readonly, strong, nonatomic) HTMLDocument *document;
 

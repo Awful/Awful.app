@@ -28,18 +28,18 @@
            intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSString *userID; {
-        HTMLElementNode *profileLink = [node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
+        HTMLElement *profileLink = [node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
         
         // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
         if (profileLink) {
             NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
             userID = URL.queryDictionary[@"userid"];
         } else {
-            HTMLElementNode *userIDInput = [node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
+            HTMLElement *userIDInput = [node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
             userID = userIDInput[@"value"];
         }
     }
-    HTMLElementNode *authorTerm = [node awful_firstNodeMatchingCachedSelector:@"dt.author"];
+    HTMLElement *authorTerm = [node awful_firstNodeMatchingCachedSelector:@"dt.author"];
     NSString *username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
     if (userID.length == 0 && username.length == 0) {
         return nil;
@@ -53,13 +53,13 @@
 			user.idiotKing = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-ik"];
     }
     NSDate *regdate; {
-        HTMLElementNode *regdateDefinition = [node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
+        HTMLElement *regdateDefinition = [node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
         regdate = [self.regdateDateParser dateFromString:regdateDefinition.innerHTML];
     }
     if (regdate) {
         user.regdate = regdate;
     }
-    HTMLElementNode *customTitleDefinition = [node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
+    HTMLElement *customTitleDefinition = [node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
     if (customTitleDefinition) {
         user.customTitleHTML = customTitleDefinition.innerHTML;
     }

@@ -8,7 +8,7 @@
 
 - (NSArray *)awful_nodesMatchingCachedSelector:(NSString *)selectorString;
 
-- (HTMLElementNode *)awful_firstNodeMatchingCachedSelector:(NSString *)selectorString;
+- (HTMLElement *)awful_firstNodeMatchingCachedSelector:(NSString *)selectorString;
 
 
 @end

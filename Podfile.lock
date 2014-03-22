@@ -20,7 +20,7 @@ PODS:
     - AFNetworking/NSURLSession
   - GRMustache (6.9.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.1.1)
+  - HTMLReader (0.5)
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
@@ -45,7 +45,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: e8cfd8f3fe3bfe19124a0cc63f4d45752d892a56
   GRMustache: 292d60aaafbdab2844bc7af76d111b848c8807a0
-  HTMLReader: 70088dbdc1e28af9f1cd7e01238db085d4fa135a
+  HTMLReader: fed5670d3261df9c7679765ea77476b46050dae8
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e

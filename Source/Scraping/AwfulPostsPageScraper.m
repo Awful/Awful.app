@@ -10,6 +10,7 @@
 #import "AwfulScanner.h"
 #import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
+#import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulPostsPageScraper ()
@@ -42,22 +43,22 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     AwfulThread *thread;
     AwfulForum *forum;
-    HTMLElementNode *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
+    HTMLElement *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
     thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:managedObjectContext];
     forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
     thread.forum = forum;
     
-    HTMLElementNode *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
+    HTMLElement *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
     // Last hierarchy link is the thread.
     // First hierarchy link is the category.
     // Intervening hierarchy links are forums/subforums.
     NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'id=']"];
     
-    HTMLElementNode *threadLink = hierarchyLinks.lastObject;
+    HTMLElement *threadLink = hierarchyLinks.lastObject;
     thread.title = [threadLink.innerHTML gtm_stringByUnescapingFromHTML];
     if (hierarchyLinks.count > 1) {
-        HTMLElementNode *categoryLink = hierarchyLinks.firstObject;
+        HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID
@@ -65,7 +66,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         AwfulForum *currentForum;
-        for (HTMLElementNode *subforumLink in subforumLinks.reverseObjectEnumerator) {
+        for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
             AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext
@@ -77,7 +78,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
     }
     
-    HTMLElementNode *closedImage = [body awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
+    HTMLElement *closedImage = [body awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
     thread.closed = !!closedImage;
     
     NSString *singleUserID = documentURL.queryDictionary[@"userid"];
@@ -86,16 +87,16 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         singleUser = [AwfulUser firstOrNewUserWithUserID:singleUserID username:nil inManagedObjectContext:managedObjectContext];
     }
     
-    HTMLElementNode *pagesDiv = [body awful_firstNodeMatchingCachedSelector:@"div.pages"];
-    HTMLElementNode *pagesSelect = [pagesDiv awful_firstNodeMatchingCachedSelector:@"select"];
+    HTMLElement *pagesDiv = [body awful_firstNodeMatchingCachedSelector:@"div.pages"];
+    HTMLElement *pagesSelect = [pagesDiv awful_firstNodeMatchingCachedSelector:@"select"];
     int32_t numberOfPages = 0;
     int32_t currentPage = 0;
     if (pagesDiv) {
         if (pagesSelect) {
-            HTMLElementNode *lastOption = [pagesSelect awful_nodesMatchingCachedSelector:@"option"].lastObject;
+            HTMLElement *lastOption = [pagesSelect awful_nodesMatchingCachedSelector:@"option"].lastObject;
             NSString *pageValue = lastOption[@"value"];
             numberOfPages = (int32_t)pageValue.integerValue;
-            HTMLElementNode *selectedOption = [pagesSelect awful_firstNodeMatchingCachedSelector:@"option[selected]"];
+            HTMLElement *selectedOption = [pagesSelect awful_firstNodeMatchingCachedSelector:@"option[selected]"];
             NSString *selectedPageValue = selectedOption[@"value"];
             currentPage = (int32_t)selectedPageValue.integerValue;
         } else {
@@ -108,7 +109,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     } else {
         thread.numberOfPages = numberOfPages;
     }
-    HTMLElementNode *bookmarkButton = [body awful_firstNodeMatchingCachedSelector:@"div.threadbar img.thread_bookmark"];
+    HTMLElement *bookmarkButton = [body awful_firstNodeMatchingCachedSelector:@"div.threadbar img.thread_bookmark"];
     if (bookmarkButton) {
         NSArray *bookmarkClasses = [bookmarkButton[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([bookmarkClasses containsObject:@"unbookmark"] && thread.starCategory == AwfulStarCategoryNone) {
@@ -123,7 +124,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     NSMutableArray *posts = [NSMutableArray new];
     NSArray *postTables = [document awful_nodesMatchingCachedSelector:@"table.post"];
     __block AwfulPost *firstUnseenPost;
-    [postTables enumerateObjectsUsingBlock:^(HTMLElementNode *table, NSUInteger i, BOOL *stop) {
+    [postTables enumerateObjectsUsingBlock:^(HTMLElement *table, NSUInteger i, BOOL *stop) {
         NSString *postID;
         {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:table[@"id"]];
@@ -153,9 +154,9 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 post.threadIndex = index;
             }
         }
-        HTMLElementNode *postDateCell = [table awful_firstNodeMatchingCachedSelector:@"td.postdate"];
+        HTMLElement *postDateCell = [table awful_firstNodeMatchingCachedSelector:@"td.postdate"];
         if (postDateCell) {
-            HTMLTextNode *postDateText = postDateCell.childNodes.lastObject;
+            HTMLTextNode *postDateText = postDateCell.children.lastObject;
             NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             post.postDate = [self.postDateParser dateFromString:postDateString];
         }
@@ -166,15 +167,15 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                 thread.author = author;
             }
         }
-        HTMLElementNode *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'private.php']"];
+        HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'private.php']"];
         author.canReceivePrivateMessages = !!privateMessageLink;
-        HTMLElementNode *editButton = [table awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'editpost.php']"];
+        HTMLElement *editButton = [table awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'editpost.php']"];
         post.editable = !!editButton;
-        HTMLElementNode *seenRow = [table awful_firstNodeMatchingCachedSelector:@"tr.seen1"] ?: [table awful_firstNodeMatchingCachedSelector:@"tr.seen2"];
+        HTMLElement *seenRow = [table awful_firstNodeMatchingCachedSelector:@"tr.seen1"] ?: [table awful_firstNodeMatchingCachedSelector:@"tr.seen2"];
         if (!seenRow && !firstUnseenPost) {
             firstUnseenPost = post;
         }
-        HTMLElementNode *postBodyElement = [table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?: [table awful_firstNodeMatchingCachedSelector:@"td.postbody"];
+        HTMLElement *postBodyElement = [table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?: [table awful_firstNodeMatchingCachedSelector:@"td.postbody"];
         if (postBodyElement) {
             post.innerHTML = postBodyElement.innerHTML;
         }

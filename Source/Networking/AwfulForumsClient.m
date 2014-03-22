@@ -442,7 +442,7 @@
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
                 AwfulPost *post;
-                HTMLElementNode *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
+                HTMLElement *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
                                          [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
@@ -1073,7 +1073,7 @@
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
-                HTMLElementNode *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
+                HTMLElement *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 NSString *threadID = URL.queryDictionary[@"threadid"];
                 AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];

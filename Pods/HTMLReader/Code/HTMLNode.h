@@ -3,200 +3,79 @@
 //  Public domain. https://github.com/nolanw/HTMLReader
 
 #import <Foundation/Foundation.h>
-#import "HTMLAttribute.h"
+@class HTMLDocument;
+@class HTMLElement;
+#import "HTMLNamespace.h"
 
 /**
- * HTML knows of three namespaces.
- */
-typedef NS_ENUM(NSInteger, HTMLNamespace)
-{
-    /**
-     * The default namespace is HTML.
-     */
-    HTMLNamespaceHTML,
-    
-    /**
-     * Most elements within <math> tags are in the MathML namespace.
-     */
-    HTMLNamespaceMathML,
-    
-    /**
-     * Most elements within <svg> tags are in the SVG namespace.
-     */
-    HTMLNamespaceSVG,
-};
-
-/**
- * HTMLNode is an abstract class whose instances represent a single element, block of text, comment, or document type.
+ * HTMLNode is an abstract class representing a node in a parsed HTML tree.
+ *
+ * @note Copying an HTMLNode does not copy its document, parentElement, or children.
  */
 @interface HTMLNode : NSObject <NSCopying>
 
 /**
- * This node's parent, or nil if this node is a root node.
+ * The document in which this node appears, or nil if the node is not in a tree with a document at its root.
  */
-@property (readonly, weak, nonatomic) HTMLNode *parentNode;
+@property (readonly, strong, nonatomic) HTMLDocument *document;
 
 /**
- * The root node of this node's tree. (Usually an HTMLDocument.)
+ * The node's parent, or nil if the node is a root node.
  */
-@property (readonly, strong, nonatomic) HTMLNode *rootNode;
+@property (strong, nonatomic) HTMLNode *parentNode;
 
 /**
- * This node's children, in document order.
+ * The node's parent if it is an instance of HTMLElement, otherwise nil. Setter is equivalent to calling -setParentNode:.
  */
-@property (readonly, copy, nonatomic) NSArray *childNodes;
+@property (strong, nonatomic) HTMLElement *parentElement;
 
 /**
- * This node's element children, in document order.
+ * The node's children. Each is an instance of HTMLNode. Key-Value Coding compliant for accessing and mutation.
+ */
+@property (readonly, copy, nonatomic) NSOrderedSet *children;
+
+/**
+ * Convenience method that returns a mutable proxy for children. The proxy returned by -mutableChildren is much faster than the one obtained by calling -mutableOrderedSetValueForKey: yourself.
+ */
+- (NSMutableOrderedSet *)mutableChildren;
+
+/**
+ * The number of nodes that have the node as their parent.
+ *
+ * This method is faster than calling `aNode.children.count`.
+ */
+- (NSUInteger)numberOfChildren;
+
+/**
+ * Returns a child of the node. Throws an NSRangeException if index is out of bounds.
+ *
+ * This method is faster than calling `[aNode.children objectAtIndex:]`.
+ */
+- (HTMLNode *)childAtIndex:(NSUInteger)index;
+
+/**
+ * The node's children which are instances of HTMLElement.
  */
 @property (readonly, copy, nonatomic) NSArray *childElementNodes;
 
 /**
- * Returns an enumerator that returns all nodes in the subtree rooted at this node, in tree order.
+ * Returns an enumerator that emits the subtree rooted at the node in tree order.
  *
  * http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#tree-order
  */
 - (NSEnumerator *)treeEnumerator;
 
 /**
- * Returns an enumerator that returns all nodes in the subtree rooted at this node, in reverse tree order.
+ * Returns an enumerator that emits the subtree rooted at the node in a reversed tree order (preorder, depth-first, but starting with the last child instead of the first).
  */
 - (NSEnumerator *)reversedTreeEnumerator;
 
 /**
- * Returns an NSString describing the subtree rooted at this node.
- */
-- (NSString *)recursiveDescription;
-
-/**
- * Returns nil. See -[HTMLElementNode objectForKeyedSubscript:].
- */
-- (id)objectForKeyedSubscript:(id)key;
-
-/**
- * Returns the serialized HTML fragment of this node's children.
+ * Convenience method for either adding a string to an existing text node or creating a new text node.
  *
- * This is what's described as "the HTML fragment serialization algorithm" by the spec.
+ * @param string         The text to insert.
+ * @param childNodeIndex The desired location of the text. If a new text node is created, this is where it will be inserted.
  */
-- (NSString *)innerHTML;
-
-/**
- * Returns the serialized HTML fragment of this node. Subclasses must override.
- */
-- (NSString *)serializedFragment;
-
-@end
-
-/**
- * An HTMLElementNode represents a parsed element.
- */
-@interface HTMLElementNode : HTMLNode
-
-/**
- * Returns an initialized HTMLElementNode. This is the designated initializer.
- *
- * @param tagName The name of this element.
- */
-- (id)initWithTagName:(NSString *)tagName;
-
-/**
- * This element's name.
- */
-@property (readonly, copy, nonatomic) NSString *tagName;
-
-/**
- * This element's attributes.
- */
-@property (readonly, copy, nonatomic) NSArray *attributes;
-
-/**
- * Returns an attribute on this element, or nil if no matching element is found.
- *
- * @param name The name of the attribute to return.
- */
-- (HTMLAttribute *)attributeNamed:(NSString *)name;
-
-/**
- * Returns the value of the attribute named `key`, or nil if no such value exists.
- *
- * Attributes by default have a value of the empty string.
- */
-- (id)objectForKeyedSubscript:(id)key;
-
-/**
- * This element's namespace.
- */
-@property (readonly, assign, nonatomic) HTMLNamespace namespace;
-
-@end
-
-/**
- * An HTMLTextNode represents a contiguous sequence of one or more characters.
- */
-@interface HTMLTextNode : HTMLNode
-
-/**
- * Returns an initialized HTMLTextNode. This is the designated initializer.
- *
- * @param data The text.
- */
-- (id)initWithData:(NSString *)data;
-
-/**
- * The node's text.
- */
-@property (readonly, copy, nonatomic) NSString *data;
-
-@end
-
-/**
- * An HTMLCommentNode represents a comment.
- */
-@interface HTMLCommentNode : HTMLNode
-
-/**
- * Returns an initialized HTMLCommentNode. This is the designated initializer.
- *
- * @param data The comment text.
- */
-- (id)initWithData:(NSString *)data;
-
-/**
- * The comment's text.
- */
-@property (readonly, copy, nonatomic) NSString *data;
-
-@end
-
-/**
- * An HTMLDocumentTypeNode represents an archaic description of the standards an HTML document is meant to adhere to.
- *
- * The only valid document type is `<!doctype html>`.
- */
-@interface HTMLDocumentTypeNode : HTMLNode
-
-/**
- * Returns an initialized HTMLDocumentTypeNode.
- *
- * @param name The document type's name. May be nil.
- * @param publicId The document type's public identifier (the second part of the document type). May be nil.
- * @param systemId The document type's system identifier (the third part of the document type). May be nil.
- */
-- (id)initWithName:(NSString *)name publicId:(NSString *)publicId systemId:(NSString *)systemId;
-
-/**
- * The document type's name, or nil if it has no name.
- */
-@property (readonly, copy, nonatomic) NSString *name;
-
-/**
- * The document type's public identifier, or nil if it has no public identifier.
- */
-@property (readonly, copy, nonatomic) NSString *publicId;
-
-/**
- * The document type's system identifier, or nil if it has no system identifier.
- */
-@property (readonly, copy, nonatomic) NSString *systemId;
+- (void)insertString:(NSString *)string atChildNodeIndex:(NSUInteger)childNodeIndex;
 
 @end
