@@ -120,7 +120,6 @@ To add a new thread tag you just made:
 
 [AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
 [awfulapp.com]: https://github.com/Awful/awful.github.io
-[tags.txt]: tags.txt
 [thread tags]: https://github.com/Awful/thread-tags
 
 Assembling the AwfulPostsView
