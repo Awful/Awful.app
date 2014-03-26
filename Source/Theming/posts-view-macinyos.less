@@ -15,8 +15,7 @@ html {
 body {
   color: #000;
   background-attachment: fixed;
-  // Pass URLs through LESS to avoid rewriting them to absolute URLs.
-  background-image: ~"url('macinyos-wallpaper@2x.png')";
+  background-image: url('awful-resource://macinyos-wallpaper@2x.png');
   background-size: 2px;
 }
 
@@ -24,7 +23,7 @@ body {
   margin: 5px;
   padding: 0;
   background-color: #fff;
-  background-image: ~"url('macinyos-heading-left.png'), url('macinyos-heading-center.png'), url('macinyos-heading-right.png'), url('macinyos-heading.png')";
+  background-image: url('awful-resource://macinyos-heading-left.png'), url('awful-resource://macinyos-heading-center.png'), url('awful-resource://macinyos-heading-right.png'), url('awful-resource://macinyos-heading.png');
   background-position: top left, top center, top right, top left;
   background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
   background-size: 20px 17px, 56px 17px, 20px 17px, 1px 18px;
@@ -96,7 +95,7 @@ header {
 }
 
 .postdate {
-  background-image: ~"url('mac-watch.png')"; 
+  background-image: url('awful-resource://mac-watch.png');
 }
 
 .action-button {
@@ -105,7 +104,7 @@ header {
   padding-right: 6px;
   font-size: 28px;
   text-align: right;
-  background: top left no-repeat ~"url('macinyos-postactions-bg.png')" #fff;
+  background: top left no-repeat url('awful-resource://macinyos-postactions-bg.png') #fff;
   background-size: 31px;
   border: 1px solid black;
   border-radius: 4px;

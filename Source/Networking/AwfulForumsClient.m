@@ -61,6 +61,11 @@
     return instance;
 }
 
+- (NSURL *)baseURL
+{
+    return _HTTPManager.baseURL;
+}
+
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if (_managedObjectContext) {

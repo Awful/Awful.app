@@ -11,6 +11,8 @@
 // Singleton instance.
 + (AwfulForumsClient *)client;
 
+@property (readonly, strong, nonatomic) NSURL *baseURL;
+
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 // Cancel all operations and recreate internal HTTP client using base URL from settings.

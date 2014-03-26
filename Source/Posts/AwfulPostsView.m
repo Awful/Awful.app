@@ -33,9 +33,13 @@
     self.webView.delegate = nil;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame baseURL:(NSURL *)baseURL
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
+    self = [super initWithFrame:frame];
+    if (!self) return nil;
+    
+    _baseURL = baseURL;
+    
     UIWebView *webView = [[UIWebView alloc] initWithFrame:(CGRect){ .size = frame.size }];
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
@@ -55,7 +59,13 @@
     longPress.delegate = self;
     [longPress addTarget:self action:@selector(didLongPressWebView:)];
     [self addGestureRecognizer:longPress];
+    
     return self;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    return [self initWithFrame:frame baseURL:nil];
 }
 
 - (void)didTapWebView:(UITapGestureRecognizer *)tap
@@ -205,7 +215,7 @@ static NSString * JSONizeBool(BOOL aBool)
     NSMutableString *js = [[NSMutableString alloc] initWithFormat:script arguments:args];
     va_end(args);
     
-    // JavaScript considers U+2028 and U+2029 "line terminators", but JSON does not require them to be escaped. Left unescaped, they trigger automatic semicolon insertion, which means syntax errors in our JavaScript code.
+    // JavaScript considers U+2028 and U+2029 "line terminators" which are not allowed in string literals, but JSON does not require them to be escaped.
     [js replaceOccurrencesOfString:@"\u2028" withString:@"\\u2028" options:0 range:NSMakeRange(0, js.length)];
     [js replaceOccurrencesOfString:@"\u2029" withString:@"\\u2029" options:0 range:NSMakeRange(0, js.length)];
     
@@ -232,8 +242,7 @@ static NSString * JSONizeBool(BOOL aBool)
         return;
     }
     NSString *css = self.stylesheet ?: @"";
-    [self.webView loadHTMLString:[NSString stringWithFormat:html, css]
-                         baseURL:[thisBundle resourceURL]];
+    [self.webView loadHTMLString:[NSString stringWithFormat:html, css] baseURL:self.baseURL];
     self.didLoadHTML = YES;
 }
 

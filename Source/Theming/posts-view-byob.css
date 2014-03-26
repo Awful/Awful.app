@@ -68,7 +68,7 @@ header:after {
   font-weight: lighter;
   float: left;
   margin: .7em 0;
-  background-image: url('clock.png');
+  background-image: url('awful-resource://clock.png');
   background-position: left center;
   background-repeat: no-repeat;
   padding-left: 16px;
@@ -262,7 +262,7 @@ footer:after {
   font-family: ChalkboardSE-Regular;
 }
 body {
-  background-image: url('cat.gif');
+  background-image: url('awful-resource://cat.gif');
   background-repeat: no-repeat;
   padding-top: 80px;
 }

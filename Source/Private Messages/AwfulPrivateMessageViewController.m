@@ -80,7 +80,8 @@
 
 - (void)loadView
 {
-    AwfulPostsView *view = [AwfulPostsView new];
+    NSURL *baseURL = [AwfulForumsClient client].baseURL;
+    AwfulPostsView *view = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
     view.frame = [UIScreen mainScreen].applicationFrame;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.delegate = self;

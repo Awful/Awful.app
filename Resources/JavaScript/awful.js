@@ -164,17 +164,6 @@ Awful.spoiledVideoInPostForPoint = function(x, y){
 function render(post) {
   post = $(post)
   
-  // Some links and images come with relative URLs, which break as we set our
-  // relative URL to the app's resource directory. Let's fix those up.
-  post.find('a:not([href *= ":"])').each(function(){
-    var a = $(this)
-    a.attr('href', prependBaseURL(a.attr('href')))
-  })
-  post.find('img:not([src *= ":"])').each(function(){
-    var img = $(this)
-    img.attr('src', prependBaseURL(img.attr('src')))
-  })
-  
   // We style spoilers ourselves.
   post.find('span.bbc-spoiler')
       .removeAttr('onmouseover')
@@ -190,10 +179,6 @@ function render(post) {
   highlightMentions(post.find('.postbody'))
   fixVimeoEmbeds(post)
   return post
-}
-
-function prependBaseURL(relativeURL) {
-  return "http://forums.somethingawful.com" + (relativeURL.indexOf('/') !== 0 ? '/' : '') + relativeURL
 }
 
 function nullOrUndefined(arg) {

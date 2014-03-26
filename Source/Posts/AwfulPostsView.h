@@ -8,6 +8,10 @@
 
 @interface AwfulPostsView : UIView
 
+- (id)initWithFrame:(CGRect)frame baseURL:(NSURL *)baseURL;
+
+@property (readonly, strong, nonatomic) NSURL *baseURL;
+
 @property (weak, nonatomic) id <AwfulPostsViewDelegate> delegate;
 
 - (void)reloadData;

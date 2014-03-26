@@ -664,7 +664,8 @@
 
 - (void)loadView
 {
-    self.postsView = [AwfulPostsView new];
+    NSURL *baseURL = [AwfulForumsClient client].baseURL;
+    self.postsView = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
     self.postsView.delegate = self;
     self.postsView.scrollView.delegate = self;
     self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |

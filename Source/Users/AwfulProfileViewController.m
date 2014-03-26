@@ -40,11 +40,14 @@
 
 - (id)initWithUser:(AwfulUser *)user
 {
-    if (!(self = [super init])) return nil;
+    self = [super init];
+    if (!self) return nil;
+    
     _user = user;
     self.title = @"Profile";
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.hidesBottomBarWhenPushed = YES;
+    
     return self;
 }
 
@@ -97,7 +100,8 @@
         NSLog(@"error loading profile-view.html: %@", error);
         return;
     }
-    [webView loadHTMLString:html baseURL:[[NSBundle mainBundle] resourceURL]];
+    NSURL *baseURL = [AwfulForumsClient client].baseURL;
+    [webView loadHTMLString:html baseURL:baseURL];
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
     tap.delegate = self;
     [tap addTarget:self action:@selector(didTap:)];

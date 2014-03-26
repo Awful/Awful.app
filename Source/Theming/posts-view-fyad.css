@@ -68,7 +68,7 @@ header:after {
   font-weight: lighter;
   float: left;
   margin: .7em 0;
-  background-image: url('clock.png');
+  background-image: url('awful-resource://clock.png');
   background-position: left center;
   background-repeat: no-repeat;
   padding-left: 16px;
@@ -290,13 +290,13 @@ header {
 }
 .iphone header {
   top: 3px;
-  background: 40px bottom no-repeat url('fyad-bubble.png');
+  background: 40px bottom no-repeat url('awful-resource://fyad-bubble.png');
   background-size: 75px 25px;
 }
 .ipad header {
   top: 11px;
   padding: 0 15px 15px 15px;
-  background: 65px bottom no-repeat url('fyad-bubble.png');
+  background: 65px bottom no-repeat url('awful-resource://fyad-bubble.png');
   background-size: 70px 25px;
 }
 #bracket::before,

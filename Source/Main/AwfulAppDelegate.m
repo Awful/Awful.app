@@ -21,6 +21,7 @@
 #import "AwfulNewPMNotifierAgent.h"
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulRapSheetViewController.h"
+#import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
@@ -115,6 +116,7 @@ static id _instance;
                                                                 diskCapacity:50 * 1024 * 1024
                                                                     diskPath:nil]];
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
+    [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     if ([AwfulForumsClient client].loggedIn) {
