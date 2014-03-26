@@ -703,11 +703,23 @@
             [managedObjectContext performBlock:^{
                 AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
                 post.thread = [AwfulThread firstOrNewThreadWithThreadID:query[@"threadid"] inManagedObjectContext:managedObjectContext];
+                NSError *error;
+                BOOL ok = [managedObjectContext save:&error];
                 if (callback) {
                     NSManagedObjectID *objectID = post.objectID;
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                        AwfulPost *post = [mainManagedObjectContext awful_objectWithID:objectID];
-                        callback(nil, post, [query[@"pagenumber"] integerValue]);
+                        if (ok) {
+                            AwfulPost *post = [mainManagedObjectContext awful_objectWithID:objectID];
+                            callback(nil, post, [query[@"pagenumber"] integerValue]);
+                        } else {
+                            NSString *message = @"The post's thread could not be parsed";
+                            NSError *underlyingError = error;
+                            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                                 code:AwfulErrorCodes.parseError
+                                                             userInfo:@{ NSLocalizedDescriptionKey: message,
+                                                                         NSUnderlyingErrorKey: underlyingError }];
+                            callback(error, nil, 0);
+                        }
                     }];
                 }
             }];
