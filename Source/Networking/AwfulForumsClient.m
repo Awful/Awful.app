@@ -197,6 +197,19 @@
                                                fromURL:operation.response.URL
                               intoManagedObjectContext:managedObjectContext
                                                  error:&error];
+            if (threads) {
+                if (page == 1) {
+                    AwfulForum *backgroundForum = [managedObjectContext awful_objectWithID:forum.objectID];
+                    NSMutableSet *threadsToHide = [backgroundForum.threads mutableCopy];
+                    for (AwfulThread *thread in threads) {
+                        [threadsToHide removeObject:thread];
+                    }
+                    [threadsToHide setValue:@YES forKey:@"hideFromList"];
+                }
+                [threads setValue:@NO forKey:@"hideFromList"];
+                [managedObjectContext save:&error];
+            }
+
             if (callback) {
                 NSArray *objectIDs = [threads valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -228,6 +241,17 @@
                                                fromURL:operation.response.URL
                               intoManagedObjectContext:managedObjectContext
                                                  error:&error];
+            if (threads) {
+                if (page == 1) {
+                    NSArray *threadIDsToIgnore = [threads valueForKey:@"threadID"];
+                    NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext
+                                                                   matchingPredicateFormat:@"bookmarked = YES && NOT(threadID IN %@)", threadIDsToIgnore];
+                    [threadsToForget setValue:@NO forKey:@"bookmarked"];
+                }
+                [threads setValue:@YES forKey:@"bookmarked"];
+                [managedObjectContext save:&error];
+            }
+            
             if (callback) {
                 NSArray *objectIDs = [threads valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -279,6 +303,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (posts) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSInteger firstUnreadPostIndex = NSNotFound;
                 if (page == AwfulThreadPageNextUnread) {
@@ -338,6 +365,9 @@
                                               fromURL:operation.response.URL
                              intoManagedObjectContext:managedObjectContext
                                                 error:&error];
+            if (user) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSManagedObjectID *objectID = user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -384,6 +414,9 @@
                                                   fromURL:operation.response.URL
                                  intoManagedObjectContext:managedObjectContext
                                                     error:&error];
+            if (categories) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSArray *objectIDs = [categories valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -415,6 +448,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             NSMutableDictionary *parameters;
             for (AwfulForm *form in forms) {
                 NSMutableDictionary *possibleParameters = [form recommendedParameters];
@@ -481,6 +517,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             for (AwfulForm *form in forms) {
                 for (AwfulFormItem *text in form.texts) {
                     if ([text.name isEqualToString:@"message"]) {
@@ -525,6 +564,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             NSString *BBcode;
             for (AwfulForm *form in forms) {
                 NSDictionary *parameters = [form recommendedParameters];
@@ -562,6 +604,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             NSMutableDictionary *parameters;
             for (AwfulForm *form in forms) {
                 NSMutableDictionary *possibleParameters = [form recommendedParameters];
@@ -603,11 +648,12 @@
     return [_HTTPManager POST:@"threadrate.php"
                    parameters:@{ @"vote": @(MAX(5, MIN(1, rating))),
                                  @"threadid": thread.threadID }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          if (callback) callback(nil);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (callback) callback(error);
-                      }];
+                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+            {
+                if (callback) callback(nil);
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                if (callback) callback(error);
+            }];
 }
 
 - (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
@@ -660,6 +706,9 @@
                                               fromURL:operation.response.URL
                              intoManagedObjectContext:self.managedObjectContext
                                                 error:&error];
+            if (user) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSManagedObjectID *objectID = user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -775,6 +824,9 @@
                                               fromURL:operation.response.URL
                              intoManagedObjectContext:managedObjectContext
                                                 error:&error];
+            if (user) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSManagedObjectID *objectID = user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -808,6 +860,9 @@
                                             fromURL:operation.response.URL
                            intoManagedObjectContext:managedObjectContext
                                               error:&error];
+            if (bans) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     callback(error, bans);
@@ -834,6 +889,9 @@
                                                 fromURL:operation.response.URL
                                intoManagedObjectContext:managedObjectContext
                                                   error:&error];
+            if (messages) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 NSArray *objectIDs = [messages valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -874,10 +932,13 @@
         [managedObjectContext performBlock:^{
             AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper new];
             NSError *error;
-            [scraper scrapeDocument:document
-                            fromURL:operation.response.URL
-           intoManagedObjectContext:managedObjectContext
-                              error:&error];
+            AwfulPrivateMessage *message = [scraper scrapeDocument:document
+                                                           fromURL:operation.response.URL
+                                          intoManagedObjectContext:managedObjectContext
+                                                             error:&error];
+            if (message) {
+                [managedObjectContext save:&error];
+            }
             if (callback) {
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     callback(error);
@@ -905,6 +966,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             for (AwfulForm *form in forms) {
                 for (AwfulFormItem *text in form.texts) {
                     if ([text.name isEqualToString:@"message"]) {
@@ -947,6 +1011,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             for (AwfulForm *form in forms) {
                 NSArray *tags = form.threadTags;
                 if (tags.count > 0) {
@@ -995,11 +1062,12 @@
     }
     return [_HTTPManager POST:@"private.php"
                    parameters:parameters
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          if (callback) callback(nil);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          if (callback) callback(error);
-                      }];
+                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    {
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
@@ -1019,6 +1087,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             for (AwfulForm *form in forms) {
                 if (form.threadTags.count > 0) {
                     if (callback) {
@@ -1066,6 +1137,9 @@
                                              fromURL:operation.response.URL
                             intoManagedObjectContext:managedObjectContext
                                                error:&error];
+            if (forms) {
+                [managedObjectContext save:&error];
+            }
             AwfulForm *form;
             NSMutableDictionary *parameters;
             for (AwfulForm *possibleForm in forms) {

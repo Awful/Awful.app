@@ -88,7 +88,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         [messages addObject:message];
     }
-    [managedObjectContext save:error];
     return messages;
 }
 

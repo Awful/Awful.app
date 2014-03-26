@@ -188,7 +188,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         thread.lastPostDate = lastPost.postDate;
         thread.lastPostAuthorName = lastPost.author.username;
     }
-    [managedObjectContext save:error];
     return posts;
 }
 

@@ -213,7 +213,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             thread.lastPostAuthorName = lastPostAuthorLink.innerHTML;
         }
     }
-    [managedObjectContext save:error];
     return threads;
 }
 

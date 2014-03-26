@@ -199,14 +199,8 @@
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
             if (page == 1) {
-                NSMutableSet *threadsToHide = [self.forum.threads mutableCopy];
-                for (AwfulThread *thread in threads) {
-                    [threadsToHide removeObject:thread];
-                }
-                [threadsToHide setValue:@YES forKey:@"hideFromList"];
                 self.tableView.showsInfiniteScrolling = YES;
             }
-            [threads setValue:@NO forKey:@"hideFromList"];
             if (self.filterThreadTag) {
                 self.forum.lastFilteredRefresh = [NSDate date];
             } else {

@@ -67,7 +67,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         [forms addObject:form];
     }
-    [managedObjectContext save:error];
     return forms;
 }
 

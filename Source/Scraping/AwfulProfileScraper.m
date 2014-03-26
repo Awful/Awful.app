@@ -151,7 +151,6 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             user.occupation = definitionText.data;
         }
     }
-    [managedObjectContext save:error];
     return user;
 }
 
