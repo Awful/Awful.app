@@ -107,8 +107,8 @@ static inline CGAffineTransform RotationTransformForArrowDirection(UIPopoverArro
 {
     switch (arrowDirection) {
         case UIPopoverArrowDirectionUp: return CGAffineTransformIdentity;
-        case UIPopoverArrowDirectionLeft: return CGAffineTransformMakeRotation(M_PI_2);
-        case UIPopoverArrowDirectionRight: return CGAffineTransformMakeRotation(-M_PI_2);
+        case UIPopoverArrowDirectionLeft: return CGAffineTransformMakeRotation(-M_PI_2);
+        case UIPopoverArrowDirectionRight: return CGAffineTransformMakeRotation(M_PI_2);
         default: return CGAffineTransformMakeRotation(M_PI);
     }
 }
