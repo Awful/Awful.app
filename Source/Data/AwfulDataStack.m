@@ -3,12 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulDataStack.h"
-#ifndef DEBUG
-    #import <Crashlytics/Crashlytics.h>
-#else
-    #define CLSLog NSLog
-    #define CLSNSLog NSLog
-#endif
 
 @implementation AwfulDataStack
 {
@@ -30,7 +24,6 @@
 
 - (void)addPersistentStore
 {
-    CLSLog(@"%s it's happening", __PRETTY_FUNCTION__);
     NSError *error;
     NSPersistentStore *store;
     NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
@@ -43,20 +36,19 @@
                                                                                    error:&error];
     if (!store) {
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileReadCorruptFileError) {
-            CLSNSLog(@"%s corrupt database (mismatched store and write-ahead log?): %@", __PRETTY_FUNCTION__, error);
+            NSLog(@"%s corrupt database (mismatched store and write-ahead log?): %@", __PRETTY_FUNCTION__, error);
             [self deleteStoreAndResetStack];
             return;
         }
         
         if ([error.domain isEqualToString:NSCocoaErrorDomain] && (error.code == NSMigrationMissingSourceModelError ||
                                                                   error.code == NSMigrationMissingMappingModelError)) {
-            CLSNSLog(@"%s automatic migration failed", __PRETTY_FUNCTION__);
+            NSLog(@"%s automatic migration failed", __PRETTY_FUNCTION__);
             [self deleteStoreAndResetStack];
             return;
         }
-        CLSNSLog(@"%s error adding %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
+        NSLog(@"%s error adding %@: %@", __PRETTY_FUNCTION__, _storeURL, error);
     }
-    CLSLog(@"%s it's done", __PRETTY_FUNCTION__);
 }
 
 - (id)init
@@ -71,13 +63,12 @@
 
 - (void)deleteStoreAndResetStack
 {
-    CLSLog(@"%s it's happening", __PRETTY_FUNCTION__);
     NSPersistentStoreCoordinator *persistentStoreCoordinator = _managedObjectContext.persistentStoreCoordinator;
     for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
         NSError *error;
         BOOL ok = [persistentStoreCoordinator removePersistentStore:store error:&error];
         if (!ok) {
-            CLSNSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
+            NSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
         }
         
         if (_storeURL && ![store.URL isEqual:_storeURL]) {
@@ -89,7 +80,6 @@
     }
     
     [self addPersistentStore];
-    CLSLog(@"%s it's done", __PRETTY_FUNCTION__);
 }
 
 void DeleteDataStoreAtURL(NSURL *storeURL)
@@ -98,7 +88,7 @@ void DeleteDataStoreAtURL(NSURL *storeURL)
     NSError *error;
     BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error];
     if (!ok) {
-        CLSNSLog(@"%s error deleting SQLite store at %@: %@", __PRETTY_FUNCTION__, storeURL, error);
+        NSLog(@"%s error deleting SQLite store at %@: %@", __PRETTY_FUNCTION__, storeURL, error);
     }
 
     NSURL *directory = [storeURL URLByDeletingLastPathComponent];
@@ -111,7 +101,7 @@ void DeleteDataStoreAtURL(NSURL *storeURL)
             NSError *error;
             BOOL ok = [fileManager removeItemAtURL:detritusURL error:&error];
             if (!ok) {
-                CLSNSLog(@"%s error deleting SQLite store detritus at %@: %@", __PRETTY_FUNCTION__, detritusURL, error);
+                NSLog(@"%s error deleting SQLite store detritus at %@: %@", __PRETTY_FUNCTION__, detritusURL, error);
             }
         }
     }

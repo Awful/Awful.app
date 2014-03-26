@@ -21,7 +21,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenience.h"
-#import <Crashlytics/Crashlytics.h>
 
 @implementation AwfulForumsClient
 {
@@ -824,14 +823,11 @@
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    CLSLog(@"%s fetching list into %@", __PRETTY_FUNCTION__, managedObjectContext);
     return [_HTTPManager GET:@"private.php"
                   parameters:nil
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
-        CLSLog(@"%s fetch succeeded, ready to insert into %@", __PRETTY_FUNCTION__, managedObjectContext);
         [managedObjectContext performBlock:^{
-            CLSLog(@"%s inserting into %@", __PRETTY_FUNCTION__, managedObjectContext);
             AwfulMessageFolderScraper *scraper = [AwfulMessageFolderScraper new];
             NSError *error;
             NSArray *messages = [scraper scrapeDocument:document
