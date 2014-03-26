@@ -54,21 +54,35 @@
 - (HTMLNode *)childAtIndex:(NSUInteger)index;
 
 /**
+ * Returns the location of a child, or NSNotFound if the node is not the child's parent.
+ *
+ * This method is faster than calling `[aNode.children indexOfObject:]`.
+ */
+- (NSUInteger)indexOfChild:(HTMLNode *)child;
+
+/**
  * The node's children which are instances of HTMLElement.
  */
 @property (readonly, copy, nonatomic) NSArray *childElementNodes;
 
 /**
- * Returns an enumerator that emits the subtree rooted at the node in tree order.
+ * Emits in tree order the nodes in the subtree rooted at the node.
  *
- * http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#tree-order
+ * For more information, see http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#tree-order
  */
 - (NSEnumerator *)treeEnumerator;
 
 /**
- * Returns an enumerator that emits the subtree rooted at the node in a reversed tree order (preorder, depth-first, but starting with the last child instead of the first).
+ * Emits in tree order the node in the subree rooted at the node, except children are enumerated back to front.
  */
 - (NSEnumerator *)reversedTreeEnumerator;
+
+/**
+ * The combined text content of the node and its descendants. The setter replaces the node's text, removing all descendants.
+ *
+ * For more information, see http://dom.spec.whatwg.org/#dom-node-textcontent
+ */
+@property (copy, nonatomic) NSString *textContent;
 
 /**
  * Convenience method for either adding a string to an existing text node or creating a new text node.
