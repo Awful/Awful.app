@@ -31,6 +31,8 @@
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
 		1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */; };
+		1C1ADC2F18E344C800E865BF /* AwfulBasementHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2E18E344C800E865BF /* AwfulBasementHeaderView.m */; };
+		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
 		1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */; };
@@ -293,6 +295,10 @@
 		1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImagePreviewViewController.m; sourceTree = "<group>"; };
 		1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulResourceURLProtocol.h; sourceTree = "<group>"; };
 		1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulResourceURLProtocol.m; sourceTree = "<group>"; };
+		1C1ADC2D18E344C800E865BF /* AwfulBasementHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBasementHeaderView.h; sourceTree = "<group>"; };
+		1C1ADC2E18E344C800E865BF /* AwfulBasementHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBasementHeaderView.m; sourceTree = "<group>"; };
+		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
+		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1D2FDA171A75CB00AC6387 /* AwfulSingleUserThreadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSingleUserThreadInfo.h; sourceTree = "<group>"; };
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
@@ -752,10 +758,12 @@
 		1C00E0AB173A006B008895E7 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1C5F6FFF17D8521F005ABD6F /* AwfulBasementViewController.h */,
-				1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */,
+				1C1ADC2D18E344C800E865BF /* AwfulBasementHeaderView.h */,
+				1C1ADC2E18E344C800E865BF /* AwfulBasementHeaderView.m */,
 				1C5F700217D853AA005ABD6F /* AwfulBasementSidebarViewController.h */,
 				1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */,
+				1C5F6FFF17D8521F005ABD6F /* AwfulBasementViewController.h */,
+				1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */,
 				1C89A79218AF4DA500D75854 /* AwfulEmptyViewController.h */,
 				1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */,
 				1C89A79818B0D14900D75854 /* AwfulExpandingSplitViewController.h */,
@@ -946,6 +954,8 @@
 		1C6ED634169103FE0015CDD5 /* Users */ = {
 			isa = PBXGroup;
 			children = (
+				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
+				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
 				1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */,
 				1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */,
 				1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */,
@@ -1876,6 +1886,7 @@
 				1C89A79118AA12CB00D75854 /* AwfulSplitView.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
+				1C1ADC2F18E344C800E865BF /* AwfulBasementHeaderView.m in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
@@ -1904,6 +1915,7 @@
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C5F700C17D87C0C005ABD6F /* AwfulVerticalTabBar.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
+				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
 				1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
 				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,

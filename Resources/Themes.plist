@@ -49,6 +49,8 @@
 		<string>#ffffff</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
+		<key>basementHeaderBackgroundColor</key>
+		<string>#061d28</string>
 		<key>basementBackgroundColor</key>
 		<string>#000000</string>
 		<key>basementLabelColor</key>

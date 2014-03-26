@@ -8,7 +8,7 @@
 /**
  * An AwfulBasementSidebarViewController is created by an AwfulBasementViewController to list the available view controllers.
  */
-@interface AwfulBasementSidebarViewController : AwfulTableViewController
+@interface AwfulBasementSidebarViewController : AwfulViewController
 
 /**
  * An array of UITabBarItem objects.
@@ -20,9 +20,6 @@
  */
 @property (strong, nonatomic) UITabBarItem *selectedItem;
 
-/**
- * The delegate.
- */
 @property (weak, nonatomic) id <AwfulBasementSidebarViewControllerDelegate> delegate;
 
 @end
@@ -36,7 +33,7 @@
  * Informs the delegate that the user has tapped an item.
  *
  * @param sidebar The sidebar whose item was tapped.
- * @param item The newly-selected item. Obtain its index using the sidebar's `items` array.
+ * @param item    The newly-selected item. Obtain its index using the sidebar's `items` array.
  */
 - (void)sidebar:(AwfulBasementSidebarViewController *)sidebar didSelectItem:(UITabBarItem *)item;
 

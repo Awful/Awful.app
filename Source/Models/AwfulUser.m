@@ -55,6 +55,8 @@
                                 username:(NSString *)username
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
+    NSParameterAssert(userID.length > 0 || username.length > 0);
+    
     AwfulUser *user;
     if (userID.length > 0) {
         user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
@@ -62,9 +64,6 @@
     } else if (username.length > 0) {
         user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
                                   matchingPredicateFormat:@"username = %@", username];
-    } else {
-        NSLog(@"%s need user ID or username to fetch user", __PRETTY_FUNCTION__);
-        return nil;
     }
     if (!user) {
         user = [AwfulUser insertInManagedObjectContext:managedObjectContext];

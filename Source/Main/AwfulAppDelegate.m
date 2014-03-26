@@ -6,6 +6,7 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AVFoundation/AVFoundation.h>
 #import "AwfulAlertView.h"
+#import "AwfulAvatarLoader.h"
 #import "AwfulBasementViewController.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulCrashlytics.h"
@@ -72,6 +73,7 @@ static id _instance;
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings settings] reset];
     [[PocketAPI sharedAPI] logout];
+    [[AwfulAvatarLoader loader] emptyCache];
     
     [UIView transitionWithView:self.window
                       duration:0.3

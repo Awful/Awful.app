@@ -308,7 +308,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[top][sidebar]|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[sidebar]|"
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
