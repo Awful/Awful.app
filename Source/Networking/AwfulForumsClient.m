@@ -507,23 +507,35 @@
 - (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
                                      andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
+    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     return [_HTTPManager GET:@"newreply.php"
                   parameters:@{ @"action": @"newreply",
-                                @"postid": post.postID,
-                                @"json": @1 }
-                     success:^(AFHTTPRequestOperation *operation, NSDictionary *json)
+                                @"postid": post.postID }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         if (!callback) return;
-        // If you quote a post from a thread that's been moved to the Gas Chamber, you don't get a post body. That's an error, even though the HTTP operation succeeded.
-        if ([json isKindOfClass:[NSDictionary class]] && json[@"body"]) {
-            callback(nil, json[@"body"]);
-        } else {
-            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Missing quoted post body" };
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError
-                                             userInfo:userInfo];
-            callback(error, nil);
-        }
+        [managedObjectContext performBlock:^{
+            AwfulFormScraper *scraper = [AwfulFormScraper new];
+            NSError *error;
+            NSArray *forms = [scraper scrapeDocument:document
+                                             fromURL:operation.response.URL
+                            intoManagedObjectContext:managedObjectContext
+                                               error:&error];
+            NSString *BBcode;
+            for (AwfulForm *form in forms) {
+                NSDictionary *parameters = [form recommendedParameters];
+                BBcode = parameters[@"message"];
+                if (BBcode) break;
+            }
+            if (!BBcode) {
+                error = [NSError errorWithDomain:AwfulErrorDomain
+                                            code:AwfulErrorCodes.parseError
+                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to quote post; could not find form" }];
+            }
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                callback(error, BBcode);
+            }];
+        }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
