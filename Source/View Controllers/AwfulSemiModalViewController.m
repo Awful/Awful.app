@@ -238,7 +238,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
             toViewController.view.alpha = 1;
             fromViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
         } completion:^(BOOL finished) {
-            [transitionContext completeTransition:YES];
+            [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
         }];
     } else {
         UIView *containerView = [transitionContext containerView];
@@ -252,7 +252,7 @@ static inline UIViewController * ViewControllerForView(UIView *view)
             [_dimmingView removeFromSuperview];
             _dimmingView = nil;
             self.regionBlock = nil;
-            [transitionContext completeTransition:YES];
+            [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
         }];
     }
 }
