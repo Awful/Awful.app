@@ -50,6 +50,7 @@
 - (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, NSError *error))completionBlock
 {
     NSURL *avatarURL = user.avatarURL;
+    if (avatarURL.path.length == 0) return;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:avatarURL];
     
     NSURL *cachedResponseURL = [self cachedResponseURLForUser:user];

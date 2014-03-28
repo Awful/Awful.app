@@ -113,15 +113,27 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqualToString:AwfulSettingsKeys.username]) {
+    NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([setting isEqualToString:AwfulSettingsKeys.username]) {
         [self updateHeaderView];
+    } else if ([setting isEqualToString:AwfulSettingsKeys.showAvatars]) {
+        [self updateAvatarImageFromCache];
     }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.headerView.avatarImageView.image = [[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser];
+    [self updateAvatarImageFromCache];
+}
+
+- (void)updateAvatarImageFromCache
+{
+    if ([AwfulSettings settings].showAvatars) {
+        self.headerView.avatarImageView.image = [[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser];
+    } else {
+        self.headerView.avatarImageView.image = nil;
+    }
 }
 
 - (void)themeDidChange
@@ -148,15 +160,17 @@ static NSString * const CellIdentifier = @"Cell";
     [self.tableView endUpdates];
     [UIView setAnimationsEnabled:YES];
     
-    __weak __typeof__(self) weakSelf = self;
-    [[AwfulAvatarLoader loader] avatarImageForUser:self.loggedInUser completion:^(UIImage *avatarImage, NSError *error) {
-        __typeof__(self) self = weakSelf;
-        if (error) {
-            NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
-        } else {
-            self.headerView.avatarImageView.image = avatarImage;
-        }
-    }];
+    if ([AwfulSettings settings].showAvatars) {
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulAvatarLoader loader] avatarImageForUser:self.loggedInUser completion:^(UIImage *avatarImage, NSError *error) {
+            __typeof__(self) self = weakSelf;
+            if (error) {
+                NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
+            } else {
+                self.headerView.avatarImageView.image = avatarImage;
+            }
+        }];
+    }
 }
 
 - (void)setItems:(NSArray *)items
