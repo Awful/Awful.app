@@ -62,6 +62,11 @@
     }
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@: %p updatesTableView=%@>", self.class, self, self.updatesTableView ? @"YES" : @"NO"];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

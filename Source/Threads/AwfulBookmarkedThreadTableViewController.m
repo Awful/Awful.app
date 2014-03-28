@@ -10,11 +10,13 @@
 #import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
+@interface AwfulBookmarkedThreadTableViewController ()
+
+@property (assign, nonatomic) NSUInteger mostRecentlyLoadedPage;
+
+@end
+
 @implementation AwfulBookmarkedThreadTableViewController
-{
-    NSInteger _mostRecentlyLoadedPage;
-    UIBarButtonItem *_backBarItem;
-}
 
 - (void)dealloc
 {
@@ -31,17 +33,6 @@
     return self;
 }
 
-- (UIBarButtonItem *)backBarItem
-{
-    if (_backBarItem) return _backBarItem;
-    _backBarItem = [[UIBarButtonItem alloc] initWithImage:self.tabBarItem.image
-                                      landscapeImagePhone:[UIImage imageNamed:@"bookmarks-landscape"]
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:nil
-                                                   action:nil];
-    return _backBarItem;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -52,7 +43,7 @@
     __weak __typeof__(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         __typeof__(self) self = weakSelf;
-        [self loadPage:self->_mostRecentlyLoadedPage + 1];
+        [self loadPage:self.mostRecentlyLoadedPage + 1];
     }];
     self.tableView.showsInfiniteScrolling = NO;
     
@@ -64,15 +55,14 @@
 
 - (void)configureFetchedResultsController
 {
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
     request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
-    
-    NSMutableArray *sortDescriptors = [@[ [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ] mutableCopy];
-	if ([AwfulSettings settings].bookmarksSortedByUnread) {
-        [sortDescriptors insertObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO] atIndex:0];
+    NSMutableArray *sortDescriptors = [NSMutableArray new];
+    if ([AwfulSettings settings].bookmarksSortedByUnread) {
+        [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
 	}
+    [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
     request.sortDescriptors = sortDescriptors;
-    
     self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                          managedObjectContext:self.managedObjectContext
                                                                                            sectionNameKeyPath:nil
@@ -128,10 +118,8 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            [self.tableView beginUpdates];
-            [self.tableView endUpdates];
             [self setLastRefreshDate:[NSDate date]];
-            _mostRecentlyLoadedPage = page;
+            self.mostRecentlyLoadedPage = page;
         }
         [self.refreshControl endRefreshing];
         [self.tableView.infiniteScrollingView stopAnimating];

@@ -244,7 +244,7 @@
             if (threads) {
                 if (page == 1) {
                     NSArray *threadIDsToIgnore = [threads valueForKey:@"threadID"];
-                    NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext
+                    NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:managedObjectContext
                                                                    matchingPredicateFormat:@"bookmarked = YES && NOT(threadID IN %@)", threadIDsToIgnore];
                     [threadsToForget setValue:@NO forKey:@"bookmarked"];
                 }
@@ -704,7 +704,7 @@
             NSError *error;
             AwfulUser *user = [scraper scrapeDocument:document
                                               fromURL:operation.response.URL
-                             intoManagedObjectContext:self.managedObjectContext
+                             intoManagedObjectContext:managedObjectContext
                                                 error:&error];
             if (user) {
                 [managedObjectContext save:&error];
