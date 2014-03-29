@@ -36,17 +36,23 @@
 - (void)autocloseBBcode
 {
     NSString *textContent = self.textView.text;
-    NSUInteger closingBracketPos = [textContent rangeOfString:@"]" options:NSBackwardsSearch].location;
+
+    // Find nearest ] before current cursor point.
+    NSUInteger closingBracketPos = [textContent rangeOfString:@"]" options:NSBackwardsSearch
+                                        range:NSMakeRange(0, self.textView.selectedRange.location)].location;
     if (closingBracketPos == NSNotFound) {
         return;
     }
+    // Find matching [ opener.
     NSUInteger openingBracketPos = [textContent rangeOfString:@"[" options:NSBackwardsSearch
                                                         range:NSMakeRange(0, closingBracketPos)].location;
     if (openingBracketPos == NSNotFound) {
         return;
     }
+    // If there's an = in the opener, the tag name ends there.
     NSUInteger equalsPos = [textContent rangeOfString:@"=" options:0
-                                                range:NSMakeRange(openingBracketPos, closingBracketPos - openingBracketPos)].location;
+                                                    range:NSMakeRange(openingBracketPos,
+                                                                      closingBracketPos - openingBracketPos)].location;
     if (equalsPos != NSNotFound) {
         closingBracketPos = equalsPos;
     }
