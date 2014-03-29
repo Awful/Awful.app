@@ -45,6 +45,11 @@
     if (openingBracketPos == NSNotFound) {
         return;
     }
+    NSUInteger equalsPos = [textContent rangeOfString:@"=" options:0
+                                                range:NSMakeRange(openingBracketPos, closingBracketPos - openingBracketPos)].location;
+    if (equalsPos != NSNotFound) {
+        closingBracketPos = equalsPos;
+    }
     [self.keyInputView insertText:@"[/"];
     NSRange bbcodeRange = NSMakeRange(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1);
     [self.keyInputView insertText:[textContent substringWithRange:bbcodeRange]];
