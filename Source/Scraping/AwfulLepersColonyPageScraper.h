@@ -2,11 +2,13 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
 
 /**
- * An AwfulLepersColonyPageScraper scrapes AwfulBan objects from a document.
+ * An AwfulLepersColonyPageScraper finds AwfulBan objects from a list of bans and probations.
  */
-@interface AwfulLepersColonyPageScraper : NSObject <AwfulDocumentScraper>
+@interface AwfulLepersColonyPageScraper : AwfulScraper
+
+@property (readonly, copy, nonatomic) NSArray *bans;
 
 @end

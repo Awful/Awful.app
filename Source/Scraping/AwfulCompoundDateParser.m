@@ -41,10 +41,13 @@
 
 + (instancetype)postDateParser
 {
-    return [[AwfulCompoundDateParser alloc] initWithFormats:@[
-                                                              @"MMM d, yyyy h:mm a",
-                                                              @"MMM d, yyyy HH:mm",
-                                                              ]];
+    static AwfulCompoundDateParser *parser;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        parser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"MMM d, yyyy h:mm a",
+                                                                     @"MMM d, yyyy HH:mm" ]];
+    });
+    return parser;
 }
 
 @end

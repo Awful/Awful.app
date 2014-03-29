@@ -4,7 +4,7 @@
 
 #import "AwfulScrapingTestCase.h"
 #import "AwfulDataStack.h"
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
 
 @interface AwfulScrapingTestCase ()
 
@@ -54,13 +54,9 @@
     NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSWindowsCP1252StringEncoding error:&error];
     XCTAssertNotNil(fixtureHTML, @"error loading fixture from %@: %@", fixtureURL, error);
     HTMLDocument *document = [HTMLDocument documentWithString:fixtureHTML];
-    id <AwfulDocumentScraper> scraper = [[[self class] scraperClass] new];
-    NSArray *scrapedThreads = [scraper scrapeDocument:document
-                                              fromURL:fixtureURL
-                             intoManagedObjectContext:self.managedObjectContext
-                                                error:&error];
-    XCTAssertNotNil(scrapedThreads, @"error scraping threads: %@", error);
-    return scrapedThreads;
+    AwfulScraper *scraper = [[[self class] scraperClass] scrapeNode:document intoManagedObjectContext:self.managedObjectContext];
+    XCTAssertNil(scraper.error, @"error scraping %@: %@", [[self class] scraperClass], error);
+    return scraper;
 }
 
 @end

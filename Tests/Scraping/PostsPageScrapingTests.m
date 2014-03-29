@@ -18,7 +18,8 @@
 
 - (void)testCanadianPoliticsThread
 {
-    NSArray *posts = [self scrapeFixtureNamed:@"showthread"];
+    AwfulPostsPageScraper *scraper = [self scrapeFixtureNamed:@"showthread"];
+    NSArray *posts = scraper.posts;
     XCTAssertEqual(posts.count, (NSUInteger)40);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreads.count, (NSUInteger)1);
@@ -73,7 +74,8 @@
 - (void)testWeirdSizeTags
 {
     // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
-    NSArray *posts = [self scrapeFixtureNamed:@"showthread2"];
+    AwfulPostsPageScraper *scraper = [self scrapeFixtureNamed:@"showthread2"];
+    NSArray *posts = scraper.posts;
     XCTAssertEqual(posts.count, (NSUInteger)40);
     AwfulPost *ganker = posts[24];
     XCTAssertEqualObjects(ganker.author.username, @"Ganker");
@@ -84,7 +86,8 @@
 
 - (void)testFYADThreadIndex
 {
-    NSArray *posts = [self scrapeFixtureNamed:@"showthread-fyad"];
+    AwfulPostsPageScraper *scraper = [self scrapeFixtureNamed:@"showthread-fyad"];
+    NSArray *posts = scraper.posts;
     XCTAssertEqual(posts.count, (NSUInteger)10);
     AwfulPost *last = posts.lastObject;
     XCTAssertEqual(last.page, (NSInteger)2);
@@ -92,7 +95,8 @@
 
 - (void)testFYADThreadPageOne
 {
-    NSArray *posts = [self scrapeFixtureNamed:@"showthread-fyad2"];
+    AwfulPostsPageScraper *scraper = [self scrapeFixtureNamed:@"showthread-fyad2"];
+    NSArray *posts = scraper.posts;
     XCTAssertEqual(posts.count, (NSUInteger)40);
     AwfulPost *first = posts.firstObject;
     XCTAssertEqualObjects(first.author.username, @"BiG TrUcKs !!!");

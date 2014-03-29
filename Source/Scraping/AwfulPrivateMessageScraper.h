@@ -2,11 +2,13 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
 
 /**
- * An AwfulPrivateMessageScraper scrapes an AwfulPrivateMessage object from a document.
+ * An AwfulPrivateMessageScraper scrapes a standalone AwfulPrivateMessage.
  */
-@interface AwfulPrivateMessageScraper : NSObject <AwfulDocumentScraper>
+@interface AwfulPrivateMessageScraper : AwfulScraper
+
+@property (readonly, strong, nonatomic) AwfulPrivateMessage *privateMessage;
 
 @end

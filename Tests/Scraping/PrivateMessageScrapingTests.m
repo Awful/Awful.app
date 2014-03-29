@@ -18,7 +18,8 @@
 
 - (void)testSingleMessage
 {
-    AwfulPrivateMessage *message = [self scrapeFixtureNamed:@"private-one"];
+    AwfulPrivateMessageScraper *scraper = [self scrapeFixtureNamed:@"private-one"];
+    AwfulPrivateMessage *message = scraper.privateMessage;
     NSArray *allMessages = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allMessages.count, (NSUInteger)1);
     NSArray *allUsers = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];

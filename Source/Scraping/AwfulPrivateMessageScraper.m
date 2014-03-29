@@ -14,52 +14,33 @@
 
 @interface AwfulPrivateMessageScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *sentDateParser;
-@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
+@property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
 
 @end
 
 @implementation AwfulPrivateMessageScraper
 
-- (AwfulCompoundDateParser *)sentDateParser
-{
-    if (!_sentDateParser) _sentDateParser = [AwfulCompoundDateParser postDateParser];
-    return _sentDateParser;
-}
-
-- (AwfulAuthorScraper *)authorScraper
-{
-    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
-    return _authorScraper;
-}
-
-#pragma mark - AwfulDocumentScraper
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError **)error
+- (void)scrape
 {
     NSString *messageID;
-    HTMLElement *replyLink = [document awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
+    HTMLElement *replyLink = [self.node awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];
     messageID = replyLinkURL.queryDictionary[@"privatemessageid"];
     if (messageID.length == 0) {
-        if (error) {
-            *error = [NSError errorWithDomain:AwfulErrorDomain
-                                         code:AwfulErrorCodes.parseError
-                                     userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing private message; could not find messageID" }];
-        }
-        return nil;
+        NSString *message = @"Failed parsing private message; could not find messageID";
+        self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
+        return;
     }
-    AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
-                                                                       inManagedObjectContext:managedObjectContext];
-    HTMLElement *breadcrumbs = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
+    
+    AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:self.managedObjectContext];
+    
+    HTMLElement *breadcrumbs = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
     HTMLTextNode *subjectText = breadcrumbs.children.lastObject;
     if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
         message.subject = [subjectText.data gtm_stringByUnescapingFromHTML];
     }
-    HTMLElement *postDateCell = [document awful_firstNodeMatchingCachedSelector:@"td.postdate"];
+    
+    HTMLElement *postDateCell = [self.node awful_firstNodeMatchingCachedSelector:@"td.postdate"];
     HTMLElement *iconImage = [postDateCell awful_firstNodeMatchingCachedSelector:@"img"];
     if (iconImage) {
         NSString *src = iconImage[@"src"];
@@ -67,22 +48,24 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         message.replied = [src rangeOfString:@"replied"].location != NSNotFound;
         message.forwarded = [src rangeOfString:@"forwarded"].location != NSNotFound;
     }
-    HTMLTextNode *sentDateText = postDateCell.children.lastObject;
-    if ([sentDateText isKindOfClass:[HTMLTextNode class]]) {
-        NSDate *sentDate = [self.sentDateParser dateFromString:sentDateText.data];
-        if (sentDate) {
-            message.sentDate = sentDate;
-        }
+    
+    NSString *sentDateText = [postDateCell.children.lastObject textContent];
+    NSDate *sentDate = [[AwfulCompoundDateParser postDateParser] dateFromString:sentDateText];
+    if (sentDate) {
+        message.sentDate = sentDate;
     }
-    HTMLElement *postBodyCell = [document awful_firstNodeMatchingCachedSelector:@"td.postbody"];
+    
+    HTMLElement *postBodyCell = [self.node awful_firstNodeMatchingCachedSelector:@"td.postbody"];
     if (postBodyCell) {
         message.innerHTML = postBodyCell.innerHTML;
     }
-    AwfulUser *from = [self.authorScraper scrapeAuthorFromNode:document intoManagedObjectContext:managedObjectContext];
+    
+    AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
+    AwfulUser *from = authorScraper.author;
     if (from) {
         message.from = from;
     }
-    return message;
+    self.privateMessage = message;
 }
 
 @end

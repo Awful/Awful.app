@@ -9,9 +9,9 @@
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulLepersColonyPageScraper.h"
-#import "AwfulMessageFolderScraper.h"
 #import "AwfulModels.h"
 #import "AwfulPostsPageScraper.h"
+#import "AwfulPrivateMessageFolderScraper.h"
 #import "AwfulPrivateMessageScraper.h"
 #import "AwfulProfileScraper.h"
 #import "AwfulScanner.h"
@@ -191,27 +191,22 @@
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"forumdisplay.php" parameters:parameters success:^(AFHTTPRequestOperation *operation, HTMLDocument *document) {
         [managedObjectContext performBlock:^{
-            AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
-            NSError *error;
-            NSArray *threads = [scraper scrapeDocument:document
-                                               fromURL:operation.response.URL
-                              intoManagedObjectContext:managedObjectContext
-                                                 error:&error];
-            if (threads) {
+            AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.threads) {
                 if (page == 1) {
-                    AwfulForum *backgroundForum = [managedObjectContext awful_objectWithID:forum.objectID];
-                    NSMutableSet *threadsToHide = [backgroundForum.threads mutableCopy];
-                    for (AwfulThread *thread in threads) {
+                    NSMutableSet *threadsToHide = [scraper.forum.threads mutableCopy];
+                    for (AwfulThread *thread in scraper.threads) {
                         [threadsToHide removeObject:thread];
                     }
                     [threadsToHide setValue:@YES forKey:@"hideFromList"];
                 }
-                [threads setValue:@NO forKey:@"hideFromList"];
+                [scraper.threads setValue:@NO forKey:@"hideFromList"];
                 [managedObjectContext save:&error];
             }
 
             if (callback) {
-                NSArray *objectIDs = [threads valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.threads valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *threads = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
                     callback(error, threads);
@@ -235,25 +230,21 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulThreadListScraper *scraper = [AwfulThreadListScraper new];
-            NSError *error;
-            NSArray *threads = [scraper scrapeDocument:document
-                                               fromURL:operation.response.URL
-                              intoManagedObjectContext:managedObjectContext
-                                                 error:&error];
-            if (threads) {
+            AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.threads) {
                 if (page == 1) {
-                    NSArray *threadIDsToIgnore = [threads valueForKey:@"threadID"];
+                    NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
                     NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:managedObjectContext
                                                                    matchingPredicateFormat:@"bookmarked = YES && NOT(threadID IN %@)", threadIDsToIgnore];
                     [threadsToForget setValue:@NO forKey:@"bookmarked"];
                 }
-                [threads setValue:@YES forKey:@"bookmarked"];
+                [scraper.threads setValue:@YES forKey:@"bookmarked"];
                 [managedObjectContext save:&error];
             }
             
             if (callback) {
-                NSArray *objectIDs = [threads valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.threads valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *threads = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
                     callback(error, threads);
@@ -297,13 +288,9 @@
                                                                               success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper new];
-            NSError *error;
-            NSArray *posts = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (posts) {
+            AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.posts) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
@@ -320,7 +307,7 @@
                     }
                 }
                 
-                NSArray *objectIDs = [posts valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.posts valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *posts = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
                     callback(nil, posts, firstUnreadPostIndex, nil);
@@ -359,17 +346,13 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
-            NSError *error;
-            AwfulUser *user = [scraper scrapeDocument:document
-                                              fromURL:operation.response.URL
-                             intoManagedObjectContext:managedObjectContext
-                                                error:&error];
-            if (user) {
+            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.user) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSManagedObjectID *objectID = user.objectID;
+                NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -408,17 +391,13 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper new];
-            NSError *error;
-            NSArray *categories = [scraper scrapeDocument:document
-                                                  fromURL:operation.response.URL
-                                 intoManagedObjectContext:managedObjectContext
-                                                    error:&error];
-            if (categories) {
+            AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.categories) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSArray *objectIDs = [categories valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.categories valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *categories = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
                     callback(error, categories);
@@ -442,17 +421,13 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
             NSMutableDictionary *parameters;
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 NSMutableDictionary *possibleParameters = [form recommendedParameters];
                 if (possibleParameters[@"threadid"]) {
                     parameters = possibleParameters;
@@ -511,16 +486,12 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 for (AwfulFormItem *text in form.texts) {
                     if ([text.name isEqualToString:@"message"]) {
                         if (callback) {
@@ -558,17 +529,13 @@
     {
         if (!callback) return;
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
             NSString *BBcode;
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 NSDictionary *parameters = [form recommendedParameters];
                 BBcode = parameters[@"message"];
                 if (BBcode) break;
@@ -598,17 +565,13 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
             NSMutableDictionary *parameters;
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 NSMutableDictionary *possibleParameters = [form recommendedParameters];
                 if (possibleParameters[@"postid"]) {
                     parameters = possibleParameters;
@@ -700,17 +663,13 @@
                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
-            NSError *error;
-            AwfulUser *user = [scraper scrapeDocument:document
-                                              fromURL:operation.response.URL
-                             intoManagedObjectContext:managedObjectContext
-                                                error:&error];
-            if (user) {
+            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.user) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSManagedObjectID *objectID = user.objectID;
+                NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -818,17 +777,13 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper new];
-            NSError *error;
-            AwfulUser *user = [scraper scrapeDocument:document
-                                              fromURL:operation.response.URL
-                             intoManagedObjectContext:managedObjectContext
-                                                error:&error];
-            if (user) {
+            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.user) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSManagedObjectID *objectID = user.objectID;
+                NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -854,18 +809,14 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper new];
-            NSError *error;
-            NSArray *bans = [scraper scrapeDocument:document
-                                            fromURL:operation.response.URL
-                           intoManagedObjectContext:managedObjectContext
-                                              error:&error];
-            if (bans) {
+            AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.bans) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, bans);
+                    callback(error, scraper.bans);
                 }];
             }
         }];
@@ -883,17 +834,14 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulMessageFolderScraper *scraper = [AwfulMessageFolderScraper new];
-            NSError *error;
-            NSArray *messages = [scraper scrapeDocument:document
-                                                fromURL:operation.response.URL
-                               intoManagedObjectContext:managedObjectContext
-                                                  error:&error];
-            if (messages) {
+            AwfulPrivateMessageFolderScraper *scraper = [AwfulPrivateMessageFolderScraper scrapeNode:document
+                                                                            intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.messages) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSArray *objectIDs = [messages valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.messages valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *messages = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
                     callback(error, messages);
@@ -930,13 +878,9 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper new];
-            NSError *error;
-            AwfulPrivateMessage *message = [scraper scrapeDocument:document
-                                                           fromURL:operation.response.URL
-                                          intoManagedObjectContext:managedObjectContext
-                                                             error:&error];
-            if (message) {
+            AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.privateMessage) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
@@ -960,16 +904,12 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 for (AwfulFormItem *text in form.texts) {
                     if ([text.name isEqualToString:@"message"]) {
                         if (callback) {
@@ -1005,16 +945,12 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 NSArray *tags = form.threadTags;
                 if (tags.count > 0) {
                     if (callback) {
@@ -1081,16 +1017,12 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
-            for (AwfulForm *form in forms) {
+            for (AwfulForm *form in scraper.forms) {
                 if (form.threadTags.count > 0) {
                     if (callback) {
                         NSArray *objectIDs = [form.threadTags valueForKey:@"objectID"];
@@ -1131,18 +1063,14 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper new];
-            NSError *error;
-            NSArray *forms = [scraper scrapeDocument:document
-                                             fromURL:operation.response.URL
-                            intoManagedObjectContext:managedObjectContext
-                                               error:&error];
-            if (forms) {
+            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.forms) {
                 [managedObjectContext save:&error];
             }
             AwfulForm *form;
             NSMutableDictionary *parameters;
-            for (AwfulForm *possibleForm in forms) {
+            for (AwfulForm *possibleForm in scraper.forms) {
                 NSMutableDictionary *possibleParameters = [possibleForm recommendedParameters];
                 if (possibleParameters[@"forumid"]) {
                     form = possibleForm;

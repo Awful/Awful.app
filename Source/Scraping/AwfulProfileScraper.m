@@ -13,43 +13,23 @@
 
 @interface AwfulProfileScraper ()
 
-@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
-@property (strong, nonatomic) AwfulCompoundDateParser *postDateParser;
+@property (strong, nonatomic) AwfulUser *user;
 
 @end
 
 @implementation AwfulProfileScraper
 
-- (AwfulAuthorScraper *)authorScraper
+- (void)scrape
 {
-    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
-    return _authorScraper;
-}
-
-- (AwfulCompoundDateParser *)postDateParser
-{
-    if (!_postDateParser) _postDateParser = [AwfulCompoundDateParser postDateParser];
-    return _postDateParser;
-}
-
-#pragma mark - AwfulDocumentScraper
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError **)error
-{
-    AwfulUser *user = [self.authorScraper scrapeAuthorFromNode:document
-                                      intoManagedObjectContext:managedObjectContext];
-    if (!user) {
-        if (error) {
-            *error = [NSError errorWithDomain:AwfulErrorDomain
-                                         code:AwfulErrorCodes.parseError
-                                     userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing user profile; could not find either username or user ID" }];
-        }
-        return nil;
+    AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
+    if (!authorScraper.author) {
+        NSString *message = @"Failed parsing user profile; could not find either username or user ID";
+        self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
+        return;
     }
-    HTMLElement *infoParagraph = [document awful_firstNodeMatchingCachedSelector:@"td.info p:first-of-type"];
+    self.user = authorScraper.author;
+    
+    HTMLElement *infoParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:infoParagraph.innerHTML];
         [scanner scanUpToString:@"claims to be a " intoString:nil];
@@ -57,83 +37,94 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         NSString *gender;
         BOOL ok = [scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&gender];
         if (ok) {
-            user.gender = gender;
+            self.user.gender = gender;
         }
     }
-    HTMLElement *aboutParagraph = [document awful_firstNodeMatchingCachedSelector:@"td.info p:nth-of-type(2)"];
+    
+    HTMLElement *aboutParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:nth-of-type(2)"];
     if (aboutParagraph) {
-        user.aboutMe = aboutParagraph.innerHTML;
+        self.user.aboutMe = aboutParagraph.innerHTML;
     }
-    HTMLElement *messageLink = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.pm + dd a"];
-    user.canReceivePrivateMessages = !!messageLink;
-    HTMLElement *ICQDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.icq + dd"];
+    
+    HTMLElement *messageLink = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.pm + dd a"];
+    self.user.canReceivePrivateMessages = !!messageLink;
+    
+    HTMLElement *ICQDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.icq + dd"];
     if (ICQDefinition) {
-        HTMLTextNode *ICQText = ICQDefinition.children.firstObject;
-        if (ICQDefinition.numberOfChildren == 1 && [ICQText isKindOfClass:[HTMLTextNode class]]) {
-            user.icqName = ICQText.data;
+        NSString *ICQText = [ICQDefinition.children.firstObject textContent];
+        if (ICQDefinition.numberOfChildren == 1 && [ICQDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+            self.user.icqName = ICQText;
         } else {
-            user.icqName = nil;
+            self.user.icqName = nil;
         }
     }
-    HTMLElement *AIMDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.aim + dd"];
+    
+    HTMLElement *AIMDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.aim + dd"];
     if (AIMDefinition) {
-        HTMLTextNode *AIMText = AIMDefinition.children.firstObject;
-        if (AIMDefinition.numberOfChildren == 1 && [AIMText isKindOfClass:[HTMLTextNode class]]) {
-            user.aimName = AIMText.data;
+        NSString *AIMText = [AIMDefinition.children.firstObject textContent];
+        if (AIMDefinition.numberOfChildren == 1 && [AIMDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+            self.user.aimName = AIMText;
         } else {
-            user.aimName = nil;
+            self.user.aimName = nil;
         }
     }
-    HTMLElement *yahooDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.yahoo + dd"];
+    
+    HTMLElement *yahooDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.yahoo + dd"];
     if (yahooDefinition) {
-        HTMLTextNode *yahooText = yahooDefinition.children.firstObject;
-        if (yahooDefinition.numberOfChildren == 1 && [yahooText isKindOfClass:[HTMLTextNode class]]) {
-            user.yahooName = yahooText.data;
+        NSString *yahooText = [yahooDefinition.children.firstObject textContent];
+        if (yahooDefinition.numberOfChildren == 1 && [yahooDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+            self.user.yahooName = yahooText;
         } else {
-            user.yahooName = nil;
+            self.user.yahooName = nil;
         }
     }
-    HTMLElement *homepageDefinition = [document awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.homepage + dd"];
+    
+    HTMLElement *homepageDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.homepage + dd"];
     if (homepageDefinition) {
-        HTMLTextNode *homepageText = homepageDefinition.children.firstObject;
-        if (homepageDefinition.numberOfChildren == 1 && [homepageText isKindOfClass:[HTMLTextNode class]]) {
-            user.homepageURL = [NSURL URLWithString:homepageText.data relativeToURL:documentURL];
+        NSString *homepageText = [homepageDefinition.children.firstObject textContent];
+        if (homepageText.length > 0) {
+            self.user.homepageURL = [NSURL URLWithString:homepageText];
         } else {
-            user.homepageURL = nil;
+            self.user.homepageURL = nil;
         }
     }
-    HTMLElement *userPictureImage = [document awful_firstNodeMatchingCachedSelector:@"div.userpic img"];
+    
+    HTMLElement *userPictureImage = [self.node awful_firstNodeMatchingCachedSelector:@"div.userpic img"];
     if (userPictureImage) {
-        user.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"] relativeToURL:documentURL];
+        self.user.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"]];
     }
-    HTMLElement *additionalList = [document awful_firstNodeMatchingCachedSelector:@"dl.additional"];
+    
+    HTMLElement *additionalList = [self.node awful_firstNodeMatchingCachedSelector:@"dl.additional"];
     HTMLElement *postCountDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(2)"];
-    HTMLTextNode *postCountText = postCountDefinition.children.firstObject;
-    if ([postCountText isKindOfClass:[HTMLTextNode class]]) {
+    NSString *postCountText = [postCountDefinition.children.firstObject textContent];
+    if (postCountText.length > 0) {
         NSInteger postCount;
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:postCountText.data];
+        AwfulScanner *scanner = [AwfulScanner scannerWithString:postCountText];
         BOOL ok = [scanner scanInteger:&postCount];
         if (ok) {
-            user.postCount = (int32_t)postCount;
+            self.user.postCount = (int32_t)postCount;
         }
     }
+    
     HTMLElement *postRateDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(3)"];
-    HTMLTextNode *postRateText = postRateDefinition.children.firstObject;
-    if ([postRateText isKindOfClass:[HTMLTextNode class]]) {
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText.data];
+    NSString *postRateText = [postRateDefinition.children.firstObject textContent];
+    if (postRateText.length > 0) {
+        AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText];
         BOOL ok = [scanner scanFloat:nil];
         if (ok) {
-            user.postRate = [scanner.string substringToIndex:scanner.scanLocation];
+            self.user.postRate = [scanner.string substringToIndex:scanner.scanLocation];
         }
     }
+    
     HTMLElement *lastPostDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(4)"];
-    HTMLTextNode *lastPostText = lastPostDefinition.children.firstObject;
-    if ([lastPostText isKindOfClass:[HTMLTextNode class]]) {
-        NSDate *lastPostDate = [self.postDateParser dateFromString:lastPostText.data];
+    NSString *lastPostText = [lastPostDefinition.children.firstObject textContent];
+    if (lastPostText.length > 0) {
+        NSDate *lastPostDate = [[AwfulCompoundDateParser postDateParser] dateFromString:lastPostText];
         if (lastPostDate) {
-            user.lastPost = lastPostDate;
+            self.user.lastPost = lastPostDate;
         }
     }
+    
     NSArray *remainingAdditionalInfo = [additionalList.children.array subarrayWithRange:NSMakeRange(4, additionalList.numberOfChildren - 4)];
     for (NSUInteger i = 0; i < remainingAdditionalInfo.count; i++) {
         HTMLElement *term = remainingAdditionalInfo[i];
@@ -144,14 +135,13 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         HTMLTextNode *definitionText = definition.children.firstObject;
         if (![definitionText isKindOfClass:[HTMLTextNode class]]) continue;
         if ([termText.data hasPrefix:@"Location"]) {
-            user.location = definitionText.data;
+            self.user.location = definitionText.data;
         } else if ([termText.data hasPrefix:@"Interests"]) {
-            user.interests = definitionText.data;
+            self.user.interests = definitionText.data;
         } else if ([termText.data hasPrefix:@"Occupation"]) {
-            user.occupation = definitionText.data;
+            self.user.occupation = definitionText.data;
         }
     }
-    return user;
 }
 
 @end

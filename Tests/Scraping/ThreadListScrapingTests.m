@@ -18,7 +18,8 @@
 
 - (void)testBookmarkedThreadList
 {
-    NSArray *scrapedThreads = [self scrapeFixtureNamed:@"bookmarkthreads"];
+    AwfulThreadListScraper *scraper = [self scrapeFixtureNamed:@"bookmarkthreads"];;
+    NSArray *scrapedThreads = scraper.threads;
     XCTAssertEqual(scrapedThreads.count, (NSUInteger)11);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(scrapedThreads.count, allThreads.count);
@@ -79,7 +80,8 @@
 
 - (void)testDebateAndDiscussionThreadList
 {
-    NSArray *scrapedThreads = [self scrapeFixtureNamed:@"forumdisplay"];
+    AwfulThreadListScraper *scraper = [self scrapeFixtureNamed:@"forumdisplay"];
+    NSArray *scrapedThreads = scraper.threads;
     XCTAssertEqual(scrapedThreads.count, (NSUInteger)40);
     NSArray *allThreads = [AwfulThread fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreads.count, scrapedThreads.count);

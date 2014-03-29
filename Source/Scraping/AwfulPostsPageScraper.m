@@ -15,38 +15,22 @@
 
 @interface AwfulPostsPageScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *postDateParser;
-@property (strong, nonatomic) AwfulAuthorScraper *authorScraper;
+@property (strong, nonatomic) AwfulThread *thread;
+
+@property (copy, nonatomic) NSArray *posts;
+
+@property (copy, nonatomic) NSString *advertisementHTML;
 
 @end
 
 @implementation AwfulPostsPageScraper
 
-- (AwfulCompoundDateParser *)postDateParser
+- (void)scrape
 {
-    if (!_postDateParser) _postDateParser = [AwfulCompoundDateParser postDateParser];
-    return _postDateParser;
-}
-
-- (AwfulAuthorScraper *)authorScraper
-{
-    if (!_authorScraper) _authorScraper = [AwfulAuthorScraper new];
-    return _authorScraper;
-}
-
-#pragma mark - AwfulDocumentScraper
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError **)error
-{
-    AwfulThread *thread;
-    AwfulForum *forum;
-    HTMLElement *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
-    thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:managedObjectContext];
-    forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
-    thread.forum = forum;
+    HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
+    self.thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
+    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
+    self.thread.forum = forum;
     
     HTMLElement *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
@@ -56,21 +40,19 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'id=']"];
     
     HTMLElement *threadLink = hierarchyLinks.lastObject;
-    thread.title = [threadLink.innerHTML gtm_stringByUnescapingFromHTML];
+    self.thread.title = [threadLink.innerHTML gtm_stringByUnescapingFromHTML];
     if (hierarchyLinks.count > 1) {
         HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
-        AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID
-                                                           inManagedObjectContext:managedObjectContext];
+        AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
         category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         AwfulForum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
-            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext
-                                                                                 withID:subforumID];
+            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
             subforum.name = [subforumLink.innerHTML gtm_stringByUnescapingFromHTML];
             subforum.category = category;
             currentForum.parentForum = subforum;
@@ -79,13 +61,9 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     }
     
     HTMLElement *closedImage = [body awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
-    thread.closed = !!closedImage;
+    self.thread.closed = !!closedImage;
     
-    NSString *singleUserID = documentURL.queryDictionary[@"userid"];
-    AwfulUser *singleUser;
-    if (singleUserID) {
-        singleUser = [AwfulUser firstOrNewUserWithUserID:singleUserID username:nil inManagedObjectContext:managedObjectContext];
-    }
+    BOOL singleUserFilterEnabled = !![self.node awful_firstNodeMatchingCachedSelector:@"table.post a.user_jump[title *= 'Remove']"];
     
     HTMLElement *pagesDiv = [body awful_firstNodeMatchingCachedSelector:@"div.pages"];
     HTMLElement *pagesSelect = [pagesDiv awful_firstNodeMatchingCachedSelector:@"select"];
@@ -104,25 +82,21 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             currentPage = 1;
         }
     }
-    if (singleUser) {
-        [thread setNumberOfPages:numberOfPages forSingleUser:singleUser];
-    } else {
-        thread.numberOfPages = numberOfPages;
-    }
+    
     HTMLElement *bookmarkButton = [body awful_firstNodeMatchingCachedSelector:@"div.threadbar img.thread_bookmark"];
     if (bookmarkButton) {
         NSArray *bookmarkClasses = [bookmarkButton[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([bookmarkClasses containsObject:@"unbookmark"] && thread.starCategory == AwfulStarCategoryNone) {
-            thread.starCategory = AwfulStarCategoryOrange;
-        } else if ([bookmarkClasses containsObject:@"bookmark"] && thread.starCategory != AwfulStarCategoryNone) {
-            thread.starCategory = AwfulStarCategoryNone;
+        if ([bookmarkClasses containsObject:@"unbookmark"] && self.thread.starCategory == AwfulStarCategoryNone) {
+            self.thread.starCategory = AwfulStarCategoryOrange;
+        } else if ([bookmarkClasses containsObject:@"bookmark"] && self.thread.starCategory != AwfulStarCategoryNone) {
+            self.thread.starCategory = AwfulStarCategoryNone;
         }
     }
     
-    // TODO scrape ad
+    self.advertisementHTML = [[self.node awful_firstNodeMatchingCachedSelector:@"#ad_banner_user a"] serializedFragment];
     
     NSMutableArray *posts = [NSMutableArray new];
-    NSArray *postTables = [document awful_nodesMatchingCachedSelector:@"table.post"];
+    NSArray *postTables = [self.node awful_nodesMatchingCachedSelector:@"table.post"];
     __block AwfulPost *firstUnseenPost;
     [postTables enumerateObjectsUsingBlock:^(HTMLElement *table, NSUInteger i, BOOL *stop) {
         NSString *postID;
@@ -132,23 +106,20 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             postID = [scanner.string substringFromIndex:scanner.scanLocation];
         }
         if (postID.length == 0) {
-            if (error) {
-                *error = [NSError errorWithDomain:AwfulErrorDomain
-                                             code:AwfulErrorCodes.parseError
-                                         userInfo:@{ NSLocalizedDescriptionKey: @"Post parsing failed; could not find post ID" }];
-            }
+            NSString *message = @"Post parsing failed; could not find post ID";
+            self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
             return;
         }
-        AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+        AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
         [posts addObject:post];
-        post.thread = thread;
+        post.thread = self.thread;
         int32_t index = (currentPage - 1) * 40 + (int32_t)i + 1;
         NSInteger indexAttribute = [table[@"data-idx"] integerValue];
         if (indexAttribute > 0) {
             index = (int32_t)indexAttribute;
         }
         if (index > 0) {
-            if (singleUser) {
+            if (singleUserFilterEnabled) {
                 post.singleUserIndex = index;
             } else {
                 post.threadIndex = index;
@@ -158,17 +129,17 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         if (postDateCell) {
             HTMLTextNode *postDateText = postDateCell.children.lastObject;
             NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            post.postDate = [self.postDateParser dateFromString:postDateString];
+            post.postDate = [[AwfulCompoundDateParser postDateParser] dateFromString:postDateString];
         }
-        AwfulUser *author = [self.authorScraper scrapeAuthorFromNode:table intoManagedObjectContext:managedObjectContext];
-        if (author) {
-            post.author = author;
+        AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
+        if (authorScraper.author) {
+            post.author = authorScraper.author;
             if ([table awful_firstNodeMatchingCachedSelector:@"dt.author.op"]) {
-                thread.author = author;
+                self.thread.author = post.author;
             }
+            HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'private.php']"];
+            post.author.canReceivePrivateMessages = !!privateMessageLink;
         }
-        HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'private.php']"];
-        author.canReceivePrivateMessages = !!privateMessageLink;
         HTMLElement *editButton = [table awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'editpost.php']"];
         post.editable = !!editButton;
         HTMLElement *seenRow = [table awful_firstNodeMatchingCachedSelector:@"tr.seen1"] ?: [table awful_firstNodeMatchingCachedSelector:@"tr.seen2"];
@@ -180,15 +151,23 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             post.innerHTML = postBodyElement.innerHTML;
         }
     }];
-    if (firstUnseenPost && !singleUser) {
-        thread.seenPosts = firstUnseenPost.threadIndex - 1;
+    if (firstUnseenPost && !singleUserFilterEnabled) {
+        self.thread.seenPosts = firstUnseenPost.threadIndex - 1;
     }
-    if (numberOfPages > 0 && currentPage == numberOfPages && !singleUser) {
+    if (numberOfPages > 0 && currentPage == numberOfPages && !singleUserFilterEnabled) {
         AwfulPost *lastPost = posts.lastObject;
-        thread.lastPostDate = lastPost.postDate;
-        thread.lastPostAuthorName = lastPost.author.username;
+        self.thread.lastPostDate = lastPost.postDate;
+        self.thread.lastPostAuthorName = lastPost.author.username;
     }
-    return posts;
+    self.posts = posts;
+    
+    
+    if (singleUserFilterEnabled) {
+        AwfulPost *anyPost = posts.firstObject;
+        [self.thread setNumberOfPages:numberOfPages forSingleUser:anyPost.author];
+    } else {
+        self.thread.numberOfPages = numberOfPages;
+    }
 }
 
 @end

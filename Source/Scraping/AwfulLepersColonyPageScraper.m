@@ -10,46 +10,32 @@
 
 @interface AwfulLepersColonyPageScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *dateParser;
+@property (copy, nonatomic) NSArray *bans;
 
 @end
 
 @implementation AwfulLepersColonyPageScraper
 
-- (AwfulCompoundDateParser *)dateParser
-{
-    if (_dateParser) return _dateParser;
-    _dateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[
-                                                                    @"MM/dd/yy hh:mma",
-                                                                    ]];
-    return _dateParser;
-}
-
-#pragma mark - AwfulDocumentScraper
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError *__autoreleasing *)error
+- (void)scrape
 {
     NSMutableArray *bans = [NSMutableArray new];
-    NSArray *rows = [document awful_nodesMatchingCachedSelector:@"table.standard tr"];
+    
+    NSEnumerator *rows = [self.node awful_nodesMatchingCachedSelector:@"table.standard tr"].objectEnumerator;
     
     // First row just has headers.
-    rows = [rows subarrayWithRange:NSMakeRange(1, rows.count - 1)];
+    [rows nextObject];
     
     for (HTMLElement *row in rows) {
         AwfulBan *ban = [AwfulBan new];
-        HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
-        {
+        {{
+            HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
             HTMLElement *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
             if (postID) {
-                ban.post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+                ban.post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
             }
-        }
-        {
+            
             NSString *typeHTML = typeCell.innerHTML;
             if ([typeHTML rangeOfString:@"PROBATION"].location != NSNotFound) {
                 ban.punishment = AwfulPunishmentProbation;
@@ -58,57 +44,67 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             } else if ([typeHTML rangeOfString:@"BAN"].location != NSNotFound) {
                 ban.punishment = AwfulPunishmentBan;
             }
-        }
-        {
+        }}
+        
+        {{
             HTMLElement *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
-            NSDate *date = [self.dateParser dateFromString:dateCell.innerHTML];
+            NSDate *date = [BanDateParser() dateFromString:dateCell.innerHTML];
             if (date) {
                 ban.date = date;
             }
-        }
-        {
+        }}
+        
+        {{
             HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID
-                                                         username:username
-                                           inManagedObjectContext:managedObjectContext];
+            AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
             if (user) {
                 ban.user = user;
             }
-        }
-        {
+        }}
+        
+        {{
             HTMLElement *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
             ban.reasonHTML = reasonCell.innerHTML;
-        }
-        {
+        }}
+        
+        {{
             HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *requester = [AwfulUser firstOrNewUserWithUserID:userID
-                                                              username:username
-                                                inManagedObjectContext:managedObjectContext];
+            AwfulUser *requester = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
             if (requester) {
                 ban.requester = requester;
             }
-        }
-        {
+        }}
+        
+        {{
             HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *approver = [AwfulUser firstOrNewUserWithUserID:userID
-                                                             username:username
-                                               inManagedObjectContext:managedObjectContext];
+            AwfulUser *approver = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
             if (approver) {
                 ban.approver = approver;
             }
-        }
+        }}
+        
         [bans addObject:ban];
     }
-    return bans;
+    self.bans = bans;
+}
+
+static AwfulCompoundDateParser * BanDateParser(void)
+{
+    static AwfulCompoundDateParser *parser;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        parser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"MM/dd/yy hh:mma" ]];
+    });
+    return parser;
 }
 
 @end

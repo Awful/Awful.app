@@ -4,66 +4,66 @@
 
 #import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
+#import "AwfulErrorDomain.h"
 #import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
 @interface AwfulAuthorScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *regdateDateParser;
+@property (strong, nonatomic) AwfulUser *author;
 
 @end
 
 @implementation AwfulAuthorScraper
 
-- (AwfulCompoundDateParser *)regdateDateParser
+- (void)scrape
 {
-    if (!_regdateDateParser) {
-        _regdateDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"MMM d, yyyy" ]];
+    NSString *userID;
+    
+    // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
+    HTMLElement *profileLink = [self.node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
+    if (profileLink) {
+        NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
+        userID = URL.queryDictionary[@"userid"];
+    } else {
+        HTMLElement *userIDInput = [self.node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
+        userID = userIDInput[@"value"];
     }
-    return _regdateDateParser;
+    HTMLElement *authorTerm = [self.node awful_firstNodeMatchingCachedSelector:@"dt.author"];
+    NSString *username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
+    
+    if (userID.length == 0 && username.length == 0) {
+        NSString *message = @"Could not find author's user ID or username";
+        self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
+        return;
+    }
+    
+    self.author = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
+    if (authorTerm[@"class"]) {
+        self.author.administrator = [authorTerm hasClass:@"role-admin"];
+        self.author.moderator = [authorTerm hasClass:@"role-mod"];
+        self.author.idiotKing = [authorTerm hasClass:@"role-ik"];
+    }
+    HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
+    NSDate *regdate = [RegdateParser() dateFromString:regdateDefinition.innerHTML];
+    if (regdate) {
+        self.author.regdate = regdate;
+    }
+    HTMLElement *customTitleDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
+    if (customTitleDefinition) {
+        self.author.customTitleHTML = customTitleDefinition.innerHTML;
+    }
 }
 
-- (AwfulUser *)scrapeAuthorFromNode:(HTMLNode *)node
-           intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+static AwfulCompoundDateParser * RegdateParser(void)
 {
-    NSString *userID; {
-        HTMLElement *profileLink = [node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
-        
-        // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
-        if (profileLink) {
-            NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
-            userID = URL.queryDictionary[@"userid"];
-        } else {
-            HTMLElement *userIDInput = [node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
-            userID = userIDInput[@"value"];
-        }
-    }
-    HTMLElement *authorTerm = [node awful_firstNodeMatchingCachedSelector:@"dt.author"];
-    NSString *username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
-    if (userID.length == 0 && username.length == 0) {
-        return nil;
-    }
-    AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID
-                                                 username:username
-                                   inManagedObjectContext:managedObjectContext];
-    if (authorTerm[@"class"]) {
-        user.administrator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-admin"];
-			user.moderator = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-mod"];
-			user.idiotKing = !![authorTerm awful_firstNodeMatchingCachedSelector:@".role-ik"];
-    }
-    NSDate *regdate; {
-        HTMLElement *regdateDefinition = [node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
-        regdate = [self.regdateDateParser dateFromString:regdateDefinition.innerHTML];
-    }
-    if (regdate) {
-        user.regdate = regdate;
-    }
-    HTMLElement *customTitleDefinition = [node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
-    if (customTitleDefinition) {
-        user.customTitleHTML = customTitleDefinition.innerHTML;
-    }
-    return user;
+    static AwfulCompoundDateParser *parser;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        parser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"MMM d, yyyy" ]];
+    });
+    return parser;
 }
 
 @end

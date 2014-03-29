@@ -2,13 +2,13 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
-#import "AwfulModels.h"
-#import <HTMLReader/HTMLReader.h>
+#import "AwfulScraper.h"
 
-@interface AwfulAuthorScraper : NSObject
+/**
+ * An AwfulAuthorScraper scrapes an AwfulUser from information near a post or profile.
+ */
+@interface AwfulAuthorScraper : AwfulScraper
 
-- (AwfulUser *)scrapeAuthorFromNode:(HTMLNode *)node
-           intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+@property (readonly, strong, nonatomic) AwfulUser *author;
 
 @end

@@ -13,58 +13,42 @@
 
 @interface AwfulThreadListScraper ()
 
-@property (strong, nonatomic) AwfulCompoundDateParser *lastPostDateParser;
+@property (strong, nonatomic) AwfulForum *forum;
+
+@property (copy, nonatomic) NSArray *threads;
 
 @end
 
 @implementation AwfulThreadListScraper
 
-- (AwfulCompoundDateParser *)lastPostDateParser
+- (void)scrape
 {
-    if (_lastPostDateParser) return _lastPostDateParser;
-    _lastPostDateParser = [[AwfulCompoundDateParser alloc] initWithFormats:@[
-                                                                             @"h:mm a MMM d, yyyy",
-                                                                             @"HH:mm MMM d, yyyy",
-                                                                             ]];
-    return _lastPostDateParser;
-}
-
-#pragma mark - AwfulDocumentScraper
-
-- (id)scrapeDocument:(HTMLDocument *)document
-             fromURL:(NSURL *)documentURL
-intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-               error:(out NSError **)error
-{
-    AwfulForum *forum;
-    HTMLElement *body = [document awful_firstNodeMatchingCachedSelector:@"body"];
+    HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     if (body[@"data-forum"]) {
-        forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:body[@"data-forum"]];
+        self.forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
     }
     
-    HTMLElement *breadcrumbsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
+    HTMLElement *breadcrumbsDiv = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
     // The first hierarchy link (if any) is the category. The rest are forums/subforums.
     NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'forumdisplay.php']"];
 
     HTMLElement *forumLink = hierarchyLinks.lastObject;
     if (forumLink) {
-        forum.name = [forumLink.innerHTML gtm_stringByUnescapingFromHTML];
+        self.forum.name = [forumLink.textContent gtm_stringByUnescapingFromHTML];
     }
     if (hierarchyLinks.count > 0) {
         HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
-        AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID
-                                                           inManagedObjectContext:managedObjectContext];
+        AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
         category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
         AwfulForum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
-            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext
-                                                                                 withID:subforumID];
+            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
             subforum.name = [subforumLink.innerHTML gtm_stringByUnescapingFromHTML];
             subforum.category = category;
             currentForum.parentForum = subforum;
@@ -74,7 +58,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
     
     // TODO parse number of pages so we know whether to enable pull-for-more.
     
-    HTMLElement *threadTagsDiv = [document awful_firstNodeMatchingCachedSelector:@"div.thread_tags"];
+    HTMLElement *threadTagsDiv = [self.node awful_firstNodeMatchingCachedSelector:@"div.thread_tags"];
     if (threadTagsDiv) {
         NSMutableOrderedSet *threadTags = [NSMutableOrderedSet new];
         for (HTMLElement *link in [threadTagsDiv awful_nodesMatchingCachedSelector:@"a[href*='posticon']"]) {
@@ -84,13 +68,13 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
             AwfulThreadTag *threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
                                                                               threadTagURL:imageURL
-                                                                    inManagedObjectContext:managedObjectContext];
+                                                                    inManagedObjectContext:self.managedObjectContext];
             [threadTags addObject:threadTag];
         }
-        forum.threadTags = threadTags;
+        self.forum.threadTags = threadTags;
     }
     
-    NSArray *threadLinks = [document awful_nodesMatchingCachedSelector:@"tr.thread"];
+    NSArray *threadLinks = [self.node awful_nodesMatchingCachedSelector:@"tr.thread"];
     NSMutableArray *threads = [NSMutableArray new];
     int32_t stickyIndex = -(int32_t)threadLinks.count;
     for (HTMLElement *row in threadLinks) {
@@ -101,19 +85,17 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             threadID = [scanner.string substringFromIndex:scanner.scanLocation];
         }
         if (threadID.length == 0) {
-            if (error) {
-                *error = [NSError errorWithDomain:AwfulErrorDomain
+            self.error = [NSError errorWithDomain:AwfulErrorDomain
                                              code:AwfulErrorCodes.parseError
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Thread list parsing failed; could not find thread ID" }];
-            }
             continue;
         }
-        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
+        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:self.managedObjectContext];
         [threads addObject:thread];
         HTMLElement *stickyCell = [row awful_firstNodeMatchingCachedSelector:@"td.title_sticky"];
         thread.sticky = !!stickyCell;
-        if (forum) {
-            thread.forum = forum;
+        if (self.forum) {
+            thread.forum = self.forum;
             if (thread.sticky) {
                 thread.stickyIndex = stickyIndex;
                 stickyIndex++;
@@ -130,19 +112,19 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img[src*='/rate/reviews']"];
         }
         if (threadTagImage) {
-            NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"] relativeToURL:documentURL];
+            NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
             NSString *threadTagID = URL.fragment;
             thread.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
                                                                      threadTagURL:URL
-                                                           inManagedObjectContext:managedObjectContext];
+                                                           inManagedObjectContext:self.managedObjectContext];
         }
         HTMLElement *secondaryThreadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon2 img"];
         if (secondaryThreadTagImage) {
-            NSURL *URL = [NSURL URLWithString:secondaryThreadTagImage[@"src"] relativeToURL:documentURL];
+            NSURL *URL = [NSURL URLWithString:secondaryThreadTagImage[@"src"]];
             NSString *threadTagID = URL.fragment;
             thread.secondaryThreadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
                                                                               threadTagURL:URL
-                                                                    inManagedObjectContext:managedObjectContext];
+                                                                    inManagedObjectContext:self.managedObjectContext];
         }
         HTMLElement *authorProfileLink = [row awful_firstNodeMatchingCachedSelector:@"td.author a"];
         if (authorProfileLink) {
@@ -151,7 +133,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             NSString *authorUserID = profileURL.queryDictionary[@"userid"];
             AwfulUser *author = [AwfulUser firstOrNewUserWithUserID:authorUserID
                                                            username:authorUsername
-                                             inManagedObjectContext:managedObjectContext];
+                                             inManagedObjectContext:self.managedObjectContext];
             if (author) {
                 thread.author = author;
             }
@@ -203,7 +185,7 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
         }
         HTMLElement *lastPostDateDiv = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost div.date"];
         if (lastPostDateDiv) {
-            NSDate *lastPostDate = [self.lastPostDateParser dateFromString:lastPostDateDiv.innerHTML];
+            NSDate *lastPostDate = [LastPostDateParser() dateFromString:lastPostDateDiv.innerHTML];
             if (lastPostDate) {
                 thread.lastPostDate = lastPostDate;
             }
@@ -213,7 +195,19 @@ intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
             thread.lastPostAuthorName = lastPostAuthorLink.innerHTML;
         }
     }
-    return threads;
+    
+    self.threads = threads;
+}
+
+static AwfulCompoundDateParser * LastPostDateParser(void)
+{
+    static AwfulCompoundDateParser *parser;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        parser = [[AwfulCompoundDateParser alloc] initWithFormats:@[ @"h:mm a MMM d, yyyy",
+                                                                     @"HH:mm MMM d, yyyy" ]];
+    });
+    return parser;
 }
 
 @end

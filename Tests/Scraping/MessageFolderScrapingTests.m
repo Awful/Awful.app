@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulScrapingTestCase.h"
-#import "AwfulMessageFolderScraper.h"
+#import "AwfulPrivateMessageFolderScraper.h"
 
 @interface MessageFolderScrapingTests : AwfulScrapingTestCase
 
@@ -13,12 +13,13 @@
 
 + (Class)scraperClass
 {
-    return [AwfulMessageFolderScraper class];
+    return [AwfulPrivateMessageFolderScraper class];
 }
 
 - (void)testInbox
 {
-    NSArray *messages = [self scrapeFixtureNamed:@"private-list"];
+    AwfulPrivateMessageFolderScraper *scraper = [self scrapeFixtureNamed:@"private-list"];
+    NSArray *messages = scraper.messages;
     XCTAssertEqual(messages.count, (NSUInteger)4);
     NSArray *allMessages = [AwfulPrivateMessage fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(messages.count, allMessages.count);

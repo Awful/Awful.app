@@ -19,7 +19,8 @@
 
 - (void)testReply
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"newreply"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newreply"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)0);
@@ -38,7 +39,8 @@
 
 - (void)testReplyWithAmazonSearch
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"newreply-amazon-form"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newreply-amazon-form"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)2);
     AwfulForm *replyForm = forms[1];
     XCTAssertNotNil([replyForm recommendedParameters][@"threadid"]);
@@ -46,7 +48,8 @@
 
 - (void)testThread
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"newthread"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)51);
@@ -67,7 +70,8 @@
 
 - (void)testAskTellThread
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"newthread-at"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread-at"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)55);
@@ -79,7 +83,8 @@
 
 - (void)testSAMartThread
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"newthread-samart"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread-samart"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)69);
@@ -91,7 +96,8 @@
 
 - (void)testMessage
 {
-    NSArray *forms = [self scrapeFixtureNamed:@"private-reply"];
+    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"private-reply"];
+    NSArray *forms = scraper.forms;
     XCTAssertEqual(forms.count, (NSUInteger)1);
     AwfulForm *form = forms[0];
     AwfulFormItem *messageItem;

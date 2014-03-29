@@ -18,7 +18,8 @@
 
 - (void)testHierarchy
 {
-    NSArray *categories = [self scrapeFixtureNamed:@"forumdisplay"];
+    AwfulForumHierarchyScraper *scraper = [self scrapeFixtureNamed:@"forumdisplay"];
+    NSArray *categories = scraper.categories;
     NSArray *categoryNames = [[categories valueForKey:@"name"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     XCTAssertEqualObjects(categoryNames, (@[
                                             @"Archives",

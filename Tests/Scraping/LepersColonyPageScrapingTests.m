@@ -18,7 +18,8 @@
 
 - (void)testFirstPage
 {
-    NSArray *bans = [self scrapeFixtureNamed:@"banlist"];
+    AwfulLepersColonyPageScraper *scraper = [self scrapeFixtureNamed:@"banlist"];
+    NSArray *bans = scraper.bans;
     XCTAssertEqual(bans.count, (NSUInteger)50);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allUsers.count, (NSUInteger)71);

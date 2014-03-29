@@ -2,11 +2,14 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
+#import "AwfulForm.h"
 
 /**
- * An AwfulFormScraper scrapes an array of AwfulForm objects from a document.
+ * An AwfulFormScraper finds all HTML forms.
  */
-@interface AwfulFormScraper : NSObject <AwfulDocumentScraper>
+@interface AwfulFormScraper : AwfulScraper
+
+@property (readonly, copy, nonatomic) NSArray *forms;
 
 @end

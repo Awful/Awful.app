@@ -2,11 +2,15 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
 
 /**
- * An AwfulThreadListScraper scrapes an array of AwfulThread objects.
+ * An AwfulThreadListScraper scrapes a list of AwfulThread objects from a forum or a page of bookmarks.
  */
-@interface AwfulThreadListScraper : NSObject <AwfulDocumentScraper>
+@interface AwfulThreadListScraper : AwfulScraper
+
+@property (readonly, strong, nonatomic) AwfulForum *forum;
+
+@property (readonly, copy, nonatomic) NSArray *threads;
 
 @end

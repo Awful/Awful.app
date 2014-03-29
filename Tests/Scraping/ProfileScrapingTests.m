@@ -18,7 +18,8 @@
 
 - (void)testWithAvatarAndText
 {
-    AwfulUser *pokeyman = [self scrapeFixtureNamed:@"profile"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile"];
+    AwfulUser *pokeyman = scraper.user;
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allUsers.count, (NSUInteger)1);
     XCTAssertEqualObjects(pokeyman.userID, @"106125");
@@ -37,7 +38,8 @@
 
 - (void)testWithAvatarAndGangTag
 {
-    AwfulUser *ronald = [self scrapeFixtureNamed:@"profile2"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile2"];
+    AwfulUser *ronald = scraper.user;
     XCTAssertEqualObjects(ronald.location, @"San Francisco");
     XCTAssertNotEqual([ronald.customTitleHTML rangeOfString:@"safs/titles"].location, (NSUInteger)NSNotFound);
     XCTAssertNotEqual([ronald.customTitleHTML rangeOfString:@"dd/68"].location, (NSUInteger)NSNotFound);
@@ -46,7 +48,8 @@
 
 - (void)testWithFunkyText
 {
-    AwfulUser *rinkles = [self scrapeFixtureNamed:@"profile3"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile3"];
+    AwfulUser *rinkles = scraper.user;
     XCTAssertNotEqual([rinkles.customTitleHTML rangeOfString:@"<i>"].location, (NSUInteger)NSNotFound);
     XCTAssertNotEqual([rinkles.customTitleHTML rangeOfString:@"I'm getting at is"].location, (NSUInteger)NSNotFound);
     XCTAssertNotEqual([rinkles.customTitleHTML rangeOfString:@"safs/titles"].location, (NSUInteger)NSNotFound);
@@ -54,19 +57,22 @@
 
 - (void)testWithNoAvatarOrTitle
 {
-    AwfulUser *crypticEdge = [self scrapeFixtureNamed:@"profile4"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile4"];
+    AwfulUser *crypticEdge = scraper.user;
     XCTAssertNotEqual([crypticEdge.customTitleHTML rangeOfString:@"<br"].location, (NSUInteger)NSNotFound);
 }
 
 - (void)testStupidNewbie
 {
-    AwfulUser *newbie = [self scrapeFixtureNamed:@"profile5"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile5"];
+    AwfulUser *newbie = scraper.user;
     XCTAssertNotEqual([newbie.customTitleHTML rangeOfString:@"newbie.gif"].location, (NSUInteger)NSNotFound);
 }
 
 - (void)testWithGangTagButNoAvatar
 {
-    AwfulUser *gripper = [self scrapeFixtureNamed:@"profile6"];
+    AwfulProfileScraper *scraper = [self scrapeFixtureNamed:@"profile6"];
+    AwfulUser *gripper = scraper.user;
     XCTAssertNotEqual([gripper.customTitleHTML rangeOfString:@"i am winner"].location, (NSUInteger)NSNotFound);
     XCTAssertNotEqual([gripper.customTitleHTML rangeOfString:@"tccburnouts.png"].location, (NSUInteger)NSNotFound);
 }

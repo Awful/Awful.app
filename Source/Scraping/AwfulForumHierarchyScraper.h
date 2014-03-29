@@ -2,11 +2,13 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulDocumentScraper.h"
+#import "AwfulScraper.h"
 
 /**
- * An AwfulForumHierarchyScraper scrapes an array of AwfulCategory objects from a document.
+ * An AwfulForumHierarchyScraper builds up a hierarchy of AwfulCategory and AwfulForum instances from a drop-down menu.
  */
-@interface AwfulForumHierarchyScraper : NSObject <AwfulDocumentScraper>
+@interface AwfulForumHierarchyScraper : AwfulScraper
+
+@property (readonly, copy, nonatomic) NSArray *categories;
 
 @end
