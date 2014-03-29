@@ -33,10 +33,32 @@
     [self setNeedsLayout];
 }
 
+- (void)autocloseBBcode
+{
+    NSString *textContent = self.textView.text;
+    NSUInteger closingBracketPos = [textContent rangeOfString:@"]" options:NSBackwardsSearch].location;
+    if (closingBracketPos == NSNotFound) {
+        return;
+    }
+    NSUInteger openingBracketPos = [textContent rangeOfString:@"[" options:NSBackwardsSearch
+                                                        range:NSMakeRange(0, closingBracketPos)].location;
+    if (openingBracketPos == NSNotFound) {
+        return;
+    }
+    [self.keyInputView insertText:@"[/"];
+    NSRange bbcodeRange = NSMakeRange(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1);
+    [self.keyInputView insertText:[textContent substringWithRange:bbcodeRange]];
+    [self.keyInputView insertText:@"]"];
+}
+
 - (void)keyPressed:(AwfulKeyboardButton *)button
 {
     [[UIDevice currentDevice] playInputClick];
-    [self.keyInputView insertText:button.string];
+    if ([button.string isEqual:@"[/..]"]) {
+        [self autocloseBBcode];
+    } else {
+        [self.keyInputView insertText:button.string];
+    }
 }
 
 - (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
