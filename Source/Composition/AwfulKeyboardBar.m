@@ -8,7 +8,7 @@
 
 - (id)initWithString:(NSString *)string;
 
-@property (readonly, copy, nonatomic) NSString *string;
+@property (copy, nonatomic) NSString *string;
 
 @property (strong, nonatomic) UIColor *highlightedBackgroundColor;
 
@@ -58,19 +58,18 @@
  - (BOOL)hasOpenCodeTag:(NSString *)content
 {
     NSRange codeRange = [content rangeOfString:@"[code" options:NSBackwardsSearch];
-    if (codeRange.location == NSNotFound) {
-        return FALSE;
+    if (codeRange.location == NSNotFound || NSMaxRange(codeRange) >= content.length) {
+        return NO;
     }
     
     // If it's a false alarm like [codemonkey], keep looking.
-    unichar nextChar = [content characterAtIndex:codeRange.location + 5 /* [code */];
-    if (nextChar != ']' && nextChar != '=') {
+    unichar nextChar = [content characterAtIndex:NSMaxRange(codeRange) /* [code */];
+    if (![TagNameTerminators() characterIsMember:nextChar]) {
         return [self hasOpenCodeTag:[content substringToIndex:codeRange.location]];
     }
     
     // Is this still open?
-    return [[content substringFromIndex:codeRange.location]
-                rangeOfString:@"[/code]"].location == NSNotFound;
+    return [[content substringFromIndex:codeRange.location] rangeOfString:@"[/code]"].location == NSNotFound;
 }
 
 /*
@@ -84,7 +83,6 @@
 
 - (NSString *)getCurrentlyOpenTag:(NSString *)content
 {
-    NSRange tagRange;
     // Find start of preceding tag (opener or closer).
     NSUInteger startingBracket = [content rangeOfString:@"[" options:NSBackwardsSearch].location;
     if (startingBracket == NSNotFound) {
@@ -93,7 +91,7 @@
     
     // If it's a closer, find its opener.
     if ([content characterAtIndex:(startingBracket + 1)] == '/') {
-        tagRange = [[content substringFromIndex:startingBracket] rangeOfString:@"]"];
+        NSRange tagRange = [[content substringFromIndex:startingBracket] rangeOfString:@"]"];
         if (tagRange.location == NSNotFound) {
             // Not a proper tag, keep searching backwards.
             return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
@@ -123,18 +121,21 @@
     }
     
     // We have an opener! Find the end of the tag name.
-    tagRange = [content rangeOfCharacterFromSet:
-                [NSCharacterSet characterSetWithCharactersInString:@"]="] options:0
-                                          range:NSMakeRange(startingBracket + 1,
-                                                            [content length] - startingBracket - 1)];
+    NSRange tagRange = [content rangeOfCharacterFromSet:TagNameTerminators()
+                                                options:0
+                                                  range:NSMakeRange(startingBracket + 1, content.length - startingBracket - 1)];
     if (tagRange.location == NSNotFound) {
         // Malformed, fuck 'em.
         return nil;
     }
     
     tagRange.length--; // Omit the ] or =;
-    return [content substringWithRange:NSMakeRange(startingBracket + 1,
-                                                   tagRange.location - startingBracket - 1)];
+    return [content substringWithRange:NSMakeRange(startingBracket + 1, tagRange.location - startingBracket - 1)];
+}
+
+static NSCharacterSet * TagNameTerminators(void)
+{
+    return [NSCharacterSet characterSetWithCharactersInString:@"]="];
 }
 
 - (void)autocloseBBcode
@@ -142,16 +143,14 @@
     NSString *textContent = [self.textView.text substringToIndex:self.textView.selectedRange.location];
     
     if ([self hasOpenCodeTag:textContent]) {
-        [self.keyInputView insertText:@"[/code]"];
+        [self.textView insertText:@"[/code]"];
         return;
     }
     
     NSString *openTag = [self getCurrentlyOpenTag:textContent];
-    if (openTag == nil) {
-        return;
+    if (openTag) {
+        [self.textView insertText:[NSString stringWithFormat:@"[/%@]", openTag]];
     }
-    
-    [self.keyInputView insertText:[NSString stringWithFormat:@"[/%@]", openTag]];
 }
 
 - (void)keyPressed:(AwfulKeyboardButton *)button
@@ -160,7 +159,7 @@
     if ([button.string isEqual:@"[/..]"]) {
         [self autocloseBBcode];
     } else {
-        [self.keyInputView insertText:button.string];
+        [self.textView insertText:button.string];
     }
 }
 
@@ -214,7 +213,7 @@
     const CGFloat height = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? width : 32;
     const CGFloat between = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 12 : 6;
     const CGFloat topMargin = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 7 : 2;
-    CGFloat x = floorf((CGRectGetWidth(self.bounds) - (width * _buttons.count) - (between * (_buttons.count - 1))) / 2);
+    CGFloat x = floor((CGRectGetWidth(self.bounds) - (width * _buttons.count) - (between * (_buttons.count - 1))) / 2);
     for (UIButton *button in _buttons) {
         button.frame = CGRectMake(x, topMargin, width, height);
         x += width + between;
@@ -239,7 +238,8 @@
 {
     self = [super init];
     if (!self) return nil;
-    [self setTitle:string forState:UIControlStateNormal];
+    
+    self.string = string;
     self.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 5, 0);
@@ -249,6 +249,7 @@
     self.layer.shadowOpacity = 1;
     self.layer.shadowOffset = CGSizeMake(0, 1);
     self.layer.shadowRadius = 0;
+    
     return self;
 }
 
@@ -257,7 +258,10 @@
     return [self titleForState:UIControlStateNormal];
 }
 
-#pragma mark - UIButton
+- (void)setString:(NSString *)string
+{
+    [self setTitle:string forState:UIControlStateNormal];
+}
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor
 {

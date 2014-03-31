@@ -8,9 +8,7 @@
 
 @property (copy, nonatomic) NSArray *strings;
 
-@property (weak, nonatomic) id <UIKeyInput> keyInputView;
-
-@property (weak, nonatomic) UITextView* textView;
+@property (weak, nonatomic) UITextView *textView;
 
 @property (assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
 
