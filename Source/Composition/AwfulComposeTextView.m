@@ -47,8 +47,9 @@
     _BBcodeBar = [AwfulKeyboardBar new];
     _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
                                   UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
-    _BBcodeBar.strings = @[ @"[", @"=", @":", @"/", @"]" ];
+    _BBcodeBar.strings = @[ @"[", @"=", @":", @"/", @"]", @"[/..]" ];
     _BBcodeBar.keyInputView = self;
+    _BBcodeBar.textView = self;
     _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
     return _BBcodeBar;
 }

@@ -10,6 +10,8 @@
 
 @property (weak, nonatomic) id <UIKeyInput> keyInputView;
 
+@property (weak, nonatomic) UITextView* textView;
+
 @property (assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
 
 @end
