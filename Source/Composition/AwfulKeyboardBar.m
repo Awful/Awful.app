@@ -33,33 +33,125 @@
     [self setNeedsLayout];
 }
 
+/*
+ * Insert the appropriate closing tag, if any.
+ *
+ * First, scan backwards for [code]. If so, and there's no [/code] between there and here, then
+ * the insertion is always [/code] (bbcode within [code] isn't interpreted).
+ *
+ * Scan backwards looking for [.
+ * - If we find a [/tag], scan backwards for its [tag] and continue search from there.
+ * - If we find [tag], trim =part if any, and insert [/tag].
+ *
+ * XXX should have a list of bbcode tags, and only consider those?
+ */
+
+/* Tests:
+ * "[code] [b]"                -> TRUE
+ * "[code] [b] [/code]"        -> FALSE
+ * "[code] [b] [/code][code]"  -> TRUE
+ * "[code=cpp] [b]"            -> TRUE
+ * "[/code]"                   -> FALSE
+ * "[codemonkey] [b]"          -> FALSE
+ * "[code][codemonkey]"        -> TRUE
+ */
+ - (BOOL)hasOpenCodeTag:(NSString *)content
+{
+    NSRange codeRange = [content rangeOfString:@"[code" options:NSBackwardsSearch];
+    if (codeRange.location == NSNotFound) {
+        return FALSE;
+    }
+    
+    // If it's a false alarm like [codemonkey], keep looking.
+    unichar nextChar = [content characterAtIndex:codeRange.location + 5 /* [code */];
+    if (nextChar != ']' && nextChar != '=') {
+        return [self hasOpenCodeTag:[content substringToIndex:codeRange.location]];
+    }
+    
+    // Is this still open?
+    return [[content substringFromIndex:codeRange.location]
+                rangeOfString:@"[/code]"].location == NSNotFound;
+}
+
+/*
+ * Tests:
+ * "[b][i]"              -> "i"
+ * "[b][i][/i]"          -> "b"
+ * "[b][/b]"             -> nil
+ * "[url=foo]"           -> "url"
+ * "[url=foo][b][i][/b]" -> "url"
+ */
+
+- (NSString *)getCurrentlyOpenTag:(NSString *)content
+{
+    NSRange tagRange;
+    // Find start of preceding tag (opener or closer).
+    NSUInteger startingBracket = [content rangeOfString:@"[" options:NSBackwardsSearch].location;
+    if (startingBracket == NSNotFound) {
+        return nil;
+    }
+    
+    // If it's a closer, find its opener.
+    if ([content characterAtIndex:(startingBracket + 1)] == '/') {
+        tagRange = [[content substringFromIndex:startingBracket] rangeOfString:@"]"];
+        if (tagRange.location == NSNotFound) {
+            // Not a proper tag, keep searching backwards.
+            return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
+        }
+        
+        tagRange = NSMakeRange(startingBracket + 2, tagRange.location - 2);
+        NSString *tagname = [content substringWithRange:tagRange];
+        
+        NSUInteger openerLocation =
+            [content rangeOfString:
+             [NSString stringWithFormat:@"[%@]", tagname] options:NSBackwardsSearch].location;
+        if (openerLocation == NSNotFound) {
+            // Might be [tag=]
+            openerLocation =
+                [content rangeOfString:
+                 [NSString stringWithFormat:@"[%@=", tagname] options:NSBackwardsSearch].location;
+            
+            if (openerLocation == NSNotFound) {
+                // Never opened, keep searching backwards from the starting bracket.
+                return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
+            }
+        }
+        
+        // Now that we've matched [tag]...[/tag], keep looking back for an outer [tag2] that
+        // might still be open.
+        return [self getCurrentlyOpenTag:[content substringToIndex:openerLocation]];
+    }
+    
+    // We have an opener! Find the end of the tag name.
+    tagRange = [content rangeOfCharacterFromSet:
+                [NSCharacterSet characterSetWithCharactersInString:@"]="] options:0
+                                          range:NSMakeRange(startingBracket + 1,
+                                                            [content length] - startingBracket - 1)];
+    if (tagRange.location == NSNotFound) {
+        // Malformed, fuck 'em.
+        return nil;
+    }
+    
+    tagRange.length--; // Omit the ] or =;
+    return [content substringWithRange:NSMakeRange(startingBracket + 1,
+                                                   tagRange.location - startingBracket - 1)];
+}
+
 - (void)autocloseBBcode
 {
-    NSString *textContent = self.textView.text;
-
-    // Find nearest ] before current cursor point.
-    NSUInteger closingBracketPos = [textContent rangeOfString:@"]" options:NSBackwardsSearch
-                                        range:NSMakeRange(0, self.textView.selectedRange.location)].location;
-    if (closingBracketPos == NSNotFound) {
+    NSString *textContent = [self.textView.text substringToIndex:self.textView.selectedRange.location];
+    
+    if ([self hasOpenCodeTag:textContent]) {
+        [self.keyInputView insertText:@"[/code]"];
         return;
     }
-    // Find matching [ opener.
-    NSUInteger openingBracketPos = [textContent rangeOfString:@"[" options:NSBackwardsSearch
-                                                        range:NSMakeRange(0, closingBracketPos)].location;
-    if (openingBracketPos == NSNotFound) {
+    
+    NSString *openTag = [self getCurrentlyOpenTag:textContent];
+    if (openTag == nil) {
         return;
     }
-    // If there's an = in the opener, the tag name ends there.
-    NSUInteger equalsPos = [textContent rangeOfString:@"=" options:0
-                                                    range:NSMakeRange(openingBracketPos,
-                                                                      closingBracketPos - openingBracketPos)].location;
-    if (equalsPos != NSNotFound) {
-        closingBracketPos = equalsPos;
-    }
-    [self.keyInputView insertText:@"[/"];
-    NSRange bbcodeRange = NSMakeRange(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1);
-    [self.keyInputView insertText:[textContent substringWithRange:bbcodeRange]];
-    [self.keyInputView insertText:@"]"];
+    
+    [self.keyInputView insertText:[NSString stringWithFormat:@"[/%@]", openTag]];
 }
 
 - (void)keyPressed:(AwfulKeyboardButton *)button
