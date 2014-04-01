@@ -17,6 +17,7 @@
 @implementation AwfulKeyboardBar
 {
     NSMutableArray *_buttons;
+    AwfulKeyboardButton *_autocloseButton;
 }
 
 - (void)setStrings:(NSArray *)strings
@@ -29,8 +30,38 @@
         [button addTarget:self action:@selector(keyPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         [_buttons addObject:button];
+        if ([string isEqualToString:@"[/..]"]) {
+            _autocloseButton = button;
+            [button setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
+            [self updateAutocloseButtonState];
+        }
     }
     [self setNeedsLayout];
+}
+
+- (void)setTextView:(UITextView *)textView
+{
+    _textView = textView;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textViewTextDidChange:)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:_textView];
+}
+
+- (void)updateAutocloseButtonState
+{
+    NSString *textContent = [self.textView.text substringToIndex:self.textView.selectedRange.location];
+    _autocloseButton.enabled = ([self getCurrentlyOpenTag:textContent] != nil);
+}
+
+- (void)textViewTextDidChange:(NSNotification *)notification
+{
+    [self updateAutocloseButtonState];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /*
@@ -79,13 +110,15 @@
  * "[b][/b]"             -> nil
  * "[url=foo]"           -> "url"
  * "[url=foo][b][i][/b]" -> "url"
+ * "["                   -> "nil"
+ * "[foo][/foo"          -> "foo"
  */
 
 - (NSString *)getCurrentlyOpenTag:(NSString *)content
 {
     // Find start of preceding tag (opener or closer).
     NSUInteger startingBracket = [content rangeOfString:@"[" options:NSBackwardsSearch].location;
-    if (startingBracket == NSNotFound) {
+    if (startingBracket == NSNotFound || startingBracket >= content.length - 1) {
         return nil;
     }
     
