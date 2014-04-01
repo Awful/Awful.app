@@ -11,48 +11,72 @@
 
 @interface AwfulAuthorScraper ()
 
-@property (strong, nonatomic) AwfulUser *author;
+@property (copy, nonatomic) NSString *userID;
+
+@property (copy, nonatomic) NSString *username;
+
+@property (copy, nonatomic) NSDictionary *otherAttributes;
 
 @end
 
 @implementation AwfulAuthorScraper
 
+@synthesize author = _author;
+
 - (void)scrape
 {
-    NSString *userID;
-    
     // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
     HTMLElement *profileLink = [self.node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
     if (profileLink) {
         NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
-        userID = URL.queryDictionary[@"userid"];
+        self.userID = URL.queryDictionary[@"userid"];
     } else {
         HTMLElement *userIDInput = [self.node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
-        userID = userIDInput[@"value"];
+        self.userID = userIDInput[@"value"];
     }
     HTMLElement *authorTerm = [self.node awful_firstNodeMatchingCachedSelector:@"dt.author"];
-    NSString *username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
+    self.username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
     
-    if (userID.length == 0 && username.length == 0) {
+    if (self.userID.length == 0 && self.username.length == 0) {
         NSString *message = @"Could not find author's user ID or username";
         self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
         return;
     }
     
-    self.author = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
+    NSMutableDictionary *otherAttributes = [NSMutableDictionary new];
     if (authorTerm[@"class"]) {
-        self.author.administrator = [authorTerm hasClass:@"role-admin"];
-        self.author.moderator = [authorTerm hasClass:@"role-mod"];
-        self.author.idiotKing = [authorTerm hasClass:@"role-ik"];
+        otherAttributes[@"administrator"] = @([authorTerm hasClass:@"role-admin"]);
+        otherAttributes[@"moderator"] = @([authorTerm hasClass:@"role-mod"]);
+        otherAttributes[@"idiotKing"] = @([authorTerm hasClass:@"role-ik"]);
     }
     HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
     NSDate *regdate = [RegdateParser() dateFromString:regdateDefinition.innerHTML];
     if (regdate) {
-        self.author.regdate = regdate;
+        otherAttributes[@"regdate"] = regdate;
     }
     HTMLElement *customTitleDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
     if (customTitleDefinition) {
-        self.author.customTitleHTML = customTitleDefinition.innerHTML;
+        otherAttributes[@"customTitleHTML"] = customTitleDefinition.innerHTML;
+    }
+    self.otherAttributes = otherAttributes;
+}
+
+- (AwfulUser *)author
+{
+    if (_author) return _author;
+    self.author = [AwfulUser firstOrNewUserWithUserID:self.userID username:self.username inManagedObjectContext:self.managedObjectContext];
+    return _author;
+}
+
+- (void)setAuthor:(AwfulUser *)author
+{
+    _author = author;
+    [author setValuesForKeysWithDictionary:_otherAttributes];
+    if (self.userID.length > 0 && author.userID.length == 0) {
+        author.userID = self.userID;
+    }
+    if (self.username.length > 0) {
+        author.username = self.username;
     }
 }
 

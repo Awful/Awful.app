@@ -29,11 +29,11 @@
 }
 
 #define NSPredicateWithFormatAndArguments(format) ({ \
-    va_list __args; \
-    va_start(__args, (format)); \
-    NSPredicate *__predicate = [NSPredicate predicateWithFormat:(format) arguments:__args]; \
-    va_end(__args); \
-    __predicate; \
+    va_list args; \
+    va_start(args, (format)); \
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:(format) arguments:args]; \
+    va_end(args); \
+    predicate; \
 })
 
 + (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext

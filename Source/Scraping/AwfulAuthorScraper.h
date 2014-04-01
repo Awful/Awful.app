@@ -9,6 +9,15 @@
  */
 @interface AwfulAuthorScraper : AwfulScraper
 
-@property (readonly, strong, nonatomic) AwfulUser *author;
+@property (readonly, copy, nonatomic) NSString *userID;
+
+@property (readonly, copy, nonatomic) NSString *username;
+
+@property (readonly, copy, nonatomic) NSDictionary *otherAttributes;
+
+/**
+ * Gets a lazily-fetched or -created AwfulUser for the scraped userID and/or username. Sets
+ */
+@property (strong, nonatomic) AwfulUser *author;
 
 @end
