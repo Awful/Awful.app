@@ -111,15 +111,20 @@
  * "[url=foo]"           -> "url"
  * "[url=foo][b][i][/b]" -> "url"
  * "["                   -> "nil"
- * "[foo][/foo"          -> "foo"
+ * "[foo][/x"            -> "foo"
  */
 
 - (NSString *)getCurrentlyOpenTag:(NSString *)content
 {
     // Find start of preceding tag (opener or closer).
     NSUInteger startingBracket = [content rangeOfString:@"[" options:NSBackwardsSearch].location;
-    if (startingBracket == NSNotFound || startingBracket >= content.length - 1) {
+    if (startingBracket == NSNotFound) {
         return nil;
+    }
+    
+    if (startingBracket >= content.length - 1) {
+        // Incomplete tag, keep going.
+        return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
     }
     
     // If it's a closer, find its opener.
@@ -158,8 +163,8 @@
                                                 options:0
                                                   range:NSMakeRange(startingBracket + 1, content.length - startingBracket - 1)];
     if (tagRange.location == NSNotFound) {
-        // Malformed, fuck 'em.
-        return nil;
+        // Malformed, keep looking.
+        return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
     }
     
     tagRange.length--; // Omit the ] or =;
