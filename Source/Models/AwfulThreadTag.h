@@ -50,6 +50,11 @@
 @property (copy, nonatomic) NSSet *threads;
 
 /**
+ * Sets the thread tag's imageName.
+ */
+- (void)setURL:(NSURL *)URL;
+
+/**
  * Returns an AwfulThreadTag object with the given ID and image name, updating an existing one or inserting a new one as necessary.
  */
 + (instancetype)firstOrNewThreadTagWithThreadTagID:(NSString *)threadTagID

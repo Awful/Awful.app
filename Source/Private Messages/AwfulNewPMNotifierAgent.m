@@ -41,23 +41,21 @@ static NSString * const kLastMessageCheckDate = @"com.awfulapp.Awful.LastMessage
 - (void)checkForNewMessages
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulForumsClient client] listPrivateMessageInboxAndThen:^(NSError *error, NSArray *messages) {
+    [[AwfulForumsClient client] countUnreadPrivateMessagesInInboxAndThen:^(NSError *error, NSInteger unreadMessageCount) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            NSLog(@"error checking for new private messages: %@", error);
+            NSLog(@"%s error checking for new private messages: %@", __PRETTY_FUNCTION__, error);
             return;
         }
         self.lastCheckDate = [NSDate date];
-        NSArray *unseen = [messages filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"seen = NO"]];
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulNewPrivateMessagesNotification
                                                             object:self
-                                                          userInfo:@{ AwfulNewPrivateMessageCountKey: @([unseen count]) }];
+                                                          userInfo:@{ AwfulNewPrivateMessageCountKey: @(unreadMessageCount) }];
     }];
 }
 
-
 @end
 
-
 NSString * const AwfulNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
+
 NSString * const AwfulNewPrivateMessageCountKey = @"AwfulNewPrivateMessageCountKey";

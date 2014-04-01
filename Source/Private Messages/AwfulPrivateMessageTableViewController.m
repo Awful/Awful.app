@@ -21,7 +21,10 @@
 @interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
+
 @property (strong, nonatomic) UIBarButtonItem *backItem;
+
+@property (strong, nonatomic) NSDate *lastRefreshDate;
 
 @end
 
@@ -31,9 +34,16 @@
     AwfulNewPrivateMessageViewController *_composeViewController;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super init])) return nil;
+    self = [super init];
+    if (!self) return nil;
+    
     _managedObjectContext = managedObjectContext;
     self.title = @"Private Messages";
     self.tabBarItem.accessibilityLabel = @"Private messages";
@@ -41,11 +51,8 @@
     self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
-    [noteCenter addObserver:self
-                   selector:@selector(didGetNewPMCount:)
-                       name:AwfulNewPrivateMessagesNotification
-                     object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:) name:AwfulNewPrivateMessagesNotification object:nil];
+    
     return self;
 }
 
@@ -71,8 +78,7 @@
 - (void)didGetNewPMCount:(NSNotification *)notification
 {
     NSNumber *count = notification.userInfo[AwfulNewPrivateMessageCountKey];
-    self.tabBarItem.badgeValue = [count integerValue] ? [count stringValue] : nil;
-    [self.refreshControl endRefreshing];
+    self.tabBarItem.badgeValue = count.integerValue ? count.stringValue : nil;
 }
 
 - (void)loadView
@@ -127,17 +133,37 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 {
     if (![AwfulSettings settings].canSendPrivateMessages) return NO;
     if (_dataSource.fetchedResultsController.fetchedObjects.count == 0) return YES;
-    NSDate *lastCheckDate = [AwfulNewPMNotifierAgent agent].lastCheckDate;
+    NSDate *lastCheckDate = self.lastRefreshDate;
     if (!lastCheckDate) return YES;
-    const NSTimeInterval checkingThreshhold = 10 * 60;
-    return (-[lastCheckDate timeIntervalSinceNow] > checkingThreshhold);
+    return -[lastCheckDate timeIntervalSinceNow] > 10 * 60;
 }
 
 - (void)refresh
 {
     [self.refreshControl beginRefreshing];
-    [AwfulNewPMNotifierAgent.agent checkForNewMessages];
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulForumsClient client] listPrivateMessageInboxAndThen:^(NSError *error, NSArray *messages) {
+        __typeof__(self) self = weakSelf;
+        [self.refreshControl endRefreshing];
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+        } else {
+            self.lastRefreshDate = [NSDate date];
+        }
+    }];
 }
+
+- (NSDate *)lastRefreshDate
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:LastRefreshDateKey];
+}
+
+- (void)setLastRefreshDate:(NSDate *)lastRefreshDate
+{
+    [[NSUserDefaults standardUserDefaults] setObject:lastRefreshDate forKey:LastRefreshDateKey];
+}
+
+static NSString * const LastRefreshDateKey = @"LastPrivateMessageInboxRefreshDate";
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {

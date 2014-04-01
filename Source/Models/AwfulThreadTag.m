@@ -15,6 +15,11 @@
 @dynamic secondaryThreads;
 @dynamic threads;
 
+- (void)setURL:(NSURL *)URL
+{
+    self.imageName = URL.lastPathComponent.stringByDeletingPathExtension;
+}
+
 + (instancetype)firstOrNewThreadTagWithThreadTagID:(NSString *)threadTagID
                                          imageName:(NSString *)imageName
                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext

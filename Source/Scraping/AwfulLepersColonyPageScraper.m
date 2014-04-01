@@ -19,32 +19,141 @@
 - (void)scrape
 {
     NSMutableArray *bans = [NSMutableArray new];
-    
-    NSEnumerator *rows = [self.node awful_nodesMatchingCachedSelector:@"table.standard tr"].objectEnumerator;
+    NSMutableArray *rows = [[self.node awful_nodesMatchingCachedSelector:@"table.standard tr"] mutableCopy];
     
     // First row just has headers.
-    [rows nextObject];
+    [rows removeObjectAtIndex:0];
     
+    // Find all the post IDs and user IDs/names so we can fetch the ones we know about. Then we'll come back around and update/insert as needed.
+    NSMutableArray *infoDictionaries = [NSMutableArray new];
+    NSMutableArray *postIDs = [NSMutableArray new];
+    NSMutableArray *userIDs = [NSMutableArray new];
+    NSMutableArray *usernames = [NSMutableArray new];
     for (HTMLElement *row in rows) {
-        AwfulBan *ban = [AwfulBan new];
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
+        
         {{
-            HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
             HTMLElement *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
-            if (postID) {
-                ban.post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
-            }
-            
-            NSString *typeHTML = typeCell.innerHTML;
-            if ([typeHTML rangeOfString:@"PROBATION"].location != NSNotFound) {
-                ban.punishment = AwfulPunishmentProbation;
-            } else if ([typeHTML rangeOfString:@"PERMABAN"].location != NSNotFound) {
-                ban.punishment = AwfulPunishmentPermaban;
-            } else if ([typeHTML rangeOfString:@"BAN"].location != NSNotFound) {
-                ban.punishment = AwfulPunishmentBan;
+            if (postID.length > 0) {
+                info[@"postID"] = postID;
+                [postIDs addObject:postID];
             }
         }}
+        
+        {{
+            NSString *typeText = typeCell.textContent;
+            if ([typeText rangeOfString:@"PROBATION"].location != NSNotFound) {
+                info[@"punishment"] = @(AwfulPunishmentProbation);
+            } else if ([typeText rangeOfString:@"PERMABAN"].location != NSNotFound) {
+                info[@"punishment"] = @(AwfulPunishmentPermaban);
+            } else if ([typeText rangeOfString:@"BAN"].location != NSNotFound) {
+                info[@"punishment"] = @(AwfulPunishmentBan);
+            }
+        }}
+        
+        {{
+            HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
+            NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
+            NSString *userID = URL.queryDictionary[@"userid"];
+            if (userID.length > 0) {
+                [userIDs addObject:userID];
+                info[@"userID"] = userID;
+            }
+            NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
+            if (username.length > 0) {
+                [usernames addObject:username];
+                info[@"username"] = username;
+            }
+        }}
+        
+        {{
+            HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
+            NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
+            NSString *userID = URL.queryDictionary[@"userid"];
+            if (userID.length > 0) {
+                [userIDs addObject:userID];
+                info[@"requesterUserID"] = userID;
+            }
+            NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
+            if (username.length > 0) {
+                [usernames addObject:username];
+                info[@"requesterUsername"] = username;
+            }
+        }}
+        
+        {{
+            HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
+            NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
+            NSString *userID = URL.queryDictionary[@"userid"];
+            if (userID.length > 0) {
+                [userIDs addObject:userID];
+                info[@"approverUserID"] = userID;
+            }
+            NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];
+            if (username.length > 0) {
+                [usernames addObject:username];
+                info[@"approverUsername"] = username;
+            }
+        }}
+        
+        [infoDictionaries addObject:info];
+    }
+    NSMutableDictionary *posts = [[AwfulPost dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                             keyedByAttributeNamed:@"postID"
+                                                           matchingPredicateFormat:@"postID IN %@", postIDs] mutableCopy];
+    NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                 keyedByAttributeNamed:@"userID"
+                                                               matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
+    NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                   keyedByAttributeNamed:@"username"
+                                                                 matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    
+    [rows enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {
+        AwfulBan *ban = [AwfulBan new];
+        NSDictionary *info = infoDictionaries[i];
+        
+        {{
+            NSString *postID = info[@"postID"];
+            if (postID) {
+                AwfulPost *post = posts[postID];
+                if (!post) {
+                    post = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
+                    post.postID = postID;
+                    posts[postID] = post;
+                }
+                ban.post = post;
+            }
+        }}
+        
+        {{
+            NSString *userID = info[@"userID"];
+            NSString *username = info[@"username"];
+            if (userID || username) {
+                AwfulUser *user;
+                if (userID) {
+                    user = usersByID[userID];
+                } else {
+                    user = usersByName[username];
+                }
+                if (!user) {
+                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                }
+                if (userID) {
+                    user.userID = userID;
+                    usersByID[userID] = user;
+                }
+                if (username) {
+                    user.username = username;
+                    usersByName[username] = user;
+                }
+                ban.user = user;
+            }
+        }}
+        
+        ban.punishment = [info[@"punishment"] integerValue];
         
         {{
             HTMLElement *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
@@ -55,45 +164,62 @@
         }}
         
         {{
-            HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
-            NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
-            NSString *userID = URL.queryDictionary[@"userid"];
-            NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
-            if (user) {
-                ban.user = user;
-            }
-        }}
-        
-        {{
             HTMLElement *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
-            ban.reasonHTML = reasonCell.innerHTML;
+            ban.reasonHTML = reasonCell.textContent;
         }}
         
         {{
-            HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
-            NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
-            NSString *userID = URL.queryDictionary[@"userid"];
-            NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *requester = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
-            if (requester) {
-                ban.requester = requester;
+            NSString *userID = info[@"requesterUserID"];
+            NSString *username = info[@"requesterUsername"];
+            if (userID || username) {
+                AwfulUser *user;
+                if (userID) {
+                    user = usersByID[userID];
+                } else {
+                    user = usersByName[username];
+                }
+                if (!user) {
+                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                }
+                if (userID) {
+                    user.userID = userID;
+                    usersByID[userID] = user;
+                }
+                if (username) {
+                    user.username = username;
+                    usersByName[username] = user;
+                }
+                ban.requester = user;
             }
         }}
         
         {{
-            HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
-            NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
-            NSString *userID = URL.queryDictionary[@"userid"];
-            NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];
-            AwfulUser *approver = [AwfulUser firstOrNewUserWithUserID:userID username:username inManagedObjectContext:self.managedObjectContext];
-            if (approver) {
-                ban.approver = approver;
+            NSString *userID = info[@"approverUserID"];
+            NSString *username = info[@"approverUsername"];
+            if (userID || username) {
+                AwfulUser *user;
+                if (userID) {
+                    user = usersByID[userID];
+                } else {
+                    user = usersByName[username];
+                }
+                if (!user) {
+                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                }
+                if (userID) {
+                    user.userID = userID;
+                    usersByID[userID] = user;
+                }
+                if (username) {
+                    user.username = username;
+                    usersByName[username] = user;
+                }
+                ban.approver = user;
             }
         }}
         
         [bans addObject:ban];
-    }
+    }];
     self.bans = bans;
 }
 

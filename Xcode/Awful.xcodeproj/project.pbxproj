@@ -155,6 +155,7 @@
 		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
+		1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */; };
 		1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */; };
 		1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AB3180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m */; };
 		1C9FDACF16E4809300C665B5 /* AwfulPostIconPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */; };
@@ -488,6 +489,8 @@
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPRequestOperationManager.h; sourceTree = "<group>"; };
 		1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPRequestOperationManager.m; sourceTree = "<group>"; };
+		1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnreadPrivateMessageCountScraper.h; sourceTree = "<group>"; };
+		1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnreadPrivateMessageCountScraper.m; sourceTree = "<group>"; };
 		1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPopoverBackgroundView.h; sourceTree = "<group>"; };
@@ -806,10 +809,10 @@
 				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
 				1CE694A9182FF0E500B24928 /* AwfulLepersColonyPageScraper.h */,
 				1CE694AA182FF0E500B24928 /* AwfulLepersColonyPageScraper.m */,
-				1C6D2EB0182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.h */,
-				1C6D2EB1182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.m */,
 				1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */,
 				1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */,
+				1C6D2EB0182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.h */,
+				1C6D2EB1182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.m */,
 				1C6D2EA6182E81B000785766 /* AwfulPrivateMessageScraper.h */,
 				1C6D2EA7182E81B000785766 /* AwfulPrivateMessageScraper.m */,
 				1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */,
@@ -820,6 +823,8 @@
 				1C1ADC3418E625BF00E865BF /* AwfulScraper.m */,
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
+				1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */,
+				1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */,
 			);
 			path = Scraping;
 			sourceTree = "<group>";
@@ -1844,6 +1849,7 @@
 				1C23A0A2163E6C40006C7F39 /* AwfulPostsView.m in Sources */,
 				1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
+				1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */,
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
 				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,

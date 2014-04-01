@@ -19,6 +19,7 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulThreadTag.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenience.h"
 
@@ -822,6 +823,29 @@
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
+    }];
+}
+
+- (NSOperation *)countUnreadPrivateMessagesInInboxAndThen:(void (^)(NSError *error, NSInteger unreadMessageCount))callback
+{
+    // Not readlly doing anything with the background managed object context, just using its queue.
+    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+    
+    return [_HTTPManager GET:@"private.php"
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulUnreadPrivateMessageCountScraper *scraper = [AwfulUnreadPrivateMessageCountScraper scrapeNode:document
+                                                                                      intoManagedObjectContext:managedObjectContext];
+            if (callback) {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    callback(scraper.error, scraper.unreadPrivateMessageCount);
+                }];
+            }
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, 0);
     }];
 }
 

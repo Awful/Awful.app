@@ -176,6 +176,13 @@
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 /**
+ * @param callback A block to call after counting the unread messages in the logged-in user's PM inbox, which takes as parameters: an NSError object on failure, or nil on success; and the number of unread messages on success, or 0 on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)countUnreadPrivateMessagesInInboxAndThen:(void (^)(NSError *error, NSInteger unreadMessageCount))callback;
+
+/**
  * @param callback A block to call after listing the logged-in user's PM inbox, which takes as parameters: an NSError object on failure, or nil on success; and an array of AwfulPrivateMessage objects on success, or nil on failure.
  *
  * @return An enqueued network operation.

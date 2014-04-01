@@ -21,13 +21,12 @@
     AwfulForumHierarchyScraper *scraper = [self scrapeFixtureNamed:@"forumdisplay"];
     NSArray *categories = scraper.categories;
     NSArray *categoryNames = [[categories valueForKey:@"name"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    XCTAssertEqualObjects(categoryNames, (@[
-                                            @"Archives",
-                                            @"Discussion",
-                                            @"Main",
-                                            @"The Community",
-                                            @"The Finer Arts",
-                                            ]));
+    XCTAssertEqualObjects(categoryNames, (@[ @"Archives",
+                                             @"Discussion",
+                                             @"Main",
+                                             @"The Community",
+                                             @"The Finer Arts",
+                                             ]));
     NSArray *allCategories = [AwfulCategory fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(categories.count, allCategories.count);
     NSArray *allForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext];
