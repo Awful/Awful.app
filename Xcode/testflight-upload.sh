@@ -81,7 +81,6 @@ STATUS_CODE=$(curl "http://testflightapp.com/api/builds.json" \
   -F api_token="$TESTFLIGHT_API_TOKEN" \
   -F team_token="$TESTFLIGHT_TEAM_TOKEN" \
   -F notify=True \
-  -F distribution_lists=SA \
   -F "notes=@$NOTES_FILE" \
   2>> "$LOG" )
 if [ $? -ne 0 ] || [ "$STATUS_CODE" -ge 300 ]; then
@@ -104,7 +103,7 @@ if [ -z "$VERSION" ]; then
   open_log
   exit 1
 fi
-git tag -a -f -m "Awful $VERSION" "$VERSION" >> "$LOG" 2>&1
+git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1
 if [ $? -ne 0 ]; then
   error "Failed to tag release. Please see log for details."
   open_log

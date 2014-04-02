@@ -51,19 +51,23 @@ There are unit tests for the HTML parsing, to help us find problems when markup 
 Distribute
 ----------
 
-To build for [beta testing][TestFlight], change the scheme to "Awful Beta".
+To build for [beta testing][TestFlight], change the scheme to "Awful Beta". Select "iOS Device", then from the `Product` menu choose `Archive`. A post-archive step will guide you through uploading the build to TestFlight, including writing release notes and tagging the version. To use the post-archive step, create a file called `api_keys`, in the root folder of the repository, that looks something like this:
 
-To build for the App Store, change the scheme to "Awful App Store".
+```
+TESTFLIGHT_API_TOKEN abc123abc123abc123
+TESTFLIGHT_TEAM_TOKEN abc123abc123abc123
+```
 
-Either way, select "iOS Device", then in the `Product` menu, choose `Archive`.
+To build for the App Store, change the scheme to "Awful App Store". Select "iOS Device", then in the `Product` menu, choose `Archive`. A post-archive step will tag the git repository with the version specified in [Info.plist][].
 
-If you want to use [Crashlytics][] for reporting crashes, create a file called `api_keys`, in the root folder of the repository, that looks something like this:
+If you want to use [Crashlytics][] for reporting crashes, create a file called `api_keys`, in the root folder of the repository, that looks something like this (or just add this line after your TestFlight keys from earlier):
 
 ```
 CRASHLYTICS_API_KEY abc123abc123abc123
 ```
 
 [Crashlytics]: https://www.crashlytics.com/
+[Info.plist]: Xcode/Info.plist
 [TestFlight]: http://testflightapp.com/
 
 Contribute
