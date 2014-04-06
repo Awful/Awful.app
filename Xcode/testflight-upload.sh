@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PATH="$PATH":/usr/local/bin
+
 if [ -z "$SRCROOT" ] || [ -z "$ARCHIVE_PRODUCTS_PATH" ]; then
   echo "Please run from an Xcode archive post-action."; exit 1
 fi
@@ -29,6 +31,11 @@ LOG="$WORKING_DIR/testflight-upload.log"
 function log {
   echo "$1" >> "$LOG"
 }
+function open_log {
+  open -a Console "$LOG"
+}
+
+set >> "$LOG"
 
 log "Asking for release notes"
 NEAREST_TAG=$(cd "$SRCROOT" ; git describe --abbrev=0)
@@ -42,18 +49,16 @@ cat <<END > "$NOTES_FILE"
 #
 END
 (cd "$SRCROOT" ; git shortlog $NEAREST_TAG.. | sed 's/^/# /' >> "$NOTES_FILE")
-mate -w --name "$SCHEME_NAME Release Notes" "$NOTES_FILE"
+mate -w --name "$SCHEME_NAME Release Notes" "$NOTES_FILE" >> "$LOG" 2>&1
 if [ $? -ne 0 ]; then
-  error "Missing release notes. Upload cancelled."; exit 1
+  error "Missing release notes. Upload cancelled. Please see log for details."
+  open_log
+  exit 1
 fi
 # Not sure how to combine these two sed passes.
 sed -i '' /^#/d "$NOTES_FILE"
 sed -i '' -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "$NOTES_FILE"
 log "Release notes saved to $NOTES_FILE"
-
-function open_log {
-  open -a Console "$LOG"
-}
 
 log "Packaging app into an .ipa"
 APP="$ARCHIVE_PRODUCTS_PATH/$INSTALL_PATH/$WRAPPER_NAME"
@@ -103,7 +108,7 @@ if [ -z "$VERSION" ]; then
   open_log
   exit 1
 fi
-git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1
+( cd "$SRCROOT"; git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1 )
 if [ $? -ne 0 ]; then
   error "Failed to tag release. Please see log for details."
   open_log
