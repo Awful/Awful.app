@@ -1643,7 +1643,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "API_KEYS=\"$SRCROOT/../api_keys\"\nif [ ! -e \"$API_KEYS\" ]; then exit 0; fi\n\nwhile IFS=\" \" read name key; do\n    declare $name=\"$key\"\ndone < \"$SRCROOT/../api_keys\" 2>/dev/nul\n\nif [ -z \"$CRASHLYTICS_API_KEY\" ]; then\n    KEYS_FILE=$(cd \"$SRCROOT/../api_keys\"; pwd)\n    echo \"Couldn't find Crashlytics API key. Add it to $KEYS_FILE, or see README.md for details.\"\n    exit 0\nfi\n\ncase \"$CONFIGURATION\" in\n    \"App Store\" | \"Beta\") ../Vendor/Crashlytics.framework/run \"$CRASHLYTICS_API_KEY\" ;;\n    *) echo \"Skipping Crashlytics integration for build configuration $CONFIGURATION.\" ;;\nesac\n";
+			shellScript = "API_KEYS=\"$SRCROOT/../api_keys\"\nif [ ! -e \"$API_KEYS\" ]; then exit 0; fi\n\nwhile IFS=\" \" read name key; do\n    declare $name=\"$key\"\ndone < \"$SRCROOT/../api_keys\" 2>/dev/null\n\nif [ -z \"$CRASHLYTICS_API_KEY\" ]; then\n    KEYS_FILE=$(cd \"$SRCROOT/../api_keys\"; pwd)\n    echo \"Couldn't find Crashlytics API key. Add it to $KEYS_FILE, or see README.md for details.\"\n    exit 0\nfi\n\ncase \"$CONFIGURATION\" in\n    \"App Store\" | \"Beta\") ../Vendor/Crashlytics.framework/run \"$CRASHLYTICS_API_KEY\" ;;\n    *) echo \"Skipping Crashlytics integration for build configuration $CONFIGURATION.\" ;;\nesac\n";
 		};
 		1C41B8A316CD50E500718F79 /* Configure Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1659,7 +1659,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "API_KEYS=\"$SRCROOT/../api_keys\"\nif [ -e \"$API_KEYS\" ]; then\n    while IFS=\" \" read name key; do\n        declare $name=\"$key\"\n    done < \"$API_KEYS\"\nfi\n\nHEADER=\"$SRCROOT/../Source/Main/AwfulCrashlytics.h\"\nif [ -n \"$CRASHLYTICS_API_KEY\" ]; then\n    echo \"#define CRASHLYTICS_API_KEY @\\\"$CRASHLYTICS_API_KEY\\\"\" > \"$HEADER\"\nelse\n    : > \"$HEADER\"\nfi\n";
+			shellScript = "API_KEYS=\"$SRCROOT/../api_keys\"\nif [ -e \"$API_KEYS\" ]; then\n    while IFS=\" \" read name key; do\n        declare $name=\"$key\"\n    done < \"$SRCROOT/../api_keys\" 2>/dev/null\nfi\n\nHEADER=\"$SRCROOT/../Source/Main/AwfulCrashlytics.h\"\nif [ -n \"$CRASHLYTICS_API_KEY\" ]; then\n    echo \"#define CRASHLYTICS_API_KEY @\\\"$CRASHLYTICS_API_KEY\\\"\" > \"$HEADER\"\nelse\n    : > \"$HEADER\"\nfi\n";
 		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
