@@ -64,7 +64,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [longPress addTarget:self action:@selector(showThreadActions:)];
     [cell addGestureRecognizer:longPress];
     
-	if (AwfulSettings.settings.showThreadTags) {
+	if ([AwfulSettings settings].showThreadTags) {
 		
 		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use

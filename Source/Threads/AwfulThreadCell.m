@@ -18,7 +18,8 @@
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (!(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) return nil;
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    if (!self) return nil;
     
     _stickyImageView = [UIImageView new];
     _stickyImageView.translatesAutoresizingMaskIntoConstraints = NO;

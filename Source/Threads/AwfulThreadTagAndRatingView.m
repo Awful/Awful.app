@@ -43,7 +43,7 @@
                                      toItem:_tagImageView
                                   attribute:NSLayoutAttributeRight
                                  multiplier:1
-                                   constant:0]];
+                                   constant:1]];
     [self addConstraint:
      [NSLayoutConstraint constraintWithItem:_secondaryTagImageView
                                   attribute:NSLayoutAttributeBottom
@@ -51,7 +51,7 @@
                                      toItem:_tagImageView
                                   attribute:NSLayoutAttributeBottom
                                  multiplier:1
-                                   constant:0]];
+                                   constant:1]];
     return self;
 }
 
