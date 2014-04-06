@@ -78,6 +78,7 @@ osascript -e "tell application \"Xcode\"" \
 log "Uploading to TestFlight"
 RESPONSE_FILE="$WORKING_DIR/response.txt"
 log "Writing response to $RESPONSE_FILE"
+# By default, nobody has permission to install the build and nobody gets notified. The otherwise pointless distribution_lists=Everyone gives the "Everyone" list access and notifies them. Be sure to add testers to the "Everyone" list or they won't get any builds uploaded by this script.
 STATUS_CODE=$(curl "http://testflightapp.com/api/builds.json" \
   -o "$RESPONSE_FILE" \
   -s \
@@ -85,6 +86,7 @@ STATUS_CODE=$(curl "http://testflightapp.com/api/builds.json" \
   -F "file=@$IPA" \
   -F api_token="$TESTFLIGHT_API_TOKEN" \
   -F team_token="$TESTFLIGHT_TEAM_TOKEN" \
+  -F distribution_lists=Everyone \
   -F notify=True \
   -F "notes=@$NOTES_FILE" \
   2>> "$LOG" )
