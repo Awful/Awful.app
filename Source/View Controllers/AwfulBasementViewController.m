@@ -312,6 +312,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
+    [self.view layoutIfNeeded];
 }
 
 - (void)tapMainView:(UITapGestureRecognizer *)tap
