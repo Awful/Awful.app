@@ -80,6 +80,7 @@
     NSMutableArray *userIDs = [NSMutableArray new];
     NSMutableArray *usernames = [NSMutableArray new];
     NSMutableArray *threadTagIDs = [NSMutableArray new];
+    NSMutableArray *threadTagImageNames = [NSMutableArray new];
     NSMutableArray *threadDictionaries = [NSMutableArray new];
     for (HTMLElement *row in threadLinks) {
         NSMutableDictionary *threadInfo = [NSMutableDictionary new];
@@ -121,8 +122,12 @@
             NSString *threadTagID = URL.fragment;
             if (threadTagID.length > 0) {
                 threadInfo[@"threadTagID"] = threadTagID;
-                threadInfo[@"threadTagURL"] = URL;
                 [threadTagIDs addObject:threadTagID];
+            }
+            NSString *imageName = URL.lastPathComponent.stringByDeletingPathExtension;
+            if (imageName.length > 0) {
+                threadInfo[@"threadTagImageName"] = imageName;
+                [threadTagImageNames addObject:imageName];
             }
         }
         
@@ -132,8 +137,12 @@
             NSString *threadTagID = URL.fragment;
             if (threadTagID.length > 0) {
                 threadInfo[@"secondaryThreadTagID"] = threadTagID;
-                threadInfo[@"secondaryThreadTagURL"] = URL;
                 [threadTagIDs addObject:threadTagID];
+            }
+            NSString *imageName = URL.lastPathComponent.stringByDeletingPathExtension;
+            if (imageName.length > 0) {
+                threadInfo[@"secondaryThreadTagImageName"] = imageName;
+                [threadTagImageNames addObject:imageName];
             }
         }
         
@@ -148,9 +157,12 @@
     NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                    keyedByAttributeNamed:@"username"
                                                                  matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
-    NSMutableDictionary *threadTags = [[AwfulThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                       keyedByAttributeNamed:@"threadTagID"
-                                                                     matchingPredicateFormat:@"threadTagID IN %@", threadTagIDs] mutableCopy];
+    NSMutableDictionary *tagsByID = [[AwfulThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                     keyedByAttributeNamed:@"threadTagID"
+                                                                   matchingPredicateFormat:@"threadTagID IN %@", threadTagIDs] mutableCopy];
+    NSMutableDictionary *tagsByImageName = [[AwfulThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                            keyedByAttributeNamed:@"imageName"
+                                                                          matchingPredicateFormat:@"imageName IN %@", threadTagImageNames] mutableCopy];
     
     NSMutableArray *threads = [NSMutableArray new];
     __block int32_t stickyIndex = -(int32_t)threadLinks.count;
@@ -218,33 +230,57 @@
         }
         
         NSString *threadTagID = threadInfo[@"threadTagID"];
-        if (threadTagID) {
-            AwfulThreadTag *threadTag = threadTags[threadTagID];
+        NSString *threadTagImageName = threadInfo[@"threadTagImageName"];
+        if (threadTagID || threadTagImageName) {
+            AwfulThreadTag *threadTag;
+            if (threadTagID) {
+                threadTag = tagsByID[threadTagID];
+            } else if (threadTagImageName) {
+                threadTag = tagsByImageName[threadTagImageName];
+            }
             if (!threadTag) {
                 threadTag = [AwfulThreadTag insertInManagedObjectContext:self.managedObjectContext];
-                threadTag.threadTagID = threadTagID;
-                threadTags[threadTagID] = threadTag;
+                if (threadTagID) {
+                    threadTag.threadTagID = threadTagID;
+                }
+                if (threadTagImageName) {
+                    threadTag.imageName = threadTagImageName;
+                }
             }
-            NSURL *URL = threadInfo[@"threadTagURL"];
-            if (URL) {
-                [threadTag setURL:URL];
+            if (threadTag.threadTagID.length > 0) {
+                tagsByID[threadTag.threadTagID] = threadTag;
+            }
+            if (threadTag.imageName.length > 0) {
+                tagsByImageName[threadTag.imageName] = threadTag;
             }
             thread.threadTag = threadTag;
         }
         
         NSString *secondaryThreadTagID = threadInfo[@"secondaryThreadTagID"];
-        if (secondaryThreadTagID) {
-            AwfulThreadTag *threadTag = threadTags[threadTagID];
-            if (!threadTag) {
-                threadTag = [AwfulThreadTag insertInManagedObjectContext:self.managedObjectContext];
-                threadTag.threadTagID = secondaryThreadTagID;
-                threadTags[secondaryThreadTagID] = threadTag;
+        NSString *secondaryThreadTagImageName = threadInfo[@"secondaryThreadTagImageName"];
+        if (secondaryThreadTagID || secondaryThreadTagImageName) {
+            AwfulThreadTag *secondaryThreadTag;
+            if (secondaryThreadTagID) {
+                secondaryThreadTag = tagsByID[secondaryThreadTagID];
+            } else if (threadTagImageName) {
+                secondaryThreadTag = tagsByImageName[secondaryThreadTagImageName];
             }
-            NSURL *URL = threadInfo[@"secondaryThreadTagURL"];
-            if (URL) {
-                [threadTag setURL:URL];
+            if (!secondaryThreadTag) {
+                secondaryThreadTag = [AwfulThreadTag insertInManagedObjectContext:self.managedObjectContext];
+                if (secondaryThreadTagID) {
+                    secondaryThreadTag.threadTagID = secondaryThreadTagID;
+                }
+                if (secondaryThreadTagImageName) {
+                    secondaryThreadTag.imageName = secondaryThreadTagImageName;
+                }
             }
-            thread.secondaryThreadTag = threadTag;
+            if (secondaryThreadTag.threadTagID.length > 0) {
+                tagsByID[secondaryThreadTag.threadTagID] = secondaryThreadTag;
+            }
+            if (secondaryThreadTag.imageName.length > 0) {
+                tagsByImageName[secondaryThreadTag.imageName] = secondaryThreadTag;
+            }
+            thread.secondaryThreadTag = secondaryThreadTag;
         }
         
         HTMLElement *repliesCell = [row awful_firstNodeMatchingCachedSelector:@"td.replies"];

@@ -16,6 +16,14 @@
     return [AwfulThreadListScraper class];
 }
 
+- (void)testAskTellThreadList
+{
+    AwfulThreadListScraper *scraper = [self scrapeFixtureNamed:@"showthread-asktell"];
+    AwfulThread *stupidQuestions = scraper.threads.firstObject;
+    AwfulThreadTag *askTag = stupidQuestions.secondaryThreadTag;
+    XCTAssertEqualObjects(askTag.imageName, @"ama");
+}
+
 - (void)testBookmarkedThreadList
 {
     AwfulThreadListScraper *scraper = [self scrapeFixtureNamed:@"bookmarkthreads"];;
@@ -29,19 +37,17 @@
     XCTAssertEqual(allForums.count, (NSUInteger)0);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     NSArray *allUsernames = [[allUsers valueForKey:@"username"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    XCTAssertEqualObjects(allUsernames, (@[
-                                           @"Choochacacko",
-                                           @"csammis",
-                                           @"Dreylad",
-                                           @"escape artist",
-                                           @"Ferg",
-                                           @"I am in",
-                                           @"pokeyman",
-                                           @"Ranma4703",
-                                           @"Salaminizer",
-                                           @"Scaevolus",
-                                           @"Sir Davey",
-                                           ]));
+    XCTAssertEqualObjects(allUsernames, (@[ @"Choochacacko",
+                                            @"csammis",
+                                            @"Dreylad",
+                                            @"escape artist",
+                                            @"Ferg",
+                                            @"I am in",
+                                            @"pokeyman",
+                                            @"Ranma4703",
+                                            @"Salaminizer",
+                                            @"Scaevolus",
+                                            @"Sir Davey" ]));
     
     AwfulThread *wireThread = [AwfulThread fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                         matchingPredicateFormat:@"title BEGINSWITH 'The Wire'"];
@@ -99,44 +105,42 @@
     XCTAssertEqualObjects(threadForums, [NSSet setWithObject:debateAndDiscussion]);
     NSArray *allUsers = [AwfulUser fetchAllInManagedObjectContext:self.managedObjectContext];
     NSArray *allUsernames = [[allUsers valueForKey:@"username"] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    XCTAssertEqualObjects(allUsernames, (@[
-                                           @"a bad enough dude",
-                                           @"Bedlamdan",
-                                           @"BiggerBoat",
-                                           @"blackguy32",
-                                           @"CatCannons",
-                                           @"Chamale",
-                                           @"coolskillrex remix",
-                                           @"Dreylad",
-                                           @"evilweasel",
-                                           @"Fire",
-                                           @"Fluo",
-                                           @"Fried Chicken",
-                                           @"GAS CURES KIKES",
-                                           @"hambeet",
-                                           @"Helsing",
-                                           @"Joementum",
-                                           @"Landsknecht",
-                                           @"Lascivious Sloth",
-                                           @"lonelywurm",
-                                           @"MiracleMouse",
-                                           @"Pesmerga",
-                                           @"Petey",
-                                           @"Pobama",
-                                           @"Salaminizer",
-                                           @"showbiz_liz",
-                                           @"Sir Kodiak",
-                                           @"Solkanar512",
-                                           @"Stefu",
-                                           @"The Selling Wizard",
-                                           @"TheOtherContraGuy",
-                                           @"tonelok",
-                                           @"UltimoDragonQuest",
-                                           @"Vilerat",
-                                           @"WYA",
-                                           @"XyloJW",
-                                           @"Zikan",
-                                           ]));
+    XCTAssertEqualObjects(allUsernames, (@[ @"a bad enough dude",
+                                            @"Bedlamdan",
+                                            @"BiggerBoat",
+                                            @"blackguy32",
+                                            @"CatCannons",
+                                            @"Chamale",
+                                            @"coolskillrex remix",
+                                            @"Dreylad",
+                                            @"evilweasel",
+                                            @"Fire",
+                                            @"Fluo",
+                                            @"Fried Chicken",
+                                            @"GAS CURES KIKES",
+                                            @"hambeet",
+                                            @"Helsing",
+                                            @"Joementum",
+                                            @"Landsknecht",
+                                            @"Lascivious Sloth",
+                                            @"lonelywurm",
+                                            @"MiracleMouse",
+                                            @"Pesmerga",
+                                            @"Petey",
+                                            @"Pobama",
+                                            @"Salaminizer",
+                                            @"showbiz_liz",
+                                            @"Sir Kodiak",
+                                            @"Solkanar512",
+                                            @"Stefu",
+                                            @"The Selling Wizard",
+                                            @"TheOtherContraGuy",
+                                            @"tonelok",
+                                            @"UltimoDragonQuest",
+                                            @"Vilerat",
+                                            @"WYA",
+                                            @"XyloJW",
+                                            @"Zikan" ]));
     NSOrderedSet *tags = debateAndDiscussion.threadTags;
     XCTAssertEqual(tags.count, 106U);
     AwfulThreadTag *firstTag = tags.firstObject;
