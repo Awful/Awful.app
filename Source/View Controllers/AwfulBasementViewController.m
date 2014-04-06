@@ -231,8 +231,11 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 - (void)setState:(AwfulBasementSidebarState)state animated:(BOOL)animated
 {
     if (_state == state) return;
+    AwfulBasementSidebarState oldState = _state;
     _state = state;
     if (![self isViewLoaded]) return;
+    
+    BOOL sidebarAlreadyAdded = self.sidebarViewController.parentViewController == self;
     
     if (state == AwfulBasementSidebarStateHidden) {
         if (self.revealSidebarConstraint) {
@@ -290,8 +293,22 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
         }
     }
     
+    BOOL appearing = sidebarAlreadyAdded && state != AwfulBasementSidebarStateHidden && oldState == AwfulBasementSidebarStateHidden;
+    BOOL disappearing = sidebarAlreadyAdded && state == AwfulBasementSidebarStateHidden && oldState != AwfulBasementSidebarStateHidden;
+    
+    if (appearing) {
+        [self.sidebarViewController viewWillAppear:animated];
+    } else if (disappearing) {
+        [self.sidebarViewController viewWillDisappear:animated];
+    }
     [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
         [self.view layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        if (appearing) {
+            [self.sidebarViewController viewDidAppear:animated];
+        } else if (disappearing) {
+            [self.sidebarViewController viewDidDisappear:animated];
+        }
     }];
 }
 
