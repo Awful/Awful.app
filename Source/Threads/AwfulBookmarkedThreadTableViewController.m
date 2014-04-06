@@ -6,6 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
@@ -79,30 +80,17 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([self shouldRefreshOnAppear]) {
+    [self refreshIfNecessary];
+}
+
+- (void)refreshIfNecessary
+{
+    if (![AwfulForumsClient client].reachable) return;
+    
+    if ([self.tableView numberOfRowsInSection:0] == 0 || [[AwfulRefreshMinder minder] shouldRefreshBookmarks]) {
         [self refresh];
     }
 }
-
-- (BOOL)shouldRefreshOnAppear
-{
-    if (![AwfulForumsClient client].reachable) return NO;
-    if ([self.tableView numberOfRowsInSection:0] == 0) return YES;
-    if (!self.lastRefreshDate) return YES;
-    return [[NSDate date] timeIntervalSinceDate:self.lastRefreshDate] > 60 * 10;
-}
-
-- (NSDate *)lastRefreshDate
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kLastBookmarksRefreshDate];
-}
-
-- (void)setLastRefreshDate:(NSDate *)date
-{
-    [[NSUserDefaults standardUserDefaults] setObject:date forKey:kLastBookmarksRefreshDate];
-}
-
-static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBookmarksRefreshDate";
 
 - (void)refresh
 {
@@ -118,7 +106,7 @@ static NSString * const kLastBookmarksRefreshDate = @"com.awfulapp.Awful.LastBoo
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            [self setLastRefreshDate:[NSDate date]];
+            [[AwfulRefreshMinder minder] didFinishRefreshingBookmarks];
             self.mostRecentlyLoadedPage = page;
         }
         [self.refreshControl endRefreshing];

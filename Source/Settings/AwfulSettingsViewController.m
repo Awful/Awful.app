@@ -10,6 +10,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
@@ -90,19 +91,27 @@
     [super viewWillAppear:animated];
     [self reloadSections];
     [self.tableView reloadData];
-    
-    __weak __typeof__(self) weakSelf = self;
-    [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
-        __typeof__(self) self = weakSelf;
-        if (error) {
-            NSLog(@"failed refreshing user info: %@", error);
-        } else {
-            [AwfulSettings settings].username = user.username;
-            [AwfulSettings settings].userID = user.userID;
-            [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
-            [self.tableView reloadData];
-        }
-    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self refreshIfNecessary];
+}
+
+- (void)refreshIfNecessary
+{
+    if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
+        __weak UITableView *tableView = self.tableView;
+        [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
+            if (error) {
+                NSLog(@"failed refreshing user info: %@", error);
+            } else {
+                [tableView reloadData];
+                [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
+            }
+        }];
+    }
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation

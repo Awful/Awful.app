@@ -7,10 +7,10 @@
 @interface AwfulDateFormatters ()
 
 @property (nonatomic) NSDateFormatter *postDateFormatter;
+
 @property (nonatomic) NSDateFormatter *regDateFormatter;
 
 @end
-
 
 @implementation AwfulDateFormatters
 

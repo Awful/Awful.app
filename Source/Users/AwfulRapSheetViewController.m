@@ -75,23 +75,23 @@
     }
 }
 
-- (void)refresh
-{
-    [self.refreshControl beginRefreshing];
-    [self loadPage:1];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([self shouldRefreshOnAppear]) {
+    [self refreshIfNecessary];
+}
+
+- (void)refreshIfNecessary
+{
+    if (_bans.count == 0) {
         [self refresh];
     }
 }
 
-- (BOOL)shouldRefreshOnAppear
+- (void)refresh
 {
-    return _bans.count == 0;
+    [self.refreshControl beginRefreshing];
+    [self loadPage:1];
 }
 
 - (void)loadPage:(NSUInteger)page

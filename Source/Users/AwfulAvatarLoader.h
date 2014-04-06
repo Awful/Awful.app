@@ -32,9 +32,9 @@
 /**
  * Finds and caches a user's current avatar image.
  *
- * @param completionBlock A block to call after finding an avatar image, which returns nothing and takes two parameter: the user's avatar image if found, or nil otherwise; and nil on success, or an error on failure.
+ * @param completionBlock A block to call after finding an avatar image, which returns nothing and takes three parameter: the user's avatar image if downloaded, or nil otherwise; YES if a new avatar was downloaded, or NO otherwise; and nil on success, or an error on failure.
  */
-- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, NSError *error))completionBlock;
+- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, BOOL modified, NSError *error))completionBlock;
 
 /**
  * Deletes all cached images and information.

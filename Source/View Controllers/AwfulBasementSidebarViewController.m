@@ -6,6 +6,8 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulAvatarLoader.h"
 #import "AwfulBasementHeaderView.h"
+#import "AwfulForumsClient.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 
 @interface AwfulBasementSidebarViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -153,24 +155,48 @@ static NSString * const CellIdentifier = @"Cell";
     [super viewWillAppear:animated];
     [self updateHeaderView];
     [self selectRowForSelectedItem];
-    
-    // Normally on first appear this table's rows are inserted with an animation. This disables that animation.
-    [UIView setAnimationsEnabled:NO];
-    [self.tableView beginUpdates];
-    [self.tableView endUpdates];
-    [UIView setAnimationsEnabled:YES];
-    
-    if ([AwfulSettings settings].showAvatars) {
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self refreshIfNecessary];
+}
+
+- (void)refreshIfNecessary
+{
+    if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulAvatarLoader loader] avatarImageForUser:self.loggedInUser completion:^(UIImage *avatarImage, NSError *error) {
+        [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
             __typeof__(self) self = weakSelf;
             if (error) {
-                NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
+                NSLog(@"%s error refreshing logged-in user's info: %@", __PRETTY_FUNCTION__, error);
             } else {
-                self.headerView.avatarImageView.image = avatarImage;
+                [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
+                [self refreshAvatar];
             }
         }];
+    } else if ([[AwfulRefreshMinder minder] shouldRefreshAvatar]) {
+        [self refreshAvatar];
     }
+}
+
+- (void)refreshAvatar
+{
+    if (![AwfulSettings settings].showAvatars) return;
+    
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulAvatarLoader loader] avatarImageForUser:self.loggedInUser completion:^(UIImage *avatarImage, BOOL modified, NSError *error) {
+        __typeof__(self) self = weakSelf;
+        if (error) {
+            NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
+        } else {
+            if (modified) {
+                self.headerView.avatarImageView.image = avatarImage;
+            }
+            [[AwfulRefreshMinder minder] didFinishRefreshingAvatar];
+        }
+    }];
 }
 
 - (void)setItems:(NSArray *)items

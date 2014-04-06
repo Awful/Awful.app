@@ -12,6 +12,7 @@
 #import "AwfulNewThreadViewController.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
@@ -163,24 +164,20 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([self shouldRefreshOnAppear]) {
-        [self refresh];
-    }
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
     self.tableView.showsInfiniteScrolling = fetchedResultsController.fetchedObjects.count > 0;
+    [self refreshIfNecessary];
 }
 
-- (BOOL)shouldRefreshOnAppear
+- (void)refreshIfNecessary
 {
-    if (![AwfulForumsClient client].reachable) return NO;
-    if (!self.filterThreadTag && !self.forum.lastRefresh) return YES;
-    if (self.filterThreadTag && !self.forum.lastFilteredRefresh) return YES;
+    if (![AwfulForumsClient client].reachable) return;
+    
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
-    if ([fetchedResultsController.fetchedObjects count] == 0) return YES;
-    if (!self.filterThreadTag) {
-        return [[NSDate date] timeIntervalSinceDate:self.forum.lastRefresh] > 60 * 15;
-    } else {
-        return [[NSDate date] timeIntervalSinceDate:self.forum.lastFilteredRefresh] > 60 * 15;
+    if (fetchedResultsController.fetchedObjects.count == 0 ||
+        (self.filterThreadTag && [[AwfulRefreshMinder minder] shouldRefreshFilteredForum:self.forum]) ||
+        (!self.filterThreadTag && [[AwfulRefreshMinder minder] shouldRefreshForum:self.forum])) {
+        [self refresh];
     }
 }
 
@@ -202,15 +199,9 @@
                 self.tableView.showsInfiniteScrolling = YES;
             }
             if (self.filterThreadTag) {
-                self.forum.lastFilteredRefresh = [NSDate date];
+                [[AwfulRefreshMinder minder] didFinishRefreshingFilteredForum:self.forum];
             } else {
-                self.forum.lastRefresh = [NSDate date];
-            }
-            NSError *error;
-            BOOL ok = [self.forum.managedObjectContext save:&error];
-            if (!ok) {
-                NSLog(@"%s error saving managed object context while loading %@ page %tu: %@",
-                      __PRETTY_FUNCTION__, self.forum.name, page, error);
+                [[AwfulRefreshMinder minder] didFinishRefreshingForum:self.forum];
             }
         }
         _mostRecentlyLoadedPage = page;
@@ -310,8 +301,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)refreshForFilterChange
 {
     [self updateFilterButtonText];
-    self.forum.lastFilteredRefresh = nil;
-    self.forum.lastRefresh = nil;
+    [[AwfulRefreshMinder minder] forgetForum:self.forum];
     [self updateFilter];
     [self refresh];
 }

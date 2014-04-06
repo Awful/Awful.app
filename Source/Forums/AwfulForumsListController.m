@@ -12,12 +12,12 @@
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulForumsListController () <AwfulForumTreeDataSourceDelegate>
 
-@property (nonatomic) NSDate *lastRefresh;
 @property (nonatomic) NSMutableArray *favoriteForums;
 @property (nonatomic) BOOL userDrivenChange;
 
@@ -70,15 +70,9 @@
 
 - (void)settingsDidChange:(NSNotification *)note
 {
-    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    
-    // Refresh the forum list after changing servers.
-    if ([changedSetting isEqualToString:AwfulSettingsKeys.customBaseURL]) {
-        self.lastRefresh = nil;
-    }
-    
     if (self.userDrivenChange) return;
     
+    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([changedSetting isEqualToString:AwfulSettingsKeys.favoriteForums]) {
         [self.favoriteForums setArray:[self fetchFavoriteForumsWithIDsFromSettings]];
         [self showOrHideEditButton];
@@ -118,18 +112,6 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     UIBarButtonItem *item = self.favoriteForums.count > 0 ? self.editButtonItem : nil;
     [self.navigationItem setRightBarButtonItem:item animated:YES];
 }
-
-- (NSDate *)lastRefresh
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kLastRefreshDate];
-}
-
-- (void)setLastRefresh:(NSDate *)lastRefresh
-{
-    [[NSUserDefaults standardUserDefaults] setObject:lastRefresh forKey:kLastRefreshDate];
-}
-
-NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (void)toggleFavorite:(UIButton *)button
 {
@@ -192,41 +174,39 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
     [_treeDataSource setForum:forum childrenExpanded:button.selected];
 }
 
-- (void)refresh
-{
-    __weak __typeof__(self) weakSelf = self;
-    [[AwfulForumsClient client] taxonomizeForumsAndThen:^(NSError *error, NSArray *categories) {
-        if (!error) {
-            weakSelf.lastRefresh = [NSDate date];
-        }
-    }];
-}
-
-- (BOOL)refreshOnAppear
-{
-    if (![AwfulForumsClient client].loggedIn) return NO;
-    if (!self.lastRefresh) return YES;
-    if (self.tableView.numberOfSections < 2) return YES;
-    if ([[NSDate date] timeIntervalSinceDate:self.lastRefresh] > 60 * 60 * 6) return YES;
-    if ([AwfulForum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
-        return YES;
-    }
-    return NO;
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     _treeDataSource.updatesTableView = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self refreshIfNecessary];
+}
+
+- (void)refreshIfNecessary
+{
+    if (![AwfulForumsClient client].loggedIn) return;
     
-    if ([self refreshOnAppear]) {
-        [self refresh];
+    if ([[AwfulRefreshMinder minder] shouldRefreshForumList] || self.tableView.numberOfSections < 2 ||
+        [AwfulForum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
+        if ([AwfulForumsClient client].reachable) {
+            [self refresh];
+        } else {
+            [self refreshOnceServerIsReachable];
+        }
     }
-    
-    if (![AwfulForumsClient client].reachable) {
-        [self refreshOnceServerIsReachable];
-    }
+}
+
+- (void)refresh
+{
+    [[AwfulForumsClient client] taxonomizeForumsAndThen:^(NSError *error, NSArray *categories) {
+        if (!error) {
+            [[AwfulRefreshMinder minder] didFinishRefreshingForumList];
+        }
+    }];
 }
 
 - (void)refreshOnceServerIsReachable
@@ -242,10 +222,8 @@ NSString * const kLastRefreshDate = @"com.awfulapp.Awful.LastForumRefreshDate";
 
 - (void)reachabilityChanged:(NSNotification *)note
 {
-    if ([self refreshOnAppear]) {
-        [self stopObservingReachability];
-        [self refresh];
-    }
+    [self stopObservingReachability];
+    [self refresh];
 }
 
 - (void)stopObservingReachability

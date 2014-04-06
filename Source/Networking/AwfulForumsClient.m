@@ -349,8 +349,12 @@
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.user) {
+            AwfulUser *user = scraper.user;
+            if (user) {
                 [managedObjectContext save:&error];
+                [AwfulSettings settings].userID = user.userID;
+                [AwfulSettings settings].username = user.username;
+                [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }
             if (callback) {
                 NSManagedObjectID *objectID = scraper.user.objectID;

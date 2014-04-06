@@ -47,10 +47,15 @@
     return [UIImage imageWithContentsOfFile:imageURL.path];
 }
 
-- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, NSError *error))completionBlock
+- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, BOOL modified, NSError *error))completionBlock
 {
     NSURL *avatarURL = user.avatarURL;
-    if (avatarURL.path.length == 0) return;
+    if (avatarURL.path.length == 0) {
+        if (completionBlock) {
+            completionBlock(nil, YES, nil);
+        }
+        return;
+    }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:avatarURL];
     
     NSURL *cachedResponseURL = [self cachedResponseURLForUser:user];
@@ -80,12 +85,13 @@
              if (error) {
                  NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
                  if (response.statusCode == 304) {
+                     completionBlock(nil, NO, nil);
                      return;
                  }
              } else {
                  image = [UIImage imageWithContentsOfFile:filePath.path];
              }
-             completionBlock(image, error);
+             completionBlock(image, YES, error);
          }
      }];
     [downloadTask resume];

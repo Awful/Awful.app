@@ -4,6 +4,7 @@
 
 #import "AwfulSettingsAlternateServerController.h"
 #import "AwfulForumsClient.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 
 @interface AwfulSettingsAlternateServerController ()
@@ -94,6 +95,9 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
     newCell.accessoryType = UITableViewCellAccessoryCheckmark;
     self.currentIndexPath = indexPath;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    // Refresh everything after changing servers.
+    [[AwfulRefreshMinder minder] forgetEverything];
 }
 
 @end

@@ -12,6 +12,7 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPrivateMessageCell.h"
 #import "AwfulPrivateMessageViewController.h"
+#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
@@ -23,8 +24,6 @@
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
 
 @property (strong, nonatomic) UIBarButtonItem *backItem;
-
-@property (strong, nonatomic) NSDate *lastRefreshDate;
 
 @end
 
@@ -124,18 +123,16 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if ([self refreshOnAppear]) {
-        [self refresh];
-    }
+    [self refreshIfNecessary];
 }
 
-- (BOOL)refreshOnAppear
+- (void)refreshIfNecessary
 {
-    if (![AwfulSettings settings].canSendPrivateMessages) return NO;
-    if (_dataSource.fetchedResultsController.fetchedObjects.count == 0) return YES;
-    NSDate *lastCheckDate = self.lastRefreshDate;
-    if (!lastCheckDate) return YES;
-    return -[lastCheckDate timeIntervalSinceNow] > 10 * 60;
+    if (![AwfulSettings settings].canSendPrivateMessages) return;
+    
+    if (_dataSource.fetchedResultsController.fetchedObjects.count == 0 || [[AwfulRefreshMinder minder] shouldRefreshPrivateMessagesInbox]) {
+        [self refresh];
+    }
 }
 
 - (void)refresh
@@ -148,22 +145,10 @@ static NSString * const MessageCellIdentifier = @"Message cell";
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            self.lastRefreshDate = [NSDate date];
+            [[AwfulRefreshMinder minder] didFinishRefreshingPrivateMessagesInbox];
         }
     }];
 }
-
-- (NSDate *)lastRefreshDate
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:LastRefreshDateKey];
-}
-
-- (void)setLastRefreshDate:(NSDate *)lastRefreshDate
-{
-    [[NSUserDefaults standardUserDefaults] setObject:lastRefreshDate forKey:LastRefreshDateKey];
-}
-
-static NSString * const LastRefreshDateKey = @"LastPrivateMessageInboxRefreshDate";
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
