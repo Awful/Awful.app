@@ -111,6 +111,7 @@ static NSString * const CellIdentifier = @"Cell";
         self.headerHeightConstraint.constant = 52;
         headerView.bottomOffset = 5;
     }
+    [headerView layoutIfNeeded];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
