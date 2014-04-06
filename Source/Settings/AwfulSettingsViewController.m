@@ -142,7 +142,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     StepperSetting,
 };
 
--(void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	cell.backgroundColor = self.theme[@"listBackgroundColor"];
 	cell.textLabel.textColor = self.theme[@"listTextColor"];

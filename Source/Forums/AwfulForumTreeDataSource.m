@@ -34,9 +34,11 @@
 {
     self = [super init];
     if (!self) return nil;
+    
     _tableView = tableView;
     tableView.dataSource = self;
     _reuseIdentifier = [reuseIdentifier copy];
+    
     return self;
 }
 
