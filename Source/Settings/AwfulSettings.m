@@ -312,6 +312,8 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key
 {
     NSParameterAssert(key);
+    id old = self[key];
+    if (old == object || [old isEqual:object]) return;
     [self setObject:object withoutNotifyingForKey:key];
     NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingKey : key };
     void (^notify)(void) = ^{
