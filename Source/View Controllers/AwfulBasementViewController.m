@@ -194,6 +194,7 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[new]|" options:0 metrics:nil views:views]];
     self.selectedViewControllerConstraints = constraints;
     [self.mainContainerView addConstraints:constraints];
+    [self.mainContainerView layoutIfNeeded];
     [oldViewController removeFromParentViewController];
     [newViewController didMoveToParentViewController:self];
     [self setNeedsStatusBarAppearanceUpdate];
