@@ -60,9 +60,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
 {
-    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
-    [longPress addTarget:self action:@selector(showThreadActions:)];
-    [cell addGestureRecognizer:longPress];
+    [cell.showActionsGestureRecognizer removeTarget:nil action:nil];
+    [cell.showActionsGestureRecognizer addTarget:self action:@selector(showThreadActions:)];
     
 	if ([AwfulSettings settings].showThreadTags) {
 		cell.threadTagHidden = NO;
