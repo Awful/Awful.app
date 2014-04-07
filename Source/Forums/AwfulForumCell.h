@@ -10,13 +10,6 @@
 @interface AwfulForumCell : UITableViewCell
 
 /**
- * Returns an initialized AwfulForumCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
-
-/**
  * A forum cell can have a disclosure button to show or hide the represented forum's subforums.
  *
  * The disclosureButton's `selected` property is YES when subforums are revealed, and is NO (the default) otherwise.

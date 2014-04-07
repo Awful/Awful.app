@@ -6,48 +6,37 @@
 
 @implementation AwfulFavoriteForumCell
 
-// Redeclare imageView and textLabel so we can make our own which participate in auto layout.
-@synthesize imageView = _imageView;
-@synthesize textLabel = _textLabel;
-
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (!(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) return nil;
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    if (!self) return nil;
     
-    _imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"star-on"]];
-    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    _imageView.contentMode = UIViewContentModeCenter;
-    [self.contentView addSubview:_imageView];
+    self.imageView.image = [UIImage imageNamed:@"star-on"];
+    self.imageView.contentMode = UIViewContentModeCenter;
     
-    _textLabel = [UILabel new];
-    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.numberOfLines = 2;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    [self.contentView addSubview:_textLabel];
+    self.textLabel.numberOfLines = 2;
+    self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.textLabel.adjustsFontSizeToFitWidth = YES;
+    self.textLabel.minimumScaleFactor = 0.5;
     
-    [self setNeedsUpdateConstraints];
     return self;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void)layoutSubviews
 {
-    return [self initWithReuseIdentifier:reuseIdentifier];
-}
-
-- (void)updateConstraints
-{
-    [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[favorite(width)]-[name]-width-|"
-                                             options:NSLayoutFormatAlignAllCenterY
-                                             metrics:@{ @"width": @32 }
-                                               views:@{ @"favorite": self.imageView,
-                                                        @"name": self.textLabel }]];
-    [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0,==0@900)-[name]-(>=0,==0@900)-|"
-                                             options:NSLayoutFormatAlignAllCenterY
-                                             metrics:nil
-                                               views:@{ @"name": self.textLabel }]];
-    [super updateConstraints];
+    [super layoutSubviews];
+    CGRect remainder = self.contentView.bounds;
+    
+    CGRect favoriteFrame;
+    CGRectDivide(remainder, &favoriteFrame, &remainder, 32, CGRectMinXEdge);
+    [self.imageView sizeToFit];
+    favoriteFrame.size.height = CGRectGetHeight(self.imageView.bounds);
+    favoriteFrame.origin.y = CGRectGetMidY(remainder) - CGRectGetHeight(favoriteFrame) / 2 - 2;
+    self.imageView.frame = favoriteFrame;
+    
+    CGRect nameFrame = CGRectInset(remainder, 4, 4);
+    nameFrame.size.width -= CGRectGetWidth(favoriteFrame);
+    self.textLabel.frame = nameFrame;
 }
 
 @end

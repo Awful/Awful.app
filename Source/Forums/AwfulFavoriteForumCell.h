@@ -9,11 +9,4 @@
  */
 @interface AwfulFavoriteForumCell : UITableViewCell
 
-/**
- * Returns an initialized AwfulFavoriteForumCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
-
 @end
