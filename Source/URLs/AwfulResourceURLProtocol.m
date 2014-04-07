@@ -8,7 +8,8 @@
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request
 {
-    return [request.URL.scheme caseInsensitiveCompare:@"awful-resource"] == NSOrderedSame;
+    NSString *scheme = request.URL.scheme;
+    return scheme && [scheme caseInsensitiveCompare:@"awful-resource"] == NSOrderedSame;
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
