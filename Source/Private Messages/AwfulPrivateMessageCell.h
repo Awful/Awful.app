@@ -10,15 +10,13 @@
 @interface AwfulPrivateMessageCell : UITableViewCell
 
 /**
- * Returns an initialized AwfulPrivateMessageCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
-
-/**
  * An image view laid over the bottom right corner of the thread tag.
  */
 @property (readonly, strong, nonatomic) UIImageView *overlayImageView;
+
+/**
+ * Whether or not the thread tag is hidden.
+ */
+@property (assign, nonatomic) BOOL threadTagHidden;
 
 @end

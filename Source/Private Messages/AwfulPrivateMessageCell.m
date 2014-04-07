@@ -3,132 +3,77 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessageCell.h"
-#import "AwfulSettings.h"
 
 @implementation AwfulPrivateMessageCell
-{
-    UIView *_topSpacer;
-    UIView *_bottomSpacer;
-}
 
-// Redeclare imageView, textLabel, and detailTextLabel so we can make our own that participate in auto layout.
-@synthesize imageView = _imageView;
-@synthesize textLabel = _textLabel;
-@synthesize detailTextLabel = _detailTextLabel;
-
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (!(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier])) return nil;
-    
-    _imageView = [UIImageView new];
-    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_imageView];
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+    if (!self) return nil;
     
     _overlayImageView = [UIImageView new];
-    _overlayImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [_imageView addSubview:_overlayImageView];
+    [self.imageView addSubview:_overlayImageView];
     
-    _textLabel = [UILabel new];
-    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.numberOfLines = 2;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    [self.contentView addSubview:_textLabel];
+    self.textLabel.numberOfLines = 2;
+    self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    self.textLabel.adjustsFontSizeToFitWidth = YES;
+    self.textLabel.minimumScaleFactor = 0.5;
     
-    _detailTextLabel = [UILabel new];
-    _detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    _detailTextLabel.enabled = NO;
-    [self.contentView addSubview:_detailTextLabel];
-    
-    _topSpacer = [UIView new];
-    _topSpacer.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_topSpacer];
-    
-    _bottomSpacer = [UIView new];
-    _bottomSpacer.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_bottomSpacer];
-    
-    [self setNeedsUpdateConstraints];
+    self.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    self.detailTextLabel.enabled = NO;
     
     return self;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void)setThreadTagHidden:(BOOL)threadTagHidden
 {
-    return [self initWithReuseIdentifier:reuseIdentifier];
+    if (_threadTagHidden == threadTagHidden) return;
+    _threadTagHidden = threadTagHidden;
+    self.imageView.hidden = threadTagHidden;
+    self.overlayImageView.hidden = threadTagHidden;
+    [self setNeedsLayout];
 }
 
-- (void)updateConstraints
+- (void)layoutSubviews
 {
-    NSDictionary *views = @{ @"tag": self.imageView,
-                             @"subject": self.textLabel,
-                             @"sender": self.detailTextLabel,
-                             @"overlay": self.overlayImageView,
-                             @"topSpacer": _topSpacer,
-                             @"bottomSpacer": _bottomSpacer };
-	
-	if (AwfulSettings.settings.showThreadTags) {
-		[self.contentView addConstraints:
-		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[tag(45)]-9-[subject]-(>=5,==5@900)-|"
-												 options:0
-												 metrics:nil
-												   views:views]];
-	}
-	else {
-		[self.contentView addConstraints:
-		 [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[subject]-(>=5,==5@900)-|"
-												 options:0
-												 metrics:nil
-												   views:views]];
-	}
-	
-
-    [self.contentView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"tag"]
-                                  attribute:NSLayoutAttributeCenterY
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:self.contentView
-                                  attribute:NSLayoutAttributeCenterY
-                                 multiplier:1
-                                   constant:0]];
-    [self.contentView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"sender"]
-                                  attribute:NSLayoutAttributeLeft
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:views[@"subject"]
-                                  attribute:NSLayoutAttributeLeft
-                                 multiplier:1
-                                   constant:0]];
-    [self.contentView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"sender"]
-                                  attribute:NSLayoutAttributeRight
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:views[@"subject"]
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1
-                                   constant:0]];
-    [self.contentView addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topSpacer(bottomSpacer)][subject][sender][bottomSpacer(topSpacer)]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self.imageView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"overlay"]
-                                  attribute:NSLayoutAttributeRight
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:views[@"tag"]
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1
-                                   constant:1]];
-    [self.imageView addConstraint:
-     [NSLayoutConstraint constraintWithItem:views[@"overlay"]
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:views[@"tag"]
-                                  attribute:NSLayoutAttributeBottom
-                                 multiplier:1
-                                   constant:2]];
-    [super updateConstraints];
+    [super layoutSubviews];
+    CGRect remainder = CGRectInset(self.contentView.bounds, 4, 0);
+    
+    if (self.threadTagHidden) {
+        remainder.origin.x += 11;
+        remainder.size.width -= 11;
+    } else {
+        CGRect tagFrame;
+        CGRectDivide(remainder, &tagFrame, &remainder, 45 + 9, CGRectMinXEdge);
+        tagFrame.size.width -= 9;
+        [self.imageView sizeToFit];
+        tagFrame.size.height = CGRectGetHeight(self.imageView.bounds);
+        tagFrame.origin.y = CGRectGetMidY(remainder) - CGRectGetHeight(tagFrame) / 2;
+        self.imageView.frame = tagFrame;
+        
+        CGRect tagBounds = self.imageView.bounds;
+        [self.overlayImageView sizeToFit];
+        CGRect overlayFrame = self.overlayImageView.frame;
+        overlayFrame.origin.x = CGRectGetMaxX(tagBounds) - CGRectGetWidth(overlayFrame) + 1;
+        overlayFrame.origin.y = CGRectGetMaxY(tagBounds) - CGRectGetHeight(overlayFrame) + 1;
+        self.overlayImageView.frame = overlayFrame;
+    }
+    
+    self.separatorInset = UIEdgeInsetsMake(0, CGRectGetMinX(remainder), 0, 0);
+    
+    self.textLabel.frame = CGRectMake(0, 0, CGRectGetWidth(remainder), 0);
+    [self.textLabel sizeToFit];
+    self.detailTextLabel.frame = CGRectMake(0, 0, CGRectGetWidth(remainder), 0);
+    [self.detailTextLabel sizeToFit];
+    CGFloat totalHeight = CGRectGetHeight(self.textLabel.bounds) + 2 + CGRectGetHeight(self.detailTextLabel.bounds);
+    CGRect textRect = CGRectInset(remainder, 0, (CGRectGetHeight(remainder) - totalHeight) / 2);
+    CGRect subjectFrame = textRect;
+    subjectFrame.size.height = CGRectGetHeight(self.textLabel.bounds);
+    self.textLabel.frame = subjectFrame;
+    CGRect fromFrame = textRect;
+    fromFrame.size.height = CGRectGetHeight(self.detailTextLabel.bounds);
+    fromFrame.origin.y = CGRectGetMaxY(textRect) - CGRectGetHeight(fromFrame);
+    self.detailTextLabel.frame = fromFrame;
 }
 
 @end

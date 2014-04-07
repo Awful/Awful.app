@@ -182,36 +182,32 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-	if (AwfulSettings.settings.showThreadTags) {
-		AwfulThreadTag *threadTag = pm.threadTag;
-		if (threadTag) {
-			cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
-		} else {
-			// TODO handle updated thread tags
-			cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
-		}
-	}
-	else {
-		cell.imageView.image = nil;
-	}
-	
-    // TODO this is more convoluted than necessary
-    if (AwfulSettings.settings.showThreadTags && (pm.replied || pm.forwarded || !pm.seen)) {
+    if (AwfulSettings.settings.showThreadTags) {
+        cell.threadTagHidden = NO;
+        AwfulThreadTag *threadTag = pm.threadTag;
+        if (threadTag) {
+            cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
+        } else {
+            // TODO handle updated thread tags
+            cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+        }
+        
         if (pm.replied) {
             cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
         } else if (pm.forwarded) {
             cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
         } else if (!pm.seen) {
             cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
+        } else {
+            cell.overlayImageView.image = nil;
         }
     } else {
-        cell.overlayImageView.image = nil;
+        cell.threadTagHidden = YES;
     }
-	
-	NSString *detailText = [NSString stringWithFormat:@"%@ - %@", pm.from.username, [AwfulDateFormatters.postDateFormatter stringFromDate:pm.sentDate]];
-	
+    
     cell.textLabel.text = pm.subject;
-    cell.detailTextLabel.text = detailText;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",
+                                 pm.from.username, [[AwfulDateFormatters postDateFormatter] stringFromDate:pm.sentDate]];
     [self themeCell:cell withObject:pm];
 }
 
