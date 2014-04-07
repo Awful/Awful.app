@@ -65,24 +65,25 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [cell addGestureRecognizer:longPress];
     
 	if ([AwfulSettings settings].showThreadTags) {
-		
+		cell.threadTagHidden = NO;
+        AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
+        
 		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
 		// the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (thread.threadTag.imageName.length > 0 && ![thread.threadTag isEqual:thread.secondaryThreadTag]) {
 			UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
-			cell.tagAndRatingView.threadTag = threadTag;
+			tagAndRatingView.threadTagImage = threadTag;
 		} else {
-            cell.tagAndRatingView.threadTag = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+            tagAndRatingView.threadTagImage = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
 		}
 		if (thread.secondaryThreadTag) {
 			UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
-			cell.tagAndRatingView.secondaryThreadTag = secondaryThreadTag;
+			tagAndRatingView.secondaryThreadTagImage = secondaryThreadTag;
 		} else {
-			cell.tagAndRatingView.secondaryThreadTag = nil;
+			tagAndRatingView.secondaryThreadTagImage = nil;
 		}
 		
-		// Hardcode Film Dump to never show ratings; its thread tags are the ratings.
 		if ([AwfulForumTweaks tweaksForForumId:thread.forum.forumID].showRatings) {
 			cell.tagAndRatingView.ratingImage = nil;
 		} else {
@@ -98,11 +99,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 				cell.tagAndRatingView.ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
 			}
 		}
-	}
-	else {
-		cell.tagAndRatingView.threadTag = nil;
-		cell.tagAndRatingView.secondaryThreadTag = nil;
-		cell.tagAndRatingView.ratingImage = nil;
+	} else {
+		cell.threadTagHidden = YES;
 	}
 	
 	
@@ -122,6 +120,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
         cell.badgeLabel.text = nil;
     }
+    
     [self themeCell:cell withObject:thread];
 }
 

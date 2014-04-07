@@ -6,98 +6,50 @@
 
 @implementation AwfulThreadTagAndRatingView
 {
-    UIImageView *_tagImageView;
-    UIImageView *_secondaryTagImageView;
+    UIImageView *_threadTagImageView;
+    UIImageView *_secondaryThreadTagImageView;
     UIImageView *_ratingImageView;
-    CGFloat _gap;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (!self) return nil;
-    _tagImageView = [UIImageView new];
-    _tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_tagImageView];
     
-    _secondaryTagImageView = [UIImageView new];
-    _secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_secondaryTagImageView];
+    _threadTagImageView = [UIImageView new];
+    _threadTagImageView.contentMode = UIViewContentModeCenter;
+    [self addSubview:_threadTagImageView];
     
-    NSDictionary *views = @{ @"tag": _tagImageView,
-                             @"secondary": _secondaryTagImageView };
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-0@500-|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraint:
-     [NSLayoutConstraint constraintWithItem:_secondaryTagImageView
-                                  attribute:NSLayoutAttributeRight
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:_tagImageView
-                                  attribute:NSLayoutAttributeRight
-                                 multiplier:1
-                                   constant:1]];
-    [self addConstraint:
-     [NSLayoutConstraint constraintWithItem:_secondaryTagImageView
-                                  attribute:NSLayoutAttributeBottom
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:_tagImageView
-                                  attribute:NSLayoutAttributeBottom
-                                 multiplier:1
-                                   constant:1]];
+    _secondaryThreadTagImageView = [UIImageView new];
+    [_threadTagImageView addSubview:_secondaryThreadTagImageView];
+    
+    _ratingImageView = [UIImageView new];
+    _ratingImageView.contentMode = UIViewContentModeCenter;
+    [self addSubview:_ratingImageView];
+    
     return self;
 }
 
-- (void)updateConstraints
+- (UIImage *)threadTagImage
 {
-    if (_ratingImageView) {
-        NSDictionary *views = @{ @"tag": _tagImageView,
-                                 @"rating": _ratingImageView };
-        NSDictionary *metrics = @{ @"gap": @(_gap) };
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]-gap-[rating]|"
-                                                 options:0
-                                                 metrics:metrics
-                                                   views:views]];
-        [self addConstraint:
-         [NSLayoutConstraint constraintWithItem:views[@"rating"]
-                                      attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:views[@"tag"]
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:1
-                                       constant:0]];
-    }
-    [super updateConstraints];
+    return _threadTagImageView.image;
 }
 
-- (UIImage *)threadTag
+- (void)setThreadTagImage:(UIImage *)threadTagImage
 {
-    return _tagImageView.image;
+    _threadTagImageView.image = threadTagImage;
+    [self setNeedsLayout];
 }
 
-- (void)setThreadTag:(UIImage *)threadTag
+- (UIImage *)secondaryThreadTagImage
 {
-    _tagImageView.image = threadTag;
-    [self invalidateIntrinsicContentSize];
+    return _secondaryThreadTagImageView.image;
 }
 
-- (UIImage *)secondaryThreadTag
+- (void)setSecondaryThreadTagImage:(UIImage *)secondaryThreadTagImage
 {
-    return _secondaryTagImageView.image;
-}
-
-- (void)setSecondaryThreadTag:(UIImage *)secondaryThreadTag
-{
-    UIImage *ensureRetina = [UIImage imageWithCGImage:secondaryThreadTag.CGImage scale:2 orientation:secondaryThreadTag.imageOrientation];
-    _secondaryTagImageView.image = ensureRetina;
+    _secondaryThreadTagImageView.image = secondaryThreadTagImage;
+    [self setNeedsLayout];
 }
 
 - (UIImage *)ratingImage
@@ -107,25 +59,42 @@
 
 - (void)setRatingImage:(UIImage *)ratingImage
 {
-    if (ratingImage && !_ratingImageView) {
-        _ratingImageView = [[UIImageView alloc] initWithImage:ratingImage];
-        _ratingImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _gap = 2;
-        [self addSubview:_ratingImageView];
-        [self setNeedsUpdateConstraints];
-    } else if (!ratingImage && _ratingImageView) {
-        [_ratingImageView removeFromSuperview];
-        _ratingImageView = nil;
-    }
+    _ratingImageView.image = ratingImage;
+    [self setNeedsLayout];
 }
 
-- (CGSize)intrinsicContentSize
+- (void)layoutSubviews
 {
-    CGSize size = _tagImageView.intrinsicContentSize;
-    if (_ratingImageView) {
-        size.height += _gap + _ratingImageView.intrinsicContentSize.height;
+    [_threadTagImageView sizeToFit];
+    [_ratingImageView sizeToFit];
+    [_secondaryThreadTagImageView sizeToFit];
+    
+    CGFloat totalHeight = CGRectGetHeight(_threadTagImageView.bounds);
+    if (_ratingImageView.image) {
+        totalHeight += 2 + CGRectGetHeight(_ratingImageView.bounds);
     }
-    return size;
+    CGRect workingRect = CGRectInset(self.bounds, 0, (CGRectGetHeight(self.bounds) - totalHeight) / 2);
+    workingRect = CGRectIntegral(workingRect);
+    
+    CGRect tagFrame = _threadTagImageView.bounds;
+    tagFrame.origin.y = CGRectGetMinY(workingRect);
+    tagFrame.size.width = CGRectGetWidth(workingRect);
+    _threadTagImageView.frame = tagFrame;
+    
+    if (_ratingImageView.image) {
+        CGRect ratingFrame = _ratingImageView.bounds;
+        ratingFrame.origin.y = CGRectGetMaxY(workingRect) - CGRectGetHeight(ratingFrame);
+        ratingFrame.size.width = CGRectGetWidth(workingRect);
+        _ratingImageView.frame = ratingFrame;
+    }
+    
+    if (_secondaryThreadTagImageView.image) {
+        CGRect secondaryFrame = _secondaryThreadTagImageView.bounds;
+        CGRect tagBounds = _threadTagImageView.bounds;
+        secondaryFrame.origin.x = CGRectGetMaxX(tagBounds) - CGRectGetWidth(secondaryFrame) + 1;
+        secondaryFrame.origin.y += CGRectGetMaxY(tagBounds) - CGRectGetHeight(secondaryFrame) + 1;
+        _secondaryThreadTagImageView.frame = secondaryFrame;
+    }
 }
 
 @end

@@ -11,16 +11,14 @@
 @interface AwfulThreadCell : UITableViewCell
 
 /**
- * Returns an initialized AwfulThreadCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by the table view to identify the cell for reuse.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
-
-/**
  * An AwfulThreadTagAndRatingView suitable for displaying the thread's tag and, optionally, its rating.
  */
 @property (readonly, strong, nonatomic) AwfulThreadTagAndRatingView *tagAndRatingView;
+
+/**
+ * Whether or not the thread tag (and rating) is hidden.
+ */
+@property (assign, nonatomic) BOOL threadTagHidden;
 
 /**
  * A label displaying the thread's title. Inherited from UITableViewCell.
