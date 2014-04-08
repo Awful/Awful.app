@@ -142,19 +142,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
     StepperSetting,
 };
 
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	cell.backgroundColor = self.theme[@"listBackgroundColor"];
-	cell.textLabel.textColor = self.theme[@"listTextColor"];
-    cell.selectedBackgroundView = [[UIView alloc] init];
-    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
-	
-	if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
-		UIColor *color = self.theme[@"settingsSwitchColor"];
-		[(UISwitch*)cell.accessoryView setOnTintColor:color];
-	}
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -281,7 +268,16 @@ typedef NS_ENUM(NSUInteger, SettingType)
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
-	[self themeCell:cell atIndexPath:indexPath];
+    AwfulTheme *theme = self.theme;
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
+    UIView *selectedBackgroundView = [UIView new];
+    selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    cell.selectedBackgroundView = selectedBackgroundView;
+    if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
+        UIColor *color = theme[@"settingsSwitchColor"];
+        [(UISwitch*)cell.accessoryView setOnTintColor:color];
+    }
 	
     return cell;
 }

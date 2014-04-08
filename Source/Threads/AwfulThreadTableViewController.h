@@ -20,12 +20,6 @@
  */
 @property (readonly, strong, nonatomic) AwfulFetchedResultsControllerDataSource *threadDataSource;
 
-
-/**
- * Applies the AwfulThreadTableViewController's theme to the cell for the given thread.
- */
-- (void)themeCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread;
-
 /**
  * Pushes a posts view controller on to the navigation stack or shows it in the expanding split view, as appropriate.
  */

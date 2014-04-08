@@ -38,11 +38,6 @@
  */
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
 
-/**
- * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
- */
-- (void)themeCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath;
-
 @end
 
 /**
@@ -54,11 +49,6 @@
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
-
-/**
- * Applies the current theme to a cell. This implementation does nothing; subclasses can override and provide their own.
- */
-- (void)themeCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 

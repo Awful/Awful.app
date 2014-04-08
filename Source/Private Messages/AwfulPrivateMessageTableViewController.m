@@ -163,21 +163,6 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     _dataSource.updatesTableView = NO;
 }
 
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    [super themeCell:cell atIndexPath:indexPath];
-    AwfulPrivateMessage *message = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    [self themeCell:cell withObject:message];
-}
-
-- (void)themeCell:(UITableViewCell *)cell withObject:(AwfulPrivateMessage *)message
-{
-    cell.backgroundColor = self.theme[@"listBackgroundColor"];
-    cell.textLabel.textColor = self.theme[@"listTextColor"];
-    cell.selectedBackgroundView = [[UIView alloc] init];
-    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
-}
-
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
@@ -208,7 +193,13 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     cell.textLabel.text = pm.subject;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",
                                  pm.from.username, [[AwfulDateFormatters postDateFormatter] stringFromDate:pm.sentDate]];
-    [self themeCell:cell withObject:pm];
+    
+    AwfulTheme *theme = self.theme;
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
+    UIView *selectedBackgroundView = [UIView new];
+    selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    cell.selectedBackgroundView = selectedBackgroundView;
 }
 
 - (BOOL)canDeleteObject:(AwfulPrivateMessage *)object atIndexPath:(NSIndexPath *)indexPath

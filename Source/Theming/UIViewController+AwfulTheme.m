@@ -36,7 +36,7 @@
 
 - (AwfulTheme *)theme
 {
-    return AwfulTheme.currentTheme;
+    return [AwfulTheme currentTheme];
 }
 
 @end
@@ -51,22 +51,18 @@
 
 - (void)themeDidChange
 {
-	[super themeDidChange];
-	self.tableView.backgroundColor = self.theme[@"backgroundColor"];
-	self.refreshControl.tintColor = self.theme[@"listTextColor"];
-	self.tableView.separatorColor = self.theme[@"listSeparatorColor"];
-	self.tableView.indicatorStyle = self.theme.scrollIndicatorStyle;
-	[self.tableView reloadData];
-}
-
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	// noop
+    [super themeDidChange];
+    AwfulTheme *theme = self.theme;
+    self.tableView.backgroundColor = theme[@"backgroundColor"];
+    self.refreshControl.tintColor = theme[@"listTextColor"];
+    self.tableView.separatorColor = theme[@"listSeparatorColor"];
+    self.tableView.indicatorStyle = theme.scrollIndicatorStyle;
+    [self.tableView reloadData];
 }
 
 - (AwfulTheme *)theme
 {
-    return AwfulTheme.currentTheme;
+    return [AwfulTheme currentTheme];
 }
 
 @end
@@ -84,17 +80,11 @@
 	[super themeDidChange];
 	self.collectionView.indicatorStyle = self.theme.scrollIndicatorStyle;
 	[self.collectionView reloadData];
-
-}
-
-- (void)themeCell:(UICollectionViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	// noop
 }
 
 - (AwfulTheme *)theme
 {
-    return AwfulTheme.currentTheme;
+    return [AwfulTheme currentTheme];
 }
 
 @end

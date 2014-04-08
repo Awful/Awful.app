@@ -121,18 +121,13 @@ static NSString * const ButtonIdentifier = @"Button";
         cell.textLabel.enabled = !_loggingIn && [self formIsValid];
     }
     
-    [self themeCell:cell atIndexPath:indexPath];
-    
-    return cell;
-}
-
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
     cell.selectedBackgroundView = [[UIView alloc] init];
     cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
+    
+    return cell;
 }
 
 - (void)textFieldDidChangeValue:(UITextField *)textField

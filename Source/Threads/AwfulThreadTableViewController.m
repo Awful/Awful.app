@@ -120,7 +120,26 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         cell.badgeLabel.text = nil;
     }
     
-    [self themeCell:cell withObject:thread];
+    AwfulTheme *theme = self.theme;
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
+    cell.tintColor = theme[@"listDetailColor"];
+    cell.fontName = theme[@"listFontName"];
+    UIView *selectedBackgroundView = [UIView new];
+    selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    cell.selectedBackgroundView = selectedBackgroundView;
+    if (thread.unreadPosts == 0) {
+        cell.badgeLabel.textColor = [UIColor grayColor];
+        cell.lightenBadgeLabel = YES;
+    } else {
+        switch (thread.starCategory) {
+            case AwfulStarCategoryOrange: cell.badgeLabel.textColor = theme[@"unreadBadgeOrangeColor"]; break;
+            case AwfulStarCategoryRed: cell.badgeLabel.textColor = theme[@"unreadBadgeRedColor"]; break;
+            case AwfulStarCategoryYellow: cell.badgeLabel.textColor = theme[@"unreadBadgeYellowColor"]; break;
+            default: cell.badgeLabel.textColor = theme[@"tintColor"]; break;
+        }
+        cell.lightenBadgeLabel = NO;
+    }
 }
 
 - (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
@@ -226,36 +245,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     } else {
         [self.navigationController pushViewController:postsViewController animated:YES];
     }
-}
-
-- (void)themeCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
-{
-    cell.backgroundColor = self.theme[@"listBackgroundColor"];
-    cell.textLabel.textColor = self.theme[@"listTextColor"];
-    cell.tintColor = self.theme[@"listDetailColor"];
-    cell.fontName = self.theme[@"listFontName"];
-    cell.selectedBackgroundView = [[UIView alloc] init];
-    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
-    if (thread.unreadPosts == 0) {
-        cell.badgeLabel.textColor = [UIColor grayColor];
-        cell.lightenBadgeLabel = YES;
-    } else {
-        switch (thread.starCategory) {
-            case AwfulStarCategoryOrange: cell.badgeLabel.textColor = self.theme[@"unreadBadgeOrangeColor"]; break;
-            case AwfulStarCategoryRed: cell.badgeLabel.textColor = self.theme[@"unreadBadgeRedColor"]; break;
-            case AwfulStarCategoryYellow: cell.badgeLabel.textColor = self.theme[@"unreadBadgeYellowColor"]; break;
-            default: cell.badgeLabel.textColor = self.theme[@"tintColor"]; break;
-        }
-        cell.lightenBadgeLabel = NO;
-    }
-}
-
-- (void)themeCell:(AwfulThreadCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    [super themeCell:cell atIndexPath:indexPath];
-    NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
-    AwfulThread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
-    [self themeCell:cell withObject:thread];
 }
 
 #pragma mark - UITableViewDelegate

@@ -247,14 +247,6 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     [self.navigationController pushViewController:threadList animated:animated];
 }
 
-- (void)themeCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	cell.backgroundColor = self.theme[@"listBackgroundColor"];
-	cell.textLabel.textColor = self.theme[@"listTextColor"];
-    cell.selectedBackgroundView = [[UIView alloc] init];
-    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
-}
-
 - (void)saveFavoriteForumsToSettings
 {
     self.userDrivenChange = YES;
@@ -285,13 +277,20 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.textLabel.text = forum.name;
     cell.separatorInset = UIEdgeInsetsZero;
-    [self themeCell:cell atIndexPath:indexPath];
+    ThemeCell(self.theme, cell);
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView
-commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
-forRowAtIndexPath:(NSIndexPath *)favoriteIndexPath
+static void ThemeCell(AwfulTheme *theme, UITableViewCell *cell)
+{
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+	cell.textLabel.textColor = theme[@"listTextColor"];
+    UIView *selectedBackgroundView = [UIView new];
+    selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    cell.selectedBackgroundView = selectedBackgroundView;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)favoriteIndexPath
 {
     AwfulForum *forum = self.favoriteForums[favoriteIndexPath.row];
     
@@ -324,9 +323,7 @@ forRowAtIndexPath:(NSIndexPath *)favoriteIndexPath
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView
-moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
-      toIndexPath:(NSIndexPath *)destinationIndexPath
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
     id forum = self.favoriteForums[sourceIndexPath.row];
     [self.favoriteForums removeObjectAtIndex:sourceIndexPath.row];
@@ -418,7 +415,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         currentForum = currentForum.parentForum;
     }
     cell.subforumLevel = subforumLevel;
-    [self themeCell:cell atIndexPath:nil];
+    ThemeCell(self.theme, cell);
 }
 
 @end
