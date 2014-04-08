@@ -652,7 +652,6 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
     } else {
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [self.navigationController pushViewController:rapSheet animated:YES];
     }
 }
@@ -847,7 +846,6 @@ static void *KVOContext = &KVOContext;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
     } else {
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [self.navigationController pushViewController:browser animated:YES];
     }
 }
