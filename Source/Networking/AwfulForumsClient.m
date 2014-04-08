@@ -97,19 +97,24 @@
     }
 }
 
-- (void)mainManagedObjectContextDidSave:(NSNotification *)note
+- (void)mainManagedObjectContextDidSave:(NSNotification *)notification
 {
     NSManagedObjectContext *context = _backgroundManagedObjectContext;
     [context performBlock:^{
-        [context mergeChangesFromContextDidSaveNotification:note];
+        [context mergeChangesFromContextDidSaveNotification:notification];
     }];
 }
 
-- (void)backgroundManagedObjectContextDidSave:(NSNotification *)note
+- (void)backgroundManagedObjectContextDidSave:(NSNotification *)notification
 {
     NSManagedObjectContext *context = self.managedObjectContext;
+    NSArray *updatedObjectIDs = [notification.userInfo[NSUpdatedObjectsKey] valueForKey:@"objectID"];
     [context performBlock:^{
-        [context mergeChangesFromContextDidSaveNotification:note];
+        for (NSManagedObjectID *objectID in updatedObjectIDs) {
+            NSManagedObject *mainObject = [context objectWithID:objectID];
+            [mainObject willAccessValueForKey:nil];
+        }
+        [context mergeChangesFromContextDidSaveNotification:notification];
     }];
 }
 
