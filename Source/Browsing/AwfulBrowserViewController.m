@@ -11,7 +11,7 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
-@interface AwfulBrowserViewController () <UIWebViewDelegate>
+@interface AwfulBrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) UIBarButtonItem *actionItem;
@@ -24,6 +24,7 @@
 @implementation AwfulBrowserViewController
 {
     AwfulActionSheet *_visibleActionSheet;
+    BOOL _restoringState;
 }
 
 - (void)dealloc
@@ -47,6 +48,7 @@
     } else {
         self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem awful_flexibleSpace], self.actionItem ];
     }
+    self.restorationClass = self.class;
     [self updateBackForwardItemEnabledState];
     
     return self;
@@ -174,6 +176,7 @@
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
     webView.scalesPageToFit = YES;
+    webView.restorationIdentifier = @"Awful Browser web view";
     
     // Start with a clear background for the web view to avoid a FOUC.
     webView.backgroundColor = [UIColor clearColor];
@@ -199,6 +202,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    // State restoration isn't 100% automatic for UIWebView.
+    if (_restoringState) {
+        [self.webView reload];
+        _restoringState = NO;
+    }
+    
     if (self.presentingViewController) {
         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(dismiss)];
         self.navigationItem.leftBarButtonItem = item;
@@ -254,5 +264,29 @@
         self.loading = NO;
     }
 }
+
+#pragma mark - State preservation and restoration
+
++ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
+{
+    NSURL *URL = [coder decodeObjectForKey:URLKey];
+    AwfulBrowserViewController *viewController = [[self alloc] initWithURL:URL];
+    viewController.restorationIdentifier = identifierComponents.lastObject;
+    return viewController;
+}
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.URL forKey:URLKey];
+}
+
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    _restoringState = YES;
+}
+
+static NSString * const URLKey = @"Awful Browser URL";
 
 @end
