@@ -59,15 +59,15 @@
 
 - (void)configureFetchedResultsController
 {
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
-    request.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
     NSMutableArray *sortDescriptors = [NSMutableArray new];
     if ([AwfulSettings settings].bookmarksSortedByUnread) {
         [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
 	}
     [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
-    request.sortDescriptors = sortDescriptors;
-    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+    fetchRequest.sortDescriptors = sortDescriptors;
+    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                          managedObjectContext:self.managedObjectContext
                                                                                            sectionNameKeyPath:nil
                                                                                                     cacheName:nil];

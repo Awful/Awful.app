@@ -73,9 +73,14 @@
                                                         name:NSManagedObjectContextDidSaveNotification
                                                       object:_managedObjectContext];
     }
+    if (_backgroundManagedObjectContext) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                        name:NSManagedObjectContextDidSaveNotification
+                                                      object:_backgroundManagedObjectContext];
+        _backgroundManagedObjectContext = nil;
+    }
     
     _managedObjectContext = managedObjectContext;
-    _backgroundManagedObjectContext = nil;
     
     if (managedObjectContext) {
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -282,8 +287,8 @@
     if (!request) {
         if (callback) {
             callback(error, nil, 0, nil);
-            return nil;
         }
+        return nil;
     }
     AFHTTPRequestOperation *operation = [_HTTPManager HTTPRequestOperationWithRequest:request
                                                                               success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)

@@ -39,11 +39,14 @@
 
 - (id)initWithForum:(AwfulForum *)forum
 {
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    
     _forum = forum;
     self.title = _forum.abbreviatedName;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
+    
     return self;
 }
 
@@ -82,15 +85,15 @@
 
 - (NSFetchedResultsController *)createFetchedResultsController
 {
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
-    request.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@", self.forum];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@", self.forum];
     if (self.filterThreadTag) {
         NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"threadTag == %@", self.filterThreadTag];
-        request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[ request.predicate, filterPredicate ]];
+        fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[ fetchRequest.predicate, filterPredicate ]];
     }
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
+    fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
                                  [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
-    return [[NSFetchedResultsController alloc] initWithFetchRequest:request
+    return [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                managedObjectContext:self.forum.managedObjectContext
                                                  sectionNameKeyPath:nil
                                                           cacheName:nil];
