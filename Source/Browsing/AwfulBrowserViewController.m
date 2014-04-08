@@ -41,7 +41,7 @@
         self.navigationItem.rightBarButtonItems = @[ self.actionItem, self.forwardItem, self.backItem ];
         self.hidesBottomBarWhenPushed = YES;
     } else {
-        self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem flexibleSpace], self.actionItem ];
+        self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem awful_flexibleSpace], self.actionItem ];
     }
     [self updateBackForwardItemEnabledState];
     return self;

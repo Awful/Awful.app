@@ -82,13 +82,16 @@
     _author = author;
     self.restorationClass = self.class;
     self.navigationItem.rightBarButtonItem = self.composeItem;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    const CGFloat spacerWidth = 12;
     self.toolbarItems = @[ self.settingsItem,
-                           [UIBarButtonItem flexibleSpace],
+                           [UIBarButtonItem awful_flexibleSpace],
                            self.backItem,
+                           [UIBarButtonItem awful_fixedSpace:spacerWidth],
                            self.currentPageItem,
+                           [UIBarButtonItem awful_fixedSpace:spacerWidth],
                            self.forwardItem,
-                           [UIBarButtonItem flexibleSpace],
+                           [UIBarButtonItem awful_flexibleSpace],
                            self.actionsItem ];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
@@ -649,7 +652,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
     } else {
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [self.navigationController pushViewController:rapSheet animated:YES];
     }
 }
@@ -843,7 +846,7 @@ static void *KVOContext = &KVOContext;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
     } else {
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [self.navigationController pushViewController:browser animated:YES];
     }
 }

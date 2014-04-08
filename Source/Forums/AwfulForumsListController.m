@@ -41,7 +41,7 @@
     _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
     
     self.title = @"Forums";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.tabBarItem.accessibilityLabel = @"Forums list";
     self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
     [self showOrHideEditButton];

@@ -169,7 +169,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
             } else {
-                self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+                self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
                 [self.navigationController pushViewController:profile animated:YES];
             }
         }];

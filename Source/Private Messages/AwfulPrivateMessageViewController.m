@@ -193,7 +193,7 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
             [self.navigationController pushViewController:profile animated:YES];
         }
     }];
@@ -210,7 +210,7 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
             [self.navigationController pushViewController:profile animated:YES];
         }
 	}]];
@@ -219,7 +219,7 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
         } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
             [self.navigationController pushViewController:rapSheet animated:YES];
         }
 
@@ -302,11 +302,11 @@
 - (void)openURLInBuiltInBrowser:(NSURL *)url
 {
     AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:url];
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
     } else {
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [self.navigationController pushViewController:browser animated:YES];
     }
 }

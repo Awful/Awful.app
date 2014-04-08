@@ -6,14 +6,21 @@
 
 @implementation UIBarButtonItem (AwfulConvenience)
 
-+ (instancetype)flexibleSpace
++ (instancetype)awful_flexibleSpace
 {
-    return [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    return [[self alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
 }
 
-+ (instancetype)emptyBackBarButtonItem
++ (instancetype)awful_fixedSpace:(CGFloat)width
 {
-    return [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    UIBarButtonItem *item = [[self alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    item.width = width;
+    return item;
+}
+
++ (instancetype)awful_emptyBackBarButtonItem
+{
+    return [[self alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
 }
 
 @end

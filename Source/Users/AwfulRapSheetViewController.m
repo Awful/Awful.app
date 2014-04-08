@@ -25,14 +25,17 @@
 
 - (id)initWithUser:(AwfulUser *)user
 {
-    if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
+    self = [super initWithStyle:UITableViewStylePlain];
+    if (!self) return nil;
+    
     _user = user;
     _bans = [NSMutableOrderedSet new];
     self.title = user ? @"Rap Sheet" : @"Leper's Colony";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.hidesBottomBarWhenPushed = YES;
+    
     return self;
 }
 

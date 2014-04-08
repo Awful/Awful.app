@@ -47,7 +47,7 @@
     self.title = @"Private Messages";
     self.tabBarItem.accessibilityLabel = @"Private messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:) name:AwfulNewPrivateMessagesNotification object:nil];

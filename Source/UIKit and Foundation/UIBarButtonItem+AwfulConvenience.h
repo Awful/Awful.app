@@ -9,11 +9,16 @@
 /**
  * Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
  */
-+ (instancetype)flexibleSpace;
++ (instancetype)awful_flexibleSpace;
+
+/**
+ * Returns a UIBarButtonItem of type UIBarButtonSystemItemFixedSpace.
+ */
++ (instancetype)awful_fixedSpace:(CGFloat)width;
 
 /**
  * Returns a UIBarButtonItem with an empty title that, used as -[UINavigationItem backBarButtonItem], shows just the arrow for a back button.
  */
-+ (instancetype)emptyBackBarButtonItem;
++ (instancetype)awful_emptyBackBarButtonItem;
 
 @end

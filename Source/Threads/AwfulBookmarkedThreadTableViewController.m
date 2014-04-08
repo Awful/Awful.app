@@ -26,11 +26,14 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super initWithNibName:Nil bundle:nil])) return nil;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    
     _managedObjectContext = managedObjectContext;
     self.title = @"Bookmarks";
     self.tabBarItem.image = [UIImage imageNamed:@"bookmarks"];
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    
     return self;
 }
 

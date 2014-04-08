@@ -42,7 +42,7 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     _forum = forum;
     self.title = _forum.abbreviatedName;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem emptyBackBarButtonItem];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     return self;
 }
