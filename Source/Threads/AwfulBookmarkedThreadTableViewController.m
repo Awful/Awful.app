@@ -119,4 +119,32 @@
     }];
 }
 
+#pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
+
+- (BOOL)canDeleteObject:(id)object atIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)deleteObject:(AwfulThread *)thread
+{
+    [[AwfulForumsClient client] setThread:thread isBookmarked:NO andThen:^(NSError *error) {
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+        } else {
+            thread.bookmarked = NO;
+            if (![thread.managedObjectContext save:&error]) {
+                NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+            }
+        }
+    }];
+}
+
+#pragma mark - UITableViewDelegate
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return @"Remove";
+}
+
 @end
