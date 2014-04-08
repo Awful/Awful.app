@@ -67,6 +67,7 @@
 	}
     [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
     fetchRequest.sortDescriptors = sortDescriptors;
+    fetchRequest.fetchBatchSize = 20;
     self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                          managedObjectContext:self.managedObjectContext
                                                                                            sectionNameKeyPath:nil

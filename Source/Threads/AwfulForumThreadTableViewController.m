@@ -93,6 +93,7 @@
     }
     fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
                                  [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+    fetchRequest.fetchBatchSize = 20;
     return [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                managedObjectContext:self.forum.managedObjectContext
                                                  sectionNameKeyPath:nil
