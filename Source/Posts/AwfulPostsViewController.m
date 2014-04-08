@@ -1031,37 +1031,37 @@ static void *KVOContext = &KVOContext;
     }
 }
 
-- (void)showMenuForLinkToURL:(NSURL *)url fromRect:(CGRect)rect
+- (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect
 {
-    if (![url opensInBrowser]) {
-        [[UIApplication sharedApplication] openURL:url];
+    if (![URL opensInBrowser]) {
+        [[UIApplication sharedApplication] openURL:URL];
         return;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
-    sheet.title = url.absoluteString;
+    sheet.title = URL.absoluteString;
     [sheet addButtonWithTitle:@"Open" block:^{
-        if ([url awfulURL]) {
-            [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
+        if ([URL awfulURL]) {
+            [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
         } else {
-            [self openURLInBuiltInBrowser:url];
+            [self openURLInBuiltInBrowser:URL];
         }
     }];
     [sheet addButtonWithTitle:@"Open in Safari"
-                        block:^{ [[UIApplication sharedApplication] openURL:url]; }];
+                        block:^{ [[UIApplication sharedApplication] openURL:URL]; }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
+        if (![browser canOpenURL:URL]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
+                            block:^{ [browser openURL:URL]; }];
     }
     for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
         [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
+            [service saveURL:URL];
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: url.absoluteString,
+            (id)kUTTypeURL: URL,
+            (id)kUTTypePlainText: URL.absoluteString,
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];

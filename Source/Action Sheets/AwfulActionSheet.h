@@ -20,4 +20,6 @@
 
 - (void)addCancelButtonWithTitle:(NSString *)title;
 
+- (void)setCompletionBlock:(void (^)(void))completionBlock;
+
 @end

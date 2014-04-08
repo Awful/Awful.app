@@ -22,6 +22,9 @@
 @end
 
 @implementation AwfulBrowserViewController
+{
+    AwfulActionSheet *_visibleActionSheet;
+}
 
 - (void)dealloc
 {
@@ -35,6 +38,7 @@
 {
     self = [super initWithNibName:nil bundle:nil];
     if (!self) return nil;
+    
     self.URL = URL;
     self.title = @"Awful Browser";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -44,6 +48,7 @@
         self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem awful_flexibleSpace], self.actionItem ];
     }
     [self updateBackForwardItemEnabledState];
+    
     return self;
 }
 
@@ -75,22 +80,23 @@
 
 - (void)actOnCurrentPage:(UIBarButtonItem *)sender
 {
-    NSURL *url = self.webView.request.URL;
-    if (url.absoluteString.length == 0) {
-        url = self.URL;
+    if (_visibleActionSheet) return;
+    NSURL *URL = self.webView.request.URL;
+    if (URL.absoluteString.length == 0) {
+        URL = self.URL;
     }
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Open in Safari" block:^{
-        [[UIApplication sharedApplication] openURL:url];
+        [[UIApplication sharedApplication] openURL:URL];
     }];
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:url]) continue;
+        if (![browser canOpenURL:URL]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:url]; }];
+                            block:^{ [browser openURL:URL]; }];
     }
     for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
         [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:url];
+            [service saveURL:URL];
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
@@ -102,6 +108,10 @@
         } ];
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
+    _visibleActionSheet = sheet;
+    [sheet setCompletionBlock:^{
+        _visibleActionSheet = nil;
+    }];
     [sheet showFromBarButtonItem:sender animated:YES];
 }
 

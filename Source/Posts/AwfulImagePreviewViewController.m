@@ -30,6 +30,9 @@
 
 
 @implementation AwfulImagePreviewViewController
+{
+    AwfulActionSheet *_visibleActionSheet;
+}
 
 - (id)initWithURL:(NSURL *)imageURL
 {
@@ -129,6 +132,7 @@
 
 - (void)showActions
 {
+    if (_visibleActionSheet) return;
     [self.automaticallyHideBarsTimer invalidate];
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Save to Photos" block:^{
@@ -173,6 +177,10 @@
         [self hideBarsAfterShortDuration];
     }];
     [sheet showFromBarButtonItem:self.actionButton animated:YES];
+    [sheet setCompletionBlock:^{
+        _visibleActionSheet = nil;
+    }];
+    _visibleActionSheet = sheet;
 }
 
 - (void)hideBarsAfterShortDuration

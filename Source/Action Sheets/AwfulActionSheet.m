@@ -8,7 +8,9 @@
 
 @property (weak, nonatomic) id <UIActionSheetDelegate> actualDelegate;
 
-@property (readonly, nonatomic) NSMutableDictionary *blocks;
+@property (readonly, copy, nonatomic) NSMutableDictionary *blocks;
+
+@property (copy, nonatomic) void (^completionBlock)(void);
 
 @end
 
@@ -16,11 +18,7 @@
 
 - (id)initWithTitle:(NSString *)title
 {
-    self = [super initWithTitle:title
-                       delegate:self
-              cancelButtonTitle:nil
-         destructiveButtonTitle:nil
-              otherButtonTitles:nil];
+    self = [super initWithTitle:title delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
     if (self) [self commonInit];
     return self;
 }
@@ -130,6 +128,9 @@
     if (block) block();
     if ([self.actualDelegate respondsToSelector:_cmd]) {
         [self.actualDelegate actionSheet:actionSheet didDismissWithButtonIndex:buttonIndex];
+    }
+    if (self.completionBlock) {
+        self.completionBlock();
     }
 }
 
