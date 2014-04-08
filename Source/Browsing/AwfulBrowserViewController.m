@@ -188,7 +188,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (self.URL) {
+    if (self.URL && !_restoringState) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     }
 }
