@@ -841,6 +841,7 @@ static void *KVOContext = &KVOContext;
 
 - (void)openURLInBuiltInBrowser:(NSURL *)URL
 {
+    URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
     AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:URL];
     browser.restorationIdentifier = @"Awful browser from posts view";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -1003,14 +1004,17 @@ static void *KVOContext = &KVOContext;
     NSURL *URL;
     CGRect rect;
     if ((URL = [postsView URLOfSpoiledImageForPoint:point])) {
+        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
         AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:URL];
         preview.title = self.title;
         UINavigationController *nav = [preview enclosingNavigationController];
         nav.navigationBar.translucent = YES;
         [self presentViewController:nav animated:YES completion:nil];
     } else if ((URL = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
+        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
         [self showMenuForLinkToURL:URL fromRect:rect];
     } else if ((URL = [postsView URLOfSpoiledVideoForPoint:point rect:&rect])) {
+        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
         NSURL *safariURL;
         if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
             NSString *youtubeVideoID = URL.lastPathComponent;
