@@ -148,15 +148,19 @@
 - (void)cancel
 {
     if (self.post) {
-        AwfulActionSheet *actionSheet = [AwfulActionSheet new];
-        [actionSheet addDestructiveButtonWithTitle:@"Delete Edit" block:^{
-            [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:NO];
-        }];
-        [actionSheet addButtonWithTitle:@"Save Draft" block:^{
-            [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
-        }];
-        [actionSheet addCancelButtonWithTitle:@"Cancel"];
-        [actionSheet showFromBarButtonItem:self.cancelButtonItem animated:YES];
+        if (self.delegate) {
+            AwfulActionSheet *actionSheet = [AwfulActionSheet new];
+            [actionSheet addDestructiveButtonWithTitle:@"Delete Edit" block:^{
+                [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:NO];
+            }];
+            [actionSheet addButtonWithTitle:@"Save Draft" block:^{
+                [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
+            }];
+            [actionSheet addCancelButtonWithTitle:@"Cancel"];
+            [actionSheet showFromBarButtonItem:self.cancelButtonItem animated:YES];
+        } else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
     } else if (self.thread) {
         [super cancel];
     } else {

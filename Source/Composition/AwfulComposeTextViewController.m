@@ -178,7 +178,11 @@
         [self submitComposition:submission.string completionHandler:^(BOOL success) {
             [SVProgressHUD dismiss];
             if (success) {
-                [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
+                if (self.delegate) {
+                    [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
+                } else {
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                }
             } else {
                 [self enableEverything];
                 [self focusInitialFirstResponder];
@@ -244,7 +248,11 @@
 
 - (void)cancel
 {
-    [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
+    if (self.delegate) {
+        [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)setCustomView:(UIView<AwfulComposeCustomView> *)customView
