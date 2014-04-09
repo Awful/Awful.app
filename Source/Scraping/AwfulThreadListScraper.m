@@ -84,8 +84,16 @@
     NSMutableArray *threadDictionaries = [NSMutableArray new];
     for (HTMLElement *row in threadLinks) {
         NSMutableDictionary *threadInfo = [NSMutableDictionary new];
+        
+        NSString *IDAttribute = row[@"id"];
+        if (IDAttribute.length == 0) {
+            // probably an announcement
+            [threadDictionaries addObject:threadInfo];
+            continue;
+        }
+        
         NSString *threadID;
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:row[@"id"]];
+        AwfulScanner *scanner = [AwfulScanner scannerWithString:IDAttribute];
         [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
         threadID = [scanner.string substringFromIndex:scanner.scanLocation];
         if (threadID.length > 0) {
@@ -168,6 +176,10 @@
     __block int32_t stickyIndex = -(int32_t)threadLinks.count;
     [threadLinks enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {
         NSDictionary *threadInfo = threadDictionaries[i];
+        if (threadInfo.count == 0) {
+            // probably an announcement
+            return;
+        }
         NSString *threadID = threadInfo[@"threadID"];
         AwfulThread *thread = fetchedThreads[threadID];
         if (!thread) {
