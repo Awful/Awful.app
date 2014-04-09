@@ -16,8 +16,6 @@
     
     self.textLabel.numberOfLines = 2;
     self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.textLabel.minimumScaleFactor = 0.5;
     
     self.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.detailTextLabel.enabled = NO;

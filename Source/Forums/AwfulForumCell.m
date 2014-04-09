@@ -21,7 +21,7 @@
     self.textLabel.numberOfLines = 2;
     self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.textLabel.minimumScaleFactor = 0.5;
+    self.textLabel.minimumScaleFactor = 0.95;
     
     _favoriteButton = [UIButton new];
     [_favoriteButton setImage:[UIImage imageNamed:@"star-off"] forState:UIControlStateNormal];
@@ -53,7 +53,7 @@
     favoriteFrame.origin.y = CGRectGetMidY(remainder) - CGRectGetHeight(favoriteFrame) / 2 - 2;
     self.favoriteButton.frame = favoriteFrame;
     
-    CGRect nameFrame = CGRectInset(remainder, 4, 4);
+    CGRect nameFrame = CGRectInset(remainder, 4, 2);
     CGFloat indent = self.subforumLevel * 15;
     nameFrame.origin.x += indent;
     nameFrame.size.width -= indent;

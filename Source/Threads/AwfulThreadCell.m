@@ -28,8 +28,6 @@
 	[self.contentView addSubview:_tagAndRatingView];
     
     self.textLabel.numberOfLines = 2;
-    self.textLabel.adjustsFontSizeToFitWidth = YES;
-    self.textLabel.minimumScaleFactor = 0.5;
     
     _numberOfPagesLabel = [UILabel new];
     [self.contentView addSubview:_numberOfPagesLabel];
