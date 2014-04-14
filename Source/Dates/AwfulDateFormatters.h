@@ -10,12 +10,12 @@
 @interface AwfulDateFormatters : NSObject
 
 /**
- * Returns a date formatter that looks like "Jan 2, 2003 16:05".
+ * Returns a date formatter that looks like "Jan 2, 2003 16:05" in the device settings' and locale's style.
  */
 + (NSDateFormatter *)postDateFormatter;
 
 /**
- * Returns a date formatter that looks like "Jan 2, 2003".
+ * Returns a date formatter that looks like "Jan 2, 2003" in the device settings' and locale's style.
  */
 + (NSDateFormatter *)regDateFormatter;
 
