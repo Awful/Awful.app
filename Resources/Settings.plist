@@ -56,6 +56,26 @@
 					<key>Key</key>
 					<string>show_thread_tags</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Show Avatars</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_avatars</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Load Images</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_images</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -176,26 +196,6 @@
 			<false/>
 			<key>Settings</key>
 			<array>
-				<dict>
-					<key>Title</key>
-					<string>Show Images</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_images</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Show Avatars</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_avatars</string>
-				</dict>
 				<dict>
 					<key>Title</key>
 					<string>BYOB Theme</string>
