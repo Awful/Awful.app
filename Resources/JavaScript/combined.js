@@ -39,15 +39,6 @@ Awful.endMessage = function(end){
   $('#end').text(nullOrUndefined(end) ? '' : end)
 }
 
-Awful.highlightQuoteUsername = function(username){
-  Awful._highlightQuoteUsername = username
-  if (nullOrUndefined(username)) {
-    $('.bbc-block.mention').removeClass('mention')
-  } else {
-    $('.postbody').each(function(){ highlightQuotes(this) })
-  }
-}
-
 Awful.highlightMentionUsername = function(username){
   Awful._highlightMentionUsername = username
   if (nullOrUndefined(username)) {
@@ -60,33 +51,35 @@ Awful.highlightMentionUsername = function(username){
   }
 }
 
-Awful.showAvatars = function(on){
-  Awful._showAvatars = !!on
+Awful.showAvatars = function(on) {
   if (on) {
-    $('#posts > article > header[data-avatar]').each(function(){
-      $('<img>', { src: $(this).data('avatar'), alt: '', class: 'avatar' }).prependTo($(this))
-      $(this).data('avatar', null)
-      $(this).closest('article').removeClass('no-avatar')
-    })
+    $('header[data-avatar]').each(function() {
+      var header = $(this);
+      var img = $('<img>', {
+        src: header.data('avatar'),
+        alt: '',
+        class: 'avatar'
+      });
+      img.prependTo(header);
+      header.data('avatar', null);
+      header.closest('article').removeClass('no-avatar');
+    });
   } else {
-    $('#posts > article > header > img').each(function(){
-      hideAvatar($(this).closest('article'))
-    })
+    $('header img.avatar').each(function() {
+      var img = $(this);
+      img.closest('header').data('avatar', img.attr('src'));
+      img.remove();
+      img.closest('article').addClass('no-avatar');
+    });
   }
 }
 
-Awful.showImages = function(on){
-  Awful._showImages = !!on
-  if (on) {
-    $('#posts > article > section a[data-awful="image"]').each(function(){
-      $(this).replaceWith($('<img>', { src: $(this).text(), border: '0' }))
-    })
-  } else {
-    $('#posts > article').each(function(){
-      hideImages(this)
-    })
-  }
-}
+Awful.loadLinkifiedImages = function() {
+  $('a[data-awful="image"]').each(function() {
+    var link = $(this);
+    link.replaceWith($('<img>', { src: link.text(), border: 0 }));
+  });
+};
 
 Awful.postWithButtonForPoint = function(x, y){
   var button = $(document.elementFromPoint(x, y)).closest('button')
@@ -163,38 +156,13 @@ Awful.spoiledVideoInPostForPoint = function(x, y){
 }
 
 function render(post) {
-  post = $(post)
-  
-  // We style spoilers ourselves.
-  post.find('span.bbc-spoiler')
-      .removeAttr('onmouseover')
-      .removeAttr('onmouseout')
-      .removeAttr('style')
-  
-  // Remove empty "editedby" paragraphs; they make for ugly spacing.
-  post.find('.editedby').filter(function(){ return $(this).text().trim().length == 0 }).remove()
-  
-  if (!Awful._showAvatars) hideAvatar(post)
-  if (!Awful._showImages) hideImages(post)
-  highlightQuotes(post.find('.postbody'))
-  highlightMentions(post.find('.postbody'))
-  fixVimeoEmbeds(post)
-  return post
+  post = $(post);
+  highlightMentions(post.find('.postbody'));
+  return post;
 }
 
 function nullOrUndefined(arg) {
   return arg === null || arg === undefined
-}
-
-function highlightQuotes(post) {
-  var username = Awful._highlightQuoteUsername
-  if (nullOrUndefined(username)) return
-  $(post).find('.bbc-block h4').each(function(){
-    var text = $(this).text()
-    if (text.indexOf(username) === 0 && text.indexOf("posted") !== -1) {
-      $(this).closest('div.bbc-block').addClass('mention')
-    }
-  })
 }
 
 function highlightMentions(post) {
@@ -225,45 +193,6 @@ function highlightMentions(post) {
 
 function regexEscape(s) {
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-}
-
-function fixVimeoEmbeds(post) {
-  $(post).find('div.bbcode_video object param[value^="http://vimeo.com"]').each(function(){
-    var videoID = $(this).attr('value').match(/clip_id=(\d+)/)
-    if (videoID === null) return
-    videoID = videoID[1]
-    var object = $(this).closest('object')
-    $(this).closest('div.bbcode_video').replaceWith($('<iframe/>', {
-      src: "http://player.vimeo.com/video/" + videoID + "?byline=0&portrait=0",
-      width: object.attr('width'),
-      height: object.attr('height'),
-      frameborder: 0,
-      webkitAllowFullScreen: '',
-      allowFullScreen: ''
-    }))
-  })
-}
-
-function hideAvatar(post) {
-  var img = $(post).find('header > img')
-  if (img.length === 0) return
-  img.closest('header').data('avatar', img.attr('src'))
-  img.remove()
-  $(post).addClass('no-avatar')
-}
-
-function hideImages(post) {
-  $(post).children('section').find('img')
-         .not('img[src*="://fi.somethingawful.com/images/smilies"]')
-         .not('img[src*="://fi.somethingawful.com/safs/smilies"]')
-         .not('img[src*="://i.somethingawful.com/images/emot"]')
-         .not('img[src*="://i.somethingawful.com/forumsystem/emoticons"]')
-         .not('img[src*="://fi.somethingawful.com/forums/posticons"]')
-         .not('img[src*="://forumimages.somethingawful.com/forums/posticons"]')
-         .not('img[src*="://forumimages.somethingawful.com/images"]')
-         .each(function(){
-    $(this).replaceWith($('<a data-awful="image"/>').text($(this).attr('src')))
-  })
 }
 
 Awful.profile = {

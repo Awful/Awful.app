@@ -293,11 +293,14 @@
 - (void)settingsDidChange:(NSNotification *)note
 {
     if (![self isViewLoaded]) return;
+    
     NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] ||
-        [changedSetting isEqualToString:AwfulSettingsKeys.showImages] ||
-        [changedSetting isEqualToString:AwfulSettingsKeys.username]) {
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] || [changedSetting isEqualToString:AwfulSettingsKeys.username]) {
         [self configurePostsViewSettings];
+    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
+        if ([AwfulSettings settings].showImages) {
+            [self.postsView loadLinkifiedImages];
+        }
     }
 }
 
@@ -446,7 +449,6 @@
     self.view.backgroundColor = theme[@"backgroundColor"];
 	
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
-    self.postsView.showImages = [AwfulSettings settings].showImages;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
     self.postsView.stylesheet = theme[@"postsViewCSS"];
@@ -803,8 +805,7 @@ static void *KVOContext = &KVOContext;
 {
     AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
     NSError *error;
-    NSString *html = [self.postTemplate renderObject:[AwfulPostViewModel newWithPost:post]
-                                               error:&error];
+    NSString *html = [self.postTemplate renderObject:[[AwfulPostViewModel alloc] initWithPost:post] error:&error];
     if (!html) {
         NSLog(@"error rendering post at index %@: %@", @(index), error);
     }

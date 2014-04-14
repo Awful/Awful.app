@@ -904,7 +904,6 @@
 		1C3447E2175D9CCE007377C5 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				1C3447E3175D9CCE007377C5 /* Post.mustache */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 			);
 			path = Templates;
@@ -1235,6 +1234,7 @@
 				1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */,
 				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
 				1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */,
+				1C3447E3175D9CCE007377C5 /* Post.mustache */,
 				1C23A0A4163E6E1D006C7F39 /* posts-view.html */,
 			);
 			path = Posts;

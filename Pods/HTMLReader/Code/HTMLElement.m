@@ -57,6 +57,7 @@
 - (void)toggleClass:(NSString *)className
 {
     NSMutableArray *classes = [[self[@"class"] componentsSeparatedByCharactersInSet:HTMLSelectorWhitespaceCharacterSet()] mutableCopy];
+    if (!classes) classes = [NSMutableArray new];
     NSUInteger i = [classes indexOfObject:className];
     if (i == NSNotFound) {
         [classes addObject:className];

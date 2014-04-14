@@ -66,8 +66,10 @@
 {
     if (![self isViewLoaded]) return;
     NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] || [changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars]) {
         [self configurePostsViewSettings];
+    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
+        [self.postsView loadLinkifiedImages];
     }
 }
 
@@ -95,7 +97,6 @@
 - (void)configurePostsViewSettings
 {
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
-    self.postsView.showImages = [AwfulSettings settings].showImages;
 }
 
 - (void)viewWillAppear:(BOOL)animated

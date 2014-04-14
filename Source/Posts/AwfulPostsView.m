@@ -25,6 +25,7 @@
 @implementation AwfulPostsView
 {
     BOOL _onceOnFirstLoad;
+    BOOL _loadLinkifiedImagesOnFirstLoad;
 }
 
 - (void)dealloc
@@ -267,16 +268,10 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.showAvatars(%@)", JSONizeBool(self.showAvatars)];
 }
 
-- (void)setShowImages:(BOOL)showImages
+- (void)loadLinkifiedImages
 {
-    if (_showImages == showImages) return;
-    _showImages = showImages;
-    [self updateShowImages];
-}
-
-- (void)updateShowImages
-{
-    [self evalJavaScript:@"Awful.showImages(%@)", JSONizeBool(self.showImages)];
+    _loadLinkifiedImagesOnFirstLoad = YES;
+    [self evalJavaScript:@"Awful.loadLinkifiedImages()"];
 }
 
 - (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
@@ -450,7 +445,9 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     if (!_onceOnFirstLoad) {
         _onceOnFirstLoad = YES;
         [self updateShowAvatars];
-        [self updateShowImages];
+        if (_loadLinkifiedImagesOnFirstLoad) {
+            [self loadLinkifiedImages];
+        }
         [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
