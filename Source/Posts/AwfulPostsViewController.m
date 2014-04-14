@@ -450,7 +450,6 @@
 	
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
-    self.postsView.highlightQuoteUsername = [AwfulSettings settings].username;
     self.postsView.stylesheet = theme[@"postsViewCSS"];
 	self.postsView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     if (self.loadingView) {

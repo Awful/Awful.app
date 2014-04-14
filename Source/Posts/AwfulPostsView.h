@@ -38,9 +38,6 @@
 
 - (void)loadLinkifiedImages;
 
-// Set to nil to highlight no quotes.
-@property (copy, nonatomic) NSString *highlightQuoteUsername;
-
 // Set to nil to highlight no mentions.
 @property (copy, nonatomic) NSString *highlightMentionUsername;
 

@@ -274,19 +274,6 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.loadLinkifiedImages()"];
 }
 
-- (void)setHighlightQuoteUsername:(NSString *)highlightQuoteUsername
-{
-    if (_highlightQuoteUsername == highlightQuoteUsername) return;
-    _highlightQuoteUsername = [highlightQuoteUsername copy];
-    [self updateHighlightQuoteUsername];
-}
-
-- (void)updateHighlightQuoteUsername
-{
-    [self evalJavaScript:@"Awful.highlightQuoteUsername(%@)",
-     JSONizeValue(self.highlightQuoteUsername)];
-}
-
 - (void)setHighlightMentionUsername:(NSString *)highlightMentionUsername
 {
     if (_highlightMentionUsername == highlightMentionUsername) return;
@@ -448,7 +435,6 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
         if (_loadLinkifiedImagesOnFirstLoad) {
             [self loadLinkifiedImages];
         }
-        [self updateHighlightQuoteUsername];
         [self updateHighlightMentionUsername];
         [self updateEndMessage];
         self.hasLoaded = YES;
