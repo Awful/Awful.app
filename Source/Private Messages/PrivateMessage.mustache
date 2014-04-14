@@ -1,0 +1,24 @@
+<article
+  id="{{ messageID }}"
+  class="private-message post {{# seen }}seen{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
+    
+    <header {{# hiddenAvatarURL }}data-avatar="{{ . }}"{{/ }}>
+        
+        {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
+        
+        <section class="nameanddate">
+            <h1 class="username">{{ from.username }}</h1>
+            <time class="regdate">Joined {{ regDateFormat(from.regdate) }}</time>
+        </section>
+
+    </header>
+    
+    <section class="postbody">
+        {{{ HTMLContents }}}
+    </section>
+    
+    <footer>
+        <time class="postdate">{{ sentDateFormat(sentDate) }}</time>
+    </footer>
+
+</article>

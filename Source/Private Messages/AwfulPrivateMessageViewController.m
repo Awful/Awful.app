@@ -17,6 +17,7 @@
 #import "AwfulModels.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPostsView.h"
+#import "AwfulPrivateMessageViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
@@ -28,8 +29,12 @@
 @interface AwfulPrivateMessageViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
+
 @property (readonly, strong, nonatomic) AwfulPostsView *postsView;
+
 @property (strong, nonatomic) AwfulLoadingView *loadingView;
+
+@property (strong, nonatomic) UIBarButtonItem *actionButtonItem;
 
 @end
 
@@ -45,128 +50,42 @@
 
 - (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
 {
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    
     _privateMessage = privateMessage;
-    self.restorationClass = self.class;
     self.title = privateMessage.subject;
+    self.navigationItem.rightBarButtonItem = self.actionButtonItem;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    self.restorationClass = self.class;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
+    
     return self;
 }
 
-- (void)setPrivateMessage:(AwfulPrivateMessage *)privateMessage
+- (UIBarButtonItem *)actionButtonItem
 {
-    _privateMessage = privateMessage;
-    self.title = _privateMessage.subject;
+    if (_actionButtonItem) return _actionButtonItem;
+    _actionButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(didTapActionButtonItem:)];
+    return _actionButtonItem;
 }
 
-- (void)settingsDidChange:(NSNotification *)note
+- (void)didTapActionButtonItem:(UIBarButtonItem *)buttonItem
 {
-    if (![self isViewLoaded]) return;
-    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars]) {
-        [self configurePostsViewSettings];
-    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
-        [self.postsView loadLinkifiedImages];
-    }
-}
-
-- (AwfulPostsView *)postsView
-{
-    return (AwfulPostsView *)self.view;
-}
-
-#pragma mark - UIViewController
-
-- (void)loadView
-{
-    NSURL *baseURL = [AwfulForumsClient client].baseURL;
-    AwfulPostsView *view = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
-    view.frame = [UIScreen mainScreen].applicationFrame;
-    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.delegate = self;
-    view.stylesheet = self.theme[@"postsViewCSS"];
-    self.view = view;
-    [self configurePostsViewSettings];
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.loadingView.tintColor = self.view.backgroundColor;
-}
-
-- (void)configurePostsViewSettings
-{
-    self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    if (self.privateMessage.innerHTML.length == 0) {
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
-        self.loadingView.message = @"Loading…";
-        [self.postsView addSubview:self.loadingView];
-        __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
-            __typeof__(self) self = weakSelf;
-             [self.postsView reloadPostAtIndex:0];
-             [self.loadingView removeFromSuperview];
-             self.loadingView = nil;
-         }];
-    }
-}
-
-#pragma mark - AwfulPostsViewDelegate
-
-- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
-{
-    return 1;
-}
-
-- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
-{
-    NSMutableDictionary *dict = [NSMutableDictionary new];
-    dict[@"innerHTML"] = self.privateMessage.innerHTML ?: @"";
-    dict[@"beenSeen"] = @(self.privateMessage.seen) ?: @NO;
-    dict[@"postDate"] = self.privateMessage.sentDate ?: [NSNull null];
-    dict[@"postDateFormat"] = AwfulDateFormatters.postDateFormatter;
-    dict[@"author"] = self.privateMessage.from;
-    dict[@"regDateFormat"] = AwfulDateFormatters.regDateFormatter;
-    dict[@"postID"] = self.privateMessage.messageID;
-    NSError *error;
-    NSString *html = [GRMustacheTemplate renderObject:dict
-                                         fromResource:@"Post"
-                                               bundle:nil
-                                                error:&error];
-    if (!html) {
-        NSLog(@"error rendering private message: %@", error);
-    }
-    return html;
-}
-
-- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
-{
-    CGRect rect;
-    if ([postsView indexOfPostWithActionButtonAtPoint:point rect:&rect] != NSNotFound) {
-        [self showPostActionsFromRect:rect];
-    } else if ([postsView indexOfPostWithUserNameAtPoint:point rect:&rect] != NSNotFound) {
-        [self showUserActionsFromRect:rect];
-    }
-}
-
-- (void)showPostActionsFromRect:(CGRect)rect
-{
-    NSString *title = [NSString stringWithFormat:@"%@'s Message",
-                       self.privateMessage.from.username];
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:title];
+    AwfulPrivateMessage *privateMessage = self.privateMessage;
+    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    __weak __typeof__(self) weakSelf = self;
+    
     [sheet addButtonWithTitle:@"Reply" block:^{
-        __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:self.privateMessage
+                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:privateMessage
                                                                                                 initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message replying to private message";
@@ -174,8 +93,8 @@
             }
         }];
     }];
+    
     [sheet addButtonWithTitle:@"Forward" block:^{
-        __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
@@ -189,17 +108,92 @@
             }
         }];
     }];
-    [sheet addButtonWithTitle:@"User Profile" block:^{
-        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:self.privateMessage.from];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
-        } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-            [self.navigationController pushViewController:profile animated:YES];
-        }
-    }];
+    
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:self.postsView animated:YES];
+    [sheet showFromBarButtonItem:buttonItem animated:YES];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    if (![self isViewLoaded]) return;
+    
+    NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars]) {
+        self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
+    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
+        [self.postsView loadLinkifiedImages];
+    }
+}
+
+- (AwfulPostsView *)postsView
+{
+    return (AwfulPostsView *)self.view;
+}
+
+- (void)loadView
+{
+    NSURL *baseURL = [AwfulForumsClient client].baseURL;
+    AwfulPostsView *view = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
+    view.frame = [UIScreen mainScreen].applicationFrame;
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.delegate = self;
+    self.view = view;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    if (self.privateMessage.innerHTML.length == 0) {
+        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
+        self.loadingView.message = @"Loading…";
+        [self.postsView addSubview:self.loadingView];
+        __weak __typeof__(self) weakSelf = self;
+        [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
+            __typeof__(self) self = weakSelf;
+            self.title = self.privateMessage.subject;
+            [self.postsView reloadPostAtIndex:0];
+            [self.loadingView removeFromSuperview];
+            self.loadingView = nil;
+        }];
+    }
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    
+    AwfulTheme *theme = self.theme;
+    self.postsView.stylesheet = theme[@"postsViewCSS"];
+    self.postsView.backgroundColor = theme[@"backgroundColor"];
+    self.postsView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
+    self.loadingView.tintColor = self.postsView.backgroundColor;
+}
+
+#pragma mark - AwfulPostsViewDelegate
+
+- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
+{
+    return 1;
+}
+
+- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
+{
+    AwfulPrivateMessageViewModel *viewModel = [[AwfulPrivateMessageViewModel alloc] initWithPrivateMessage:self.privateMessage];
+    NSError *error;
+    NSString *html = [GRMustacheTemplate renderObject:viewModel fromResource:@"PrivateMessage" bundle:nil error:&error];
+    if (!html) {
+        NSLog(@"%s error rendering private message: %@", __PRETTY_FUNCTION__, error);
+    }
+    return html;
+}
+
+- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
+{
+    CGRect rect;
+    if ([postsView indexOfPostWithUserNameAtPoint:point rect:&rect] != NSNotFound) {
+        [self showUserActionsFromRect:rect];
+    }
 }
 
 - (void)showUserActionsFromRect:(CGRect)rect
@@ -211,7 +205,6 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
             [self.navigationController pushViewController:profile animated:YES];
         }
 	}]];
@@ -220,7 +213,6 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
         } else {
-            self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
             [self.navigationController pushViewController:rapSheet animated:YES];
         }
 
