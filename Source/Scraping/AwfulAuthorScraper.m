@@ -63,7 +63,7 @@
 
 - (AwfulUser *)author
 {
-    if (_author) return _author;
+    if (_author || self.error) return _author;
     self.author = [AwfulUser firstOrNewUserWithUserID:self.userID username:self.username inManagedObjectContext:self.managedObjectContext];
     return _author;
 }
