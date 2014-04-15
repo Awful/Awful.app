@@ -187,7 +187,12 @@
                 }
                 HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href*='private.php']"];
                 post.author.canReceivePrivateMessages = !!privateMessageLink;
-                usersByID[author.userID] = author;
+                if (author.userID) {
+                    usersByID[author.userID] = author;
+                }
+                if (author.username) {
+                    usersByName[author.username] = author;
+                }
             }
         }}
         
