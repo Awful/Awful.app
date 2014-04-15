@@ -4,6 +4,7 @@
 
 #import "AwfulFormScraper.h"
 #import "HTMLNode+CachedSelector.h"
+#import "GTMNSString+HTML.h"
 
 @interface AwfulFormScraper ()
 
@@ -56,7 +57,8 @@
             [form addText:[AwfulFormItem itemWithName:input[@"name"] value:input[@"value"]]];
         }
         for (HTMLElement *textarea in [formNode awful_nodesMatchingCachedSelector:@"textarea[name]"]) {
-            [form addText:[AwfulFormItem itemWithName:textarea[@"name"] value:textarea.innerHTML]];
+            [form addText:[AwfulFormItem itemWithName:textarea[@"name"]
+                                                value:[textarea.innerHTML gtm_stringByUnescapingFromHTML]]];
         }
         for (HTMLElement *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='submit']"]) {
             [form addSubmit:[AwfulFormItem itemWithName:input[@"name"] value:input[@"value"]]];
