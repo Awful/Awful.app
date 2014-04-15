@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulResourceURLProtocol.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 
 @implementation AwfulResourceURLProtocol
 
@@ -26,7 +27,21 @@
 - (void)startLoading
 {
     NSURL *URL = self.request.URL;
-    NSURL *resourceURL = [[NSBundle mainBundle] URLForResource:URL.host withExtension:nil];
+    
+    // awful-resource:// URLs are pretty hackneyed. Resource names can include an @, like "image@2x.png". URL parsing would split that up into a user part "image" and a host part "2x.png". So we'll parse it ourselves, with the slashes being optional after the scheme.
+    NSScanner *scanner = [NSScanner scannerWithString:URL.awful_absoluteUnicodeString];
+    scanner.charactersToBeSkipped = nil;
+    [scanner scanString:@"awful-resource:" intoString:nil];
+    [scanner scanString:@"/" intoString:nil];
+    [scanner scanString:@"/" intoString:nil];
+    NSString *resourceName = [scanner.string substringFromIndex:scanner.scanLocation];
+    
+    NSURL *resourceURL = [[NSBundle mainBundle] URLForResource:resourceName withExtension:nil];
+    if (!resourceURL) {
+        NSLog(@"%s could not find resource for URL %@", __PRETTY_FUNCTION__, URL);
+        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:@{ NSLocalizedDescriptionKey: @"Invalid URL" }];
+        [self.client URLProtocol:self didFailWithError:error];
+    }
     
     NSError *error;
     NSData *resourceData = [NSData dataWithContentsOfURL:resourceURL options:0 error:&error];
