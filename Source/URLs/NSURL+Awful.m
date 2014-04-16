@@ -26,12 +26,9 @@
     if ([self.path caseInsensitiveCompare:@"/showthread.php"] == NSOrderedSame) {
         
         // Link to specific post.
-        if ([query[@"goto"] isEqual:@"post"] && query[@"postid"]) {
+        if (([query[@"goto"] isEqual:@"post"] || [query[@"action"] isEqualToString:@"showpost"]) && query[@"postid"]) {
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", query[@"postid"]]];
-        }
-        
-        // Link to specific post.
-        else if ([self.fragment hasPrefix:@"post"] && self.fragment.length > 4) {
+        } else if ([self.fragment hasPrefix:@"post"] && self.fragment.length > 4) {
             return [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", [self.fragment substringFromIndex:4]]];
         }
         
