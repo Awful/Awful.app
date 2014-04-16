@@ -255,7 +255,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
         selectedRange.location += equalsPart.location + equalsPart.length;
         selectedRange.length = 0;
     } else if (selectedRange.length == 0) {
-        selectedRange.location += NSMaxRange(equalsPart);
+        selectedRange.location += NSMaxRange(equalsPart) + 1;
     } else {
         selectedRange.location += selectedRange.length + tagSpecifier.length + closingTag.length;
         selectedRange.length = 0;
