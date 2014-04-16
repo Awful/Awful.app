@@ -226,13 +226,18 @@
     AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = self.title;
     AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@",
-                         self.thread.threadID, @(self.page)];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: [NSURL URLWithString:url],
-                                                       (id)kUTTypePlainText: url
-                                                       }];
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        NSMutableArray *queryParts = [NSMutableArray new];
+        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
+        [queryParts addObject:@"perpage=40"];
+        if (self.page > 1) {
+            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
+        }
+        components.query = [queryParts componentsJoinedByString:@"&"];
+        NSURL *URL = components.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: URL,
+                                                       (id)kUTTypePlainText: URL.absoluteString }];
     }];
     copyURL.title = @"Copy Thread URL";
     [sheet addItem:copyURL];
@@ -873,14 +878,19 @@ static void *KVOContext = &KVOContext;
     AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSString *url = [NSString stringWithFormat:@"http://forums.somethingawful.com/"
-                         "showthread.php?threadid=%@&perpage=40&pagenumber=%@#post%@",
-                         self.thread.threadID, @(self.page), post.postID];
-        [AwfulSettings settings].lastOfferedPasteboardURL = url;
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: [NSURL URLWithString:url],
-            (id)kUTTypePlainText: url,
-        }];
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        NSMutableArray *queryParts = [NSMutableArray new];
+        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
+        [queryParts addObject:@"perpage=40"];
+        if (self.page > 1) {
+            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
+        }
+        components.query = [queryParts componentsJoinedByString:@"&"];
+        components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
+        NSURL *URL = components.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: URL,
+                                                       (id)kUTTypePlainText: URL.absoluteString }];
     }]];
     if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
