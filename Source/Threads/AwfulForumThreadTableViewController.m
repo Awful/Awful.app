@@ -43,7 +43,7 @@
     if (!self) return nil;
     
     _forum = forum;
-    self.title = _forum.abbreviatedName;
+    self.title = _forum.name;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     

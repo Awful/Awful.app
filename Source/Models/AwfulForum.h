@@ -35,11 +35,6 @@
 @property (copy, nonatomic) NSString *name;
 
 /**
- * An abbreviated name of the forum if one is available, otherwise the full name.
- */
-@property (readonly, copy, nonatomic) NSString *abbreviatedName;
-
-/**
  * The forum's category.
  */
 @property (strong, nonatomic) AwfulCategory *category;
