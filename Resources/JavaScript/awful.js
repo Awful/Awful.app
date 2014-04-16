@@ -26,6 +26,14 @@ Awful.post = function(i, post){
   $('#posts > article').eq(i).replaceWith(render(post))
 }
 
+Awful.markReadUpToPostWithID = function(postID) {
+  var lastReadIndex = $('#' + postID).index();
+  if (lastReadIndex == -1) return;
+  $('article.post').each(function(i) {
+    $(this).toggleClass('seen', i <= lastReadIndex);
+  });
+};
+
 Awful.stylesheet = function(style){
   $('#awful-inline-style').text(style)
 }

@@ -287,6 +287,11 @@ static NSString * JSONizeBool(BOOL aBool)
      JSONizeValue(self.highlightMentionUsername)];
 }
 
+- (void)setLastReadPostID:(NSString *)postID
+{
+    [self evalJavaScript:@"Awful.markReadUpToPostWithID(%@)", JSONizeValue(postID)];
+}
+
 - (UIScrollView *)scrollView
 {
     return self.webView.scrollView;

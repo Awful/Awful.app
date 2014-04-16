@@ -41,6 +41,8 @@
 // Set to nil to highlight no mentions.
 @property (copy, nonatomic) NSString *highlightMentionUsername;
 
+- (void)setLastReadPostID:(NSString *)postID;
+
 @property (readonly, nonatomic) UIScrollView *scrollView;
 
 // Set to nil to hide end of thread message.

@@ -55,7 +55,6 @@
 @property (nonatomic) AwfulLoadingView *loadingView;
 
 @property (nonatomic) BOOL observingScrollViewSize;
-@property (nonatomic) BOOL observingThreadSeenPosts;
 
 @property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
 
@@ -72,17 +71,20 @@
     [self stopObservingScrollViewContentSize];
     self.postsView.scrollView.delegate = nil;
     self.fetchedResultsController.delegate = nil;
-    [self stopObservingThreadSeenPosts];
 }
 
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
 {
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
+    self = [super initWithNibName:nil bundle:nil];
+    if (!self) return nil;
+    
     _thread = thread;
     _author = author;
     self.restorationClass = self.class;
+    
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    
     const CGFloat spacerWidth = 12;
     self.toolbarItems = @[ self.settingsItem,
                            [UIBarButtonItem awful_flexibleSpace],
@@ -93,10 +95,12 @@
                            self.forwardItem,
                            [UIBarButtonItem awful_flexibleSpace],
                            self.actionsItem ];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
+    
     return self;
 }
 
@@ -113,9 +117,7 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                 target:self
-                                                                 action:@selector(didTapCompose)];
+    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didTapCompose)];
     return _composeItem;
 }
 
@@ -512,7 +514,6 @@
         self.topPostAfterLoad = nil;
     }
     [self updateUserInterface];
-    [self startObservingThreadSeenPosts];
     [self clearLoadingMessage];
 }
 
@@ -528,7 +529,6 @@
 
 - (void)prepareForLoad
 {
-    [self stopObservingThreadSeenPosts];
     [self.networkOperation cancel];
     self.topPostAfterLoad = nil;
 }
@@ -603,23 +603,8 @@
                  if (self.thread.seenPosts < lastPost.threadIndex) {
                      self.thread.seenPosts = lastPost.threadIndex;
                  }
-                 [self startObservingThreadSeenPosts];
              }];
     self.networkOperation = op;
-}
-
-- (void)startObservingThreadSeenPosts
-{
-    if (self.observingThreadSeenPosts) return;
-    [self addObserver:self forKeyPath:@"thread.seenPosts" options:0 context:KVOContext];
-    self.observingThreadSeenPosts = YES;
-}
-
-- (void)stopObservingThreadSeenPosts
-{
-    if (!self.observingThreadSeenPosts) return;
-    [self removeObserver:self forKeyPath:@"thread.seenPosts" context:KVOContext];
-    self.observingThreadSeenPosts = NO;
 }
 
 - (void)setTopPost:(AwfulPost *)topPost
@@ -770,19 +755,17 @@
                         change:(NSDictionary *)change
                        context:(void *)context
 {
-    if (context != KVOContext) {
+    if (context == KVOContext) {
+        if ([keyPath isEqualToString:@"contentSize"]) {
+            CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
+            CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
+            CGPoint contentOffset = [object contentOffset];
+            contentOffset.y += newSize.height - oldSize.height;
+            [object setContentOffset:contentOffset];
+            [self stopObservingScrollViewContentSize];
+        }
+    } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-        return;
-    }
-    if ([keyPath isEqualToString:@"contentSize"]) {
-        CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
-        CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
-        CGPoint contentOffset = [object contentOffset];
-        contentOffset.y += newSize.height - oldSize.height;
-        [object setContentOffset:contentOffset];
-        [self stopObservingScrollViewContentSize];
-    } else if ([keyPath isEqualToString:@"thread.seenPosts"]) {
-        [self.postsView reloadData];
     }
 }
 
@@ -896,12 +879,10 @@ static void *KVOContext = &KVOContext;
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Mark Read"
-                                            error:error
-                                      buttonTitle:@"Alright"];
+                    [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
                 } else {
-                    [SVProgressHUD showSuccessWithStatus:@"Marked"];
                     post.thread.seenPosts = post.threadIndex;
+                    [self.postsView setLastReadPostID:post.postID];
                 }
             }];
         }]];
