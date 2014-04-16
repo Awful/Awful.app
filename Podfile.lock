@@ -20,7 +20,7 @@ PODS:
     - AFNetworking/NSURLSession
   - GRMustache (6.9.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.5.2)
+  - HTMLReader (0.5.3)
   - JLRoutes (1.4)
   - JRSwizzle (1.0)
   - PocketAPI (1.0.2)
@@ -44,8 +44,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: e8cfd8f3fe3bfe19124a0cc63f4d45752d892a56
-  GRMustache: 292d60aaafbdab2844bc7af76d111b848c8807a0
-  HTMLReader: e22a39fcc94afa709ba55749e3552c3c6c462e85
+  GRMustache: 66b188b8563f14812c6cb465a18599df4dbb4244
+  HTMLReader: 7ab4be7db91895a352ccc49761024d9fe88d6e8a
   JLRoutes: 8814d5341d2678c2daca045ce538f21e62e558d4
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
@@ -53,4 +53,4 @@ SPEC CHECKSUMS:
   SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
 
-COCOAPODS: 0.31.1
+COCOAPODS: 0.32.1
