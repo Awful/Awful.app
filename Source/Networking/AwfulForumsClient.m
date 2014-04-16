@@ -321,7 +321,7 @@
                 NSArray *objectIDs = [scraper.posts valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     NSArray *posts = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                    callback(nil, posts, firstUnreadPostIndex, nil);
+                    callback(nil, posts, firstUnreadPostIndex, scraper.advertisementHTML);
                 }];
             }
         }];
