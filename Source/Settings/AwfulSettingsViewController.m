@@ -358,8 +358,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
             [AwfulSettings settings].instapaperUsername = nil;
             [AwfulSettings settings].instapaperPassword = nil;
             [self reloadSections];
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                     withRowAnimation:UITableViewRowAnimationNone];
+            [tableView reloadData];
         } else {
             AwfulInstapaperLogInController *logIn = [AwfulInstapaperLogInController new];
             logIn.delegate = self;
@@ -369,9 +368,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         if ([[PocketAPI sharedAPI] isLoggedIn]) {
             [[PocketAPI sharedAPI] logout];
             [self reloadSections];
-            [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                     withRowAnimation:UITableViewRowAnimationNone];
-            [SVProgressHUD showSuccessWithStatus:@"Logged out"];
+            [tableView reloadData];
         } else {
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[PocketAPI sharedAPI] loginWithHandler: ^(PocketAPI *API, NSError *error){
