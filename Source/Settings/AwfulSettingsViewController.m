@@ -10,6 +10,7 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulPostsViewController.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
@@ -75,10 +76,14 @@
         }
         NSMutableDictionary *filteredSection = [section mutableCopy];
         NSArray *settings = filteredSection[@"Settings"];
-        NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *setting, id _)
+        NSPredicate *predicate = [NSPredicate predicateWithBlock:^(NSDictionary *setting, id _)
         {
-            if (!setting[@"PredicateKeyPath"]) return YES;
-            return [[self valueForKeyPath:setting[@"PredicateKeyPath"]] boolValue];
+            NSString *device = setting[@"Device"];
+            if (device && ![device isEqual:currentDevice]) return NO;
+            
+            NSString *keyPath = setting[@"PredicateKeyPath"];
+            if (keyPath) return [[self valueForKeyPath:setting[@"PredicateKeyPath"]] boolValue];
+            return YES;
         }];
         filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
         [sections addObject:filteredSection];
@@ -156,7 +161,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     } else if (setting[@"Choices"]) {
         settingType = ChoiceSetting;
         identifier = @"Choices";
-    } else if (setting[@"Action"]) {
+    } else if (setting[@"Action"] && ![setting[@"Action"] isEqual:@"ShowProfile"]) {
         settingType = ButtonSetting;
         identifier = @"Action";
     } else if ([setting[@"Type"] isEqual:@"Stepper"]) {
@@ -324,7 +329,13 @@ typedef NS_ENUM(NSUInteger, SettingType)
 {
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *action = setting[@"Action"];
-    if ([action isEqualToString:@"LogOut"]) {
+    if ([action isEqualToString:@"ShowProfile"]) {
+        AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
+                                                             username:[AwfulSettings settings].username
+                                               inManagedObjectContext:self.managedObjectContext];
+        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:loggedInUser];
+        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+    } else if ([action isEqualToString:@"LogOut"]) {
         AwfulAlertView *alert = [AwfulAlertView new];
         alert.title = @"Log Out";
         alert.message = @"Are you sure you want to log out?";

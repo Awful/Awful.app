@@ -14,6 +14,10 @@
 					<string>Logged In As</string>
 					<key>ValueIdentifier</key>
 					<string>Username</string>
+					<key>Action</key>
+					<string>ShowProfile</string>
+					<key>Device</key>
+					<string>iPad</string>
 				</dict>
 				<dict>
 					<key>Title</key>

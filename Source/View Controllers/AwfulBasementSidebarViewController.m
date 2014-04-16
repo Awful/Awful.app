@@ -7,6 +7,7 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulBasementHeaderView.h"
 #import "AwfulForumsClient.h"
+#import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 
@@ -57,6 +58,8 @@
     
     AwfulBasementHeaderView *headerView = [AwfulBasementHeaderView new];
     headerView.translatesAutoresizingMaskIntoConstraints = NO;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapHeader)];
+    [headerView addGestureRecognizer:tap];
     self.headerView = headerView;
     [self.view addSubview:headerView];
     
@@ -112,6 +115,12 @@ static NSString * const CellIdentifier = @"Cell";
         headerView.bottomOffset = 5;
     }
     [headerView layoutIfNeeded];
+}
+
+- (void)didTapHeader
+{
+    AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:self.loggedInUser];
+    [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
