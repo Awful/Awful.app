@@ -26,6 +26,7 @@
 {
     BOOL _onceOnFirstLoad;
     BOOL _loadLinkifiedImagesOnFirstLoad;
+    CGFloat _scrollToFractionOfContent;
 }
 
 - (void)dealloc
@@ -292,6 +293,24 @@ static NSString * JSONizeBool(BOOL aBool)
     [self evalJavaScript:@"Awful.markReadUpToPostWithID(%@)", JSONizeValue(postID)];
 }
 
+- (CGFloat)scrolledFractionOfContent
+{
+    return [[self evalJavaScript:@"document.body.scrollTop / document.body.scrollHeight"] floatValue];
+}
+
+- (void)scrollToFractionOfContent:(CGFloat)fraction
+{
+    _scrollToFractionOfContent = fraction;
+    [self updateScrollToFractionOfContent];
+}
+
+- (void)updateScrollToFractionOfContent
+{
+    if (_onceOnFirstLoad) {
+        [self evalJavaScript:@"window.scroll(0, document.body.scrollHeight * %g)", _scrollToFractionOfContent];
+    }
+}
+
 - (UIScrollView *)scrollView
 {
     return self.webView.scrollView;
@@ -447,6 +466,8 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
         if (self.jumpToElementAfterLoading) {
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;
+        } else if (_scrollToFractionOfContent > 0) {
+            [self updateScrollToFractionOfContent];
         }
     }
 }

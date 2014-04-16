@@ -1221,6 +1221,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeObject:self.replyViewController forKey:ReplyViewControllerKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
+    [coder encodeFloat:self.postsView.scrolledFractionOfContent forKey:ScrolledFractionOfContentKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -1234,6 +1235,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
     [self.postsView reloadData];
+    [self.postsView scrollToFractionOfContent:[coder decodeFloatForKey:ScrolledFractionOfContentKey]];
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";
@@ -1243,5 +1245,6 @@ static NSString * const HiddenPostsKey = @"AwfulHiddenPosts";
 static NSString * const ReplyViewControllerKey = @"AwfulReplyViewController";
 static NSString * const MessageViewControllerKey = @"AwfulMessageViewController";
 static NSString * const AdvertisementHTMLKey = @"AwfulAdvertisementHTML";
+static NSString * const ScrolledFractionOfContentKey = @"AwfulScrolledFractionOfContentSize";
 
 @end

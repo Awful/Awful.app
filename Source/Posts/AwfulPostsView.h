@@ -43,6 +43,10 @@
 
 - (void)setLastReadPostID:(NSString *)postID;
 
+@property (readonly, assign, nonatomic) CGFloat scrolledFractionOfContent;
+
+- (void)scrollToFractionOfContent:(CGFloat)fraction;
+
 @property (readonly, nonatomic) UIScrollView *scrollView;
 
 // Set to nil to hide end of thread message.
