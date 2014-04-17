@@ -47,8 +47,8 @@
         
         {{
             HTMLElement *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
-            if (threadTagImage) {
-                NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
+            NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
+            if (URL) {
                 message.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil threadTagURL:URL inManagedObjectContext:self.managedObjectContext];
             } else {
                 message.threadTag = nil;
