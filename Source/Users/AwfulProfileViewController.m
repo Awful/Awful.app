@@ -112,29 +112,28 @@
 - (void)didTap:(UITapGestureRecognizer *)tap
 {
     CGPoint location = [tap locationInView:self.webView];
-    NSString *js = [NSString stringWithFormat:@"Awful.profile.serviceFromPoint(%d, %d)",
-                    (int)location.x, (int)location.y];
+    NSString *js = [NSString stringWithFormat:@"Awful.profile.serviceFromPoint(%d, %d)", (int)location.x, (int)location.y];
     NSString *json = [self.webView stringByEvaluatingJavaScriptFromString:js];
     NSData *jsonData = [json dataUsingEncoding:NSUTF8StringEncoding];
-    // JSON errors are irrelevant here; the JavaScript function returns undefined if no service
-    // was tapped.
-    NSDictionary *tappedService = [NSJSONSerialization JSONObjectWithData:jsonData options:0
-                                                                    error:nil];
+    
+    // JSON errors are irrelevant here; the JavaScript function returns undefined if no service was tapped.
+    NSDictionary *tappedService = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+    
     if (![tappedService isKindOfClass:[NSDictionary class]]) return;
     NSUInteger i = [tappedService[@"serviceIndex"] unsignedIntegerValue];
     if (i >= [self.services count]) return;
     self.skipFetchingAndRenderingProfileOnAppear = YES;
     NSDictionary *service = self.services[i];
     if ([service[@"service"] isEqual:AwfulServiceHomepage]) {
-        NSURL *url = [NSURL awful_URLWithString:service[@"address"]];
-        if (url) {
+        NSURL *URL = service[@"address"];
+        if (URL) {
             NSDictionary *rectDict = tappedService[@"rect"];
             CGRect rect = CGRectMake([rectDict[@"left"] floatValue],
                                      [rectDict[@"top"] floatValue],
                                      [rectDict[@"width"] floatValue],
                                      [rectDict[@"height"] floatValue]);
 
-            [self showActionsForHomepage:url atRect:rect];
+            [self showActionsForHomepage:URL atRect:rect];
         }
     } else if ([service[@"service"] isEqual:AwfulServicePrivateMessage]) {
         AwfulNewPrivateMessageViewController *newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:self.user];
