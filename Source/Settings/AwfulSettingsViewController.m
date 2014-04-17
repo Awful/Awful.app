@@ -17,7 +17,6 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 
 @interface AwfulSettingsViewController () <AwfulInstapaperLogInControllerDelegate>
 
@@ -379,9 +378,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
                                       buttonTitle:@"Alright"];
                 } else {
                     [self reloadSections];
-                    [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                             withRowAnimation:UITableViewRowAnimationNone];
-                    [SVProgressHUD showSuccessWithStatus:@"Logged in to Pocket"];
+                    [tableView reloadData];
                 }
             }];
         }

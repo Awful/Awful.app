@@ -10,7 +10,7 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "FVGifAnimation.h"
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MRProgress/MRProgressOverlayView.h>
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -136,23 +136,15 @@
     [self.automaticallyHideBarsTimer invalidate];
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Save to Photos" block:^{
-        [SVProgressHUD showWithStatus:@"Saving…" maskType:SVProgressHUDMaskTypeGradient];
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view title:@"Saving" mode:MRProgressOverlayViewModeIndeterminate animated:YES];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            ALAssetsLibrary *assets = [ALAssetsLibrary new];
-            [assets writeImageDataToSavedPhotosAlbum:self.imageData
-                                            metadata:nil
-                                     completionBlock:^(NSURL *assetURL, NSError *error)
-            {
+            [[ALAssetsLibrary new] writeImageDataToSavedPhotosAlbum:self.imageData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        [SVProgressHUD dismiss];
-                        [AwfulAlertView showWithTitle:@"Could Not Save Image"
-                                                error:error
-                                          buttonTitle:@"OK"
-                                           completion:^{ [self hideBarsAfterShortDuration]; }];
-                    } else {
-                        [SVProgressHUD showSuccessWithStatus:@"Saved"];
-                    }
+                    [overlay dismiss:YES completion:^{
+                        if (error) {
+                            [AwfulAlertView showWithTitle:@"Could Not Save Image" error:error buttonTitle:@"OK" completion:^{ [self hideBarsAfterShortDuration]; }];
+                        }
+                    }];
                 });
             }];
         });

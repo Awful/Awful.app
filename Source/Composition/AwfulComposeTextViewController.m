@@ -7,7 +7,7 @@
 #import "AwfulComposeTextView.h"
 #import <Crashlytics/Crashlytics.h>
 #import "ImgurHTTPClient.h"
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MRProgress/MRProgressOverlayView.h>
 
 @implementation AwfulComposeTextViewController
 {
@@ -174,19 +174,23 @@
     NSMutableAttributedString *submission = [self.textView.attributedText mutableCopy];
     void (^submit)(void) = ^{
         __typeof__(self) self = weakSelf;
-        [SVProgressHUD showWithStatus:self.submissionInProgressTitle];
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                             title:self.submissionInProgressTitle
+                                                                              mode:MRProgressOverlayViewModeIndeterminate
+                                                                          animated:YES];
         [self submitComposition:submission.string completionHandler:^(BOOL success) {
-            [SVProgressHUD dismiss];
-            if (success) {
-                if (self.delegate) {
-                    [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
+            [overlay dismiss:YES completion:^{
+                if (success) {
+                    if (self.delegate) {
+                        [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
+                    } else {
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    }
                 } else {
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    [self enableEverything];
+                    [self focusInitialFirstResponder];
                 }
-            } else {
-                [self enableEverything];
-                [self focusInitialFirstResponder];
-            }
+            }];
         }];
     };
     
@@ -205,7 +209,10 @@
         return;
     }
     
-    [SVProgressHUD showWithStatus:@"Uploading images…"];
+    MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                         title:@"Uploading images"
+                                                                          mode:MRProgressOverlayViewModeIndeterminate
+                                                                      animated:YES];
     
     _imageUploadCancelToken = [[ImgurHTTPClient client] uploadImages:[attachments valueForKey:@"image"]
                                                              andThen:^(NSError *error, NSArray *URLs)
@@ -213,7 +220,7 @@
         __typeof__(self) self = weakSelf;
         _imageUploadCancelToken = nil;
         if (error) {
-            [SVProgressHUD dismiss];
+            [overlay dismiss:NO];
             [AwfulAlertView showWithTitle:@"Image Upload Failed" error:error buttonTitle:@"OK" completion:^{
                 [self enableEverything];
             }];
@@ -302,8 +309,9 @@
 {
     if (_imageUploadCancelToken) {
         [_imageUploadCancelToken cancel], _imageUploadCancelToken = nil;
-        [SVProgressHUD dismiss];
-        [self enableEverything];
+        [MRProgressOverlayView dismissAllOverlaysForView:self.view animated:YES completion:^{
+            [self enableEverything];
+        }];
     } else {
         [self cancel];
     }

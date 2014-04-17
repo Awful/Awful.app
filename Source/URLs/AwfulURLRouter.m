@@ -15,7 +15,7 @@
 #import "AwfulRapSheetViewController.h"
 #import "AwfulSettingsViewController.h"
 #import <JLRoutes/JLRoutes.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MRProgress/MRProgressOverlayView.h>
 
 @implementation AwfulURLRouter
 {
@@ -73,22 +73,29 @@
             return [self showPostsViewController:postsViewController];
         }
         
-        [SVProgressHUD showWithStatus:@"Locating Post"];
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.rootViewController.view
+                                                                             title:@"Locating Post"
+                                                                              mode:MRProgressOverlayViewModeIndeterminate
+                                                                          animated:YES];
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
             if (error) {
-                [SVProgressHUD showErrorWithStatus:@"Post Not Found"];
-                NSLog(@"%s couldn't locate post at %@: %@", __PRETTY_FUNCTION__, parameters[kJLRouteURLKey], error);
+                overlay.titleLabelText = @"Post Not Found";
+                overlay.mode = MRProgressOverlayViewModeCross;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [overlay dismiss:YES];
+                });
             } else {
-                [SVProgressHUD dismiss];
-                AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
-                                                         inManagedObjectContext:self.managedObjectContext];
-                AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-                postsViewController.page = page;
-                postsViewController.topPost = [AwfulPost firstOrNewPostWithPostID:postID
-                                                           inManagedObjectContext:self.managedObjectContext];
-                [self showPostsViewController:postsViewController];
+                [overlay dismiss:YES completion:^{
+                    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
+                                                             inManagedObjectContext:self.managedObjectContext];
+                    AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+                    postsViewController.page = page;
+                    postsViewController.topPost = [AwfulPost firstOrNewPostWithPostID:postID
+                                                               inManagedObjectContext:self.managedObjectContext];
+                    [self showPostsViewController:postsViewController];
+                }];
             }
         }];
         return YES;

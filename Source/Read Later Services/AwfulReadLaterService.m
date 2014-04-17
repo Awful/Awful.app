@@ -6,10 +6,11 @@
 
 #import "AwfulReadLaterService.h"
 #import "AwfulAlertView.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulSettings.h"
 #import "InstapaperAPIClient.h"
+#import <MRProgress/MRProgressOverlayView.h>
 #import <PocketAPI/PocketAPI.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 
 @interface InstapaperReadLaterService : AwfulReadLaterService @end
 @interface PocketReadLaterService : AwfulReadLaterService @end
@@ -24,6 +25,8 @@
 @property (readonly, getter=isReady, nonatomic) BOOL ready;
 
 - (void)showProgressHUD;
+
+@property (strong, nonatomic) MRProgressOverlayView *overlay;
 
 // Text appropriate for a progress HUD while saving is in progress.
 @property (readonly, nonatomic) NSString *ongoingStatusText;
@@ -55,16 +58,23 @@
 
 - (void)showProgressHUD
 {
-    [SVProgressHUD showWithStatus:self.ongoingStatusText];
+    self.overlay = [MRProgressOverlayView showOverlayAddedTo:[AwfulAppDelegate instance].window
+                                                       title:self.ongoingStatusText
+                                                        mode:MRProgressOverlayViewModeIndeterminate
+                                                    animated:YES];
 }
 
 - (void)done:(NSError *)error
 {
     if (error) {
-        [SVProgressHUD dismiss];
+        [self.overlay dismiss:NO];
         [AwfulAlertView showWithTitle:@"Could Not Send Link" error:error buttonTitle:@"OK"];
     } else {
-         [SVProgressHUD showSuccessWithStatus:self.successfulStatusText];
+        self.overlay.titleLabelText = self.successfulStatusText;
+        self.overlay.mode = MRProgressOverlayViewModeCheckmark;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.overlay dismiss:YES];
+        });
     }
 }
 

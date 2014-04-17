@@ -16,7 +16,6 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
-#import <SVProgressHUD/SVProgressHUD.h>
 
 @interface AwfulProfileViewController () <UIWebViewDelegate, UIGestureRecognizerDelegate, AwfulComposeTextViewControllerDelegate>
 

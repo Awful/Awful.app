@@ -15,7 +15,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @implementation AwfulThreadTableViewController
@@ -178,7 +178,10 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
             } else {
                 NSString *status = thread.bookmarked ? @"Added Bookmark" : @"Removed Bookmark";
-                [SVProgressHUD showSuccessWithStatus:status];
+                [MRProgressOverlayView showOverlayAddedTo:self.view title:status mode:MRProgressOverlayViewModeCheckmark animated:YES];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [MRProgressOverlayView dismissOverlayForView:self.view animated:YES];
+                });
             }
         }];
     }]];

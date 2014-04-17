@@ -7,9 +7,9 @@ pod 'AFNetworking', '2.2.0'
 pod 'GRMustache', '6.9.2'
 pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
 pod 'JLRoutes', '1.4'
+pod 'MRProgress/Overlay', '0.4.1'
 pod 'PocketAPI', '1.0.2'
 pod 'PSMenuItem', '0.0.1'
-pod 'SVProgressHUD', '1.0'
 pod 'SVPullToRefresh', :head
 
 target :ScrapingTests, :exclusive => true do

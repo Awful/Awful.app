@@ -18,7 +18,6 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
-#import <SVProgressHUD/SVProgressHUD.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>

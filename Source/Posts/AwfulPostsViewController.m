@@ -29,7 +29,7 @@
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
-#import <SVProgressHUD/SVProgressHUD.h>
+#import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
@@ -248,16 +248,21 @@
         AwfulActionSheet *vote = [AwfulActionSheet new];
         for (int i = 5; i >= 1; i--) {
             [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                [[AwfulForumsClient client] rateThread:self.thread :i
-                                             andThen:^(NSError *error)
-                 {
-                     if (error) {
-                         [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
-                     } else {
-                         NSString *status = [NSString stringWithFormat:@"Voted %d", i];
-                         [SVProgressHUD showSuccessWithStatus:status];
-                     }
-                 }];
+                MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                     title:[NSString stringWithFormat:@"Voting %i", i]
+                                                                                      mode:MRProgressOverlayViewModeIndeterminate
+                                                                                  animated:YES];
+                [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
+                    if (error) {
+                        [overlay dismiss:NO];
+                        [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                    } else {
+                        overlay.mode = MRProgressOverlayViewModeCheckmark;
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [overlay dismiss:YES];
+                        });
+                    }
+                }];
             }];
         }
         [vote addCancelButtonWithTitle:@"Cancel"];
@@ -283,7 +288,10 @@
                  if (self.thread.bookmarked) {
                      status = @"Added Bookmark";
                  }
-                 [SVProgressHUD showSuccessWithStatus:status];
+                 [MRProgressOverlayView showOverlayAddedTo:self.view title:status mode:MRProgressOverlayViewModeCheckmark animated:YES];
+                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                     [MRProgressOverlayView dismissOverlayForView:self.view animated:YES];
+                 });
              }
          }];
     }]];
