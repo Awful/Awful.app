@@ -891,9 +891,7 @@ static void *KVOContext = &KVOContext;
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Edit Post"
-                                            error:error
-                                      buttonTitle:@"Alright"];
+                    [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
                     return;
                 }
                 self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
@@ -907,25 +905,23 @@ static void *KVOContext = &KVOContext;
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Quote Post"
-                                            error:error
-                                      buttonTitle:@"Alright"];
+                    [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
                     return;
                 }
                 if (self.replyViewController) {
                     UITextView *textView = self.replyViewController.textView;
                     void (^appendString)(NSString *) = ^(NSString *string) {
-                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument
-                                                                     toPosition:textView.endOfDocument];
+                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument toPosition:textView.endOfDocument];
                         [textView replaceRange:endRange withText:string];
                     };
-                    while (![textView.text hasSuffix:@"\n\n"]) {
-                        appendString(@"\n");
+                    if ([textView comparePosition:textView.beginningOfDocument toPosition:textView.endOfDocument] != NSOrderedSame) {
+                        while (![textView.text hasSuffix:@"\n\n"]) {
+                            appendString(@"\n");
+                        }
                     }
                     appendString(quotedText);
                 } else {
-                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread
-                                                                                     quotedText:quotedText];
+                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:quotedText];
                     self.replyViewController.delegate = self;
                     self.replyViewController.restorationIdentifier = @"Reply composition";
                 }
