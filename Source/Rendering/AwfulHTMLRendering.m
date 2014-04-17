@@ -9,7 +9,11 @@ void HighlightQuotesOfPostsByUserNamed(HTMLDocument *document, NSString *usernam
     NSString *loggedInUserPosted = [username stringByAppendingString:@" posted:"];
     for (HTMLElement *h4 in [document nodesMatchingSelector:@".bbc-block h4"]) {
         if ([h4.textContent isEqualToString:loggedInUserPosted]) {
-            [h4 toggleClass:@"mention"];
+            HTMLElement *block = h4.parentElement;
+            while (block && ![block hasClass:@"bbc-block"]) {
+                block = block.parentElement;
+            }
+            [block toggleClass:@"mention"];
         }
     }
 }
