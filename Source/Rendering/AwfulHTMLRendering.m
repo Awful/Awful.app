@@ -35,8 +35,9 @@ void LinkifyNonSmileyImages(HTMLDocument *document)
 
 void RemoveEmptyEditedByParagraphs(HTMLDocument *document)
 {
-    for (HTMLElement *element in [document nodesMatchingSelector:@".editedby"]) {
-        if (element.textContent.length == 0) {
+    for (HTMLElement *element in [document nodesMatchingSelector:@"p.editedby"]) {
+        NSString *textContent = [element.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (textContent.length == 0) {
             [[element.parentNode mutableChildren] removeObject:element];
         }
     }
