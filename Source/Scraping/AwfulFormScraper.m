@@ -45,6 +45,8 @@
                                                                         inManagedObjectContext:self.managedObjectContext];
                 [form addSecondaryThreadTag:threadTag];
             }];
+            HTMLElement *anyInput = secondaryIconInputs.firstObject;
+            form.secondaryThreadTagName = anyInput[@"name"];
         }
         
         for (HTMLElement *input in [formNode awful_nodesMatchingCachedSelector:@"input[type='hidden']"]) {
