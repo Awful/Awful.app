@@ -111,7 +111,8 @@
 
 - (AwfulTheme *)theme
 {
-	return [AwfulTheme currentThemeForForum:self.thread.forum];
+    AwfulForum *forum = self.thread.forum;
+    return forum.forumID.length > 0 ? [AwfulTheme currentThemeForForum:self.thread.forum] : [AwfulTheme currentTheme];
 }
 
 - (UIBarButtonItem *)composeItem
