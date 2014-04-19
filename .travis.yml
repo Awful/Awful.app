@@ -1,5 +1,8 @@
 language: objective-c
-install: true
+before_install:
+  - brew update
+  - brew install xctool || brew upgrade xctool
+install: true # skip cocoapods
 script: xctool test
 notifications:
   email:
