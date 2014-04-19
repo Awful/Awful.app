@@ -21,6 +21,7 @@
 {
     BOOL _whenLoadedSidebarHidden;
     BOOL _detailViewControllerIsInconsequential;
+    BOOL _shouldHideSidebarAfterRestoringState;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -313,6 +314,7 @@
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.viewControllers forKey:ViewControllersKey];
+    [coder encodeBool:self.sidebarHidden forKey:SidebarHiddenKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -322,6 +324,7 @@
     if (viewControllers.count > 0) {
         self.viewControllers = viewControllers;
     }
+    _shouldHideSidebarAfterRestoringState = [coder decodeBoolForKey:SidebarHiddenKey];
 }
 
 - (void)applicationFinishedRestoringState
@@ -331,11 +334,12 @@
     // If the detail view controller is a UINavigationController, it has no child view controllers as of -decodeRestorableStateWithCoder:. So it doesn't get its left bar button item set. Seems lame, but if we do this stuff here then it works.
     [self updateToggleSidebarItemOnDetailViewController];
     if (!_detailViewControllerIsInconsequential) {
-        self.sidebarHidden = YES;
+        self.sidebarHidden = _shouldHideSidebarAfterRestoringState;
     }
 }
 
 static NSString * const ViewControllersKey = @"AwfulViewControllers";
+static NSString * const SidebarHiddenKey = @"AwfulSidebarHidden";
 
 @end
 
