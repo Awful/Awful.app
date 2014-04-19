@@ -178,6 +178,7 @@
                                                                              title:self.submissionInProgressTitle
                                                                               mode:MRProgressOverlayViewModeIndeterminate
                                                                           animated:YES];
+        overlay.tintColor = self.theme[@"tintColor"];
         [self submitComposition:submission.string completionHandler:^(BOOL success) {
             [overlay dismiss:YES completion:^{
                 if (success) {
@@ -213,6 +214,7 @@
                                                                          title:@"Uploading images"
                                                                           mode:MRProgressOverlayViewModeIndeterminate
                                                                       animated:YES];
+    overlay.tintColor = self.theme[@"tintColor"];
     
     _imageUploadCancelToken = [[ImgurHTTPClient client] uploadImages:[attachments valueForKey:@"image"]
                                                              andThen:^(NSError *error, NSArray *URLs)

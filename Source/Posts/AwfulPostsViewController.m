@@ -252,6 +252,7 @@
                                                                                      title:[NSString stringWithFormat:@"Voting %i", i]
                                                                                       mode:MRProgressOverlayViewModeIndeterminate
                                                                                   animated:YES];
+                overlay.tintColor = self.theme[@"tintColor"];
                 [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
                     if (error) {
                         [overlay dismiss:NO];
@@ -288,9 +289,13 @@
                  if (self.thread.bookmarked) {
                      status = @"Added Bookmark";
                  }
-                 [MRProgressOverlayView showOverlayAddedTo:self.view title:status mode:MRProgressOverlayViewModeCheckmark animated:YES];
+                 MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                      title:status
+                                                                                       mode:MRProgressOverlayViewModeCheckmark
+                                                                                   animated:YES];
+//                 overlay.tintColor = self.theme[@"tintColor"];
                  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                     [MRProgressOverlayView dismissOverlayForView:self.view animated:YES];
+                     [overlay dismiss:YES];
                  });
              }
          }];

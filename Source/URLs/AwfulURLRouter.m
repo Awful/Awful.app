@@ -77,6 +77,7 @@
                                                                              title:@"Locating Post"
                                                                               mode:MRProgressOverlayViewModeIndeterminate
                                                                           animated:YES];
+        overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;

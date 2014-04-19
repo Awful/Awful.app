@@ -62,6 +62,7 @@
                                                        title:self.ongoingStatusText
                                                         mode:MRProgressOverlayViewModeIndeterminate
                                                     animated:YES];
+    self.overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
 }
 
 - (void)done:(NSError *)error

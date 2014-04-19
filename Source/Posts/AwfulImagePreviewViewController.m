@@ -136,7 +136,11 @@
     [self.automaticallyHideBarsTimer invalidate];
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Save to Photos" block:^{
-        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view title:@"Saving" mode:MRProgressOverlayViewModeIndeterminate animated:YES];
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                             title:@"Saving"
+                                                                              mode:MRProgressOverlayViewModeIndeterminate
+                                                                          animated:YES];
+        overlay.tintColor = self.theme[@"tintColor"];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[ALAssetsLibrary new] writeImageDataToSavedPhotosAlbum:self.imageData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
