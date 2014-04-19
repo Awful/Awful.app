@@ -28,8 +28,10 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (!self) return nil;
+    
     _whenLoadedSidebarHidden = YES;
     _stickySidebarInterfaceOrientationMask = UIInterfaceOrientationMaskLandscape;
+    
     return self;
 }
 
