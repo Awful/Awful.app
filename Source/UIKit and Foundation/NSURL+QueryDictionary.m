@@ -10,6 +10,7 @@
 {
     NSMutableDictionary *queryDictionary = [NSMutableDictionary new];
     for (NSString *pair in [[self query] componentsSeparatedByString:@"&"]) {
+        if (pair.length == 0) continue;
         NSArray *keyAndValue = [pair componentsSeparatedByString:@"="];
         queryDictionary[keyAndValue[0]] = keyAndValue[1];
     }
