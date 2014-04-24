@@ -109,5 +109,11 @@ static BOOL IsSmileyURL(NSURL *URL)
             return YES;
         }
     }
+    
+    // http://media.votefinder.org (games of Mafia)
+    else if ([host caseInsensitiveCompare:@"media.votefinder.org"] == NSOrderedSame) {
+        return YES;
+    }
+    
     return NO;
 }
