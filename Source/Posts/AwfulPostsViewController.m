@@ -1066,6 +1066,7 @@ static void *KVOContext = &KVOContext;
             (id)kUTTypeURL: URL,
             (id)kUTTypePlainText: URL.absoluteString,
         } ];
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
