@@ -30,6 +30,7 @@
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
+#import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import <PocketAPI/PocketAPI.h>
@@ -117,6 +118,7 @@ static id _instance;
                                                                     diskPath:nil]];
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
+    [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     if ([AwfulForumsClient client].loggedIn) {
