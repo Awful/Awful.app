@@ -77,34 +77,6 @@
     self.textView.keyboardAppearance = self.theme.keyboardAppearance;
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-	//If the rage being changed is not where the cursor is and the replacement text isn't blank (backspace), then we're dealing with an autocorrect
-	if (range.location != textView.selectedRange.location && text.length != 0) {
-		
-		//Stop autocorrect from capitalizing words like "iPhone" or "I" when capitalization is turned off
-		if (textView.autocapitalizationType == UITextAutocapitalizationTypeNone
-			&& [text rangeOfCharacterFromSet:[NSCharacterSet uppercaseLetterCharacterSet] options:0].length != 0) {
-			
-			//replace the autocorrected text with a lowercase version of that text
-			textView.text = [textView.text stringByReplacingCharactersInRange:range withString:[text lowercaseString]];
-			
-			return NO;
-		}
-		
-		//Stop autocorrect from capitalizing/correcting bbcode tags, like [s] getting corrected to [a]
-		if (range.location != 0
-			&& [textView.text characterAtIndex:range.location - 1] == '[' ) {
-		
-			return NO;
-		}
-	}
-	
-
-	
-	return YES;
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
