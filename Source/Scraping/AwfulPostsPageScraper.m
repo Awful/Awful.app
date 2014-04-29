@@ -215,7 +215,7 @@
         {{
             HTMLElement *postBodyElement = ([table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?:
                                             [table awful_firstNodeMatchingCachedSelector:@"td.postbody"]);
-            if (postBodyElement) {
+            if (postBodyElement && !(post.ignored && [table firstNodeMatchingSelector:@"a[title=\"DON'T DO IT!!\"]"])) {
                 post.innerHTML = postBodyElement.innerHTML;
             }
         }}
