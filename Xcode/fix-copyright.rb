@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require 'pathname'
 
-Dir.chdir(Pathname.new(__FILE__).dirname + "../Source")
-
 REGEX = %r{\A
   // \s*
   (// .* \n)
@@ -15,8 +13,13 @@ REGEX = %r{\A
 
 BOILERPLATE = "Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app"
 
-`ag -il "copyright.*all rights reserved"`.split("\n").each do |path|
-  before = File.read(path)
-  after = before.sub(REGEX, "\\1\\2//  Copyright \\3 #{BOILERPLATE}\n\n")
-  File.write(path, after)
+ROOT = (Pathname.new(__FILE__).dirname + "../").realpath
+
+%w[Source Tests/Scraping].each do |subpath|
+  Dir.chdir(ROOT + subpath)
+  `ag -il "copyright.*all rights reserved"`.split("\n").each do |path|
+    before = File.read(path)
+    after = before.sub(REGEX, "\\1\\2//  Copyright \\3 #{BOILERPLATE}\n\n")
+    File.write(path, after)
+  end
 end
