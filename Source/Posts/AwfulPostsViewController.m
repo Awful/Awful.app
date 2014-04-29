@@ -829,15 +829,38 @@ static void *KVOContext = &KVOContext;
     return self.advertisementHTML;
 }
 
-- (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url
+- (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)URL
 {
-    if ([url awfulURL]) {
-        [[AwfulAppDelegate instance] openAwfulURL:[url awfulURL]];
-    } else if ([url opensInBrowser]) {
-        [self openURLInBuiltInBrowser:url];
+    if ([URL awfulURL]) {
+        if ([URL.fragment isEqualToString:@"awful-ignored"]) {
+            NSString *postID = URL.awfulURL.lastPathComponent;
+            NSUInteger index = [[self.posts valueForKey:@"postID"] indexOfObject:postID];
+            if (index != NSNotFound) {
+                [self readIgnoredPostAtIndex:index];
+            }
+        } else {
+            [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
+        }
+    } else if ([URL opensInBrowser]) {
+        [self openURLInBuiltInBrowser:URL];
     } else {
-        [[UIApplication sharedApplication] openURL:url];
+        [[UIApplication sharedApplication] openURL:URL];
     }
+}
+
+- (void)readIgnoredPostAtIndex:(NSUInteger)index
+{
+    AwfulPost *post = self.posts[index];
+    AwfulThreadPage page = self.page;
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulForumsClient client] readIgnoredPost:post andThen:^(NSError *error) {
+        __typeof__(self) self = weakSelf;
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+        } else if (self.page == page) {
+            [self.postsView reloadPostAtIndex:index];
+        }
+    }];
 }
 
 - (void)openURLInBuiltInBrowser:(NSURL *)URL

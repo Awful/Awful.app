@@ -10,6 +10,7 @@
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulModels.h"
+#import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulPrivateMessageFolderScraper.h"
 #import "AwfulPrivateMessageScraper.h"
@@ -346,6 +347,31 @@
     }];
     [operation start];
     return operation;
+}
+
+- (NSOperation *)readIgnoredPost:(AwfulPost *)post andThen:(void (^)(NSError *error))callback
+{
+    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+    return [_HTTPManager GET:@"showthread.php"
+                  parameters:@{ @"action": @"showpost",
+                                @"postid": post.postID }
+                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        [managedObjectContext performBlock:^{
+            AwfulPostScraper *scraper = [AwfulPostScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            NSError *error = scraper.error;
+            if (scraper.post) {
+                [managedObjectContext save:&error];
+            }
+            if (callback) {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    callback(error);
+                }];
+            }
+        }];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
 }
 
 - (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback

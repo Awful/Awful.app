@@ -29,7 +29,19 @@
     if (![AwfulSettings settings].showImages) {
         LinkifyNonSmileyImages(document);
     }
+    if (self.post.ignored) {
+        MarkRevealIgnoredPostLink(document);
+    }
     return [document firstNodeMatchingSelector:@"body"].innerHTML;
+}
+
+static void MarkRevealIgnoredPostLink(HTMLDocument *document)
+{
+    HTMLElement *link = [document firstNodeMatchingSelector:@"a[title=\"DON'T DO IT!!\"]"];
+    if (!link) return;
+    NSURLComponents *components = [NSURLComponents componentsWithString:link[@"href"]];
+    components.fragment = @"awful-ignored";
+    link[@"href"] = components.URL.absoluteString;
 }
 
 - (NSURL *)visibleAvatarURL

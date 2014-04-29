@@ -58,6 +58,14 @@
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
 /**
+ * @param post     An ignored post whose author and innerHTML should be filled.
+ * @param callback A block to call after reading the post, which takes a single parameter: an NSError object on failure, or nil on success.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)readIgnoredPost:(AwfulPost *)post andThen:(void (^)(NSError *error))callback;
+
+/**
  * @param callback A block to call after learning user info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object for the logged-in user on success, or nil on failure.
  *
  * @return An enqueued network operation.
