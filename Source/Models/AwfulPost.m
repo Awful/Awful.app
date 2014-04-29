@@ -7,6 +7,7 @@
 @implementation AwfulPost
 
 @dynamic editable;
+@dynamic ignored;
 @dynamic innerHTML;
 @dynamic postDate;
 @dynamic postID;

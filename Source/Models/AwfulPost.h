@@ -15,6 +15,11 @@
 @property (assign, nonatomic) BOOL editable;
 
 /**
+ * Whether or not the post was written by an ignored author.
+ */
+@property (assign, nonatomic) BOOL ignored;
+
+/**
  * The raw HTML contents of the post.
  */
 @property (copy, nonatomic) NSString *innerHTML;

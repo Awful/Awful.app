@@ -118,4 +118,18 @@
     XCTAssertEqual(thread.lastPostDate.timeIntervalSince1970, 1357586460.0);
 }
 
+- (void)testIgnoredPost
+{
+    [self scrapeFixtureNamed:@"showthread2"];
+    AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:self.managedObjectContext
+                                              matchingPredicateFormat:@"postID = %@", @"428957756"];
+    XCTAssertTrue(post.ignored);
+    NSArray *others = [AwfulPost fetchAllInManagedObjectContext:self.managedObjectContext
+                                        matchingPredicateFormat:@"postID != %@", @"428957756"];
+    XCTAssertTrue(others.count > 0);
+    NSArray *ignored = [others valueForKeyPath:@"@distinctUnionOfObjects.ignored"];
+    XCTAssertTrue(ignored.count == 1);
+    XCTAssertEqualObjects(ignored[0], @NO);
+}
+
 @end

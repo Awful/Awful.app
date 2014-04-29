@@ -159,6 +159,10 @@
         }}
         
         {{
+            post.ignored = [table hasClass:@"ignored"];
+        }}
+        
+        {{
             HTMLElement *postDateCell = [table awful_firstNodeMatchingCachedSelector:@"td.postdate"];
             if (postDateCell) {
                 HTMLTextNode *postDateText = postDateCell.children.lastObject;
