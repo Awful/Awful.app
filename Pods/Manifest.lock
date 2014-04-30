@@ -43,6 +43,7 @@ PODS:
   - PocketAPI (1.0.2)
   - PSMenuItem (0.0.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
+  - WebViewJavascriptBridge (HEAD based on 4.1.0)
 
 DEPENDENCIES:
   - AFNetworking (= 2.2.0)
@@ -53,6 +54,7 @@ DEPENDENCIES:
   - PocketAPI (= 1.0.2)
   - PSMenuItem (= 0.0.1)
   - SVPullToRefresh (HEAD)
+  - WebViewJavascriptBridge (HEAD)
 
 EXTERNAL SOURCES:
   HTMLReader:
@@ -68,5 +70,6 @@ SPEC CHECKSUMS:
   PocketAPI: 2ed51391e6ea7a48c707528f782f5a2cb0eab80e
   PSMenuItem: 59e411188ca4478b89c45ec6a58dcdb41b623587
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
+  WebViewJavascriptBridge: eb504e9485f5b7f3fa036b6f0d748cfccb2aa18b
 
 COCOAPODS: 0.32.1

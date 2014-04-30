@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #fff;
+    font-family: Helvetica, sans-serif;
+    font-size: 14px;
+    -webkit-touch-callout: none;
+}
+body.dark {
+	background: #262626;
+	color: #fff;
+}
+
+#headerBackground {
+	background: rgba(0,0,0,.5);
+	position: absolute;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 1;
+	display: block;
+	width: 100%;
+	height: 170px;
+}
+#headerBackground > section {
+	-webkit-filter: blur(5px);
+	background-size: cover;
+	background-position-y: center;
+	position: absolute;
+	left: -20px;
+	right: -20px;
+	top:-20px;
+	bottom: -20px;
+}
+#content {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* First section: avatar, custom title, "about me", profile image. */
+
+/* Avatar and custom title. */
+header {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+	padding: 1em;
+	background: rgba(0,0,0,.5);
+	height: 170px;
+}
+
+/* Avatar. */
+header img:first-child {
+    float: left;
+    margin-right: 1em;
+}
+
+header::after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+/* About me. */
+p {
+    margin: 1em;
+}
+
+/* Profile image (users with plat can include one). */
+section > img {
+    display: block;
+    margin: 1em auto;
+}
+
+/* Second section: contact and additional info. */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Use table captions like UITableView headers (à la Forums tab). */
+table caption {
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background: hsl(200, 2%, 69%) repeat-x;
+    padding: 0.2em 0.5em;
+}
+.dark table caption {
+	background: #151515;
+}
+
+tr {
+    height: 3em;
+}
+
+th {
+    text-align: left;
+    padding-left: 1em;
+    width: 50%;
+}
+
+/* Blue Settings.app-like text for the current value. */
+td {
+    color: hsl(217, 40%, 37%);
+}
+.dark td {
+    color: hsl(209, 100%, 72%);
+}
+
+/* Cell separator. */
+th, td {
+    border-bottom: 1px solid hsl(200, 2%, 95%);
+}
+.dark th, .dark td {
+	border-bottom: 1px solid #;
+}
+tr:last-child th, tr:last-child td {
+    border-bottom: 0;
+}
+</style>
+
+<body class="{{ userInterfaceIdiom }} {{# dark }}dark{{/ }}">
+    <section id="headerBackground">
+        <section style="background-image:url('{{ avatarURL }}')"></section>
+    </section>
+
+    <section id="content">
+        <section>
+            {{# customTitleHTML }}
+                <header>
+                    {{{ . }}}
+                </header>
+            {{/ }}
+            <p>
+                There have been <b>{{ postCount }}</b> posts made by <i>{{ username }}</i>, an average of {{ postRate }} posts per day, since registering on <b>{{ regDateFormat(regdate) }}</b>. <i>{{ username }}</i> claims to be a {{ gender }}.
+            </p>
+
+            <p>{{ aboutMe }}</p>
+
+            {{# profilePictureURL }}<img src="{{ . }}" alt="">{{/ profilePictureURL }}
+        </section>
+
+        <section>
+            {{# anyContactInfo }}
+                <table id="contact">
+                    <caption>Contact Information</caption>
+                    {{# privateMessagesWork }}<tr><th>Private Message</th><td>{{ username }}</td></tr>{{/ }}
+                    {{# aimName }}<tr><th>AIM</th><td>{{ . }}</td></tr>{{/ }}
+                    {{# icqName }}<tr><th>ICQ</th><td>{{ . }}</td></tr>{{/ }}
+                    {{# yahooName }}<tr><th>Yahoo!</th><td>{{ . }}</td></tr>{{/ }}
+                    {{# homepageURL }}<tr><th>Homepage</th><td>{{ . }}</td></tr>{{/ }}
+                </table>
+            {{/ }}
+
+            <table>
+                <caption>Additional Information</caption>
+                {{# regdate }}<tr><th>Member Since</th><td>{{ regDateFormat(.) }}</td></tr>{{/ }}
+                {{# postCount }}<tr><th>Post Count</th><td>{{ postCount }}</td></tr>{{/ }}
+                {{# postRate }}<tr><th>Post Rate</th><td>{{ . }} posts per day</td></tr>{{/ }}
+                {{# lastPost }}<tr><th>Last Post</th><td>{{ lastPostDateFormat(.) }}</td></tr>{{/ }}
+                {{# location }}<tr><th>Location</th><td>{{ . }}</td></tr>{{/ }}
+                {{# interests }}<tr><th>Interests</th><td>{{ . }}</td></tr>{{/ }}
+                {{# occupation }}<tr><th>Occupation</th><td>{{ . }}</td></tr>{{/ }}
+            </table>
+        </section>
+    </section>
+
+    <script>{{{ JavaScriptLibraries }}}</script>
+
+    <script>
+    $(function() {
+        FastClick.attach(document.body);
+    });
+    </script>
+    
+    <script>
+        function startBridge(callback) {
+            if (window.WebViewJavascriptBridge) {
+                callback(WebViewJavascriptBridge);
+            } else {
+                document.addEventListener('WebViewJavascriptBridgeReady', function() {
+                    callback(WebViewJavascriptBridge);
+                }, false);
+            }
+        }
+        
+        startBridge(function(bridge) {
+            bridge.init();
+            
+            $(function() {
+                $('#contact').on('click', 'tr', function(event) {
+                    var row = $(this);
+                    var service = row.find('th').text();
+                    var address = row.find('td').text();
+                    var rect = row.offset();
+                    rect.left -= window.pageXOffset;
+                    rect.top -= window.pageYOffset;
+                    var data = {
+                        service: service,
+                        address: address,
+                        rect: rect
+                    };
+                    bridge.callHandler('contactInfo', data);
+                });
+            });
+        });
+    </script>
+</body>

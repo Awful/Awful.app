@@ -1,5 +1,5 @@
 #include "Pods-GRMustache.xcconfig"
 GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/GRMustache" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/GRMustache" "${PODS_ROOT}/Headers/HTMLReader" "${PODS_ROOT}/Headers/JLRoutes" "${PODS_ROOT}/Headers/JRSwizzle" "${PODS_ROOT}/Headers/MRProgress" "${PODS_ROOT}/Headers/PSMenuItem" "${PODS_ROOT}/Headers/PocketAPI" "${PODS_ROOT}/Headers/SVPullToRefresh"
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/GRMustache" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/AFNetworking" "${PODS_ROOT}/Headers/GRMustache" "${PODS_ROOT}/Headers/HTMLReader" "${PODS_ROOT}/Headers/JLRoutes" "${PODS_ROOT}/Headers/JRSwizzle" "${PODS_ROOT}/Headers/MRProgress" "${PODS_ROOT}/Headers/PSMenuItem" "${PODS_ROOT}/Headers/PocketAPI" "${PODS_ROOT}/Headers/SVPullToRefresh" "${PODS_ROOT}/Headers/WebViewJavascriptBridge"
 OTHER_LDFLAGS = -ObjC ${PODS_GRMUSTACHE_OTHER_LDFLAGS}
 PODS_ROOT = ${SRCROOT}

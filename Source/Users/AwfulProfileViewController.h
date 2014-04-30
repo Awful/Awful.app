@@ -11,7 +11,7 @@
 @interface AwfulProfileViewController : AwfulViewController
 
 /**
- * Returns an initialized AwfulProfileViewController. This is the designated initializer.
+ * Designated initializer.
  */
 - (id)initWithUser:(AwfulUser *)user;
 

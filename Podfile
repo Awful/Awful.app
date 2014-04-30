@@ -11,6 +11,7 @@ pod 'MRProgress/Overlay', '0.4.1'
 pod 'PocketAPI', '1.0.2'
 pod 'PSMenuItem', '0.0.1'
 pod 'SVPullToRefresh', :head
+pod 'WebViewJavascriptBridge', :head
 
 target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
