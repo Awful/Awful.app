@@ -36,6 +36,8 @@
 
 @property (nonatomic) BOOL showAvatars;
 
+@property (nonatomic) BOOL useSmallFonts;
+
 - (void)loadLinkifiedImages;
 
 // Set to nil to highlight no mentions.

@@ -132,6 +132,8 @@ BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
 
+BOOL_PROPERTY(useSmallFonts, setUseSmallFonts)
+
 struct {
     __unsafe_unretained NSString *currentUser;
 } ObsoleteSettingsKeys = {
@@ -369,4 +371,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .customBaseURL = @"custom_base_URL",
     .instapaperUsername = @"instapaper_username",
     .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
+    .useSmallFonts = @"use_small_fonts",
 };
