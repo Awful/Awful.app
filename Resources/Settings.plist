@@ -80,6 +80,16 @@
 					<key>Key</key>
 					<string>show_images</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Use Small Fonts</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>use_small_fonts</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
