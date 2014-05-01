@@ -87,9 +87,9 @@ Awful.useSmallFonts = function(on) {
     '.postbody { font-size: 80%; padding: 0; margin: 0; }' +
     '.username { font: -apple-system-subheadline; }' +
     '.regdate, .postdate { font-size: .7em; } ' +
-    '.action-button { line-height: 0.5 em; }'
+    '.action-button { line-height: 0.5 em; }';
   if (on) {
-    $('#awful-font-adjust-style').text('.postbody { font-size: 80%; }');
+    $('#awful-font-adjust-style').text(smallFontCSS);
   } else {
     $('#awful-font-adjust-style').text('');
   }
