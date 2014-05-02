@@ -69,14 +69,14 @@ Awful.showAvatars = function(on) {
       });
       img.prependTo(header);
       header.data('avatar', null);
-      header.closest('article').removeClass('no-avatar');
+      header.closest('post').removeClass('no-avatar');
     });
   } else {
     $('header img.avatar').each(function() {
       var img = $(this);
       img.closest('header').data('avatar', img.attr('src'));
       img.remove();
-      img.closest('article').addClass('no-avatar');
+      img.closest('post').addClass('no-avatar');
     });
   }
 }
@@ -91,7 +91,7 @@ Awful.loadLinkifiedImages = function() {
 Awful.postWithButtonForPoint = function(x, y){
   var button = $(document.elementFromPoint(x, y)).closest('button')
   if (button.length) {
-    var post = button.closest('article')
+    var post = button.closest('post')
     return JSON.stringify({ rect: rectOf(button), postIndex: post.index() })
   }
 }
@@ -99,7 +99,7 @@ Awful.postWithButtonForPoint = function(x, y){
 Awful.postWithUserNameForPoint = function(x, y){
 	var usernameHeading = $(document.elementFromPoint(x, y)).closest('h1')
 	if (usernameHeading.length) {
-		var post = usernameHeading.closest('article')
+		var post = usernameHeading.closest('post')
 		return JSON.stringify({ rect: rectOf(usernameHeading), postIndex: post.index() })
 	}
 }
