@@ -5,6 +5,7 @@
 #import "AwfulPostsView.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import <GRMustache.h>
 
 @interface AwfulPostsView () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -233,18 +234,22 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (void)loadHTML
 {
-    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
-    NSURL *postsViewURL = [thisBundle URLForResource:@"posts-view" withExtension:@"html"];
+    NSURL *scriptURL = [[NSBundle mainBundle] URLForResource:@"combined" withExtension:@"js"];
     NSError *error;
-    NSString *html = [NSString stringWithContentsOfURL:postsViewURL
-                                              encoding:NSUTF8StringEncoding
-                                                 error:&error];
-    if (!html) {
-        NSLog(@"error loading html for %@: %@", [self class], error);
-        return;
+    NSString *script = [NSString stringWithContentsOfURL:scriptURL encoding:NSUTF8StringEncoding error:&error];
+    if (!script) {
+        NSLog(@"%s error loading script from %@: %@", __PRETTY_FUNCTION__, scriptURL, error);
+        script = @"";
     }
-    NSString *css = self.stylesheet ?: @"";
-    [self.webView loadHTMLString:[NSString stringWithFormat:html, css] baseURL:self.baseURL];
+    NSString *idiom = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
+    NSDictionary *context = @{ @"userInterfaceIdiom": idiom,
+                               @"stylesheet": self.stylesheet ?: @"",
+                               @"script": script };
+    NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
+    if (!HTML) {
+        NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
+    }
+    [self.webView loadHTMLString:HTML baseURL:self.baseURL];
     self.didLoadHTML = YES;
 }
 

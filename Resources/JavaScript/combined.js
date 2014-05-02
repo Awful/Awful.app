@@ -210,7 +210,6 @@ window.Awful = Awful
 ;(function(){
 
 $(function(){
-  $('body').addClass($.os.ipad ? 'ipad' : 'iphone')
   $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
 })
