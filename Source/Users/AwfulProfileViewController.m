@@ -139,6 +139,7 @@
     webView.scalesPageToFit = YES;
     webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     webView.dataDetectorTypes = UIDataDetectorTypeNone;
+    webView.opaque = NO;
     self.view = webView;
 }
 
@@ -169,6 +170,7 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
+    self.view.backgroundColor = self.theme[@"backgroundColor"];
     [self.webView awful_evalJavaScript:@"$('body').toggleClass('dark', %@)", [AwfulSettings settings].darkTheme ? @"true" : @"false"];
 }
 
