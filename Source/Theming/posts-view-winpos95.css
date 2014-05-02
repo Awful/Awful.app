@@ -13,19 +13,20 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
-.post {
+post {
+  display: block;
   margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }
-.post:first-child {
+post:first-child {
   margin-top: 0;
 }
-.iphone .post {
+.iphone post {
   padding: .6em;
   padding-bottom: 0;
 }
-.ipad .post {
+.ipad post {
   padding: 1.07em;
   padding-bottom: 0;
 }
@@ -266,7 +267,7 @@ body {
   color: #000;
   background: #008080;
 }
-.post {
+post {
   margin: 5px;
   padding: 0;
   border: 2px groove #808080;
@@ -279,10 +280,10 @@ body {
   background-size: 77px 18px, 52px 18px, 1px 18px;
   border-radius: 0;
 }
-.post.seen {
+post.seen {
   background-image: url('awful-resource://winpos95-heading-left-seen.png'), url('awful-resource://winpos95-heading-right.png'), url('awful-resource://winpos95-heading-seen.png');
 }
-.ipad .post {
+.ipad post {
   min-height: 178px;
   padding: 25px 5px 40px 5px;
 }

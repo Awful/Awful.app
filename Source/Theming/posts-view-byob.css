@@ -13,19 +13,20 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
-.post {
+post {
+  display: block;
   margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }
-.post:first-child {
+post:first-child {
   margin-top: 0;
 }
-.iphone .post {
+.iphone post {
   padding: .6em;
   padding-bottom: 0;
 }
-.ipad .post {
+.ipad post {
   padding: 1.07em;
   padding-bottom: 0;
 }
@@ -266,10 +267,10 @@ body {
   background-repeat: no-repeat;
   padding-top: 80px;
 }
-.post:nth-of-type(even) {
+post:nth-of-type(even) {
   background-color: #ccf;
 }
-.post:nth-of-type(odd) {
+post:nth-of-type(odd) {
   background-color: #b9e7e7;
 }
 time.regdate {

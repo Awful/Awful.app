@@ -13,19 +13,20 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
-.post {
+post {
+  display: block;
   margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }
-.post:first-child {
+post:first-child {
   margin-top: 0;
 }
-.iphone .post {
+.iphone post {
   padding: .6em;
   padding-bottom: 0;
 }
-.ipad .post {
+.ipad post {
   padding: 1.07em;
   padding-bottom: 0;
 }
@@ -261,13 +262,13 @@ footer:after {
 body {
   background-color: #f99;
 }
-.post {
+post {
   margin: 8px 0;
   border-top: 0;
   border-bottom: 0;
 }
-.iphone .post,
-.ipad .post {
+.iphone post,
+.ipad post {
   padding: 0;
 }
 .postbody {

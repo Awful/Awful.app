@@ -1,10 +1,10 @@
-<article
-  id="{{ postID }}"
-  class="post {{# beenSeen }}seen{{/ }}{{# roles }} role-{{ . }}{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
+<post id="{{ postID }}" class="{{# beenSeen }}seen{{/ }}{{# roles }} role-{{ . }}{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
     <header {{# hiddenAvatarURL }}data-avatar="{{ . }}"{{/ }}>
         {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
+
 		<section class="nameanddate">
 			<h1 class="username">{{ author.username }}<div id="bracket"></div></h1>
+
 			<time class="regdate">Joined {{ regDateFormat(author.regdate) }}</time>
 		<section>
     </header>
@@ -15,7 +15,7 @@
 	
 	<footer>
 		<time class="postdate">{{ postDateFormat(postDate) }}</time>
+
         <button class="action-button" title="Post actions">•••</button>
 	</footer>
-
-</article>
+</post>

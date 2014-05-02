@@ -13,19 +13,20 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
-.post {
+post {
+  display: block;
   margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }
-.post:first-child {
+post:first-child {
   margin-top: 0;
 }
-.iphone .post {
+.iphone post {
   padding: .6em;
   padding-bottom: 0;
 }
-.ipad .post {
+.ipad post {
   padding: 1.07em;
   padding-bottom: 0;
 }
@@ -262,12 +263,12 @@ body {
   color: #ddd;
   background-color: #060606;
 }
-.post {
+post {
   background-color: #262626;
   border-bottom-color: #060606;
   border-top-color: #060606;
 }
-.post.seen {
+post.seen {
   background-color: #22262e;
 }
 header {

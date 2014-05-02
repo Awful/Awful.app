@@ -11,25 +11,25 @@ Awful.posts = function(posts){
 Awful.insertPost = function(post, i){
   if (i === 0) {
     render(post).prependTo('#posts')
-  } else if (i >= $('#posts > article').length) {
+  } else if (i >= $('post').length) {
     render(post).appendTo('#posts')
   } else {
-    $('#posts > article').eq(i).before(render(post))
+    $('post').eq(i).before(render(post))
   }
 }
 
 Awful.deletePost = function(post, i){
-  $('#posts > article').eq(i).remove()
+  $('post').eq(i).remove()
 }
 
 Awful.post = function(i, post){
-  $('#posts > article').eq(i).replaceWith(render(post))
+  $('post').eq(i).replaceWith(render(post))
 }
 
 Awful.markReadUpToPostWithID = function(postID) {
   var lastReadIndex = $('#' + postID).index();
   if (lastReadIndex == -1) return;
-  $('article.post').each(function(i) {
+  $('post').each(function(i) {
     $(this).toggleClass('seen', i <= lastReadIndex);
   });
 };

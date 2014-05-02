@@ -13,19 +13,20 @@ body {
   -webkit-touch-callout: none;
   word-wrap: break-word;
 }
-.post {
+post {
+  display: block;
   margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
 }
-.post:first-child {
+post:first-child {
   margin-top: 0;
 }
-.iphone .post {
+.iphone post {
   padding: .6em;
   padding-bottom: 0;
 }
-.ipad .post {
+.ipad post {
   padding: 1.07em;
   padding-bottom: 0;
 }
@@ -268,7 +269,7 @@ body {
   background-image: url('awful-resource://macinyos-wallpaper@2x.png');
   background-size: 2px;
 }
-.post {
+post {
   margin: 5px;
   padding: 0;
   background-color: #fff;
@@ -280,10 +281,10 @@ body {
   border-radius: 2px;
   border-width: 1px 2px 2px 1px;
 }
-.post.seen {
+post.seen {
   background-color: #f1f1f1;
 }
-.ipad .post {
+.ipad post {
   padding: 18px 5px 40px 5px;
 }
 .iphone header {
