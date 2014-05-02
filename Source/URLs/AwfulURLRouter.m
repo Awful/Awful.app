@@ -125,7 +125,7 @@
             success(user);
             return YES;
         }
-        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, AwfulUser *user) {
             if (user) {
                 success(user);
             } else if (error) {
@@ -158,7 +158,7 @@
 			return YES;
 		}
 		
-		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] andThen:^(NSError *error, AwfulUser *user) {
+		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, AwfulUser *user) {
 			if (user) {
 				success(user);
 			} else if (error) {

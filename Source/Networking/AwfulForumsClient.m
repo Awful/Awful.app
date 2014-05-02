@@ -808,13 +808,23 @@
 }
 
 - (NSOperation *)profileUserWithID:(NSString *)userID
+                          username:(NSString *)username
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
+    NSParameterAssert(userID.length > 0 || username.length > 0);
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    parameters[@"action"] = @"getinfo";
+    if (userID.length > 0) {
+        parameters[@"userid"] = userID;
+    } else {
+        parameters[@"username"] = username;
+    }
+    
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"member.php"
-                  parameters:@{ @"action": @"getinfo",
-                                @"userid": userID }
+                  parameters:parameters
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{

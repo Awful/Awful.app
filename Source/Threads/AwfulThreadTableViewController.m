@@ -189,7 +189,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             }
         }];
     }]];
-    if ([thread.author.userID length] > 0) {
+    AwfulUser *author = thread.author;
+    if (author.userID.length > 0 || author.username > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
             AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

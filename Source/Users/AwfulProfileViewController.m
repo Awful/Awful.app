@@ -58,7 +58,7 @@
 {
     if (([[NSDate date] timeIntervalSinceDate:_mostRecentRefreshDate] < 60 * 20)) return;
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulForumsClient client] profileUserWithID:self.user.userID andThen:^(NSError *error, AwfulUser *user) {
+    [[AwfulForumsClient client] profileUserWithID:self.user.userID username:self.user.username andThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"error fetching user profile for %@: %@", self.user.userID, error);

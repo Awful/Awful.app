@@ -167,11 +167,13 @@
 
 /**
  * @param userID   The user's ID. Specified directly in case no such user exists, which would make for a useless AwfulUser object.
+ * @param username The user's username. If userID is not given, username must be given.
  * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)profileUserWithID:(NSString *)userID
+                          username:(NSString *)username
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback;
 
 /**
