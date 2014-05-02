@@ -56,7 +56,7 @@
 
 - (void)refreshIfNecessary
 {
-    if (!([[NSDate date] timeIntervalSinceDate:_mostRecentRefreshDate] > 60 * 20)) return;
+    if (([[NSDate date] timeIntervalSinceDate:_mostRecentRefreshDate] < 60 * 20)) return;
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] profileUserWithID:self.user.userID andThen:^(NSError *error, AwfulUser *user) {
         __typeof__(self) self = weakSelf;
