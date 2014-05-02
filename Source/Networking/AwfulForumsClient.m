@@ -850,30 +850,46 @@
                         forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
-    NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
-    if (user.userID) {
-        parameters[@"userid"] = user.userID;
-    }
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"banlist.php"
-                  parameters:parameters
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
-    {
-        [managedObjectContext performBlock:^{
-            AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.bans) {
-                [managedObjectContext save:&error];
-            }
-            if (callback) {
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, scraper.bans);
-                }];
+    NSParameterAssert(user.userID.length > 0 || user.username.length > 0);
+    
+    NSOperation * (^doIt)(AwfulUser *) = ^(AwfulUser *user){
+        NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
+        if (user.userID.length > 0) {
+            parameters[@"userid"] = user.userID;
+        }
+        NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+        return [_HTTPManager GET:@"banlist.php"
+                      parameters:parameters
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+        {
+             [managedObjectContext performBlock:^{
+                 AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+                 NSError *error = scraper.error;
+                 if (scraper.bans) {
+                     [managedObjectContext save:&error];
+                 }
+                 if (callback) {
+                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                         callback(error, scraper.bans);
+                     }];
+                 }
+             }];
+         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             if (callback) callback(error, nil);
+         }];
+    };
+    
+    if (user.userID.length == 0) {
+        return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, AwfulUser *user) {
+            if (error) {
+                if (callback) callback(error, nil);
+            } else {
+                doIt(user);
             }
         }];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error, nil);
-    }];
+    } else {
+        return doIt(user);
+    }
 }
 
 - (NSOperation *)countUnreadPrivateMessagesInInboxAndThen:(void (^)(NSError *error, NSInteger unreadMessageCount))callback
