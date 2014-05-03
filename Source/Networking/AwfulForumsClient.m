@@ -850,8 +850,6 @@
                         forUser:(AwfulUser *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
-    NSParameterAssert(user.userID.length > 0 || user.username.length > 0);
-    
     NSOperation * (^doIt)(AwfulUser *) = ^(AwfulUser *user){
         NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
         if (user.userID.length > 0) {
@@ -879,7 +877,7 @@
          }];
     };
     
-    if (user.userID.length == 0) {
+    if (user.userID.length == 0 && user.username.length > 0) {
         return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, AwfulUser *user) {
             if (error) {
                 if (callback) callback(error, nil);
