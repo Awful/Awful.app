@@ -165,7 +165,9 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"backgroundColor"];
+    AwfulTheme *theme = self.theme;
+    self.view.backgroundColor = theme[@"backgroundColor"];
+    self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     [self.webView awful_evalJavaScript:@"$('body').toggleClass('dark', %@)", [AwfulSettings settings].darkTheme ? @"true" : @"false"];
 }
 
