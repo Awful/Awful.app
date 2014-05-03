@@ -43,14 +43,11 @@
     
     _baseURL = baseURL;
     
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:(CGRect){ .size = frame.size }];
+    UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
+    webView.frame = (CGRect){ .size = frame.size };
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     webView.delegate = self;
-    webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    webView.scalesPageToFit = YES;
     webView.backgroundColor = [UIColor clearColor];
-    webView.opaque = NO;
     self.webView = webView;
     [self addSubview:self.webView];
     

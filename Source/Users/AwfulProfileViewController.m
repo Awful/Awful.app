@@ -135,12 +135,7 @@
 
 - (void)loadView
 {
-    UIWebView *webView = [UIWebView new];
-    webView.scalesPageToFit = YES;
-    webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
-    webView.dataDetectorTypes = UIDataDetectorTypeNone;
-    webView.opaque = NO;
-    self.view = webView;
+    self.view = [UIWebView awful_nativeFeelingWebView];
 }
 
 - (void)viewDidLoad

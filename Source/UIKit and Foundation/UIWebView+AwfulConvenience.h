@@ -11,4 +11,9 @@
  */
 - (NSString *)awful_evalJavaScript:(NSString *)script, ... NS_FORMAT_FUNCTION(1, 2);
 
+/**
+ * Creates and returns a UIWebView suitable for displaying native content.
+ */
++ (instancetype)awful_nativeFeelingWebView;
+
 @end

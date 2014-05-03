@@ -15,4 +15,14 @@
     return [self stringByEvaluatingJavaScriptFromString:formatted];
 }
 
++ (instancetype)awful_nativeFeelingWebView
+{
+    UIWebView *webView = [self new];
+    webView.scalesPageToFit = YES;
+    webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
+    webView.dataDetectorTypes = UIDataDetectorTypeNone;
+    webView.opaque = NO;
+    return webView;
+}
+
 @end
