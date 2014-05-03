@@ -134,6 +134,7 @@
 		1C89A79418AF4DA500D75854 /* AwfulEmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */; };
 		1C89A79A18B0D14900D75854 /* AwfulExpandingSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79918B0D14900D75854 /* AwfulExpandingSplitViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
+		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
 		1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */; };
@@ -464,6 +465,7 @@
 		1C89A79918B0D14900D75854 /* AwfulExpandingSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExpandingSplitViewController.m; sourceTree = "<group>"; };
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+AwfulConvenience.m"; sourceTree = "<group>"; };
+		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionViewController.h; sourceTree = "<group>"; };
@@ -991,6 +993,7 @@
 				1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */,
 				8CCA272B16B8C1EF00A4952A /* AwfulRapSheetViewController.h */,
 				8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */,
+				1C8E10431914AA730010007B /* profile.css */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 			);
 			path = Users;
@@ -1594,6 +1597,7 @@
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8C220D9E1814D61100F188AE /* clock.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
+				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
@@ -1729,7 +1733,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
-			shellScript = "set -e\n\nPATH=\"${PATH}:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\ncd \"${PROJECT_DIR}/../Source/Theming\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nfor s in posts-view*.less; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"${s}\")\n    cmodified=$(mtime \"${c}\")\n    if [[ ! -e \"${c}\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling ${s}\"\n        lessc \"${s}\" \"${c}\"\n    fi\ndone\n";
+			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --include-path=\"Theming:Users\" \"$@\"\n}\n\nLESSFILES=(Theming/posts-view*.less)\nLESSFILES+=(Users/profile.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 		34B5EEF646C542F1B54EDDC3 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -21,6 +21,11 @@
 @property (readonly, strong, nonatomic) AwfulUser *user;
 
 /**
+ * CSS for displaying a profile.
+ */
+@property (readonly, copy, nonatomic) NSString *stylesheet;
+
+/**
  * Returns "ipad" on iPads and "iphone" otherwise.
  */
 @property (readonly, copy, nonatomic) NSString *userInterfaceIdiom;

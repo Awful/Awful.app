@@ -1,0 +1,178 @@
+/*
+  profile.css
+  Awful
+  
+  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #fff;
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  -webkit-touch-callout: none;
+}
+body.dark {
+  background: #262626;
+  color: #fff;
+}
+#headerBackground {
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 170px;
+}
+#headerBackground > section {
+  -webkit-filter: blur(5px);
+  background-size: cover;
+  background-position-y: center;
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  top: -20px;
+  bottom: -20px;
+}
+#content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+img {
+  max-width: 100%;
+}
+/* First section: avatar, custom title, "about me", profile image. */
+/* Avatar and custom title. */
+header {
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
+  padding: 1em;
+  background: rgba(0, 0, 0, 0.5);
+  height: 170px;
+}
+header img:first-child {
+  float: left;
+  margin-right: 1em;
+}
+header ::after {
+  content: "";
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+/* About me. */
+p {
+  margin: 1em;
+}
+/* Profile image (users with plat can include one). */
+section > img {
+  display: block;
+  margin: 1em auto;
+}
+/* Second section: contact and additional info. */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Use table captions like UITableView headers (à la Forums tab). */
+table caption {
+  text-align: left;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #fff;
+  background: #aeb0b2 repeat-x;
+  padding: 0.2em 0.5em;
+}
+.dark table caption {
+  background: #151515;
+}
+tr {
+  height: 3em;
+}
+th {
+  text-align: left;
+  padding-left: 1em;
+  width: 50%;
+}
+/* Blue Settings.app-like text for the current value. */
+td {
+  color: #395684;
+}
+.dark td {
+  color: #70baff;
+}
+/* Cell separator. */
+th,
+td {
+  border-bottom: 1px solid #f2f3f3;
+}
+.dark th,
+.dark td {
+  border-bottom: 1px solid #111;
+}
+tr:last-child th,
+tr:last-child td {
+  border-bottom: 0;
+}
+/* Spoilers can appear in custom titles. */
+.bbc-spoiler {
+  color: #000000;
+  background: #000000;
+}
+.bbc-spoiler li {
+  color: #000000;
+  background: #000000;
+  list-style: none;
+}
+.bbc-spoiler img {
+  visibility: hidden;
+}
+.bbc-spoiler a:link,
+.bbc-spoiler a:visited,
+.bbc-spoiler a:active {
+  color: #000000;
+}
+.bbc-spoiler.spoiled {
+  background: transparent;
+}
+.bbc-spoiler.spoiled li {
+  background: transparent;
+  list-style: inherit;
+}
+.bbc-spoiler.spoiled img {
+  visibility: visible;
+}
+.dark .bbc-spoiler {
+  color: #ffffff;
+  background: #ffffff;
+}
+.dark .bbc-spoiler li {
+  color: #ffffff;
+  background: #ffffff;
+  list-style: none;
+}
+.dark .bbc-spoiler img {
+  visibility: hidden;
+}
+.dark .bbc-spoiler a:link,
+.dark .bbc-spoiler a:visited,
+.dark .bbc-spoiler a:active {
+  color: #ffffff;
+}
+.dark .bbc-spoiler.spoiled {
+  background: transparent;
+}
+.dark .bbc-spoiler.spoiled li {
+  background: transparent;
+  list-style: inherit;
+}
+.dark .bbc-spoiler.spoiled img {
+  visibility: visible;
+}

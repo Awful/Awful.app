@@ -24,6 +24,17 @@
     return self;
 }
 
+- (NSString *)stylesheet
+{
+    NSURL *URL = [[NSBundle mainBundle] URLForResource:@"profile" withExtension:@"css"];
+    NSError *error;
+    NSString *stylesheet = [NSString stringWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:&error];
+    if (!stylesheet) {
+        NSLog(@"%s error loading stylesheet from %@: %@", __PRETTY_FUNCTION__, URL, error);
+    }
+    return stylesheet;
+}
+
 - (NSString *)userInterfaceIdiom
 {
     return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";

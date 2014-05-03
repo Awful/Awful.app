@@ -1,0 +1,151 @@
+/*
+  profile.css
+  Awful
+  
+  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+  -webkit-touch-callout: none;
+  
+  &.dark {
+  	background: #262626;
+  	color: #fff;
+  }
+}
+
+#headerBackground {
+	background: rgba(0,0,0,.5);
+	position: absolute;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 1;
+	display: block;
+	width: 100%;
+	height: 170px;
+  
+  & > section {
+  	-webkit-filter: blur(5px);
+  	background-size: cover;
+  	background-position-y: center;
+  	position: absolute;
+  	left: -20px;
+  	right: -20px;
+  	top:-20px;
+  	bottom: -20px;
+  }
+}
+
+#content {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* First section: avatar, custom title, "about me", profile image. */
+
+/* Avatar and custom title. */
+header {
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+	padding: 1em;
+	background: rgba(0,0,0,.5);
+	height: 170px;
+  
+  img:first-child {
+      float: left;
+      margin-right: 1em;
+  }
+  
+  ::after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+  }
+}
+
+/* About me. */
+p {
+  margin: 1em;
+}
+
+/* Profile image (users with plat can include one). */
+section > img {
+  display: block;
+  margin: 1em auto;
+}
+
+/* Second section: contact and additional info. */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Use table captions like UITableView headers (à la Forums tab). */
+table caption {
+  text-align: left;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #fff;
+  background: hsl(200, 2%, 69%) repeat-x;
+  padding: 0.2em 0.5em;
+  
+  .dark & {
+    background: #151515;
+  }
+}
+
+tr {
+  height: 3em;
+}
+
+th {
+  text-align: left;
+  padding-left: 1em;
+  width: 50%;
+}
+
+/* Blue Settings.app-like text for the current value. */
+td {
+  color: hsl(217, 40%, 37%);
+  
+  .dark & {
+    color: hsl(209, 100%, 72%);
+  }
+}
+
+/* Cell separator. */
+th, td {
+  border-bottom: 1px solid #f2f3f3;
+  
+  .dark & {
+    border-bottom: 1px solid #111;
+  }
+  
+  tr:last-child & {
+    border-bottom: 0;
+  }
+}
+
+/* Spoilers can appear in custom titles. */
+@import "spoilers.less";
+.spoilers(#000);
+.dark {
+  .spoilers(#fff);
+}
