@@ -35,6 +35,8 @@
 
 @property (assign, nonatomic) BOOL useSmallFonts;
 
+@property (assign, nonatomic) double fontScale;
+
 @property (nonatomic, readonly) NSString *pocketUsername;
 
 @property (assign, nonatomic) BOOL canSendPrivateMessages;
@@ -105,4 +107,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *instapaperUsername;
     __unsafe_unretained NSString *hideSidebarInLandscape;
     __unsafe_unretained NSString *useSmallFonts;
+    __unsafe_unretained NSString *fontScale;
 } AwfulSettingsKeys;
