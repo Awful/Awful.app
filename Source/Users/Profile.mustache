@@ -61,48 +61,48 @@
     </script>
     
     <script>
-        function startBridge(callback) {
-            if (window.WebViewJavascriptBridge) {
+    function startBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            callback(WebViewJavascriptBridge);
+        } else {
+            document.addEventListener('WebViewJavascriptBridgeReady', function() {
                 callback(WebViewJavascriptBridge);
-            } else {
-                document.addEventListener('WebViewJavascriptBridgeReady', function() {
-                    callback(WebViewJavascriptBridge);
-                }, false);
-            }
+            }, false);
         }
+    }
+    
+    startBridge(function(bridge) {
+        bridge.init();
         
-        startBridge(function(bridge) {
-            bridge.init();
-            
-            $(function() {
-                $('#contact').on('click', 'tr', function(event) {
-                    var row = $(this);
-                    var service = row.find('th').text();
-                    var address = row.find('td').text();
-                    var rect = row.offset();
-                    rect.left -= window.pageXOffset;
-                    rect.top -= window.pageYOffset;
-                    var data = {
-                        service: service,
-                        address: address,
-                        rect: rect
-                    };
-                    bridge.callHandler('contactInfo', data);
-                });
+        $(function() {
+            $('#contact').on('click', 'tr', function(event) {
+                var row = $(this);
+                var service = row.find('th').text();
+                var address = row.find('td').text();
+                var rect = row.offset();
+                rect.left -= window.pageXOffset;
+                rect.top -= window.pageYOffset;
+                var data = {
+                    service: service,
+                    address: address,
+                    rect: rect
+                };
+                bridge.callHandler('contactInfo', data);
             });
         });
+    });
     </script>
     
     <script>
-        $(function(){
-            $('#content').on('click', '.bbc-spoiler', function(e) {
-                var target = $(e.target);
-                var spoiler = target.closest('.bbc-spoiler');
-                if (!spoiler.hasClass('spoiled') && target.filter('a').length) {
-                    e.preventDefault();
-                }
-                spoiler.toggleClass('spoiled');
-            });
+    $(function() {
+        $('#content').on('click', '.bbc-spoiler', function(e) {
+            var target = $(e.target);
+            var spoiler = target.closest('.bbc-spoiler');
+            if (!spoiler.hasClass('spoiled') && target.filter('a').length) {
+                e.preventDefault();
+            }
+            spoiler.toggleClass('spoiled');
         });
+    });
     </script>
 </body>
