@@ -32,6 +32,8 @@
 		<string>#003333</string>
 		<key>listBackgroundColor</key>
 		<string>#ccccff</string>
+		<key>collectionViewBackgroundColor</key>
+		<string>#ccccff</string>
 		<key>relevantForumID</key>
 		<string>268</string>
 		<key>descriptiveColor</key>
@@ -90,6 +92,8 @@
 		<key>tabBarBackgroundColor</key>
 		<string>#444444</string>
 		<key>listBackgroundColor</key>
+		<string>#ffffff</string>
+		<key>collectionViewBackgroundColor</key>
 		<string>#ffffff</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cccccc</string>
@@ -156,6 +160,8 @@
 		<string>#237733</string>
 		<key>listBackgroundColor</key>
 		<string>#262626</string>
+		<key>collectionViewBackgroundColor</key>
+		<string>#262626</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#525252</string>
 		<key>listSeparatorColor</key>
@@ -202,6 +208,8 @@
 		<key>listSeparatorColor</key>
 		<string>#0000</string>
 		<key>listBackgroundColor</key>
+		<string>#ffccff</string>
+		<key>collectionViewBackgroundColor</key>
 		<string>#ffccff</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cea8ce</string>
@@ -274,6 +282,8 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 		<key>listBackgroundColor</key>
+		<string>#171717</string>
+		<key>collectionViewBackgroundColor</key>
 		<string>#171717</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#3a3a3a</string>

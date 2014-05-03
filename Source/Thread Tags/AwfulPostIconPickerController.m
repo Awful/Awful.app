@@ -29,10 +29,9 @@
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate
 {
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(49, 49);
-    layout.minimumInteritemSpacing = 13;
-    layout.minimumLineSpacing = 11;
-    layout.sectionInset = UIEdgeInsetsMake(12, 12, 12, 12);
+    layout.itemSize = CGSizeMake(60, 60);
+    layout.minimumInteritemSpacing = 5;
+    layout.minimumLineSpacing = 5;
     if (!(self = [super initWithCollectionViewLayout:layout])) return nil;
     _delegate = delegate;
     self.clearsSelectionOnViewWillAppear = NO;
@@ -202,11 +201,6 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor whiteColor];
-    cell.layer.cornerRadius = 2;
-    cell.layer.shadowOpacity = 0.5;
-    cell.layer.shadowOffset = CGSizeZero;
-    cell.layer.shadowRadius = 1;
     if (self.numberOfSecondaryIcons > 0 && indexPath.section == 0) {
         cell.icon = [self selectedIconImage];
     } else {
@@ -218,16 +212,6 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         cell.secondaryIcon = ensureRetina;
     } else {
         cell.secondaryIcon = nil;
-    }
-    if (!cell.selectedBackgroundView) {
-        cell.selectedBackgroundView = [UIView new];
-        cell.selectedBackgroundView.layer.cornerRadius = cell.layer.cornerRadius;
-        cell.selectedBackgroundView.layer.shadowRadius = 1.5;
-        cell.selectedBackgroundView.layer.shadowOpacity = 0.25;
-        cell.selectedBackgroundView.layer.shadowOffset = CGSizeZero;
-        cell.selectedBackgroundView.backgroundColor = [UIColor colorWithHue:0.526
-                                                                 saturation:0.561
-                                                                 brightness:1 alpha:1];
     }
     return cell;
 }
@@ -260,7 +244,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.788 alpha:1];
     [self.collectionView registerClass:[AwfulImageCollectionViewCell class]
             forCellWithReuseIdentifier:TagCellIdentifier];
     self.collectionView.allowsMultipleSelection = YES;

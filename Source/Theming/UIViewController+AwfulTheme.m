@@ -78,7 +78,9 @@
 - (void)themeDidChange
 {
 	[super themeDidChange];
-	self.collectionView.indicatorStyle = self.theme.scrollIndicatorStyle;
+    AwfulTheme *theme = self.theme;
+    self.collectionView.backgroundColor = theme[@"collectionViewBackgroundColor"];
+	self.collectionView.indicatorStyle = theme.scrollIndicatorStyle;
 	[self.collectionView reloadData];
 }
 

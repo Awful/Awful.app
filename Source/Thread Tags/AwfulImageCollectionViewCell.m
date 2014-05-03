@@ -8,6 +8,7 @@
 @interface AwfulImageCollectionViewCell ()
 
 @property (strong, nonatomic) AwfulThreadTagView *tagView;
+@property (strong, nonatomic) UIImageView *selectedIcon;
 
 @end
 
@@ -18,6 +19,10 @@
     if (!(self = [super initWithFrame:frame])) return nil;
     self.tagView = [AwfulThreadTagView new];
     [self.contentView addSubview:self.tagView];
+    UIImage *selectedTick = [UIImage imageNamed:@"selected-tick-icon"];
+    self.selectedIcon = [[UIImageView alloc] initWithImage:selectedTick];
+    self.selectedIcon.hidden = YES;
+    [self.contentView addSubview:self.selectedIcon];
     return self;
 }
 
@@ -31,6 +36,12 @@
     self.tagView.tagImage = icon;
 }
 
+- (void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    self.selectedIcon.hidden = !selected;
+}
+
 - (UIImage *)secondaryIcon
 {
     return self.tagView.secondaryTagImage;
@@ -41,9 +52,14 @@
     self.tagView.secondaryTagImage = secondaryIcon;
 }
 
+static const CGFloat kSelectedIconSize = 31;
+
 - (void)layoutSubviews
 {
-    self.tagView.frame = CGRectInset(self.bounds, 2, 2);
+    self.tagView.frame = self.bounds;
+    self.selectedIcon.frame = CGRectMake(self.bounds.size.width-kSelectedIconSize,
+                                         self.bounds.size.height-kSelectedIconSize,
+                                         kSelectedIconSize, kSelectedIconSize);
 }
 
 @end
