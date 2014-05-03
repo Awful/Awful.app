@@ -316,7 +316,7 @@
     if (![self isViewLoaded]) return;
     
     NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] || [changedSetting isEqualToString:AwfulSettingsKeys.username] || [changedSetting isEqualToString:AwfulSettingsKeys.useSmallFonts]) {
+    if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars] || [changedSetting isEqualToString:AwfulSettingsKeys.username] || [changedSetting isEqualToString:AwfulSettingsKeys.fontScale]) {
         [self configurePostsViewSettings];
     } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
         if ([AwfulSettings settings].showImages) {
@@ -470,7 +470,7 @@
     self.view.backgroundColor = theme[@"backgroundColor"];
 	
     self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
-    self.postsView.useSmallFonts = [AwfulSettings settings].useSmallFonts;
+    self.postsView.fontScale = [AwfulSettings settings].fontScale;
     self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
     self.postsView.stylesheet = theme[@"postsViewCSS"];
 	self.postsView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;

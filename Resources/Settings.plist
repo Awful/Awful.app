@@ -82,16 +82,6 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Use Small Fonts</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>use_small_fonts</string>
-				</dict>
-				<dict>
-					<key>Title</key>
 					<string>Font Scale: %d%%</string>
 					<key>Type</key>
 					<string>Stepper</string>

@@ -132,8 +132,6 @@ BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
 
-BOOL_PROPERTY(useSmallFonts, setUseSmallFonts)
-
 struct {
     __unsafe_unretained NSString *currentUser;
 } ObsoleteSettingsKeys = {
@@ -199,6 +197,16 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 - (void)setLastOfferedPasteboardURL:(NSString *)lastOfferedPasteboardURL
 {
     self[AwfulSettingsKeys.lastOfferedPasteboardURL] = lastOfferedPasteboardURL;
+}
+
+- (double)fontScale
+{
+    return [self[AwfulSettingsKeys.fontScale] doubleValue];
+}
+
+- (void)setFontScale:(double)fontScale
+{
+    self[AwfulSettingsKeys.fontScale] = @(fontScale);
 }
 
 - (NSString *)customBaseURL
@@ -371,6 +379,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .customBaseURL = @"custom_base_URL",
     .instapaperUsername = @"instapaper_username",
     .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
-    .useSmallFonts = @"use_small_fonts",
     .fontScale = @"font_scale",
 };
