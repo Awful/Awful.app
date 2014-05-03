@@ -919,13 +919,6 @@
 			path = "Thread Tags";
 			sourceTree = "<group>";
 		};
-		1C3447E2175D9CCE007377C5 /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Templates;
-			sourceTree = "<group>";
-		};
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -1318,7 +1311,6 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
-				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				837D67EF1861C3D700464055 /* AwfulForumTweaks.h */,
 				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
 				1C9F3AB2180CD39C00B3BCBA /* AwfulPopoverBackgroundView.h */,
@@ -1328,6 +1320,7 @@
 				1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */,
 				1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
+				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */,
 				1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */,
 				1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */,
@@ -1434,7 +1427,6 @@
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
-				1C3447E2175D9CCE007377C5 /* Templates */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
