@@ -36,27 +36,11 @@
     _delegate = delegate;
     self.clearsSelectionOnViewWillAppear = NO;
     self.title = @"Choose Post Icon";
-    self.navigationItem.rightBarButtonItem = self.pickButtonItem;
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
     return self;
 }
 
 static NSString * const TagCellIdentifier = @"Tag Cell";
-
-- (UIBarButtonItem *)pickButtonItem
-{
-    if (_pickButtonItem) return _pickButtonItem;
-    _pickButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Pick" style:UIBarButtonItemStyleDone
-                                                      target:self action:@selector(didTapPick)];
-    return _pickButtonItem;
-}
-
-- (void)didTapPick
-{
-    if ([self.delegate respondsToSelector:@selector(postIconPickerDidComplete:)]) {
-        [self.delegate postIconPickerDidComplete:self];
-    }
-}
 
 - (UIBarButtonItem *)cancelButtonItem
 {
@@ -235,6 +219,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     } else {
         if ([self.delegate respondsToSelector:@selector(postIconPicker:didSelectIconAtIndex:)]) {
             [self.delegate postIconPicker:self didSelectIconAtIndex:indexPath.item];
+        }
+    }
+    if (self.numberOfSecondaryIcons == 0 || (self.selectedIndex > -1 && self.secondarySelectedIndex > -1)) {
+        if ([self.delegate respondsToSelector:@selector(postIconPickerDidComplete:)]) {
+            [self.delegate postIconPickerDidComplete:self];
         }
     }
 }
