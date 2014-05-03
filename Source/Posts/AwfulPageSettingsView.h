@@ -50,4 +50,14 @@
  */
 @property (readonly, strong, nonatomic) AwfulThemePicker *themePicker;
 
+/**
+ * Describes the fontScaleStepper. Default text is "Font Scale".
+ */
+@property (readonly, strong, nonatomic) UILabel *fontScaleLabel;
+
+/**
+ * Adjusts font size for post text.
+ */
+@property (readonly, strong, nonatomic) UIStepper *fontScaleStepper;
+
 @end

@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPageSettingsView.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulPageSettingsView
 {
@@ -58,6 +59,23 @@
     [_themePicker setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
     [self addSubview:_themePicker];
     
+    /* XXX really want to borrow this stuff from the AwfulSettingsViewController. */
+    _fontScaleLabel = [UILabel new];
+    _fontScaleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_fontScaleLabel setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+    [self updateFontScaleLabel];
+    [self addSubview:_fontScaleLabel];
+    
+    /* XXX really want to borrow this stuff from the AwfulSettingsViewController. */
+    _fontScaleStepper = [UIStepper new];
+    _fontScaleStepper.minimumValue = 50;
+    _fontScaleStepper.maximumValue = 200;
+    _fontScaleStepper.stepValue = 10;
+    _fontScaleStepper.value = (int)[AwfulSettings settings].fontScale;
+    _fontScaleStepper.translatesAutoresizingMaskIntoConstraints = NO;
+    [_fontScaleStepper setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisVertical];
+    [self addSubview:_fontScaleStepper];
+    
     NSDictionary *views = @{ @"titleLabel": _titleLabel,
                              @"titleBackground": _titleBackgroundView,
                              @"avatarsLabel": _avatarsLabel,
@@ -65,7 +83,9 @@
                              @"imagesLabel": _imagesLabel,
                              @"imagesSwitch": _imagesEnabledSwitch,
                              @"themeLabel": _themeLabel,
-                             @"themePicker": _themePicker };
+                             @"themePicker": _themePicker,
+                             @"fontScaleLabel": _fontScaleLabel,
+                             @"fontScaleStepper": _fontScaleStepper};
     NSDictionary *metrics = @{ @"hspace": @(innerMargins.width),
                                @"vspace": @(innerMargins.height),
                                @"hmargin": @(outerMargins.width),
@@ -93,7 +113,12 @@
                                              metrics:metrics
                                                views:views]];
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleBackground(titleHeight)]-vmargin-[avatarsSwitch]-vspace-[themePicker]-vmargin-|"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-hmargin-[fontScaleLabel]-[fontScaleStepper]-hmargin-|"
+                                             options:NSLayoutFormatAlignAllCenterY
+                                             metrics:metrics
+                                               views:views]];
+    [self addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[titleBackground(titleHeight)]-vmargin-[avatarsSwitch]-vspace-[themePicker]-vspace-[fontScaleStepper]-vmargin-|"
                                              options:0
                                              metrics:metrics
                                                views:views]];
@@ -106,6 +131,12 @@
     return self;
 }
 
+/* XXX really want to borrow this stuff from the AwfulSettingsViewController. */
+- (void)updateFontScaleLabel
+{
+    _fontScaleLabel.text = [NSString stringWithFormat:@"Font Scale: %d%%", (int)[AwfulSettings settings].fontScale];
+}
+
 static const CGSize outerMargins = {32, 20};
 static const CGSize innerMargins = {8, 18};
 static const CGFloat titleHeight = 38;
@@ -114,8 +145,9 @@ static const CGFloat titleHeight = 38;
 {
     CGSize switchSize = _avatarsEnabledSwitch.intrinsicContentSize;
     CGSize themePickerSize = _themePicker.intrinsicContentSize;
-    CGFloat margins = outerMargins.height * 2 + innerMargins.height;
-    return CGSizeMake(UIViewNoIntrinsicMetric, titleHeight + switchSize.height + themePickerSize.height + margins);
+    CGSize fontScaleSize = _fontScaleStepper.intrinsicContentSize;
+    CGFloat margins = outerMargins.height * 2 + innerMargins.height * 2;
+    return CGSizeMake(UIViewNoIntrinsicMetric, titleHeight + switchSize.height + themePickerSize.height + fontScaleSize.height + margins);
 }
 
 - (UIColor *)titleBackgroundColor
