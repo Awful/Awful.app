@@ -285,7 +285,7 @@ header {
   list-style: none;
 }
 .bbc-spoiler img {
-  visibility: hidden;
+  opacity: 0;
 }
 .bbc-spoiler a:link,
 .bbc-spoiler a:visited,
@@ -300,7 +300,7 @@ header {
   list-style: inherit;
 }
 .bbc-spoiler.spoiled img {
-  visibility: visible;
+  opacity: 1;
 }
 .bbc-block h4,
 .bbc-block h5 {

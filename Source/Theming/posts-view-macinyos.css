@@ -350,7 +350,7 @@ post.seen {
   list-style: none;
 }
 .bbc-spoiler img {
-  visibility: hidden;
+  opacity: 0;
 }
 .bbc-spoiler a:link,
 .bbc-spoiler a:visited,
@@ -365,7 +365,7 @@ post.seen {
   list-style: inherit;
 }
 .bbc-spoiler.spoiled img {
-  visibility: visible;
+  opacity: 1;
 }
 blockquote {
   border-left-color: #000;

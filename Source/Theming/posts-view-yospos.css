@@ -321,7 +321,7 @@ post.seen {
   list-style: none;
 }
 .bbc-spoiler img {
-  visibility: hidden;
+  opacity: 0;
 }
 .bbc-spoiler a:link,
 .bbc-spoiler a:visited,
@@ -336,7 +336,7 @@ post.seen {
   list-style: inherit;
 }
 .bbc-spoiler.spoiled img {
-  visibility: visible;
+  opacity: 1;
 }
 .bbc-block {
   border-left-color: #57ff57;

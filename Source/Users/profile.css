@@ -132,7 +132,7 @@ tr:last-child td {
   list-style: none;
 }
 .bbc-spoiler img {
-  visibility: hidden;
+  opacity: 0;
 }
 .bbc-spoiler a:link,
 .bbc-spoiler a:visited,
@@ -147,7 +147,7 @@ tr:last-child td {
   list-style: inherit;
 }
 .bbc-spoiler.spoiled img {
-  visibility: visible;
+  opacity: 1;
 }
 .dark .bbc-spoiler {
   color: #ffffff;
@@ -159,7 +159,7 @@ tr:last-child td {
   list-style: none;
 }
 .dark .bbc-spoiler img {
-  visibility: hidden;
+  opacity: 0;
 }
 .dark .bbc-spoiler a:link,
 .dark .bbc-spoiler a:visited,
@@ -174,5 +174,5 @@ tr:last-child td {
   list-style: inherit;
 }
 .dark .bbc-spoiler.spoiled img {
-  visibility: visible;
+  opacity: 1;
 }
