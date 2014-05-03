@@ -12,4 +12,5 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .parseError = -1002,
     .dataMigrationError = -1003,
     .missingDataStore = -1004,
+    .forbidden = -1005,
 };

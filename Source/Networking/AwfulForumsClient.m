@@ -582,9 +582,16 @@
                 if (BBcode) break;
             }
             if (!BBcode) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to quote post; could not find form" }];
+                HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
+                if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.forbidden
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to post in this thread" }];
+                } else {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.parseError
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"Failed to quote post; could not find form" }];
+                }
             }
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 callback(error, BBcode);
@@ -621,9 +628,16 @@
             }
             if (!parameters) {
                 if (callback) {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
-                                            userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
+                    HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
+                    if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
+                        error = [NSError errorWithDomain:AwfulErrorDomain
+                                                    code:AwfulErrorCodes.forbidden
+                                                userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to edit posts in this thread" }];
+                    } else {
+                        error = [NSError errorWithDomain:AwfulErrorDomain
+                                                    code:AwfulErrorCodes.parseError
+                                                userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
+                    }
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         callback(error);
                     }];
@@ -1167,9 +1181,16 @@
                 }
             }
             if (!parameters) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed to scrape new thread form" }];
+                HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
+                if (specialMessage && [specialMessage.textContent rangeOfString:@"accepting"].location != NSNotFound) {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.forbidden
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to post threads in this forum" }];
+                } else {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.parseError
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"Failed to scrape new thread form" }];
+                }
                 if (callback) {
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         callback(error, nil);

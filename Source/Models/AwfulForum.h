@@ -14,6 +14,8 @@
  */
 @property (copy, nonatomic) NSString *forumID;
 
+@property (assign, nonatomic) BOOL canPost;
+
 /**
  * The position of the forum when displayed in the big list of forums (`http://forums.somethingawful.com`) or in its parent forum, starting at 0.
  */

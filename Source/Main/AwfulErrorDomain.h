@@ -24,4 +24,7 @@ extern const struct AwfulErrorCodes
     
     // Could not find the Core Data store.
     NSInteger missingDataStore;
+    
+    // Don't have permission to do it.
+    NSInteger forbidden;
 } AwfulErrorCodes;

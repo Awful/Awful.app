@@ -26,6 +26,7 @@
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     if (body[@"data-forum"]) {
         self.forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
+        self.forum.canPost = !![body firstNodeMatchingSelector:@"ul.postbuttons a[href*='newthread']"];
     }
     
     HTMLElement *breadcrumbsDiv = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];

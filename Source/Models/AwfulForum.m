@@ -6,6 +6,7 @@
 
 @implementation AwfulForum
 
+@dynamic canPost;
 @dynamic forumID;
 @dynamic index;
 @dynamic lastRefresh;

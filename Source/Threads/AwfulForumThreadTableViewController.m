@@ -44,6 +44,7 @@
     _forum = forum;
     self.title = _forum.name;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    self.newThreadButtonItem.enabled = forum.lastRefresh && forum.canPost;
     self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
     
     return self;
@@ -206,6 +207,7 @@
             } else {
                 [[AwfulRefreshMinder minder] didFinishRefreshingForum:self.forum];
             }
+            self.newThreadButtonItem.enabled = self.forum.canPost;
         }
         _mostRecentlyLoadedPage = page;
         [self.refreshControl endRefreshing];

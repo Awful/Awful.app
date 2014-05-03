@@ -198,4 +198,18 @@
     XCTAssertEqualObjects(letsPlay.name, @"Let's Play!");
 }
 
+- (void)testAcceptsNewThreads
+{
+    [self scrapeFixtureNamed:@"forumdisplay2"];
+    [self scrapeFixtureNamed:@"forumdisplay-goldmine"];
+    
+    AwfulForum *LP = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = '191'"];
+    XCTAssertNotNil(LP);
+    XCTAssertTrue(LP.canPost);
+    
+    AwfulForum *goldmine = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = '21'"];
+    XCTAssertNotNil(goldmine);
+    XCTAssertFalse(goldmine.canPost);
+}
+
 @end
