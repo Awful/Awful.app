@@ -313,6 +313,9 @@ typedef NS_ENUM(NSUInteger, SettingType)
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
     [AwfulSettings settings][key] = @(stepperView.value);
+
+    // Redisplay to update title
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView
