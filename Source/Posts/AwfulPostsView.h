@@ -36,7 +36,7 @@
 
 @property (nonatomic) BOOL showAvatars;
 
-@property (nonatomic) BOOL useSmallFonts;
+@property (nonatomic) int fontScale;
 
 - (void)loadLinkifiedImages;
 

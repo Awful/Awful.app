@@ -248,7 +248,7 @@ static NSString * JSONizeBool(BOOL aBool)
     }
     [self.webView loadHTMLString:HTML baseURL:self.baseURL];
     self.didLoadHTML = YES;
-    [self updateUseSmallFonts];
+    [self updateFontScale];
 }
 
 - (void)updateStylesheet
@@ -267,20 +267,16 @@ static NSString * JSONizeBool(BOOL aBool)
     [self updateShowAvatars];
 }
 
-- (void)setUseSmallFonts:(BOOL)useSmallFonts
+- (void)setFontScale:(int)fontScale
 {
-    if (_useSmallFonts == useSmallFonts) return;
-    _useSmallFonts = useSmallFonts;
-    [self updateUseSmallFonts];
+    if (_fontScale == fontScale) return;
+    _fontScale = fontScale;
+    [self updateFontScale];
 }
 
-- (void)updateUseSmallFonts
+- (void)updateFontScale
 {
-    if (_useSmallFonts) {
-        [self evalJavaScript:@"Awful.setFontScale(80)"];
-    } else {
-        [self evalJavaScript:@"Awful.setFontScale(100)"];
-    }
+    [self evalJavaScript:@"Awful.setFontScale(%d)", self.fontScale];
 }
 
 - (void)updateShowAvatars
@@ -475,7 +471,7 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     if (!_onceOnFirstLoad) {
         _onceOnFirstLoad = YES;
         [self updateShowAvatars];
-        [self updateUseSmallFonts];
+        [self updateFontScale];
         if (_loadLinkifiedImagesOnFirstLoad) {
             [self loadLinkifiedImages];
         }
