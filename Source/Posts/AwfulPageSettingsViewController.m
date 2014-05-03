@@ -70,6 +70,9 @@
     [settingsView.themePicker addTarget:self
                                  action:@selector(didTapThemePicker:)
                        forControlEvents:UIControlEventValueChanged];
+    [settingsView.fontScaleStepper addTarget:self
+                                      action:@selector(didTapFontScaleStepper:)
+                            forControlEvents:UIControlEventValueChanged];
     [self.themes enumerateObjectsUsingBlock:^(AwfulTheme *theme, NSUInteger i, BOOL *stop) {
         UIColor *color = theme.descriptiveColor;
         color.accessibilityLabel = theme.descriptiveName;
@@ -97,6 +100,12 @@
     if (!theme.forumSpecific) {
         [AwfulSettings settings].darkTheme = ![theme isEqual:[AwfulThemeLoader sharedLoader].defaultTheme];
     }
+}
+
+- (void)didTapFontScaleStepper:(UIStepper *)fontScaleStepper
+{
+    [AwfulSettings settings].fontScale = fontScaleStepper.value;
+    [[self settingsView] updateFontScaleLabel];
 }
 
 - (void)themeDidChange

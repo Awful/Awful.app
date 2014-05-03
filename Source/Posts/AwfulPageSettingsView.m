@@ -135,6 +135,7 @@
 - (void)updateFontScaleLabel
 {
     _fontScaleLabel.text = [NSString stringWithFormat:@"Font Scale: %d%%", (int)[AwfulSettings settings].fontScale];
+    [_fontScaleLabel setNeedsDisplay];
 }
 
 static const CGSize outerMargins = {32, 20};

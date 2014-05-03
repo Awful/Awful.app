@@ -60,4 +60,9 @@
  */
 @property (readonly, strong, nonatomic) UIStepper *fontScaleStepper;
 
+/**
+ * Call after adjusting "fontScale" setting, to update label.
+ */
+- (void)updateFontScaleLabel;
+
 @end
