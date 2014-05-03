@@ -82,13 +82,9 @@ Awful.showAvatars = function(on) {
   }
 }
 
-Awful.useSmallFonts = function(on) {
-  var smallFontCSS =
-    '.postbody { font-size: 80%; padding: 0; margin: 0; }' +
-    '.username { font: -apple-system-subheadline; }' +
-    '.regdate, .postdate { font-size: .7em; } ' +
-    '.action-button { line-height: 0.5 em; }';
-  if (on) {
+Awful.setFontScale = function(scalePercentage) {
+  var smallFontCSS = '.postbody { font-size: ' + scalePercentage + '%; }';
+  if (scalePercentage != 100) {
     $('#awful-font-adjust-style').text(smallFontCSS);
   } else {
     $('#awful-font-adjust-style').text('');

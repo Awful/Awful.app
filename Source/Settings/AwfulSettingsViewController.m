@@ -257,6 +257,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         stepperView.maximumValue = [maximum integerValue];
         stepperView.stepValue = [setting[@"Increment"] integerValue];
         stepperView.value = [valueForSetting integerValue];
+        cell.textLabel.text = [NSString stringWithFormat:setting[@"Title"], (int)stepperView.value];
         
         NSUInteger tag = [self.steppers indexOfObject:indexPath];
         if (tag == NSNotFound) {

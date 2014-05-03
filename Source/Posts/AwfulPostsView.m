@@ -279,7 +279,11 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (void)updateUseSmallFonts
 {
-    [self evalJavaScript:@"Awful.useSmallFonts(%@)", JSONizeBool(_useSmallFonts)];
+    if (_useSmallFonts) {
+        [self evalJavaScript:@"Awful.setFontScale(80)"];
+    } else {
+        [self evalJavaScript:@"Awful.setFontScale(100)"];
+    }
 }
 
 - (void)updateShowAvatars

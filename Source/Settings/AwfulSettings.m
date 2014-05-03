@@ -372,4 +372,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .instapaperUsername = @"instapaper_username",
     .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
     .useSmallFonts = @"use_small_fonts",
+    .fontScale = @"font_scale",
 };

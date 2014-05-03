@@ -90,6 +90,22 @@
 					<key>Key</key>
 					<string>use_small_fonts</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Font Scale: %d%%</string>
+					<key>Type</key>
+					<string>Stepper</string>
+					<key>Minimum</key>
+					<integer>50</integer>
+					<key>Maximum</key>
+					<integer>200</integer>
+					<key>Default</key>
+					<integer>100</integer>
+					<key>Increment</key>
+					<integer>10</integer>
+					<key>Key</key>
+					<string>font_scale</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
