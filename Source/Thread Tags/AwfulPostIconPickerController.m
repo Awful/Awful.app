@@ -151,8 +151,10 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
             [self.collectionView deselectItemAtIndexPath:indexPath animated:NO];
         }
     }
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:selectedIndex inSection:section];
-    [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:scroll];
+    if (selectedIndex >= 0) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:selectedIndex inSection:section];
+        [self.collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:scroll];
+    }
 }
 
 - (NSInteger)secondarySelectedIndex
@@ -175,8 +177,10 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
             [self.secondaryIconPicker deselectItemAtIndexPath:indexPath animated:NO];
         }
     }
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:secondarySelectedIndex inSection:section];
-    [self.secondaryIconPicker selectItemAtIndexPath:indexPath animated:NO scrollPosition:scroll];
+    if (secondarySelectedIndex >= -1) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:secondarySelectedIndex inSection:section];
+        [self.secondaryIconPicker selectItemAtIndexPath:indexPath animated:NO scrollPosition:scroll];
+    }
 }
 
 - (UIImage *)selectedIconImage
