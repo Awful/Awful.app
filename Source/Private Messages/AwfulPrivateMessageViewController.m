@@ -335,7 +335,9 @@
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
+    __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSString *rectString, WVJBResponseCallback responseCallback) {
+        __typeof__(self) self = weakSelf;
         UIEdgeInsets insets = self.webView.scrollView.contentInset;
         CGRect rect = CGRectOffset(CGRectFromString(rectString), insets.left, insets.top);
         [self showUserActionsFromRect:rect];

@@ -144,7 +144,9 @@
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
+    __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge registerHandler:@"contactInfo" handler:^(NSDictionary *contactInfo, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
         NSString *service = contactInfo[@"service"];
         if ([service isEqualToString:@"Private Message"]) {
             AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:self.user];
