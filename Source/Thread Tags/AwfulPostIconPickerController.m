@@ -242,7 +242,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     
-    if (self.numberOfSecondaryIcons == 0 || (self.selectedIndex > -1 && self.secondarySelectedIndex > -1)) {
+    if (self.numberOfSecondaryIcons == 0 || (self.selectedIndex != NSNotFound && self.secondarySelectedIndex != NSNotFound)) {
         if ([self.delegate respondsToSelector:@selector(postIconPickerDidComplete:)]) {
             [self.delegate postIconPickerDidComplete:self];
         }
