@@ -153,11 +153,8 @@
             [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
         } else if ([service isEqualToString:@"Homepage"]) {
             NSString *address = contactInfo[@"address"];
-            NSDictionary *webViewRect = contactInfo[@"rect"];
-            CGRect rect = CGRectMake([webViewRect[@"left"] floatValue], [webViewRect[@"top"] floatValue],
-                                     [webViewRect[@"width"] floatValue], [webViewRect[@"height"] floatValue]);
             UIEdgeInsets insets = self.webView.scrollView.contentInset;
-            rect = CGRectOffset(rect, insets.left, insets.top);
+            CGRect rect = CGRectOffset(CGRectFromString(contactInfo[@"rect"]), insets.left, insets.top);
             [self showActionsForHomepage:[NSURL URLWithString:address] atRect:rect];
         }
     }];

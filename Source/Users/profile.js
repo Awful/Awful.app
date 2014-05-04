@@ -24,13 +24,16 @@ startBridge(function(bridge) {
       var row = $(this);
       var service = row.find('th').text();
       var address = row.find('td').text();
-      var rect = row.offset();
-      rect.left -= window.pageXOffset;
-      rect.top -= window.pageYOffset;
+      function rectOfElement(element) {
+        var rect = element.offset();
+        var origin = [rect.left - window.pageXOffset, rect.top - window.pageYOffset];
+        var size = [rect.width, rect.height];
+        return "{{" + origin.join(',') + "},{" + size.join(',') + "}}";
+      }
       var data = {
         service: service,
         address: address,
-        rect: rect
+        rect: rectOfElement(row)
       };
       bridge.callHandler('contactInfo', data);
     });
