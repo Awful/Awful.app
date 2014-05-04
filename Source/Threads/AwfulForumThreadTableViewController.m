@@ -74,11 +74,13 @@
     }
 }
 
+static NSString * const kFilterThreadsTitle = @"Filter Threads";
+
 - (AwfulPostIconPickerController *)postIconPicker
 {
     if (_postIconPicker) return _postIconPicker;
     _postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
-    _postIconPicker.title = @"Filter Threads";
+    _postIconPicker.title = kFilterThreadsTitle;
     [_postIconPicker reloadData];
     return _postIconPicker;
 }
@@ -266,7 +268,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+        if ([picker.title isEqualToString:kFilterThreadsTitle]) {
+            return [[AwfulThreadTagLoader loader] noFilterTagImage];
+        } else {
+            return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+        }
     } else {
         AwfulThreadTag *threadTag = self.forum.threadTags[index - 1];
         return [[AwfulThreadTagLoader loader] imageNamed:threadTag.imageName];

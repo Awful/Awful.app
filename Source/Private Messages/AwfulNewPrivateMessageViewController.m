@@ -140,7 +140,7 @@
     if (self.threadTag.imageName) {
         image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
     } else {
-        image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+        image = [[AwfulThreadTagLoader loader] unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
 }
@@ -148,7 +148,7 @@
 - (void)didTapThreadTagButton:(AwfulThreadTagButton *)button
 {
     if (self.threadTag) {
-        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag];
+        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag] + 1;
     } else {
         self.postIconPicker.selectedIndex = 0;
     }

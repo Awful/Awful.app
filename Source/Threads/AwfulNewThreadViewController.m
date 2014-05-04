@@ -75,15 +75,9 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     [super viewDidLoad];
     [self updateThreadTagButtonImage];
-    __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
-        __typeof__(self) self = weakSelf;
         _availableThreadTags = [form.threadTags copy];
         _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
-        if (!self.secondaryThreadTag) {
-            self.secondaryThreadTag = _availableSecondaryThreadTags.firstObject;
-        }
-        _secondaryIconKey = [form.secondaryThreadTagName copy];
         [_postIconPicker reloadData];
     }];
 }
@@ -130,7 +124,7 @@ static NSString * const DefaultTitle = @"New Thread";
     if (self.threadTag) {
         image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
     } else {
-        image = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+        image = [[AwfulThreadTagLoader loader] unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
@@ -147,12 +141,12 @@ static NSString * const DefaultTitle = @"New Thread";
     if (self.threadTag) {
         self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag] + 1;
     } else {
-        self.postIconPicker.selectedIndex = 0;
+        self.postIconPicker.selectedIndex = -1;
     }
     if (self.secondaryThreadTag) {
         self.postIconPicker.secondarySelectedIndex = [_availableSecondaryThreadTags indexOfObject:self.secondaryThreadTag];
     } else if (_availableSecondaryThreadTags.count > 0) {
-        self.postIconPicker.secondarySelectedIndex = 0;
+        self.postIconPicker.secondarySelectedIndex = -1;
     }
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.postIconPicker showFromRect:button.bounds inView:button];

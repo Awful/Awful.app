@@ -200,6 +200,16 @@ static UIImage *EnsureDoubleScaledImage(UIImage *image)
     return [UIImage imageNamed:@"empty-pm-tag"];
 }
 
+- (UIImage *)unsetThreadTagImage
+{
+    return [UIImage imageNamed:@"unset-tag"];
+}
+
+- (UIImage *)noFilterTagImage
+{
+    return [UIImage imageNamed:@"no-filter-icon"];
+}
+
 @end
 
 NSString * const AwfulThreadTagLoaderNewImageAvailableNotification = @"com.awfulapp.Awful.ThreadTagLoaderNewImageAvailable";

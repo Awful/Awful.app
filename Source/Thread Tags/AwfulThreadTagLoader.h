@@ -33,6 +33,16 @@
  */
 - (UIImage *)emptyPrivateMessageImage;
 
+/**
+ * Returns a placeholder image for use before a tag has been selected.
+ */
+- (UIImage *)unsetThreadTagImage;
+
+/**
+ * Returns a generic image suitable for clearing a filter.
+ */
+- (UIImage *)noFilterTagImage;
+
 @end
 
 /**
