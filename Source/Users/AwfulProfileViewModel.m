@@ -80,22 +80,27 @@
     return self.user.gender ?: @"porpoise";
 }
 
-- (NSString *)JavaScriptLibraries
+- (NSString *)javascript
 {
-    NSURL *URLForZepto = [[NSBundle mainBundle] URLForResource:@"zepto.min" withExtension:@"js"];
-    NSError *error;
-    NSString *zepto = [NSString stringWithContentsOfURL:URLForZepto encoding:NSUTF8StringEncoding error:&error];
-    if (!zepto) {
-        NSLog(@"%s error loading zepto.js from %@: %@", __PRETTY_FUNCTION__, URLForZepto, error);
+    static __unsafe_unretained NSString *scriptFilenames[] = {
+        @"zepto.min.js",
+        @"fastclick.js",
+        @"profile.js",
+        @"spoilers.js",
+    };
+    NSMutableArray *scripts = [NSMutableArray new];
+    for (NSUInteger i = 0, end = sizeof(scriptFilenames) / sizeof(*scriptFilenames); i < end; i++) {
+        NSString *filename = scriptFilenames[i];
+        NSURL *URL = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
+        NSError *error;
+        NSString *script = [NSString stringWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:&error];
+        if (!script) {
+            NSLog(@"%s error loading %@ from %@: %@", __PRETTY_FUNCTION__, filename, URL, error);
+            return nil;
+        }
+        [scripts addObject:script];
     }
-    
-    NSURL *URLForFastClick = [[NSBundle mainBundle] URLForResource:@"fastclick" withExtension:@"js"];
-    NSString *fastClick = [NSString stringWithContentsOfURL:URLForFastClick encoding:NSUTF8StringEncoding error:&error];
-    if (!fastClick) {
-        NSLog(@"%s error loading fastclick.js from %@: %@", __PRETTY_FUNCTION__, URLForFastClick, error);
-    }
-    
-    return [NSString stringWithFormat:@"%@\n%@", zepto, fastClick];
+    return [scripts componentsJoinedByString:@"\n\n"];
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

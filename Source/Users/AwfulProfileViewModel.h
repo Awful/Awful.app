@@ -71,8 +71,8 @@
 @property (readonly, copy, nonatomic) NSString *gender;
 
 /**
- * JavaScript libraries used in rendering.
+ * JavaScript used in rendering.
  */
-@property (readonly, copy, nonatomic) NSString *JavaScriptLibraries;
+@property (readonly, copy, nonatomic) NSString *javascript;
 
 @end

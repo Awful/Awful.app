@@ -21,6 +21,16 @@
 @property (readonly, strong, nonatomic) AwfulPrivateMessage *privateMessage;
 
 /**
+ * The CSS for the message.
+ */
+@property (copy, nonatomic) NSString *stylesheet;
+
+/**
+ * Returns "ipad" when run on an iPad, otherwise "iphone".
+ */
+@property (readonly, copy, nonatomic) NSString *userInterfaceIdiom;
+
+/**
  * The author's avatar URL if it is to be shown.
  */
 @property (readonly, strong, nonatomic) NSURL *visibleAvatarURL;
@@ -44,5 +54,10 @@
  * A formatter suitable for the message's send date.
  */
 @property (readonly, strong, nonatomic) NSDateFormatter *sentDateFormat;
+
+/**
+ * JavaScript used in rendering.
+ */
+@property (readonly, copy, nonatomic) NSString *javascript;
 
 @end

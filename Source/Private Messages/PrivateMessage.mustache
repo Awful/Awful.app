@@ -1,19 +1,31 @@
-<post id="{{ messageID }}" class="private-message {{# seen }}seen{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
-    <header {{# hiddenAvatarURL }}data-avatar="{{ . }}"{{/ }}>
-        {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
-        
-        <section class="nameanddate">
-            <h1 class="username">{{ from.username }}</h1>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
 
-            <time class="regdate">Joined {{ regDateFormat(from.regdate) }}</time>
+<style id="awful-inline-style">
+    {{{ stylesheet }}}
+</style>
+
+<body class="{{ userInterfaceIdiom }}">
+    <post id="{{ messageID }}" class="private-message {{# seen }}seen{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
+        <header {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>
+            {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
+            
+            <section class="nameanddate">
+                <h1 class="username">{{ from.username }}</h1>
+
+                <time class="regdate">Joined {{ regDateFormat(from.regdate) }}</time>
+            </section>
+        </header>
+        
+        <section class="postbody">
+            {{{ HTMLContents }}}
         </section>
-    </header>
+        
+        <footer>
+            <time class="postdate">{{ sentDateFormat(sentDate) }}</time>
+        </footer>
+    </post>
     
-    <section class="postbody">
-        {{{ HTMLContents }}}
-    </section>
-    
-    <footer>
-        <time class="postdate">{{ sentDateFormat(sentDate) }}</time>
-    </footer>
-</post>
+    <script>{{{ javascript }}}</script>
+</body>
