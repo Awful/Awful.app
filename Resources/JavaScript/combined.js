@@ -61,21 +61,21 @@ Awful.highlightMentionUsername = function(username){
 
 Awful.showAvatars = function(on) {
   if (on) {
-    $('header[data-avatar]').each(function() {
+    $('header[data-awful-avatar]').each(function() {
       var header = $(this);
       var img = $('<img>', {
-        src: header.data('avatar'),
+        src: header.data('awful-avatar'),
         alt: '',
         class: 'avatar'
       });
       img.prependTo(header);
-      header.data('avatar', null);
+      header.data('awful-avatar', null);
       header.closest('post').removeClass('no-avatar');
     });
   } else {
     $('header img.avatar').each(function() {
       var img = $(this);
-      img.closest('header').data('avatar', img.attr('src'));
+      img.closest('header').data('awful-avatar', img.attr('src'));
       img.remove();
       img.closest('post').addClass('no-avatar');
     });
