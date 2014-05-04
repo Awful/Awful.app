@@ -78,9 +78,9 @@
     self.fieldView.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
     
     NSDictionary *styleAttrs = @{NSForegroundColorAttributeName: self.theme[@"placeholderTextColor"]};
-    NSAttributedString *toString = [[NSAttributedString alloc] initWithString:@"To..." attributes:styleAttrs];
+    NSAttributedString *toString = [[NSAttributedString alloc] initWithString:@"To" attributes:styleAttrs];
     self.fieldView.toField.textField.attributedPlaceholder = toString;
-    NSAttributedString *subjectString = [[NSAttributedString alloc] initWithString:@"Subject..." attributes:styleAttrs];
+    NSAttributedString *subjectString = [[NSAttributedString alloc] initWithString:@"Subject" attributes:styleAttrs];
     self.fieldView.subjectField.textField.attributedPlaceholder = subjectString;
 }
 
