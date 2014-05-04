@@ -22,7 +22,7 @@
 @end
 
 
-static const CGFloat kSecondaryPickerHeight = 70;
+static const CGFloat kSecondaryPickerVMargin = 14;
 static const CGFloat kCollectionViewItemSize = 60;
 static const CGFloat kCollectionViewSpacing = 5;
 
@@ -103,6 +103,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         self.collectionView.contentInset = UIEdgeInsetsZero;
         self.secondaryIconPicker.hidden = YES;
     } else {
+        const CGFloat kSecondaryPickerHeight = kCollectionViewItemSize + (kSecondaryPickerVMargin * 2);
         self.secondaryIconPicker.frame = CGRectMake(0, 0, self.collectionView.frame.size.width, kSecondaryPickerHeight);
         self.collectionView.contentInset = UIEdgeInsetsMake(kSecondaryPickerHeight, 0, 0, 0);
         self.secondaryIconPicker.hidden = NO;
@@ -251,7 +252,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     if (collectionView == self.secondaryIconPicker) {
         CGFloat totalWidth = (self.numberOfSecondaryIcons * (kCollectionViewItemSize + kCollectionViewSpacing)) - kCollectionViewSpacing;
         CGFloat hMargin = (self.secondaryIconPicker.frame.size.width - totalWidth) / 2;
-        return UIEdgeInsetsMake(0, hMargin, 0, hMargin);
+        return UIEdgeInsetsMake(kSecondaryPickerVMargin, hMargin, kSecondaryPickerVMargin, hMargin);
     }
     return UIEdgeInsetsZero;
 }
