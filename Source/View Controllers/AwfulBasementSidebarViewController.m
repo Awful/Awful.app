@@ -69,7 +69,6 @@
     tableView.dataSource = self;
     tableView.delegate = self;
     [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
-    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:tableView];
     
     // Leaving `scrollsToTop` set to its default `YES` prevents the basement's main content view from ever scrolling to top when someone taps the status bar. (If multiple scroll views can scroll to top, none of them actually will.) We set it to `NO` so main content views work as expected. Any sidebar with enough items to make scrolling to top a valuable behaviour is probably ill-conceived anyway.
@@ -137,6 +136,7 @@ static NSString * const CellIdentifier = @"Cell";
 {
     [super viewDidLoad];
     [self updateAvatarImageFromCache];
+    [self.tableView awful_hideExtraneousSeparators];
 }
 
 - (void)updateAvatarImageFromCache
@@ -154,9 +154,12 @@ static NSString * const CellIdentifier = @"Cell";
     AwfulTheme *theme = self.theme;
     AwfulBasementHeaderView *headerView = self.headerView;
     headerView.usernameLabel.textColor = theme[@"basementLabelColor"];
-    headerView.backgroundColor = theme[@"basementHeaderBackgroundColor"];
-    self.view.backgroundColor = theme[@"basementBackgroundColor"];
-    self.tableView.backgroundColor = theme[@"basementBackgroundColor"];
+    CGFloat r,g,b,a;
+    [theme[@"basementHeaderBackgroundColor"] getRed:&r green:&g blue:&b alpha:&a];
+    headerView.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:0.3];
+    self.view.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.separatorColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
     [self.tableView reloadData];
 }
 
@@ -304,7 +307,7 @@ static void * KVOContext = &KVOContext;
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = self.theme[@"basementBackgroundColor"];
+    cell.backgroundColor = [UIColor clearColor];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

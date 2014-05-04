@@ -101,7 +101,11 @@ typedef NS_ENUM(NSInteger, AwfulBasementSidebarState)
 
 - (void)loadView
 {
-    self.view = [UIView new];
+    UIImage *blurImage = [UIImage imageNamed:@"bg_menu.jpg"];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:blurImage];
+    self.view = backgroundView;
+    self.view.userInteractionEnabled = YES;
+    
     self.sidebarViewController = [AwfulBasementSidebarViewController new];
     self.sidebarViewController.delegate = self;
     self.sidebarViewController.items = [self.viewControllers valueForKey:@"tabBarItem"];
