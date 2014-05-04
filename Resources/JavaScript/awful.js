@@ -82,7 +82,7 @@ Awful.showAvatars = function(on) {
 }
 
 Awful.loadLinkifiedImages = function() {
-  $('a[data-awful="image"]').each(function() {
+  $('[data-awful-linkified-image]').each(function() {
     var link = $(this);
     link.replaceWith($('<img>', { src: link.text(), border: 0 }));
   });
@@ -209,7 +209,7 @@ window.Awful = Awful
 ;(function(){
 
 $(function(){
-  $('#posts').on('click', 'a[data-awful="image"]', showLinkedImage)
+  $('#posts').on('click', '[data-awful-linkified-image]', showLinkedImage)
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
 })
 

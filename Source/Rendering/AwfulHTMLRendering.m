@@ -25,7 +25,7 @@ void LinkifyNonSmileyImages(HTMLDocument *document)
     for (HTMLElement *img in [document nodesMatchingSelector:@"img"]) {
         NSURL *src = [NSURL URLWithString:img[@"src"]];
         if (!IsSmileyURL(src)) {
-            HTMLElement *link = [[HTMLElement alloc] initWithTagName:@"a" attributes:@{ @"data-awful": @"image" }];
+            HTMLElement *link = [[HTMLElement alloc] initWithTagName:@"span" attributes:@{ @"data-awful-linkified-image": @"" }];
             link.textContent = src.absoluteString;
             NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
             [imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:link];

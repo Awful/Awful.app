@@ -2,33 +2,25 @@
 // -------------------------
 
 .spoilers(@color) {
-  .bbc-spoiler {
+  .bbc-spoiler:not(.spoiled) {
     color: @color;
     background: @color;
+    
     li {
       color: @color;
       background: @color;
       list-style: none;
     }
+    
     img {
       opacity: 0;
     }
     
     a:link,
     a:visited,
-    a:active {
+    a:active,
+    [data-awful-linkified-image] {
       color: @color;
-    }
-    
-    &.spoiled {
-      background: transparent;
-      li {
-        background: transparent;
-        list-style: inherit;
-      }
-      img {
-        opacity: 1;
-      }
     }
   }
 }

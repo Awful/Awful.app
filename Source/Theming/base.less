@@ -196,7 +196,6 @@ header {
 // We don't generally control the markup in the post body, so we make do.
 
 .postbody {
-	
 	font: -apple-system-body;
 
   // Hide UIWebView's long-tap image menu.
@@ -257,6 +256,11 @@ span.mention {
 // .quote_link is "pokeyman posted:" above a quote, a link to the quoted post.
 .quote_link {
   text-decoration: none;
+}
+
+// Make linkified images look like links.
+[data-awful-linkified-image] {
+  text-decoration: underline;
 }
 
 blockquote {

@@ -205,6 +205,9 @@ span.mention {
 .quote_link {
   text-decoration: none;
 }
+[data-awful-linkified-image] {
+  text-decoration: underline;
+}
 blockquote {
   margin: 0;
 }
@@ -324,7 +327,8 @@ header {
 .ipad .action-button {
   margin-top: 10px;
 }
-.postbody a {
+.postbody a,
+[data-awful-linkified-image] {
   color: #000;
 }
 .postdate,
@@ -339,32 +343,23 @@ footer,
 .postbody {
   font-family: arial;
 }
-.bbc-spoiler {
+.bbc-spoiler:not(.spoiled) {
   color: #000000;
   background: #000000;
 }
-.bbc-spoiler li {
+.bbc-spoiler:not(.spoiled) li {
   color: #000000;
   background: #000000;
   list-style: none;
 }
-.bbc-spoiler img {
+.bbc-spoiler:not(.spoiled) img {
   opacity: 0;
 }
-.bbc-spoiler a:link,
-.bbc-spoiler a:visited,
-.bbc-spoiler a:active {
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
   color: #000000;
-}
-.bbc-spoiler.spoiled {
-  background: transparent;
-}
-.bbc-spoiler.spoiled li {
-  background: transparent;
-  list-style: inherit;
-}
-.bbc-spoiler.spoiled img {
-  opacity: 1;
 }
 blockquote {
   border-left-color: #000;

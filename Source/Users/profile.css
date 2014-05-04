@@ -122,57 +122,39 @@ tr:last-child td {
   border-bottom: 0;
 }
 /* Spoilers can appear in custom titles. */
-.bbc-spoiler {
+.bbc-spoiler:not(.spoiled) {
   color: #000000;
   background: #000000;
 }
-.bbc-spoiler li {
+.bbc-spoiler:not(.spoiled) li {
   color: #000000;
   background: #000000;
   list-style: none;
 }
-.bbc-spoiler img {
+.bbc-spoiler:not(.spoiled) img {
   opacity: 0;
 }
-.bbc-spoiler a:link,
-.bbc-spoiler a:visited,
-.bbc-spoiler a:active {
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
   color: #000000;
 }
-.bbc-spoiler.spoiled {
-  background: transparent;
-}
-.bbc-spoiler.spoiled li {
-  background: transparent;
-  list-style: inherit;
-}
-.bbc-spoiler.spoiled img {
-  opacity: 1;
-}
-.dark .bbc-spoiler {
+.dark .bbc-spoiler:not(.spoiled) {
   color: #ffffff;
   background: #ffffff;
 }
-.dark .bbc-spoiler li {
+.dark .bbc-spoiler:not(.spoiled) li {
   color: #ffffff;
   background: #ffffff;
   list-style: none;
 }
-.dark .bbc-spoiler img {
+.dark .bbc-spoiler:not(.spoiled) img {
   opacity: 0;
 }
-.dark .bbc-spoiler a:link,
-.dark .bbc-spoiler a:visited,
-.dark .bbc-spoiler a:active {
+.dark .bbc-spoiler:not(.spoiled) a:link,
+.dark .bbc-spoiler:not(.spoiled) a:visited,
+.dark .bbc-spoiler:not(.spoiled) a:active,
+.dark .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
   color: #ffffff;
-}
-.dark .bbc-spoiler.spoiled {
-  background: transparent;
-}
-.dark .bbc-spoiler.spoiled li {
-  background: transparent;
-  list-style: inherit;
-}
-.dark .bbc-spoiler.spoiled img {
-  opacity: 1;
 }
