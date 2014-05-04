@@ -117,6 +117,8 @@
 		<string>#000000</string>
 		<key>sheetDimColor</key>
 		<string>#777777f0</string>
+        <key>placeholderTextColor</key>
+        <string>#999999</string>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -178,6 +180,8 @@
 		<string>#ffffff</string>
 		<key>sheetDimColor</key>
 		<string>#202020f2</string>
+        <key>placeholderTextColor</key>
+        <string>#666666</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>

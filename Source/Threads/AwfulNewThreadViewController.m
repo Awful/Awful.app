@@ -87,6 +87,10 @@ static NSString * const DefaultTitle = @"New Thread";
     [super themeDidChange];
     self.fieldView.subjectField.textField.textColor = self.textView.textColor;
     self.fieldView.subjectField.textField.keyboardAppearance = self.textView.keyboardAppearance;
+    
+    NSDictionary *styleAttrs = @{NSForegroundColorAttributeName: self.theme[@"placeholderTextColor"]};
+    NSAttributedString *themedString = [[NSAttributedString alloc] initWithString:@"Subject..." attributes:styleAttrs];
+    self.fieldView.subjectField.textField.attributedPlaceholder = themedString;
 }
 
 - (void)updateTweaks

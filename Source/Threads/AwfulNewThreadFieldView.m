@@ -20,7 +20,6 @@
     
     _subjectField = [AwfulComposeField new];
     _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
-    _subjectField.label.text = @"Subject";
     [self addSubview:_subjectField];
     
     _separator = [UIView new];

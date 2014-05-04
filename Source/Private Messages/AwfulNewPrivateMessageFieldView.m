@@ -21,7 +21,6 @@
     
     _toField = [AwfulComposeField new];
     _toField.translatesAutoresizingMaskIntoConstraints = NO;
-    _toField.label.text = @"To";
     _toField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     [self addSubview:_toField];
@@ -33,7 +32,6 @@
     
     _subjectField = [AwfulComposeField new];
     _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
-    _subjectField.label.text = @"Subject";
     [self addSubview:_subjectField];
     
     _bottomSeparator = [UIView new];
