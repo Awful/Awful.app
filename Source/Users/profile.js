@@ -14,6 +14,10 @@ function startBridge(callback) {
 
 startBridge(function(bridge) {
   bridge.init();
+  
+  bridge.registerHandler('darkMode', function(dark) {
+    $('body').toggleClass('dark', dark);
+  });
 
   $(function() {
     $('#contact').on('click', 'tr', function(event) {
