@@ -20,7 +20,7 @@ startBridge(function(bridge) {
       bridge.callHandler('didTapUserHeader', HeaderRect());
     });
 
-    bridge.registerHandler("interestingElementsAtPoint", function(point, callback) {
+    bridge.registerHandler('interestingElementsAtPoint', function(point, callback) {
       var items = {};
       var elementAtPoint = $(document.elementFromPoint(point.x, point.y));
       function isSpoiled(element) {
@@ -52,11 +52,11 @@ startBridge(function(bridge) {
       callback(items);
     });
     
-    bridge.registerHandler("loadLinkifiedImages", function() {
+    bridge.registerHandler('loadLinkifiedImages', function() {
       $('[data-awful-linkified-image]').each(function() { showLinkifiedImage(this); });
     });
     
-    bridge.registerHandler("showAvatars", function(show) {
+    bridge.registerHandler('showAvatars', function(show) {
       if (show) {
         $('header[data-awful-avatar]').each(function() {
           var header = $(this);
@@ -75,7 +75,7 @@ startBridge(function(bridge) {
       }
     });
     
-    bridge.registerHandler("changeStylesheet", function(stylesheet) {
+    bridge.registerHandler('changeStylesheet', function(stylesheet) {
       $('#awful-inline-style').text(stylesheet);
     });
   });
