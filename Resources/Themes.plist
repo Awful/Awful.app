@@ -34,6 +34,8 @@
 		<string>#ccccff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ccccff</string>
+        <key>collectionViewTextColor</key>
+        <string>#006666</string>
 		<key>relevantForumID</key>
 		<string>268</string>
 		<key>descriptiveColor</key>
@@ -93,6 +95,8 @@
 		<string>#ffffff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ffffff</string>
+		<key>collectionViewTextColor</key>
+		<string>#000000</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cccccc</string>
 		<key>listTextColor</key>
@@ -117,8 +121,8 @@
 		<string>#000000</string>
 		<key>sheetDimColor</key>
 		<string>#777777f0</string>
-        <key>placeholderTextColor</key>
-        <string>#999999</string>
+		<key>placeholderTextColor</key>
+		<string>#999999</string>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -162,6 +166,8 @@
 		<string>#262626</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#262626</string>
+		<key>collectionViewTextColor</key>
+		<string>#dddddd</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#525252</string>
 		<key>listSeparatorColor</key>
@@ -180,8 +186,8 @@
 		<string>#ffffff</string>
 		<key>sheetDimColor</key>
 		<string>#202020f2</string>
-        <key>placeholderTextColor</key>
-        <string>#666666</string>
+		<key>placeholderTextColor</key>
+		<string>#666666</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
@@ -213,6 +219,8 @@
 		<string>#ffccff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ffccff</string>
+        <key>collectionViewTextColor</key>
+        <string>#000000</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cea8ce</string>
 		<key>listTextColor</key>
@@ -287,6 +295,8 @@
 		<string>#171717</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#171717</string>
+        <key>collectionViewTextColor</key>
+        <string>#57FF57</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#3a3a3a</string>
 		<key>listTextColor</key>

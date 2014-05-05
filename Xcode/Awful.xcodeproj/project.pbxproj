@@ -278,7 +278,10 @@
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		9290A9AE337A4A89B6B1E516 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F3DF9C27054D9A93B744A1 /* libPods.a */; };
+		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
+		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
+		F4B3645B1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B3645A1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -688,8 +691,13 @@
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		9306A999CFD7476D8B521B90 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScrapingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
+		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
+		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
+		F4B364591916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSecondaryTagCollectionViewCell.h; sourceTree = "<group>"; };
+		F4B3645A1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSecondaryTagCollectionViewCell.m; sourceTree = "<group>"; };
 		FF54849D34B84496B062B479 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -916,6 +924,8 @@
 				1C9FDAFE16E486A600C665B5 /* AwfulImageCollectionViewCell.m */,
 				1C9FDACD16E4809300C665B5 /* AwfulPostIconPickerController.h */,
 				1C9FDACE16E4809300C665B5 /* AwfulPostIconPickerController.m */,
+				F4B364591916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.h */,
+				F4B3645A1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m */,
 				1C3447D0174D9B01007377C5 /* AwfulThreadTagButton.h */,
 				1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */,
@@ -1358,6 +1368,8 @@
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
 				1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */,
 				1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */,
+				F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */,
+				F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */,
 				1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */,
 				1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
@@ -1435,6 +1447,7 @@
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1C41918C1763C6EA00EADE07 /* JavaScript */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
+				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
@@ -1624,6 +1637,7 @@
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
+				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
@@ -1920,6 +1934,7 @@
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
 				1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */,
 				1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */,
+				F4B3645B1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m in Sources */,
 				1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */,
 				1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */,
 				1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m in Sources */,
@@ -1970,6 +1985,7 @@
 				1CA1F04519109C0100E85DB2 /* UIWebView+AwfulConvenience.m in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */,
+				F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,

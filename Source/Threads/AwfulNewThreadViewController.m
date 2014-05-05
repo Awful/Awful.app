@@ -240,11 +240,11 @@ static NSString * const DefaultTitle = @"New Thread";
     }
 }
 
-- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker secondaryIconAtIndex:(NSInteger)index
+- (NSString *)postIconPicker:(AwfulPostIconPickerController *)picker nameOfSecondaryIconAtIndex:(NSInteger)index
 {
     // TODO grab new style from thread table view controller
     AwfulThreadTag *tag = _availableSecondaryThreadTags[index];
-    return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+    return tag.imageName;
 }
 
 - (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index

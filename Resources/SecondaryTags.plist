@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>icon-37-selling</key>
+	<dict>
+		<key>title</key>
+		<string>Selling</string>
+		<key>color</key>
+		<string>#df0200</string>
+	</dict>
+	<key>icon-38-buying</key>
+	<dict>
+		<key>title</key>
+		<string>Buying</string>
+		<key>color</key>
+		<string>#006324</string>
+	</dict>
+	<key>icon-46-trading</key>
+	<dict>
+		<key>title</key>
+		<string>Trading</string>
+		<key>color</key>
+		<string>#3ae226</string>
+	</dict>
+	<key>icon-52-trading</key>
+	<dict>
+		<key>title</key>
+		<string>Auction</string>
+		<key>color</key>
+		<string>#ffc700</string>
+	</dict>
+	<key>ama</key>
+	<dict>
+		<key>title</key>
+		<string>Ask</string>
+		<key>color</key>
+		<string>#56a4ae</string>
+	</dict>
+	<key>tma</key>
+	<dict>
+		<key>title</key>
+		<string>Tell</string>
+		<key>color</key>
+		<string>#cba722</string>
+	</dict>
+</dict>
+</plist>

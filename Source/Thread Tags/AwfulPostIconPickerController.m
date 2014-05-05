@@ -4,6 +4,7 @@
 
 #import "AwfulPostIconPickerController.h"
 #import "AwfulImageCollectionViewCell.h"
+#import "AwfulSecondaryTagCollectionViewCell.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
@@ -22,8 +23,10 @@
 @end
 
 
-static const CGFloat kSecondaryPickerVMargin = 14;
-static const CGFloat kCollectionViewItemSize = 60;
+static const CGFloat kSecondaryPickerVMargin = 12;
+static const CGFloat kCollectionViewItemWidth = 60;
+static const CGFloat kCollectionViewItemHeight = 60;
+static const CGFloat kSecondaryCollectionViewItemHeight = 74;
 static const CGFloat kCollectionViewSpacing = 5;
 
 @interface AwfulPostIconPickerController () <UICollectionViewDelegateFlowLayout>
@@ -39,7 +42,7 @@ static const CGFloat kCollectionViewSpacing = 5;
 - (instancetype)initWithDelegate:(id <AwfulPostIconPickerControllerDelegate>)delegate
 {
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.itemSize = CGSizeMake(kCollectionViewItemSize, kCollectionViewItemSize);
+    layout.itemSize = CGSizeMake(kCollectionViewItemWidth, kCollectionViewItemHeight);
     layout.minimumInteritemSpacing = kCollectionViewSpacing;
     layout.minimumLineSpacing = kCollectionViewSpacing;
     if (!(self = [super initWithCollectionViewLayout:layout])) return nil;
@@ -49,7 +52,7 @@ static const CGFloat kCollectionViewSpacing = 5;
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
     
     UICollectionViewFlowLayout *secondaryLayout = [UICollectionViewFlowLayout new];
-    secondaryLayout.itemSize = CGSizeMake(kCollectionViewItemSize, kCollectionViewItemSize);
+    secondaryLayout.itemSize = CGSizeMake(kCollectionViewItemWidth, kSecondaryCollectionViewItemHeight);
     secondaryLayout.minimumInteritemSpacing = kCollectionViewSpacing;
     secondaryLayout.minimumLineSpacing = kCollectionViewSpacing;
     self.secondaryIconPicker = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:secondaryLayout];
@@ -57,7 +60,7 @@ static const CGFloat kCollectionViewSpacing = 5;
     self.secondaryIconPicker.dataSource = self;
     self.secondaryIconPicker.backgroundColor = self.theme[@"collectionViewBackgroundColor"];
     self.secondaryIconPicker.scrollEnabled = NO;
-    [self.secondaryIconPicker registerClass:[AwfulImageCollectionViewCell class] forCellWithReuseIdentifier:TagCellIdentifier];
+    [self.secondaryIconPicker registerClass:[AwfulSecondaryTagCollectionViewCell class] forCellWithReuseIdentifier:SecondaryCellIdentifier];
     [self.view addSubview:self.secondaryIconPicker];
     
     return self;
@@ -72,6 +75,7 @@ static const CGFloat kCollectionViewSpacing = 5;
 }
 
 static NSString * const TagCellIdentifier = @"Tag Cell";
+static NSString * const SecondaryCellIdentifier = @"Secondary Tag Cell";
 
 - (UIBarButtonItem *)cancelButtonItem
 {
@@ -103,7 +107,7 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
         self.collectionView.contentInset = UIEdgeInsetsZero;
         self.secondaryIconPicker.hidden = YES;
     } else {
-        const CGFloat kSecondaryPickerHeight = kCollectionViewItemSize + (kSecondaryPickerVMargin * 2);
+        const CGFloat kSecondaryPickerHeight = kSecondaryCollectionViewItemHeight + (kSecondaryPickerVMargin * 2);
         self.secondaryIconPicker.frame = CGRectMake(0, 0, self.collectionView.frame.size.width, kSecondaryPickerHeight);
         self.collectionView.contentInset = UIEdgeInsetsMake(kSecondaryPickerHeight, 0, 0, 0);
         self.secondaryIconPicker.hidden = NO;
@@ -213,11 +217,17 @@ static NSString * const TagCellIdentifier = @"Tag Cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier forIndexPath:indexPath];
+    UICollectionViewCell *cell = nil;
     if (collectionView == self.secondaryIconPicker) {
-        cell.icon = [self.delegate postIconPicker:self secondaryIconAtIndex:indexPath.item];
+        AwfulSecondaryTagCollectionViewCell *awfulCell = [collectionView dequeueReusableCellWithReuseIdentifier:SecondaryCellIdentifier
+                                                                                                   forIndexPath:indexPath];
+        awfulCell.tagImageName = [self.delegate postIconPicker:self nameOfSecondaryIconAtIndex:indexPath.item];
+        awfulCell.titleTextColor = self.theme[@"collectionViewTextColor"];
+        cell = awfulCell;
     } else {
-        cell.icon = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+        AwfulImageCollectionViewCell *awfulCell = [collectionView dequeueReusableCellWithReuseIdentifier:TagCellIdentifier forIndexPath:indexPath];
+        awfulCell.icon = [self.delegate postIconPicker:self postIconAtIndex:indexPath.item];
+        cell = awfulCell;
     }
     return cell;
 }
@@ -254,7 +264,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
         insetForSectionAtIndex:(NSInteger)section
 {
     if (collectionView == self.secondaryIconPicker) {
-        CGFloat totalWidth = (self.numberOfSecondaryIcons * (kCollectionViewItemSize + kCollectionViewSpacing)) - kCollectionViewSpacing;
+        CGFloat totalWidth = (self.numberOfSecondaryIcons * (kCollectionViewItemWidth + kCollectionViewSpacing)) - kCollectionViewSpacing;
         CGFloat hMargin = (self.secondaryIconPicker.frame.size.width - totalWidth) / 2;
         return UIEdgeInsetsMake(kSecondaryPickerVMargin, hMargin, kSecondaryPickerVMargin, hMargin);
     }

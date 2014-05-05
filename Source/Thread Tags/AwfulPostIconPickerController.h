@@ -55,8 +55,8 @@
 //
 // This method is not optional if the delegate implements -numberOfSecondaryIconsInPostIconPicker:
 // and returns from it a number greater than 0.
-- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker
-       secondaryIconAtIndex:(NSInteger)index;
+- (NSString *)postIconPicker:(AwfulPostIconPickerController *)picker
+  nameOfSecondaryIconAtIndex:(NSInteger)index;
 
 // Sent when a final icon has been chosen.
 - (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker;
