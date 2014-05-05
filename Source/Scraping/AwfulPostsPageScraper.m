@@ -215,8 +215,10 @@
         {{
             HTMLElement *postBodyElement = ([table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?:
                                             [table awful_firstNodeMatchingCachedSelector:@"td.postbody"]);
-            if (postBodyElement && !(post.ignored && [table firstNodeMatchingSelector:@"a[title=\"DON'T DO IT!!\"]"])) {
-                post.innerHTML = postBodyElement.innerHTML;
+            if (postBodyElement) {
+                if (post.innerHTML.length == 0 || !post.ignored) {
+                    post.innerHTML = postBodyElement.innerHTML;
+                }
             }
         }}
     }];
