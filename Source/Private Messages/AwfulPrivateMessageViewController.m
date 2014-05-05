@@ -218,7 +218,7 @@
                 if (awfulURL) {
                     [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
                 } else {
-                    [self openURLInBuiltInBrowser:URL];
+                    [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
                 }
             }];
             
@@ -272,7 +272,9 @@
     }
     
     AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Open" block:^{ [self openURLInBuiltInBrowser:components.URL]; }];
+    [sheet addButtonWithTitle:@"Open" block:^{
+        [AwfulBrowserViewController presentBrowserForURL:components.URL fromViewController:self];
+    }];
     
     void (^openInSafariOrYouTube)(void) = ^{ [[UIApplication sharedApplication] openURL:components.URL]; };
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
@@ -283,16 +285,6 @@
     
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.view animated:YES];
-}
-
-- (void)openURLInBuiltInBrowser:(NSURL *)url
-{
-    AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:url];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
-    } else {
-        [self.navigationController pushViewController:browser animated:YES];
-    }
 }
 
 - (void)previewImageAtURL:(NSURL *)url
@@ -392,7 +384,7 @@
         if (awfulURL) {
             [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
         } else if ([URL opensInBrowser]) {
-            [self openURLInBuiltInBrowser:URL];
+            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }

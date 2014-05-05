@@ -16,4 +16,9 @@
  */
 @property (strong, nonatomic) NSURL *URL;
 
+/**
+ * Convenience method to show an Awful Browser in a user interface idiom-appropriate manner. The AwfulBrowserViewController has its restorationIdentifier set.
+ */
++ (instancetype)presentBrowserForURL:(NSURL *)URL fromViewController:(UIViewController *)presentingViewController;
+
 @end

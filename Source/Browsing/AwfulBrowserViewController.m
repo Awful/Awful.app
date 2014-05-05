@@ -68,6 +68,18 @@
     }
 }
 
++ (instancetype)presentBrowserForURL:(NSURL *)URL fromViewController:(UIViewController *)presentingViewController
+{
+    AwfulBrowserViewController *browser = [[self alloc] initWithURL:URL];
+    browser.restorationIdentifier = [NSString stringWithFormat:@"Awful Browser for %@", presentingViewController.title];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && !presentingViewController.navigationController) {
+        [presentingViewController presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
+    } else {
+        [presentingViewController.navigationController pushViewController:browser animated:YES];
+    }
+    return browser;
+}
+
 - (UIWebView *)webView
 {
     return (UIWebView *)self.view;

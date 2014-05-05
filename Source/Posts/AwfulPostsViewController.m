@@ -843,7 +843,7 @@ static void *KVOContext = &KVOContext;
             [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
         }
     } else if ([URL opensInBrowser]) {
-        [self openURLInBuiltInBrowser:URL];
+        [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
     } else {
         [[UIApplication sharedApplication] openURL:URL];
     }
@@ -862,18 +862,6 @@ static void *KVOContext = &KVOContext;
             [self.postsView reloadPostAtIndex:index];
         }
     }];
-}
-
-- (void)openURLInBuiltInBrowser:(NSURL *)URL
-{
-    URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
-    AwfulBrowserViewController *browser = [[AwfulBrowserViewController alloc] initWithURL:URL];
-    browser.restorationIdentifier = @"Awful browser from posts view";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
-    } else {
-        [self.navigationController pushViewController:browser animated:YES];
-    }
 }
 
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
@@ -1070,7 +1058,7 @@ static void *KVOContext = &KVOContext;
         if ([URL awfulURL]) {
             [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
         } else {
-            [self openURLInBuiltInBrowser:URL];
+            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
         }
     }];
     [sheet addButtonWithTitle:@"Open in Safari"

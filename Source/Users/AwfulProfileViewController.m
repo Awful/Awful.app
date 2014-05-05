@@ -6,6 +6,7 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
+#import "AwfulBrowserViewController.h"
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
@@ -50,6 +51,7 @@
     self.title = username.length > 0 ? username : @"Profile";
     self.modalPresentationStyle = UIModalPresentationFormSheet;
     self.hidesBottomBarWhenPushed = YES;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     
     return self;
 }
@@ -100,6 +102,11 @@
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
     AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[homepage absoluteString]];
+    
+    [sheet addButtonWithTitle:@"Open" block:^{
+        [AwfulBrowserViewController presentBrowserForURL:homepage fromViewController:self];
+    }];
+    
     [sheet addButtonWithTitle:@"Open in Safari" block:^{
         [[UIApplication sharedApplication] openURL:homepage];
     }];
