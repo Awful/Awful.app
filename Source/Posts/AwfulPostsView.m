@@ -492,13 +492,13 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     shouldStartLoadWithRequest:(NSURLRequest *)request
     navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSURL *url = request.URL;
+    NSURL *URL = [NSURL URLWithString:request.URL.absoluteString relativeToURL:self.baseURL];
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([self.delegate respondsToSelector:@selector(postsView:willFollowLinkToURL:)]) {
-            [self.delegate postsView:self willFollowLinkToURL:url];
+            [self.delegate postsView:self willFollowLinkToURL:URL];
         }
         return NO;
-    } else if ([url.host hasSuffix:@"www.youtube.com"] && [url.path hasPrefix:@"/watch"]) {
+    } else if ([URL.host hasSuffix:@"www.youtube.com"] && [URL.path hasPrefix:@"/watch"]) {
         // Prevent YouTube embeds from taking over the whole frame. This would happen if you tap
         // the title of the video in the embed.
         return NO;
