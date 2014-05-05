@@ -120,6 +120,7 @@
     settingsView.avatarsLabel.textColor = theme[@"sheetTextColor"];
     settingsView.imagesLabel.textColor = theme[@"sheetTextColor"];
     settingsView.themeLabel.textColor = theme[@"sheetTextColor"];
+    settingsView.fontScaleLabel.textColor = theme[@"sheetTextColor"];
     settingsView.avatarsEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
     settingsView.imagesEnabledSwitch.onTintColor = theme[@"settingsSwitchColor"];
 }
