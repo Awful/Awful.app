@@ -9,6 +9,9 @@
  */
 @interface AwfulBrowserViewController : AwfulViewController
 
+/**
+ * Designated initializer.
+ */
 - (id)initWithURL:(NSURL *)URL;
 
 /**

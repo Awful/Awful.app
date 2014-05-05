@@ -101,7 +101,7 @@
 
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
-    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:[homepage absoluteString]];
+    AwfulActionSheet *sheet = [[AwfulActionSheet alloc] initWithTitle:homepage.absoluteString];
     
     [sheet addButtonWithTitle:@"Open" block:^{
         [AwfulBrowserViewController presentBrowserForURL:homepage fromViewController:self];
@@ -110,16 +110,17 @@
     [sheet addButtonWithTitle:@"Open in Safari" block:^{
         [[UIApplication sharedApplication] openURL:homepage];
     }];
+    
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
         if (![browser canOpenURL:homepage]) continue;
         [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
                             block:^{ [browser openURL:homepage]; }];
     }
+    
     for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:homepage];
-        }];
+        [sheet addButtonWithTitle:service.callToAction block:^{ [service saveURL:homepage]; }];
     }
+    
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [AwfulSettings settings].lastOfferedPasteboardURL = [homepage absoluteString];
         [UIPasteboard generalPasteboard].items = @[ @{
@@ -127,12 +128,9 @@
             (id)kUTTypePlainText: [homepage absoluteString],
         }];
     }];
+    
     [sheet addCancelButtonWithTitle:@"Cancel"];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet showFromRect:rect inView:self.view animated:YES];
-    } else {
-        [sheet showInView:self.view];
-    }
+    [sheet showFromRect:rect inView:self.view animated:YES];
 }
 
 - (UIWebView *)webView
