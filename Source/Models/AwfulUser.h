@@ -150,7 +150,7 @@
 @property (readonly, nonatomic) NSURL *avatarURL;
 
 /**
- * Returns an AwfulUser with the given user ID and/or username, inserting one if necessary.
+ * Returns an AwfulUser with the given user ID and/or username, inserting one if necessary. If an existing AwfulUser is found, it is updated with the provided userID and/or username.
  */
 + (instancetype)firstOrNewUserWithUserID:(NSString *)userID
                                 username:(NSString *)username

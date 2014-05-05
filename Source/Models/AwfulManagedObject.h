@@ -54,6 +54,11 @@
                              matchingPredicateFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(2, 3);
 
 /**
+ * Returns an arbitrary object of the class's entity that matches a predicate.
+ */
++ (instancetype)fetchArbitraryInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext matchingPredicate:(NSPredicate *)predicate;
+
+/**
  * Deletes all objects of the class's entity that match a predicate.
  *
  * @return YES if deletion succeeded, otherwise NO.

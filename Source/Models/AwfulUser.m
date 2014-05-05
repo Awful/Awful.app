@@ -57,14 +57,15 @@
 {
     NSParameterAssert(userID.length > 0 || username.length > 0);
     
-    AwfulUser *user;
+    NSMutableArray *subpredicates = [NSMutableArray new];
     if (userID.length > 0) {
-        user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
-                                  matchingPredicateFormat:@"userID = %@", userID];
-    } else if (username.length > 0) {
-        user = [self fetchArbitraryInManagedObjectContext:managedObjectContext
-                                  matchingPredicateFormat:@"username = %@", username];
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"userID = %@", userID]];
     }
+    if (username.length > 0) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"username = %@", username]];
+    }
+    NSPredicate *predicate = [NSCompoundPredicate orPredicateWithSubpredicates:subpredicates];
+    AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:managedObjectContext matchingPredicate:predicate];
     if (!user) {
         user = [AwfulUser insertInManagedObjectContext:managedObjectContext];
     }
