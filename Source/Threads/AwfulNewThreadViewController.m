@@ -277,9 +277,13 @@ static NSString * const DefaultTitle = @"New Thread";
     if (_availableSecondaryThreadTags.count > 0) {
         self.secondaryThreadTag = _availableSecondaryThreadTags[picker.secondarySelectedIndex];
     }
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self focusInitialFirstResponder];
-    }];
+    // On iPad the modal view controller is the compose screen rather than the tag picker,
+    // so we don't want to dismiss it.
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [self focusInitialFirstResponder];
+        }];
+    }
 }
 
 - (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
