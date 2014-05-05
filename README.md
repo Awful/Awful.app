@@ -114,17 +114,27 @@ The rest of Awful is themed in a a [big plist][theme plist]. If you can't find a
 Thread Tags
 -----------
 
-[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][awfulapp.com].
+[Diabolik900][] and [The Dave][] have fashioned Awful with its own [set of thread tags][thread tags] that look great on the iPhone and the iPad. They're distributed with the app. New thread tags can also [appear in Awful][AwfulThreadTags] without us having to send an update through the App Store. This is done by hosting the icons via [GitHub Pages][awfulapp.com.git].
 
 To add a new thread tag you just made:
 
-1. Add it to the [thread tags][] repository and push.
-2. In the [awfulapp.com][] repository, update the `Thread Tags` submodule and push.
-3. In this (Awful.app) repository, update the `Resources/Thread Tags` submodule and push.
+1. Add it to the [thread tags repository][Thread Tags.git] and push.
+2. Update the [awfulapp.com repository][awfulapp.com.git] repository per [its README][awfulapp.com.git README].
+3. In this (Awful.app) repository, update the `Resources/Thread Tags` submodule and push:
+    
+    ```bash
+    cd path/to/awful-app/repo
+    cd Resources/Thread\ Tags
+    git pull origin master
+    cd ..
+    git commit -am "Updated thread tags."
+    git push
+    ```
 
 [AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
-[awfulapp.com]: https://github.com/Awful/awful.github.io
-[thread tags]: https://github.com/Awful/thread-tags
+[awfulapp.com.git]: https://github.com/Awful/awful.github.io
+[awfulapp.com.git README]: https://github.com/Awful/awful.github.io/blob/master/README.md#thread-tags
+[Thread Tags.git]: https://github.com/Awful/thread-tags
 
 Assembling the AwfulPostsView
 -----------------------------
