@@ -35,8 +35,8 @@
     NSURL *tagsInfoURL = [[NSBundle mainBundle] URLForResource:@"SecondaryTags" withExtension:@"plist"];
     NSDictionary *tagsDictionary = [NSDictionary dictionaryWithContentsOfURL:tagsInfoURL];
     NSDictionary *tagInfo = tagsDictionary[tagImageName];
-    self.titleText = tagInfo[@"title"];
-    self.drawColor = [UIColor awful_colorWithHexCode:tagInfo[@"color"]];
+    self.titleText = tagInfo[@"title"] ?: @"?????";
+    self.drawColor = [UIColor awful_colorWithHexCode:tagInfo[@"color"]] ?: [UIColor redColor];
 }
 
 - (void)setSelected:(BOOL)selected
