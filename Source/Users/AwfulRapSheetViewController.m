@@ -73,7 +73,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.presentingViewController) {
+    if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
         self.navigationItem.rightBarButtonItem = self.doneItem;
     }
 }

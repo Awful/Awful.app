@@ -221,7 +221,7 @@
         _restoringState = NO;
     }
     
-    if (self.presentingViewController) {
+    if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(dismiss)];
         self.navigationItem.leftBarButtonItem = item;
     }
