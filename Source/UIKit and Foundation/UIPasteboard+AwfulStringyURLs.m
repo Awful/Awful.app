@@ -12,4 +12,10 @@
     return self.URL ?: [NSURL awful_URLWithString:self.string];
 }
 
+- (void)awful_setURL:(NSURL *)URL
+{
+    self.items = @[ @{ (id)kUTTypeURL: URL,
+                       (id)kUTTypePlainText: URL.absoluteString }];
+}
+
 @end

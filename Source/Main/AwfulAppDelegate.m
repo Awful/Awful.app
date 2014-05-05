@@ -365,8 +365,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 {
     if (![AwfulForumsClient client].loggedIn) return;
     
-	// Get a URL from the pasteboard. Check the pasteboard's string too in case some app is a big jerk.
-    NSURL *URL = [UIPasteboard generalPasteboard].URL ?: [NSURL awful_URLWithString:[UIPasteboard generalPasteboard].string];
+    NSURL *URL = [UIPasteboard generalPasteboard].awful_URL;
     
     // If it's not a URL we can handle, or if we specifically handle it some other way, stop here.
     if (!URL.awfulURL) return;

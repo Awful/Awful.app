@@ -237,8 +237,7 @@
             }
             
             [sheet addButtonWithTitle:@"Copy URL" block:^{
-                [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: URL,
-                                                               (id)kUTTypePlainText: URL.absoluteString }];
+                [UIPasteboard generalPasteboard].awful_URL = URL;
             }];
         } else {
             [sheet addButtonWithTitle:@"Open" block:^{ [[UIApplication sharedApplication] openURL:URL]; }];

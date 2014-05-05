@@ -239,8 +239,7 @@
         components.query = [queryParts componentsJoinedByString:@"&"];
         NSURL *URL = components.URL;
         [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: URL,
-                                                       (id)kUTTypePlainText: URL.absoluteString }];
+        [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
     copyURL.title = @"Copy Thread URL";
     [sheet addItem:copyURL];
@@ -898,8 +897,7 @@ static void *KVOContext = &KVOContext;
         components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
         NSURL *URL = components.URL;
         [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: URL,
-                                                       (id)kUTTypePlainText: URL.absoluteString }];
+        [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
@@ -1074,11 +1072,8 @@ static void *KVOContext = &KVOContext;
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: URL,
-            (id)kUTTypePlainText: URL.absoluteString,
-        } ];
         [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];

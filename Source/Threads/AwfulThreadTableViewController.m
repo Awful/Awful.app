@@ -204,10 +204,11 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         [sheet addItem:profileItem];
     }
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSString *URLString = [NSString stringWithFormat:@"http://forums.somethingawful.com/showthread.php?threadid=%@", thread.threadID];
-        [AwfulSettings settings].lastOfferedPasteboardURL = URLString;
-        [UIPasteboard generalPasteboard].items = @[ @{ (id)kUTTypeURL: [NSURL URLWithString:URLString],
-                                                       (id)kUTTypePlainText: URLString }];
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        components.query = [@"threadid=" stringByAppendingString:thread.threadID];
+        NSURL *URL = components.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     if (thread.beenSeen) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread action:^{

@@ -123,10 +123,7 @@
     
     [sheet addButtonWithTitle:@"Copy URL" block:^{
         [AwfulSettings settings].lastOfferedPasteboardURL = [homepage absoluteString];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: homepage,
-            (id)kUTTypePlainText: [homepage absoluteString],
-        }];
+        [UIPasteboard generalPasteboard].awful_URL = homepage;
     }];
     
     [sheet addCancelButtonWithTitle:@"Cancel"];

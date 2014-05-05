@@ -7,8 +7,8 @@
 @interface UIPasteboard (AwfulStringyURLs)
 
 /**
- * Returns a URL whether it was put on the pasteboard as a string or as a URL, or nil if neither occurred.
+ * The URL object of the first pasteboard item, whether it's an NSURL or an NSString. Setting this property replaces all current items in the pasteboard with a new item that contains both an NSURL and an NSString representation of the URL.
  */
-- (NSURL *)awful_URL;
+@property (strong, nonatomic, setter=awful_setURL:) NSURL *awful_URL;
 
 @end

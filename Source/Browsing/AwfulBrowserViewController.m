@@ -114,12 +114,8 @@
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
-        NSURL *url = self.webView.request.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = [url absoluteString];
-        [UIPasteboard generalPasteboard].items = @[ @{
-            (id)kUTTypeURL: url,
-            (id)kUTTypePlainText: [url absoluteString]
-        } ];
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];
     _visibleActionSheet = sheet;
