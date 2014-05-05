@@ -59,9 +59,11 @@
 {
     if (self.privateMessagesWork) return YES;
     NSDictionary *contactInfo = [self.user dictionaryWithValuesForKeys:@[ @"aimName", @"icqName", @"yahooName", @"homepageURL" ]];
-    return [contactInfo.allValues indexOfObjectPassingTest:^BOOL(NSString *string, NSUInteger i, BOOL *stop) {
-        return (![[NSNull null] isEqual:string] && string.length > 0);
-    }] != NSNotFound;
+    for (id value in contactInfo.allValues) {
+        if ([value respondsToSelector:@selector(length)] && [value length] > 0) return YES;
+        if ([value respondsToSelector:@selector(absoluteString)] && [value absoluteString].length > 0) return YES;
+    }
+    return NO;
 }
 
 - (BOOL)privateMessagesWork
