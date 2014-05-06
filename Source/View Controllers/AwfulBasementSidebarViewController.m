@@ -157,12 +157,9 @@ static NSString * const CellIdentifier = @"Cell";
     AwfulTheme *theme = self.theme;
     AwfulBasementHeaderView *headerView = self.headerView;
     headerView.usernameLabel.textColor = theme[@"basementLabelColor"];
-    CGFloat r,g,b,a;
-    [theme[@"basementHeaderBackgroundColor"] getRed:&r green:&g blue:&b alpha:&a];
-    headerView.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:0.3];
-    self.view.backgroundColor = [UIColor clearColor];
+    headerView.backgroundColor = theme[@"basementHeaderBackgroundColor"];
     self.tableView.backgroundColor = [UIColor clearColor];
-    self.tableView.separatorColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
+    self.tableView.separatorColor = theme[@"basementSeparatorColor"];
     [self.tableView reloadData];
 }
 
@@ -230,11 +227,8 @@ static NSString * const CellIdentifier = @"Cell";
         self.selectedItem = _items[0];
     }
     [self.tableView reloadData];
-    [_items addObserver:self
-     toObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
-             forKeyPath:@"badgeValue"
-                options:0
-                context:KVOContext];
+    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)];
+    [_items addObserver:self toObjectsAtIndexes:indexes forKeyPath:@"badgeValue" options:0 context:KVOContext];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -252,10 +246,8 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)stopObservingItems
 {
-    [_items removeObserver:self
-      fromObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)]
-                forKeyPath:@"badgeValue"
-                   context:KVOContext];
+    NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, _items.count)];
+    [_items removeObserver:self fromObjectsAtIndexes:indexes forKeyPath:@"badgeValue" context:KVOContext];
 }
 
 static void * KVOContext = &KVOContext;
@@ -271,8 +263,7 @@ static void * KVOContext = &KVOContext;
 
 - (void)selectRowForSelectedItem
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.items indexOfObject:self.selectedItem]
-                                                inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.items indexOfObject:self.selectedItem] inSection:0];
     [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
@@ -310,6 +301,7 @@ static void * KVOContext = &KVOContext;
     } else {
         cell.accessoryView = nil;
     }
+    
     return cell;
 }
 

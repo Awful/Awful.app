@@ -34,8 +34,8 @@
 		<string>#ccccff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ccccff</string>
-        <key>collectionViewTextColor</key>
-        <string>#006666</string>
+		<key>collectionViewTextColor</key>
+		<string>#006666</string>
 		<key>relevantForumID</key>
 		<string>268</string>
 		<key>descriptiveColor</key>
@@ -54,11 +54,13 @@
 		<key>tintColor</key>
 		<string>#1e84af</string>
 		<key>basementHeaderBackgroundColor</key>
-		<string>#061d28</string>
+		<string>#061d2855</string>
 		<key>basementLabelColor</key>
 		<string>#ffffff</string>
 		<key>basementBadgeColor</key>
 		<string>#dddddd</string>
+		<key>basementSeparatorColor</key>
+		<string>#ffffff55</string>
 		<key>browserBackgroundColor</key>
 		<string>#f5f5f5</string>
 		<key>listSecondaryBackgroundColor</key>
@@ -219,8 +221,8 @@
 		<string>#ffccff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ffccff</string>
-        <key>collectionViewTextColor</key>
-        <string>#000000</string>
+		<key>collectionViewTextColor</key>
+		<string>#000000</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cea8ce</string>
 		<key>listTextColor</key>
@@ -295,8 +297,8 @@
 		<string>#171717</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#171717</string>
-        <key>collectionViewTextColor</key>
-        <string>#57FF57</string>
+		<key>collectionViewTextColor</key>
+		<string>#57FF57</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#3a3a3a</string>
 		<key>listTextColor</key>
