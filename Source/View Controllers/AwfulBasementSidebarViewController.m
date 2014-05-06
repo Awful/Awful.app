@@ -24,6 +24,9 @@
 @end
 
 @implementation AwfulBasementSidebarViewController
+{
+    BOOL _didAppearAlready;
+}
 
 - (void)dealloc
 {
@@ -174,6 +177,12 @@ static NSString * const CellIdentifier = @"Cell";
 {
     [super viewDidAppear:animated];
     [self refreshIfNecessary];
+    
+    // Fixes iOS 7 bug whereby the first cell's separator would never appear.
+    if (!_didAppearAlready) {
+        [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ] withRowAnimation:UITableViewRowAnimationNone];
+        _didAppearAlready = YES;
+    }
 }
 
 - (void)refreshIfNecessary
