@@ -23,7 +23,7 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulTheme.h"
-#import <AFNetworkActivityIndicatorManager.h>
+#import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache/GRMustache.h>
 #import <WebViewJavascriptBridge.h>
 
@@ -41,8 +41,8 @@
 
 @implementation AwfulPrivateMessageViewController
 {
+    AwfulWebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
-    NSUInteger _webViewActiveRequestCount;
     AwfulNewPrivateMessageViewController *_composeViewController;
     BOOL _didRender;
 }
@@ -50,9 +50,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    if (_webViewActiveRequestCount > 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
 }
 
 - (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
@@ -282,8 +279,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
+    _networkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
+    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:_networkActivityIndicatorManager handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
     __weak __typeof__(self) weakSelf = self;
@@ -350,30 +347,6 @@
     }
     
     return YES;
-}
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    ++_webViewActiveRequestCount;
-    if (_webViewActiveRequestCount == 1) {
-        [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-    }
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    --_webViewActiveRequestCount;
-    if (_webViewActiveRequestCount == 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    --_webViewActiveRequestCount;
-    if (_webViewActiveRequestCount == 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate

@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileViewController.h"
-#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAlertView.h"
 #import "AwfulBrowserViewController.h"
@@ -16,10 +15,11 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache.h>
 #import <WebViewJavascriptBridge.h>
 
-@interface AwfulProfileViewController () <UIWebViewDelegate>
+@interface AwfulProfileViewController ()
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
@@ -29,16 +29,9 @@
 
 @implementation AwfulProfileViewController
 {
-    NSUInteger _webViewLoadingCount;
+    AwfulWebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
     NSDate *_mostRecentRefreshDate;
-}
-
-- (void)dealloc
-{
-    if (_webViewLoadingCount > 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
 }
 
 - (id)initWithUser:(AwfulUser *)user
@@ -119,7 +112,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
+    _networkActivityIndicatorManager = [AwfulWebViewNetworkActivityIndicatorManager new];
+    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:_networkActivityIndicatorManager handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
     __weak __typeof__(self) weakSelf = self;
@@ -160,32 +154,6 @@
     [super viewDidAppear:animated];
     [self.webView.scrollView flashScrollIndicators];
     [self refreshIfNecessary];
-}
-
-#pragma mark UIWebViewDelegate
-
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    ++_webViewLoadingCount;
-    if (_webViewLoadingCount == 1) {
-        [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-    }
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    --_webViewLoadingCount;
-    if (_webViewLoadingCount == 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    --_webViewLoadingCount;
-    if (_webViewLoadingCount == 0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
 }
 
 @end

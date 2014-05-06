@@ -139,6 +139,7 @@
 		1C8E104A1916F7970010007B /* util.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* util.js */; };
 		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
 		1C8E104F1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */; };
+		1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */; };
 		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
 		1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */; };
@@ -480,6 +481,8 @@
 		1C8E104B1916F85F0010007B /* profile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = profile.js; sourceTree = "<group>"; };
 		1C8E104D1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulActionSheet+WebViewSheets.h"; sourceTree = "<group>"; };
 		1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulActionSheet+WebViewSheets.m"; sourceTree = "<group>"; };
+		1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWebViewNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
+		1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWebViewNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionViewController.h; sourceTree = "<group>"; };
@@ -1022,6 +1025,8 @@
 				1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */,
 				1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */,
 				1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */,
+				1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */,
+				1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */,
 				1C8E10491916F78B0010007B /* util.js */,
 			);
 			path = "Web View Junk";
@@ -1890,6 +1895,7 @@
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
+				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */,
 				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
