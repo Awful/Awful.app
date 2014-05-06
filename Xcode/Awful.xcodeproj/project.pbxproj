@@ -956,7 +956,6 @@
 				1CC780241612D9DD002AF958 /* Posts */,
 				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C7D22F6173B66B3008A802C /* Read Later Services */,
-				1C7C60C018FCA4D7009BF4BB /* Rendering */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
@@ -967,6 +966,7 @@
 				1C6ED634169103FE0015CDD5 /* Users */,
 				1C00E0AB173A006B008895E7 /* View Controllers */,
 				1C00E0A71739F8BB008895E7 /* Views */,
+				1C7C60C018FCA4D7009BF4BB /* Web View Junk */,
 			);
 			name = Source;
 			path = ../Source;
@@ -1012,14 +1012,14 @@
 			path = Users;
 			sourceTree = "<group>";
 		};
-		1C7C60C018FCA4D7009BF4BB /* Rendering */ = {
+		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
 			isa = PBXGroup;
 			children = (
 				1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */,
 				1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */,
 				1C8E10491916F78B0010007B /* util.js */,
 			);
-			path = Rendering;
+			path = "Web View Junk";
 			sourceTree = "<group>";
 		};
 		1C7D22EC173B330E008A802C /* Instapaper API */ = {
