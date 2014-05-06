@@ -3,7 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessageViewController.h"
-#import "AwfulActionSheet.h"
+#import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
@@ -205,52 +205,13 @@
 
 - (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect withImageURL:(NSURL *)imageURL
 {
-    if ([URL opensInBrowser] || imageURL) {
-        AwfulActionSheet *sheet = [AwfulActionSheet new];
-        
-        if ([URL opensInBrowser]) {
-            sheet.title = URL.absoluteString;
-        
-            [sheet addButtonWithTitle:@"Open" block:^{
-                NSURL *awfulURL = URL.awfulURL;
-                if (awfulURL) {
-                    [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
-                } else {
-                    [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
-                }
-            }];
-            
-            [sheet addButtonWithTitle:@"Open in Safari" block:^{ [[UIApplication sharedApplication] openURL:URL]; }];
-            
-            for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-                if (![browser canOpenURL:URL]) continue;
-                [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                                    block:^{ [browser openURL:URL]; }];
-            }
-            
-            for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-                [sheet addButtonWithTitle:service.callToAction block:^{
-                    [service saveURL:URL];
-                }];
-            }
-            
-            [sheet addButtonWithTitle:@"Copy URL" block:^{
-                [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-                [UIPasteboard generalPasteboard].awful_URL = URL;
-            }];
-        } else {
-            [sheet addButtonWithTitle:@"Open" block:^{ [[UIApplication sharedApplication] openURL:URL]; }];
-        }
-        
-        if (imageURL) {
-            [sheet addButtonWithTitle:@"Show Image" block:^{ [self previewImageAtURL:imageURL]; }];
-        }
-        
-        [sheet addCancelButtonWithTitle:@"Cancel"];
-        [sheet showFromRect:rect inView:self.view animated:YES];
-    } else {
-        [[UIApplication sharedApplication] openURL:URL];
+    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
+    if (imageURL) {
+        [sheet addButtonWithTitle:@"Show Image" block:^{
+            [self previewImageAtURL:imageURL];
+        }];
     }
+    [sheet showFromRect:rect inView:self.view animated:YES];
 }
 
 - (void)showMenuForVideoAtURL:(NSURL *)URL fromRect:(CGRect)rect
