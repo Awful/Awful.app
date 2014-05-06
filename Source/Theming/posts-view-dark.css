@@ -283,6 +283,10 @@ post.seen {
 header {
   border-bottom: none;
 }
+/* Peta's 3D username */
+.userid-182864 .username {
+  color: rgba(255, 255, 255, 0.5);
+}
 .action-button {
   color: #1682b2;
 }
