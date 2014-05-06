@@ -291,11 +291,14 @@ static void * KVOContext = &KVOContext;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     UITabBarItem *item = self.items[indexPath.row];
-    cell.imageView.contentMode = UIViewContentModeCenter;
     cell.imageView.image = item.image;
+    cell.imageView.contentMode = UIViewContentModeCenter;
     cell.textLabel.text = item.title;
+    
     AwfulTheme *theme = self.theme;
     cell.textLabel.textColor = theme[@"basementLabelColor"];
     if (item.badgeValue.length > 0) {
@@ -312,9 +315,7 @@ static void * KVOContext = &KVOContext;
 
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView
-  willDisplayCell:(UITableViewCell *)cell
-forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     cell.backgroundColor = [UIColor clearColor];
 }
