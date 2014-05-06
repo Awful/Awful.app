@@ -155,25 +155,31 @@ header {
     color: #006699;
   }
   
-  @-webkit-keyframes idiotKingStar {
+  @-webkit-keyframes RalpStar {
   	0% {color: grey;}
   	49% {color: grey;}
 	50% {color: yellow;}
 	100% {color: yellow;}
 	}
-  .role-ik &:before {
-    -webkit-animation: idiotKingStar 20s;
+  .userid-61644 &:before {
+    -webkit-animation: RalpStar 20s;
     -webkit-animation-iteration-count: infinite;
   }
   
   .role-admin &:before,
   .role-mod &:before,
-  .role-ik &:before {
+  .userid-61644 &:before {
     content: '★'; 
   }
   
   .role-op & {
     color: #199ed7;
+  }
+  
+  /* Peta's 3D username */
+  .userid-182864 & {
+  	color: rgba(0, 0, 0, 0.5);
+	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
   
 }

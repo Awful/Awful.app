@@ -1,5 +1,5 @@
 <post id="{{ postID }}" class="{{# beenSeen }}seen{{/ }}{{# roles }} role-{{ . }}{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
-    <header {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>
+    <header class="userid-{{ author.userID }}" {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>
         {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
 
 		<section class="nameanddate">
