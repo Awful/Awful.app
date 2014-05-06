@@ -78,6 +78,15 @@ startBridge(function(bridge) {
     bridge.registerHandler('changeStylesheet', function(stylesheet) {
       $('#awful-inline-style').text(stylesheet);
     });
+    
+    bridge.registerHandler('fontScale', function(scalePercentage) {
+      var style = $('#awful-font-scale-style');
+      if (scalePercentage == 100) {
+        style.text('');
+      } else {
+        style.text(".postbody { font-size: " + scalePercentage + "%; }");
+      }
+    });
   });
 });
 

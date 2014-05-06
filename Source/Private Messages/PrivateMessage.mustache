@@ -6,6 +6,14 @@
     {{{ stylesheet }}}
 </style>
 
+<style id="awful-font-scale-style">
+    {{# fontScalePercentage }}
+        .postbody {
+            font-size: {{ fontScalePercentage }}%;
+        }
+    {{/ }}
+</style>
+
 <body class="{{ userInterfaceIdiom }}">
     <post id="{{ messageID }}" class="private-message {{# seen }}seen{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
         <header {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>

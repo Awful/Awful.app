@@ -86,6 +86,16 @@
     return [scripts componentsJoinedByString:@"\n\n"];
 }
 
+- (NSNumber *)fontScalePercentage
+{
+    int percentage = [AwfulSettings settings].fontScale;
+    if (percentage == 100) {
+        return nil;
+    } else {
+        return @(percentage);
+    }
+}
+
 - (id)valueForUndefinedKey:(NSString *)key
 {
     return [self.privateMessage valueForKey:key];

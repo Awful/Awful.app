@@ -60,4 +60,9 @@
  */
 @property (readonly, copy, nonatomic) NSString *javascript;
 
+/**
+ * The current font scale.
+ */
+@property (readonly, strong, nonatomic) NSNumber *fontScalePercentage;
+
 @end

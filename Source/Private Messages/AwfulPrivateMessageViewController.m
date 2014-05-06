@@ -266,6 +266,8 @@
         if ([AwfulSettings settings].showImages) {
             [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
+    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.fontScale]) {
+        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@((int)[AwfulSettings settings].fontScale)];
     }
 }
 
