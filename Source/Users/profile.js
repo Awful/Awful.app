@@ -24,12 +24,6 @@ startBridge(function(bridge) {
       var row = $(this);
       var service = row.find('th').text();
       var address = row.find('td').text();
-      function rectOfElement(element) {
-        var rect = element.offset();
-        var origin = [rect.left - window.pageXOffset, rect.top - window.pageYOffset];
-        var size = [rect.width, rect.height];
-        return "{{" + origin.join(',') + "},{" + size.join(',') + "}}";
-      }
       var data = {
         service: service,
         address: address,

@@ -154,10 +154,9 @@
             AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:self.user];
             [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
         } else if ([service isEqualToString:@"Homepage"]) {
-            NSString *address = contactInfo[@"address"];
-            UIEdgeInsets insets = self.webView.scrollView.contentInset;
-            CGRect rect = CGRectOffset(CGRectFromString(contactInfo[@"rect"]), insets.left, insets.top);
-            [self showActionsForHomepage:[NSURL URLWithString:address] atRect:rect];
+            NSURL *URL = [NSURL URLWithString:contactInfo[@"address"] relativeToURL:[AwfulForumsClient client].baseURL];
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:contactInfo[@"rect"]];
+            [self showActionsForHomepage:URL atRect:rect];
         }
     }];
     [self renderUser];

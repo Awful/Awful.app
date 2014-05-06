@@ -25,4 +25,11 @@
     return webView;
 }
 
+- (CGRect)awful_rectForElementBoundingRect:(NSString *)rectString
+{
+    UIScrollView *scrollView = self.scrollView;
+    UIEdgeInsets insets = scrollView.contentInset;
+    return CGRectOffset(CGRectFromString(rectString), insets.left, insets.top);
+}
+
 @end

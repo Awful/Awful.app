@@ -136,7 +136,7 @@
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
-		1C8E104A1916F7970010007B /* spoilers.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* spoilers.js */; };
+		1C8E104A1916F7970010007B /* util.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* util.js */; };
 		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
 		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
@@ -475,7 +475,7 @@
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10451914B5F00010007B /* Awful 2.0.8-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.8-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
-		1C8E10491916F78B0010007B /* spoilers.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = spoilers.js; sourceTree = "<group>"; };
+		1C8E10491916F78B0010007B /* util.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = util.js; sourceTree = "<group>"; };
 		1C8E104B1916F85F0010007B /* profile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = profile.js; sourceTree = "<group>"; };
 		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
@@ -1017,7 +1017,7 @@
 			children = (
 				1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */,
 				1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */,
-				1C8E10491916F78B0010007B /* spoilers.js */,
+				1C8E10491916F78B0010007B /* util.js */,
 			);
 			path = Rendering;
 			sourceTree = "<group>";
@@ -1597,7 +1597,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C8E104C1916F92F0010007B /* profile.js in Resources */,
-				1C8E104A1916F7970010007B /* spoilers.js in Resources */,
+				1C8E104A1916F7970010007B /* util.js in Resources */,
 				1C8E10481914D1180010007B /* private-message.js in Resources */,
 				1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */,
 				1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */,

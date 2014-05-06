@@ -16,4 +16,11 @@
  */
 + (instancetype)awful_nativeFeelingWebView;
 
+/**
+ * Returns a CGRect in the web view corresponding to an element's offset.
+ *
+ * @param rectString A string, formatted appropriately for CGRectFromString, representing the element's client bounding rect.
+ */
+- (CGRect)awful_rectForElementBoundingRect:(NSString *)rectString;
+
 @end

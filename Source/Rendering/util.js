@@ -1,3 +1,4 @@
+// Toggle spoilers on tap.
 $(function() {
   $('body').on('click', '.bbc-spoiler', function(event) {
     var target = $(event.target);
@@ -12,3 +13,11 @@ $(function() {
     }
   });
 });
+
+// CGRectFromString-formatted bounding rect of an element, for passing back to Objective-C.
+function rectOfElement(element) {
+  var rect = $(element).offset();
+  var origin = [rect.left - window.pageXOffset, rect.top - window.pageYOffset].join(",");
+  var size = [rect.width, rect.height].join(",");
+  return "{{" + origin + "},{" + size + "}}";
+}

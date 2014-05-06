@@ -68,8 +68,8 @@
     static __unsafe_unretained NSString *scriptFilenames[] = {
         @"zepto.min.js",
         @"fastclick.js",
+        @"util.js",
         @"private-message.js",
-        @"spoilers.js",
     };
     NSMutableArray *scripts = [NSMutableArray new];
     for (NSUInteger i = 0, end = sizeof(scriptFilenames) / sizeof(*scriptFilenames); i < end; i++) {

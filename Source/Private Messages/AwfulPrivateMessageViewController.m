@@ -160,9 +160,9 @@
 	}]];
     
     AwfulSemiModalRectInViewBlock headerBlock = ^(UIView *view) {
-        CGRect rect = CGRectFromString([self.webView awful_evalJavaScript:@"HeaderRect()"]);
-        UIEdgeInsets insets = self.webView.scrollView.contentInset;
-        return CGRectOffset(rect, insets.left, insets.top);
+        UIWebView *webView = self.webView;
+        NSString *rectString = [webView awful_evalJavaScript:@"HeaderRect()"];
+        return [webView awful_rectForElementBoundingRect:rectString];
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentInPopoverFromView:self.view pointingToRegionReturnedByBlock:headerBlock];
@@ -187,16 +187,14 @@
             if (response[@"spoiledLink"]) {
                 NSDictionary *linkInfo = response[@"spoiledLink"];
                 NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-                UIEdgeInsets insets = self.webView.scrollView.contentInset;
-                CGRect rect = CGRectOffset(CGRectFromString(linkInfo[@"rect"]), insets.left, insets.top);
+                CGRect rect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
                 [self showMenuForLinkToURL:URL fromRect:rect withImageURL:imageURL];
             } else if (imageURL) {
                 [self previewImageAtURL:imageURL];
             } else if (response[@"spoiledVideo"]) {
                 NSDictionary *videoInfo = response[@"spoiledVideo"];
                 NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-                UIEdgeInsets insets = self.webView.scrollView.contentInset;
-                CGRect rect = CGRectOffset(CGRectFromString(videoInfo[@"rect"]), insets.left, insets.top);
+                CGRect rect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
                 [self showMenuForVideoAtURL:URL fromRect:rect];
             } else {
                 NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, response);
@@ -329,8 +327,7 @@
     __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSString *rectString, WVJBResponseCallback responseCallback) {
         __typeof__(self) self = weakSelf;
-        UIEdgeInsets insets = self.webView.scrollView.contentInset;
-        CGRect rect = CGRectOffset(CGRectFromString(rectString), insets.left, insets.top);
+        CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
         [self showUserActionsFromRect:rect];
     }];
     

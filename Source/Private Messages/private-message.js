@@ -81,13 +81,6 @@ startBridge(function(bridge) {
   });
 });
 
-function rectOfElement(element) {
-  var rect = element.offset();
-  var origin = [rect.left - window.pageXOffset, rect.top - window.pageYOffset];
-  var size = [rect.width, rect.height];
-  return "{{" + origin.join(',') + "},{" + size.join(',') + "}}";
-}
-
 function HeaderRect() {
   return rectOfElement($('header'));
 }
