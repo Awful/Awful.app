@@ -32,4 +32,14 @@
     return CGRectOffset(CGRectFromString(rectString), insets.left, insets.top);
 }
 
+- (CGFloat)awful_fractionalContentOffset
+{
+    return [[self awful_evalJavaScript:@"document.body.scrollTop / document.body.scrollHeight"] floatValue];
+}
+
+- (void)awful_setFractionalContentOffset:(CGFloat)fractionalContentOffset
+{
+    [self awful_evalJavaScript:@"window.scroll(0, document.body.scrollHeight * %g)", fractionalContentOffset];
+}
+
 @end

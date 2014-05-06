@@ -310,7 +310,7 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (CGFloat)scrolledFractionOfContent
 {
-    return [[self evalJavaScript:@"document.body.scrollTop / document.body.scrollHeight"] floatValue];
+    return self.webView.awful_fractionalContentOffset;
 }
 
 - (void)scrollToFractionOfContent:(CGFloat)fraction
@@ -322,7 +322,7 @@ static NSString * JSONizeBool(BOOL aBool)
 - (void)updateScrollToFractionOfContent
 {
     if (_onceOnFirstLoad) {
-        [self evalJavaScript:@"window.scroll(0, document.body.scrollHeight * %g)", _scrollToFractionOfContent];
+        self.webView.awful_fractionalContentOffset = _scrollToFractionOfContent;
     }
 }
 

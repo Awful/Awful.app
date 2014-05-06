@@ -23,4 +23,9 @@
  */
 - (CGRect)awful_rectForElementBoundingRect:(NSString *)rectString;
 
+/**
+ * The percentage of the web view that's been scrolled down. Potentially more helpful than contentOffset when aiming for orientation indepdence.
+ */
+@property (assign, nonatomic, setter=awful_setFractionalContentOffset:) CGFloat awful_fractionalContentOffset;
+
 @end

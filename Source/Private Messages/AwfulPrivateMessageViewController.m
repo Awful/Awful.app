@@ -45,6 +45,8 @@
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
     AwfulNewPrivateMessageViewController *_composeViewController;
     BOOL _didRender;
+    BOOL _didLoadOnce;
+    CGFloat _fractionalContentOffsetOnLoad;
 }
 
 - (void)dealloc
@@ -82,6 +84,7 @@
     NSURL *baseURL = [AwfulForumsClient client].baseURL;
     [self.webView loadHTMLString:HTML baseURL:baseURL];
     _didRender = YES;
+    self.webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
 }
 
 - (UIBarButtonItem *)actionButtonItem
@@ -349,6 +352,14 @@
     return YES;
 }
 
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    if (!_didLoadOnce) {
+        webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
+        _didLoadOnce = YES;
+    }
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -383,6 +394,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.privateMessage.messageID forKey:MessageIDKey];
     [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
+    [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrollFractionKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -390,9 +402,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super decodeRestorableStateWithCoder:coder];
     _composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
     _composeViewController.delegate = self;
+    _fractionalContentOffsetOnLoad = [coder decodeFloatForKey:ScrollFractionKey];
 }
 
 static NSString * const MessageIDKey = @"AwfulMessageID";
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
+static NSString * const ScrollFractionKey = @"AwfulScrollFraction";
 
 @end
