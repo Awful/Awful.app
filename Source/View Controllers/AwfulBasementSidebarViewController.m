@@ -44,6 +44,11 @@
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidBecomeActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
     return self;
 }
 
@@ -133,6 +138,11 @@ static NSString * const CellIdentifier = @"Cell";
     } else if ([setting isEqualToString:AwfulSettingsKeys.showAvatars]) {
         [self updateAvatarImageFromCache];
     }
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)note
+{
+    _didAppearAlready = NO;
 }
 
 - (void)viewDidLoad
