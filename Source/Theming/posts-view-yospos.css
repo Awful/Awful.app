@@ -72,8 +72,8 @@ header:after {
   background-image: url('awful-resource://clock.png');
   background-position: left center;
   background-repeat: no-repeat;
-  padding-left: 16px;
-  background-size: 12px;
+  padding-left: 2em;
+  background-size: auto 100%;
 }
 .regdate {
   display: block;
