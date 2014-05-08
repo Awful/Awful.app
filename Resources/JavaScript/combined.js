@@ -83,7 +83,7 @@ Awful.showAvatars = function(on) {
 }
 
 Awful.setFontScale = function(scalePercentage) {
-  var smallFontCSS = '.postbody { font-size: ' + scalePercentage + '%; }';
+  var smallFontCSS = '.nameanddate, .postbody { font-size: ' + scalePercentage + '%; }';
   if (scalePercentage != 100) {
     $('#awful-font-adjust-style').text(smallFontCSS);
   } else {
