@@ -61,7 +61,7 @@ header:after {
   float: right;
 }
 .username {
-  margin: 0;
+  margin: 0 0 2px;
 }
 .postdate {
   font: -apple-system-subheadline;
@@ -72,12 +72,11 @@ header:after {
   background-image: url('awful-resource://clock.png');
   background-position: left center;
   background-repeat: no-repeat;
-  padding-left: 16px;
-  background-size: 12px;
+  padding-left: 2em;
+  background-size: auto 100%;
 }
 .regdate {
   display: block;
-  font: -apple-system-subheadline;
   font-size: .8em;
   font-weight: lighter;
   margin: -0.4em 0 0;
@@ -89,10 +88,9 @@ header {
   padding-bottom: 0;
 }
 .username {
-  font: -apple-system-headline;
   display: inline-block;
-  /* Peta's 3D username */
-
+  font-size: 1.1em;
+  font-weight: bold;
 }
 .username #bracket {
   display: inline-block;
@@ -123,7 +121,7 @@ header {
 .role-mod .username:before {
   color: #006699;
 }
-@-webkit-keyframes RalpStar {
+@-webkit-keyframes idiotKingStar {
   0% {
     color: grey;
   }
@@ -137,21 +135,17 @@ header {
     color: yellow;
   }
 }
-.userid-61644 .username:before {
-  -webkit-animation: RalpStar 20s;
+.role-ik .username:before {
+  -webkit-animation: idiotKingStar 20s;
   -webkit-animation-iteration-count: infinite;
 }
 .role-admin .username:before,
 .role-mod .username:before,
-.userid-61644 .username:before {
+.role-ik .username:before {
   content: '★';
 }
 .role-op .username {
   color: #199ed7;
-}
-.userid-182864 .username {
-  color: rgba(0, 0, 0, 0.5);
-  text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
 }
 .action-button {
   margin: 0;
@@ -179,7 +173,6 @@ header {
 }
 .bbc-block {
   border-left: 2px solid #999;
-  font: -apple-system-caption1;
   margin: 5px 0;
   padding: 0 10px 5px;
 }
@@ -282,10 +275,6 @@ post.seen {
 }
 header {
   border-bottom: none;
-}
-/* Peta's 3D username */
-.userid-182864 .username {
-  color: rgba(255, 255, 255, 0.5);
 }
 .action-button {
   color: #1682b2;
