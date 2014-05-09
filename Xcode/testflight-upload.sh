@@ -72,8 +72,12 @@ fi
 log "App packaged as $IPA"
 
 osascript -e "tell application \"Xcode\"" \
-  -e "display dialog \"Upload is about to begin. Once it's done, you'll be asked to tag the release.\" buttons {\"OK\"} with icon 1 with title \"TestFlight Upload\"" \
+  -e "display dialog \"Upload is about to begin. Once it's done, you'll be asked to tag the release.\" with icon 1 with title \"TestFlight Upload\"" \
   -e "end tell" > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+  log "User cancelled"
+  exit 1
+fi
 
 log "Uploading to TestFlight"
 RESPONSE_FILE="$WORKING_DIR/response.txt"
