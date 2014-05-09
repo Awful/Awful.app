@@ -84,7 +84,7 @@ startBridge(function(bridge) {
       if (scalePercentage == 100) {
         style.text('');
       } else {
-        style.text(".postbody { font-size: " + scalePercentage + "%; }");
+        style.text(".nameanddate, .postbody, footer { font-size: " + scalePercentage + "%; }");
       }
     });
   });
