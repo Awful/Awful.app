@@ -6,21 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		1CE2D9A016688C640024AC1C /* Build Resources */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */;
-			buildPhases = (
-				1CD33EA016EF7C550059587E /* Compile CSS */,
-				1C4191941763CCB800EADE07 /* Concatenate JavaScript */,
-			);
-			dependencies = (
-			);
-			name = "Build Resources";
-			productName = "Build Resources";
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
@@ -64,7 +49,6 @@
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */; };
-		1C41918E1763C88E00EADE07 /* combined.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C41918D1763C88E00EADE07 /* combined.js */; };
 		1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C41B8A016CD4C7600718F79 /* Crashlytics.framework */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
@@ -140,6 +124,8 @@
 		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
 		1C8E104F1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */; };
 		1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */; };
+		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
+		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
 		1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */; };
@@ -284,16 +270,6 @@
 		F4B3645B1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F4B3645A1916631800CCE1EF /* AwfulSecondaryTagCollectionViewCell.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		1CE2D9A416688C700024AC1C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1CE2D9A016688C640024AC1C;
-			remoteInfo = "Build Resources";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		1190F71913BE4EA900B9D271 /* AwfulLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoginController.h; sourceTree = "<group>"; };
 		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
@@ -364,8 +340,7 @@
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageViewController.h; sourceTree = "<group>"; };
 		1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageViewController.m; sourceTree = "<group>"; };
-		1C41918D1763C88E00EADE07 /* combined.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = combined.js; sourceTree = "<group>"; };
-		1C4191901763C8BD00EADE07 /* awful.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = awful.js; sourceTree = "<group>"; };
+		1C4191901763C8BD00EADE07 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
 		1C41B8A016CD4C7600718F79 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
 		1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCrashlytics.h; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
@@ -480,6 +455,8 @@
 		1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulActionSheet+WebViewSheets.m"; sourceTree = "<group>"; };
 		1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWebViewNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWebViewNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
+		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
+		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionViewController.h; sourceTree = "<group>"; };
@@ -972,15 +949,6 @@
 			path = ../Source;
 			sourceTree = "<group>";
 		};
-		1C41918C1763C6EA00EADE07 /* JavaScript */ = {
-			isa = PBXGroup;
-			children = (
-				1C4191901763C8BD00EADE07 /* awful.js */,
-				1C41918D1763C88E00EADE07 /* combined.js */,
-			);
-			path = JavaScript;
-			sourceTree = "<group>";
-		};
 		1C6474A61569989800C72657 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -1019,6 +987,8 @@
 				1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */,
 				1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */,
 				1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */,
+				1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */,
+				1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */,
 				1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */,
 				1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */,
 				1C8E10491916F78B0010007B /* util.js */,
@@ -1286,6 +1256,7 @@
 				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
 				1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */,
 				1C3447E3175D9CCE007377C5 /* Post.mustache */,
+				1C4191901763C8BD00EADE07 /* posts-view.js */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 			);
 			path = Posts;
@@ -1451,7 +1422,6 @@
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				8CCD498215B497A700E5893B /* Info.plist */,
-				1C41918C1763C6EA00EADE07 /* JavaScript */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
 				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
@@ -1522,6 +1492,7 @@
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
 			buildPhases = (
 				92D192B30FE54C29B1BC2C16 /* Check Pods Manifest.lock */,
+				1C8F0DE6191CFA2200CE8DEE /* Compile CSS */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1C41B8A316CD50E500718F79 /* Configure Crashlytics */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -1532,7 +1503,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1CE2D9A516688C700024AC1C /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -1565,7 +1535,6 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
-				1CE2D9A016688C640024AC1C /* Build Resources */,
 				1C96D054167FDEA60043B194 /* Imgur API Test */,
 				1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */,
 			);
@@ -1597,12 +1566,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */,
 				1C8E104C1916F92F0010007B /* profile.js in Resources */,
 				1C8E104A1916F7970010007B /* util.js in Resources */,
 				1C8E10481914D1180010007B /* private-message.js in Resources */,
 				1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */,
 				1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */,
-				1C41918E1763C88E00EADE07 /* combined.js in Resources */,
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
 				1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */,
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
@@ -1682,23 +1651,6 @@
 			shellScript = "\"${SRCROOT}/../Pods/Pods-ScrapingTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1C4191941763CCB800EADE07 /* Concatenate JavaScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/../Vendor/zepto/zepto.min.js",
-				"$(SRCROOT)/../Resources/JavaScript/awful.js",
-			);
-			name = "Concatenate JavaScript";
-			outputPaths = (
-				"$(SRCROOT)/../Resources/JavaScript/combined.js",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cat \"${SRCROOT}/../Vendor/zepto/zepto.min.js\" \"${SRCROOT}/../Resources/JavaScript/awful.js\" > \"${SRCROOT}/../Resources/JavaScript/combined.js\"\n";
-		};
 		1C41B89F16CD4C1D00718F79 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1729,6 +1681,20 @@
 			shellPath = /bin/sh;
 			shellScript = "API_KEYS=\"$SRCROOT/../api_keys\"\nif [ -e \"$API_KEYS\" ]; then\n    while IFS=\" \" read name key; do\n        declare $name=\"$key\"\n    done < \"$SRCROOT/../api_keys\" 2>/dev/null\nfi\n\nHEADER=\"$SRCROOT/../Source/Main/AwfulCrashlytics.h\"\nif [ -n \"$CRASHLYTICS_API_KEY\" ]; then\n    echo \"#define CRASHLYTICS_API_KEY @\\\"$CRASHLYTICS_API_KEY\\\"\" > \"$HEADER\"\nelse\n    : > \"$HEADER\"\nfi\n";
 		};
+		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile CSS";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --include-path=\"Theming:Users\" \"$@\"\n}\n\nLESSFILES=(Theming/posts-view*.less)\nLESSFILES+=(Users/profile.less)\n\nfor s in \"${LESSFILES[@]}\"; do\nif [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\nc=\"${s%.less}.css\"\nsmodified=$(mtime \"$s\")\ncmodified=$(mtime \"$c\")\nif [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\necho \"Compiling $s\"\nlessc \"$s\" \"$c\"\nfi\ndone\n";
+		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1741,20 +1707,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-		1CD33EA016EF7C550059587E /* Compile CSS */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Compile CSS";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env bash";
-			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --include-path=\"Theming:Users\" \"$@\"\n}\n\nLESSFILES=(Theming/posts-view*.less)\nLESSFILES+=(Users/profile.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    if [[ ! -e \"${s}\" ]]; then continue; fi # empty glob\n\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 		34B5EEF646C542F1B54EDDC3 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1964,6 +1916,7 @@
 				1C89A78E18AA084500D75854 /* AwfulSplitViewController.m in Sources */,
 				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
 				1C35FB761831D69100B52724 /* AwfulFormScraper.m in Sources */,
+				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
@@ -2037,14 +1990,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		1CE2D9A516688C700024AC1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1CE2D9A016688C640024AC1C /* Build Resources */;
-			targetProxy = 1CE2D9A416688C700024AC1C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		1C96D05D167FDEA60043B194 /* InfoPlist.strings */ = {
@@ -2172,13 +2117,6 @@
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Profile;
-		};
-		1C9A746918EDDD8D00093E33 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Profile;
 		};
@@ -2312,20 +2250,6 @@
 			};
 			name = "App Store";
 		};
-		1CE2D9A216688C640024AC1C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		1CE2D9A316688C640024AC1C /* App Store */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = "App Store";
-		};
 		1CE8FE4B1718E8CD006A3B84 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2377,13 +2301,6 @@
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Beta;
-		};
-		1CE8FE4D1718E8CD006A3B84 /* Beta */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Beta;
 		};
@@ -2567,17 +2484,6 @@
 				1CBDB5CD16259C6D0004BDF4 /* App Store */,
 				1CE8FE501718E8CD006A3B84 /* Beta */,
 				1C9A746B18EDDD8D00093E33 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		1CE2D9A116688C640024AC1C /* Build configuration list for PBXAggregateTarget "Build Resources" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1CE2D9A216688C640024AC1C /* Debug */,
-				1CE2D9A316688C640024AC1C /* App Store */,
-				1CE8FE4D1718E8CD006A3B84 /* Beta */,
-				1C9A746918EDDD8D00093E33 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsView.h"
+#import "AwfulJavaScript.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache.h>
@@ -231,12 +232,11 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (void)loadHTML
 {
-    NSURL *scriptURL = [[NSBundle mainBundle] URLForResource:@"combined" withExtension:@"js"];
     NSError *error;
-    NSString *script = [NSString stringWithContentsOfURL:scriptURL encoding:NSUTF8StringEncoding error:&error];
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"posts-view.js" ], &error);
     if (!script) {
-        NSLog(@"%s error loading script from %@: %@", __PRETTY_FUNCTION__, scriptURL, error);
-        script = @"";
+        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
+        return;
     }
     NSString *idiom = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
     NSDictionary *context = @{ @"userInterfaceIdiom": idiom,

@@ -4,6 +4,7 @@
 
 #import "AwfulProfileViewModel.h"
 #import "AwfulDateFormatters.h"
+#import "AwfulJavaScript.h"
 #import "AwfulSettings.h"
 
 @interface AwfulProfileViewModel ()
@@ -84,25 +85,12 @@
 
 - (NSString *)javascript
 {
-    static __unsafe_unretained NSString *scriptFilenames[] = {
-        @"zepto.min.js",
-        @"fastclick.js",
-        @"util.js",
-        @"profile.js",
-    };
-    NSMutableArray *scripts = [NSMutableArray new];
-    for (NSUInteger i = 0, end = sizeof(scriptFilenames) / sizeof(*scriptFilenames); i < end; i++) {
-        NSString *filename = scriptFilenames[i];
-        NSURL *URL = [[NSBundle mainBundle] URLForResource:filename withExtension:nil];
-        NSError *error;
-        NSString *script = [NSString stringWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:&error];
-        if (!script) {
-            NSLog(@"%s error loading %@ from %@: %@", __PRETTY_FUNCTION__, filename, URL, error);
-            return nil;
-        }
-        [scripts addObject:script];
+    NSError *error;
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"fastclick.js", @"util.js", @"profile.js" ], &error);
+    if (!script) {
+        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
     }
-    return [scripts componentsJoinedByString:@"\n\n"];
+    return script;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key
