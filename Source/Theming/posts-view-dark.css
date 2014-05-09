@@ -67,6 +67,7 @@ header:after {
   font-size: .8em;
   font-weight: lighter;
   -webkit-flex-grow: 1;
+  -webkit-flex-wrap: wrap-reverse;
 }
 .clock {
   box-sizing: border-box;
