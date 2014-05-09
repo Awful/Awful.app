@@ -64,16 +64,15 @@ header:after {
   margin: 0 0 2px;
 }
 .postdate {
-  font: -apple-system-subheadline;
   font-size: .8em;
   font-weight: lighter;
   float: left;
   margin: .7em 0;
-  background-image: url('awful-resource://clock.png');
-  background-position: left center;
-  background-repeat: no-repeat;
-  padding-left: 2em;
-  background-size: auto 100%;
+}
+.clock {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
 }
 .regdate {
   display: block;
@@ -233,9 +232,6 @@ blockquote img {
 .attachment {
   margin: 0;
 }
-footer {
-  font: -apple-system-subheadline2;
-}
 footer:after {
   content: "";
   display: block;
@@ -319,6 +315,13 @@ post.seen {
 }
 .postdate {
   background-image: url('awful-resource://mac-watch.png');
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  padding-left: 2em;
+}
+.clock {
+  display: none;
 }
 .action-button {
   width: 70px;
