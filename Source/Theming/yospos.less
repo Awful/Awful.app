@@ -61,14 +61,18 @@ post {
   color: @color;
 }
 
+@postdate-color: #474747;
 .postdate {
   color: #474747;
-  fill: #474747;
 }
+.clock-color(@postdate-color);
 
-.seen .postdate {
-  color: #257a26;
-  fill: #257a26;
+@postdate-seen-color: #257a26;
+.seen {
+  .postdate {
+    color: @postdate-seen-color;
+  }
+  .clock-color(@postdate-seen-color);
 }
 
 @import "spoilers.less";

@@ -13,6 +13,7 @@
 @import "posts-view-dark-emoticons.less";
 
 .seen .postdate {
-    color: #675b1f;
-    fill: #675b1f;
+  @seen-postdate-color: #675b1f;
+  color: @seen-postdate-color;
+  .clock-color(@seen-postdate-color);
 }

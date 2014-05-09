@@ -66,13 +66,42 @@ header:after {
 .postdate {
   font-size: .8em;
   font-weight: lighter;
-  float: left;
-  margin: .7em 0;
+  -webkit-flex-grow: 1;
 }
 .clock {
+  box-sizing: border-box;
+  display: inline-block;
   width: 1em;
   height: 1em;
   margin-right: 0.2em;
+  border-width: 0.1em;
+  border-style: solid;
+  border-radius: 50%;
+  position: relative;
+}
+.clock::before,
+.clock::after {
+  content: "";
+  position: absolute;
+  bottom: 50%;
+  margin-bottom: -0.1em;
+  left: 50%;
+  margin-left: -0.05em;
+}
+.clock::before {
+  width: 30%;
+  height: 0.1em;
+}
+.clock::after {
+  width: 0.1em;
+  height: 45%;
+}
+.clock {
+  border-color: #000000;
+}
+.clock::before,
+.clock::after {
+  background-color: #000000;
 }
 .regdate {
   display: block;
@@ -89,7 +118,8 @@ header {
 .username {
   display: inline-block;
   font-size: 1.1em;
-  font-weight: bold;
+  font-weight: 500;
+  /* Peta's 3D username */
 }
 .username #bracket {
   display: inline-block;
@@ -120,7 +150,7 @@ header {
 .role-mod .username:before {
   color: #006699;
 }
-@-webkit-keyframes idiotKingStar {
+@-webkit-keyframes RalpStar {
   0% {
     color: grey;
   }
@@ -134,17 +164,21 @@ header {
     color: yellow;
   }
 }
-.role-ik .username:before {
-  -webkit-animation: idiotKingStar 20s;
+.userid-61644 .username:before {
+  -webkit-animation: RalpStar 20s;
   -webkit-animation-iteration-count: infinite;
 }
 .role-admin .username:before,
 .role-mod .username:before,
-.role-ik .username:before {
+.userid-61644 .username:before {
   content: '★';
 }
 .role-op .username {
   color: #199ed7;
+}
+.userid-182864 .username {
+  color: rgba(0, 0, 0, 0.5);
+  text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
 }
 .action-button {
   margin: 0;
@@ -232,6 +266,10 @@ blockquote img {
 .attachment {
   margin: 0;
 }
+footer {
+  display: -webkit-flex;
+  -webkit-align-items: center;
+}
 footer:after {
   content: "";
   display: block;
@@ -271,6 +309,10 @@ post.seen {
 }
 header {
   border-bottom: none;
+}
+/* Peta's 3D username */
+.userid-182864 .username {
+  color: rgba(255, 255, 255, 0.5);
 }
 .action-button {
   color: #1682b2;
@@ -316,7 +358,13 @@ footer {
 .postdate,
 .regdate {
   color: #8e8e8e;
-  fill: #8e8e8e;
+}
+.clock {
+  border-color: #8e8e8e;
+}
+.clock::before,
+.clock::after {
+  background-color: #8e8e8e;
 }
 .editedby .mention {
   color: #dd89ff;
