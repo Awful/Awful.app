@@ -16,8 +16,6 @@
 
 - (void)reloadData;
 
-- (void)reloadAdvertisementHTML;
-
 - (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML;
 
 - (void)prependPostsHTML:(NSString *)HTML;

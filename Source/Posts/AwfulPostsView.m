@@ -96,16 +96,6 @@
     self.didLoadHTML = YES;
 }
 
-- (void)reloadAdvertisementHTML
-{
-    NSString *ad = @"";
-    if ([self.delegate respondsToSelector:@selector(advertisementHTMLForPostsView:)]) {
-        ad = [self.delegate advertisementHTMLForPostsView:self];
-        if ([ad length] == 0) ad = @"";
-    }
-    [self evalJavaScript:@"Awful.ad(%@)", JSONizeValue(ad)];
-}
-
 - (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML
 {
     [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(HTML)];
