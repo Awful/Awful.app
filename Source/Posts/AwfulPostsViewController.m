@@ -697,13 +697,9 @@
 
 - (void)showHiddenSeenPosts
 {
-    [self.postsView beginUpdates];
-    for (NSInteger i = 0; i < self.hiddenPosts; i++) {
-        [self.postsView insertPostAtIndex:i];
-    }
     self.hiddenPosts = 0;
-    [self.postsView endUpdates];
     [self maintainScrollOffsetAfterSizeChange];
+    [self.postsView reloadData];
 }
 
 - (void)maintainScrollOffsetAfterSizeChange

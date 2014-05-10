@@ -15,10 +15,6 @@
 @property (nonatomic) BOOL didLoadHTML;
 @property (nonatomic) BOOL hasLoaded;
 
-@property (nonatomic) NSMutableIndexSet *toDelete;
-@property (nonatomic) NSMutableIndexSet *toInsert;
-@property (nonatomic) NSMutableIndexSet *toReload;
-
 @property (copy, nonatomic) NSString *jumpToElementAfterLoading;
 
 @end
@@ -114,59 +110,10 @@
     [self evalJavaScript:@"Awful.ad(%@)", JSONizeValue(ad)];
 }
 
-- (void)beginUpdates
-{
-    self.toDelete = [NSMutableIndexSet new];
-    self.toInsert = [NSMutableIndexSet new];
-    self.toReload = [NSMutableIndexSet new];
-}
-
-- (void)insertPostAtIndex:(NSInteger)index
-{
-    if (self.toInsert) {
-        [self.toInsert addIndex:index];
-        return;
-    }
-    NSString *post = [self.delegate postsView:self renderedPostAtIndex:index];
-    [self evalJavaScript:@"Awful.insertPost(%@, %d)", JSONizeValue(post), index];
-}
-
-- (void)deletePostAtIndex:(NSInteger)index
-{
-    if (self.toDelete) {
-        [self.toDelete addIndex:index];
-        return;
-    }
-    [self evalJavaScript:@"Awful.deletePost(%d)", index];
-}
-
 - (void)reloadPostAtIndex:(NSInteger)index
 {
-    if (self.toReload) {
-        [self.toReload addIndex:index];
-        return;
-    }
     NSString *post = [self.delegate postsView:self renderedPostAtIndex:index];
     [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(post)];
-}
-
-- (void)endUpdates
-{
-    NSIndexSet *toDelete = self.toDelete;
-    self.toDelete = nil;
-    [toDelete enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
-        [self deletePostAtIndex:i];
-    }];
-    NSIndexSet *toInsert = self.toInsert;
-    self.toInsert = nil;
-    [toInsert enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
-        [self insertPostAtIndex:i];
-    }];
-    NSIndexSet *toReload = self.toReload;
-    self.toReload = nil;
-    [toReload enumerateIndexesUsingBlock:^(NSUInteger i, BOOL *_) {
-        [self reloadPostAtIndex:i];
-    }];
 }
 
 static NSString * JSONize(id obj)

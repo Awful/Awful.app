@@ -18,15 +18,7 @@
 
 - (void)reloadAdvertisementHTML;
 
-- (void)beginUpdates;
-
-- (void)insertPostAtIndex:(NSInteger)index;
-
-- (void)deletePostAtIndex:(NSInteger)index;
-
 - (void)reloadPostAtIndex:(NSInteger)index;
-
-- (void)endUpdates;
 
 - (void)clearAllPosts;
 
