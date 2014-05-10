@@ -1,30 +1,16 @@
 ;(function(){
 var Awful = {}
 
-Awful.posts = function(posts){
-  $('#posts').empty()
-  $.each(posts, function(i, post){
-    render(post).appendTo('#posts')
-  })
-}
-
-Awful.insertPost = function(post, i){
-  if (i === 0) {
-    render(post).prependTo('#posts')
-  } else if (i >= $('post').length) {
-    render(post).appendTo('#posts')
-  } else {
-    $('post').eq(i).before(render(post))
-  }
-}
-
-Awful.deletePost = function(post, i){
-  $('post').eq(i).remove()
-}
-
 Awful.post = function(i, post){
-  $('post').eq(i).replaceWith(render(post))
+  $('post').eq(i).replaceWith(post)
 }
+
+Awful.prependPosts = function(posts) {
+  var oldHeight = document.documentElement.scrollHeight;
+  $('#posts').prepend(posts);
+  var newHeight = document.documentElement.scrollHeight;
+  window.scrollBy(0, newHeight - oldHeight);
+};
 
 Awful.markReadUpToPostWithID = function(postID) {
   var lastReadIndex = $('#' + postID).index();
@@ -54,7 +40,7 @@ Awful.highlightMentionUsername = function(username){
       this.parentNode.normalize()
     })
   } else {
-    $('.postbody').each(function(){ highlightMentions(this) })
+    $('.postbody').each(function(){ Awful.highlightMentions(this) })
   }
 }
 
@@ -171,17 +157,11 @@ Awful.spoiledVideoInPostForPoint = function(x, y){
   }
 }
 
-function render(post) {
-  post = $(post);
-  highlightMentions(post.find('.postbody'));
-  return post;
-}
-
 function nullOrUndefined(arg) {
   return arg === null || arg === undefined
 }
 
-function highlightMentions(post) {
+Awful.highlightMentions = function(post) {
   var username = Awful._highlightMentionUsername
   if (nullOrUndefined(username)) return
   var regex = new RegExp("\\b" + regexEscape(username) + "\\b", "i")
@@ -220,6 +200,8 @@ window.Awful = Awful
 $(function(){
   $('#posts').on('click', '[data-awful-linkified-image]', showLinkedImage)
   $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
+  
+  $('.postbody').each(function() { Awful.highlightMentions(this); });
 })
 
 function showLinkedImage(e) {

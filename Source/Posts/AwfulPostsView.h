@@ -18,7 +18,9 @@
 
 - (void)reloadAdvertisementHTML;
 
-- (void)reloadPostAtIndex:(NSInteger)index;
+- (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML;
+
+- (void)prependPostsHTML:(NSString *)HTML;
 
 - (void)clearAllPosts;
 
@@ -90,10 +92,7 @@
 
 @required
 
-- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView;
-
-// Returns an HTML representation of the requested post.
-- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index;
+- (NSString *)HTMLForPostsView:(AwfulPostsView *)postsView;
 
 @optional
 

@@ -91,13 +91,9 @@
 
 - (void)reloadData
 {
-    NSMutableArray *posts = [NSMutableArray new];
-    NSInteger numberOfPosts = [self.delegate numberOfPostsInPostsView:self];
-    for (NSInteger i = 0; i < numberOfPosts; i++) {
-        [posts addObject:[self.delegate postsView:self renderedPostAtIndex:i]];
-    }
-    [self evalJavaScript:@"Awful.posts(%@)", JSONize(posts)];
-    [self reloadAdvertisementHTML];
+    NSString *HTML = [self.delegate HTMLForPostsView:self];
+    [self.webView loadHTMLString:HTML baseURL:self.baseURL];
+    self.didLoadHTML = YES;
 }
 
 - (void)reloadAdvertisementHTML
@@ -110,10 +106,14 @@
     [self evalJavaScript:@"Awful.ad(%@)", JSONizeValue(ad)];
 }
 
-- (void)reloadPostAtIndex:(NSInteger)index
+- (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML
 {
-    NSString *post = [self.delegate postsView:self renderedPostAtIndex:index];
-    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(post)];
+    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(HTML)];
+}
+
+- (void)prependPostsHTML:(NSString *)HTML
+{
+    [self evalJavaScript:@"Awful.prependPosts(%@)", JSONizeValue(HTML)];
 }
 
 static NSString * JSONize(id obj)
@@ -177,33 +177,12 @@ static NSString * JSONizeBool(BOOL aBool)
     [self updateStylesheet];
 }
 
-- (void)loadHTML
-{
-    NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"posts-view.js" ], &error);
-    if (!script) {
-        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
-        return;
-    }
-    NSString *idiom = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
-    NSDictionary *context = @{ @"userInterfaceIdiom": idiom,
-                               @"stylesheet": self.stylesheet ?: @"",
-                               @"script": script };
-    NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
-    if (!HTML) {
-        NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
-    }
-    [self.webView loadHTMLString:HTML baseURL:self.baseURL];
-    self.didLoadHTML = YES;
-    [self updateFontScale];
-}
-
 - (void)updateStylesheet
 {
     if (self.didLoadHTML) {
         [self evalJavaScript:@"Awful.stylesheet(%@)", JSONizeValue(self.stylesheet ?: @"")];
     } else {
-        [self loadHTML];
+        [self reloadData];
     }
 }
 
@@ -417,15 +396,11 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
 {
     if (!_onceOnFirstLoad) {
         _onceOnFirstLoad = YES;
-        [self updateShowAvatars];
-        [self updateFontScale];
         if (_loadLinkifiedImagesOnFirstLoad) {
             [self loadLinkifiedImages];
         }
-        [self updateHighlightMentionUsername];
         [self updateEndMessage];
         self.hasLoaded = YES;
-        [self reloadData];
         if (self.jumpToElementAfterLoading) {
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;

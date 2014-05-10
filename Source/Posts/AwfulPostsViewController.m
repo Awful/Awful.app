@@ -12,6 +12,7 @@
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulImagePreviewViewController.h"
+#import "AwfulJavaScript.h"
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
@@ -52,8 +53,6 @@
 @property (nonatomic) GRMustacheTemplate *postTemplate;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
-@property (nonatomic) BOOL observingScrollViewSize;
-
 @property (strong, nonatomic) AwfulReplyViewController *replyViewController;
 @property (strong, nonatomic) AwfulNewPrivateMessageViewController *messageViewController;
 
@@ -66,7 +65,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self stopObservingScrollViewContentSize];
     self.postsView.scrollView.delegate = nil;
 }
 
@@ -697,19 +695,14 @@
 
 - (void)showHiddenSeenPosts
 {
+    NSMutableArray *HTMLFragments = [NSMutableArray new];
+    NSUInteger end = self.hiddenPosts;
     self.hiddenPosts = 0;
-    [self maintainScrollOffsetAfterSizeChange];
-    [self.postsView reloadData];
-}
-
-- (void)maintainScrollOffsetAfterSizeChange
-{
-    _observingScrollViewSize = YES;
-    [self.postsView.scrollView addObserver:self
-                                forKeyPath:@"contentSize"
-                                   options:(NSKeyValueObservingOptionOld |
-                                            NSKeyValueObservingOptionNew)
-                                   context:KVOContext];
+    for (NSUInteger i = 0; i < end; i++) {
+        NSString *HTML = [self postsView:self.postsView renderedPostAtIndex:i];
+        [HTMLFragments addObject:HTML];
+    }
+    [self.postsView prependPostsHTML:[HTMLFragments componentsJoinedByString:@""]];
 }
 
 - (void)scrollToBottom
@@ -729,42 +722,39 @@
     [super viewDidDisappear:animated];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context
-{
-    if (context == KVOContext) {
-        if ([keyPath isEqualToString:@"contentSize"]) {
-            CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
-            CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
-            CGPoint contentOffset = [object contentOffset];
-            contentOffset.y += newSize.height - oldSize.height;
-            [object setContentOffset:contentOffset];
-            [self stopObservingScrollViewContentSize];
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-static void *KVOContext = &KVOContext;
-
-- (void)stopObservingScrollViewContentSize
-{
-    if (_observingScrollViewSize && [self isViewLoaded]) {
-        [self.postsView.scrollView removeObserver:self
-                                       forKeyPath:@"contentSize"
-                                          context:KVOContext];
-        _observingScrollViewSize = NO;
-    }
-}
-
 #pragma mark - AwfulPostsViewDelegate
 
-- (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
+- (NSString *)HTMLForPostsView:(AwfulPostsView *)postsView
 {
-    return self.posts.count - self.hiddenPosts;
+    NSMutableDictionary *context = [NSMutableDictionary new];
+    NSError *error;
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"posts-view.js" ], &error);
+    if (!script) {
+        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
+        return nil;
+    }
+    context[@"script"] = script;
+    context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
+    context[@"stylesheet"] = self.theme[@"postsViewCSS"];
+    NSMutableArray *postViewModels = [NSMutableArray new];
+    NSRange range = NSMakeRange(self.hiddenPosts, self.posts.count - self.hiddenPosts);
+    for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
+        [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
+    }
+    context[@"posts"] = postViewModels;
+    if (self.advertisementHTML.length) {
+        context[@"advertisementHTML"] = self.advertisementHTML;
+    }
+    int fontScalePercentage = [AwfulSettings settings].fontScale;
+    if (fontScalePercentage != 100) {
+        context[@"fontScalePercentage"] = @(fontScalePercentage);
+    }
+    context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
+    if (!HTML) {
+        NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
+    }
+    return HTML;
 }
 
 - (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
@@ -823,7 +813,8 @@ static void *KVOContext = &KVOContext;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else if (self.page == page) {
-            [self.postsView reloadPostAtIndex:index];
+            NSString *HTML = [self postsView:self.postsView renderedPostAtIndex:index];
+            [self.postsView reloadPostAtIndex:index withHTML:HTML];
         }
     }];
 }

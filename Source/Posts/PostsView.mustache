@@ -5,15 +5,29 @@
 <style id="awful-inline-style">
     {{{ stylesheet }}}
 </style>
-<style id="awful-font-adjust-style"><!-- filled from script --></style>
-<body class="{{ userInterfaceIdiom }}">
-    <div id="posts"></div>
 
-    <div id="ad"></div>
+<style id="awful-font-adjust-style">
+    {{> FontScale }}
+</style>
+
+<body class="{{ userInterfaceIdiom }}">
+    <div id="posts">
+        {{# posts }}
+            {{> Post }}
+        {{/ }}
+    </div>
+
+    <div id="ad">
+        {{{ advertisementHTML }}}
+    </div>
 
     <div id="end"></div>
 
     <script>
         {{{ script }}}
+    </script>
+    
+    <script>
+        Awful._highlightMentionUsername = "{{ javascript.escape(loggedInUsername) }}";
     </script>
 </body>
