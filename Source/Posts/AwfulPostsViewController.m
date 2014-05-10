@@ -32,9 +32,7 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, NSFetchedResultsControllerDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
-
-@property (nonatomic) NSFetchedResultsController *fetchedResultsController;
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -56,10 +54,10 @@
 
 @property (nonatomic) BOOL observingScrollViewSize;
 
-@property (nonatomic) NSMutableArray *cachedUpdatesWhileScrolling;
-
 @property (strong, nonatomic) AwfulReplyViewController *replyViewController;
 @property (strong, nonatomic) AwfulNewPrivateMessageViewController *messageViewController;
+
+@property (copy, nonatomic) NSArray *posts;
 
 @end
 
@@ -70,7 +68,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self stopObservingScrollViewContentSize];
     self.postsView.scrollView.delegate = nil;
-    self.fetchedResultsController.delegate = nil;
 }
 
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
@@ -346,29 +343,17 @@
     [self willChangeValueForKey:@"thread"];
     _thread = thread;
     [self didChangeValueForKey:@"thread"];
-    [self updateFetchedResultsController];
+    [self refetchPosts];
     [self updateUserInterface];
     self.postsView.stylesheet = self.theme[@"postsViewCSS"];
     self.replyViewController = nil;
 }
 
-- (NSArray *)posts
+- (void)refetchPosts
 {
-    return self.fetchedResultsController.fetchedObjects;
-}
-
-- (void)updateFetchedResultsController
-{
-    if (!self.thread || self.page < 1) {
-        self.fetchedResultsController.delegate = nil;
-        self.fetchedResultsController = nil;
-        return;
-    }
+    if (!self.thread || self.page < 1) return;
     
-    NSFetchRequest *request = self.fetchedResultsController.fetchRequest;
-    if (!request) {
-        request = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
-    }
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
     NSInteger lowIndex = (self.page - 1) * 40 + 1;
     NSInteger highIndex = self.page * 40;
     NSString *indexKey;
@@ -377,40 +362,28 @@
     } else {
         indexKey = @"threadIndex";
     }
-    request.predicate = [NSPredicate predicateWithFormat:@"thread = %@ AND %d <= %K AND %K <= %d",
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"thread = %@ AND %d <= %K AND %K <= %d",
                          self.thread, lowIndex, indexKey, indexKey, highIndex];
     if (self.author) {
         NSPredicate *and = [NSPredicate predicateWithFormat:@"author.userID = %@", self.author.userID];
-        request.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
-                             @[ request.predicate, and ]];
+        fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:
+                             @[ fetchRequest.predicate, and ]];
     }
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:indexKey ascending:YES] ];
-    if (!self.fetchedResultsController) {
-        NSManagedObjectContext *context = self.thread.managedObjectContext;
-        NSFetchedResultsController *controller;
-        controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                         managedObjectContext:context
-                                                           sectionNameKeyPath:nil
-                                                                    cacheName:nil];
-        controller.delegate = self;
-        self.fetchedResultsController = controller;
-    }
+    fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:indexKey ascending:YES] ];
     
     NSError *error;
-    BOOL ok = [self.fetchedResultsController performFetch:&error];
-    if (!ok) {
-        NSLog(@"error fetching posts: %@", error);
+    NSArray *posts = [self.thread.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (!posts) {
+        NSLog(@"%s error fetching posts: %@", __PRETTY_FUNCTION__, error);
     }
+    self.posts = posts;
 }
 
 - (void)updateUserInterface
 {
     self.title = [self.thread.title stringByCollapsingWhitespace];
     
-    if (self.page == AwfulThreadPageLast ||
-        self.page == AwfulThreadPageNextUnread ||
-        [self.fetchedResultsController.fetchedObjects count] == 0)
-    {
+    if (self.page == AwfulThreadPageLast || self.page == AwfulThreadPageNextUnread || self.posts.count == 0) {
         [self setLoadingMessage:@"Loading…"];
     } else {
         [self clearLoadingMessage];
@@ -549,8 +522,7 @@
 
 - (void)prepareForNewPage
 {
-    self.cachedUpdatesWhileScrolling = nil;
-    [self updateFetchedResultsController];
+    [self refetchPosts];
     [self.postsView.scrollView.pullToRefreshView stopAnimating];
     [self updateUserInterface];
     [self.postsView.scrollView setContentOffset:CGPointZero animated:NO];
@@ -600,12 +572,8 @@
                  if (page == AwfulThreadPageNextUnread && firstUnreadPost != NSNotFound) {
                      self.hiddenPosts = firstUnreadPost;
                  }
-                 if (!self.fetchedResultsController) [self updateFetchedResultsController];
-                 if (wasLoading) {
-                     [self.postsView reloadData];
-                 } else {
-                     [self.postsView reloadAdvertisementHTML];
-                 }
+                 self.posts = posts;
+                 [self.postsView reloadData];
                  if (self.topPostAfterLoad) {
                      self.topPost = self.topPostAfterLoad;
                      self.topPostAfterLoad = nil;
@@ -617,6 +585,7 @@
                  if (self.thread.seenPosts < lastPost.threadIndex) {
                      self.thread.seenPosts = lastPost.threadIndex;
                  }
+                 [self.postsView.scrollView.pullToRefreshView stopAnimating];
              }];
     self.networkOperation = op;
 }
@@ -799,12 +768,12 @@ static void *KVOContext = &KVOContext;
 
 - (NSInteger)numberOfPostsInPostsView:(AwfulPostsView *)postsView
 {
-    return [[self.fetchedResultsController fetchedObjects] count] - self.hiddenPosts;
+    return self.posts.count - self.hiddenPosts;
 }
 
 - (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
 {
-    AwfulPost *post = self.fetchedResultsController.fetchedObjects[index + self.hiddenPosts];
+    AwfulPost *post = self.posts[index + self.hiddenPosts];
     NSError *error;
     NSString *html = [self.postTemplate renderObject:[[AwfulPostViewModel alloc] initWithPost:post] error:&error];
     if (!html) {
@@ -869,10 +838,10 @@ static void *KVOContext = &KVOContext;
     NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
     NSInteger usersPostIndex = [postsView indexOfPostWithUserNameAtPoint:point rect:&rect];
     if (postIndex != NSNotFound) {
-        AwfulPost *post = self.fetchedResultsController.fetchedObjects[postIndex + self.hiddenPosts];
+        AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
         [self showActionsForPost:post fromRect:rect];
     } else if (usersPostIndex != NSNotFound) {
-        AwfulPost *post = self.fetchedResultsController.fetchedObjects[usersPostIndex + self.hiddenPosts];
+        AwfulPost *post = self.posts[usersPostIndex + self.hiddenPosts];
         [self showActionsForAuthorOfPost:post fromRect:rect];
     }
 }
@@ -1079,58 +1048,6 @@ static void *KVOContext = &KVOContext;
     [sheet showFromRect:rect inView:self.postsView animated:YES];
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
-    if (!self.cachedUpdatesWhileScrolling) [self.postsView beginUpdates];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(AwfulPost *)post
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
-    if (self.cachedUpdatesWhileScrolling) {
-        NSMethodSignature *signature = [self methodSignatureForSelector:_cmd];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-        invocation.selector = _cmd;
-        [invocation setArgument:&controller atIndex:2];
-        [invocation setArgument:&post atIndex:3];
-        [invocation setArgument:&indexPath atIndex:4];
-        [invocation setArgument:&type atIndex:5];
-        [invocation setArgument:&newIndexPath atIndex:6];
-        [invocation retainArguments];
-        [self.cachedUpdatesWhileScrolling addObject:invocation];
-        return;
-    }
-    if (type == NSFetchedResultsChangeInsert) {
-        if (newIndexPath.row < self.hiddenPosts) return;
-        [self.postsView insertPostAtIndex:newIndexPath.row - self.hiddenPosts];
-    } else if (type == NSFetchedResultsChangeDelete) {
-        if (indexPath.row < self.hiddenPosts) return;
-        [self.postsView deletePostAtIndex:indexPath.row - self.hiddenPosts];
-    } else if (type == NSFetchedResultsChangeUpdate) {
-        if (indexPath.row < self.hiddenPosts) return;
-        [self.postsView reloadPostAtIndex:indexPath.row - self.hiddenPosts];
-    } else if (type == NSFetchedResultsChangeMove) {
-        if (indexPath.row >= self.hiddenPosts) {
-            [self.postsView deletePostAtIndex:indexPath.row - self.hiddenPosts];
-        }
-        if (newIndexPath.row >= self.hiddenPosts) {
-            [self.postsView insertPostAtIndex:newIndexPath.row - self.hiddenPosts];
-        }
-    }
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    if (!self.cachedUpdatesWhileScrolling) [self.postsView endUpdates];
-    [self.postsView.scrollView.pullToRefreshView stopAnimating];
-    [self updateUserInterface];
-}
-
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
@@ -1182,7 +1099,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    if (!self.cachedUpdatesWhileScrolling) self.cachedUpdatesWhileScrolling = [NSMutableArray new];
     [self.topBar scrollViewWillBeginDragging:scrollView];
 }
 
@@ -1193,22 +1109,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
 {
-    if (!willDecelerate) [self processCachedUpdates];
     [self.topBar scrollViewDidEndDragging:scrollView willDecelerate:willDecelerate];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    [self processCachedUpdates];
-}
-
-- (void)processCachedUpdates
-{
-    NSArray *invocations = [self.cachedUpdatesWhileScrolling copy];
-    self.cachedUpdatesWhileScrolling = nil;
-    [self.postsView beginUpdates];
-    [invocations makeObjectsPerformSelector:@selector(invokeWithTarget:) withObject:self];
-    [self.postsView endUpdates];
 }
 
 #pragma mark - State Preservation and Restoration
