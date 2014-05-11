@@ -33,7 +33,7 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -65,7 +65,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.postsView.scrollView.delegate = nil;
 }
 
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
@@ -641,7 +640,6 @@
     NSURL *baseURL = [AwfulForumsClient client].baseURL;
     self.postsView = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
     self.postsView.delegate = self;
-    self.postsView.scrollView.delegate = self;
     self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
     self.view = self.postsView;
@@ -656,6 +654,7 @@
     [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
                                forControlEvents:UIControlEventTouchUpInside];
     [self.postsView.scrollView addSubview:self.topBar];
+    self.postsView.scrollView.delegate = self.topBar;
     
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
@@ -1088,23 +1087,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                         shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    [self.topBar scrollViewWillBeginDragging:scrollView];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    [self.topBar scrollViewDidScroll:scrollView];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
-{
-    [self.topBar scrollViewDidEndDragging:scrollView willDecelerate:willDecelerate];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
