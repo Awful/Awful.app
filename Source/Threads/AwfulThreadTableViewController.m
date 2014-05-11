@@ -158,13 +158,13 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [self showPostsViewController:postsViewController];
-        postsViewController.page = 1;
+        [postsViewController loadPage:1 updatingCache:YES];
     }]];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [self showPostsViewController:postsViewController];
-        postsViewController.page = AwfulThreadPageLast;
+        [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
     }]];
     AwfulIconActionItemType bookmarkItemType;
     if (thread.bookmarked) {
@@ -263,7 +263,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     postsViewController.restorationIdentifier = @"AwfulPostsViewController";
     
     // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-    postsViewController.page = thread.beenSeen ? AwfulThreadPageNextUnread : 1;
+    [postsViewController loadPage:(thread.beenSeen ? AwfulThreadPageNextUnread : 1) updatingCache:YES];
     
     [self showPostsViewController:postsViewController];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

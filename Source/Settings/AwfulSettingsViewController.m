@@ -350,7 +350,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
                                                  inManagedObjectContext:self.managedObjectContext];
         AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsView.restorationIdentifier = @"Awful's Thread";
-        postsView.page = AwfulThreadPageNextUnread;
+        [postsView loadPage:AwfulThreadPageNextUnread updatingCache:YES];
         if (self.splitViewController) {
             [self.splitViewController setDetailViewController:[postsView enclosingNavigationController] sidebarHidden:YES animated:YES];
         } else {

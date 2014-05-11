@@ -44,9 +44,6 @@
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
-// Set to nil to hide end of thread message.
-@property (copy, nonatomic) NSString *endMessage;
-
 /**
  * Calls completionBlock with a dictionary containing keys from AwfulInterestingElementKeys.
  */

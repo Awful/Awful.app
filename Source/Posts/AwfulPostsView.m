@@ -23,7 +23,7 @@
 
 @implementation AwfulPostsView
 {
-    BOOL _onceOnFirstLoad;
+    BOOL _didFinishLoadingOnce;
     BOOL _loadLinkifiedImagesOnFirstLoad;
     CGFloat _scrollToFractionOfContent;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
@@ -74,7 +74,7 @@
 
 - (void)reloadData
 {
-    _onceOnFirstLoad = NO;
+    _didFinishLoadingOnce = NO;
     NSString *HTML = [self.delegate HTMLForPostsView:self];
     [self.webView loadHTMLString:HTML baseURL:self.baseURL];
     self.didLoadHTML = YES;
@@ -145,7 +145,7 @@ static NSString * JSONizeValue(id value)
 {
     if (_stylesheet == stylesheet) return;
     _stylesheet = [stylesheet copy];
-    if (_onceOnFirstLoad) {
+    if (_didFinishLoadingOnce) {
         [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:self.stylesheet];
     }
 }
@@ -154,7 +154,7 @@ static NSString * JSONizeValue(id value)
 {
     if (_showAvatars == showAvatars) return;
     _showAvatars = showAvatars;
-    if (_onceOnFirstLoad) {
+    if (_didFinishLoadingOnce) {
         [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@(showAvatars)];
     }
 }
@@ -163,14 +163,14 @@ static NSString * JSONizeValue(id value)
 {
     if (_fontScale == fontScale) return;
     _fontScale = fontScale;
-    if (_onceOnFirstLoad) {
+    if (_didFinishLoadingOnce) {
         [_webViewJavaScriptBridge callHandler:@"fontScale" data:@(fontScale)];
     }
 }
 
 - (void)loadLinkifiedImages
 {
-    if (_onceOnFirstLoad) {
+    if (_didFinishLoadingOnce) {
         [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
     } else {
         _loadLinkifiedImagesOnFirstLoad = YES;
@@ -181,7 +181,7 @@ static NSString * JSONizeValue(id value)
 {
     if (_highlightMentionUsername == highlightMentionUsername) return;
     _highlightMentionUsername = [highlightMentionUsername copy];
-    if (_onceOnFirstLoad) {
+    if (_didFinishLoadingOnce) {
         [_webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:_highlightMentionUsername];
     }
 }
@@ -198,34 +198,17 @@ static NSString * JSONizeValue(id value)
 
 - (void)scrollToFractionOfContent:(CGFloat)fraction
 {
-    _scrollToFractionOfContent = fraction;
-    [self updateScrollToFractionOfContent];
-}
-
-- (void)updateScrollToFractionOfContent
-{
-    if (_onceOnFirstLoad) {
-        self.webView.awful_fractionalContentOffset = _scrollToFractionOfContent;
+    if (_didFinishLoadingOnce) {
+        self.webView.awful_fractionalContentOffset = fraction;
+        _scrollToFractionOfContent = 0;
+    } else {
+        _scrollToFractionOfContent = fraction;
     }
 }
 
 - (UIScrollView *)scrollView
 {
     return self.webView.scrollView;
-}
-
-- (void)setEndMessage:(NSString *)endMessage
-{
-    if (_endMessage == endMessage) return;
-    _endMessage = [endMessage copy];
-    [self updateEndMessage];
-}
-
-- (void)updateEndMessage
-{
-    if (_onceOnFirstLoad) {
-        [_webViewJavaScriptBridge callHandler:@"endMessage" data:self.endMessage];
-    }
 }
 
 - (id)evalJavaScriptWithJSONResponse:(NSString *)script, ...
@@ -279,19 +262,19 @@ static NSString * JSONizeValue(id value)
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    if (!_onceOnFirstLoad) {
-        _onceOnFirstLoad = YES;
+    if (!_didFinishLoadingOnce) {
+        _didFinishLoadingOnce = YES;
         if (_loadLinkifiedImagesOnFirstLoad) {
             [self loadLinkifiedImages];
             _loadLinkifiedImagesOnFirstLoad = NO;
         }
-        [self updateEndMessage];
         self.hasLoaded = YES;
         if (self.jumpToElementAfterLoading) {
             [self jumpToElementWithID:self.jumpToElementAfterLoading];
             self.jumpToElementAfterLoading = nil;
         } else if (_scrollToFractionOfContent > 0) {
-            [self updateScrollToFractionOfContent];
+            webView.awful_fractionalContentOffset = _scrollToFractionOfContent;
+            _scrollToFractionOfContent = 0;
         }
     }
 }

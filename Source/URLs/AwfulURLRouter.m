@@ -68,8 +68,8 @@
                                                   matchingPredicateFormat:@"postID = %@", postID];
         if (post && post.page > 0) {
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:post.thread];
-            postsViewController.page = post.page;
             postsViewController.topPost = post;
+            [postsViewController loadPage:post.page updatingCache:YES];
             return [self showPostsViewController:postsViewController];
         }
         
@@ -92,9 +92,9 @@
                     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
                                                              inManagedObjectContext:self.managedObjectContext];
                     AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-                    postsViewController.page = page;
                     postsViewController.topPost = [AwfulPost firstOrNewPostWithPostID:postID
                                                                inManagedObjectContext:self.managedObjectContext];
+                    [postsViewController loadPage:page updatingCache:YES];
                     [self showPostsViewController:postsViewController];
                 }];
             }
@@ -252,7 +252,7 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     if (page == AwfulThreadPageNone) {
         page = pageString.integerValue ?: thread.beenSeen ? AwfulThreadPageNextUnread : 1;
     }
-    postsViewController.page = page;
+    [postsViewController loadPage:page updatingCache:YES];
     return [self showPostsViewController:postsViewController];
 }
 

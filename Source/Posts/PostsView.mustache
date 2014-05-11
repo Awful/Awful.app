@@ -21,7 +21,11 @@
         {{{ advertisementHTML }}}
     </div>
 
-    <div id="end"></div>
+    {{# endMessage }}
+        <div id="end">
+            {{ . }}
+        </div>
+    {{/ }}
 
     <script>
         {{{ script }}}

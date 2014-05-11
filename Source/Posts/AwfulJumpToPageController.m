@@ -63,7 +63,7 @@
     [super viewWillAppear:animated];
     AwfulThreadPage currentPage = self.postsViewController.page;
     if (currentPage < 0) {
-        currentPage = self.postsViewController.relevantNumberOfPagesInThread;
+        currentPage = self.postsViewController.numberOfPages;
     }
     [self.jumpToPageView.pickerView selectRow:currentPage - 1 inComponent:0 animated:NO];
     [self updateJumpButtonTitle];
@@ -71,20 +71,20 @@
 
 - (void)didTapFirstPageButton
 {
-    self.postsViewController.page = 1;
+    [self.postsViewController loadPage:1 updatingCache:YES];
     [self dismissCompletion:nil];
 }
 
 - (void)didTapJumpButton
 {
     AwfulThreadPage page = [self.jumpToPageView.pickerView selectedRowInComponent:0] + 1;
-    self.postsViewController.page = page;
+    [self.postsViewController loadPage:page updatingCache:YES];
     [self dismissCompletion:nil];
 }
 
 - (void)didTapLastPageButton
 {
-    self.postsViewController.page = AwfulThreadPageLast;
+    [self.postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
     [self dismissCompletion:nil];
 }
 
@@ -107,7 +107,7 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return self.postsViewController.relevantNumberOfPagesInThread;
+    return self.postsViewController.numberOfPages;
 }
 
 #pragma mark - UIPickerViewDelegate

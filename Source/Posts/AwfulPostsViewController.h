@@ -11,48 +11,47 @@
 @interface AwfulPostsViewController : AwfulViewController
 
 /**
- * Returns an initialized AwfulPostsViewController. This is the designated initializer.
+ * Designated initializer.
  *
  * @param thread The thread whose posts are shown.
- * @param author An optional author used to filter the shown posts. May be nil.
+ * @param author An optional author used to filter the shown posts. May be nil, in which case all posts are shown.
  */
 - (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author;
 
 /**
- * Returns an initialized AwfulPostsViewController.
- *
- * @param thread The thread whose posts are shown.
+ * Calls -initWithThread:author: with a nil author.
  */
 - (id)initWithThread:(AwfulThread *)thread;
 
-/**
- * Set the currently-visible post.
- */
-- (void)setTopPost:(AwfulPost*)topPost;
-
-/**
- * The thread whose posts are shown.
- */
 @property (readonly, strong, nonatomic) AwfulThread *thread;
 
-/**
- * Only the author's posts are shown. If nil, all posts are shown.
- */
 @property (readonly, strong, nonatomic) AwfulUser *author;
 
 /**
  * The currently-visible (or currently-loading) page of posts.
  */
-@property (assign, nonatomic) AwfulThreadPage page;
+@property (readonly, assign, nonatomic) AwfulThreadPage page;
 
 /**
  * The number of pages in the thread, taking any filters into account.
  */
-@property (readonly, assign, nonatomic) NSInteger relevantNumberOfPagesInThread;
+@property (readonly, assign, nonatomic) NSInteger numberOfPages;
+
+/**
+ * Changes the page.
+ *
+ * @param updateCache Whether to fetch posts from the client, or simply render any posts that are cached.
+ */
+- (void)loadPage:(AwfulThreadPage)page updatingCache:(BOOL)updateCache;
 
 /**
  * An array of AwfulPost objects of the currently-visible posts.
  */
 @property (readonly, copy, nonatomic) NSArray *posts;
+
+/**
+ * Set the currently-visible post.
+ */
+- (void)setTopPost:(AwfulPost*)topPost;
 
 @end

@@ -248,7 +248,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
             AwfulThread *thread = newThreadViewController.thread;
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-            postsViewController.page = 1;
+            [postsViewController loadPage:1 updatingCache:YES];
             [self showPostsViewController:postsViewController];
         }
         if (!keepDraft) {
