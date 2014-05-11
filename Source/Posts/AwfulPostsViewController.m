@@ -708,14 +708,18 @@
 - (void)readIgnoredPostAtIndex:(NSUInteger)index
 {
     AwfulPost *post = self.posts[index];
-    AwfulThreadPage page = self.page;
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] readIgnoredPost:post andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-        } else if (self.page == page) {
-            NSDictionary *data = @{ @"index": @(index),
+            return;
+        }
+        
+        // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
+        NSInteger i = [self.posts indexOfObject:post];
+        if (i > self.hiddenPosts && i != NSNotFound) {
+            NSDictionary *data = @{ @"index": @(i),
                                     @"HTML": [self renderedPostAtIndex:index] };
             [_webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
         }
