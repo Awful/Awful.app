@@ -4,7 +4,6 @@
 
 #import <UIKit/UIKit.h>
 @protocol AwfulPostsViewDelegate;
-@class AwfulSettings;
 
 @interface AwfulPostsView : UIView
 
@@ -43,48 +42,57 @@
 
 @property (readonly, nonatomic) UIScrollView *scrollView;
 
+@property (readonly, strong, nonatomic) UIWebView *webView;
+
 // Set to nil to hide end of thread message.
 @property (copy, nonatomic) NSString *endMessage;
 
-// Returns the index of the post whose action button is at point, or NSNotFound on failure.
-//
-// point - A point in the posts view's frame coordinates.
-// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the action button in
-//         the posts view's frame coordinates on success.
-- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(out CGRect *)rect;
+/**
+ * Calls completionBlock with a dictionary containing keys from AwfulInterestingElementKeys.
+ */
+- (void)interestingElementsAtPoint:(CGPoint)point completion:(void (^)(NSDictionary *elementInfo))completionBlock;
 
-// Returns the index of the post whose username heading is at point, or NSNotFound on failure.
-//
-// point - A point in the posts view's frame coordinates.
-// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the username heading in
-//         the posts view's frame coordinates on success.
-- (NSInteger)indexOfPostWithUserNameAtPoint:(CGPoint)point rect:(out CGRect *)rect;
+- (CGRect)rectOfHeaderForPostAtIndex:(NSUInteger)postIndex;
 
-// Returns the URL of the first image in a post at point, or nil on failure.
-- (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point;
+- (CGRect)rectOfFooterForPostAtIndex:(NSUInteger)postIndex;
 
-// Returns the URL of the first link in a post at point, or nil on failure.
-//
-// point - A point in the posts view's frame coordinates.
-// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the link in the posts
-//         view's frame coordinates on success.
-- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(out CGRect *)rect;
-
-// Returns the URL of the first video in a post at point, or nil on failure.
-//
-// point - A point in the posts view's frame coordinates.
-// rect  - A pointer to a CGRect that, if non-NULL, will contain the bounds of the embedded video
-//         in the posts view's frame coordinates on success.
-- (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect;
-
-- (CGRect)rectOfHeaderForPostWithID:(NSString *)postID;
-
-- (CGRect)rectOfFooterForPostWithID:(NSString *)postID;
-
-- (CGRect)rectOfActionButtonForPostWithID:(NSString *)postID;
+- (CGRect)rectOfActionButtonForPostAtIndex:(NSUInteger)postIndex;
 
 @end
 
+/**
+ * Keys that may be present in the dictionary returned by -interestingElementsAtPoint:.
+ */
+extern const struct AwfulInterestingElementKeys {
+    
+    /**
+     * An NSString of a URL pointing to an image.
+     */
+    __unsafe_unretained NSString *spoiledImageURL;
+    
+    /**
+     * An NSDictionary with info keys "rect" and "URL".
+     */
+    __unsafe_unretained NSString *spoiledLinkInfo;
+    
+    /**
+     * An NSDictionary with info keys "rect" and "URL".
+     */
+    __unsafe_unretained NSString *spoiledVideoInfo;
+    
+    // Info keys.
+    
+    /**
+     * The CGRectFromString-formatted bounding rect of the element.
+     */
+    __unsafe_unretained NSString *rect;
+    
+    /**
+     * The NSString of the URL pointing to the element's contents.
+     */
+    __unsafe_unretained NSString *URL;
+
+} AwfulInterestingElementKeys;
 
 @protocol AwfulPostsViewDelegate <NSObject>
 
@@ -95,7 +103,9 @@
 @optional
 
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url;
-- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point;
-- (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point;
+
+- (void)postsView:(AwfulPostsView *)postsView didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex;
+
+- (void)postsView:(AwfulPostsView *)postsView didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex;
 
 @end

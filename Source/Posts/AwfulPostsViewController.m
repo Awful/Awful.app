@@ -3,7 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsViewController.h"
-#import "AwfulActionSheet.h"
+#import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
@@ -33,7 +33,7 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, UIViewControllerRestoration>
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -666,6 +666,15 @@
     }
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressOnPostsView:)];
+    longPress.delegate = self;
+    [self.postsView addGestureRecognizer:longPress];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -728,7 +737,7 @@
 {
     NSMutableDictionary *context = [NSMutableDictionary new];
     NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"common.js", @"posts-view.js" ], &error);
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"fastclick.js", @"common.js", @"posts-view.js" ], &error);
     if (!script) {
         NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
         return nil;
@@ -814,28 +823,62 @@
     }];
 }
 
-- (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point
+- (void)postsView:(AwfulPostsView *)postsView didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
 {
-    CGRect rect;
-    NSInteger postIndex = [postsView indexOfPostWithActionButtonAtPoint:point rect:&rect];
-    NSInteger usersPostIndex = [postsView indexOfPostWithUserNameAtPoint:point rect:&rect];
-    if (postIndex != NSNotFound) {
-        AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
-        [self showActionsForPost:post fromRect:rect];
-    } else if (usersPostIndex != NSNotFound) {
-        AwfulPost *post = self.posts[usersPostIndex + self.hiddenPosts];
-        [self showActionsForAuthorOfPost:post fromRect:rect];
+    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
+    AwfulUser *user = post.author;
+	AwfulActionViewController *sheet = [AwfulActionViewController new];
+    
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+		[self showProfileWithUser:user];
+	}]];
+    
+	if (!self.author) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
+            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
+            postsView.page = 1;
+            [self.navigationController pushViewController:postsView animated:YES];
+        }]];
+	}
+    
+	if ([AwfulSettings settings].canSendPrivateMessages && user.canReceivePrivateMessages) {
+        if (![user.userID isEqual:[AwfulSettings settings].userID]) {
+            [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
+                self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+                self.messageViewController.delegate = self;
+                self.messageViewController.restorationIdentifier = @"New PM from posts view";
+                [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
+            }]];
+        }
+	}
+    
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+		[self showRapSheetWithUser:user];
+	}]];
+    
+    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
+        CGRect rect = [self.postsView rectOfHeaderForPostAtIndex:postIndex];
+        rect.origin.x = 0;
+        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
+        return rect;
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
     }
 }
 
-- (void)showActionsForPost:(AwfulPost *)post fromRect:(CGRect)rect
+- (void)postsView:(AwfulPostsView *)postsView didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
 {
+    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
     NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
         possessiveUsername = @"Your";
     }
     AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
         NSMutableArray *queryParts = [NSMutableArray new];
@@ -850,6 +893,7 @@
         [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
+    
     if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
@@ -862,6 +906,7 @@
             }];
         }]];
     }
+    
     if (post.editable) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
@@ -876,6 +921,7 @@
             }];
         }]];
     }
+    
     if (!self.thread.closed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
@@ -904,13 +950,14 @@
             }];
         }]];
     }
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:^(UIView *view) {
-            return [self.postsView rectOfActionButtonForPostWithID:post.postID];
+            return [self.postsView rectOfActionButtonForPostAtIndex:postIndex];
         }];
     } else {
         [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:^(UIView *view) {
-            CGRect rect = [self.postsView rectOfFooterForPostWithID:post.postID];
+            CGRect rect = [self.postsView rectOfFooterForPostAtIndex:postIndex];
             rect.origin.x = 0;
             rect.size.width = CGRectGetWidth(self.postsView.bounds);
             return rect;
@@ -918,116 +965,82 @@
     }
 }
 
-- (void)showActionsForAuthorOfPost:(AwfulPost *)post fromRect:(CGRect)rect
+- (void)didLongPressOnPostsView:(UILongPressGestureRecognizer *)sender
 {
-    AwfulUser *user = post.author;
-	AwfulActionViewController *sheet = [AwfulActionViewController new];
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-		[self showProfileWithUser:user];
-	}]];
-	if (!self.author) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
-            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
-            postsView.page = 1;
-            [self.navigationController pushViewController:postsView animated:YES];
-        }]];
-	}
-	if ([AwfulSettings settings].canSendPrivateMessages &&
-        user.canReceivePrivateMessages &&
-        ![user.userID isEqual:[AwfulSettings settings].userID]) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-            self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
-            self.messageViewController.delegate = self;
-            self.messageViewController.restorationIdentifier = @"New PM from posts view";
-            [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
-        }]];
-	}
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-		[self showRapSheetWithUser:user];
-	}]];
+    if (sender.state != UIGestureRecognizerStateBegan) return;
     
-    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
-        CGRect rect = [self.postsView rectOfHeaderForPostWithID:post.postID];
-        rect.origin.x = 0;
-        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
-        return rect;
-    };
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
-    } else {
-        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
+    CGPoint location = [sender locationInView:self.postsView];
+    UIScrollView *scrollView = self.postsView.scrollView;
+    location.y -= scrollView.contentInset.top;
+    CGFloat offsetY = scrollView.contentOffset.y;
+    if (offsetY < 0) {
+        location.y += offsetY;
     }
-}
-
-- (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point
-{
-    NSURL *URL;
-    CGRect rect;
-    if ((URL = [postsView URLOfSpoiledImageForPoint:point])) {
-        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
-        AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:URL];
-        preview.title = self.title;
-        UINavigationController *nav = [preview enclosingNavigationController];
-        nav.navigationBar.translucent = YES;
-        [self presentViewController:nav animated:YES completion:nil];
-    } else if ((URL = [postsView URLOfSpoiledLinkForPoint:point rect:&rect])) {
-        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
-        [self showMenuForLinkToURL:URL fromRect:rect];
-    } else if ((URL = [postsView URLOfSpoiledVideoForPoint:point rect:&rect])) {
-        URL = [NSURL URLWithString:URL.absoluteString relativeToURL:[AwfulForumsClient client].baseURL];
-        NSURL *safariURL;
-        if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
-            NSString *youtubeVideoID = URL.lastPathComponent;
-            safariURL = [NSURL URLWithString:[NSString stringWithFormat:
-                                              @"http://www.youtube.com/watch?v=%@", youtubeVideoID]];
-        } else if ([URL.host hasSuffix:@"player.vimeo.com"]) {
-            NSString *vimeoVideoID = URL.lastPathComponent;
-            safariURL = [NSURL URLWithString:[NSString stringWithFormat:
-                                              @"http://vimeo.com/%@", vimeoVideoID]];
-        }
-        if (!safariURL) return;
-        AwfulActionSheet *sheet = [AwfulActionSheet new];
-        [sheet addButtonWithTitle:@"Open in Safari" block:^{
-            [[UIApplication sharedApplication] openURL:safariURL];
-        }];
-        [sheet addCancelButtonWithTitle:@"Cancel"];
-        [sheet showFromRect:rect inView:self.postsView animated:YES];
-    }
-}
-
-- (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect
-{
-    if (![URL opensInBrowser]) {
-        [[UIApplication sharedApplication] openURL:URL];
-        return;
-    }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    sheet.title = URL.absoluteString;
-    [sheet addButtonWithTitle:@"Open" block:^{
-        if ([URL awfulURL]) {
-            [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
+    NSURL *baseURL = self.postsView.baseURL;
+    [self.postsView interestingElementsAtPoint:location completion:^(NSDictionary *elementInfo) {
+        if (elementInfo.count == 0) return;
+        
+        NSURL *imageURL = [NSURL URLWithString:elementInfo[AwfulInterestingElementKeys.spoiledImageURL] relativeToURL:baseURL];
+        if (elementInfo[AwfulInterestingElementKeys.spoiledLinkInfo]) {
+            NSDictionary *linkInfo = elementInfo[AwfulInterestingElementKeys.spoiledLinkInfo];
+            NSURL *URL = [NSURL URLWithString:linkInfo[AwfulInterestingElementKeys.URL] relativeToURL:baseURL];
+            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:linkInfo[AwfulInterestingElementKeys.rect]];
+            [self showMenuForLinkToURL:URL fromRect:rect withImageURL:imageURL];
+        } else if (imageURL) {
+            [self previewImageAtURL:imageURL];
+        } else if (elementInfo[AwfulInterestingElementKeys.spoiledVideoInfo]) {
+            NSDictionary *videoInfo = elementInfo[AwfulInterestingElementKeys.spoiledVideoInfo];
+            NSURL *URL = [NSURL URLWithString:videoInfo[AwfulInterestingElementKeys.URL] relativeToURL:baseURL];
+            NSURL *safariURL;
+            if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
+                NSString *youtubeVideoID = URL.lastPathComponent;
+                safariURL = [NSURL URLWithString:[NSString stringWithFormat:
+                                                  @"http://www.youtube.com/watch?v=%@", youtubeVideoID]];
+            } else if ([URL.host hasSuffix:@"player.vimeo.com"]) {
+                NSString *vimeoVideoID = URL.lastPathComponent;
+                safariURL = [NSURL URLWithString:[NSString stringWithFormat:
+                                                  @"http://vimeo.com/%@", vimeoVideoID]];
+            }
+            if (!safariURL) return;
+            
+            AwfulActionSheet *sheet = [AwfulActionSheet new];
+            
+            void (^openInSafariOrYouTube)(void) = ^{ [[UIApplication sharedApplication] openURL:safariURL]; };
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
+                [sheet addButtonWithTitle:@"Open in YouTube" block:openInSafariOrYouTube];
+            } else {
+                [sheet addButtonWithTitle:@"Open in Safari" block:openInSafariOrYouTube];
+            }
+            
+            [sheet addCancelButtonWithTitle:@"Cancel"];
+            
+            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:videoInfo[AwfulInterestingElementKeys.rect]];
+            [sheet showFromRect:rect inView:self.postsView animated:YES];
         } else {
-            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
+            NSLog(@"%s unexpected interesting elements: %@", __PRETTY_FUNCTION__, elementInfo);
         }
     }];
-    [sheet addButtonWithTitle:@"Open in Safari"
-                        block:^{ [[UIApplication sharedApplication] openURL:URL]; }];
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:URL]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:URL]; }];
-    }
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
-            [service saveURL:URL];
+}
+
+- (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect withImageURL:(NSURL *)imageURL
+{
+    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
+    sheet.title = URL.absoluteString;
+    if (imageURL) {
+        [sheet addButtonWithTitle:@"Show Image" block:^{
+            [self previewImageAtURL:imageURL];
         }];
     }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
     [sheet showFromRect:rect inView:self.postsView animated:YES];
+}
+
+- (void)previewImageAtURL:(NSURL *)URL
+{
+    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:URL];
+    preview.title = self.title;
+    UINavigationController *nav = [preview enclosingNavigationController];
+    nav.navigationBar.translucent = YES;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
@@ -1092,6 +1105,13 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)willDecelerate
 {
     [self.topBar scrollViewDidEndDragging:scrollView willDecelerate:willDecelerate];
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 #pragma mark - State Preservation and Restoration

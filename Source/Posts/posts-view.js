@@ -1,84 +1,7 @@
 // Assumes common.js is available.
 
-;(function(){
-var Awful = {}
-
-Awful.postWithButtonForPoint = function(x, y){
-  var button = $(document.elementFromPoint(x, y)).closest('button')
-  if (button.length) {
-    var post = button.closest('post')
-    return JSON.stringify({ rect: rectOf(button), postIndex: post.index() })
-  }
-}
-	
-Awful.postWithUserNameForPoint = function(x, y){
-	var usernameHeading = $(document.elementFromPoint(x, y)).closest('h1')
-	if (usernameHeading.length) {
-		var post = usernameHeading.closest('post')
-		return JSON.stringify({ rect: rectOf(usernameHeading), postIndex: post.index() })
-	}
-}
-
-Awful.headerForPostWithID = function(postID){
-  var post = $('#' + postID)
-  if (post.length) {
-    return JSON.stringify(rectOf(post.find('header')))
-  }
-}
-
-Awful.footerForPostWithID = function(postID){
-  var post = $('#' + postID)
-  if (post.length) {
-    return JSON.stringify(rectOf(post.find('footer')))
-  }
-}
-
-Awful.actionButtonForPostWithID = function(postID){
-  var post = $('#' + postID)
-  if (post.length) {
-    return JSON.stringify(rectOf(post.find('footer button')))
-  }
-}
-
-function rectOf(el) {
-  var rect = el.offset()
-  rect.left -= window.pageXOffset
-  rect.top -= window.pageYOffset
-  return rect
-}
-
-Awful.spoiledImageInPostForPoint = function(x, y){
-  var img = $(document.elementFromPoint(x, y)).closest('img')
-  if (img.length) {
-    var spoiler = img.closest('.bbc-spoiler')
-    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
-      return JSON.stringify({ url: img.attr('src') })
-    }
-  }
-}
-
-Awful.spoiledLinkInPostForPoint = function(x, y){
-  var a = $(document.elementFromPoint(x, y)).closest('a')
-  if (a.length) {
-    var spoiler = a.closest('.bbc-spoiler')
-    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
-      return JSON.stringify({ rect: rectOf(a), url: a.attr('href') })
-    }
-  }
-}
-
-Awful.spoiledVideoInPostForPoint = function(x, y){
-  var iframe = $(document.elementFromPoint(x, y)).closest('iframe')
-  if (iframe.length) {
-    var spoiler = iframe.closest('.bbc-spoiler')
-    if (spoiler.length == 0 || spoiler.hasClass('spoiled')) {
-      return JSON.stringify({ rect: rectOf(iframe), url: iframe.attr('src') })
-    }
-  }
-}
-
-window.Awful = Awful
-})()
+// Storage for a couple globals.
+window.Awful = {};
 
 startBridge(function(bridge) {
   bridge.init();
@@ -134,14 +57,47 @@ startBridge(function(bridge) {
     }
   });
   
+  bridge.registerHandler('interestingElementsAtPoint', function(point, callback) {
+    var items = interestingElementsAtPoint(point.x, point.y);
+    callback(items);
+  });
+  
   bridge.registerHandler('endMessage', function(message) {
     $('#end').text(message || '');
+  });
+  
+  $(function() {
+    $('body').on('click', 'header', function(event) {
+      bridge.callHandler('didTapUserHeader', clickData(this));
+    });
+    
+    $('body').on('click', '.action-button', function(event) {
+      bridge.callHandler('didTapActionButton', clickData(this));
+    });
+    
+    function clickData(element) {
+      return {
+        rect: rectOfElement(element),
+        postIndex: $(element).closest('post').index()
+      };
+    }
   });
 });
 
 $(function() {
   $('.postbody').each(function() { Awful.highlightMentions(this); });
 });
+
+// Action sheet popovers need to get this information synchronously, so these functions are meant to be called directly from Objective-C. They each return a CGRectFromString-formatted bounding rect.
+function HeaderRectForPostAtIndex(postIndex) {
+  return rectOfElement($('post').eq(postIndex).find('header'));
+}
+function FooterRectForPostAtIndex(postIndex) {
+  return rectOfElement($('post').eq(postIndex).find('footer'));
+}
+function ActionButtonRectForPostAtIndex(postIndex) {
+  return rectOfElement($('post').eq(postIndex).find('.action-button'));
+}
 
 // Finds all occurrences of the logged-in user's name in post text and wrap each in a <span class="mention">.
 function highlightMentions(post) {

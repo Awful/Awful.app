@@ -9,9 +9,9 @@
 #import <GRMustache.h>
 #import <WebViewJavascriptBridge.h>
 
-@interface AwfulPostsView () <UIWebViewDelegate, UIGestureRecognizerDelegate>
+@interface AwfulPostsView () <UIWebViewDelegate>
 
-@property (nonatomic) UIWebView *webView;
+@property (strong, nonatomic) UIWebView *webView;
 
 @property (nonatomic) BOOL didLoadHTML;
 @property (nonatomic) BOOL hasLoaded;
@@ -43,18 +43,26 @@
     self.webView = webView;
     [self addSubview:self.webView];
     
+    __weak __typeof__(self) weakSelf = self;
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
-    
-    UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
-    tap.delegate = self;
-    [tap addTarget:self action:@selector(didTapWebView:)];
-    [self addGestureRecognizer:tap];
-    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
-    longPress.delegate = self;
-    [longPress addTarget:self action:@selector(didLongPressWebView:)];
-    [self addGestureRecognizer:longPress];
+    [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        if ([self.delegate respondsToSelector:@selector(postsView:didTapUserHeaderWithRect:forPostAtIndex:)]) {
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+            NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+            [self.delegate postsView:self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
+        }
+    }];
+    [_webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        if ([self.delegate respondsToSelector:@selector(postsView:didTapActionButtonWithRect:forPostAtIndex:)]) {
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+            NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+            [self.delegate postsView:self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
+        }
+    }];
     
     return self;
 }
@@ -62,30 +70,6 @@
 - (id)initWithFrame:(CGRect)frame
 {
     return [self initWithFrame:frame baseURL:nil];
-}
-
-- (void)didTapWebView:(UITapGestureRecognizer *)tap
-{
-    if (tap.state == UIGestureRecognizerStateEnded)
-    if ([self.delegate respondsToSelector:@selector(postsView:didReceiveSingleTapAtPoint:)]) {
-        CGPoint location = [tap locationInView:self.webView];
-        if (self.scrollView.contentOffset.y < 0) {
-            location.y += self.scrollView.contentOffset.y;
-        }
-        [self.delegate postsView:self didReceiveSingleTapAtPoint:location];
-    }
-}
-
-- (void)didLongPressWebView:(UILongPressGestureRecognizer *)longPress
-{
-    if (longPress.state == UIGestureRecognizerStateBegan)
-    if ([self.delegate respondsToSelector:@selector(postsView:didReceiveLongTapAtPoint:)]) {
-        CGPoint location = [longPress locationInView:self.webView];
-        if (self.scrollView.contentOffset.y < 0) {
-            location.y += self.scrollView.contentOffset.y;
-        }
-        [self.delegate postsView:self didReceiveLongTapAtPoint:location];
-    }
 }
 
 - (void)reloadData
@@ -244,52 +228,6 @@ static NSString * JSONizeValue(id value)
     }
 }
 
-typedef struct WebViewPoint
-{
-    NSInteger x;
-    NSInteger y;
-} WebViewPoint;
-
-static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webView)
-{
-    CGPoint offset = webView.scrollView.contentOffset;
-    if (offset.x > 0) {
-        offset.x = 0;
-    }
-    if (offset.y > 0) {
-        offset.y = 0;
-    }
-    return (WebViewPoint){
-        // As of iOS 7, UIWebView takes its scroll view's content inset into account when calculating element positions.
-        .x = point.x - webView.scrollView.contentInset.left - offset.x,
-        .y = point.y - webView.scrollView.contentInset.top - offset.y,
-    };
-}
-
-- (NSInteger)indexOfPostWithActionButtonAtPoint:(CGPoint)point rect:(CGRect *)rect
-{
-    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
-    NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:@"Awful.postWithButtonForPoint(%d, %d)",
-                              webViewPoint.x, webViewPoint.y];
-    if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
-    if (rect) {
-        *rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
-    }
-    return [postInfo[@"postIndex"] integerValue];
-}
-
-- (NSInteger)indexOfPostWithUserNameAtPoint:(CGPoint)point rect:(CGRect *)rect
-{
-    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
-	NSDictionary *postInfo = [self evalJavaScriptWithJSONResponse:@"Awful.postWithUserNameForPoint(%d, %d)",
-                              webViewPoint.x, webViewPoint.y];
-	if (![postInfo isKindOfClass:[NSDictionary class]]) return NSNotFound;
-	if (rect) {
-		*rect = [self rectOfElementWithRectDictionary:postInfo[@"rect"]];
-	}
-	return [postInfo[@"postIndex"] integerValue];
-}
-
 - (id)evalJavaScriptWithJSONResponse:(NSString *)script, ...
 {
     va_list args;
@@ -311,58 +249,30 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     return CGRectOffset(rect, insets.left, insets.top);
 }
 
-- (NSURL *)URLOfSpoiledImageForPoint:(CGPoint)point
+- (void)interestingElementsAtPoint:(CGPoint)point completion:(void (^)(NSDictionary *elementInfo))completionBlock
 {
-    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
-    NSDictionary *imageInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledImageInPostForPoint(%d, %d)",
-                               webViewPoint.x, webViewPoint.y];
-    if ([imageInfo isKindOfClass:[NSDictionary class]]) {
-        return [NSURL awful_URLWithString:imageInfo[@"url"]];
-    } else {
-        return nil;
-    }
+    NSDictionary *data = @{ @"x": @(point.x), @"y": @(point.y) };
+    [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(id responseData) {
+        completionBlock(responseData);
+    }];
 }
 
-- (NSURL *)URLOfSpoiledLinkForPoint:(CGPoint)point rect:(CGRect *)rect
+- (CGRect)rectOfHeaderForPostAtIndex:(NSUInteger)postIndex
 {
-    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
-    NSDictionary *linkInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledLinkInPostForPoint(%d, %d)",
-                              webViewPoint.x, webViewPoint.y];
-    if (![linkInfo isKindOfClass:[NSDictionary class]]) return nil;
-    if (rect) {
-        *rect = [self rectOfElementWithRectDictionary:linkInfo[@"rect"]];
-    }
-    return [NSURL awful_URLWithString:linkInfo[@"url"]];
+    NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+    return [self.webView awful_rectForElementBoundingRect:rectString];
 }
 
-- (NSURL *)URLOfSpoiledVideoForPoint:(CGPoint)point rect:(out CGRect *)rect
+- (CGRect)rectOfFooterForPostAtIndex:(NSUInteger)postIndex
 {
-    WebViewPoint webViewPoint = WebViewPointForPointInWebView(point, self.webView);
-    NSDictionary *videoInfo = [self evalJavaScriptWithJSONResponse:@"Awful.spoiledVideoInPostForPoint(%d, %d)",
-                               webViewPoint.x, webViewPoint.y];
-    if (![videoInfo isKindOfClass:[NSDictionary class]]) return nil;
-    if (rect) {
-        *rect = [self rectOfElementWithRectDictionary:videoInfo[@"rect"]];
-    }
-    return [NSURL awful_URLWithString:videoInfo[@"url"]];
+    NSString *rectString = [self.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+    return [self.webView awful_rectForElementBoundingRect:rectString];
 }
 
-- (CGRect)rectOfHeaderForPostWithID:(NSString *)postID
+- (CGRect)rectOfActionButtonForPostAtIndex:(NSUInteger)postIndex
 {
-    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.headerForPostWithID(%@)", postID];
-    return [self rectOfElementWithRectDictionary:rectDict];
-}
-
-- (CGRect)rectOfFooterForPostWithID:(NSString *)postID
-{
-    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.footerForPostWithID(%@)", postID];
-    return [self rectOfElementWithRectDictionary:rectDict];
-}
-
-- (CGRect)rectOfActionButtonForPostWithID:(NSString *)postID
-{
-    NSDictionary *rectDict = [self evalJavaScriptWithJSONResponse:@"Awful.actionButtonForPostWithID(%@)", postID];
-    return [self rectOfElementWithRectDictionary:rectDict];
+    NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+    return [self.webView awful_rectForElementBoundingRect:rectString];
 }
 
 #pragma mark - UIWebViewDelegate
@@ -404,13 +314,13 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
     return YES;
 }
 
-#pragma mark - UIGestureRecognizerDelegate
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return !self.scrollView.dragging;
-}
-
 @end
 
+const struct AwfulInterestingElementKeys AwfulInterestingElementKeys = {
+    .spoiledImageURL = @"spoiledImageURL",
+    .spoiledLinkInfo = @"spoiledLink",
+    .spoiledVideoInfo = @"spoiledVideo",
+    
+    .rect = @"rect",
+    .URL = @"URL",
+};
