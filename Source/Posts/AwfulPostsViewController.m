@@ -307,14 +307,14 @@
     _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"]
                                                  style:UIBarButtonItemStylePlain
                                                 target:self
-                                                action:@selector(goToPreviousPage)];
+                                                action:@selector(didTapBackItem)];
     return _backItem;
 }
 
-- (void)goToPreviousPage
+- (void)didTapBackItem
 {
     if (self.page > 1) {
-        self.page--;
+        [self loadPage:self.page - 1 updatingCache:YES];
     }
 }
 
@@ -349,14 +349,14 @@
     _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
                                                     style:UIBarButtonItemStylePlain
                                                    target:self
-                                                   action:@selector(goToNextPage)];
+                                                   action:@selector(didTapForwardItem)];
     return _forwardItem;
 }
 
-- (void)goToNextPage
+- (void)didTapForwardItem
 {
-    if (self.page < self.numberOfPages) {
-        self.page++;
+    if (self.page < self.numberOfPages && self.page > 0) {
+        [self loadPage:self.page + 1 updatingCache:YES];
     }
 }
 
