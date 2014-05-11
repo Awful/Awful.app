@@ -29,7 +29,7 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
-#import <GRMustache/GRMustache.h>
+#import <GRMustache.h>
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
@@ -50,7 +50,6 @@
 @property (nonatomic) NSInteger hiddenPosts;
 @property (strong, nonatomic) AwfulPost *topPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
-@property (nonatomic) GRMustacheTemplate *postTemplate;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
 @property (strong, nonatomic) AwfulReplyViewController *replyViewController;
@@ -707,7 +706,7 @@
     NSUInteger end = self.hiddenPosts;
     self.hiddenPosts = 0;
     for (NSUInteger i = 0; i < end; i++) {
-        NSString *HTML = [self postsView:self.postsView renderedPostAtIndex:i];
+        NSString *HTML = [self renderedPostAtIndex:i];
         [HTMLFragments addObject:HTML];
     }
     [self.postsView prependPostsHTML:[HTMLFragments componentsJoinedByString:@""]];
@@ -765,26 +764,16 @@
     return HTML;
 }
 
-- (NSString *)postsView:(AwfulPostsView *)postsView renderedPostAtIndex:(NSInteger)index
+- (NSString *)renderedPostAtIndex:(NSInteger)index
 {
     AwfulPost *post = self.posts[index + self.hiddenPosts];
+    AwfulPostViewModel *viewModel = [[AwfulPostViewModel alloc] initWithPost:post];
     NSError *error;
-    NSString *html = [self.postTemplate renderObject:[[AwfulPostViewModel alloc] initWithPost:post] error:&error];
-    if (!html) {
+    NSString *HTML = [GRMustacheTemplate renderObject:viewModel fromResource:@"Post" bundle:nil error:&error];
+    if (!HTML) {
         NSLog(@"error rendering post at index %@: %@", @(index), error);
     }
-    return html;
-}
-
-- (GRMustacheTemplate *)postTemplate
-{
-    if (_postTemplate) return _postTemplate;
-    NSError *error;
-    _postTemplate = [GRMustacheTemplate templateFromResource:@"Post" bundle:nil error:&error];
-    if (!_postTemplate) {
-        NSLog(@"error loading post template: %@", error);
-    }
-    return _postTemplate;
+    return HTML;
 }
 
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)URL
@@ -816,7 +805,7 @@
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else if (self.page == page) {
-            NSString *HTML = [self postsView:self.postsView renderedPostAtIndex:index];
+            NSString *HTML = [self renderedPostAtIndex:index];
             [self.postsView reloadPostAtIndex:index withHTML:HTML];
         }
     }];
