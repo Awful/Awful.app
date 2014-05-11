@@ -175,6 +175,8 @@
         
         if (error) return;
         
+        self.hiddenPosts = firstUnreadPost == NSNotFound ? 0 : firstUnreadPost;
+        
         CGFloat scrollFraction = self.postsView.scrolledFractionOfContent;
         [self.postsView reloadData];
         if (reloadingSamePage) {
@@ -419,14 +421,14 @@
     
     NSString *settingKey = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([settingKey isEqualToString:AwfulSettingsKeys.showAvatars]) {
-        self.postsView.showAvatars = [AwfulSettings settings].showAvatars;
+        [self.postsView.webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings settings].showAvatars)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.username]) {
-        self.postsView.highlightMentionUsername = [AwfulSettings settings].username;
+        [self.postsView.webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:[AwfulSettings settings].username];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.fontScale]) {
-        self.postsView.fontScale = [AwfulSettings settings].fontScale;
+        [self.postsView.webViewJavaScriptBridge callHandler:@"fontScale" data:@([AwfulSettings settings].fontScale)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.showImages]) {
         if ([AwfulSettings settings].showImages) {
-            [self.postsView loadLinkifiedImages];
+            [self.postsView.webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
     }
 }
@@ -439,6 +441,7 @@
     self.postsView.backgroundColor = theme[@"backgroundColor"];
     self.view.backgroundColor = theme[@"backgroundColor"];
     self.postsView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
+    [self.postsView.webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     
     if (self.loadingView) {
         [self.loadingView removeFromSuperview];
@@ -598,6 +601,20 @@
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressOnPostsView:)];
     longPress.delegate = self;
     [self.postsView addGestureRecognizer:longPress];
+    
+    __weak __typeof__(self) weakSelf = self;
+    [self.postsView.webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+        [self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
+    }];
+    [self.postsView.webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+        [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -627,7 +644,8 @@
         NSString *HTML = [self renderedPostAtIndex:i];
         [HTMLFragments addObject:HTML];
     }
-    [self.postsView prependPostsHTML:[HTMLFragments componentsJoinedByString:@""]];
+    NSString *HTML = [HTMLFragments componentsJoinedByString:@"\n"];
+    [self.postsView.webViewJavaScriptBridge callHandler:@"prependPosts" data:HTML];
 }
 
 - (void)scrollToBottom
@@ -642,7 +660,7 @@
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
     // continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
-        [self.postsView clearAllPosts];
+        [self.postsView.webView loadHTMLString:@"" baseURL:nil];
     }
     [super viewDidDisappear:animated];
 }
@@ -658,14 +676,15 @@
     if (offsetY < 0) {
         location.y += offsetY;
     }
+    NSDictionary *data = @{ @"x": @(location.x), @"y": @(location.y) };
     NSURL *baseURL = self.postsView.baseURL;
-    [self.postsView interestingElementsAtPoint:location completion:^(NSDictionary *elementInfo) {
+    [self.postsView.webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
         if (elementInfo.count == 0) return;
         
-        NSURL *imageURL = [NSURL URLWithString:elementInfo[AwfulInterestingElementKeys.spoiledImageURL] relativeToURL:baseURL];
-        if (elementInfo[AwfulInterestingElementKeys.spoiledLinkInfo]) {
-            NSDictionary *linkInfo = elementInfo[AwfulInterestingElementKeys.spoiledLinkInfo];
-            NSURL *URL = [NSURL URLWithString:linkInfo[AwfulInterestingElementKeys.URL] relativeToURL:baseURL];
+        NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:baseURL];
+        if (elementInfo[@"spoiledLink"]) {
+            NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
+            NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:baseURL];
             AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
             sheet.title = URL.absoluteString;
             if (imageURL) {
@@ -673,13 +692,13 @@
                     [self previewImageAtURL:imageURL];
                 }];
             }
-            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:linkInfo[AwfulInterestingElementKeys.rect]];
+            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
             [sheet showFromRect:rect inView:self.postsView animated:YES];
         } else if (imageURL) {
             [self previewImageAtURL:imageURL];
-        } else if (elementInfo[AwfulInterestingElementKeys.spoiledVideoInfo]) {
-            NSDictionary *videoInfo = elementInfo[AwfulInterestingElementKeys.spoiledVideoInfo];
-            NSURL *URL = [NSURL URLWithString:videoInfo[AwfulInterestingElementKeys.URL] relativeToURL:baseURL];
+        } else if (elementInfo[@"spoiledVideo"]) {
+            NSDictionary *videoInfo = elementInfo[@"spoiledVideo"];
+            NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:baseURL];
             NSURL *safariURL;
             if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
                 NSString *youtubeVideoID = URL.lastPathComponent;
@@ -703,7 +722,7 @@
             
             [sheet addCancelButtonWithTitle:@"Cancel"];
             
-            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:videoInfo[AwfulInterestingElementKeys.rect]];
+            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
             [sheet showFromRect:rect inView:self.postsView animated:YES];
         } else {
             NSLog(@"%s unexpected interesting elements: %@", __PRETTY_FUNCTION__, elementInfo);
@@ -742,10 +761,164 @@
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else if (self.page == page) {
-            NSString *HTML = [self renderedPostAtIndex:index];
-            [self.postsView reloadPostAtIndex:index withHTML:HTML];
+            NSDictionary *data = @{ @"index": @(index),
+                                    @"HTML": [self renderedPostAtIndex:index] };
+            [self.postsView.webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
         }
     }];
+}
+
+- (void)didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
+{
+    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
+    AwfulUser *user = post.author;
+	AwfulActionViewController *sheet = [AwfulActionViewController new];
+    
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+	}]];
+    
+	if (!self.author) {
+		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
+            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
+            postsView.page = 1;
+            [self.navigationController pushViewController:postsView animated:YES];
+        }]];
+	}
+    
+	if ([AwfulSettings settings].canSendPrivateMessages && user.canReceivePrivateMessages) {
+        if (![user.userID isEqual:[AwfulSettings settings].userID]) {
+            [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
+                self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+                self.messageViewController.delegate = self;
+                self.messageViewController.restorationIdentifier = @"New PM from posts view";
+                [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
+            }]];
+        }
+	}
+    
+	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+        AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+        } else {
+            [self.navigationController pushViewController:rapSheet animated:YES];
+        }
+	}]];
+    
+    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
+        NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+        rect.origin.x = 0;
+        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
+        return rect;
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
+    }
+}
+
+- (void)didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
+{
+    NSAssert(postIndex + self.hiddenPosts < self.posts.count, @"post %lu beyond range (hiding %ld posts)", (unsigned long)postIndex, (long)self.hiddenPosts);
+    
+    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
+    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
+    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
+        possessiveUsername = @"Your";
+    }
+    AwfulActionViewController *sheet = [AwfulActionViewController new];
+    sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        NSMutableArray *queryParts = [NSMutableArray new];
+        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
+        [queryParts addObject:@"perpage=40"];
+        if (self.page > 1) {
+            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
+        }
+        components.query = [queryParts componentsJoinedByString:@"&"];
+        components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
+        NSURL *URL = components.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
+    }]];
+    
+    if (!self.author) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
+            [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
+                } else {
+                    post.thread.seenPosts = post.threadIndex;
+                    [self.postsView.webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
+                }
+            }];
+        }]];
+    }
+    
+    if (post.editable) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
+            [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
+                    return;
+                }
+                self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
+                self.replyViewController.restorationIdentifier = @"Edit composition";
+                self.replyViewController.delegate = self;
+                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
+            }];
+        }]];
+    }
+    
+    if (!self.thread.closed) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
+            [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
+                    return;
+                }
+                if (self.replyViewController) {
+                    UITextView *textView = self.replyViewController.textView;
+                    void (^appendString)(NSString *) = ^(NSString *string) {
+                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument toPosition:textView.endOfDocument];
+                        [textView replaceRange:endRange withText:string];
+                    };
+                    if ([textView comparePosition:textView.beginningOfDocument toPosition:textView.endOfDocument] != NSOrderedSame) {
+                        while (![textView.text hasSuffix:@"\n\n"]) {
+                            appendString(@"\n");
+                        }
+                    }
+                    appendString(quotedText);
+                } else {
+                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:quotedText];
+                    self.replyViewController.delegate = self;
+                    self.replyViewController.restorationIdentifier = @"Reply composition";
+                }
+                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
+            }];
+        }]];
+    }
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:^(UIView *view) {
+            NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+            return [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+        }];
+    } else {
+        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:^(UIView *view) {
+            NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+            rect.origin.x = 0;
+            rect.size.width = CGRectGetWidth(self.postsView.bounds);
+            return rect;
+        }];
+    }
 }
 
 #pragma mark - AwfulPostsViewDelegate
@@ -802,154 +975,6 @@
         [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
     } else {
         [[UIApplication sharedApplication] openURL:URL];
-    }
-}
-
-- (void)postsView:(AwfulPostsView *)postsView didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
-{
-    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
-    AwfulUser *user = post.author;
-	AwfulActionViewController *sheet = [AwfulActionViewController new];
-    
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
-	}]];
-    
-	if (!self.author) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
-            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
-            postsView.page = 1;
-            [self.navigationController pushViewController:postsView animated:YES];
-        }]];
-	}
-    
-	if ([AwfulSettings settings].canSendPrivateMessages && user.canReceivePrivateMessages) {
-        if (![user.userID isEqual:[AwfulSettings settings].userID]) {
-            [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-                self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
-                self.messageViewController.delegate = self;
-                self.messageViewController.restorationIdentifier = @"New PM from posts view";
-                [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
-            }]];
-        }
-	}
-    
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-        AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
-        } else {
-            [self.navigationController pushViewController:rapSheet animated:YES];
-        }
-	}]];
-    
-    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
-        CGRect rect = [self.postsView rectOfHeaderForPostAtIndex:postIndex];
-        rect.origin.x = 0;
-        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
-        return rect;
-    };
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
-    } else {
-        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
-    }
-}
-
-- (void)postsView:(AwfulPostsView *)postsView didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
-{
-    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
-    NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
-    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
-        possessiveUsername = @"Your";
-    }
-    AwfulActionViewController *sheet = [AwfulActionViewController new];
-    sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
-    
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
-        NSMutableArray *queryParts = [NSMutableArray new];
-        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
-        [queryParts addObject:@"perpage=40"];
-        if (self.page > 1) {
-            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
-        }
-        components.query = [queryParts componentsJoinedByString:@"&"];
-        components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
-        NSURL *URL = components.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }]];
-    
-    if (!self.author) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
-            [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
-                if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
-                } else {
-                    post.thread.seenPosts = post.threadIndex;
-                    [self.postsView setLastReadPostID:post.postID];
-                }
-            }];
-        }]];
-    }
-    
-    if (post.editable) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
-            [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
-                if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
-                    return;
-                }
-                self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
-                self.replyViewController.restorationIdentifier = @"Edit composition";
-                self.replyViewController.delegate = self;
-                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
-            }];
-        }]];
-    }
-    
-    if (!self.thread.closed) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
-            [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
-                if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
-                    return;
-                }
-                if (self.replyViewController) {
-                    UITextView *textView = self.replyViewController.textView;
-                    void (^appendString)(NSString *) = ^(NSString *string) {
-                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument toPosition:textView.endOfDocument];
-                        [textView replaceRange:endRange withText:string];
-                    };
-                    if ([textView comparePosition:textView.beginningOfDocument toPosition:textView.endOfDocument] != NSOrderedSame) {
-                        while (![textView.text hasSuffix:@"\n\n"]) {
-                            appendString(@"\n");
-                        }
-                    }
-                    appendString(quotedText);
-                } else {
-                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:quotedText];
-                    self.replyViewController.delegate = self;
-                    self.replyViewController.restorationIdentifier = @"Reply composition";
-                }
-                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
-            }];
-        }]];
-    }
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:^(UIView *view) {
-            return [self.postsView rectOfActionButtonForPostAtIndex:postIndex];
-        }];
-    } else {
-        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:^(UIView *view) {
-            CGRect rect = [self.postsView rectOfFooterForPostAtIndex:postIndex];
-            rect.origin.x = 0;
-            rect.size.width = CGRectGetWidth(self.postsView.bounds);
-            return rect;
-        }];
     }
 }
 

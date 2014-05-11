@@ -4,6 +4,7 @@
 
 #import <UIKit/UIKit.h>
 @protocol AwfulPostsViewDelegate;
+#import <WebViewJavascriptBridge.h>
 
 @interface AwfulPostsView : UIView
 
@@ -15,26 +16,7 @@
 
 - (void)reloadData;
 
-- (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML;
-
-- (void)prependPostsHTML:(NSString *)HTML;
-
-- (void)clearAllPosts;
-
 - (void)jumpToElementWithID:(NSString *)elementID;
-
-@property (copy, nonatomic) NSString *stylesheet;
-
-@property (nonatomic) BOOL showAvatars;
-
-@property (nonatomic) int fontScale;
-
-- (void)loadLinkifiedImages;
-
-// Set to nil to highlight no mentions.
-@property (copy, nonatomic) NSString *highlightMentionUsername;
-
-- (void)setLastReadPostID:(NSString *)postID;
 
 @property (readonly, assign, nonatomic) CGFloat scrolledFractionOfContent;
 
@@ -44,65 +26,14 @@
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
-/**
- * Calls completionBlock with a dictionary containing keys from AwfulInterestingElementKeys.
- */
-- (void)interestingElementsAtPoint:(CGPoint)point completion:(void (^)(NSDictionary *elementInfo))completionBlock;
-
-- (CGRect)rectOfHeaderForPostAtIndex:(NSUInteger)postIndex;
-
-- (CGRect)rectOfFooterForPostAtIndex:(NSUInteger)postIndex;
-
-- (CGRect)rectOfActionButtonForPostAtIndex:(NSUInteger)postIndex;
+@property (readonly, strong, nonatomic) WebViewJavascriptBridge *webViewJavaScriptBridge;
 
 @end
 
-/**
- * Keys that may be present in the dictionary returned by -interestingElementsAtPoint:.
- */
-extern const struct AwfulInterestingElementKeys {
-    
-    /**
-     * An NSString of a URL pointing to an image.
-     */
-    __unsafe_unretained NSString *spoiledImageURL;
-    
-    /**
-     * An NSDictionary with info keys "rect" and "URL".
-     */
-    __unsafe_unretained NSString *spoiledLinkInfo;
-    
-    /**
-     * An NSDictionary with info keys "rect" and "URL".
-     */
-    __unsafe_unretained NSString *spoiledVideoInfo;
-    
-    // Info keys.
-    
-    /**
-     * The CGRectFromString-formatted bounding rect of the element.
-     */
-    __unsafe_unretained NSString *rect;
-    
-    /**
-     * The NSString of the URL pointing to the element's contents.
-     */
-    __unsafe_unretained NSString *URL;
-
-} AwfulInterestingElementKeys;
-
 @protocol AwfulPostsViewDelegate <NSObject>
-
-@required
 
 - (NSString *)HTMLForPostsView:(AwfulPostsView *)postsView;
 
-@optional
-
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url;
-
-- (void)postsView:(AwfulPostsView *)postsView didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex;
-
-- (void)postsView:(AwfulPostsView *)postsView didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex;
 
 @end
