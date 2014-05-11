@@ -1,3 +1,5 @@
+// Assumes util.js is available.
+
 $(function() {
   FastClick.attach(document.body);
 });

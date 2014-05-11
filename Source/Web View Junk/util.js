@@ -1,3 +1,5 @@
+// Assumes Zepto is available.
+
 // Toggle spoilers on tap.
 $(function() {
   $('body').on('click', '.bbc-spoiler', function(event) {
