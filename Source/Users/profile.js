@@ -1,18 +1,4 @@
-// Assumes util.js is available.
-
-$(function() {
-  FastClick.attach(document.body);
-});
-    
-function startBridge(callback) {
-  if (window.WebViewJavascriptBridge) {
-    callback(WebViewJavascriptBridge);
-  } else {
-    document.addEventListener('WebViewJavascriptBridgeReady', function() {
-      callback(WebViewJavascriptBridge);
-    }, false);
-  }
-}
+// Assumes common.js is available.
 
 startBridge(function(bridge) {
   bridge.init();

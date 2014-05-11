@@ -1,4 +1,4 @@
-// Assumes zepto.js is available.
+// Assumes common.js is available.
 
 ;(function(){
 var Awful = {}
@@ -80,16 +80,6 @@ Awful.spoiledVideoInPostForPoint = function(x, y){
 window.Awful = Awful
 })()
 
-function startBridge(callback) {
-  if (window.WebViewJavascriptBridge) {
-    callback(WebViewJavascriptBridge);
-  } else {
-    document.addEventListener('WebViewJavascriptBridgeReady', function() {
-      callback(WebViewJavascriptBridge);
-    }, false);
-  }
-}
-
 startBridge(function(bridge) {
   bridge.init();
   
@@ -98,12 +88,7 @@ startBridge(function(bridge) {
   });
   
   bridge.registerHandler('fontScale', function(scalePercentage) {
-    var style = $('#awful-font-scale-style');
-    if (scalePercentage == 100) {
-      style.text('');
-    } else {
-      style.text(".nameanddate, .postbody, footer { font-size: " + scalePercentage + "%; }");
-    }
+    fontScale(scalePercentage);
   });
   
   bridge.registerHandler('markReadUpToPostWithID', function(postID) {
@@ -127,26 +112,7 @@ startBridge(function(bridge) {
   });
   
   bridge.registerHandler('showAvatars', function(show) {
-    if (show) {
-      $('header[data-awful-avatar]').each(function() {
-        var header = $(this);
-        var img = $('<img>', {
-          src: header.data('awful-avatar'),
-          alt: '',
-          class: 'avatar'
-        });
-        img.prependTo(header);
-        header.data('avatar', null);
-        header.closest('post').removeClass('no-avatar');
-      });
-    } else {
-      $('header img.avatar').each(function() {
-        var img = $(this);
-        img.closest('header').data('awful-avatar', img.attr('src'));
-        img.remove();
-        img.closest('post').addClass('no-avatar');
-      });
-    }
+    showAvatars(show);
   });
   
   bridge.registerHandler('loadLinkifiedImages', function() {
@@ -174,38 +140,10 @@ startBridge(function(bridge) {
 });
 
 $(function() {
-  $('body').on('click', '.bbc-spoiler', function(event) {
-    var target = $(event.target);
-    var spoiler = target.closest('.bbc-spoiler');
-    var isLink = target.closest('a, [data-awful-linkified-image]').length > 0;
-    var isSpoiled = spoiler.hasClass('spoiled');
-    if (!(isLink && isSpoiled)) {
-      spoiler.toggleClass('spoiled');
-    }
-    if (isLink && !isSpoiled) {
-      event.preventDefault();
-    }
-  });
-  
-  $('body').on('click', '[data-awful-linkified-image]', function(event) {
-    var link = $(event.target);
-    if (link.closest('.bbc-spoiler:not(.spoiled)').length > 0) {
-      return;
-    }
-    showLinkifiedImage(link);
-    
-    // Don't follow links when showing linkified images.
-    event.preventDefault();
-  });
-  
   $('.postbody').each(function() { Awful.highlightMentions(this); });
 });
 
-function showLinkifiedImage(link) {
-  link = $(link);
-  link.replaceWith($('<img>', { border: 0, alt: '', src: link.text() }));
-}
-
+// Finds all occurrences of the logged-in user's name in post text and wrap each in a <span class="mention">.
 function highlightMentions(post) {
   var username = Awful._highlightMentionUsername;
   if (!username) return;

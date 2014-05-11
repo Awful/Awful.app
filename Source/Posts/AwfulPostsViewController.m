@@ -728,7 +728,7 @@
 {
     NSMutableDictionary *context = [NSMutableDictionary new];
     NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"posts-view.js" ], &error);
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"common.js", @"posts-view.js" ], &error);
     if (!script) {
         NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
         return nil;

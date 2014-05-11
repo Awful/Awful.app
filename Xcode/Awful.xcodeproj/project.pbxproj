@@ -120,7 +120,7 @@
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
-		1C8E104A1916F7970010007B /* util.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* util.js */; };
+		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
 		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
 		1C8E104F1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */; };
 		1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */; };
@@ -450,7 +450,7 @@
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10451914B5F00010007B /* Awful 2.0.8-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.8-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
-		1C8E10491916F78B0010007B /* util.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = util.js; sourceTree = "<group>"; };
+		1C8E10491916F78B0010007B /* common.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = common.js; sourceTree = "<group>"; };
 		1C8E104B1916F85F0010007B /* profile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = profile.js; sourceTree = "<group>"; };
 		1C8E104D1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AwfulActionSheet+WebViewSheets.h"; sourceTree = "<group>"; };
 		1C8E104E1918D5CC0010007B /* AwfulActionSheet+WebViewSheets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AwfulActionSheet+WebViewSheets.m"; sourceTree = "<group>"; };
@@ -993,8 +993,8 @@
 				1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */,
 				1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */,
 				1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */,
+				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
-				1C8E10491916F78B0010007B /* util.js */,
 			);
 			path = "Web View Junk";
 			sourceTree = "<group>";
@@ -1571,7 +1571,7 @@
 			files = (
 				1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */,
 				1C8E104C1916F92F0010007B /* profile.js in Resources */,
-				1C8E104A1916F7970010007B /* util.js in Resources */,
+				1C8E104A1916F7970010007B /* common.js in Resources */,
 				1C8E10481914D1180010007B /* private-message.js in Resources */,
 				1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */,
 				1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */,
