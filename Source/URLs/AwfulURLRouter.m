@@ -68,8 +68,8 @@
                                                   matchingPredicateFormat:@"postID = %@", postID];
         if (post && post.page > 0) {
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:post.thread];
-            postsViewController.topPost = post;
             [postsViewController loadPage:post.page updatingCache:YES];
+            postsViewController.topPost = post;
             return [self showPostsViewController:postsViewController];
         }
         
@@ -92,9 +92,9 @@
                     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
                                                              inManagedObjectContext:self.managedObjectContext];
                     AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+                    [postsViewController loadPage:page updatingCache:YES];
                     postsViewController.topPost = [AwfulPost firstOrNewPostWithPostID:postID
                                                                inManagedObjectContext:self.managedObjectContext];
-                    [postsViewController loadPage:page updatingCache:YES];
                     [self showPostsViewController:postsViewController];
                 }];
             }
