@@ -17,30 +17,31 @@ startBridge(function(bridge) {
     $('post').on('click', 'header', function(event) {
       bridge.callHandler('didTapUserHeader', HeaderRect());
     });
+  });
 
-    bridge.registerHandler('interestingElementsAtPoint', function(point, callback) {
-      var items = interestingItemsAtPoint(point.x, point.y);
-      callback(items);
-    });
-    
-    bridge.registerHandler('loadLinkifiedImages', function() {
-      $('[data-awful-linkified-image]').each(function() { showLinkifiedImage(this); });
-    });
-    
-    bridge.registerHandler('showAvatars', function(show) {
-      showAvatars(show);
-    });
-    
-    bridge.registerHandler('changeStylesheet', function(stylesheet) {
-      $('#awful-inline-style').text(stylesheet);
-    });
-    
-    bridge.registerHandler('fontScale', function(scalePercentage) {
-      fontScale(scalePercentage);
-    });
+  bridge.registerHandler('interestingElementsAtPoint', function(point, callback) {
+    var items = interestingElementsAtPoint(point.x, point.y);
+    callback(items);
+  });
+  
+  bridge.registerHandler('loadLinkifiedImages', function() {
+    $('[data-awful-linkified-image]').each(function() { showLinkifiedImage(this); });
+  });
+  
+  bridge.registerHandler('showAvatars', function(show) {
+    showAvatars(show);
+  });
+  
+  bridge.registerHandler('changeStylesheet', function(stylesheet) {
+    $('#awful-inline-style').text(stylesheet);
+  });
+  
+  bridge.registerHandler('fontScale', function(scalePercentage) {
+    fontScale(scalePercentage);
   });
 });
 
+// Action sheet popovers need to synchronously get the bounding rect of the header. The bridge can't help us, so here's a function meant to be called directly from Objective-C.
 function HeaderRect() {
   return rectOfElement($('header'));
 }
