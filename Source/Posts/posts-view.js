@@ -14,6 +14,11 @@ startBridge(function(bridge) {
     fontScale(scalePercentage);
   });
   
+  bridge.registerHandler('jumpToPostWithID', function(postID) {
+    window.location.hash = '';
+    window.location.hash = '#' + postID;
+  });
+  
   bridge.registerHandler('markReadUpToPostWithID', function(postID) {
     var lastReadIndex = $('#' + postID).index();
     if (lastReadIndex === -1) return;

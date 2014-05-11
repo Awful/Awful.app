@@ -49,9 +49,6 @@
  */
 @property (readonly, copy, nonatomic) NSArray *posts;
 
-/**
- * Set the currently-visible post.
- */
-- (void)setTopPost:(AwfulPost*)topPost;
+- (void)scrollPostToVisible:(AwfulPost*)topPost;
 
 @end

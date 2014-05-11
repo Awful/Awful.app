@@ -19,7 +19,6 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPageTopBar.h"
-#import "AwfulPostsView.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -29,18 +28,21 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache.h>
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <WebViewJavascriptBridge.h>
 
-@interface AwfulPostsViewController () <AwfulPostsViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
+@interface AwfulPostsViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
 
 @property (assign, nonatomic) AwfulThreadPage page;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) AwfulPageTopBar *topBar;
-@property (strong, nonatomic) AwfulPostsView *postsView;
+@property (readonly, strong, nonatomic) UIWebView *webView;
+
 @property (nonatomic) UIBarButtonItem *composeItem;
 
 @property (strong, nonatomic) UIBarButtonItem *settingsItem;
@@ -50,7 +52,6 @@
 @property (strong, nonatomic) UIBarButtonItem *actionsItem;
 
 @property (nonatomic) NSInteger hiddenPosts;
-@property (strong, nonatomic) AwfulPost *topPostAfterLoad;
 @property (copy, nonatomic) NSString *advertisementHTML;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
@@ -62,6 +63,13 @@
 @end
 
 @implementation AwfulPostsViewController
+{
+    AwfulWebViewNetworkActivityIndicatorManager *_webViewNetworkActivityIndicatorManager;
+    WebViewJavascriptBridge *_webViewJavaScriptBridge;
+    BOOL _webViewDidLoadOnce;
+    NSString *_jumpToPostIDAfterLoading;
+    CGFloat _scrollToFractionAfterLoading;
+}
 
 - (void)dealloc
 {
@@ -117,19 +125,18 @@
 {
     [self.networkOperation cancel];
     self.networkOperation = nil;
-    self.topPostAfterLoad = nil;
     
     BOOL reloadingSamePage = page == self.page;
     self.page = page;
     
     if (self.posts.count == 0 || !reloadingSamePage) {
-        UIScrollView *scrollView = self.postsView.scrollView;
+        UIScrollView *scrollView = self.webView.scrollView;
         [scrollView.pullToRefreshView stopAnimating];
         [self updateUserInterface];
         [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
         self.hiddenPosts = 0;
         [self refetchPosts];
-        [self.postsView reloadData];
+        [self renderPosts];
     }
     
     [self updateUserInterface];
@@ -175,18 +182,15 @@
         
         if (error) return;
         
-        self.hiddenPosts = firstUnreadPost == NSNotFound ? 0 : firstUnreadPost;
+        if (self.hiddenPosts == 0 && firstUnreadPost != NSNotFound) {
+            self.hiddenPosts = firstUnreadPost;
+        }
         
-        CGFloat scrollFraction = self.postsView.scrolledFractionOfContent;
-        [self.postsView reloadData];
         if (reloadingSamePage) {
-            [self.postsView scrollToFractionOfContent:scrollFraction];
+            _scrollToFractionAfterLoading = self.webView.awful_fractionalContentOffset;
         }
         
-        if (self.topPostAfterLoad) {
-            [self setTopPost:self.topPostAfterLoad];
-            self.topPostAfterLoad = nil;
-        }
+        [self renderPosts];
         
         [self updateUserInterface];
         
@@ -195,23 +199,59 @@
             self.thread.seenPosts = lastPost.threadIndex;
         }
         
-        [self.postsView.scrollView.pullToRefreshView stopAnimating];
+        [self.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }
 
-- (void)setTopPost:(AwfulPost *)topPost
+- (void)scrollPostToVisible:(AwfulPost*)topPost
 {
-    if (![self isViewLoaded] || self.loadingView) {
-        self.topPostAfterLoad = topPost;
+    NSUInteger i = [self.posts indexOfObject:topPost];
+    if (self.loadingView || !_webViewDidLoadOnce || i == NSNotFound) {
+        _jumpToPostIDAfterLoading = topPost.postID;
+    } else {
+        if ((NSInteger)i < self.hiddenPosts) {
+            [self showHiddenSeenPosts];
+        }
+        [_webViewJavaScriptBridge callHandler:@"jumpToPostWithID" data:topPost.postID];
+    }
+}
+
+- (void)renderPosts
+{
+    _webViewDidLoadOnce = NO;
+    
+    NSMutableDictionary *context = [NSMutableDictionary new];
+    NSError *error;
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"fastclick.js", @"common.js", @"posts-view.js" ], &error);
+    if (!script) {
+        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
         return;
     }
-    if (self.hiddenPosts > 0) {
-        NSUInteger i = [self.posts indexOfObjectPassingTest:^BOOL(AwfulPost *post, NSUInteger _, BOOL *__) {
-            return [post isEqual:topPost];
-        }];
-        if (i < (NSUInteger)self.hiddenPosts) [self showHiddenSeenPosts];
+    context[@"script"] = script;
+    context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
+    context[@"stylesheet"] = self.theme[@"postsViewCSS"];
+    NSMutableArray *postViewModels = [NSMutableArray new];
+    NSRange range = NSMakeRange(self.hiddenPosts, self.posts.count - self.hiddenPosts);
+    for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
+        [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
     }
-    [self.postsView jumpToElementWithID:topPost.postID];
+    context[@"posts"] = postViewModels;
+    if (self.advertisementHTML.length) {
+        context[@"advertisementHTML"] = self.advertisementHTML;
+    }
+    if (postViewModels.count > 0 && self.page > 0 && self.page >= self.numberOfPages) {
+        context[@"endMessage"] = @"End of the thread";
+    }
+    int fontScalePercentage = [AwfulSettings settings].fontScale;
+    if (fontScalePercentage != 100) {
+        context[@"fontScalePercentage"] = @(fontScalePercentage);
+    }
+    context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
+    if (!HTML) {
+        NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
+    }
+    [self.webView loadHTMLString:HTML baseURL:[AwfulForumsClient client].baseURL];
 }
 
 - (AwfulTheme *)theme
@@ -421,14 +461,14 @@
     
     NSString *settingKey = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([settingKey isEqualToString:AwfulSettingsKeys.showAvatars]) {
-        [self.postsView.webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings settings].showAvatars)];
+        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings settings].showAvatars)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.username]) {
-        [self.postsView.webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:[AwfulSettings settings].username];
+        [_webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:[AwfulSettings settings].username];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.fontScale]) {
-        [self.postsView.webViewJavaScriptBridge callHandler:@"fontScale" data:@([AwfulSettings settings].fontScale)];
+        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@([AwfulSettings settings].fontScale)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.showImages]) {
         if ([AwfulSettings settings].showImages) {
-            [self.postsView.webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
+            [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
     }
 }
@@ -438,10 +478,9 @@
     [super themeDidChange];
     
     AwfulTheme *theme = self.theme;
-    self.postsView.backgroundColor = theme[@"backgroundColor"];
     self.view.backgroundColor = theme[@"backgroundColor"];
-    self.postsView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
-    [self.postsView.webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
+    self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
+    [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     
     if (self.loadingView) {
         [self.loadingView removeFromSuperview];
@@ -507,7 +546,7 @@
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     
-    SVPullToRefreshView *refresh = self.postsView.scrollView.pullToRefreshView;
+    SVPullToRefreshView *refresh = self.webView.scrollView.pullToRefreshView;
     if (self.numberOfPages > self.page) {
         [refresh setTitle:@"Pull for next page…" forState:SVPullToRefreshStateStopped];
         [refresh setTitle:@"Release for next page…" forState:SVPullToRefreshStateTriggered];
@@ -534,7 +573,7 @@
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
     }
     self.loadingView.message = message;
-    [self.postsView addSubview:self.loadingView];
+    [self.view addSubview:self.loadingView];
 }
 
 - (void)clearLoadingMessage
@@ -556,79 +595,6 @@
     [self loadPage:nextPage updatingCache:YES];
 }
 
-#pragma mark - UIViewController
-
-- (void)setTitle:(NSString *)title
-{
-    [super setTitle:title];
-    self.navigationItem.titleLabel.text = title;
-}
-
-- (void)loadView
-{
-    NSURL *baseURL = [AwfulForumsClient client].baseURL;
-    self.postsView = [[AwfulPostsView alloc] initWithFrame:CGRectZero baseURL:baseURL];
-    self.postsView.delegate = self;
-    self.postsView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                       UIViewAutoresizingFlexibleHeight);
-    self.view = self.postsView;
-    
-    self.topBar = [AwfulPageTopBar new];
-    self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
-    [self.topBar.goToForumButton addTarget:self action:@selector(goToParentForum)
-                          forControlEvents:UIControlEventTouchUpInside];
-    [self.topBar.loadReadPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
-                              forControlEvents:UIControlEventTouchUpInside];
-    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
-    [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
-                               forControlEvents:UIControlEventTouchUpInside];
-    [self.postsView.scrollView addSubview:self.topBar];
-    self.postsView.scrollView.delegate = self.topBar;
-    
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
-    for (UIButton *button in buttons) {
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-        button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
-    }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressOnPostsView:)];
-    longPress.delegate = self;
-    [self.postsView addGestureRecognizer:longPress];
-    
-    __weak __typeof__(self) weakSelf = self;
-    [self.postsView.webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
-        __typeof__(self) self = weakSelf;
-        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:data[@"rect"]];
-        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
-        [self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
-    }];
-    [self.postsView.webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
-        __typeof__(self) self = weakSelf;
-        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:data[@"rect"]];
-        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
-        [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
-    }];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
-    __weak __typeof__(self) weakSelf = self;
-    [self.postsView.scrollView addPullToRefreshWithActionHandler:^{
-        __typeof__(self) self = weakSelf;
-        [self loadNextPageOrRefresh];
-    } position:SVPullToRefreshPositionBottom];
-}
-
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
@@ -645,46 +611,34 @@
         [HTMLFragments addObject:HTML];
     }
     NSString *HTML = [HTMLFragments componentsJoinedByString:@"\n"];
-    [self.postsView.webViewJavaScriptBridge callHandler:@"prependPosts" data:HTML];
+    [_webViewJavaScriptBridge callHandler:@"prependPosts" data:HTML];
 }
 
 - (void)scrollToBottom
 {
-    UIScrollView *scrollView = self.postsView.scrollView;
-    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1)
-                           animated:YES];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{    
-    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos
-    // continuing to play their sound after the user switches to a different thread.
-    if (!self.navigationController) {
-        [self.postsView.webView loadHTMLString:@"" baseURL:nil];
-    }
-    [super viewDidDisappear:animated];
+    UIScrollView *scrollView = self.webView.scrollView;
+    [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1) animated:YES];
 }
 
 - (void)didLongPressOnPostsView:(UILongPressGestureRecognizer *)sender
 {
     if (sender.state != UIGestureRecognizerStateBegan) return;
     
-    CGPoint location = [sender locationInView:self.postsView];
-    UIScrollView *scrollView = self.postsView.scrollView;
+    CGPoint location = [sender locationInView:self.view];
+    UIScrollView *scrollView = self.webView.scrollView;
     location.y -= scrollView.contentInset.top;
     CGFloat offsetY = scrollView.contentOffset.y;
     if (offsetY < 0) {
         location.y += offsetY;
     }
     NSDictionary *data = @{ @"x": @(location.x), @"y": @(location.y) };
-    NSURL *baseURL = self.postsView.baseURL;
-    [self.postsView.webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
+    [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
         if (elementInfo.count == 0) return;
         
-        NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:baseURL];
+        NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
         if (elementInfo[@"spoiledLink"]) {
             NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
-            NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:baseURL];
+            NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
             AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
             sheet.title = URL.absoluteString;
             if (imageURL) {
@@ -692,13 +646,13 @@
                     [self previewImageAtURL:imageURL];
                 }];
             }
-            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
-            [sheet showFromRect:rect inView:self.postsView animated:YES];
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
+            [sheet showFromRect:rect inView:self.view animated:YES];
         } else if (imageURL) {
             [self previewImageAtURL:imageURL];
         } else if (elementInfo[@"spoiledVideo"]) {
             NSDictionary *videoInfo = elementInfo[@"spoiledVideo"];
-            NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:baseURL];
+            NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
             NSURL *safariURL;
             if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
                 NSString *youtubeVideoID = URL.lastPathComponent;
@@ -722,8 +676,8 @@
             
             [sheet addCancelButtonWithTitle:@"Cancel"];
             
-            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
-            [sheet showFromRect:rect inView:self.postsView animated:YES];
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
+            [sheet showFromRect:rect inView:self.webView animated:YES];
         } else {
             NSLog(@"%s unexpected interesting elements: %@", __PRETTY_FUNCTION__, elementInfo);
         }
@@ -763,7 +717,7 @@
         } else if (self.page == page) {
             NSDictionary *data = @{ @"index": @(index),
                                     @"HTML": [self renderedPostAtIndex:index] };
-            [self.postsView.webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
+            [_webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
         }
     }];
 }
@@ -808,16 +762,16 @@
 	}]];
     
     AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
-        NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-        CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+        CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
         rect.origin.x = 0;
-        rect.size.width = CGRectGetMaxX(self.postsView.bounds);
+        rect.size.width = CGRectGetMaxX(self.webView.bounds);
         return rect;
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:headerRectBlock];
+        [sheet presentInPopoverFromView:self.webView pointingToRegionReturnedByBlock:headerRectBlock];
     } else {
-        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:headerRectBlock];
+        [sheet presentFromView:self.webView highlightingRegionReturnedByBlock:headerRectBlock];
     }
 }
 
@@ -855,7 +809,7 @@
                     [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
                 } else {
                     post.thread.seenPosts = post.threadIndex;
-                    [self.postsView.webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
+                    [_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
                 }
             }];
         }]];
@@ -906,76 +860,109 @@
     }
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.postsView pointingToRegionReturnedByBlock:^(UIView *view) {
-            NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-            return [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+        [sheet presentInPopoverFromView:self.webView pointingToRegionReturnedByBlock:^(UIView *view) {
+            NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+            return [self.webView awful_rectForElementBoundingRect:rectString];
         }];
     } else {
-        [sheet presentFromView:self.postsView highlightingRegionReturnedByBlock:^(UIView *view) {
-            NSString *rectString = [self.postsView.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-            CGRect rect = [self.postsView.webView awful_rectForElementBoundingRect:rectString];
+        [sheet presentFromView:self.webView highlightingRegionReturnedByBlock:^(UIView *view) {
+            NSString *rectString = [self.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+            CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
             rect.origin.x = 0;
-            rect.size.width = CGRectGetWidth(self.postsView.bounds);
+            rect.size.width = CGRectGetWidth(self.webView.bounds);
             return rect;
         }];
     }
 }
 
-#pragma mark - AwfulPostsViewDelegate
-
-- (NSString *)HTMLForPostsView:(AwfulPostsView *)postsView
+- (UIWebView *)webView
 {
-    NSMutableDictionary *context = [NSMutableDictionary new];
-    NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"fastclick.js", @"common.js", @"posts-view.js" ], &error);
-    if (!script) {
-        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
-        return nil;
-    }
-    context[@"script"] = script;
-    context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
-    context[@"stylesheet"] = self.theme[@"postsViewCSS"];
-    NSMutableArray *postViewModels = [NSMutableArray new];
-    NSRange range = NSMakeRange(self.hiddenPosts, self.posts.count - self.hiddenPosts);
-    for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
-        [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
-    }
-    context[@"posts"] = postViewModels;
-    if (self.advertisementHTML.length) {
-        context[@"advertisementHTML"] = self.advertisementHTML;
-    }
-    if (postViewModels.count > 0 && self.page > 0 && self.page >= self.numberOfPages) {
-        context[@"endMessage"] = @"End of the thread";
-    }
-    int fontScalePercentage = [AwfulSettings settings].fontScale;
-    if (fontScalePercentage != 100) {
-        context[@"fontScalePercentage"] = @(fontScalePercentage);
-    }
-    context[@"loggedInUsername"] = [AwfulSettings settings].username;
-    NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
-    if (!HTML) {
-        NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
-    }
-    return HTML;
+    return (UIWebView *)self.view;
 }
 
-- (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)URL
+#pragma mark - UIViewController
+
+- (void)setTitle:(NSString *)title
 {
-    if ([URL awfulURL]) {
-        if ([URL.fragment isEqualToString:@"awful-ignored"]) {
-            NSString *postID = URL.awfulURL.lastPathComponent;
-            NSUInteger index = [[self.posts valueForKey:@"postID"] indexOfObject:postID];
-            if (index != NSNotFound) {
-                [self readIgnoredPostAtIndex:index];
-            }
-        } else {
-            [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
-        }
-    } else if ([URL opensInBrowser]) {
-        [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
-    } else {
-        [[UIApplication sharedApplication] openURL:URL];
+    [super setTitle:title];
+    self.navigationItem.titleLabel.text = title;
+}
+
+- (void)loadView
+{
+    UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
+    self.view = webView;
+    
+    self.topBar = [AwfulPageTopBar new];
+    self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
+    [self.topBar.goToForumButton addTarget:self action:@selector(goToParentForum)
+                          forControlEvents:UIControlEventTouchUpInside];
+    [self.topBar.loadReadPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
+                              forControlEvents:UIControlEventTouchUpInside];
+    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
+    [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
+                               forControlEvents:UIControlEventTouchUpInside];
+    [webView.scrollView addSubview:self.topBar];
+    webView.scrollView.delegate = self.topBar;
+    
+    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
+    for (UIButton *button in buttons) {
+        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
     }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressOnPostsView:)];
+    longPress.delegate = self;
+    [self.webView addGestureRecognizer:longPress];
+    
+    _webViewNetworkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
+    __weak __typeof__(self) weakSelf = self;
+    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView
+                                                         webViewDelegate:_webViewNetworkActivityIndicatorManager
+                                                                 handler:^(id data, WVJBResponseCallback _)
+    {
+        NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
+    }];
+    [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+        [self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
+    }];
+    [_webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
+        __typeof__(self) self = weakSelf;
+        CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
+        [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
+    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
+    __weak __typeof__(self) weakSelf = self;
+    [self.webView.scrollView addPullToRefreshWithActionHandler:^{
+        __typeof__(self) self = weakSelf;
+        [self loadNextPageOrRefresh];
+    } position:SVPullToRefreshPositionBottom];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{    
+    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos continuing to play their sound after the user switches to a different thread.
+    if (!self.navigationController) {
+        [self.webView loadHTMLString:@"" baseURL:nil];
+    }
+    [super viewDidDisappear:animated];
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
@@ -995,7 +982,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                     } else {
                         self.page = self.replyViewController.post.page;
                     }
-                    self.topPost = self.replyViewController.post;
+                    [self scrollPostToVisible:self.replyViewController.post];
                 }
             }
             if (!keepDraft) {
@@ -1010,6 +997,53 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return YES;
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    NSURL *URL = request.URL;
+    
+    // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
+    if (navigationType != UIWebViewNavigationTypeLinkClicked && [URL.host.lowercaseString hasSuffix:@"www.youtube.com"] && [URL.path.lowercaseString hasPrefix:@"/watch"]) {
+        navigationType = UIWebViewNavigationTypeLinkClicked;
+    }
+    
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if ([URL awfulURL]) {
+            if ([URL.fragment isEqualToString:@"awful-ignored"]) {
+                NSString *postID = URL.awfulURL.lastPathComponent;
+                NSUInteger index = [[self.posts valueForKey:@"postID"] indexOfObject:postID];
+                if (index != NSNotFound) {
+                    [self readIgnoredPostAtIndex:index];
+                }
+            } else {
+                [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
+            }
+        } else if ([URL opensInBrowser]) {
+            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
+        } else {
+            [[UIApplication sharedApplication] openURL:URL];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    if (!_webViewDidLoadOnce) {
+        _webViewDidLoadOnce = YES;
+        if (_jumpToPostIDAfterLoading) {
+            [_webViewJavaScriptBridge callHandler:@"jumpToPostWithID" data:_jumpToPostIDAfterLoading];
+        } else if (_scrollToFractionAfterLoading > 0) {
+            webView.awful_fractionalContentOffset = _scrollToFractionAfterLoading;
+        }
+        _jumpToPostIDAfterLoading = nil;
+        _scrollToFractionAfterLoading = 0;
+    }
 }
 
 #pragma mark - State Preservation and Restoration
@@ -1040,7 +1074,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeObject:self.replyViewController forKey:ReplyViewControllerKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
-    [coder encodeFloat:self.postsView.scrolledFractionOfContent forKey:ScrolledFractionOfContentKey];
+    [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrolledFractionOfContentKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -1057,7 +1091,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         [self loadPage:self.page updatingCache:YES];
     }
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
-    [self.postsView scrollToFractionOfContent:[coder decodeFloatForKey:ScrolledFractionOfContentKey]];
+    _scrollToFractionAfterLoading = [coder decodeFloatForKey:ScrolledFractionOfContentKey];
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";

@@ -69,7 +69,7 @@
         if (post && post.page > 0) {
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
-            postsViewController.topPost = post;
+            [postsViewController scrollPostToVisible:post];
             return [self showPostsViewController:postsViewController];
         }
         
@@ -93,8 +93,7 @@
                                                              inManagedObjectContext:self.managedObjectContext];
                     AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
                     [postsViewController loadPage:page updatingCache:YES];
-                    postsViewController.topPost = [AwfulPost firstOrNewPostWithPostID:postID
-                                                               inManagedObjectContext:self.managedObjectContext];
+                    [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
                 }];
             }
