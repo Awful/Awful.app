@@ -263,18 +263,18 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didTapCompose)];
+    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        if (!self.replyViewController) {
+            self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:nil];
+            self.replyViewController.delegate = self;
+            self.replyViewController.restorationIdentifier = @"Reply composition";
+        }
+        [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
+    };
     return _composeItem;
-}
-
-- (void)didTapCompose
-{
-    if (!self.replyViewController) {
-        self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:nil];
-        self.replyViewController.delegate = self;
-        self.replyViewController.restorationIdentifier = @"Reply composition";
-    }
-    [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (UIBarButtonItem *)settingsItem
@@ -282,65 +282,59 @@
     if (_settingsItem) return _settingsItem;
     _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"]
                                                      style:UIBarButtonItemStylePlain
-                                                    target:self
-                                                    action:@selector(didTapSettingsItem:)];
+                                                    target:nil
+                                                    action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _settingsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        AwfulPageSettingsViewController *settings = [[AwfulPageSettingsViewController alloc] initWithForum:self.thread.forum];
+        settings.selectedTheme = self.theme;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [settings presentInPopoverFromBarButtonItem:sender];
+        } else {
+            UIToolbar *toolbar = self.navigationController.toolbar;
+            [settings presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+                return [view convertRect:toolbar.bounds fromView:toolbar];
+            }];
+        }
+    };
     return _settingsItem;
-}
-
-- (void)didTapSettingsItem:(UIBarButtonItem *)sender
-{
-    AwfulPageSettingsViewController *settings = [[AwfulPageSettingsViewController alloc] initWithForum:self.thread.forum];
-    settings.selectedTheme = self.theme;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [settings presentInPopoverFromBarButtonItem:sender];
-    } else {
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        [settings presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-            return [view convertRect:toolbar.bounds fromView:toolbar];
-        }];
-    }
 }
 
 - (UIBarButtonItem *)backItem
 {
     if (_backItem) return _backItem;
-    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"]
-                                                 style:UIBarButtonItemStylePlain
-                                                target:self
-                                                action:@selector(didTapBackItem)];
+    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _backItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        if (self.page > 1) {
+            [self loadPage:self.page - 1 updatingCache:YES];
+        }
+    };
     return _backItem;
-}
-
-- (void)didTapBackItem
-{
-    if (self.page > 1) {
-        [self loadPage:self.page - 1 updatingCache:YES];
-    }
 }
 
 - (UIBarButtonItem *)currentPageItem
 {
     if (_currentPageItem) return _currentPageItem;
-    _currentPageItem = [[UIBarButtonItem alloc] initWithTitle:@""
-                                                        style:UIBarButtonItemStylePlain
-                                                       target:self
-                                                       action:@selector(showJumpToPageSheet:)];
+    _currentPageItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     _currentPageItem.possibleTitles = [NSSet setWithObject:@"2345 / 2345"];
+    __weak __typeof__(self) weakSelf = self;
+    _currentPageItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        if (self.loadingView) return;
+        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithPostsViewController:self];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [jump presentInPopoverFromBarButtonItem:sender];
+        } else {
+            UIToolbar *toolbar = self.navigationController.toolbar;
+            [jump presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+                return [view convertRect:toolbar.bounds fromView:toolbar];
+            }];
+        }
+    };
     return _currentPageItem;
-}
-
-- (void)showJumpToPageSheet:(UIBarButtonItem *)sender
-{
-    if (self.loadingView) return;
-    AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithPostsViewController:self];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [jump presentInPopoverFromBarButtonItem:sender];
-    } else {
-        UIToolbar *toolbar = self.navigationController.toolbar;
-        [jump presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-            return [view convertRect:toolbar.bounds fromView:toolbar];
-        }];
-    }
 }
 
 - (UIBarButtonItem *)forwardItem
@@ -348,111 +342,109 @@
     if (_forwardItem) return _forwardItem;
     _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
                                                     style:UIBarButtonItemStylePlain
-                                                   target:self
-                                                   action:@selector(didTapForwardItem)];
+                                                   target:nil
+                                                   action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _forwardItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        if (self.page < self.numberOfPages && self.page > 0) {
+            [self loadPage:self.page + 1 updatingCache:YES];
+        }
+    };
     return _forwardItem;
-}
-
-- (void)didTapForwardItem
-{
-    if (self.page < self.numberOfPages && self.page > 0) {
-        [self loadPage:self.page + 1 updatingCache:YES];
-    }
 }
 
 - (UIBarButtonItem *)actionsItem
 {
     if (_actionsItem) return _actionsItem;
-    _actionsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                 target:self
-                                                                 action:@selector(showThreadActionsFromBarButtonItem:)];
-    return _actionsItem;
-}
-
-- (void)showThreadActionsFromBarButtonItem:(UIBarButtonItem *)barButtonItem
-{
-    AwfulActionViewController *sheet = [AwfulActionViewController new];
-    sheet.title = self.title;
-    AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
-        NSMutableArray *queryParts = [NSMutableArray new];
-        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
-        [queryParts addObject:@"perpage=40"];
-        if (self.page > 1) {
-            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
-        }
-        components.query = [queryParts componentsJoinedByString:@"&"];
-        NSURL *URL = components.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }];
-    copyURL.title = @"Copy Thread URL";
-    [sheet addItem:copyURL];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
-        AwfulActionSheet *vote = [AwfulActionSheet new];
-        for (int i = 5; i >= 1; i--) {
-            [vote addButtonWithTitle:[@(i) stringValue] block:^{
-                MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                                     title:[NSString stringWithFormat:@"Voting %i", i]
-                                                                                      mode:MRProgressOverlayViewModeIndeterminate
-                                                                                  animated:YES];
-                overlay.tintColor = self.theme[@"tintColor"];
-                [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
-                    if (error) {
-                        [overlay dismiss:NO];
-                        [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
-                    } else {
-                        overlay.mode = MRProgressOverlayViewModeCheckmark;
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                            [overlay dismiss:YES];
-                        });
-                    }
+    _actionsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _actionsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        AwfulActionViewController *sheet = [AwfulActionViewController new];
+        sheet.title = self.title;
+        AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+            NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+            NSMutableArray *queryParts = [NSMutableArray new];
+            [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
+            [queryParts addObject:@"perpage=40"];
+            if (self.page > 1) {
+                [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
+            }
+            components.query = [queryParts componentsJoinedByString:@"&"];
+            NSURL *URL = components.URL;
+            [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+            [UIPasteboard generalPasteboard].awful_URL = URL;
+        }];
+        copyURL.title = @"Copy Thread URL";
+        [sheet addItem:copyURL];
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
+            AwfulActionSheet *vote = [AwfulActionSheet new];
+            for (int i = 5; i >= 1; i--) {
+                [vote addButtonWithTitle:[@(i) stringValue] block:^{
+                    MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                         title:[NSString stringWithFormat:@"Voting %i", i]
+                                                                                          mode:MRProgressOverlayViewModeIndeterminate
+                                                                                      animated:YES];
+                    overlay.tintColor = self.theme[@"tintColor"];
+                    [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
+                        if (error) {
+                            [overlay dismiss:NO];
+                            [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                        } else {
+                            overlay.mode = MRProgressOverlayViewModeCheckmark;
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [overlay dismiss:YES];
+                            });
+                        }
+                    }];
                 }];
+            }
+            [vote addCancelButtonWithTitle:@"Cancel"];
+            [vote showFromBarButtonItem:sender animated:NO];
+        }]];
+        
+        AwfulIconActionItemType bookmarkItemType;
+        if (self.thread.bookmarked) {
+            bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+        } else {
+            bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+        }
+        [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+            [[AwfulForumsClient client] setThread:self.thread
+                                     isBookmarked:!self.thread.bookmarked
+                                          andThen:^(NSError *error)
+             {
+                 if (error) {
+                     NSLog(@"error %@bookmarking thread %@: %@",
+                           self.thread.bookmarked ? @"un" : @"", self.thread.threadID, error);
+                 } else {
+                     NSString *status = @"Removed Bookmark";
+                     if (self.thread.bookmarked) {
+                         status = @"Added Bookmark";
+                     }
+                     MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                          title:status
+                                                                                           mode:MRProgressOverlayViewModeCheckmark
+                                                                                       animated:YES];
+                     //                 overlay.tintColor = self.theme[@"tintColor"];
+                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                         [overlay dismiss:YES];
+                     });
+                 }
+             }];
+        }]];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [sheet presentInPopoverFromBarButtonItem:sender];
+        } else {
+            UINavigationController *navigationController = self.navigationController;
+            [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+                UIToolbar *toolbar = navigationController.toolbar;
+                return [view convertRect:toolbar.bounds fromView:toolbar];
             }];
         }
-        [vote addCancelButtonWithTitle:@"Cancel"];
-        [vote showFromBarButtonItem:barButtonItem animated:NO];
-    }]];
-    
-    AwfulIconActionItemType bookmarkItemType;
-    if (self.thread.bookmarked) {
-        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
-    } else {
-        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulForumsClient client] setThread:self.thread
-                               isBookmarked:!self.thread.bookmarked
-                                    andThen:^(NSError *error)
-         {
-             if (error) {
-                 NSLog(@"error %@bookmarking thread %@: %@",
-                       self.thread.bookmarked ? @"un" : @"", self.thread.threadID, error);
-             } else {
-                 NSString *status = @"Removed Bookmark";
-                 if (self.thread.bookmarked) {
-                     status = @"Added Bookmark";
-                 }
-                 MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                                      title:status
-                                                                                       mode:MRProgressOverlayViewModeCheckmark
-                                                                                   animated:YES];
-//                 overlay.tintColor = self.theme[@"tintColor"];
-                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                     [overlay dismiss:YES];
-                 });
-             }
-         }];
-    }]];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromBarButtonItem:barButtonItem];
-    } else {
-        UINavigationController *navigationController = self.navigationController;
-        [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-            UIToolbar *toolbar = navigationController.toolbar;
-            return [view convertRect:toolbar.bounds fromView:toolbar];
-        }];
-    }
+    };
+    return _actionsItem;
 }
 
 - (void)settingsDidChange:(NSNotification *)note
