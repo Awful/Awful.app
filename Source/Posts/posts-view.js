@@ -24,13 +24,13 @@ startBridge(function(bridge) {
   
   bridge.registerHandler('prependPosts', function(html) {
     var oldHeight = document.documentElement.scrollHeight;
-    $('#posts').prepend(posts);
+    $('#posts').prepend(html);
     var newHeight = document.documentElement.scrollHeight;
     window.scrollBy(0, newHeight - oldHeight);
   });
 
   bridge.registerHandler('postHTMLAtIndex', function(data) {
-    var html = Awful.highlightMentions($(data['HTML']));
+    var html = highlightMentions($(data['HTML']));
     $('post').eq(data['index']).replaceWith(html);
   });
   
@@ -53,7 +53,7 @@ startBridge(function(bridge) {
     
     Awful._highlightMentionUsername = username
     if (username) {
-      $('.postbody').each(Awful.highlightMentions);
+      $('.postbody').each(highlightMentions);
     }
   });
   
@@ -85,7 +85,7 @@ startBridge(function(bridge) {
 });
 
 $(function() {
-  $('.postbody').each(function() { Awful.highlightMentions(this); });
+  $('.postbody').each(function() { highlightMentions(this); });
 });
 
 // Action sheet popovers need to get this information synchronously, so these functions are meant to be called directly from Objective-C. They each return a CGRectFromString-formatted bounding rect.
