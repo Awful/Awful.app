@@ -979,12 +979,13 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         if (composeTextViewController == self.replyViewController) {
             if (success) {
                 if (self.replyViewController.thread) {
-                    self.page = AwfulThreadPageNextUnread;
+                    [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
                 } else {
+                    AwfulPost *post = self.replyViewController.post;
                     if (self.author) {
-                        self.page = self.replyViewController.post.singleUserPage;
+                        [self loadPage:post.singleUserPage updatingCache:YES];
                     } else {
-                        self.page = self.replyViewController.post.page;
+                        [self loadPage:post.page updatingCache:YES];
                     }
                     [self scrollPostToVisible:self.replyViewController.post];
                 }
