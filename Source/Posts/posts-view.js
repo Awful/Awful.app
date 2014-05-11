@@ -1,87 +1,7 @@
+// Assumes zepto.js is available.
+
 ;(function(){
 var Awful = {}
-
-Awful.post = function(i, post){
-  $('post').eq(i).replaceWith(post)
-}
-
-Awful.prependPosts = function(posts) {
-  var oldHeight = document.documentElement.scrollHeight;
-  $('#posts').prepend(posts);
-  var newHeight = document.documentElement.scrollHeight;
-  window.scrollBy(0, newHeight - oldHeight);
-};
-
-Awful.markReadUpToPostWithID = function(postID) {
-  var lastReadIndex = $('#' + postID).index();
-  if (lastReadIndex == -1) return;
-  $('post').each(function(i) {
-    $(this).toggleClass('seen', i <= lastReadIndex);
-  });
-};
-
-Awful.stylesheet = function(style){
-  $('#awful-inline-style').text(style)
-}
-
-Awful.ad = function(ad){
-  $('#ad').html(ad)
-}
-
-Awful.endMessage = function(end){
-  $('#end').text(nullOrUndefined(end) ? '' : end)
-}
-
-Awful.highlightMentionUsername = function(username){
-  Awful._highlightMentionUsername = username
-  if (nullOrUndefined(username)) {
-    $('span.mention').each(function(){
-      this.parentNode.replaceChild(this.firstChild, this)
-      this.parentNode.normalize()
-    })
-  } else {
-    $('.postbody').each(function(){ Awful.highlightMentions(this) })
-  }
-}
-
-Awful.showAvatars = function(on) {
-  if (on) {
-    $('header[data-awful-avatar]').each(function() {
-      var header = $(this);
-      var img = $('<img>', {
-        src: header.data('awful-avatar'),
-        alt: '',
-        class: 'avatar'
-      });
-      img.prependTo(header);
-      header.data('awful-avatar', null);
-      header.closest('post').removeClass('no-avatar');
-    });
-  } else {
-    $('header img.avatar').each(function() {
-      var img = $(this);
-      img.closest('header').data('awful-avatar', img.attr('src'));
-      img.remove();
-      img.closest('post').addClass('no-avatar');
-    });
-  }
-}
-
-Awful.setFontScale = function(scalePercentage) {
-  var smallFontCSS = '.nameanddate, .postbody, footer { font-size: ' + scalePercentage + '%; }';
-  if (scalePercentage != 100) {
-    $('#awful-font-adjust-style').text(smallFontCSS);
-  } else {
-    $('#awful-font-adjust-style').text('');
-  }
-}
-  
-Awful.loadLinkifiedImages = function() {
-  $('[data-awful-linkified-image]').each(function() {
-    var link = $(this);
-    link.replaceWith($('<img>', { src: link.text(), border: 0 }));
-  });
-};
 
 Awful.postWithButtonForPoint = function(x, y){
   var button = $(document.elementFromPoint(x, y)).closest('button')
@@ -157,16 +77,146 @@ Awful.spoiledVideoInPostForPoint = function(x, y){
   }
 }
 
-function nullOrUndefined(arg) {
-  return arg === null || arg === undefined
+window.Awful = Awful
+})()
+
+function startBridge(callback) {
+  if (window.WebViewJavascriptBridge) {
+    callback(WebViewJavascriptBridge);
+  } else {
+    document.addEventListener('WebViewJavascriptBridgeReady', function() {
+      callback(WebViewJavascriptBridge);
+    }, false);
+  }
 }
 
-Awful.highlightMentions = function(post) {
-  var username = Awful._highlightMentionUsername
-  if (nullOrUndefined(username)) return
-  var regex = new RegExp("\\b" + regexEscape(username) + "\\b", "i")
-  eachTextNode($(post)[0], replaceAll)
+startBridge(function(bridge) {
+  bridge.init();
   
+  bridge.registerHandler('changeStylesheet', function(css) {
+    $('#awful-inline-style').text(css);
+  });
+  
+  bridge.registerHandler('fontScale', function(scalePercentage) {
+    var style = $('#awful-font-scale-style');
+    if (scalePercentage == 100) {
+      style.text('');
+    } else {
+      style.text(".nameanddate, .postbody, footer { font-size: " + scalePercentage + "%; }");
+    }
+  });
+  
+  bridge.registerHandler('markReadUpToPostWithID', function(postID) {
+    var lastReadIndex = $('#' + postID).index();
+    if (lastReadIndex === -1) return;
+    $('post').each(function(i) {
+      $(this).toggleClass('seen', i <= lastReadIndex);
+    });
+  });
+  
+  bridge.registerHandler('prependPosts', function(html) {
+    var oldHeight = document.documentElement.scrollHeight;
+    $('#posts').prepend(posts);
+    var newHeight = document.documentElement.scrollHeight;
+    window.scrollBy(0, newHeight - oldHeight);
+  });
+
+  bridge.registerHandler('postHTMLAtIndex', function(data) {
+    var html = Awful.highlightMentions($(data['HTML']));
+    $('post').eq(data['index']).replaceWith(html);
+  });
+  
+  bridge.registerHandler('showAvatars', function(show) {
+    if (show) {
+      $('header[data-awful-avatar]').each(function() {
+        var header = $(this);
+        var img = $('<img>', {
+          src: header.data('awful-avatar'),
+          alt: '',
+          class: 'avatar'
+        });
+        img.prependTo(header);
+        header.data('avatar', null);
+        header.closest('post').removeClass('no-avatar');
+      });
+    } else {
+      $('header img.avatar').each(function() {
+        var img = $(this);
+        img.closest('header').data('awful-avatar', img.attr('src'));
+        img.remove();
+        img.closest('post').addClass('no-avatar');
+      });
+    }
+  });
+  
+  bridge.registerHandler('loadLinkifiedImages', function() {
+    $('[data-awful-linkified-image]').each(function() { showLinkifiedImage(this); });
+  });
+  
+  bridge.registerHandler('highlightMentionUsername', function(username) {
+    var oldUsername = Awful._highlightMentionUsername;
+    if (!username || oldUsername !== username) {
+      $('span.mention').each(function() {
+        this.parentNode.replaceChild(this.firstChild, this);
+        this.parentNode.normalize();
+      });
+    }
+    
+    Awful._highlightMentionUsername = username
+    if (username) {
+      $('.postbody').each(Awful.highlightMentions);
+    }
+  });
+  
+  bridge.registerHandler('endMessage', function(message) {
+    $('#end').text(message || '');
+  });
+});
+
+$(function() {
+  $('body').on('click', '.bbc-spoiler', function(event) {
+    var target = $(event.target);
+    var spoiler = target.closest('.bbc-spoiler');
+    var isLink = target.closest('a, [data-awful-linkified-image]').length > 0;
+    var isSpoiled = spoiler.hasClass('spoiled');
+    if (!(isLink && isSpoiled)) {
+      spoiler.toggleClass('spoiled');
+    }
+    if (isLink && !isSpoiled) {
+      event.preventDefault();
+    }
+  });
+  
+  $('body').on('click', '[data-awful-linkified-image]', function(event) {
+    var link = $(event.target);
+    if (link.closest('.bbc-spoiler:not(.spoiled)').length > 0) {
+      return;
+    }
+    showLinkifiedImage(link);
+    
+    // Don't follow links when showing linkified images.
+    event.preventDefault();
+  });
+  
+  $('.postbody').each(function() { Awful.highlightMentions(this); });
+});
+
+function showLinkifiedImage(link) {
+  link = $(link);
+  link.replaceWith($('<img>', { border: 0, alt: '', src: link.text() }));
+}
+
+function highlightMentions(post) {
+  var username = Awful._highlightMentionUsername;
+  if (!username) return;
+  var regex = new RegExp("\\b" + regexEscape(username) + "\\b", "i");
+  var posts = $(post);
+  posts.each(function() { eachTextNode(this, replaceAll); });
+  return posts;
+  
+  function regexEscape(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+  }
   function eachTextNode(node, callback) {
     if (node.nodeType === Node.TEXT_NODE) callback(node)
     for (var i = 0, len = node.childNodes.length; i < len; i++) {
@@ -186,37 +236,3 @@ Awful.highlightMentions = function(post) {
     replaceAll(rest)
   }
 }
-
-function regexEscape(s) {
-  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-}
-
-window.Awful = Awful
-})()
-
-
-;(function(){
-
-$(function(){
-  $('#posts').on('click', '[data-awful-linkified-image]', showLinkedImage)
-  $('#posts').on('click', '.bbc-spoiler', toggleSpoiled)
-  
-  $('.postbody').each(function() { Awful.highlightMentions(this); });
-})
-
-function showLinkedImage(e) {
-  var link = $(e.target)
-  link.replaceWith($('<img border=0>').attr('src', link.text()))
-  e.preventDefault()
-}
-
-function toggleSpoiled(e) {
-  var target = $(e.target)
-  var spoiler = target.closest('.bbc-spoiler')
-  if (!spoiler.hasClass('spoiled') && target.filter('a').length) {
-    e.preventDefault()
-  }
-  spoiler.toggleClass('spoiled')
-}
-
-})()

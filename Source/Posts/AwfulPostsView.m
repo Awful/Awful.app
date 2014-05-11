@@ -7,6 +7,7 @@
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache.h>
+#import <WebViewJavascriptBridge.h>
 
 @interface AwfulPostsView () <UIWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -25,12 +26,7 @@
     BOOL _onceOnFirstLoad;
     BOOL _loadLinkifiedImagesOnFirstLoad;
     CGFloat _scrollToFractionOfContent;
-}
-
-- (void)dealloc
-{
-    [self.webView stopLoading];
-    self.webView.delegate = nil;
+    WebViewJavascriptBridge *_webViewJavaScriptBridge;
 }
 
 - (id)initWithFrame:(CGRect)frame baseURL:(NSURL *)baseURL
@@ -43,10 +39,13 @@
     UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
     webView.frame = (CGRect){ .size = frame.size };
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    webView.delegate = self;
     webView.backgroundColor = [UIColor clearColor];
     self.webView = webView;
     [self addSubview:self.webView];
+    
+    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:webView webViewDelegate:self handler:^(id data, WVJBResponseCallback _) {
+        NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
+    }];
     
     UITapGestureRecognizer *tap = [UITapGestureRecognizer new];
     tap.delegate = self;
@@ -91,6 +90,7 @@
 
 - (void)reloadData
 {
+    _onceOnFirstLoad = NO;
     NSString *HTML = [self.delegate HTMLForPostsView:self];
     [self.webView loadHTMLString:HTML baseURL:self.baseURL];
     self.didLoadHTML = YES;
@@ -98,12 +98,14 @@
 
 - (void)reloadPostAtIndex:(NSInteger)index withHTML:(NSString *)HTML
 {
-    [self evalJavaScript:@"Awful.post(%d, %@)", index, JSONizeValue(HTML)];
+    NSDictionary *data = @{ @"index": @(index),
+                            @"HTML": HTML };
+    [_webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
 }
 
 - (void)prependPostsHTML:(NSString *)HTML
 {
-    [self evalJavaScript:@"Awful.prependPosts(%@)", JSONizeValue(HTML)];
+    [_webViewJavaScriptBridge callHandler:@"prependPosts" data:HTML];
 }
 
 static NSString * JSONize(id obj)
@@ -123,14 +125,9 @@ static NSString * JSONizeValue(id value)
     return [JSONize(@[ value ?: [NSNull null] ]) stringByAppendingString:@"[0]"];
 }
 
-static NSString * JSONizeBool(BOOL aBool)
-{
-    return aBool ? @"true" : @"false";
-}
-
 - (void)clearAllPosts
 {
-    [self evalJavaScript:@"Awful.posts([])"];
+    [self.webView loadHTMLString:@"" baseURL:nil];
 }
 
 - (void)jumpToElementWithID:(NSString *)elementID
@@ -164,15 +161,8 @@ static NSString * JSONizeBool(BOOL aBool)
 {
     if (_stylesheet == stylesheet) return;
     _stylesheet = [stylesheet copy];
-    [self updateStylesheet];
-}
-
-- (void)updateStylesheet
-{
-    if (self.didLoadHTML) {
-        [self evalJavaScript:@"Awful.stylesheet(%@)", JSONizeValue(self.stylesheet ?: @"")];
-    } else {
-        [self reloadData];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:self.stylesheet];
     }
 }
 
@@ -180,48 +170,41 @@ static NSString * JSONizeBool(BOOL aBool)
 {
     if (_showAvatars == showAvatars) return;
     _showAvatars = showAvatars;
-    [self updateShowAvatars];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@(showAvatars)];
+    }
 }
 
 - (void)setFontScale:(int)fontScale
 {
     if (_fontScale == fontScale) return;
     _fontScale = fontScale;
-    [self updateFontScale];
-}
-
-- (void)updateFontScale
-{
-    [self evalJavaScript:@"Awful.setFontScale(%d)", self.fontScale];
-}
-
-- (void)updateShowAvatars
-{
-    [self evalJavaScript:@"Awful.showAvatars(%@)", JSONizeBool(self.showAvatars)];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@(fontScale)];
+    }
 }
 
 - (void)loadLinkifiedImages
 {
-    _loadLinkifiedImagesOnFirstLoad = YES;
-    [self evalJavaScript:@"Awful.loadLinkifiedImages()"];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
+    } else {
+        _loadLinkifiedImagesOnFirstLoad = YES;
+    }
 }
 
 - (void)setHighlightMentionUsername:(NSString *)highlightMentionUsername
 {
     if (_highlightMentionUsername == highlightMentionUsername) return;
     _highlightMentionUsername = [highlightMentionUsername copy];
-    [self updateHighlightMentionUsername];
-}
-
-- (void)updateHighlightMentionUsername
-{
-    [self evalJavaScript:@"Awful.highlightMentionUsername(%@)",
-     JSONizeValue(self.highlightMentionUsername)];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:_highlightMentionUsername];
+    }
 }
 
 - (void)setLastReadPostID:(NSString *)postID
 {
-    [self evalJavaScript:@"Awful.markReadUpToPostWithID(%@)", JSONizeValue(postID)];
+    [_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:postID];
 }
 
 - (CGFloat)scrolledFractionOfContent
@@ -256,7 +239,9 @@ static NSString * JSONizeBool(BOOL aBool)
 
 - (void)updateEndMessage
 {
-    [self evalJavaScript:@"Awful.endMessage(%@)", JSONizeValue(self.endMessage)];
+    if (_onceOnFirstLoad) {
+        [_webViewJavaScriptBridge callHandler:@"endMessage" data:self.endMessage];
+    }
 }
 
 typedef struct WebViewPoint
@@ -388,6 +373,7 @@ static WebViewPoint WebViewPointForPointInWebView(CGPoint point, UIWebView *webV
         _onceOnFirstLoad = YES;
         if (_loadLinkifiedImagesOnFirstLoad) {
             [self loadLinkifiedImages];
+            _loadLinkifiedImagesOnFirstLoad = NO;
         }
         [self updateEndMessage];
         self.hasLoaded = YES;
