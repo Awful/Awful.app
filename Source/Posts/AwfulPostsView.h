@@ -94,8 +94,6 @@
 
 @optional
 
-- (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView;
-
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)url;
 - (void)postsView:(AwfulPostsView *)postsView didReceiveSingleTapAtPoint:(CGPoint)point;
 - (void)postsView:(AwfulPostsView *)postsView didReceiveLongTapAtPoint:(CGPoint)point;

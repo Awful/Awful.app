@@ -779,11 +779,6 @@
     return _postTemplate;
 }
 
-- (NSString *)advertisementHTMLForPostsView:(AwfulPostsView *)postsView
-{
-    return self.advertisementHTML;
-}
-
 - (void)postsView:(AwfulPostsView *)postsView willFollowLinkToURL:(NSURL *)URL
 {
     if ([URL awfulURL]) {
