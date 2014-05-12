@@ -4,37 +4,47 @@
  
  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 */
-html {
-  font-family: "Helvetica Neue", sans-serif;
-}
 body {
+  font-family: "Helvetica Neue", sans-serif;
   margin: 0;
   -webkit-text-size-adjust: 100%;
   -webkit-touch-callout: none;
+}
+body {
   word-wrap: break-word;
+}
+.postbody img,
+.postbody iframe {
+  max-width: 100%;
 }
 post {
   display: block;
-  margin: 8px 0;
   border-top: 1px solid;
   border-bottom: 1px solid;
+  margin-top: 0.5em;
+}
+.iphone post header,
+.iphone post .postbody,
+.iphone post footer {
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+.ipad post header,
+.ipad post .postbody,
+.ipad post footer {
+  padding-left: 1.07em;
+  padding-right: 1.07em;
 }
 post:first-child {
   margin-top: 0;
 }
-.iphone post {
-  padding: .6em;
-  padding-bottom: 0;
-}
-.ipad post {
-  padding: 1.07em;
-  padding-bottom: 0;
-}
 header {
-  margin: 0.25em 0 0.5em 0;
+  padding-top: 0.75em;
+  padding-bottom: 0.7em;
 }
 .ipad header {
-  margin-bottom: 8px;
+  padding-top: 1.22em;
+  /*    padding-bottom: 0.7em;*/
 }
 header:after {
   content: "";
@@ -44,13 +54,13 @@ header:after {
 .avatar {
   display: inline-block;
   vertical-align: middle;
-  margin: 0;
 }
 .iphone .avatar {
-  max-height: 2.5em;
   max-width: 2.5em;
+  max-height: 2.5em;
 }
 .ipad .avatar {
+  max-width: 4em;
   max-height: 4em;
 }
 .nameanddate {
@@ -106,12 +116,6 @@ header:after {
   font-size: .8em;
   font-weight: lighter;
   margin: -0.4em 0 0;
-}
-.ipad .regdate {
-  padding-bottom: .75em;
-}
-header {
-  padding-bottom: 0;
 }
 .username {
   display: inline-block;
@@ -181,24 +185,19 @@ header {
   font-family: inherit;
   font-size: 2.25em;
   -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
   background-color: transparent;
   line-height: 1em;
 }
-.postbody {
-  font-family: "Helvetica Neue";
-}
 .postbody img {
   -webkit-user-select: none;
-}
-.postbody img,
-.postbody iframe {
-  max-width: 100%;
 }
 .bbc-block {
   border-left: 2px solid #999;
   margin: 5px 0;
   padding: 0 10px 5px;
+}
+.ipad .bbc-block {
+  margin: 0 10px 1em 10px;
 }
 .bbc-block h4 {
   margin: 0;
@@ -207,9 +206,6 @@ header {
 }
 .bbc-block h5 {
   margin: 0;
-}
-.ipad .bbc-block {
-  margin: 0 10px 1em 10px;
 }
 .bbc-block.mention,
 .bbc-block.mention h4 a {

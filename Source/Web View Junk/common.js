@@ -48,11 +48,31 @@ $('body').on('click', '[data-awful-linkified-image]', function(event) {
   event.preventDefault();
 });
 
-// Returns the CGRectFromString-formatted bounding rect of an element, for passing back to Objective-C.
-function rectOfElement(element) {
-  var rect = $(element).offset();
-  var origin = [rect.left - window.pageXOffset, rect.top - window.pageYOffset].join(",");
-  var size = [rect.width, rect.height].join(",");
+// Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
+function rectOfElement(elements) {
+  elements = $(elements);
+  var unionRect = elements.offset();
+  elements.slice(1).each(function() {
+    var rect = $(this).offset();
+    if (rect.left < unionRect.left) {
+      unionRect.width += (unionRect.left - rect.left);
+      unionRect.left = rect.left;
+    }
+    if (rect.top < unionRect.top) {
+      unionRect.height += (unionRect.top - rect.top);
+      unionRect.top = rect.top;
+    }
+    var rightDelta = (rect.left + rect.width) - (unionRect.left + unionRect.width);
+    if (rightDelta > 0) {
+      unionRect.width += rightDelta;
+    }
+    var bottomDelta = (rect.top + rect.height) - (unionRect.top + unionRect.height);
+    if (bottomDelta > 0) {
+      unionRect.height += bottomDelta;
+    }
+  });
+  var origin = [unionRect.left - window.pageXOffset, unionRect.top - window.pageYOffset].join(",");
+  var size = [unionRect.width, unionRect.height].join(",");
   return "{{" + origin + "},{" + size + "}}";
 }
 

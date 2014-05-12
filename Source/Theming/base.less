@@ -1,12 +1,11 @@
-// Common style for all posts views.
-// -------------------------
+// All posts view themes inherit from this file.
 
-// Base font. Size other text using ems so the font size setting works.
-html {
-  font-family: "Helvetica Neue", sans-serif;
-}
+// Please use ems whenever sizing text or things that should scale with text. Then Awful's font scale setting works properly.
+
+// The body has the .iphone class on iPhones; .ipad on iPads.
 
 body {
+  font-family: "Helvetica Neue", sans-serif;
   margin: 0;
   
   // Maintain text size on orientation change.
@@ -14,66 +13,82 @@ body {
   
   // Hide UIWebView's long-tap link menu.
   -webkit-touch-callout: none;
-  
-  // Don't break tables.
-  word-wrap: break-word;
 }
 
-// Posts
-// -------------------------
+// Don't break tables with text, images, or videos.
+body {
+  word-wrap: break-word;
+}
+.postbody {
+  img, iframe {
+    max-width: 100%;
+  }
+}
+
+// The action sheet code highlights the <header>, <footer>, and .action-button elements. Padding on those elements is included in the highlight but margin is not. So prefer pading the <header> and <footer> over setting a margin on the <post>.
+.post-side-padding(@padding) {
+  
+  // Spelled out with -left and -right so padding can be individually overridden later.
+  header, .postbody, footer {
+    padding-left: @padding;
+    padding-right: @padding;
+  }
+}
 
 post {
   display: block;
-  margin: 8px 0;
+  
+  .iphone & {
+    .post-side-padding(0.6em);
+  }
+  .ipad & {
+    .post-side-padding(1.07em);
+  }
+  
   border-top: 1px solid;
   border-bottom: 1px solid;
   
-  &:first-child {
-  	margin-top: 0;
+  .spacer(@height) {
+    margin-top: @height;
+    &:first-child {
+    	margin-top: 0;
+    }
   }
-  
-  .iphone & {
-    padding: .6em;
-    padding-bottom: 0;
-  }
-  
-  .ipad & {
-    padding: 1.07em;
-    padding-bottom: 0;
-  }
+  .spacer(0.5em);
 }
 
-// Post header
-// -------------------------
-
-// Layout
-
 header {
-  margin: 0.25em 0 0.5em 0; 
+  padding-top: 0.75em;
+  padding-bottom: 0.7em;
   
   .ipad & {
-    margin-bottom: 8px;
+    padding-top: 1.22em;
+/*    padding-bottom: 0.7em;*/
   }
   
-  &:after {
-    content: "";
-    display: block;
-    clear: both;
+  .clearfix() {
+    &:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
   }
+  .clearfix();
 }
 
 .avatar {
   display: inline-block;
   vertical-align: middle;
-  margin: 0;
   
-  .iphone & {
-    max-height: 2.5em;
-    max-width: 2.5em;
+  .constrain-size(@width) {
+    max-width: @width;
+    max-height: @width;
   }
-  
+  .iphone & {
+    .constrain-size(2.5em);
+  }
   .ipad & {
-    max-height: 4em;
+    .constrain-size(4em);
   }
 }
 
@@ -134,7 +149,6 @@ header {
     }
   }
 }
-
 .clock-color(#000);
 
 .regdate {
@@ -142,16 +156,6 @@ header {
   font-size: .8em;
   font-weight: lighter;
   margin: -.4em 0 0;
-  
-  .ipad & {
-    padding-bottom: .75em;
-  }
-}
-
-// Non-layout
-
-header {
-  padding-bottom: 0;
 }
 
 .username {
@@ -229,21 +233,11 @@ header {
   line-height: 1em;  
 }
 
-// Post body
-// -------------------------
+// We don't generally control the markup in the post body, so tread carefully.
 
-// We don't generally control the markup in the post body, so we make do.
-
-.postbody {
-  // Hide UIWebView's long-tap image menu.
-  img {
-    -webkit-user-select: none;
-  }
-  
-  // Don't break tables. iframes are embedded videos.
-  img, iframe {
-    max-width: 100%;
-  }
+// Hide UIWebView's long-tap image menu.
+.postbody img {
+  -webkit-user-select: none;
 }
 
 // A bbc-block is [quote], [code], etc.
@@ -255,18 +249,18 @@ header {
   margin: 5px 0;
   padding: 0 10px 5px;
   
+  .ipad & {
+    margin: 0 10px 1em 10px;
+  }
   
   h4 {
     margin: 0;
     padding: 1px 0px 2px;
     font-weight: bold;
   }
+  
   h5 {
     margin: 0;
-  }
-  
-  .ipad & {
-    margin: 0 10px 1em 10px;
   }
   
   &.mention, &.mention h4 a {
@@ -343,9 +337,6 @@ footer {
     clear: both;
   }
 }
-
-// Bottom of the page
-// -------------------------
 
 #ad {
   text-align: center;

@@ -95,7 +95,8 @@ $(function() {
 
 // Action sheet popovers need to get this information synchronously, so these functions are meant to be called directly from Objective-C. They each return a CGRectFromString-formatted bounding rect.
 function HeaderRectForPostAtIndex(postIndex) {
-  return rectOfElement($('post').eq(postIndex).find('header'));
+  // Want to point just to the avatar/username, but the <header> extends across the page.
+  return rectOfElement($('post').eq(postIndex).find('.avatar, .nameanddate'));
 }
 function FooterRectForPostAtIndex(postIndex) {
   return rectOfElement($('post').eq(postIndex).find('footer'));

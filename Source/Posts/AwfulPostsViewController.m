@@ -759,10 +759,7 @@
     
     AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
         NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-        CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
-        rect.origin.x = 0;
-        rect.size.width = CGRectGetMaxX(self.webView.bounds);
-        return rect;
+        return [self.webView awful_rectForElementBoundingRect:rectString];
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [sheet presentInPopoverFromView:self.webView pointingToRegionReturnedByBlock:headerRectBlock];
@@ -863,10 +860,7 @@
     } else {
         [sheet presentFromView:self.webView highlightingRegionReturnedByBlock:^(UIView *view) {
             NSString *rectString = [self.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-            CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
-            rect.origin.x = 0;
-            rect.size.width = CGRectGetWidth(self.webView.bounds);
-            return rect;
+            return [self.webView awful_rectForElementBoundingRect:rectString];
         }];
     }
 }
