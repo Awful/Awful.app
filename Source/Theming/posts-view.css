@@ -120,29 +120,25 @@ header {
   display: inline-block;
   font-size: 1.1em;
   font-weight: 500;
+  position: relative;
+  margin-right: 1em;
   /* Peta's 3D username */
 }
-.username #bracket {
-  display: inline-block;
-  position: relative;
-  height: 16px;
-  width: 8px;
-}
-.username #bracket::before,
-.username #bracket::after {
-  content: '';
+.username::before,
+.username::after {
+  content: "";
   position: absolute;
-  left: 5px;
+  width: 0.5em;
   height: 15%;
-  width: 100%;
+  right: -0.75em;
   background: #1682b2;
 }
-.username #bracket::before {
-  top: 50%;
+.username::before {
+  top: 40%;
   -webkit-transform: rotate(45deg);
 }
-.username #bracket::after {
-  top: 81%;
+.username::after {
+  top: 60%;
   -webkit-transform: rotate(-45deg);
 }
 .role-admin .username:before {

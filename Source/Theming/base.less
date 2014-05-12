@@ -160,33 +160,32 @@ header {
 }
 
 .username {
-  
   display: inline-block;
   font-size: 1.1em;
   font-weight: 500;
   
-  #bracket {
-    display: inline-block;
-	position: relative;
-	height: 16px;
-	width: 8px;
+  .chevron-pointing-right(@width: 0.5em) {
+    position: relative;
+    margin-right: 2 * @width;
+    
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      width: @width;
+      height: 15%; // line thickness
+      right: -1.5 * @width;
+      background: #1682b2;
+    }
+    &::before {
+      top: 40%;
+      -webkit-transform: rotate(45deg);
+    }
+    &::after {
+      top: 60%;
+      -webkit-transform: rotate(-45deg);
+    }
   }
-  #bracket::before, #bracket::after {
-	content: '';
-	position: absolute;
-	left: 5px;
-	height: 15%;
-	width: 100%;
-	background: #1682b2;
-  }
-  #bracket::before {
-	top: 50%;
-	-webkit-transform: rotate(45deg);
-  }
-  #bracket::after {
-	top: 81%;
-	-webkit-transform: rotate(-45deg);
-  }
+  .chevron-pointing-right();
   
   .role-admin &:before {
     color: #990011;
