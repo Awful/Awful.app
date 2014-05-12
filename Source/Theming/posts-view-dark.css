@@ -244,6 +244,7 @@ span.mention {
 blockquote {
   margin: 0;
   font-size: 90%;
+  color: #666;
 }
 blockquote img {
   max-width: 160px;
