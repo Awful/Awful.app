@@ -72,7 +72,7 @@ startBridge(function(bridge) {
   });
   
   $(function() {
-    $('body').on('click', 'header', function(event) {
+    $('body').on('click', 'header .avatar, header .nameanddate', function(event) {
       bridge.callHandler('didTapUserHeader', clickData(this));
     });
     
