@@ -31,7 +31,7 @@ post:first-child {
   padding-bottom: 0;
 }
 header {
-  margin: .25em 0;
+  margin: 0.25em 0 0.5em 0;
 }
 .ipad header {
   margin-bottom: 8px;
@@ -56,9 +56,6 @@ header:after {
 .nameanddate {
   display: inline-block;
   vertical-align: middle;
-}
-.action-button {
-  float: right;
 }
 .username {
   margin: 0 0 2px;
@@ -189,7 +186,7 @@ header {
   line-height: 1em;
 }
 .postbody {
-  font: -apple-system-body;
+  font-family: "Helvetica Neue";
 }
 .postbody img {
   -webkit-user-select: none;
@@ -197,9 +194,6 @@ header {
 .postbody img,
 .postbody iframe {
   max-width: 100%;
-}
-.iphone .postbody {
-  padding: .36em 0;
 }
 .bbc-block {
   border-left: 2px solid #999;
@@ -258,8 +252,8 @@ blockquote img {
   margin: 0;
 }
 .editedby {
-  margin-top: 15px;
-  font: -apple-system-caption1;
+  margin-bottom: 0;
+  font-size: 90%;
   font-style: italic;
 }
 .attachment {

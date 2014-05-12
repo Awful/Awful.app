@@ -13,6 +13,7 @@ body {
   font-family: Helvetica, sans-serif;
   font-size: 14px;
   -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
 }
 body.dark {
   background: #262626;

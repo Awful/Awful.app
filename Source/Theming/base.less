@@ -8,10 +8,13 @@ html {
 
 body {
   margin: 0;
+  
   // Maintain text size on orientation change.
   -webkit-text-size-adjust: 100%;
+  
   // Hide UIWebView's long-tap link menu.
   -webkit-touch-callout: none;
+  
   // Don't break tables.
   word-wrap: break-word;
 }
@@ -46,8 +49,7 @@ post {
 // Layout
 
 header {
-  
-  margin: .25em 0; 
+  margin: 0.25em 0 0.5em 0; 
   
   .ipad & {
     margin-bottom: 8px;
@@ -80,10 +82,6 @@ header {
   vertical-align: middle;
 }
 
-.action-button {
-  float: right;
-}
-
 .username {
   margin: 0 0 2px;
 }
@@ -108,17 +106,14 @@ header {
   
   position: relative;
   
-  &::before,
-  &::after {
+  &::before, &::after {
     content: "";
-    
     position: absolute;
     bottom: 50%;
     margin-bottom: -0.1em;
     left: 50%;
     margin-left: -0.05em;
   }
-  
   &::before {
     width: 30%;
     height: 0.1em;
@@ -196,10 +191,10 @@ header {
   }
   
   @-webkit-keyframes RalpStar {
-  	0% {color: grey;}
-  	49% {color: grey;}
-	50% {color: yellow;}
-	100% {color: yellow;}
+  	  0% { color: grey; }
+  	 49% { color: grey; }
+     50% { color: yellow; }
+    100% { color: yellow; }
 	}
   .userid-61644 &:before {
     -webkit-animation: RalpStar 20s;
@@ -221,17 +216,15 @@ header {
   	color: rgba(0, 0, 0, 0.5);
 	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
-  
 }
 
 .action-button {
   margin: 0;
   padding: 0;
   border: none;
-  font-family: inherit; // UIWebView base style sets Helvetica.
+  font-family: inherit; // UIWebView base style hardcodes Helvetica.
   font-size: 2.25em;
   -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none; // Prevent selecting the whole header on long-tap.
   background-color: transparent;
   line-height: 1em;  
 }
@@ -242,21 +235,14 @@ header {
 // We don't generally control the markup in the post body, so we make do.
 
 .postbody {
-	font: -apple-system-body;
-
   // Hide UIWebView's long-tap image menu.
   img {
     -webkit-user-select: none;
   }
   
   // Don't break tables. iframes are embedded videos.
-  img,
-  iframe {
+  img, iframe {
     max-width: 100%;
-  }
-  
-  .iphone & {
-    padding: .36em 0;
   }
 }
 
@@ -327,8 +313,7 @@ blockquote {
 
 // Indenting lists on iPhone wastes too much space.
 .iphone .postbody {
-  ol,
-  ul {
+  ol, ul {
     margin: 0;
     padding-left: 1.5em;
   }
@@ -339,8 +324,8 @@ blockquote {
 }
 
 .editedby {
-  margin-top: 15px;
-  font: -apple-system-caption1;
+  margin-bottom: 0;
+  font-size: 90%;
   font-style: italic;
 }
 

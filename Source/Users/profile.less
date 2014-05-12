@@ -14,7 +14,12 @@ body {
   background: #fff;
   font-family: Helvetica, sans-serif;
   font-size: 14px;
+  
+  // Hide default long-tap menu.
   -webkit-touch-callout: none;
+  
+  // Maintain text size on orientation change.
+  -webkit-text-size-adjust: 100%;
   
   &.dark {
   	background: #262626;
