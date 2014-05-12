@@ -10,6 +10,7 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
+#import "AwfulSidebarCell.h"
 
 @interface AwfulBasementSidebarViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -76,7 +77,9 @@
     self.tableView = tableView;
     tableView.dataSource = self;
     tableView.delegate = self;
-    [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
+    [tableView registerClass:[AwfulSidebarCell class] forCellReuseIdentifier:CellIdentifier];
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    tableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:tableView];
     
     // Leaving `scrollsToTop` set to its default `YES` prevents the basement's main content view from ever scrolling to top when someone taps the status bar. (If multiple scroll views can scroll to top, none of them actually will.) We set it to `NO` so main content views work as expected. Any sidebar with enough items to make scrolling to top a valuable behaviour is probably ill-conceived anyway.
@@ -168,8 +171,6 @@ static NSString * const CellIdentifier = @"Cell";
     AwfulBasementHeaderView *headerView = self.headerView;
     headerView.usernameLabel.textColor = theme[@"basementLabelColor"];
     headerView.backgroundColor = theme[@"basementHeaderBackgroundColor"];
-    self.tableView.backgroundColor = [UIColor clearColor];
-    self.tableView.separatorColor = theme[@"basementSeparatorColor"];
     [self.tableView reloadData];
 }
 
@@ -291,25 +292,20 @@ static void * KVOContext = &KVOContext;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    AwfulSidebarCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     UITabBarItem *item = self.items[indexPath.row];
     cell.imageView.image = item.image;
-    cell.imageView.contentMode = UIViewContentModeCenter;
     cell.textLabel.text = item.title;
     
     AwfulTheme *theme = self.theme;
     cell.textLabel.textColor = theme[@"basementLabelColor"];
     if (item.badgeValue.length > 0) {
-        UILabel *badge = (UILabel *)cell.accessoryView ?: [UILabel new];
-        badge.textColor = theme[@"basementBadgeColor"];
-        badge.text = item.badgeValue;
-        [badge sizeToFit];
-        cell.accessoryView = badge;
+        cell.badgeLabel.textColor = theme[@"basementBadgeColor"];
+        cell.badgeLabel.text = item.badgeValue;
+        [cell.badgeLabel sizeToFit];
     } else {
-        cell.accessoryView = nil;
+        cell.badgeLabel = nil;
     }
     
     return cell;
@@ -317,9 +313,10 @@ static void * KVOContext = &KVOContext;
 
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(AwfulSidebarCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     cell.backgroundColor = [UIColor clearColor];
+    cell.separatorView.backgroundColor = self.theme[@"basementSeparatorColor"];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
