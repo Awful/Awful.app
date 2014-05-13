@@ -14,7 +14,8 @@ body {
   word-wrap: break-word;
 }
 .postbody img,
-.postbody iframe {
+.postbody iframe,
+.postbody embed {
   max-width: 100%;
 }
 post {
