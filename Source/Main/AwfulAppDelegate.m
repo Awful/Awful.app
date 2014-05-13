@@ -258,6 +258,11 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
                                                  name:AwfulSettingsDidChangeNotification
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(preferredContentSizeDidChange:)
+                                                 name:UIContentSizeCategoryDidChangeNotification
+                                               object:nil];
+    
     [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
     [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
     
@@ -302,6 +307,11 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
              [snapshot removeFromSuperview];
          }];
 	}
+}
+
+- (void)preferredContentSizeDidChange:(NSNotification *)note
+{
+    [self themeDidChange];
 }
 
 - (void)configureSplitViewControllerSettings
