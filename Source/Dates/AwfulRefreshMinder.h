@@ -59,4 +59,10 @@
 
 - (void)didFinishRefreshingPrivateMessagesInbox;
 
+- (BOOL)shouldRefreshNewPrivateMessages;
+
+- (void)didFinishRefreshingNewPrivateMessages;
+
+- (NSDate *)suggestedDateToRefreshNewPrivateMessages;
+
 @end

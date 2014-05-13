@@ -62,6 +62,7 @@
     X(ForumList, @"com.awfulapp.Awful.LastForumRefreshDate", 60 * 60 * 6) \
     X(LoggedInUser, @"LastLoggedInUserRefreshDate", 60 * 5) \
     X(PrivateMessagesInbox, @"LastPrivateMessageInboxRefreshDate", 60 * 10) \
+    X(NewPrivateMessages, @"com.awfulapp.Awful.LastMessageCheckDate", 60 * 10) \
 
 // X Macro good times ahead.
 
@@ -82,6 +83,18 @@
 - (void)didFinishRefreshing##name \
 { \
     [self.userDefaults setObject:[NSDate date] forKey:(key)]; \
+} \
+- (NSDate *)suggestedDateToRefresh##name \
+{ \
+    NSDate *lastRefresh = [self.userDefaults objectForKey:(key)]; \
+    NSDate *now = [NSDate date]; \
+    if (!lastRefresh) return [now dateByAddingTimeInterval:(interval)]; \
+    NSTimeInterval sinceLastRefresh = [now timeIntervalSinceDate:lastRefresh]; \
+    if (sinceLastRefresh > (interval) + 1) { \
+        return now; \
+    } else { \
+        return [now dateByAddingTimeInterval:(interval) - sinceLastRefresh]; \
+    } \
 }
 REFRESH_DATES
 #undef X

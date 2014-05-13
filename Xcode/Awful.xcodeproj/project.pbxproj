@@ -171,7 +171,7 @@
 		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
 		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */; };
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
-		1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */; };
+		1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */; };
 		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
 		1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* AwfulReplyViewController.m */; };
@@ -530,8 +530,8 @@
 		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageTableViewController.m; sourceTree = "<group>"; };
 		1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
 		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
-		1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPMNotifierAgent.h; sourceTree = "<group>"; };
-		1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPMNotifierAgent.m; sourceTree = "<group>"; };
+		1CB6011316D8376A00CBEE22 /* AwfulNewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewMessageChecker.h; sourceTree = "<group>"; };
+		1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewMessageChecker.m; sourceTree = "<group>"; };
 		1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDateFormatters.h; sourceTree = "<group>"; };
 		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
 		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
@@ -1093,8 +1093,8 @@
 		1CB6010616D826DA00CBEE22 /* Private Messages */ = {
 			isa = PBXGroup;
 			children = (
-				1CB6011316D8376A00CBEE22 /* AwfulNewPMNotifierAgent.h */,
-				1CB6011416D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m */,
+				1CB6011316D8376A00CBEE22 /* AwfulNewMessageChecker.h */,
+				1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */,
 				1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */,
 				1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */,
 				1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */,
@@ -1930,7 +1930,7 @@
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
 				1C89A79118AA12CB00D75854 /* AwfulSplitView.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
-				1CB6011516D8376A00CBEE22 /* AwfulNewPMNotifierAgent.m in Sources */,
+				1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */,
 				1C1ADC2F18E344C800E865BF /* AwfulBasementHeaderView.m in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,

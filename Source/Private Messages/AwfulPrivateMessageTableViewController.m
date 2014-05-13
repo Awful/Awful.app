@@ -8,7 +8,7 @@
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
-#import "AwfulNewPMNotifierAgent.h"
+#import "AwfulNewMessageChecker.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPrivateMessageCell.h"
 #import "AwfulPrivateMessageViewController.h"
@@ -47,10 +47,14 @@
     self.title = @"Private Messages";
     self.tabBarItem.accessibilityLabel = @"Private messages";
     self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
+    NSInteger unreadMessages = [AwfulNewMessageChecker checker].unreadMessageCount;
+    if (unreadMessages > 0) {
+        self.tabBarItem.badgeValue = [@(unreadMessages) stringValue];
+    }
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:) name:AwfulNewPrivateMessagesNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:) name:AwfulDidFinishCheckingNewPrivateMessagesNotification object:nil];
     
     return self;
 }

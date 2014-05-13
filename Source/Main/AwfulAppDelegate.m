@@ -19,7 +19,7 @@
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
-#import "AwfulNewPMNotifierAgent.h"
+#import "AwfulNewMessageChecker.h"
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulResourceURLProtocol.h"
@@ -252,7 +252,8 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 
     [self showPromptIfLoginCookieExpiresSoon];
     
-    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
+    [[AwfulNewMessageChecker checker] refreshIfNecessary];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
@@ -318,11 +319,6 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 {
     UIInterfaceOrientationMask mask = [AwfulSettings settings].hideSidebarInLandscape ? 0 : UIInterfaceOrientationMaskLandscape;
     self.splitViewController.stickySidebarInterfaceOrientationMask = mask;
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    [[AwfulNewPMNotifierAgent agent] checkForNewMessages];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
