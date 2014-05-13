@@ -7,6 +7,7 @@
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="category" inverseEntity="AwfulForum" syncable="YES"/>
     </entity>
     <entity name="AwfulForum" representedClassName="AwfulForum" syncable="YES">
+        <attribute name="canPost" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="forumID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <attribute name="lastFilteredRefresh" optional="YES" attributeType="Date" syncable="YES"/>
@@ -114,7 +115,7 @@
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="AwfulForum" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="AwfulForum" positionX="0" positionY="0" width="128" height="225"/>
         <element name="AwfulPost" positionX="0" positionY="0" width="128" height="195"/>
         <element name="AwfulPrivateMessage" positionX="0" positionY="0" width="128" height="195"/>
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
