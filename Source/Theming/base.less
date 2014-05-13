@@ -163,29 +163,6 @@ header {
   font-size: 1.1em;
   font-weight: 500;
   
-  .chevron-pointing-right(@width: 0.5em) {
-    position: relative;
-    margin-right: 2 * @width;
-    
-    &::before, &::after {
-      content: "";
-      position: absolute;
-      width: @width;
-      height: 15%; // line thickness
-      right: -1.5 * @width;
-      background: #1682b2;
-    }
-    &::before {
-      top: 40%;
-      -webkit-transform: rotate(45deg);
-    }
-    &::after {
-      top: 60%;
-      -webkit-transform: rotate(-45deg);
-    }
-  }
-  .chevron-pointing-right();
-  
   .role-admin &:before {
     color: #990011;
   }
@@ -208,7 +185,7 @@ header {
   .role-admin &:before,
   .role-mod &:before,
   .userid-61644 &:before {
-    content: '★'; 
+    content: '★ '; 
   }
   
   .role-op & {
@@ -221,6 +198,36 @@ header {
 	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
 }
+
+.chevron {
+  position: relative;
+  display: inline-block;
+  
+  @width: 0.5em;
+  width: @width;
+  height: 1em;
+  
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    width: @width;
+    height: 15%; // line thickness
+  }
+  &::before {
+    top: 50%;
+    -webkit-transform: rotate(45deg);
+  }
+  &::after {
+    top: 80%;
+    -webkit-transform: rotate(-45deg);
+  }
+}
+.chevron-color(@color: #1682b2) {
+  .chevron::before, .chevron::after {
+    background: @color;
+  }
+}
+.chevron-color();
 
 .action-button {
   margin: 0;

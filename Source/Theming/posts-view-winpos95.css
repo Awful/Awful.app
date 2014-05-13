@@ -121,26 +121,7 @@ header:after {
   display: inline-block;
   font-size: 1.1em;
   font-weight: 500;
-  position: relative;
-  margin-right: 1em;
   /* Peta's 3D username */
-}
-.username::before,
-.username::after {
-  content: "";
-  position: absolute;
-  width: 0.5em;
-  height: 15%;
-  right: -0.75em;
-  background: #1682b2;
-}
-.username::before {
-  top: 40%;
-  -webkit-transform: rotate(45deg);
-}
-.username::after {
-  top: 60%;
-  -webkit-transform: rotate(-45deg);
 }
 .role-admin .username:before {
   color: #990011;
@@ -169,7 +150,7 @@ header:after {
 .role-admin .username:before,
 .role-mod .username:before,
 .userid-61644 .username:before {
-  content: '★';
+  content: '★ ';
 }
 .role-op .username {
   color: #199ed7;
@@ -177,6 +158,31 @@ header:after {
 .userid-182864 .username {
   color: rgba(0, 0, 0, 0.5);
   text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
+}
+.chevron {
+  position: relative;
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+}
+.chevron::before,
+.chevron::after {
+  content: "";
+  position: absolute;
+  width: 0.5em;
+  height: 15%;
+}
+.chevron::before {
+  top: 50%;
+  -webkit-transform: rotate(45deg);
+}
+.chevron::after {
+  top: 80%;
+  -webkit-transform: rotate(-45deg);
+}
+.chevron::before,
+.chevron::after {
+  background: #1682b2;
 }
 .action-button {
   margin: 0;
