@@ -333,8 +333,7 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
 {
     NSError *error;
-    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
-                                                     error:&error];
+    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
     if (!ok) {
         NSLog(@"error setting shared audio session category: %@", error);
     }
