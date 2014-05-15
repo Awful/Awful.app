@@ -161,7 +161,7 @@
     
     AwfulSemiModalRectInViewBlock headerBlock = ^(UIView *view) {
         UIWebView *webView = self.webView;
-        NSString *rectString = [webView awful_evalJavaScript:@"HeaderRect()"];
+        NSString *rectString = [webView awful_evalJavaScript:@"HeaderRect(%@)", UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"true" : @"false"];
         return [webView awful_rectForElementBoundingRect:rectString];
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

@@ -758,7 +758,7 @@
 	}]];
     
     AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
-        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu, %@)", (unsigned long)postIndex, UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"true" : @"false"];
         return [self.webView awful_rectForElementBoundingRect:rectString];
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
