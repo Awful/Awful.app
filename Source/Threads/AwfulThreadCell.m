@@ -13,7 +13,6 @@
 @implementation AwfulThreadCell
 
 @synthesize fontName = _fontName;
-@synthesize showActionsGestureRecognizer = _showActionsGestureRecognizer;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -91,14 +90,6 @@
     UIFontDescriptor *detailTextLabelDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleCaption2];
     self.detailTextLabel.font = [UIFont fontWithName:(fontName ?: [detailTextLabelDescriptor objectForKey:UIFontDescriptorNameAttribute])
                                                 size:detailTextLabelDescriptor.pointSize];
-}
-
-- (UILongPressGestureRecognizer *)showActionsGestureRecognizer
-{
-    if (_showActionsGestureRecognizer) return _showActionsGestureRecognizer;
-    _showActionsGestureRecognizer = [UILongPressGestureRecognizer new];
-    [self addGestureRecognizer:_showActionsGestureRecognizer];
-    return _showActionsGestureRecognizer;
 }
 
 - (void)layoutSubviews

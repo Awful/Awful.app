@@ -60,9 +60,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
 {
-    [cell.showActionsGestureRecognizer removeTarget:nil action:nil];
-    [cell.showActionsGestureRecognizer addTarget:self action:@selector(showThreadActions:)];
-    
 	if ([AwfulSettings settings].showThreadTags) {
 		cell.threadTagHidden = NO;
         AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
@@ -142,101 +139,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     }
 }
 
-- (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
-{
-    if (longPress.state != UIGestureRecognizerStateBegan) return;
-    UITableViewCell *cell = (UITableViewCell *)longPress.view;
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulThread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    [self showThreadActionsForThread:thread];
-}
-
-- (void)showThreadActionsForThread:(AwfulThread *)thread
-{
-    AwfulActionViewController *sheet = [AwfulActionViewController new];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
-        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-        postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-        [self showPostsViewController:postsViewController];
-        [postsViewController loadPage:1 updatingCache:YES];
-    }]];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
-        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-        postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-        [self showPostsViewController:postsViewController];
-        [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
-    }]];
-    AwfulIconActionItemType bookmarkItemType;
-    if (thread.bookmarked) {
-        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
-    } else {
-        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
-        [[AwfulForumsClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
-            if (error) {
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-            } else {
-                NSString *status = thread.bookmarked ? @"Added Bookmark" : @"Removed Bookmark";
-                MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                                     title:status
-                                                                                      mode:MRProgressOverlayViewModeCheckmark
-                                                                                  animated:YES];
-                overlay.tintColor = self.theme[@"tintColor"];
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [overlay dismiss:YES];
-                });
-            }
-        }];
-    }]];
-    AwfulUser *author = thread.author;
-    if (author.userID.length > 0 || author.username > 0) {
-        AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
-            } else {
-                self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-                [self.navigationController pushViewController:profile animated:YES];
-            }
-        }];
-        profileItem.title = @"View OP's Profile";
-        [sheet addItem:profileItem];
-    }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
-        components.query = [@"threadid=" stringByAppendingString:thread.threadID];
-        NSURL *URL = components.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }]];
-    if (thread.beenSeen) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread action:^{
-            if (!thread.threadID) {
-                return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
-            }
-            [[AwfulForumsClient client] markThreadUnread:thread andThen:^(NSError *error) {
-                if (error) {
-                    [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-                } else {
-                    thread.seenPosts = 0;
-                    NSError *error;
-                    BOOL ok = [thread.managedObjectContext save:&error];
-                    if (!ok) {
-                        NSLog(@"%s error saving thread %@ marked unread: %@", __PRETTY_FUNCTION__, thread.threadID, error);
-                    }
-                }
-            }];
-        }]];
-    }
-    NSIndexPath *indexPath = [_threadDataSource.fetchedResultsController indexPathForObject:thread];
-    // The cell can be nil if it's invisible or out of range. The table view is an acceptable fallback.
-    UIView *view = [self.tableView cellForRowAtIndexPath:indexPath] ?: self.tableView;
-    [sheet presentFromView:view highlightingRegionReturnedByBlock:^(UIView *view) {
-        return CGRectInset(view.bounds, 0, 1);
-    }];
-}
-
 - (void)doneWithProfile
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -267,6 +169,105 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     
     [self showPostsViewController:postsViewController];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForSwipeAccessoryButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return @"More";
+}
+
+- (void)tableView:(UITableView *)tableView swipeAccessoryButtonPushedForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self setEditing:NO animated:YES];
+    
+    AwfulThread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulActionViewController *sheet = [AwfulActionViewController new];
+    
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
+        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsViewController.restorationIdentifier = @"AwfulPostsViewController";
+        [self showPostsViewController:postsViewController];
+        [postsViewController loadPage:1 updatingCache:YES];
+    }]];
+    
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
+        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsViewController.restorationIdentifier = @"AwfulPostsViewController";
+        [self showPostsViewController:postsViewController];
+        [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
+    }]];
+    
+    AwfulIconActionItemType bookmarkItemType;
+    if (thread.bookmarked) {
+        bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+    } else {
+        bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+    }
+    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+        [[AwfulForumsClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
+            if (error) {
+                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            } else {
+                NSString *status = thread.bookmarked ? @"Added Bookmark" : @"Removed Bookmark";
+                MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                     title:status
+                                                                                      mode:MRProgressOverlayViewModeCheckmark
+                                                                                  animated:YES];
+                overlay.tintColor = self.theme[@"tintColor"];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [overlay dismiss:YES];
+                });
+            }
+        }];
+    }]];
+    
+    AwfulUser *author = thread.author;
+    if (author.userID.length > 0 || author.username > 0) {
+        AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+            } else {
+                self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+                [self.navigationController pushViewController:profile animated:YES];
+            }
+        }];
+        profileItem.title = @"View OP's Profile";
+        [sheet addItem:profileItem];
+    }
+    
+    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        components.query = [@"threadid=" stringByAppendingString:thread.threadID];
+        NSURL *URL = components.URL;
+        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
+    }]];
+    
+    if (thread.beenSeen) {
+        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread action:^{
+            if (!thread.threadID) {
+                return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
+            }
+            [[AwfulForumsClient client] markThreadUnread:thread andThen:^(NSError *error) {
+                if (error) {
+                    [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                } else {
+                    thread.seenPosts = 0;
+                    NSError *error;
+                    BOOL ok = [thread.managedObjectContext save:&error];
+                    if (!ok) {
+                        NSLog(@"%s error saving thread %@ marked unread: %@", __PRETTY_FUNCTION__, thread.threadID, error);
+                    }
+                }
+            }];
+        }]];
+    }
+    
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [sheet presentFromView:cell highlightingRegionReturnedByBlock:^(UIView *view) {
+        return CGRectInset(view.bounds, 0, 1);
+    }];
 }
 
 @end
