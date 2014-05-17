@@ -69,6 +69,7 @@
     BOOL _webViewDidLoadOnce;
     NSString *_jumpToPostIDAfterLoading;
     CGFloat _scrollToFractionAfterLoading;
+    BOOL _restoringState;
 }
 
 - (void)dealloc
@@ -133,8 +134,9 @@
         UIScrollView *scrollView = self.webView.scrollView;
         [scrollView.pullToRefreshView stopAnimating];
         [self updateUserInterface];
-        [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
-        self.hiddenPosts = 0;
+        if (!_restoringState) {
+            self.hiddenPosts = 0;
+        }
         [self refetchPosts];
         [self renderPosts];
     }
@@ -1070,6 +1072,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
+    _restoringState = YES;
     [super decodeRestorableStateWithCoder:coder];
     self.replyViewController = [coder decodeObjectForKey:ReplyViewControllerKey];
     self.replyViewController.delegate = self;
@@ -1083,6 +1086,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
     _scrollToFractionAfterLoading = [coder decodeFloatForKey:ScrolledFractionOfContentKey];
+}
+
+- (void)applicationFinishedRestoringState
+{
+    _restoringState = NO;
 }
 
 static NSString * const ThreadIDKey = @"AwfulThreadID";
