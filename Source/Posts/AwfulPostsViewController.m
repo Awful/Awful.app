@@ -159,9 +159,8 @@
         // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
         if (page != self.page) return;
         
-        [self clearLoadingMessage];
-        
         if (error) {
+            [self clearLoadingMessage];
             BOOL offlineMode = ![AwfulForumsClient client].reachable && [error.domain isEqualToString:NSURLErrorDomain];
             if (self.posts.count == 0 || !offlineMode) {
                 [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
@@ -201,6 +200,7 @@
             self.thread.seenPosts = lastPost.threadIndex;
         }
         
+        [self clearLoadingMessage];
         [self.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }
@@ -220,6 +220,7 @@
 
 - (void)renderPosts
 {
+    [self loadBlankPage];
     _webViewDidLoadOnce = NO;
     
     NSMutableDictionary *context = [NSMutableDictionary new];
@@ -254,6 +255,11 @@
         NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
     }
     [self.webView loadHTMLString:HTML baseURL:[AwfulForumsClient client].baseURL];
+}
+
+- (void)loadBlankPage
+{
+    [self.webView loadHTMLString:@"" baseURL:nil];
 }
 
 - (AwfulTheme *)theme
@@ -952,7 +958,7 @@
 {    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos continuing to play their sound after the user switches to a different thread.
     if (!self.navigationController) {
-        [self.webView loadHTMLString:@"" baseURL:nil];
+        [self loadBlankPage];
     }
     [super viewDidDisappear:animated];
 }
