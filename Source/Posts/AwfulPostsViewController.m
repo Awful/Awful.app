@@ -740,7 +740,7 @@
 	if (!self.author) {
 		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
             AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
-            postsView.page = 1;
+            [postsView loadPage:1 updatingCache:YES];
             [self.navigationController pushViewController:postsView animated:YES];
         }]];
 	}
