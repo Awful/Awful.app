@@ -73,5 +73,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>ImgurAnonymousAPIClientID</key>
+	<string>4db466addcb5cfc</string>
 </dict>
 </plist>

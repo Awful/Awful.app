@@ -3,9 +3,10 @@ xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
 link_with 'Awful', 'Imgur API Test'
 inhibit_all_warnings!
 
-pod 'AFNetworking', '2.2.0'
+pod 'AFNetworking', '2.2.4'
 pod 'GRMustache', '6.9.2'
 pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
+pod 'ImgurAnonymousAPIClient', :git => 'https://github.com/nolanw/ImgurAnonymousAPIClient.git', :tag => 'v0.1.1'
 pod 'JLRoutes', '1.4'
 pod 'MRProgress/Overlay', '0.4.1'
 pod 'PocketAPI', '1.0.2'

@@ -338,7 +338,7 @@ static BOOL verboseLoggingEnabled = NO;
 			[finalParameters addEntriesFromDictionary:parameters];
 			finalParameters[kJLRoutePatternKey] = route.pattern;
 			finalParameters[kJLRouteURLKey] = URL;
-			finalParameters[kJLRouteNamespaceKey] = route.parentRoutesController.namespaceKey ?: [NSNull null];
+			finalParameters[kJLRouteNamespaceKey] = route.parentRoutesController.namespaceKey;
 
 			[self verboseLogWithFormat:@"Final parameters are %@", finalParameters];
 			didRoute = route.block(finalParameters);

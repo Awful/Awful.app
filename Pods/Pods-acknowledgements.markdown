@@ -3,7 +3,7 @@ Awful uses these third-party libraries:
 
 ## AFNetworking
 
-Copyright (c) 2013 AFNetworking (http://afnetworking.com/)
+Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## HTMLReader
 
 HTMLReader is in the public domain.
+
+
+## ImgurAnonymousAPIClient
+
+ImgurHTTPClient is in the public domain.
 
 
 ## JLRoutes

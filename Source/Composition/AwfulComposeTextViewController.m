@@ -6,7 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
 #import <Crashlytics/Crashlytics.h>
-#import "ImgurHTTPClient.h"
+#import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
 @implementation AwfulComposeTextViewController
@@ -16,7 +16,7 @@
     id _keyboardWillShowObserver;
     id _keyboardWillHideObserver;
     id _textDidChangeObserver;
-    id <ImgurHTTPClientCancelToken> _imageUploadCancelToken;
+    NSProgress *_imageUploadProgress;
     NSLayoutConstraint *_customViewWidthConstraint;
 }
 
@@ -188,11 +188,9 @@
                                                                       animated:YES];
     overlay.tintColor = self.theme[@"tintColor"];
     
-    _imageUploadCancelToken = [[ImgurHTTPClient client] uploadImages:[attachments valueForKey:@"image"]
-                                                             andThen:^(NSError *error, NSArray *URLs)
-    {
+    _imageUploadProgress = [self uploadImages:[attachments valueForKey:@"image"] completionHandler:^(NSArray *URLs, NSError *error) {
         __typeof__(self) self = weakSelf;
-        _imageUploadCancelToken = nil;
+        _imageUploadProgress = nil;
         if (error) {
             [overlay dismiss:NO];
             [AwfulAlertView showWithTitle:@"Image Upload Failed" error:error buttonTitle:@"OK" completion:^{
@@ -220,6 +218,36 @@
             submit();
         }
     }];
+}
+
+- (NSProgress *)uploadImages:(NSArray *)images completionHandler:(void (^)(NSArray *URLs, NSError *error))completionHandler
+{
+    NSProgress *progress = [NSProgress progressWithTotalUnitCount:images.count];
+    dispatch_group_t group = dispatch_group_create();
+    NSPointerArray *URLs = [NSPointerArray strongObjectsPointerArray];
+    URLs.count = images.count;
+    for (UIImage *image in images) {
+        dispatch_group_enter(group);
+        [progress becomeCurrentWithPendingUnitCount:1];
+        [[ImgurAnonymousAPIClient client] uploadImage:image withFilename:@"image.png" completionHandler:^(NSURL *imgurURL, NSError *error) {
+            if (error) {
+                if (!progress.cancelled) {
+                    [progress cancel];
+                    if (completionHandler) completionHandler(nil, error);
+                }
+            } else {
+                [URLs replacePointerAtIndex:[images indexOfObject:image] withPointer:(__bridge void *)imgurURL];
+            }
+            dispatch_group_leave(group);
+        }];
+        [progress resignCurrent];
+    }
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (!progress.cancelled) {
+            if (completionHandler) completionHandler(URLs.allObjects, nil);
+        }
+    });
+    return progress;
 }
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
@@ -281,8 +309,9 @@
 
 - (void)didTapCancel
 {
-    if (_imageUploadCancelToken) {
-        [_imageUploadCancelToken cancel], _imageUploadCancelToken = nil;
+    if (_imageUploadProgress) {
+        [_imageUploadProgress cancel];
+        _imageUploadProgress = nil;
         [MRProgressOverlayView dismissAllOverlaysForView:self.view animated:YES completion:^{
             [self enableEverything];
         }];
