@@ -9,4 +9,9 @@
  */
 @interface AwfulTextAttachment : NSTextAttachment
 
+/**
+ * If the text attachment's image came from the Assets Library, this URL represents the asset.
+ */
+@property (strong, nonatomic) NSURL *assetURL;
+
 @end

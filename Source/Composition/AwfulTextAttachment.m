@@ -35,4 +35,22 @@
     }
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        _assetURL = [coder decodeObjectForKey:AssetURLKey];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [super encodeWithCoder:coder];
+    [coder encodeObject:self.assetURL forKey:AssetURLKey];
+}
+
+static NSString * const AssetURLKey = @"AwfulAssetURL";
+
 @end

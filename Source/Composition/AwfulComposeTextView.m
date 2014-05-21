@@ -84,7 +84,7 @@
     [items addObject:[[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self wrapSelectionInTag:@"[img]"]; }]];
     if ([UIPasteboard generalPasteboard].image) {
         [items addObject:[[PSMenuItem alloc] initWithTitle:@"Paste" block:^{
-            [self insertImage:[UIPasteboard generalPasteboard].image];
+            [self insertImage:[UIPasteboard generalPasteboard].image withAssetURL:nil];
         }]];
     }
     return items;
@@ -264,7 +264,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     [self becomeFirstResponder];
 }
 
-- (void)insertImage:(UIImage *)image
+- (void)insertImage:(UIImage *)image withAssetURL:(NSURL *)assetURL
 {
     // For whatever reason we get the default font/text color after inserting an image, so keep our current font for later.
     UIFont *font = self.font;
@@ -272,6 +272,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     
     AwfulTextAttachment *attachment = [AwfulTextAttachment new];
     attachment.image = image;
+    attachment.assetURL = assetURL;
     NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attachment];
     [self.textStorage replaceCharactersInRange:self.selectedRange withAttributedString:string];
     UITextPosition *afterImage = [self positionFromPosition:self.selectedTextRange.end offset:1];
@@ -290,7 +291,8 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self insertImage:info[UIImagePickerControllerEditedImage] ?: info[UIImagePickerControllerOriginalImage]];
+    UIImage *image = info[UIImagePickerControllerEditedImage] ?: info[UIImagePickerControllerOriginalImage];
+    [self insertImage:image withAssetURL:info[UIImagePickerControllerReferenceURL]];
     [self dismissImagePicker:picker];
     [self becomeFirstResponder];
 }

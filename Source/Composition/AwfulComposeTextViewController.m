@@ -5,6 +5,7 @@
 #import "AwfulComposeTextViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
+#import "AwfulTextAttachment.h"
 #import <Crashlytics/Crashlytics.h>
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
@@ -188,7 +189,16 @@
                                                                       animated:YES];
     overlay.tintColor = self.theme[@"tintColor"];
     
-    _imageUploadProgress = [self uploadImages:[attachments valueForKey:@"image"] completionHandler:^(NSArray *URLs, NSError *error) {
+    NSMutableArray *images = [NSMutableArray new];
+    for (AwfulTextAttachment *attachment in attachments) {
+        if ([attachment isKindOfClass:[AwfulTextAttachment class]] && attachment.assetURL) {
+            [images addObject:attachment.assetURL];
+        } else {
+            [images addObject:attachment.image];
+        }
+    }
+    
+    _imageUploadProgress = [self uploadImages:images completionHandler:^(NSArray *URLs, NSError *error) {
         __typeof__(self) self = weakSelf;
         _imageUploadProgress = nil;
         if (error) {
@@ -226,10 +236,10 @@
     dispatch_group_t group = dispatch_group_create();
     NSPointerArray *URLs = [NSPointerArray strongObjectsPointerArray];
     URLs.count = images.count;
-    for (UIImage *image in images) {
+    for (id image in images) {
         dispatch_group_enter(group);
         [progress becomeCurrentWithPendingUnitCount:1];
-        [[ImgurAnonymousAPIClient client] uploadImage:image withFilename:@"image.png" completionHandler:^(NSURL *imgurURL, NSError *error) {
+        void (^uploadComplete)() = ^(NSURL *imgurURL, NSError *error) {
             if (error) {
                 if (!progress.cancelled) {
                     [progress cancel];
@@ -239,7 +249,12 @@
                 [URLs replacePointerAtIndex:[images indexOfObject:image] withPointer:(__bridge void *)imgurURL];
             }
             dispatch_group_leave(group);
-        }];
+        };
+        if ([image isKindOfClass:[NSURL class]]) {
+            [[ImgurAnonymousAPIClient client] uploadAssetWithURL:image filename:@"image.png" completionHandler:uploadComplete];
+        } else {
+            [[ImgurAnonymousAPIClient client] uploadImage:image withFilename:@"image.png" completionHandler:uploadComplete];
+        }
         [progress resignCurrent];
     }
     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
