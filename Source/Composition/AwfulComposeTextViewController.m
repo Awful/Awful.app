@@ -225,6 +225,7 @@
                  NSString *replacement = [NSString stringWithFormat:@"[%@img]%@[/%@img]", t, URL.absoluteString, t];
                  [submission replaceCharactersInRange:range withString:replacement];
              }];
+            [overlay dismiss:NO];
             submit();
         }
     }];
