@@ -142,6 +142,8 @@
         [self renderPosts];
     }
     
+    BOOL renderedCachedPosts = self.posts.count > 0;
+    
     [self updateUserInterface];
     
     if (!updateCache) {
@@ -188,7 +190,7 @@
             self.hiddenPosts = firstUnreadPost;
         }
         
-        if (reloadingSamePage) {
+        if (reloadingSamePage || renderedCachedPosts) {
             _scrollToFractionAfterLoading = self.webView.awful_fractionalContentOffset;
         }
         
