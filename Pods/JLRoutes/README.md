@@ -9,6 +9,7 @@ JLRoutes is advanced URL parsing with a block-based callback API. It is designed
 ### Features ###
 * Simple API with minimal impact to existing codebases
 * Parse any number of parameters interleaved throughout the URL
+* Wildcard parameter support
 * Seamlessly parses out query string and fragment parameters and passes them along as part of the parameters dictionary
 * Route prioritization
 * Scheme namespaces to easily segment routes and block handlers for multiple schemes
@@ -156,7 +157,7 @@ For example, the following route would be triggerd for any URL that started with
 ```objc
 [JLRoutes addRoute:@"/wildcard/*" handler:^BOOL(NSDictionary *parameters) {
 	NSArray *pathComponents = parameters[kJLRouteWildcardComponentsKey];
-	if ([pathComponents length] > 0 && [pathComponents[0] isEqualToString:@"joker"]) {
+	if ([pathComponents count] > 0 && [pathComponents[0] isEqualToString:@"joker"]) {
 		// the route matched; do stuff
 		return YES;
 	}
@@ -166,18 +167,13 @@ For example, the following route would be triggerd for any URL that started with
 }];
 ```
 
-### Apps using JLRoutes ###
-
-* [Simple In/Out](https://simpleinout.com)
-* [Seesaw](https://seesaw.co) - [Article about JLRoutes](http://engineering.seesaw.co/post/44642797540/an-ios-url-router)
-
-*Feel free to create an issue asking me to add your app.*
-
 ### Installation ###
-JLRoutes is available for installation via CocoaPods (current release version is 1.1). The Releases folder in the repo has binary builds as well, if you'd rather just drop something in.
+JLRoutes is available for installation via CocoaPods.
 
 ### Requirements ###
-Requires ARC. Only tested on iOS 6, but I don't think there's any reason why it wouldn't work on previous iOS versions. It should also work seamlessly on OS X.
+* ARC
+* iOS 5.0+ or OS X 10.7+
+* Foundation.framework
 
 ### License ###
 BSD 3-Clause License:

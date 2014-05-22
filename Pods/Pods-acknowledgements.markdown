@@ -47,7 +47,7 @@ ImgurHTTPClient is in the public domain.
 
 ## JLRoutes
 
-Copyright (c) 2013, Joel Levin
+Copyright (c) 2013-Present, Joel Levin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

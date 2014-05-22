@@ -15,12 +15,13 @@
 
 static NSMutableDictionary *routeControllersMap = nil;
 static BOOL verboseLoggingEnabled = NO;
+static BOOL shouldDecodePlusSymbols = YES;
 
 
 @interface JLRoutes ()
 
-@property (strong) NSMutableArray *routes;
-@property (strong) NSString *namespaceKey;
+@property (nonatomic, strong) NSMutableArray *routes;
+@property (nonatomic, strong) NSString *namespaceKey;
 
 + (void)verboseLogWithFormat:(NSString *)format, ...;
 + (BOOL)routeURL:(NSURL *)URL withController:(JLRoutes *)routesController parameters:(NSDictionary *)parameters;
@@ -40,8 +41,8 @@ static BOOL verboseLoggingEnabled = NO;
 @implementation NSString (JLRoutes)
 
 - (NSString *)JLRoutes_URLDecodedString {
-	NSString *resultString = [self stringByReplacingOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, self.length)];
-	return [resultString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSString *input = shouldDecodePlusSymbols ? [self stringByReplacingOccurrencesOfString:@"+" withString:@" " options:NSLiteralSearch range:NSMakeRange(0, self.length)] : self;
+	return [input stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSDictionary *)JLRoutes_URLParameterDictionary {
@@ -66,11 +67,11 @@ static BOOL verboseLoggingEnabled = NO;
 
 @interface _JLRoute : NSObject
 
-@property (weak) JLRoutes *parentRoutesController;
-@property (strong) NSString *pattern;
-@property (strong) BOOL (^block)(NSDictionary *parameters);
-@property (assign) NSUInteger priority;
-@property (strong) NSArray *patternPathComponents;
+@property (nonatomic, weak) JLRoutes *parentRoutesController;
+@property (nonatomic, strong) NSString *pattern;
+@property (nonatomic, strong) BOOL (^block)(NSDictionary *parameters);
+@property (nonatomic, assign) NSUInteger priority;
+@property (nonatomic, strong) NSArray *patternPathComponents;
 
 - (NSDictionary *)parametersForURL:(NSURL *)URL components:(NSArray *)URLComponents;
 
@@ -96,12 +97,20 @@ static BOOL verboseLoggingEnabled = NO;
 		BOOL isMatch = YES;
 		
 		for (NSString *patternComponent in self.patternPathComponents) {
-			NSString *URLComponent = URLComponents[componentIndex];
+			NSString *URLComponent = nil;
+			if (componentIndex < [URLComponents count]) {
+				URLComponent = URLComponents[componentIndex];
+			} else if ([patternComponent isEqualToString:@"*"]) { // match /foo by /foo/*
+				URLComponent = [URLComponents lastObject];
+			}
+			
 			if ([patternComponent hasPrefix:@":"]) {
 				// this component is a variable
 				NSString *variableName = [patternComponent substringFromIndex:1];
 				NSString *variableValue = URLComponent;
-				variables[variableName] = [variableValue JLRoutes_URLDecodedString];
+				if ([variableName length] > 0) {
+					variables[variableName] = [variableValue JLRoutes_URLDecodedString];
+				}
 			} else if ([patternComponent isEqualToString:@"*"]) {
 				// match wildcards
 				variables[kJLRouteWildcardComponentsKey] = [URLComponents subarrayWithRange:NSMakeRange(componentIndex, URLComponents.count-componentIndex)];
@@ -125,7 +134,7 @@ static BOOL verboseLoggingEnabled = NO;
 
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"JLRoute %@ (%i)", self.pattern, self.priority];
+	return [NSString stringWithFormat:@"JLRoute %@ (%@)", self.pattern, @(self.priority)];
 }
 
 
@@ -141,6 +150,13 @@ static BOOL verboseLoggingEnabled = NO;
 	return self;
 }
 
++ (void)setShouldDecodePlusSymbols:(BOOL)shouldDecode {
+	shouldDecodePlusSymbols = shouldDecode;
+}
+
++ (BOOL)shouldDecodePlusSymbols {
+	return shouldDecodePlusSymbols;
+}
 
 #pragma mark -
 #pragma mark Routing API
@@ -211,6 +227,48 @@ static BOOL verboseLoggingEnabled = NO;
 			index++;
 		}
 	}
+}
+
+
++ (void)removeRoute:(NSString *)routePattern {
+	[[JLRoutes globalRoutes] removeRoute:routePattern];
+}
+
+
+- (void)removeRoute:(NSString *)routePattern {
+	if (![routePattern hasPrefix:@"/"]) {
+		routePattern = [NSString stringWithFormat:@"/%@", routePattern];
+	}
+	
+	NSInteger routeIndex = NSNotFound;
+	NSInteger index = 0;
+	
+	for (_JLRoute *route in self.routes) {
+		if ([route.pattern isEqualToString:routePattern]) {
+			routeIndex = index;
+			break;
+		}
+		index++;
+	}
+	
+	if (routeIndex != NSNotFound) {
+		[self.routes removeObjectAtIndex:(NSUInteger)routeIndex];
+	}
+}
+
+
++ (void)removeAllRoutes {
+	[[JLRoutes globalRoutes] removeAllRoutes];
+}
+
+
+- (void)removeAllRoutes {
+	[self.routes removeAllObjects];
+}
+
+
++ (void)unregisterRouteScheme:(NSString *)scheme {
+	[routeControllersMap removeObjectForKey:scheme];
 }
 
 
@@ -338,7 +396,8 @@ static BOOL verboseLoggingEnabled = NO;
 			[finalParameters addEntriesFromDictionary:parameters];
 			finalParameters[kJLRoutePatternKey] = route.pattern;
 			finalParameters[kJLRouteURLKey] = URL;
-			finalParameters[kJLRouteNamespaceKey] = route.parentRoutesController.namespaceKey;
+            __strong __typeof(route.parentRoutesController) strongParentRoutesController = route.parentRoutesController;
+			finalParameters[kJLRouteNamespaceKey] = strongParentRoutesController.namespaceKey ?: [NSNull null];
 
 			[self verboseLogWithFormat:@"Final parameters are %@", finalParameters];
 			didRoute = route.block(finalParameters);
@@ -355,7 +414,7 @@ static BOOL verboseLoggingEnabled = NO;
 	// if we couldn't find a match and this routes controller specifies to fallback and its also not the global routes controller, then...
 	if (!didRoute && routesController.shouldFallbackToGlobalRoutes && ![routesController isGlobalRoutesController]) {
 		[self verboseLogWithFormat:@"Falling back to global routes..."];
-		didRoute = [self routeURL:URL withController:[self globalRoutes] parameters:parameters];
+		didRoute = [self routeURL:URL withController:[self globalRoutes] parameters:parameters executeBlock:executeBlock];
 	}
 	
 	// if, after everything, we did not route anything and we have an unmatched URL handler, then call it
@@ -376,8 +435,10 @@ static BOOL verboseLoggingEnabled = NO;
 	if (verboseLoggingEnabled && format) {
 		va_list argsList;
 		va_start(argsList, format);
-		
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
 		NSString *formattedLogMessage = [[NSString alloc] initWithFormat:format arguments:argsList];
+#pragma clang diagnostic pop
 		
 		va_end(argsList);
 		NSLog(@"[JLRoutes]: %@", formattedLogMessage);

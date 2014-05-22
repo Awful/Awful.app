@@ -23,7 +23,7 @@ PODS:
   - HTMLReader (0.5.3)
   - ImgurAnonymousAPIClient (0.1.1):
     - AFNetworking (>= 2.2.2)
-  - JLRoutes (1.4)
+  - JLRoutes (1.5.1)
   - JRSwizzle (1.0)
   - MRProgress/ActivityIndicator (0.4.1):
     - MRProgress/Stopable
@@ -52,7 +52,7 @@ DEPENDENCIES:
   - GRMustache (= 6.9.2)
   - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - ImgurAnonymousAPIClient (from `https://github.com/nolanw/ImgurAnonymousAPIClient.git`, tag `v0.1.1`)
-  - JLRoutes (= 1.4)
+  - JLRoutes (= 1.5.1)
   - MRProgress/Overlay (= 0.4.1)
   - PocketAPI (= 1.0.2)
   - PSMenuItem (= 0.0.1)
@@ -71,7 +71,7 @@ SPEC CHECKSUMS:
   GRMustache: 2898651f8e5350df26c64196b347524508cebb86
   HTMLReader: 7ab4be7db91895a352ccc49761024d9fe88d6e8a
   ImgurAnonymousAPIClient: a59b74c3500b29b6d3b08c61c1304b65085f7aac
-  JLRoutes: 960f54ac5a60bb1616d0c2d0a9299dbb684af7e7
+  JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   MRProgress: 209cdf239e60feab2f5b1c605d375bf9cd32c8b0
   PocketAPI: 801df1a3cdd094e5477add10c80dceb533c98a66
