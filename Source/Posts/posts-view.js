@@ -4,7 +4,7 @@
 window.Awful = {};
 
 startBridge(function(bridge) {
-  bridge.init();
+  $(bridge.init);
   
   bridge.registerHandler('changeStylesheet', function(css) {
     $('#awful-inline-style').text(css);
