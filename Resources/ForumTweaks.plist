@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>133</key>
-	<dict>
-		<key>showRatings</key>
-		<false/>
-	</dict>
 	<key>26</key>
 	<dict>
 		<key>checkSpelling</key>
@@ -14,6 +9,11 @@
 		<key>autocorrection</key>
 		<false/>
 		<key>autocapitalization</key>
+		<false/>
+	</dict>
+	<key>133</key>
+	<dict>
+		<key>showRatings</key>
 		<false/>
 	</dict>
 	<key>154</key>
@@ -31,6 +31,11 @@
 		<false/>
 		<key>postButton</key>
 		<string>YOSPOS BITHC</string>
+	</dict>
+	<key>268</key>
+	<dict>
+		<key>autocapitalization</key>
+		<false/>
 	</dict>
 </dict>
 </plist>
