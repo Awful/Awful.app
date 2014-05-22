@@ -19,6 +19,7 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPageTopBar.h"
+#import "AwfulPostsView.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -41,6 +42,7 @@
 @property (weak, nonatomic) NSOperation *networkOperation;
 
 @property (nonatomic) AwfulPageTopBar *topBar;
+@property (readonly, strong, nonatomic) AwfulPostsView *postsView;
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
 @property (nonatomic) UIBarButtonItem *composeItem;
@@ -131,8 +133,7 @@
     self.page = page;
     
     if (self.posts.count == 0 || !reloadingSamePage) {
-        UIScrollView *scrollView = self.webView.scrollView;
-        [scrollView.pullToRefreshView stopAnimating];
+        [self.postsView.pullToRefreshView stopAnimating];
         [self updateUserInterface];
         if (!_restoringState) {
             self.hiddenPosts = 0;
@@ -201,7 +202,7 @@
         }
         
         [self clearLoadingMessage];
-        [self.webView.scrollView.pullToRefreshView stopAnimating];
+        [self.postsView.pullToRefreshView stopAnimating];
     }];
 }
 
@@ -479,7 +480,7 @@
     
     AwfulTheme *theme = self.theme;
     self.view.backgroundColor = theme[@"backgroundColor"];
-    self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
+    self.postsView.indicatorStyle = theme.scrollIndicatorStyle;
     [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     
     if (self.loadingView) {
@@ -546,7 +547,7 @@
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     
-    SVPullToRefreshView *refresh = self.webView.scrollView.pullToRefreshView;
+    SVPullToRefreshView *refresh = self.postsView.pullToRefreshView;
     if (self.numberOfPages > self.page) {
         [refresh setTitle:@"Pull for next page…" forState:SVPullToRefreshStateStopped];
         [refresh setTitle:@"Release for next page…" forState:SVPullToRefreshStateTriggered];
@@ -616,7 +617,7 @@
 
 - (void)scrollToBottom
 {
-    UIScrollView *scrollView = self.webView.scrollView;
+    UIScrollView *scrollView = self.postsView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1) animated:YES];
 }
 
@@ -624,7 +625,7 @@
 {
     if (sender.state != UIGestureRecognizerStateBegan) return;
     
-    CGPoint location = [sender locationInView:self.view];
+    CGPoint location = [sender locationInView:self.postsView.webView];
     UIScrollView *scrollView = self.webView.scrollView;
     location.y -= scrollView.contentInset.top;
     CGFloat offsetY = scrollView.contentOffset.y;
@@ -873,9 +874,14 @@
     }
 }
 
+- (AwfulPostsView *)postsView
+{
+    return (AwfulPostsView *)self.view;
+}
+
 - (UIWebView *)webView
 {
-    return (UIWebView *)self.view;
+    return self.postsView.webView;
 }
 
 #pragma mark - UIViewController
@@ -889,7 +895,8 @@
 - (void)loadView
 {
     UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
-    self.view = webView;
+    webView.backgroundColor = nil;
+    self.view = [[AwfulPostsView alloc] initWithWebView:webView];
     
     self.topBar = [AwfulPageTopBar new];
     self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
@@ -900,8 +907,8 @@
     self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
     [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
                                forControlEvents:UIControlEventTouchUpInside];
-    [webView.scrollView addSubview:self.topBar];
-    webView.scrollView.delegate = self.topBar;
+    [self.postsView addSubview:self.topBar];
+    self.postsView.delegate = self.topBar;
     
     NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
@@ -948,7 +955,7 @@
     
     // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
     __weak __typeof__(self) weakSelf = self;
-    [self.webView.scrollView addPullToRefreshWithActionHandler:^{
+    [self.postsView addPullToRefreshWithActionHandler:^{
         __typeof__(self) self = weakSelf;
         [self loadNextPageOrRefresh];
     } position:SVPullToRefreshPositionBottom];
