@@ -33,5 +33,4 @@
  */
 @property (readonly) BOOL showRatings;
 
-
 @end
