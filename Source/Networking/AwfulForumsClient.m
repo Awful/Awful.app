@@ -5,7 +5,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
-#import "AwfulFormScraper.h"
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulLepersColonyPageScraper.h"
@@ -462,20 +461,9 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            NSMutableDictionary *parameters;
-            for (AwfulForm *form in scraper.forms) {
-                NSMutableDictionary *possibleParameters = [form recommendedParameters];
-                if (possibleParameters[@"threadid"]) {
-                    parameters = possibleParameters;
-                    break;
-                }
-            }
-            if (!parameters) {
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            if (!form) {
                 if (callback) {
                     NSString *description;
                     if (thread.closed) {
@@ -483,23 +471,25 @@
                     } else {
                         description = @"Could not reply; failed to find the form.";
                     }
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
-                                            userInfo:@{ NSLocalizedDescriptionKey: description }];
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                         code:AwfulErrorCodes.parseError
+                                                     userInfo:@{ NSLocalizedDescriptionKey: description }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         callback(error, nil);
-                    }];
+                    });
                 }
                 return;
             }
+            NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"message"] = text;
+            [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"newreply.php"
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
             {
                 AwfulPost *post;
                 HTMLElement *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
-                                         [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
+                                     [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
                 NSURL *URL = [NSURL URLWithString:link[@"href"]];
                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                     NSString *postID = URL.queryDictionary[@"postid"];
@@ -527,31 +517,25 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            for (AwfulForm *form in scraper.forms) {
-                for (AwfulFormItem *text in form.texts) {
-                    if ([text.name isEqualToString:@"message"]) {
-                        if (callback) {
-                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                callback(error, text.value);
-                            }];
-                        }
-                        return;
-                    }
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            NSString *message = form.allParameters[@"message"];
+            NSError *error;
+            if (!message) {
+                if (form) {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.parseError
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"Could not find post contents in edit post form" }];
+                } else {
+                    error = [NSError errorWithDomain:AwfulErrorDomain
+                                                code:AwfulErrorCodes.parseError
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"Could not find edit post form" }];
                 }
             }
-            
             if (callback) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed getting post text; could not find form" }];
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, nil);
-                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    callback(error, message);
+                });
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -570,17 +554,10 @@
     {
         if (!callback) return;
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            NSString *BBcode;
-            for (AwfulForm *form in scraper.forms) {
-                NSDictionary *parameters = [form recommendedParameters];
-                BBcode = parameters[@"message"];
-                if (BBcode) break;
-            }
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            NSString *BBcode = form.allParameters[@"message"];
+            NSError *error;
             if (!BBcode) {
                 HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                 if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
@@ -593,9 +570,9 @@
                                             userInfo:@{ NSLocalizedDescriptionKey: @"Failed to quote post; could not find form" }];
                 }
             }
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 callback(error, BBcode);
-            }];
+            });
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
@@ -613,21 +590,12 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            NSMutableDictionary *parameters;
-            for (AwfulForm *form in scraper.forms) {
-                NSMutableDictionary *possibleParameters = [form recommendedParameters];
-                if (possibleParameters[@"postid"]) {
-                    parameters = possibleParameters;
-                    break;
-                }
-            }
-            if (!parameters) {
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            NSMutableDictionary *parameters = [form recommendedParameters];
+            if (!parameters[@"postid"]) {
                 if (callback) {
+                    NSError *error;
                     HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                     if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
                         error = [NSError errorWithDomain:AwfulErrorDomain
@@ -638,9 +606,9 @@
                                                     code:AwfulErrorCodes.parseError
                                                 userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
                     }
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         callback(error);
-                    }];
+                    });
                 }
                 return;
             }
@@ -1006,31 +974,23 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            for (AwfulForm *form in scraper.forms) {
-                for (AwfulFormItem *text in form.texts) {
-                    if ([text.name isEqualToString:@"message"]) {
-                        if (callback) {
-                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                                callback(error, text.value);
-                            }];
-                        }
-                        return;
-                    }
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            NSString *message = form.allParameters[@"message"];
+            NSError *error;
+            if (!message) {
+                NSString *description;
+                if (form) {
+                    description = @"Failed quoting private message; could not find text box";
+                } else {
+                    description = @"Failed quoting private message; could not find form";
                 }
-            }
-            
-            if (callback) {
                 error = [NSError errorWithDomain:AwfulErrorDomain
                                             code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed quoting private message; could not find text box" }];
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, nil);
-                }];
+                                        userInfo:@{ NSLocalizedDescriptionKey: description }];
+            }
+            if (callback) {
+                callback(error, message);
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1047,31 +1007,34 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            [form scrapeThreadTagsIntoManagedObjectContext:managedObjectContext];
+            if (form.threadTags) {
+                NSError *error;
                 [managedObjectContext save:&error];
-            }
-            for (AwfulForm *form in scraper.forms) {
-                NSArray *tags = form.threadTags;
-                if (tags.count > 0) {
-                    if (callback) {
-                        NSArray *objectIDs = [tags valueForKey:@"objectID"];
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                            NSArray *tags = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                            callback(error, tags);
-                        }];
-                    }
-                    return;
+                if (callback) {
+                    NSArray *objectIDs = [form.threadTags valueForKey:@"objectID"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSArray *tags = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
+                        callback(error, tags);
+                    });
                 }
-            }
-            if (callback) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed scraping thread tags from new private message form" }];
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, nil);
-                }];
+            } else {
+                if (callback) {
+                    NSString *description;
+                    if (form) {
+                        description = @"Failed scraping thread tags from new private message form";
+                    } else {
+                        description = @"Could not find new private message form";
+                    }
+                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                         code:AwfulErrorCodes.parseError
+                                                     userInfo:@{ NSLocalizedDescriptionKey: description }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        callback(error, nil);
+                    });
+                }
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1119,30 +1082,21 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            for (AwfulForm *form in scraper.forms) {
-                if (form.threadTags.count > 0) {
-                    if (callback) {
-                        NSArray *objectIDs = [form.threadTags valueForKey:@"objectID"];
-                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                            form.threadTags = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                            callback(error, form);
-                        }];
-                    }
-                    return;
-                }
-            }
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
             if (callback) {
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
-                                        userInfo:@{ NSLocalizedDescriptionKey: @"Failed parsing new thread form" }];
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error, nil);
-                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [form scrapeThreadTagsIntoManagedObjectContext:mainManagedObjectContext];
+                    NSError *error;
+                    if (form) {
+                        [mainManagedObjectContext save:&error];
+                    } else {
+                        error = [NSError errorWithDomain:AwfulErrorDomain
+                                                    code:AwfulErrorCodes.parseError
+                                                userInfo:@{ NSLocalizedDescriptionKey: @"Could not find new thread form" }];
+                    }
+                    callback(error, form);
+                });
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1165,22 +1119,11 @@
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulFormScraper *scraper = [AwfulFormScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
-            NSError *error = scraper.error;
-            if (scraper.forms) {
-                [managedObjectContext save:&error];
-            }
-            AwfulForm *form;
-            NSMutableDictionary *parameters;
-            for (AwfulForm *possibleForm in scraper.forms) {
-                NSMutableDictionary *possibleParameters = [possibleForm recommendedParameters];
-                if (possibleParameters[@"forumid"]) {
-                    form = possibleForm;
-                    parameters = possibleParameters;
-                    break;
-                }
-            }
+            HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+            AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+            NSMutableDictionary *parameters = [form recommendedParameters];
             if (!parameters) {
+                NSError *error;
                 HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                 if (specialMessage && [specialMessage.textContent rangeOfString:@"accepting"].location != NSNotFound) {
                     error = [NSError errorWithDomain:AwfulErrorDomain
@@ -1189,20 +1132,23 @@
                 } else {
                     error = [NSError errorWithDomain:AwfulErrorDomain
                                                 code:AwfulErrorCodes.parseError
-                                            userInfo:@{ NSLocalizedDescriptionKey: @"Failed to scrape new thread form" }];
+                                            userInfo:@{ NSLocalizedDescriptionKey: @"Could not find new thread form" }];
                 }
                 if (callback) {
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
                         callback(error, nil);
-                    }];
+                    });
                 }
                 return;
             }
+            
             parameters[@"subject"] = [subject copy];
-            parameters[form.threadTagName] = threadTag.threadTagID ?: @"0";
+            if (threadTag.threadTagID) {
+                parameters[form.selectedThreadTagKey] = threadTag.threadTagID;
+            }
             parameters[@"message"] = [text copy];
-            if (secondaryTag) {
-                parameters[form.secondaryThreadTagName] = secondaryTag.threadTagID;
+            if (secondaryTag.threadTagID) {
+                parameters[form.selectedSecondaryThreadTagKey] = secondaryTag.threadTagID;
             }
             [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"newthread.php"

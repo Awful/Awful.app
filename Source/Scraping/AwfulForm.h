@@ -3,8 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
-@class AwfulFormItem;
-@class AwfulFormCheckbox;
+#import <HTMLReader/HTMLReader.h>
 
 /**
  * An AwfulForm object describes an HTML form.
@@ -12,115 +11,64 @@
 @interface AwfulForm : NSObject
 
 /**
- * Returns an initialized AwfulForm objects. This is the designated initializer.
+ * Designated initializer.
+ *
+ * @param node The <form> element representing the form.
  */
-- (id)initWithName:(NSString *)name;
+- (id)initWithElement:(HTMLElement *)element;
+
+@property (readonly, strong, nonatomic) HTMLElement *element;
 
 /**
- * The name given to the form in markup.
+ * The name of the form in markup.
  */
 @property (readonly, copy, nonatomic) NSString *name;
 
 /**
- * A dictionary of recommended parameters including hidden inputs, checked boxes, default text values, and the first submit button that may or may not be sufficient for submitting the form.
+ * The HTTP method suitable for submitting the form.
+ */
+@property (readonly, copy, nonatomic) NSString *HTTPMethod;
+
+/**
+ * The URL to which the form should be submitted.
+ */
+@property (readonly, strong, nonatomic) NSURL *submissionURL;
+
+/**
+ * Finds all thread tags in the form and updates a managed object context with the findings.
+ */
+- (void)scrapeThreadTagsIntoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
+/**
+ * An array of AwfulThreadTag objects found in the form. Returns nil if -scrapeThreadTagsIntoMangagedObjectContext: has never been called. Returns an empty array if no thread tags are found.
+ */
+@property (readonly, copy, nonatomic) NSArray *threadTags;
+
+/**
+ * The key for the selected thread tag.
+ */
+@property (readonly, copy, nonatomic) NSString *selectedThreadTagKey;
+
+/**
+ * An array of secondary AwfulThreadTag objects found in the form. Returns nil if -scrapeThreadTagsIntoMangagedObjectContext: has never been called. Returns an empty array if no thread tags are found.
+ */
+@property (readonly, copy, nonatomic) NSArray *secondaryThreadTags;
+
+/**
+ * The key for the selected secondary thread tag.
+ */
+@property (readonly, copy, nonatomic) NSString *selectedSecondaryThreadTagKey;
+
+/**
+ * A dictionary of parameters necessary (but perhaps insufficient) to submit the form.
+ *
+ * Returned as a mutable dictionary under the presumption that the caller will further modify the dictionary in prepration for submission.
  */
 - (NSMutableDictionary *)recommendedParameters;
 
 /**
- * An array of AwfulThreadTag objects, or nil if none are available.
+ * A dictionary of all parameters in the form.
  */
-@property (copy, nonatomic) NSArray *threadTags;
-
-- (void)addThreadTag:(AwfulThreadTag *)threadTag;
-
-/**
- * The item name for the selected thread tag.
- */
-@property (copy, nonatomic) NSString *threadTagName;
-
-/**
- * An array of AwfulThreadTag objects, or nil if none are available.
- */
-@property (readonly, copy, nonatomic) NSArray *secondaryThreadTags;
-
-- (void)addSecondaryThreadTag:(AwfulThreadTag *)secondaryThreadTag;
-
-/**
- * The item name for the selected secondary thread tag.
- */
-@property (copy, nonatomic) NSString *secondaryThreadTagName;
-
-/**
- * An array of AwfulFormItem objects.
- */
-@property (readonly, copy, nonatomic) NSArray *hiddens;
-
-- (void)addHidden:(AwfulFormItem *)hidden;
-
-/**
- * An array of AwfulFormCheckbox objects.
- */
-@property (readonly, copy, nonatomic) NSArray *checkboxes;
-
-- (void)addCheckbox:(AwfulFormCheckbox *)checkbox;
-
-/**
- * An array of AwfulFormItem objects.
- */
-@property (readonly, copy, nonatomic) NSArray *texts;
-
-- (void)addText:(AwfulFormItem *)text;
-
-/**
- * An array of AwfulFormItem objects.
- */
-@property (readonly, copy, nonatomic) NSArray *submits;
-
-- (void)addSubmit:(AwfulFormItem *)submit;
-
-/**
- * An array of NSString objects naming each file field.
- */
-@property (readonly, copy, nonatomic) NSArray *files;
-
-- (void)addFile:(NSString *)file;
-
-@end
-
-/**
- * An AwfulFormItem is a simple key-value pair from an HTML form.
- */
-@interface AwfulFormItem : NSObject
-
-/**
- * Returns an initialized AwfulFormItem. This is the designated initializer.
- */
-- (id)initWithName:(NSString *)name value:(NSString *)value;
-
-+ (instancetype)itemWithName:(NSString *)name value:(NSString *)value;
-
-@property (readonly, copy, nonatomic) NSString *name;
-
-@property (readonly, copy, nonatomic) NSString *value;
-
-@end
-
-/**
- * An AwfulFormCheckbox is a simple key-value pair from an HTML form that may be checked by default.
- */
-@interface AwfulFormCheckbox : NSObject
-
-/**
- * Returns an initialized AwfulFormCheckbox. This is the designated initializer.
- */
-- (id)initWithName:(NSString *)name value:(NSString *)value checked:(BOOL)checked;
-
-+ (instancetype)checkboxWithName:(NSString *)name value:(NSString *)value checked:(BOOL)checked;
-
-@property (readonly, copy, nonatomic) NSString *name;
-
-@property (readonly, copy, nonatomic) NSString *value;
-
-@property (readonly, assign, nonatomic) BOOL checked;
+@property (readonly, copy, nonatomic) NSDictionary *allParameters;
 
 @end

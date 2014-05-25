@@ -40,9 +40,7 @@
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
 		1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7118301E9500B52724 /* AwfulThreadTag.m */; };
 		1C35FB731831A7F200B52724 /* AwfulThreadTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7118301E9500B52724 /* AwfulThreadTag.m */; };
-		1C35FB761831D69100B52724 /* AwfulFormScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB751831D69100B52724 /* AwfulFormScraper.m */; };
 		1C35FB7818329D3400B52724 /* FormScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7718329D3400B52724 /* FormScrapingTests.m */; };
-		1C35FB791832A31000B52724 /* AwfulFormScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB751831D69100B52724 /* AwfulFormScraper.m */; };
 		1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C35FB7D1832A96000B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
@@ -320,8 +318,6 @@
 		1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingView.m; sourceTree = "<group>"; };
 		1C35FB7018301E9500B52724 /* AwfulThreadTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTag.h; sourceTree = "<group>"; };
 		1C35FB7118301E9500B52724 /* AwfulThreadTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTag.m; sourceTree = "<group>"; };
-		1C35FB741831D69100B52724 /* AwfulFormScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFormScraper.h; sourceTree = "<group>"; };
-		1C35FB751831D69100B52724 /* AwfulFormScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFormScraper.m; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormScrapingTests.m; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
@@ -792,8 +788,6 @@
 				1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */,
 				1C35FB7A1832A5A900B52724 /* AwfulForm.h */,
 				1C35FB7B1832A5A900B52724 /* AwfulForm.m */,
-				1C35FB741831D69100B52724 /* AwfulFormScraper.h */,
-				1C35FB751831D69100B52724 /* AwfulFormScraper.m */,
 				1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */,
 				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
 				1CE694A9182FF0E500B24928 /* AwfulLepersColonyPageScraper.h */,
@@ -1663,7 +1657,6 @@
 				1C6D2EA3182D5E0000785766 /* AwfulForumHierarchyScraper.m in Sources */,
 				1C6FFEE1182AA5CB0014311C /* AwfulScrapingTestCase.m in Sources */,
 				1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */,
-				1C35FB791832A31000B52724 /* AwfulFormScraper.m in Sources */,
 				1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */,
 				1C6D2EA5182D622D00785766 /* ForumHierarchyScrapingTests.m in Sources */,
 				1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */,
@@ -1775,7 +1768,6 @@
 				1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */,
 				1C89A78E18AA084500D75854 /* AwfulSplitViewController.m in Sources */,
 				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
-				1C35FB761831D69100B52724 /* AwfulFormScraper.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
