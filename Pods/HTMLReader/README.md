@@ -1,6 +1,6 @@
 # HTMLReader
 
-A [WHATWG-compliant HTML parser][whatwg-spec] with [CSS selectors][selectors-level-3] in Objective-C and Foundation.
+A [WHATWG-compliant HTML parser][whatwg-spec] with [CSS selectors][selectors-level-3] in Objective-C and Foundation. It parses HTML just like a browser.
 
 [selectors-level-3]: http://www.w3.org/TR/css3-selectors/
 [whatwg-spec]: http://whatwg.org/html
@@ -29,7 +29,7 @@ HTMLReader has no dependencies other than Foundation.
 
 [CocoaPods]: http://docs.cocoapods.org/podfile.html#pod
 
-## Why
+## Why HTMLReader?
 
 I needed to scrape HTML like a browser. I couldn't find a good choice for iOS.
 
@@ -43,9 +43,15 @@ There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle d
 
 [WebKit][] ships with iOS, but its HTML parsing abilities are considered private API. I consider a round-trip through UIWebView inappropriate for parsing HTML. And I didn't make it very far into building my own copy of WebCore.
 
+[Google Toolbox for Mac][GTMNSString+HTML] will escape and unescape strings for HTML (e.g. `&amp;` ⇔ `&`) but, again, not like a modern browser. For example, GTM will not unescape `&#65` (note the missing semicolon).
+
+[CFStringTransform][kCFStringTransformToXMLHex] does numeric entities via (the reversible) `kCFStringTransformToXMLHex`, but that rules out named entities.
+
+[GTMNSString+HTML]: https://code.google.com/p/google-toolbox-for-mac/source/browse/trunk/Foundation/GTMNSString%2BHTML.h
 [Gumbo]: https://github.com/google/gumbo-parser
 [hpple]: https://github.com/topfunky/hpple
 [Hubbub]: http://www.netsurf-browser.org/projects/hubbub/
+[kCFStringTransformToXMLHex]: https://developer.apple.com/library/mac/documentation/corefoundation/Reference/CFMutableStringRef/Reference/reference.html#//apple_ref/doc/uid/20001504-CH2g-DontLinkElementID_46
 [libxml2]: http://www.xmlsoft.org/
 [Ono]: https://github.com/mattt/Ono
 [WebKit]: https://www.webkit.org/building/checkout.html
@@ -54,7 +60,7 @@ There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle d
 
 HTMLReader continually runs [html5lib][html5lib-tests]'s tokenization and tree construction tests, ignoring the tests for `<template>` (which HTMLReader does not implement).
 
-HTMLReader is continually tested on iOS 7 and OS X versions 10.8 and 10.9. It is continually built (but not tested, due to XCTest's availability) on iOS versions 6.1 and 5.1.
+HTMLReader is continually tested on iOS 7 and OS X versions 10.8 and 10.9. It is continually built (but not tested, due to XCTest's availability) on iOS 6. It should work on iOS 5 but no automated testing is done.
 
 Given all that:  [![Build Status](https://travis-ci.org/nolanw/HTMLReader.png?branch=master)](https://travis-ci.org/nolanw/HTMLReader)
 
@@ -76,6 +82,12 @@ Changes to HTMLReader should not cause these benchmarks to run slower. Ideally c
 
 [Benchmarker]: Utilities/Benchmarker.m
 [WebKit QuerySelector.html]: https://trac.webkit.org/browser/trunk/PerformanceTests/CSS/QuerySelector.html
+
+## Bugs and Feature Requests
+
+Bugs can be reported, and features can be requested, using the [issue tracker][Issues]. Or get in touch directly if you'd prefer.
+
+[Issues]: https://github.com/nolanw/HTMLReader/issues
 
 ## License
 

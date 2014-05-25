@@ -118,7 +118,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## WebViewJavascriptBridge
 
-Copyright (c) 2011-2013 Marcus Westin, Antoine Lagadec
+Copyright (c) 2011-2014 Marcus Westin, Antoine Lagadec
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

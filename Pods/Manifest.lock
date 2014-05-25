@@ -20,7 +20,7 @@ PODS:
     - AFNetworking/NSURLSession
   - GRMustache (6.9.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.5.3)
+  - HTMLReader (0.5.4)
   - ImgurAnonymousAPIClient (0.1.1):
     - AFNetworking (>= 2.2.2)
   - JLRoutes (1.5.1)
@@ -69,7 +69,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
   GRMustache: 2898651f8e5350df26c64196b347524508cebb86
-  HTMLReader: 7ab4be7db91895a352ccc49761024d9fe88d6e8a
+  HTMLReader: 6a037d5c3acd2810f049b58098fa4383ffecef68
   ImgurAnonymousAPIClient: a59b74c3500b29b6d3b08c61c1304b65085f7aac
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
