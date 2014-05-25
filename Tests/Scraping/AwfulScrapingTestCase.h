@@ -14,3 +14,5 @@
 - (id)scrapeFixtureNamed:(NSString *)fixtureName;
 
 @end
+
+extern HTMLDocument * LoadFixtureNamed(NSString *basename);

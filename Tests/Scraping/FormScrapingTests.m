@@ -4,7 +4,6 @@
 
 #import "AwfulScrapingTestCase.h"
 #import "AwfulForm.h"
-#import "AwfulFormScraper.h"
 
 @interface FormScrapingTests : AwfulScrapingTestCase
 
@@ -12,17 +11,21 @@
 
 @implementation FormScrapingTests
 
-+ (Class)scraperClass
+- (AwfulForm *)scrapeFormFromFixtureNamed:(NSString *)fixtureName
 {
-    return [AwfulFormScraper class];
+    HTMLDocument *document = LoadFixtureNamed(fixtureName);
+    HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
+    AwfulForm *form = [[AwfulForm alloc] initWithElement:formElement];
+    [form scrapeThreadTagsIntoManagedObjectContext:self.managedObjectContext];
+    NSError *error;
+    BOOL ok = [self.managedObjectContext save:&error];
+    NSAssert(ok, @"error saving context after scraping thread tags: %@", error);
+    return form;
 }
 
 - (void)testReply
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newreply"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)1);
-    AwfulForm *form = forms[0];
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"newreply"];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)0);
     NSMutableDictionary *parameters = [form recommendedParameters];
     XCTAssertEqualObjects(parameters[@"action"], @"postreply");
@@ -39,27 +42,20 @@
 
 - (void)testReplyWithAmazonSearch
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newreply-amazon-form"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)2);
-    AwfulForm *replyForm = forms[1];
-    XCTAssertNotNil([replyForm recommendedParameters][@"threadid"]);
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"newreply-amazon-form"];
+    XCTAssertNotNil([form recommendedParameters][@"threadid"]);
 }
 
 - (void)testThread
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)1);
-    AwfulForm *form = forms[0];
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"newthread"];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)51);
     NSArray *allThreadTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext];
     XCTAssertEqual(allThreadTags.count, form.threadTags.count);
-    XCTAssertNil(form.secondaryThreadTags);
-    NSArray *textNames = [form.texts valueForKey:@"name"];
-    XCTAssertTrue([textNames containsObject:@"subject"]);
-    XCTAssertTrue([textNames containsObject:@"message"]);
-    NSMutableDictionary *parameters = [form recommendedParameters];
+    XCTAssertTrue(form.secondaryThreadTags.count == 0);
+    NSDictionary *parameters = form.allParameters;
+    XCTAssertNotNil(parameters[@"subject"]);
+    XCTAssertNotNil(parameters[@"message"]);
     XCTAssertEqualObjects(parameters[@"forumid"], @"1");
     XCTAssertEqualObjects(parameters[@"action"], @"postthread");
     XCTAssertEqualObjects(parameters[@"formkey"], @"0253d85a945b60daa0165f718df82b8a");
@@ -70,10 +66,7 @@
 
 - (void)testAskTellThread
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread-at"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)1);
-    AwfulForm *form = forms[0];
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"newthread-at"];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)55);
     XCTAssertEqual(form.secondaryThreadTags.count, (NSUInteger)2);
     NSArray *secondaryTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext
@@ -83,32 +76,23 @@
 
 - (void)testSAMartThread
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"newthread-samart"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)1);
-    AwfulForm *form = forms[0];
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"newthread-samart"];
     XCTAssertEqual(form.threadTags.count, (NSUInteger)69);
     XCTAssertEqual(form.secondaryThreadTags.count, (NSUInteger)4);
     NSArray *secondaryTags = [AwfulThreadTag fetchAllInManagedObjectContext:self.managedObjectContext
                                                     matchingPredicateFormat:@"imageName LIKE 'icon*ing'"];
-    XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
+    NSIndexSet *secondaryIndexes = [secondaryTags indexesOfObjectsPassingTest:^BOOL(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+        return threadTag.threadTagID.integerValue < 5;
+    }];
+    XCTAssertEqual(secondaryIndexes.count, form.secondaryThreadTags.count);
 }
 
 - (void)testMessage
 {
-    AwfulFormScraper *scraper = [self scrapeFixtureNamed:@"private-reply"];
-    NSArray *forms = scraper.forms;
-    XCTAssertEqual(forms.count, (NSUInteger)1);
-    AwfulForm *form = forms[0];
-    AwfulFormItem *messageItem;
-    for (AwfulFormItem *text in form.texts) {
-        if ([text.name isEqualToString:@"message"]) {
-            messageItem = text;
-            break;
-        }
-    }
-    XCTAssertNotNil(messageItem);
-    XCTAssertNotEqual([messageItem.value rangeOfString:@"InFlames235 wrote"].location, (NSUInteger)NSNotFound);
+    AwfulForm *form = [self scrapeFormFromFixtureNamed:@"private-reply"];
+    NSDictionary *parameters = form.allParameters;
+    XCTAssertNotNil(parameters[@"message"]);
+    XCTAssertNotEqual([parameters[@"message"] rangeOfString:@"InFlames235 wrote"].location, (NSUInteger)NSNotFound);
 }
 
 @end

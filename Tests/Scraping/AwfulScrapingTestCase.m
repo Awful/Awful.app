@@ -49,14 +49,19 @@
 
 - (id)scrapeFixtureNamed:(NSString *)fixtureName
 {
-    NSURL *fixtureURL = [[NSBundle bundleForClass:[self class]] URLForResource:fixtureName withExtension:@"html" subdirectory:@"Fixtures"];
+    HTMLDocument *document = LoadFixtureNamed(fixtureName);
+    AwfulScraper *scraper = [[[self class] scraperClass] scrapeNode:document intoManagedObjectContext:self.managedObjectContext];
+    XCTAssertNil(scraper.error, @"error scraping %@: %@", [[self class] scraperClass], scraper.error);
+    return scraper;
+}
+
+HTMLDocument * LoadFixtureNamed(NSString *basename)
+{
+    NSURL *fixtureURL = [[NSBundle bundleForClass:[AwfulScrapingTestCase class]] URLForResource:basename withExtension:@"html" subdirectory:@"Fixtures"];
     NSError *error;
     NSString *fixtureHTML = [NSString stringWithContentsOfURL:fixtureURL encoding:NSWindowsCP1252StringEncoding error:&error];
-    XCTAssertNotNil(fixtureHTML, @"error loading fixture from %@: %@", fixtureURL, error);
-    HTMLDocument *document = [HTMLDocument documentWithString:fixtureHTML];
-    AwfulScraper *scraper = [[[self class] scraperClass] scrapeNode:document intoManagedObjectContext:self.managedObjectContext];
-    XCTAssertNil(scraper.error, @"error scraping %@: %@", [[self class] scraperClass], error);
-    return scraper;
+    NSCAssert(fixtureHTML, @"error loading fixture from %@: %@", fixtureHTML, error);
+    return [HTMLDocument documentWithString:fixtureHTML];
 }
 
 @end

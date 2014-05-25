@@ -151,7 +151,8 @@
                 HTMLElement *image = images[i];
                 NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
                 if (threadTagID && imageURL) {
-                    [_secondaryThreadTagDictionaries addObject:NSDictionaryOfVariableBindings(threadTagID, imageURL)];
+                    [_secondaryThreadTagDictionaries addObject:@{ @"threadTagID": threadTagID,
+                                                                  @"imageURL": imageURL }];
                 }
             }];
             HTMLElement *input = inputs.firstObject;
@@ -208,7 +209,7 @@
             [threadTag setURL:info[@"imageURL"]];
         } else {
             threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:info[@"threadTagID"]
-                                                              threadTagURL:info[@"threadTagURL"]
+                                                              threadTagURL:info[@"imageURL"]
                                                     inManagedObjectContext:managedObjectContext];
         }
         [secondaryThreadTags addObject:threadTag];
