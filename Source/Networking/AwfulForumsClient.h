@@ -148,6 +148,15 @@
                             BBcode:(NSString *)text
                            andThen:(void (^)(NSError *error, AwfulThread *thread))callback;
 
+/**
+ * @param callback A block to call after rendering the preview, which returns nothing and takes as parameters: an NSError object on failure or nil on success; and the rendered post's HTML on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)previewOriginalPostForThreadInForum:(AwfulForum *)forum
+                                          withBBcode:(NSString *)BBcode
+                                             andThen:(void (^)(NSError *error, NSString *postHTML))callback;
+
 #pragma mark - Posts
 
 /**
@@ -179,6 +188,15 @@
                        andThen:(void (^)(NSError *error, AwfulPost *post))callback;
 
 /**
+ * @param callback A block to call after rendering the preview, which returns nothing and takes as parameters: an NSError object on failure, or nil on success; and the rendered post's HTML on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)previewReplyToThread:(AwfulThread *)thread
+                           withBBcode:(NSString *)BBcode
+                              andThen:(void (^)(NSError *error, NSString *postHTML))callback;
+
+/**
  * @param callback A block to call after finding the text of the post, which takes as parameters: an NSError object on failure, or nil on success; and the BBcode text of the post on success, or nil on failure.
  *
  * @return An enqueued network operation.
@@ -202,6 +220,15 @@
 - (NSOperation *)editPost:(AwfulPost *)post
                 setBBcode:(NSString *)text
                   andThen:(void (^)(NSError *error))callback;
+
+/**
+ * @param callback A block to call after rendering the preview, which returns nothing takes as parameters: an NSError object on failure or nil on success; and the rendered post's HTML on success or nil on failure.
+ *
+ * @return An enqueued network operation.
+ */
+- (NSOperation *)previewEditToPost:(AwfulPost *)post
+                        withBBcode:(NSString *)BBcode
+                           andThen:(void (^)(NSError *error, NSString *postHTML))callback;
 
 /**
  * @param postID   The post's ID. Specified directly in case no such post exists, which would make for a useless AwfulPost object.
