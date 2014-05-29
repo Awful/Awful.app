@@ -152,6 +152,9 @@
 		1CA1EFFF19104A6200E85DB2 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
 		1CA1F04519109C0100E85DB2 /* UIWebView+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1F04419109C0100E85DB2 /* UIWebView+AwfulConvenience.m */; };
 		1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0461910AEBA00E85DB2 /* zepto.min.js */; };
+		1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0491910C47200E85DB2 /* fastclick.js */; };
+		1CB060791936C7B4005263EA /* AwfulPostPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB060781936C7B4005263EA /* AwfulPostPreviewViewController.m */; };
+		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
 		1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
@@ -489,6 +492,9 @@
 		1CA1F0461910AEBA00E85DB2 /* zepto.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = zepto.min.js; path = zepto/zepto.min.js; sourceTree = "<group>"; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagLoader.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagLoader.m; sourceTree = "<group>"; };
+		1CB060771936C7B4005263EA /* AwfulPostPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostPreviewViewController.h; sourceTree = "<group>"; };
+		1CB060781936C7B4005263EA /* AwfulPostPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostPreviewViewController.m; sourceTree = "<group>"; };
+		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
 		1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWaffleimagesURLProtocol.h; sourceTree = "<group>"; };
 		1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWaffleimagesURLProtocol.m; sourceTree = "<group>"; };
 		1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshMinder.h; sourceTree = "<group>"; };
@@ -1163,6 +1169,8 @@
 				1C7DFA7417EB578F0009F2C6 /* AwfulPageSettingsViewController.m */,
 				1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */,
 				1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */,
+				1CB060771936C7B4005263EA /* AwfulPostPreviewViewController.h */,
+				1CB060781936C7B4005263EA /* AwfulPostPreviewViewController.m */,
 				1C7D8956192E954B00003576 /* AwfulPostsView.h */,
 				1C7D8957192E954B00003576 /* AwfulPostsView.m */,
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
@@ -1178,6 +1186,7 @@
 				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
 				1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */,
 				1C3447E3175D9CCE007377C5 /* Post.mustache */,
+				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
 				1C4191901763C8BD00EADE07 /* posts-view.js */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 			);
@@ -1471,6 +1480,7 @@
 				1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */,
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
 				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
+				1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
@@ -1769,6 +1779,7 @@
 				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
+				1CB060791936C7B4005263EA /* AwfulPostPreviewViewController.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
