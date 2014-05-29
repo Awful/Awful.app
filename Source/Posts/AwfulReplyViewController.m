@@ -8,10 +8,13 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
+#import "AwfulPostPreviewViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulReplyViewController () <UIViewControllerRestoration>
+
+@property (copy, nonatomic) void (^onAppearBlock)(void);
 
 @end
 
@@ -23,7 +26,11 @@
     _post = post;
     _originalText = [originalText copy];
     self.title = post.thread.title;
-    self.submitButtonItem.title = @"Save";
+    if ([AwfulSettings settings].confirmNewPosts) {
+        self.submitButtonItem.title = @"Preview";
+    } else {
+        self.submitButtonItem.title = @"Save";
+    }
 	[self updateTweaks];
     return self;
 }
@@ -34,7 +41,11 @@
     _thread = thread;
     _quotedText = [quotedText copy];
     self.title = thread.title;
-    self.submitButtonItem.title = @"Post";
+    if ([AwfulSettings settings].confirmNewPosts) {
+        self.submitButtonItem.title = @"Preview";
+    } else {
+        self.submitButtonItem.title = @"Post";
+    }
 	[self updateTweaks];
     return self;
 }
@@ -70,6 +81,15 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (self.onAppearBlock) {
+        self.onAppearBlock();
+        self.onAppearBlock = nil;
+    }
+}
+
 - (AwfulTheme *)theme
 {
     return [AwfulTheme currentThemeForForum:self.forum];
@@ -89,25 +109,19 @@
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
     if (![AwfulSettings settings].confirmNewPosts) return handler(YES);
-    AwfulAlertView *alert = [AwfulAlertView new];
+    
+    AwfulPostPreviewViewController *preview;
     if (self.thread) {
-        alert.title = @"Post Post Post";
-        alert.message = (@"Does my reply offer any significant advice or help "
-                         "contribute to the conversation in any fashion?");
+        preview = [[AwfulPostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.text];
     } else if (self.post) {
-        alert.title = @"Edit Edit Edit";
-        alert.message = (@"After editing, does my reply offer any significant advice or help "
-                         "contribute to the conversation in any fashion?");
+        preview = [[AwfulPostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.text];
     }
-    [alert addCancelButtonWithTitle:@"No" block:^{
-        handler(NO);
-    }];
-	
-	NSString *customButton = [AwfulForumTweaks tweaksForForumId:self.thread.forum.forumID ?: self.post.thread.forum.forumID].postButton;
-    [alert addButtonWithTitle:customButton ?: (self.thread ? @"Post" : @"Save") block:^{
-        handler(YES);
-    }];
-    [alert show];
+    
+    // TODO consider images. Would need to upload them, save them, or embed them.
+    
+    preview.submitBlock = ^{ handler(YES); };
+    self.onAppearBlock = ^{ handler(NO); };
+    [self.navigationController pushViewController:preview animated:YES];
 }
 
 - (NSString *)submissionInProgressTitle
