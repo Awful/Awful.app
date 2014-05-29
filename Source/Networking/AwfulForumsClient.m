@@ -136,7 +136,7 @@
     }
 }
 
-- (BOOL)isReachable
+- (BOOL)reachable
 {
     return _HTTPManager.reachabilityManager.reachable;
 }
