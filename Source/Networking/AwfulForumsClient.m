@@ -768,6 +768,7 @@
                 return;
             }
             parameters[@"message"] = text;
+            [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"editpost.php"
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, id responseObject)
