@@ -121,16 +121,12 @@
 - (void)reset
 {
     [_HTTPManager.operationQueue cancelAllOperations];
-    NSString *urlString = [AwfulSettings settings].customBaseURL;
-    if (urlString) {
-        NSURL *url = [NSURL URLWithString:urlString];
-        if (!url.scheme) {
-            urlString = [NSString stringWithFormat:@"http://%@", urlString];
-        }
-    } else {
-        urlString = @"http://forums.somethingawful.com/";
+    NSString *URLString = [AwfulSettings settings].customBaseURL ?: @"http://forums.somethingawful.com";
+    NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
+    if (components.scheme.length == 0) {
+        components.scheme = @"http";
     }
-    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
+    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:components.URL];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
