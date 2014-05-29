@@ -129,7 +129,7 @@
     return self.post ? @"Saving…" : @"Posting…";
 }
 
-- (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler
+- (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL success))completionHandler
 {
     if (self.post) {
         [[AwfulForumsClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
