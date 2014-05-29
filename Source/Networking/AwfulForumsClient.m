@@ -145,7 +145,7 @@
     return _HTTPManager.reachabilityManager.reachable;
 }
 
-- (BOOL)isLoggedIn
+- (BOOL)loggedIn
 {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:_HTTPManager.baseURL];
     return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
