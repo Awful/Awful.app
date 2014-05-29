@@ -496,6 +496,32 @@
     }];
 }
 
+- (NSOperation *)previewOriginalPostForThreadInForum:(AwfulForum *)forum
+                                          withBBcode:(NSString *)BBcode
+                                             andThen:(void (^)(NSError *error, NSString *postHTML))callback
+{
+    return [_HTTPManager POST:@"newthread.php"
+                   parameters:@{ @"forumid": forum.forumID,
+                                 @"action": @"postthread",
+                                 @"message": BBcode,
+                                 @"parseurl": @"yes",
+                                 @"preview": @"Preview Post" }
+                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
+        if (postbody) {
+            if (callback) callback(nil, postbody.innerHTML);
+        } else {
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewed original post" }];
+            if (callback) callback(error, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+}
+
 #pragma mark - Posts
 
 - (NSOperation *)listPostsInThread:(AwfulThread *)thread
@@ -662,6 +688,32 @@
     }];
 }
 
+- (NSOperation *)previewReplyToThread:(AwfulThread *)thread
+                           withBBcode:(NSString *)BBcode
+                              andThen:(void (^)(NSError *error, NSString *postHTML))callback
+{
+    return [_HTTPManager POST:@"newreply.php"
+                   parameters:@{ @"action": @"postreply",
+                                 @"threadid": thread.threadID,
+                                 @"message": BBcode,
+                                 @"parseurl": @"yes",
+                                 @"preview": @"Preview Reply" }
+                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        HTMLElement *element = [document firstNodeMatchingSelector:@".postbody"];
+        if (element) {
+            if (callback) callback(nil, element.innerHTML);
+        } else {
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewed post" }];
+            if (callback) callback(error, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
+    }];
+}
+
 - (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
                                     andThen:(void (^)(NSError *error, NSString *text))callback
 {
@@ -779,6 +831,32 @@
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
+    }];
+}
+
+- (NSOperation *)previewEditToPost:(AwfulPost *)post
+                        withBBcode:(NSString *)BBcode
+                           andThen:(void (^)(NSError *error, NSString *postHTML))callback
+{
+    return [_HTTPManager POST:@"editpost.php"
+                   parameters:@{ @"action": @"updatepost",
+                                 @"postid": post.postID,
+                                 @"message": BBcode,
+                                 @"parseurl": @"yes",
+                                 @"preview": @"Preview Post" }
+                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    {
+        HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
+        if (postbody) {
+            if (callback) callback(nil, postbody.innerHTML);
+        } else {
+            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
+                                                 code:AwfulErrorCodes.parseError
+                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewd post" }];
+            if (callback) callback(error, nil);
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error, nil);
     }];
 }
 
