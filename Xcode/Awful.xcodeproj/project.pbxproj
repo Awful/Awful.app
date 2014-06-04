@@ -152,7 +152,6 @@
 		1CA1EFFF19104A6200E85DB2 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
 		1CA1F04519109C0100E85DB2 /* UIWebView+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1F04419109C0100E85DB2 /* UIWebView+AwfulConvenience.m */; };
 		1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0461910AEBA00E85DB2 /* zepto.min.js */; };
-		1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0491910C47200E85DB2 /* fastclick.js */; };
 		1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
@@ -488,7 +487,6 @@
 		1CA1F04319109C0100E85DB2 /* UIWebView+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1CA1F04419109C0100E85DB2 /* UIWebView+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1CA1F0461910AEBA00E85DB2 /* zepto.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = zepto.min.js; path = zepto/zepto.min.js; sourceTree = "<group>"; };
-		1CA1F0491910C47200E85DB2 /* fastclick.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = fastclick.js; path = FastClick/fastclick.js; sourceTree = "<group>"; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagLoader.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagLoader.m; sourceTree = "<group>"; };
 		1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWaffleimagesURLProtocol.h; sourceTree = "<group>"; };
@@ -702,7 +700,6 @@
 			isa = PBXGroup;
 			children = (
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
-				1CA1F0491910C47200E85DB2 /* fastclick.js */,
 				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
 				1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
@@ -1463,7 +1460,6 @@
 				1C8E104C1916F92F0010007B /* profile.js in Resources */,
 				1C8E104A1916F7970010007B /* common.js in Resources */,
 				1C8E10481914D1180010007B /* private-message.js in Resources */,
-				1CA1F04A1910C58400E85DB2 /* fastclick.js in Resources */,
 				1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */,
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
 				1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */,

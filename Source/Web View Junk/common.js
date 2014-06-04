@@ -2,13 +2,6 @@
 
 // Assumes Zepto is available.
 
-// Loads FastClick if it's available.
-$(function() {
-  if (typeof FastClick !== 'undefined') {
-    FastClick.attach(document.body);
-  }
-});
-
 // Starts the WebViewJavascriptBridge.
 function startBridge(callback) {
   if (window.WebViewJavascriptBridge) {

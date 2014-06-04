@@ -67,7 +67,7 @@
 - (NSString *)javascript
 {
     NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"fastclick.js", @"common.js", @"private-message.js", ], &error);
+    NSString *script = LoadJavaScriptResources(@[ @"zepto.min.js", @"common.js", @"private-message.js", ], &error);
     if (!script) {
         NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
     }
