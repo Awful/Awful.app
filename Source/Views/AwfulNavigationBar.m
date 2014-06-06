@@ -26,7 +26,7 @@
 {
     if (recognizer.state != UIGestureRecognizerStateBegan) return;
     if (!self.backItem) return;
-    UINavigationController *nav = self.delegate;
+    UINavigationController *nav = (UINavigationController*)self.delegate;
     if (![nav isKindOfClass:[UINavigationController class]]) return;
     
     // Find the leftmost, widest subview whose width is less than half of the navbar's.

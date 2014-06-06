@@ -80,7 +80,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:self.request.cachePolicy];
+    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:(NSURLCacheStoragePolicy)self.request.cachePolicy];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data

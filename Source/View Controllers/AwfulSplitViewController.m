@@ -174,6 +174,7 @@
         case UIInterfaceOrientationLandscapeLeft: return UIInterfaceOrientationMaskLandscapeLeft;
         case UIInterfaceOrientationLandscapeRight: return UIInterfaceOrientationMaskLandscapeRight;
         case UIInterfaceOrientationPortraitUpsideDown: return UIInterfaceOrientationMaskPortraitUpsideDown;
+		case UIInterfaceOrientationUnknown: return UIInterfaceOrientationMaskAll;
     }
 }
 
