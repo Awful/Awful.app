@@ -4,10 +4,13 @@
 
 #import "AwfulPostPreviewViewController.h"
 #import "AwfulAlertView.h"
+#import "AwfulComposeTextView.h"
 #import "AwfulForumsClient.h"
+#import "AwfulImageURLProtocol.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulSettings.h"
+#import "AwfulTextAttachment.h"
 #import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
 
@@ -25,6 +28,8 @@
 @property (strong, nonatomic) AwfulPost *fakePost;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property (copy, nonatomic) NSArray *imageURLs;
+
 @end
 
 @implementation AwfulPostPreviewViewController
@@ -32,7 +37,14 @@
     BOOL _webViewDidLoadOnce;
 }
 
-- (id)initWithPost:(AwfulPost *)post BBcode:(NSString *)BBcode
+- (void)dealloc
+{
+    for (NSURL *URL in _imageURLs) {
+        [AwfulImageURLProtocol stopServingImageAtURL:URL];
+    }
+}
+
+- (id)initWithPost:(AwfulPost *)post BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         _editingPost = post;
@@ -43,7 +55,7 @@
     return self;
 }
 
-- (id)initWithThread:(AwfulThread *)thread BBcode:(NSString *)BBcode
+- (id)initWithThread:(AwfulThread *)thread BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         _thread = thread;
@@ -125,10 +137,41 @@ static void CommonInit(AwfulPostPreviewViewController *self)
         };
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         [self.view addSubview:self.loadingView];
+        
+        // Serve image attachments so the UIWebView can handle it.
+        NSString *basePath = [[NSUUID UUID] UUIDString];
+        NSMutableArray *imageURLs = [NSMutableArray new];
+        NSMutableAttributedString *BBcode = [self.BBcode mutableCopy];
+        [BBcode enumerateAttribute:NSAttachmentAttributeName
+                           inRange:NSMakeRange(0, BBcode.length)
+                           options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
+                        usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
+        {
+            if (!attachment) return;
+            
+            NSString *t = @"";
+            CGSize imageSize = attachment.image.size;
+            if (imageSize.width > RequiresThumbnailImageSize.width || imageSize.height > RequiresThumbnailImageSize.height) {
+                t = @"t";
+            }
+            
+            UIImage *image = attachment.image;
+            if ([attachment isKindOfClass:[AwfulTextAttachment class]]) {
+                image = ((AwfulTextAttachment *)attachment).thumbnailImage;
+            }
+            NSURL *imageURL = [AwfulImageURLProtocol serveImage:image atPath:[basePath stringByAppendingPathComponent:@(imageURLs.count).stringValue]];
+            [imageURLs addObject:imageURL];
+            
+            // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
+            NSString *replacement = [NSString stringWithFormat:@"[%@img]http://%@[/%@img]", t, imageURL.absoluteString, t];
+            [BBcode replaceCharactersInRange:range withString:replacement];
+        }];
+        self.imageURLs = imageURLs;
+        
         if (self.editingPost) {
-            self.networkOperation = [[AwfulForumsClient client] previewEditToPost:self.editingPost withBBcode:self.BBcode andThen:callback];
+            self.networkOperation = [[AwfulForumsClient client] previewEditToPost:self.editingPost withBBcode:BBcode.string andThen:callback];
         } else {
-            self.networkOperation = [[AwfulForumsClient client] previewReplyToThread:self.thread withBBcode:self.BBcode andThen:callback];
+            self.networkOperation = [[AwfulForumsClient client] previewReplyToThread:self.thread withBBcode:BBcode.string andThen:callback];
         }
     }
 }

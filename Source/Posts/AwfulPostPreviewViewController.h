@@ -13,18 +13,18 @@
 /**
  * Preview editing a post. One of two designated initializers.
  */
-- (id)initWithPost:(AwfulPost *)post BBcode:(NSString *)BBcode;
+- (id)initWithPost:(AwfulPost *)post BBcode:(NSAttributedString *)BBcode;
 
 /**
  * Preview a new post. One of two designated initializers.
  */
-- (id)initWithThread:(AwfulThread *)thread BBcode:(NSString *)BBcode;
+- (id)initWithThread:(AwfulThread *)thread BBcode:(NSAttributedString *)BBcode;
 
 @property (readonly, strong, nonatomic) AwfulPost *editingPost;
 
 @property (readonly, strong, nonatomic) AwfulThread *thread;
 
-@property (readonly, copy, nonatomic) NSString *BBcode;
+@property (readonly, copy, nonatomic) NSAttributedString *BBcode;
 
 /**
  * A block to call if submission is to continue.

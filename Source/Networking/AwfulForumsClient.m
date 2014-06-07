@@ -7,6 +7,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulHTTPRequestOperationManager.h"
+#import "AwfulImageURLProtocol.h"
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulModels.h"
 #import "AwfulPostScraper.h"
@@ -702,6 +703,7 @@
     {
         HTMLElement *element = [document firstNodeMatchingSelector:@".postbody"];
         if (element) {
+            WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(element);
             if (callback) callback(nil, element.innerHTML);
         } else {
             NSError *error = [NSError errorWithDomain:AwfulErrorDomain
@@ -849,6 +851,7 @@
     {
         HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
         if (postbody) {
+            WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(postbody);
             if (callback) callback(nil, postbody.innerHTML);
         } else {
             NSError *error = [NSError errorWithDomain:AwfulErrorDomain
@@ -859,6 +862,16 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error, nil);
     }];
+}
+
+static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *postbody)
+{
+    NSString *selector = [NSString stringWithFormat:@"img[src^=http://%@]", AwfulImageURLScheme];
+    for (HTMLElement *img in [postbody nodesMatchingSelector:selector]) {
+        NSString *src = img[@"src"];
+        src = [src substringFromIndex:@"http://".length];
+        img[@"src"] = src;
+    }
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
