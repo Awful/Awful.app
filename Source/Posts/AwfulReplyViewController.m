@@ -112,12 +112,10 @@
     
     AwfulPostPreviewViewController *preview;
     if (self.thread) {
-        preview = [[AwfulPostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.text];
+        preview = [[AwfulPostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.attributedText];
     } else if (self.post) {
-        preview = [[AwfulPostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.text];
+        preview = [[AwfulPostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.attributedText];
     }
-    
-    // TODO consider images. Would need to upload them, save them, or embed them.
     
     preview.submitBlock = ^{ handler(YES); };
     self.onAppearBlock = ^{ handler(NO); };

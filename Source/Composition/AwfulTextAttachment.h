@@ -14,4 +14,9 @@
  */
 @property (strong, nonatomic) NSURL *assetURL;
 
+/**
+ * A thumbnail of the text attachment's image that won't turn a UITextView nigh-unscrollable.
+ */
+@property (readonly, strong, nonatomic) UIImage *thumbnailImage;
+
 @end

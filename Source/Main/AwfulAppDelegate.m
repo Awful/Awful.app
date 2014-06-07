@@ -14,6 +14,7 @@
 #import "AwfulEmptyViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumsListController.h"
+#import "AwfulImageURLProtocol.h"
 #import "AwfulLaunchImageViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
@@ -116,6 +117,7 @@ static id _instance;
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
                                                                     diskPath:nil]];
+    [NSURLProtocol registerClass:[AwfulImageURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
