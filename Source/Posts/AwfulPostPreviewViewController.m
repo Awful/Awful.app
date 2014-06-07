@@ -77,7 +77,7 @@ static void CommonInit(AwfulPostPreviewViewController *self)
     if (_postButtonItem) return _postButtonItem;
     _postButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStylePlain target:nil action:nil];
     __weak __typeof__(self) weakSelf = self;
-    _postButtonItem.awful_actionBlock = ^(UIBarButtonItem *_item) {
+    _postButtonItem.awful_actionBlock = ^(UIBarButtonItem *item) {
         __typeof__(self) self = weakSelf;
         self.submitBlock();
     };
