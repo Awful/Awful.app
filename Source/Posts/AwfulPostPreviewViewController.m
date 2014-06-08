@@ -239,6 +239,16 @@ static void CommonInit(AwfulPostPreviewViewController *self)
 
 #pragma mark - UIWebViewDelegate
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
+    if (navigationType != UIWebViewNavigationTypeLinkClicked && [request.URL.host.lowercaseString hasSuffix:@"www.youtube.com"] && [request.URL.path.lowercaseString hasPrefix:@"/watch"]) {
+        navigationType = UIWebViewNavigationTypeLinkClicked;
+    }
+    
+    return navigationType != UIWebViewNavigationTypeLinkClicked;
+}
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     if (!_webViewDidLoadOnce) {
