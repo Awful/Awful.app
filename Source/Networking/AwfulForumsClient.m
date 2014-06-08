@@ -866,7 +866,7 @@
 
 static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *postbody)
 {
-    NSString *selector = [NSString stringWithFormat:@"img[src^=http://%@]", AwfulImageURLScheme];
+    NSString *selector = [NSString stringWithFormat:@"img[src^='http://%@']", AwfulImageURLScheme];
     for (HTMLElement *img in [postbody nodesMatchingSelector:selector]) {
         NSString *src = img[@"src"];
         src = [src substringFromIndex:@"http://".length];
