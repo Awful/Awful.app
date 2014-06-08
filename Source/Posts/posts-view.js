@@ -4,7 +4,7 @@
 window.Awful = {};
 
 startBridge(function(bridge) {
-  $(bridge.init);
+  bridge.init();
   
   bridge.registerHandler('changeStylesheet', function(css) {
     $('#awful-inline-style').text(css);
@@ -72,11 +72,11 @@ startBridge(function(bridge) {
   });
   
   $(function() {
-    $('body').on('click', 'header .avatar, header .nameanddate', function(event) {
+    $('body').on('tap', 'header .avatar, header .nameanddate', function(event) {
       bridge.callHandler('didTapUserHeader', clickData(this));
     });
     
-    $('body').on('click', '.action-button', function(event) {
+    $('body').on('tap', '.action-button', function(event) {
       bridge.callHandler('didTapActionButton', clickData(this));
     });
     

@@ -15,7 +15,7 @@ function startBridge(callback) {
 
 // Toggles spoilers on tap.
 $(function() {
-  $('body').on('click', '.bbc-spoiler', function(event) {
+  $('body').on('tap', '.bbc-spoiler', function(event) {
     var target = $(event.target);
     var spoiler = target.closest('.bbc-spoiler');
     var isLink = target.closest('a, [data-awful-linkified-image]').length > 0;
@@ -30,7 +30,7 @@ $(function() {
 });
 
 // Shows linkified images on tap.
-$('body').on('click', '[data-awful-linkified-image]', function(event) {
+$('body').on('tap', '[data-awful-linkified-image]', function(event) {
   var link = $(event.target);
   if (link.closest('.bbc-spoiler:not(.spoiled)').length > 0) {
     return;

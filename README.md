@@ -139,9 +139,7 @@ To add a new thread tag you just made:
 Assembling the AwfulPostsView
 -----------------------------
 
-The posts view uses [zepto.js][]. It gets concatenated with some custom JavaScript into `Resources/JavaScript/combined.js` during the Xcode build.
-
-The standard build of zepto.js works fine, though it does include some unnecessary modules. Awful only uses `zepto` and `event`, so feel free to do a custom build with just those modules.
+The posts view uses [zepto.js][]. Awful uses the *Touch* module which is not part of a standard build, so a custom build is required. (It also uses the *Core* and *Event* modules.)
 
 [zepto.js]: http://zeptojs.com/
 
