@@ -4,7 +4,7 @@
 
 #import "AwfulTextAttachment.h"
 #import "AwfulComposeTextView.h"
-@import AssetsLibrary;
+#import "AwfulFrameworkCategories.h"
 @import ImageIO;
 
 @interface AwfulTextAttachment ()
@@ -41,11 +41,20 @@
         return image;
     }
     
+    // Try to get a thumbnail from the assets library. It's super fast.
     UIImage *thumbnail;
     if (self.assetURL) {
-        thumbnail = ThumbnailImageForAssetWithURL(self.assetURL, thumbnailSize);
+        ALAssetsLibrary *library = [ALAssetsLibrary new];
+        NSError *error;
+        ALAsset *asset = [library awful_assetForURL:self.assetURL error:&error];
+        if (asset) {
+            thumbnail = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
+        } else {
+            NSLog(@"%s could not find asset, using image instead: %@", __PRETTY_FUNCTION__, error);
+        }
     }
     
+    // If the assets library doesn't come through, resize the image we do have. May be slow and memory intensive.
     if (!thumbnail) {
         thumbnail = ThumbnailImageForImage(image, thumbnailSize);
     }
@@ -65,24 +74,6 @@ static CGSize AppropriateThumbnailSizeForImageSize(CGSize imageSize)
     } else {
         return imageSize;
     }
-}
-
-static UIImage * ThumbnailImageForAssetWithURL(NSURL *assetURL, CGSize thumbnailSize)
-{
-    __block UIImage *thumbnail;
-    dispatch_semaphore_t flag = dispatch_semaphore_create(0);
-    ALAssetsLibrary *library = [ALAssetsLibrary new];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-            thumbnail = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
-            dispatch_semaphore_signal(flag);
-        } failureBlock:^(NSError *error) {
-            // nop
-            dispatch_semaphore_signal(flag);
-        }];
-    });
-    dispatch_semaphore_wait(flag, DISPATCH_TIME_FOREVER);
-    return thumbnail;
 }
 
 static UIImage * ThumbnailImageForImage(UIImage *image, CGSize thumbnailSize)

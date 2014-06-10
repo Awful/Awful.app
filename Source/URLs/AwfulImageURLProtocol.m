@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImageURLProtocol.h"
-@import AssetsLibrary;
+#import "AwfulFrameworkCategories.h"
 
 @implementation AwfulImageURLProtocol
 
@@ -25,40 +25,28 @@ static NSMutableDictionary *g_imageDatas;
     NSParameterAssert(assetURL);
     NSParameterAssert(path.length > 0);
     
-    __block UIImage *image;
-    __block NSData *imageData;
     ALAssetsLibrary *library = [ALAssetsLibrary new];
-    dispatch_semaphore_t flag = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *representation = asset.defaultRepresentation;
-            if (UTTypeConformsTo((__bridge CFStringRef)representation.UTI, kUTTypeGIF)) {
-                NSMutableData *data = [NSMutableData dataWithLength:representation.size];
-                NSError *error;
-                NSUInteger copied = [representation getBytes:data.mutableBytes fromOffset:0 length:representation.size error:&error];
-                if (copied > 0) {
-                    imageData = data;
-                } else {
-                    NSLog(@"%s could not find data for asset: %@", __PRETTY_FUNCTION__, error);
-                }
-            } else {
-                image = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
-            }
-            dispatch_semaphore_signal(flag);
-        } failureBlock:^(NSError *error) {
-            NSLog(@"%s could not find asset: %@", __PRETTY_FUNCTION__, error);
-            dispatch_semaphore_signal(flag);
-        }];
-    });
-    dispatch_semaphore_wait(flag, DISPATCH_TIME_FOREVER);
-    
-    if (imageData) {
-        return [self serveImageData:imageData atPath:path];
-    } else if (image) {
-        return [self serveImage:image atPath:path];
-    } else {
-        NSLog(@"%s failed to serve asset", __PRETTY_FUNCTION__);
+    NSError *error;
+    ALAsset *asset = [library awful_assetForURL:assetURL error:&error];
+    if (!asset) {
+        NSLog(@"%s could not find asset: %@", __PRETTY_FUNCTION__, error);
         return nil;
+    }
+    
+    ALAssetRepresentation *representation = asset.defaultRepresentation;
+    if (UTTypeConformsTo((__bridge CFStringRef)representation.UTI, kUTTypeGIF)) {
+        NSMutableData *imageData = [NSMutableData dataWithLength:representation.size];
+        NSError *error;
+        NSUInteger copied = [representation getBytes:imageData.mutableBytes fromOffset:0 length:representation.size error:&error];
+        if (copied > 0) {
+            return [self serveImageData:imageData atPath:path];
+        } else {
+            NSLog(@"%s could not find data for asset: %@", __PRETTY_FUNCTION__, error);
+            return nil;
+        }
+    } else {
+        UIImage *image = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
+        return [self serveImage:image atPath:path];
     }
 }
 

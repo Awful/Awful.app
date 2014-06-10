@@ -178,6 +178,7 @@
 		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
 		1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */; };
 		1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */; };
+		1CD82F361946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */; };
 		1CD8728318CAE64C00B2D0B9 /* AwfulJumpToPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8728218CAE64C00B2D0B9 /* AwfulJumpToPageView.m */; };
 		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
 		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
@@ -546,6 +547,8 @@
 		1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumThreadTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1CD82F2B19428D0900B0C5BD /* AwfulImageURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageURLProtocol.h; sourceTree = "<group>"; };
 		1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageURLProtocol.m; sourceTree = "<group>"; };
+		1CD82F341946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+AwfulConvenient.h"; sourceTree = "<group>"; };
+		1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+AwfulConvenient.m"; sourceTree = "<group>"; };
 		1CD8728118CAE64C00B2D0B9 /* AwfulJumpToPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJumpToPageView.h; sourceTree = "<group>"; };
 		1CD8728218CAE64C00B2D0B9 /* AwfulJumpToPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJumpToPageView.m; sourceTree = "<group>"; };
 		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
@@ -1263,6 +1266,8 @@
 		1CE2D99D16688AC40024AC1C /* Framework Categories */ = {
 			isa = PBXGroup;
 			children = (
+				1CD82F341946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.h */,
+				1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */,
 				1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
@@ -1726,6 +1731,7 @@
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CEBF7FB1920A9C5008E63EF /* AwfulSidebarCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */,
+				1CD82F361946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m in Sources */,
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
 				1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
