@@ -129,6 +129,11 @@
     [self.networkOperation cancel];
     self.networkOperation = nil;
     
+    // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
+    if (page == AwfulThreadPageLast && self.author) {
+        page = [self.thread numberOfPagesForSingleUser:self.author] ?: 1;
+    }
+    
     BOOL reloadingSamePage = page == self.page;
     self.page = page;
     
