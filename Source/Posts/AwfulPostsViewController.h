@@ -25,6 +25,9 @@
 
 @property (readonly, strong, nonatomic) AwfulThread *thread;
 
+/**
+ * An optional user whose posts are the only ones shown. If nil, all posts are shown.
+ */
 @property (readonly, strong, nonatomic) AwfulUser *author;
 
 /**
