@@ -4,7 +4,6 @@
 
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulScanner.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 
 @interface AwfulForumHierarchyScraper ()
@@ -60,7 +59,7 @@
         }
         
         [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:nil];
-        NSString *itemName = [[scanner.string substringFromIndex:scanner.scanLocation] gtm_stringByUnescapingFromHTML];
+        NSString *itemName = [scanner.string substringFromIndex:scanner.scanLocation];
         if (itemName.length > 0) {
             info[@"itemName"] = itemName;
         }

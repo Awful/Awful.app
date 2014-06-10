@@ -4,7 +4,6 @@
 
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -62,7 +61,7 @@
                 [userIDs addObject:userID];
                 info[@"userID"] = userID;
             }
-            NSString *username = [userLink.innerHTML gtm_stringByUnescapingFromHTML];
+            NSString *username = userLink.textContent;
             if (username.length > 0) {
                 [usernames addObject:username];
                 info[@"username"] = username;
@@ -77,7 +76,7 @@
                 [userIDs addObject:userID];
                 info[@"requesterUserID"] = userID;
             }
-            NSString *username = [requesterLink.innerHTML gtm_stringByUnescapingFromHTML];
+            NSString *username = requesterLink.textContent;
             if (username.length > 0) {
                 [usernames addObject:username];
                 info[@"requesterUsername"] = username;
@@ -92,7 +91,7 @@
                 [userIDs addObject:userID];
                 info[@"approverUserID"] = userID;
             }
-            NSString *username = [approverLink.innerHTML gtm_stringByUnescapingFromHTML];
+            NSString *username = approverLink.textContent;
             if (username.length > 0) {
                 [usernames addObject:username];
                 info[@"approverUsername"] = username;

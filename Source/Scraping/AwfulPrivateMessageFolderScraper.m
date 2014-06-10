@@ -5,7 +5,6 @@
 #import "AwfulPrivateMessageFolderScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -35,7 +34,7 @@
         
         AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
                                                                            inManagedObjectContext:self.managedObjectContext];
-        message.subject = [titleLink.innerHTML gtm_stringByUnescapingFromHTML];
+        message.subject = titleLink.textContent;
         
         {{
             HTMLElement *seenImage = [row awful_firstNodeMatchingCachedSelector:@"td.status img"];
@@ -57,7 +56,7 @@
         
         {{
             HTMLElement *fromCell = [row awful_firstNodeMatchingCachedSelector:@"td.sender"];
-            NSString *fromUsername = [fromCell.innerHTML gtm_stringByUnescapingFromHTML];
+            NSString *fromUsername = fromCell.textContent;
             if (fromUsername.length > 0) {
                 message.from = [AwfulUser firstOrNewUserWithUserID:nil username:fromUsername inManagedObjectContext:self.managedObjectContext];
             }

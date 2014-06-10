@@ -7,7 +7,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
 #import "AwfulScanner.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -36,21 +35,21 @@
 
     HTMLElement *forumLink = hierarchyLinks.lastObject;
     if (forumLink) {
-        self.forum.name = [forumLink.textContent gtm_stringByUnescapingFromHTML];
+        self.forum.name = forumLink.textContent;
     }
     if (hierarchyLinks.count > 0) {
         HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
-        category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
+        category.name = categoryLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
         AwfulForum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
             AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
-            subforum.name = [subforumLink.innerHTML gtm_stringByUnescapingFromHTML];
+            subforum.name = subforumLink.textContent;
             subforum.category = category;
             currentForum.parentForum = subforum;
             currentForum = subforum;
@@ -115,7 +114,7 @@
                 threadInfo[@"authorUserID"] = authorUserID;
                 [userIDs addObject:authorUserID];
             }
-            NSString *authorUsername = [[authorProfileLink innerHTML] gtm_stringByUnescapingFromHTML];
+            NSString *authorUsername = authorProfileLink.textContent;
             if (authorUsername.length > 0) {
                 threadInfo[@"authorUsername"] = authorUsername;
                 [usernames addObject:authorUsername];
@@ -203,7 +202,7 @@
         
         HTMLElement *titleLink = [row awful_firstNodeMatchingCachedSelector:@"a.thread_title"];
         if (titleLink) {
-            thread.title = [titleLink.innerHTML gtm_stringByUnescapingFromHTML];
+            thread.title = titleLink.textContent;
         }
         
         NSString *authorUserID = threadInfo[@"authorUserID"];
@@ -338,7 +337,7 @@
         
         HTMLElement *lastPostAuthorLink = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost a.author"];
         if (lastPostAuthorLink) {
-            thread.lastPostAuthorName = [lastPostAuthorLink.textContent gtm_stringByUnescapingFromHTML];
+            thread.lastPostAuthorName = lastPostAuthorLink.textContent;
         }
     }];
     

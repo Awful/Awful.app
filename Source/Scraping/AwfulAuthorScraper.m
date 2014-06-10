@@ -5,7 +5,6 @@
 #import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 
@@ -35,7 +34,7 @@
         self.userID = userIDInput[@"value"];
     }
     HTMLElement *authorTerm = [self.node awful_firstNodeMatchingCachedSelector:@"dt.author"];
-    self.username = [authorTerm.innerHTML gtm_stringByUnescapingFromHTML];
+    self.username = authorTerm.textContent;
     
     if (self.userID.length == 0 && self.username.length == 0) {
         NSString *message = @"Could not find author's user ID or username";

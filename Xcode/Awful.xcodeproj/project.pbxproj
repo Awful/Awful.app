@@ -106,7 +106,6 @@
 		1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */; };
 		1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */; };
 		1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */; };
-		1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7DFA7417EB578F0009F2C6 /* AwfulPageSettingsViewController.m */; };
 		1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7DFA7717EB58640009F2C6 /* AwfulPageSettingsView.m */; };
@@ -124,7 +123,6 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
-		1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
 		1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */; };
 		1C9381C6181A95EC00258191 /* AwfulNewThreadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */; };
@@ -445,8 +443,6 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
-		1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
-		1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionViewController.h; sourceTree = "<group>"; };
 		1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionViewController.m; sourceTree = "<group>"; };
 		1C91B43518BEAE0F00E9AAB3 /* AwfulActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionView.h; sourceTree = "<group>"; };
@@ -709,8 +705,6 @@
 			isa = PBXGroup;
 			children = (
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
-				1C90F8FA16B0C2940015A071 /* GTMNSString+HTML.h */,
-				1C90F8FB16B0C2940015A071 /* GTMNSString+HTML.m */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
@@ -1683,7 +1677,6 @@
 				1CE694AF182FF87F00B24928 /* AwfulBan.m in Sources */,
 				1C6D2EB4182FE1E400785766 /* MessageFolderScrapingTests.m in Sources */,
 				1CFE985318293786003DBBC2 /* AwfulSingleUserThreadInfo.m in Sources */,
-				1C7D232917447428008A802C /* GTMNSString+HTML.m in Sources */,
 				1C6D2E9B182C6F8C00785766 /* ProfileScrapingTests.m in Sources */,
 				1C6D2EAA182E890D00785766 /* PrivateMessageScrapingTests.m in Sources */,
 				1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */,
@@ -1774,7 +1767,6 @@
 				8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
 				1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */,
-				1C90F8FC16B0C2940015A071 /* GTMNSString+HTML.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */,
 				1C5F700417D853AA005ABD6F /* AwfulBasementSidebarViewController.m in Sources */,
 				1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */,

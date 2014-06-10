@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 

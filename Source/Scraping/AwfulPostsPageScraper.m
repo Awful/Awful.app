@@ -8,7 +8,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
 #import "AwfulScanner.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
@@ -40,20 +39,20 @@
     NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'id=']"];
     
     HTMLElement *threadLink = hierarchyLinks.lastObject;
-    self.thread.title = [threadLink.innerHTML gtm_stringByUnescapingFromHTML];
+    self.thread.title = threadLink.textContent;
     if (hierarchyLinks.count > 1) {
         HTMLElement *categoryLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
         NSString *categoryID = URL.queryDictionary[@"forumid"];
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
-        category.name = [categoryLink.innerHTML gtm_stringByUnescapingFromHTML];
+        category.name = categoryLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         AwfulForum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
             AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
-            subforum.name = [subforumLink.innerHTML gtm_stringByUnescapingFromHTML];
+            subforum.name = subforumLink.textContent;
             subforum.category = category;
             currentForum.parentForum = subforum;
             currentForum = subforum;

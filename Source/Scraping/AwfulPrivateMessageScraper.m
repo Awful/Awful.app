@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import "GTMNSString+HTML.h"
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
@@ -37,7 +36,7 @@
     HTMLElement *breadcrumbs = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
     HTMLTextNode *subjectText = breadcrumbs.children.lastObject;
     if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
-        message.subject = [subjectText.data gtm_stringByUnescapingFromHTML];
+        message.subject = subjectText.data;
     }
     
     HTMLElement *postDateCell = [self.node awful_firstNodeMatchingCachedSelector:@"td.postdate"];
