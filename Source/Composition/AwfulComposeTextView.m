@@ -5,6 +5,7 @@
 #import "AwfulComposeTextView.h"
 #import "AwfulKeyboardBar.h"
 #import "AwfulTextAttachment.h"
+#import "AwfulUIKitAndFoundationCategories.h"
 #import <PSMenuItem/PSMenuItem.h>
 
 @interface AwfulComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
