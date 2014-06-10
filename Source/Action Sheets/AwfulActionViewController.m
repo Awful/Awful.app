@@ -99,7 +99,7 @@
     cell.titleLabel.text = item.title;
     cell.titleLabel.textColor = self.theme[@"sheetTextColor"];
     cell.iconImageView.image = item.icon;
-    cell.tintColor = item.tintColor;
+    cell.tintColor = self.theme[item.themeKey];
     cell.isAccessibilityElement = YES;
     cell.accessibilityLabel = item.title;
     cell.accessibilityTraits = UIAccessibilityTraitButton;

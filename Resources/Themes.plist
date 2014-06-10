@@ -125,6 +125,34 @@
 		<string>#777777f0</string>
 		<key>placeholderTextColor</key>
 		<string>#999999</string>
+		<key>addBookmarkIconColor</key>
+		<string>#76b35b</string>
+		<key>copyURLIconColor</key>
+		<string>#7896b9</string>
+		<key>editPostIconColor</key>
+		<string>#c98c63</string>
+		<key>jumpToFirstPageIconColor</key>
+		<string>#908b81</string>
+		<key>jumpToLastPageIconColor</key>
+		<string>#908b81</string>
+		<key>markUnreadIconColor</key>
+		<string>#8f6eaa</string>
+		<key>markReadUpToHereIconColor</key>
+		<string>#76b35b</string>
+		<key>profileIconColor</key>
+		<string>#9ea0aa</string>
+		<key>quoteIconColor</key>
+		<string>#b2b2b2</string>
+		<key>rapSheetIconColor</key>
+		<string>#dc8c3e</string>
+		<key>removeBookmarkIconColor</key>
+		<string>#d4553d</string>
+		<key>sendPMIconColor</key>
+		<string>#82a19a</string>
+		<key>singleUserIconColor</key>
+		<string>#6a8f95</string>
+		<key>voteIconColor</key>
+		<string>#d5bf5a</string>
 	</dict>
 	<key>dark</key>
 	<dict>

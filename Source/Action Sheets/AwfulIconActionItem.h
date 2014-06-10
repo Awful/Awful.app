@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
 {
@@ -22,17 +22,22 @@ typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
     AwfulIconActionItemTypeVote,
 };
 
-
+/**
+ * An AwfulIconActionItem appears in an action sheet.
+ */
 @interface AwfulIconActionItem : NSObject
 
+/**
+ * Designated initializer.
+ */
 - (id)initWithTitle:(NSString *)title
                icon:(UIImage *)icon
-          tintColor:(UIColor *)tintColor
+           themeKey:(NSString *)themeKey
              action:(void (^)(void))action;
 
 @property (copy, nonatomic) NSString *title;
 @property (nonatomic) UIImage *icon;
-@property (nonatomic) UIColor *tintColor;
+@property (copy, nonatomic) NSString *themeKey;
 @property (copy, nonatomic) void (^action)(void);
 
 + (instancetype)itemWithType:(AwfulIconActionItemType)type action:(void (^)(void))action;
