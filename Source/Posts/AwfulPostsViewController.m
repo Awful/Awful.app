@@ -237,7 +237,10 @@
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
     NSMutableArray *postViewModels = [NSMutableArray new];
-    NSRange range = NSMakeRange(self.hiddenPosts, self.posts.count - self.hiddenPosts);
+    NSRange range = NSMakeRange(self.hiddenPosts, 0);
+    if ((NSInteger)self.posts.count > self.hiddenPosts) {
+        range.length = self.posts.count - self.hiddenPosts;
+    }
     for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
         [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
     }
