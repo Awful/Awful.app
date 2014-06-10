@@ -6,6 +6,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
@@ -14,7 +15,6 @@
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulSettingsChoiceViewController.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
 

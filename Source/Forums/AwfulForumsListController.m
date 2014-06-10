@@ -11,10 +11,10 @@
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulForumsListController () <AwfulForumTreeDataSourceDelegate>
 

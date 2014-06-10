@@ -6,12 +6,12 @@
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulSettings.h"
 #import "AwfulTextAttachment.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import <GRMustache/GRMustache.h>
 
 @interface AwfulPostPreviewViewController () <UIWebViewDelegate>

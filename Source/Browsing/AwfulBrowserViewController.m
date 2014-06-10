@@ -3,13 +3,13 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulBrowserViewController.h"
-#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulPageBarBackgroundView.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulUIKitAndFoundationCategories.h"
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
 @interface AwfulBrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
 

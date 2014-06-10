@@ -6,9 +6,9 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulPunishmentCell.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulRapSheetViewController ()

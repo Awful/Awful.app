@@ -7,6 +7,7 @@
 #import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
@@ -14,7 +15,6 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 

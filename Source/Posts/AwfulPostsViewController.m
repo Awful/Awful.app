@@ -11,6 +11,8 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
+#import "AwfulForumThreadTableViewController.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJavaScript.h"
 #import "AwfulJumpToPageController.h"
@@ -27,8 +29,6 @@
 #import "AwfulReplyViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
-#import "AwfulForumThreadTableViewController.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache.h>
 #import <MRProgress/MRProgressOverlayView.h>

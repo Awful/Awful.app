@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulResourceURLProtocol.h"
-#import "AwfulUIKitAndFoundationCategories.h"
+#import "AwfulFrameworkCategories.h"
 
 @implementation AwfulResourceURLProtocol
 

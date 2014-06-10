@@ -8,9 +8,9 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulPostPreviewViewController.h"
 #import "AwfulSettings.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulReplyViewController () <UIViewControllerRestoration>
 

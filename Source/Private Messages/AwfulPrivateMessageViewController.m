@@ -12,6 +12,7 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
@@ -21,7 +22,6 @@
 #import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache/GRMustache.h>

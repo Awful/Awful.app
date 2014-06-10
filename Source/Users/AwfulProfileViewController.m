@@ -9,12 +9,12 @@
 #import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache.h>
 #import <WebViewJavascriptBridge.h>

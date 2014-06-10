@@ -6,11 +6,11 @@
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulNewPrivateMessageFieldView.h"
 #import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
-#import "AwfulUIKitAndFoundationCategories.h"
 
 @interface AwfulNewPrivateMessageViewController () <AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
 

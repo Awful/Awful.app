@@ -529,7 +529,7 @@
 		1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulFetchedResultsControllerDataSource.m; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
-		1CC45262180B54B600F5F043 /* AwfulUIKitAndFoundationCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUIKitAndFoundationCategories.h; sourceTree = "<group>"; };
+		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
 		1CC45265180B7C1A00F5F043 /* AwfulThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTableViewController.h; sourceTree = "<group>"; };
 		1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTableViewController.m; sourceTree = "<group>"; };
 		1CC45268180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarkedThreadTableViewController.h; sourceTree = "<group>"; };
@@ -888,6 +888,7 @@
 				1C6474A61569989800C72657 /* Data */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
+				1CE2D99D16688AC40024AC1C /* Framework Categories */,
 				1C7D22EC173B330E008A802C /* Instapaper API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
@@ -901,7 +902,6 @@
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
-				1CE2D99D16688AC40024AC1C /* UIKit and Foundation */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
 				1C6ED634169103FE0015CDD5 /* Users */,
 				1C00E0AB173A006B008895E7 /* View Controllers */,
@@ -1260,10 +1260,10 @@
 			path = Theming;
 			sourceTree = "<group>";
 		};
-		1CE2D99D16688AC40024AC1C /* UIKit and Foundation */ = {
+		1CE2D99D16688AC40024AC1C /* Framework Categories */ = {
 			isa = PBXGroup;
 			children = (
-				1CC45262180B54B600F5F043 /* AwfulUIKitAndFoundationCategories.h */,
+				1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
 				1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */,
@@ -1289,7 +1289,7 @@
 				1CA1F04319109C0100E85DB2 /* UIWebView+AwfulConvenience.h */,
 				1CA1F04419109C0100E85DB2 /* UIWebView+AwfulConvenience.m */,
 			);
-			path = "UIKit and Foundation";
+			path = "Framework Categories";
 			sourceTree = "<group>";
 		};
 		1CF2462016DD957300C75E05 /* Composition */ = {
