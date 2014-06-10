@@ -729,7 +729,9 @@
         
         // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
         NSInteger i = [self.posts indexOfObject:post];
-        if (i > self.hiddenPosts && i != NSNotFound) {
+        if (i == NSNotFound) return;
+        i -= self.hiddenPosts;
+        if (i >= 0) {
             NSDictionary *data = @{ @"index": @(i),
                                     @"HTML": [self renderedPostAtIndex:index] };
             [_webViewJavaScriptBridge callHandler:@"postHTMLAtIndex" data:data];
