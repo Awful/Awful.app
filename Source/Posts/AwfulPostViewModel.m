@@ -21,7 +21,9 @@
 
 - (NSString *)HTMLContents
 {
-    HTMLDocument *document = [HTMLDocument documentWithString:self.post.innerHTML];
+    NSString *innerHTML = self.post.innerHTML;
+    if (!innerHTML) return nil;
+    HTMLDocument *document = [HTMLDocument documentWithString:innerHTML];
     RemoveSpoilerStylingAndEvents(document);
     RemoveEmptyEditedByParagraphs(document);
     UseHTML5VimeoPlayer(document);
