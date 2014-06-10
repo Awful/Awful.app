@@ -6,7 +6,6 @@
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
 #import "AwfulTextAttachment.h"
-#import <Crashlytics/Crashlytics.h>
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
