@@ -321,13 +321,13 @@ header {
   border-bottom-width: 0px;
 }
 .iphone header {
-  top: 3px;
+  top: -1px;
   background: 40px bottom no-repeat url('awful-resource://fyad-bubble.png');
   background-size: 75px 25px;
 }
 .ipad header {
-  top: 11px;
-  padding: 0 15px 15px 15px;
+  top: 3px;
+  padding: 11px 15px 15px 15px;
   background: 65px bottom no-repeat url('awful-resource://fyad-bubble.png');
   background-size: 70px 25px;
 }
