@@ -155,15 +155,22 @@ static void CommonInit(AwfulPostPreviewViewController *self)
                 t = @"t";
             }
             
-            UIImage *image = attachment.image;
+            NSString *path = [basePath stringByAppendingPathComponent:@(imageURLs.count).stringValue];
+            NSURL *servedImageURL;
             if ([attachment isKindOfClass:[AwfulTextAttachment class]]) {
-                image = ((AwfulTextAttachment *)attachment).thumbnailImage;
+                AwfulTextAttachment *awfulAttachment = (AwfulTextAttachment *)attachment;
+                if (awfulAttachment.assetURL) {
+                    servedImageURL = [AwfulImageURLProtocol serveAsset:awfulAttachment.assetURL atPath:path];
+                } else {
+                    servedImageURL = [AwfulImageURLProtocol serveImage:awfulAttachment.thumbnailImage atPath:path];
+                }
+            } else {
+                servedImageURL = [AwfulImageURLProtocol serveImage:attachment.image atPath:path];
             }
-            NSURL *imageURL = [AwfulImageURLProtocol serveImage:image atPath:[basePath stringByAppendingPathComponent:@(imageURLs.count).stringValue]];
-            [imageURLs addObject:imageURL];
+            [imageURLs addObject:servedImageURL];
             
             // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
-            NSString *replacement = [NSString stringWithFormat:@"[%@img]http://%@[/%@img]", t, imageURL.absoluteString, t];
+            NSString *replacement = [NSString stringWithFormat:@"[%@img]http://%@[/%@img]", t, servedImageURL.absoluteString, t];
             [BBcode replaceCharactersInRange:range withString:replacement];
         }];
         self.imageURLs = imageURLs;
