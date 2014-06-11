@@ -31,7 +31,8 @@
     } else {
         self.submitButtonItem.title = @"Save";
     }
-	[self updateTweaks];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    [self updateTweaks];
     return self;
 }
 
@@ -46,7 +47,8 @@
     } else {
         self.submitButtonItem.title = @"Post";
     }
-	[self updateTweaks];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    [self updateTweaks];
     return self;
 }
 
