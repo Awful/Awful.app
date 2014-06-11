@@ -126,33 +126,33 @@
 		<key>placeholderTextColor</key>
 		<string>#999999</string>
 		<key>addBookmarkIconColor</key>
-		<string>#76b35b</string>
+		<string>#5cc22e</string>
 		<key>copyURLIconColor</key>
-		<string>#7896b9</string>
+		<string>#5585bf</string>
 		<key>editPostIconColor</key>
-		<string>#c98c63</string>
+		<string>ae5317</string>
 		<key>jumpToFirstPageIconColor</key>
-		<string>#908b81</string>
+		<string>#333333</string>
 		<key>jumpToLastPageIconColor</key>
-		<string>#908b81</string>
+		<string>#333333</string>
 		<key>markUnreadIconColor</key>
-		<string>#8f6eaa</string>
+		<string>#7c47a7</string>
 		<key>markReadUpToHereIconColor</key>
-		<string>#76b35b</string>
+		<string>#56b52b</string>
 		<key>profileIconColor</key>
-		<string>#9ea0aa</string>
+		<string>#e35e0d</string>
 		<key>quoteIconColor</key>
-		<string>#b2b2b2</string>
+		<string>#dbdbdb</string>
 		<key>rapSheetIconColor</key>
 		<string>#dc8c3e</string>
 		<key>removeBookmarkIconColor</key>
-		<string>#d4553d</string>
+		<string>#e24021</string>
 		<key>sendPMIconColor</key>
-		<string>#82a19a</string>
+		<string>#4ba692</string>
 		<key>singleUserIconColor</key>
-		<string>#6a8f95</string>
+		<string>#3c93a2</string>
 		<key>voteIconColor</key>
-		<string>#d5bf5a</string>
+		<string>#fcdc48</string>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -218,6 +218,12 @@
 		<string>#202020f2</string>
 		<key>placeholderTextColor</key>
 		<string>#666666</string>
+		<key>quoteIconColor</key>
+		<string>#dbdbdb</string>
+		<key>jumpToFirstPageIconColor</key>
+		<string>#eeeeee</string>
+		<key>jumpToLastPageIconColor</key>
+		<string>#eeeeee</string>
 	</dict>
 	<key>FYAD</key>
 	<dict>
@@ -261,6 +267,34 @@
 		<false/>
 		<key>checkSpelling</key>
 		<false/>
+		<key>addBookmarkIconColor</key>
+		<string>#fd309d</string>
+		<key>copyURLIconColor</key>
+		<string>#fd309d</string>
+		<key>editPostIconColor</key>
+		<string>#fd309d</string>
+		<key>jumpToFirstPageIconColor</key>
+		<string>#fd309d</string>
+		<key>jumpToLastPageIconColor</key>
+		<string>#fd309d</string>
+		<key>markUnreadIconColor</key>
+		<string>#fd309d</string>
+		<key>markReadUpToHereIconColor</key>
+		<string>#fd309d</string>
+		<key>profileIconColor</key>
+		<string>#fd309d</string>
+		<key>quoteIconColor</key>
+		<string>#fd309d</string>
+		<key>rapSheetIconColor</key>
+		<string>#fd309d</string>
+		<key>removeBookmarkIconColor</key>
+		<string>#fd309d</string>
+		<key>sendPMIconColor</key>
+		<string>#fd309d</string>
+		<key>singleUserIconColor</key>
+		<string>#fd309d</string>
+		<key>voteIconColor</key>
+		<string>#fd309d</string>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
@@ -331,6 +365,38 @@
 		<string>#3a3a3a</string>
 		<key>listTextColor</key>
 		<string>#57FF57</string>
+		<key>sheetTextColor</key>
+		<string>#57FF57</string>
+		<key>sheetTitleColor</key>
+		<string>#57FF57</string>
+		<key>addBookmarkIconColor</key>
+		<string>#57FF57</string>
+		<key>copyURLIconColor</key>
+		<string>#57FF57</string>
+		<key>editPostIconColor</key>
+		<string>#57FF57</string>
+		<key>jumpToFirstPageIconColor</key>
+		<string>#57FF57</string>
+		<key>jumpToLastPageIconColor</key>
+		<string>#57FF57</string>
+		<key>markUnreadIconColor</key>
+		<string>#57FF57</string>
+		<key>markReadUpToHereIconColor</key>
+		<string>#57FF57</string>
+		<key>profileIconColor</key>
+		<string>#57FF57</string>
+		<key>quoteIconColor</key>
+		<string>#57FF57</string>
+		<key>rapSheetIconColor</key>
+		<string>#57FF57</string>
+		<key>removeBookmarkIconColor</key>
+		<string>#57FF57</string>
+		<key>sendPMIconColor</key>
+		<string>#57FF57</string>
+		<key>singleUserIconColor</key>
+		<string>#57FF57</string>
+		<key>voteIconColor</key>
+		<string>#57FF57</string>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
@@ -349,7 +415,39 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-amberpos.css</string>
 		<key>listTextColor</key>
-		<string>#EACF4C</string>
+		<string>#ebd04b</string>
+		<key>sheetTextColor</key>
+		<string>#ebd04b</string>
+		<key>sheetTitleColor</key>
+		<string>#ebd04b</string>
+		<key>addBookmarkIconColor</key>
+		<string>#ebd04b</string>
+		<key>copyURLIconColor</key>
+		<string>#ebd04b</string>
+		<key>editPostIconColor</key>
+		<string>#ebd04b</string>
+		<key>jumpToFirstPageIconColor</key>
+		<string>#ebd04b</string>
+		<key>jumpToLastPageIconColor</key>
+		<string>#ebd04b</string>
+		<key>markUnreadIconColor</key>
+		<string>#ebd04b</string>
+		<key>markReadUpToHereIconColor</key>
+		<string>#ebd04b</string>
+		<key>profileIconColor</key>
+		<string>#ebd04b</string>
+		<key>quoteIconColor</key>
+		<string>#ebd04b</string>
+		<key>rapSheetIconColor</key>
+		<string>#ebd04b</string>
+		<key>removeBookmarkIconColor</key>
+		<string>#ebd04b</string>
+		<key>sendPMIconColor</key>
+		<string>#ebd04b</string>
+		<key>singleUserIconColor</key>
+		<string>#ebd04b</string>
+		<key>voteIconColor</key>
+		<string>#ebd04b</string>
 	</dict>
 </dict>
 </plist>
