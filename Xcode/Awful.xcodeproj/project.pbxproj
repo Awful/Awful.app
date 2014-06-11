@@ -179,6 +179,7 @@
 		1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */; };
 		1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */; };
 		1CD82F361946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */; };
+		1CD82F3C19479A1500B0C5BD /* NSURLQueryDictionaryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */; };
 		1CD8728318CAE64C00B2D0B9 /* AwfulJumpToPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD8728218CAE64C00B2D0B9 /* AwfulJumpToPageView.m */; };
 		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
 		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
@@ -549,6 +550,7 @@
 		1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageURLProtocol.m; sourceTree = "<group>"; };
 		1CD82F341946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+AwfulConvenient.h"; sourceTree = "<group>"; };
 		1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+AwfulConvenient.m"; sourceTree = "<group>"; };
+		1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionaryTests.m; sourceTree = "<group>"; };
 		1CD8728118CAE64C00B2D0B9 /* AwfulJumpToPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJumpToPageView.h; sourceTree = "<group>"; };
 		1CD8728218CAE64C00B2D0B9 /* AwfulJumpToPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJumpToPageView.m; sourceTree = "<group>"; };
 		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
@@ -1062,6 +1064,7 @@
 		1CBDB5CE16259C930004BDF4 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1CD82F3A194799E200B0C5BD /* Framework Categories */,
 				1CBDB5C116259C6C0004BDF4 /* Scraping */,
 			);
 			name = Tests;
@@ -1235,6 +1238,14 @@
 			);
 			name = "Posts View Theming";
 			path = Theming;
+			sourceTree = "<group>";
+		};
+		1CD82F3A194799E200B0C5BD /* Framework Categories */ = {
+			isa = PBXGroup;
+			children = (
+				1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */,
+			);
+			path = "Framework Categories";
 			sourceTree = "<group>";
 		};
 		1CDD51951542949600326C7B /* Theming */ = {
@@ -1646,6 +1657,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CD82F3C19479A1500B0C5BD /* NSURLQueryDictionaryTests.m in Sources */,
 				1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */,
 				1C6FFEDD182AA57C0014311C /* PostsPageScrapingTests.m in Sources */,
 				1CA1EFFF19104A6200E85DB2 /* AwfulPostScraper.m in Sources */,
