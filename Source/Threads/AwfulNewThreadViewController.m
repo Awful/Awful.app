@@ -9,6 +9,7 @@
 #import "AwfulForumsClient.h"
 #import "AwfulNewThreadFieldView.h"
 #import "AwfulPostIconPickerController.h"
+#import "AwfulThreadPreviewViewController.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -19,6 +20,8 @@
 @property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
 @property (strong, nonatomic) AwfulThreadTag *threadTag;
 @property (strong, nonatomic) AwfulThreadTag *secondaryThreadTag;
+
+@property (copy, nonatomic) void (^onAppearBlock)(void);
 
 @end
 
@@ -34,7 +37,8 @@
     if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
     _forum = forum;
     self.title = DefaultTitle;
-    self.submitButtonItem.title = @"Post";
+    self.submitButtonItem.title = @"Preview";
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.restorationClass = self.class;
 	[self updateTweaks];
     return self;
@@ -91,6 +95,15 @@ static NSString * const DefaultTitle = @"New Thread";
     NSDictionary *styleAttrs = @{NSForegroundColorAttributeName: self.theme[@"placeholderTextColor"]};
     NSAttributedString *themedString = [[NSAttributedString alloc] initWithString:@"Subject" attributes:styleAttrs];
     self.fieldView.subjectField.textField.attributedPlaceholder = themedString;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (self.onAppearBlock) {
+        self.onAppearBlock();
+        self.onAppearBlock = nil;
+    }
 }
 
 - (void)updateTweaks
@@ -180,13 +193,14 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
-    AwfulAlertView *alert = [AwfulAlertView new];
-    alert.title = @"Incoming Forums Superstar";
-    alert.message = [NSString stringWithFormat:@"You're making a new thread in %@. Will it be "
-                     "funny, informative, or interesting on any level?", self.forum.name];
-    [alert addCancelButtonWithTitle:@"Nope" block:^{ handler(NO); }];
-    [alert addButtonWithTitle:self.submitButtonItem.title block:^{ handler(YES); }];
-    [alert show];
+    AwfulThreadPreviewViewController *preview = [[AwfulThreadPreviewViewController alloc] initWithForum:self.forum
+                                                                                                subject:self.fieldView.subjectField.textField.text
+                                                                                              threadTag:self.threadTag
+                                                                                     secondaryThreadTag:self.secondaryThreadTag
+                                                                                                 BBcode:self.textView.attributedText];
+    preview.submitBlock = ^{ handler(YES); };
+    self.onAppearBlock = ^{ handler(NO); };
+    [self.navigationController pushViewController:preview animated:YES];
 }
 
 - (NSString *)submissionInProgressTitle

@@ -53,6 +53,18 @@
     [self setNeedsLayout];
 }
 
+- (BOOL)pageIconHidden
+{
+    return self.pagesIconImageView.hidden;
+}
+
+- (void)setPageIconHidden:(BOOL)pageIconHidden
+{
+    if (self.pageIconHidden == pageIconHidden) return;
+    self.pagesIconImageView.hidden = pageIconHidden;
+    [self setNeedsLayout];
+}
+
 - (void)setLightenBadgeLabel:(BOOL)lightenBadgeLabel
 {
     if (_lightenBadgeLabel == lightenBadgeLabel) return;
@@ -136,12 +148,20 @@
     self.numberOfPagesLabel.frame = pagesFrame;
     
     CGRect iconFrame = self.pagesIconImageView.bounds;
-    iconFrame.origin.x = CGRectGetMaxX(pagesFrame) + 2;
+    if (self.pageIconHidden) {
+        iconFrame.origin.x = CGRectGetMaxX(pagesFrame);
+    } else {
+        iconFrame.origin.x = CGRectGetMaxX(pagesFrame) + 2;
+    }
     iconFrame.origin.y = CGRectGetMaxY(pagesFrame) + self.numberOfPagesLabel.font.descender - CGRectGetHeight(iconFrame);
     self.pagesIconImageView.frame = iconFrame;
     
     CGRect byFrame = self.detailTextLabel.bounds;
-    byFrame.origin.x = CGRectGetMaxX(iconFrame) + 5;
+    if (self.pageIconHidden) {
+        byFrame.origin.x = CGRectGetMinX(iconFrame);
+    } else {
+        byFrame.origin.x = CGRectGetMaxX(iconFrame) + 5;
+    }
     byFrame.origin.y = CGRectGetMaxY(pagesFrame) + self.numberOfPagesLabel.font.descender - CGRectGetHeight(byFrame) - self.detailTextLabel.font.descender;
     self.detailTextLabel.frame = byFrame;
     

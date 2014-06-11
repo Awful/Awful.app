@@ -7,9 +7,9 @@
 #import "AwfulComposeTextView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulImageURLProtocol.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostViewModel.h"
+#import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTextAttachment.h"
 #import <GRMustache/GRMustache.h>
@@ -18,38 +18,27 @@
 
 @property (strong, nonatomic) UIBarButtonItem *postButtonItem;
 
-@property (copy, nonatomic) NSString *previewHTML;
-
-@property (readonly, strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) AwfulLoadingView *loadingView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (strong, nonatomic) AwfulPost *fakePost;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) AwfulSelfHostingAttachmentInterpolator *imageInterpolator;
 
-@property (copy, nonatomic) NSArray *imageURLs;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) AwfulPost *fakePost;
 
 @end
 
 @implementation AwfulPostPreviewViewController
 {
     BOOL _webViewDidLoadOnce;
-}
-
-- (void)dealloc
-{
-    for (NSURL *URL in _imageURLs) {
-        [AwfulImageURLProtocol stopServingImageAtURL:URL];
-    }
+    AwfulPost *_fakePost;
 }
 
 - (id)initWithPost:(AwfulPost *)post BBcode:(NSAttributedString *)BBcode
 {
-    if ((self = [super initWithNibName:nil bundle:nil])) {
+    if ((self = [self initWithBBcode:BBcode])) {
         _editingPost = post;
-        _BBcode = [BBcode copy];
-        CommonInit(self);
         self.postButtonItem.title = @"Save";
     }
     return self;
@@ -57,19 +46,20 @@
 
 - (id)initWithThread:(AwfulThread *)thread BBcode:(NSAttributedString *)BBcode
 {
-    if ((self = [super initWithNibName:nil bundle:nil])) {
+    if ((self = [self initWithBBcode:BBcode])) {
         _thread = thread;
-        _BBcode = [BBcode copy];
-        CommonInit(self);
     }
     return self;
 }
 
-static void CommonInit(AwfulPostPreviewViewController *self)
+- (id)initWithBBcode:(NSAttributedString *)BBcode
 {
-    self.title = @"Post Preview";
-    self.navigationItem.rightBarButtonItem = self.postButtonItem;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _BBcode = [BBcode copy];
+        self.title = @"Post Preview";
+        self.navigationItem.rightBarButtonItem = self.postButtonItem;
+    }
+    return self;
 }
 
 - (UIBarButtonItem *)postButtonItem
@@ -99,7 +89,7 @@ static void CommonInit(AwfulPostPreviewViewController *self)
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self renderPreview];
+    self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
 }
 
 - (AwfulTheme *)theme
@@ -119,72 +109,61 @@ static void CommonInit(AwfulPostPreviewViewController *self)
     [self renderPreview];
 }
 
-- (void)renderPreview
+- (void)fetchPreviewIfNecessary
 {
-    _webViewDidLoadOnce = NO;
-    if (self.previewHTML) {
-        [self render:self.previewHTML];
-    } else if (!self.networkOperation) {
-        __weak __typeof__(self) weakSelf = self;
-        void (^callback)() = ^(NSError *error, NSString *postHTML) {
-            __typeof__(self) self = weakSelf;
-            if (error) {
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-            } else {
-                self.previewHTML = postHTML;
-                [self render:postHTML];
-            }
-        };
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
-        [self.view addSubview:self.loadingView];
-        
-        // Serve image attachments so the UIWebView can handle it.
-        NSString *basePath = [[NSUUID UUID] UUIDString];
-        NSMutableArray *imageURLs = [NSMutableArray new];
-        NSMutableAttributedString *BBcode = [self.BBcode mutableCopy];
-        [BBcode enumerateAttribute:NSAttachmentAttributeName
-                           inRange:NSMakeRange(0, BBcode.length)
-                           options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                        usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
-        {
-            if (!attachment) return;
-            
-            NSString *t = @"";
-            CGSize imageSize = attachment.image.size;
-            if (imageSize.width > RequiresThumbnailImageSize.width || imageSize.height > RequiresThumbnailImageSize.height) {
-                t = @"t";
-            }
-            
-            NSString *path = [basePath stringByAppendingPathComponent:@(imageURLs.count).stringValue];
-            NSURL *servedImageURL;
-            if ([attachment isKindOfClass:[AwfulTextAttachment class]]) {
-                AwfulTextAttachment *awfulAttachment = (AwfulTextAttachment *)attachment;
-                if (awfulAttachment.assetURL) {
-                    servedImageURL = [AwfulImageURLProtocol serveAsset:awfulAttachment.assetURL atPath:path];
-                } else {
-                    servedImageURL = [AwfulImageURLProtocol serveImage:awfulAttachment.thumbnailImage atPath:path];
-                }
-            } else {
-                servedImageURL = [AwfulImageURLProtocol serveImage:attachment.image atPath:path];
-            }
-            [imageURLs addObject:servedImageURL];
-            
-            // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
-            NSString *replacement = [NSString stringWithFormat:@"[%@img]http://%@[/%@img]", t, servedImageURL.absoluteString, t];
-            [BBcode replaceCharactersInRange:range withString:replacement];
-        }];
-        self.imageURLs = imageURLs;
-        
-        if (self.editingPost) {
-            self.networkOperation = [[AwfulForumsClient client] previewEditToPost:self.editingPost withBBcode:BBcode.string andThen:callback];
+    if (self.fakePost || self.networkOperation) return;
+    
+    self.imageInterpolator = [AwfulSelfHostingAttachmentInterpolator new];
+    NSString *interpolatedBBcode = [self.imageInterpolator interpolateImagesInString:self.BBcode];
+    __weak __typeof__(self) weakSelf = self;
+    void (^callback)() = ^(NSError *error, NSString *postHTML) {
+        __typeof__(self) self = weakSelf;
+        if (error) {
+            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else {
-            self.networkOperation = [[AwfulForumsClient client] previewReplyToThread:self.thread withBBcode:BBcode.string andThen:callback];
+            self.fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
+            AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
+                                                                 username:[AwfulSettings settings].username
+                                                   inManagedObjectContext:self.managedObjectContext];
+            if (self.editingPost) {
+                
+                // Create a copy of the post we're editing. We'll later change the properties we care about previewing.
+                for (NSPropertyDescription *property in self.editingPost.entity) {
+                    if ([property isKindOfClass:[NSAttributeDescription class]]) {
+                        id actualValue = [self.editingPost valueForKey:property.name];
+                        [self.fakePost setValue:actualValue forKey:property.name];
+                    } else if ([property isKindOfClass:[NSRelationshipDescription class]]) {
+                        NSManagedObject *actualValue = [self.editingPost valueForKey:property.name];
+                        if ([[NSNull null] isEqual:actualValue]) continue;
+                        NSManagedObjectID *objectID = actualValue.objectID;
+                        if (objectID) {
+                            [self.fakePost setValue:[self.managedObjectContext objectWithID:objectID] forKey:property.name];
+                        }
+                    }
+                }
+                
+                self.fakePost.editor = loggedInUser;
+            } else {
+                self.fakePost.postDate = [NSDate date];
+                self.fakePost.author = loggedInUser;
+            }
         }
+        self.fakePost.innerHTML = postHTML;
+        [self renderPreview];
+    };
+    if (self.editingPost) {
+        self.networkOperation = [[AwfulForumsClient client] previewEditToPost:self.editingPost withBBcode:interpolatedBBcode andThen:callback];
+    } else {
+        self.networkOperation = [[AwfulForumsClient client] previewReplyToThread:self.thread withBBcode:interpolatedBBcode andThen:callback];
     }
 }
 
-- (void)render:(NSString *)postHTML
+- (void)renderPreview
 {
+    _webViewDidLoadOnce = NO;
+    [self fetchPreviewIfNecessary];
+    if (!self.fakePost) return;
+    
     NSMutableDictionary *context = [NSMutableDictionary new];
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
@@ -200,40 +179,9 @@ static void CommonInit(AwfulPostPreviewViewController *self)
         NSLog(@"%s error loading post preview HTML: %@", __PRETTY_FUNCTION__, error);
     }
     [self.webView loadHTMLString:HTML baseURL:[AwfulForumsClient client].baseURL];
-}
-
-- (AwfulPost *)fakePost
-{
-    if (!_fakePost) {
-        _fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
-        AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
-                                                             username:[AwfulSettings settings].username
-                                               inManagedObjectContext:self.managedObjectContext];
-        if (self.editingPost) {
-            
-            // Create a copy of the post we're editing. We'll later change the properties we care about previewing.
-            for (NSPropertyDescription *property in self.editingPost.entity) {
-                if ([property isKindOfClass:[NSAttributeDescription class]]) {
-                    id actualValue = [self.editingPost valueForKey:property.name];
-                    [_fakePost setValue:actualValue forKey:property.name];
-                } else if ([property isKindOfClass:[NSRelationshipDescription class]]) {
-                    NSManagedObject *actualValue = [self.editingPost valueForKey:property.name];
-                    if ([[NSNull null] isEqual:actualValue]) continue;
-                    NSManagedObjectID *objectID = actualValue.objectID;
-                    if (objectID) {
-                        [_fakePost setValue:[self.managedObjectContext objectWithID:objectID] forKey:property.name];
-                    }
-                }
-            }
-            
-            _fakePost.editor = loggedInUser;
-        } else {
-            _fakePost.postDate = [NSDate date];
-            _fakePost.author = loggedInUser;
-        }
-    }
-    _fakePost.innerHTML = self.previewHTML;
-    return _fakePost;
+    
+    [self.loadingView removeFromSuperview];
+    self.loadingView = nil;
 }
 
 - (NSManagedObjectContext *)managedObjectContext

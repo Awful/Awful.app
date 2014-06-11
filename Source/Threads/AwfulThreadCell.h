@@ -31,6 +31,11 @@
 @property (readonly, strong, nonatomic) UILabel *numberOfPagesLabel;
 
 /**
+ * Whether or not to hide the page icon.
+ */
+@property (assign, nonatomic) BOOL pageIconHidden;
+
+/**
  * A label displaying additional information about the thread. Inherited from UITableViewCell.
  */
 @property (readonly, strong, nonatomic) UILabel *detailTextLabel;

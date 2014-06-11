@@ -32,3 +32,13 @@
 @property (copy, nonatomic) void (^submitBlock)(void);
 
 @end
+
+@interface AwfulPostPreviewViewController (SubclassingHooks)
+
+- (id)initWithBBcode:(NSAttributedString *)BBcode;
+- (void)fetchPreviewIfNecessary;
+- (void)renderPreview;
+@property (readonly, strong, nonatomic) AwfulPost *fakePost;
+@property (readonly, strong, nonatomic) UIWebView *webView;
+
+@end
