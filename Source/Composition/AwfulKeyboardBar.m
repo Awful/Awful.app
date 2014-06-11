@@ -112,6 +112,9 @@
  * "[url=foo][b][i][/b]" -> "url"
  * "["                   -> "nil"
  * "[foo][/x"            -> "foo"
+ * "[foo attr]"          -> "foo"
+ * "[code][b]"           -> "code"
+ * "[b][code][/code]"    -> "b"
  */
 
 - (NSString *)getCurrentlyOpenTag:(NSString *)content
@@ -141,16 +144,24 @@
         NSUInteger openerLocation =
             [content rangeOfString:
              [NSString stringWithFormat:@"[%@]", tagname] options:NSBackwardsSearch].location;
+
         if (openerLocation == NSNotFound) {
-            // Might be [tag=]
+            // Might be [tag=attr]
             openerLocation =
                 [content rangeOfString:
                  [NSString stringWithFormat:@"[%@=", tagname] options:NSBackwardsSearch].location;
+        }
+
+        if (openerLocation == NSNotFound) {
+            // Might be [tag attr=val]
+            openerLocation =
+            [content rangeOfString:
+             [NSString stringWithFormat:@"[%@ ", tagname] options:NSBackwardsSearch].location;
+        }
             
-            if (openerLocation == NSNotFound) {
-                // Never opened, keep searching backwards from the starting bracket.
-                return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
-            }
+        if (openerLocation == NSNotFound) {
+            // Never opened, keep searching backwards from the starting bracket.
+            return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
         }
         
         // Now that we've matched [tag]...[/tag], keep looking back for an outer [tag2] that
@@ -173,7 +184,7 @@
 
 static NSCharacterSet * TagNameTerminators(void)
 {
-    return [NSCharacterSet characterSetWithCharactersInString:@"]="];
+    return [NSCharacterSet characterSetWithCharactersInString:@"]= "];
 }
 
 - (void)autocloseBBcode
