@@ -10,3 +10,22 @@
 @bordercolor: #226603;
 @import "yospos.less";
 @import "posts-view-dark-emoticons.less";
+
+@postdate-color: #57ff57;
+.postdate {
+  color: #57ff57;
+}
+.clock-color(@postdate-color);
+
+.seen .postdate {
+  @seen-postdate-color: #57ff57;
+  color: @seen-postdate-color;
+  .clock-color(@seen-postdate-color);
+}
+
+.chevron-color(@color: #57ff57) {
+  .chevron::before, .chevron::after {
+    background: @color;
+  }
+}
+.chevron-color();

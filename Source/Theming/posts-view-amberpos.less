@@ -12,8 +12,21 @@
 
 @import "posts-view-dark-emoticons.less";
 
+@postdate-color: #eacf4c;
+.postdate {
+  color: #eacf4c;
+}
+.clock-color(@postdate-color);
+
 .seen .postdate {
-  @seen-postdate-color: #675b1f;
+  @seen-postdate-color: #eacf4c;
   color: @seen-postdate-color;
   .clock-color(@seen-postdate-color);
 }
+
+.chevron-color(@color: #eacf4c) {
+  .chevron::before, .chevron::after {
+    background: @color;
+  }
+}
+.chevron-color();

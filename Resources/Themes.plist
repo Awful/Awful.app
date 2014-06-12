@@ -232,7 +232,7 @@
 		<key>sheetTitleBackgroundColor</key>
 		<string>#ac72b2</string>
 		<key>sheetBackgroundColor</key>
-		<string>#cea8ce</string>
+		<string>#efbfef</string>
 		<key>sheetDimColor</key>
 		<string>#b24c4bf0</string>
 		<key>sheetTextColor</key>
@@ -268,33 +268,33 @@
 		<key>checkSpelling</key>
 		<false/>
 		<key>addBookmarkIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>copyURLIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>editPostIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>jumpToFirstPageIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>jumpToLastPageIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>markUnreadIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>markReadUpToHereIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>profileIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>quoteIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>rapSheetIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>removeBookmarkIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>sendPMIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>singleUserIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 		<key>voteIconColor</key>
-		<string>#fd309d</string>
+		<string>#834e83</string>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
@@ -342,7 +342,7 @@
 		<key>backgroundColor</key>
 		<string>#000000</string>
 		<key>listSecondaryTextColor</key>
-		<string>#ff00ff</string>
+		<string>#57FF57</string>
 		<key>description</key>
 		<string>Green console</string>
 		<key>descriptiveColor</key>

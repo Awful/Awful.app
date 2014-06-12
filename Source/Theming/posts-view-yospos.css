@@ -185,6 +185,10 @@ header:after {
 .chevron::after {
   background: #1682b2;
 }
+.chevron::before,
+.chevron::after {
+  background: #57ff57;
+}
 .action-button {
   margin: 0;
   padding: 0;
@@ -293,6 +297,7 @@ footer:after {
 body {
   color: #57ff57;
   background-color: #000000;
+  font-family: Courier;
 }
 post {
   background-color: #171717;
@@ -340,11 +345,11 @@ post.seen {
   color: #474747;
 }
 .clock {
-  border-color: #474747;
+  border-color: #57ff57;
 }
 .clock::before,
 .clock::after {
-  background-color: #474747;
+  background-color: #57ff57;
 }
 .seen .postdate {
   color: #257a26;
@@ -442,4 +447,32 @@ post.seen {
 [title~=":wtf:"],
 [title~=":yohoho:"] {
   -webkit-filter: invert(100%);
+}
+.postdate {
+  color: #57ff57;
+}
+.clock {
+  border-color: #57ff57;
+}
+.clock::before,
+.clock::after {
+  background-color: #57ff57;
+}
+.seen .postdate {
+  color: #57ff57;
+}
+.seen .postdate .clock {
+  border-color: #57ff57;
+}
+.seen .postdate .clock::before,
+.seen .postdate .clock::after {
+  background-color: #57ff57;
+}
+.chevron::before,
+.chevron::after {
+  background: #1682b2;
+}
+.chevron::before,
+.chevron::after {
+  background: #57ff57;
 }
