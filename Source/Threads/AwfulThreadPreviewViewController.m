@@ -133,7 +133,9 @@
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
-    cell.tintColor = theme[@"listDetailColor"];
+    cell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];
+    cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
+    cell.tintColor = theme[@"listSecondaryTextColor"];
     cell.fontName = theme[@"listFontName"];
 }
 

@@ -76,8 +76,6 @@
 - (void)tintColorDidChange
 {
     [super tintColorDidChange];
-    self.numberOfPagesLabel.textColor = self.tintColor;
-    self.detailTextLabel.textColor = self.tintColor;
     _pagesIconImageView.tintColor = self.tintColor;
 }
 

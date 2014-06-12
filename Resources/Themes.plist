@@ -103,8 +103,6 @@
 		<string>#cccccc</string>
 		<key>listTextColor</key>
 		<string>#000000</string>
-		<key>listDetailColor</key>
-		<string>#999999</string>
 		<key>unreadBadgeOrangeColor</key>
 		<string>#ff8000</string>
 		<key>unreadBadgeRedColor</key>
