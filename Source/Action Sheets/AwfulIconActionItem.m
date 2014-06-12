@@ -71,7 +71,7 @@
         case AwfulIconActionItemTypeQuotePost:
             title = @"Quote\nPost";
             icon = [UIImage imageNamed:@"quote-post"];
-            themeKey = @"profileIconColor";
+            themeKey = @"quoteIconColor";
             break;
 
         case AwfulIconActionItemTypeRapSheet:
