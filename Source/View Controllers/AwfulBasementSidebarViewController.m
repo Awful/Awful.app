@@ -7,6 +7,7 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulBasementHeaderView.h"
 #import "AwfulForumsClient.h"
+#import "AwfulLoginController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
@@ -49,6 +50,10 @@
                                              selector:@selector(applicationDidBecomeActive:)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogIn:) name:AwfulUserDidLogInNotification object:nil];
+    
+    [self refreshIfNecessary];
     
     return self;
 }
@@ -148,6 +153,11 @@ static NSString * const CellIdentifier = @"Cell";
     _didAppearAlready = NO;
 }
 
+- (void)userDidLogIn:(NSNotification *)notification
+{
+    [self refresh];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -200,22 +210,28 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)refreshIfNecessary
 {
+    if (![AwfulForumsClient client].loggedIn) return;
     if (![AwfulSettings settings].showAvatars) return;
     
     if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
-        __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
-            __typeof__(self) self = weakSelf;
-            if (error) {
-                NSLog(@"%s error refreshing logged-in user's info: %@", __PRETTY_FUNCTION__, error);
-            } else {
-                [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
-                [self refreshAvatar];
-            }
-        }];
+        [self refresh];
     } else if ([[AwfulRefreshMinder minder] shouldRefreshAvatar]) {
         [self refreshAvatar];
     }
+}
+
+- (void)refresh
+{
+    __weak __typeof__(self) weakSelf = self;
+    [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
+        __typeof__(self) self = weakSelf;
+        if (error) {
+            NSLog(@"%s error refreshing logged-in user's info: %@", __PRETTY_FUNCTION__, error);
+        } else {
+            [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
+            [self refreshAvatar];
+        }
+    }];
 }
 
 - (void)refreshAvatar
@@ -228,7 +244,7 @@ static NSString * const CellIdentifier = @"Cell";
         if (error) {
             NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
         } else {
-            if (modified) {
+            if (modified && [self isViewLoaded]) {
                 self.headerView.avatarImageView.image = avatarImage;
             }
             [[AwfulRefreshMinder minder] didFinishRefreshingAvatar];

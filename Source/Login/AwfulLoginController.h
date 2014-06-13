@@ -24,3 +24,8 @@
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error;
 
 @end
+
+/**
+ * Sent when a user logs in. The notification's object is an AwfulUser instance representing the logged-in user.
+ */
+extern NSString * const AwfulUserDidLogInNotification;

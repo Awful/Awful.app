@@ -474,6 +474,9 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     settings.username = user.username;
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification object:user];
+    
     [[AwfulForumsClient client] taxonomizeForumsAndThen:nil];
     [UIView transitionWithView:self.window
                       duration:0.3

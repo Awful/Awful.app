@@ -218,3 +218,5 @@
 }
 
 @end
+
+NSString * const AwfulUserDidLogInNotification = @"AwfulUserDidLogIn";
