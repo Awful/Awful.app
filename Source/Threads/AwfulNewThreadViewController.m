@@ -329,7 +329,6 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    [super decodeRestorableStateWithCoder:coder];
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
     NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
     if (threadTagImageName) {
@@ -343,6 +342,8 @@ static NSString * const DefaultTitle = @"New Thread";
                                                                            imageName:secondaryThreadTagImageName
                                                               inManagedObjectContext:self.forum.managedObjectContext];
     }
+    
+    [super decodeRestorableStateWithCoder:coder];
 }
 
 static NSString * const ForumIDKey = @"AwfulForumID";

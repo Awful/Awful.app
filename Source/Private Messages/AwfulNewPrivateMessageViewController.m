@@ -313,7 +313,6 @@
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    [super decodeRestorableStateWithCoder:coder];
     self.fieldView.toField.textField.text = [coder decodeObjectForKey:ToKey];
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
     NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
@@ -325,6 +324,8 @@
                                                                   imageName:threadTagImageName
                                                      inManagedObjectContext:managedObjectContext];
     }
+    
+    [super decodeRestorableStateWithCoder:coder];
 }
 
 static NSString * const RecipientUserIDKey = @"AwfulRecipientUserID";
