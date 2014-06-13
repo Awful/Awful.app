@@ -511,6 +511,7 @@
     {
         HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
         if (postbody) {
+            WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(postbody);
             if (callback) callback(nil, postbody.innerHTML);
         } else {
             NSError *error = [NSError errorWithDomain:AwfulErrorDomain
