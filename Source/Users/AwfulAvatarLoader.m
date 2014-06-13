@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulAvatarLoader.h"
+#import "AwfulFrameworkCategories.h"
 #import <AFNetworking/AFNetworking.h>
 
 @interface AwfulAvatarLoader ()
@@ -18,8 +19,7 @@
     static AwfulAvatarLoader *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSURL *cachesFolder = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];
-        NSURL *cacheFolder = [cachesFolder URLByAppendingPathComponent:@"Avatars" isDirectory:YES];
+        NSURL *cacheFolder = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"Avatars" isDirectory:YES];
         instance = [[self alloc] initWithCacheFolder:cacheFolder];
     });
     return instance;
@@ -27,18 +27,19 @@
 
 - (id)initWithCacheFolder:(NSURL *)cacheFolder
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _cacheFolder = cacheFolder;
-    _sessionManager = [AFURLSessionManager new];
-    NSError *error;
-    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:cacheFolder withIntermediateDirectories:YES attributes:nil error:&error];
-    if (!ok) {
-        NSLog(@"%s error creating avatar cache folder %@: %@", __PRETTY_FUNCTION__, cacheFolder, error);
+    if ((self = [super init])) {
+        _cacheFolder = cacheFolder;
+        _sessionManager = [AFURLSessionManager new];
     }
-    
     return self;
+}
+
+- (void)createCacheFolderIfNecessary
+{
+    NSError *error;
+    if (![[NSFileManager defaultManager] createDirectoryAtURL:self.cacheFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
+        NSLog(@"%s error creating avatar cache folder %@: %@", __PRETTY_FUNCTION__, self.cacheFolder, error);
+    }
 }
 
 - (UIImage *)cachedAvatarImageForUser:(AwfulUser *)user
@@ -75,6 +76,7 @@
                                         progress:nil
                                      destination:^(NSURL *targetPath, NSURLResponse *response)
      {
+         [self createCacheFolderIfNecessary];
          return [self imageURLForUser:user];
      } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
          [NSKeyedArchiver archiveRootObject:response toFile:cachedResponseURL.path];
@@ -111,19 +113,10 @@
 
 - (void)emptyCache
 {
-    BOOL (^errorHandler)(NSURL *, NSError *) = ^(NSURL *URL, NSError *error) {
-        NSLog(@"%s error enumerating cached avatar item %@: %@", __PRETTY_FUNCTION__, URL, error);
-        return YES;
-    };
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSDirectoryEnumerationOptions options = NSDirectoryEnumerationSkipsSubdirectoryDescendants & NSDirectoryEnumerationSkipsHiddenFiles;
-    NSEnumerator *URLEnumerator = [fileManager enumeratorAtURL:self.cacheFolder includingPropertiesForKeys:nil options:options errorHandler:errorHandler];
-    for (NSURL *URL in URLEnumerator) {
-        NSError *error;
-        BOOL ok = [fileManager removeItemAtURL:URL error:&error];
-        if (!ok) {
-            NSLog(@"%s error deleting cached avatar item %@: %@", __PRETTY_FUNCTION__, URL, error);
-        }
+    NSError *error;
+    if (![[NSFileManager defaultManager] removeItemAtURL:self.cacheFolder error:&error]) {
+        if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError) return;
+        NSLog(@"%s error deleting avatar cache at %@: %@", __PRETTY_FUNCTION__, self.cacheFolder, error);
     }
 }
 
