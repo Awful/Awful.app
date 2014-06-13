@@ -198,12 +198,12 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL))completionHandler
 {
     [[AwfulForumsClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
-                                       withSubject:self.fieldView.subjectField.textField.text
-                                         threadTag:self.threadTag
-                                            BBcode:composition
-                                  asReplyToMessage:self.regardingMessage
-                              forwardedFromMessage:self.forwardingMessage
-                                           andThen:^(NSError *error)
+                                         withSubject:self.fieldView.subjectField.textField.text
+                                           threadTag:self.threadTag
+                                              BBcode:composition
+                                    asReplyToMessage:self.regardingMessage
+                                forwardedFromMessage:self.forwardingMessage
+                                             andThen:^(NSError *error)
     {
         if (error) {
             completionHandler(NO);
