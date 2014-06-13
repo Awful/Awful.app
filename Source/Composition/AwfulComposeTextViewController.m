@@ -9,6 +9,12 @@
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
+@interface AwfulComposeTextViewController ()
+
+@property (readonly, strong, nonatomic) UIView *viewToOverlay;
+
+@end
+
 @implementation AwfulComposeTextViewController
 {
     UIBarButtonItem *_submitButtonItem;
@@ -146,7 +152,7 @@
     NSMutableAttributedString *submission = [self.textView.attributedText mutableCopy];
     void (^submit)(void) = ^{
         __typeof__(self) self = weakSelf;
-        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.viewToOverlay
                                                                              title:self.submissionInProgressTitle
                                                                               mode:MRProgressOverlayViewModeIndeterminate
                                                                           animated:YES];
@@ -182,7 +188,7 @@
         return;
     }
     
-    MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+    MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.viewToOverlay
                                                                          title:@"Uploading images"
                                                                           mode:MRProgressOverlayViewModeIndeterminate
                                                                       animated:YES];
@@ -228,6 +234,16 @@
             submit();
         }
     }];
+}
+
+- (UIView *)viewToOverlay
+{
+    UINavigationController *navigationController = self.navigationController;
+    if (navigationController) {
+        return navigationController.topViewController.view;
+    } else {
+        return self.view;
+    }
 }
 
 - (NSProgress *)uploadImages:(NSArray *)images completionHandler:(void (^)(NSArray *URLs, NSError *error))completionHandler
@@ -327,7 +343,7 @@
     if (_imageUploadProgress) {
         [_imageUploadProgress cancel];
         _imageUploadProgress = nil;
-        [MRProgressOverlayView dismissAllOverlaysForView:self.view animated:YES completion:^{
+        [MRProgressOverlayView dismissAllOverlaysForView:self.viewToOverlay animated:YES completion:^{
             [self enableEverything];
         }];
     } else {
