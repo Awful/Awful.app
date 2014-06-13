@@ -462,6 +462,10 @@
 {
     [super decodeRestorableStateWithCoder:coder];
     self.textView.attributedText = [coder decodeObjectForKey:AttributedTextKey];
+    
+    // -viewDidLoad gets called before -decodeRestorableStateWithCoder: and so the text color gets loaded from the saved attributed string. Reapply the theme after restoring state.
+    [self themeDidChange];
+    
     [self updateSubmitButtonItem];
 }
 
