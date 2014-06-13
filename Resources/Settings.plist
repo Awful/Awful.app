@@ -11,7 +11,7 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Logged In As</string>
+					<string>Logged In as</string>
 					<key>ValueIdentifier</key>
 					<string>Username</string>
 					<key>Action</key>
@@ -105,7 +105,7 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Sort unread threads first</string>
+					<string>Sort Unread Threads First</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
@@ -124,7 +124,7 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Hide sidebar in landscape</string>
+					<string>Hide Sidebar in Landscape</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
@@ -172,7 +172,7 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>&quot;Read Later&quot; Services</string>
+			<string>“Read Later” Services</string>
 			<key>Explanation</key>
 			<string>Save off-Forums links for later reading.</string>
 			<key>Settings</key>
