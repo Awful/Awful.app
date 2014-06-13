@@ -15,58 +15,73 @@
 @interface AwfulReplyViewController () <UIViewControllerRestoration>
 
 @property (copy, nonatomic) void (^onAppearBlock)(void);
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPressRecognizer;
 
 @end
 
 @implementation AwfulReplyViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (id)initWithPost:(AwfulPost *)post originalText:(NSString *)originalText
 {
-    if (!(self = [self initWithNibName:nil bundle:nil])) return nil;
-    _post = post;
-    _originalText = [originalText copy];
-    self.title = post.thread.title;
-    if ([AwfulSettings settings].confirmNewPosts) {
-        self.submitButtonItem.title = @"Preview";
-    } else {
-        self.submitButtonItem.title = @"Save";
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _post = post;
+        _originalText = [originalText copy];
+        self.title = post.thread.title;
     }
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    [self updateTweaks];
     return self;
 }
 
 - (id)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText
 {
-    if (!(self = [self initWithNibName:nil bundle:nil])) return nil;
-    _thread = thread;
-    _quotedText = [quotedText copy];
-    self.title = thread.title;
-    if ([AwfulSettings settings].confirmNewPosts) {
-        self.submitButtonItem.title = @"Preview";
-    } else {
-        self.submitButtonItem.title = @"Post";
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _thread = thread;
+        _quotedText = [quotedText copy];
+        self.title = thread.title;
     }
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    [self updateTweaks];
     return self;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.restorationClass = self.class;
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        [self updateTweaks];
+        [self updateSubmitButtonTitle];
+        self.restorationClass = self.class;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+    }
     return self;
 }
 
 - (void)updateTweaks
 {
 	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumId:self.forum.forumID];
-	
-	//Apply autocorrection tweaks to text view
 	self.textView.autocapitalizationType = tweaks.autocapitalizationType;
     self.textView.autocorrectionType = tweaks.autocorrectionType;
     self.textView.spellCheckingType = tweaks.spellCheckingType;
+}
+
+- (void)updateSubmitButtonTitle
+{
+    if ([AwfulSettings settings].confirmNewPosts) {
+        self.submitButtonItem.title = @"Preview";
+    } else {
+        if (self.post) {
+            self.submitButtonItem.title = @"Save";
+        } else {
+            self.submitButtonItem.title = @"Post";
+        }
+    }
+}
+
+- (void)settingsDidChange:(NSNotification *)notification
+{
+    [self updateSubmitButtonTitle];
 }
 
 - (void)setTitle:(NSString *)title
@@ -86,6 +101,19 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    if (!self.longPressRecognizer && ![AwfulSettings settings].confirmNewPosts) {
+        self.longPressRecognizer = [UILongPressGestureRecognizer new];
+        [self.longPressRecognizer addTarget:self action:@selector(didLongPressNextButtonItem:)];
+        
+        // HACK: Private API.
+        UIView *itemView;
+        if ([self.submitButtonItem respondsToSelector:@selector(view)]) {
+            itemView = [self.submitButtonItem valueForKey:@"view"];
+        }
+        [itemView addGestureRecognizer:self.longPressRecognizer];
+    }
+    
     if (self.onAppearBlock) {
         self.onAppearBlock();
         self.onAppearBlock = nil;
@@ -110,8 +138,15 @@
 
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
-    if (![AwfulSettings settings].confirmNewPosts) return handler(YES);
-    
+    if ([AwfulSettings settings].confirmNewPosts) {
+        [self previewPostWithSubmitBlock:^{ handler(YES); } cancelBlock:^{ handler(NO); }];
+    } else {
+        handler(YES);
+    }
+}
+
+- (void)previewPostWithSubmitBlock:(void (^)(void))submitBlock cancelBlock:(void (^)(void))cancelBlock
+{
     AwfulPostPreviewViewController *preview;
     if (self.thread) {
         preview = [[AwfulPostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.attributedText];
@@ -119,8 +154,8 @@
         preview = [[AwfulPostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.attributedText];
     }
     
-    preview.submitBlock = ^{ handler(YES); };
-    self.onAppearBlock = ^{ handler(NO); };
+    preview.submitBlock = submitBlock;
+    self.onAppearBlock = cancelBlock;
     [self.navigationController pushViewController:preview animated:YES];
 }
 
@@ -179,6 +214,25 @@
         [super cancel];
     } else {
         NSAssert(NO, @"unexpected cancellation without post or thread");
+    }
+}
+
+- (void)didLongPressNextButtonItem:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        AwfulActionSheet *actionSheet = [AwfulActionSheet new];
+        [actionSheet addButtonWithTitle:@"Preview" block:^{
+            [self previewPostWithSubmitBlock:^{
+                
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                [self.submitButtonItem.target performSelector:self.submitButtonItem.action withObject:self];
+                #pragma clang diagnostic pop
+                
+            } cancelBlock:nil];
+        }];
+        [actionSheet addCancelButtonWithTitle:@"Cancel"];
+        [actionSheet showFromBarButtonItem:self.submitButtonItem animated:YES];
     }
 }
 
