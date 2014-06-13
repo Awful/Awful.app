@@ -35,7 +35,7 @@
 
 @property (strong, nonatomic) AwfulLoadingView *loadingView;
 
-@property (strong, nonatomic) UIBarButtonItem *actionButtonItem;
+@property (strong, nonatomic) UIBarButtonItem *replyButtonItem;
 
 @end
 
@@ -61,7 +61,7 @@
     
     _privateMessage = privateMessage;
     self.title = privateMessage.subject;
-    self.navigationItem.rightBarButtonItem = self.actionButtonItem;
+    self.navigationItem.rightBarButtonItem = self.replyButtonItem;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.restorationClass = self.class;
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -87,16 +87,16 @@
     self.webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
 }
 
-- (UIBarButtonItem *)actionButtonItem
+- (UIBarButtonItem *)replyButtonItem
 {
-    if (_actionButtonItem) return _actionButtonItem;
-    _actionButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+    if (_replyButtonItem) return _replyButtonItem;
+    _replyButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
                                                                       target:self
-                                                                      action:@selector(didTapActionButtonItem:)];
-    return _actionButtonItem;
+                                                                      action:@selector(didTapReplyButtonItem:)];
+    return _replyButtonItem;
 }
 
-- (void)didTapActionButtonItem:(UIBarButtonItem *)buttonItem
+- (void)didTapReplyButtonItem:(UIBarButtonItem *)buttonItem
 {
     AwfulPrivateMessage *privateMessage = self.privateMessage;
     AwfulActionSheet *sheet = [AwfulActionSheet new];
