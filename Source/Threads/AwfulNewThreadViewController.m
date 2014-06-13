@@ -34,13 +34,14 @@
 
 - (id)initWithForum:(AwfulForum *)forum
 {
-    if (!(self = [super initWithNibName:nil bundle:nil])) return nil;
-    _forum = forum;
-    self.title = DefaultTitle;
-    self.submitButtonItem.title = @"Preview";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.restorationClass = self.class;
-	[self updateTweaks];
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _forum = forum;
+        self.title = DefaultTitle;
+        self.submitButtonItem.title = @"Preview";
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.restorationClass = self.class;
+        [self updateTweaks];
+    }
     return self;
 }
 
