@@ -82,29 +82,54 @@
     [self addPersistentStore];
 }
 
+static NSArray * URLsForStoreURL(NSURL *storeURL)
+{
+    NSMutableArray *URLs = [NSMutableArray arrayWithObject:storeURL];
+    for (NSString *detritusSuffix in @[ @"-shm", @"-wal" ]) {
+        NSURLComponents *components = [NSURLComponents componentsWithURL:storeURL resolvingAgainstBaseURL:YES];
+        components.path = [components.path stringByAppendingString:detritusSuffix];
+        [URLs addObject:components.URL];
+    }
+    return URLs;
+}
+
 void DeleteDataStoreAtURL(NSURL *storeURL)
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSError *error;
-    BOOL ok = [[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error];
-    if (!ok) {
-        NSLog(@"%s error deleting SQLite store at %@: %@", __PRETTY_FUNCTION__, storeURL, error);
-    }
-
-    NSURL *directory = [storeURL URLByDeletingLastPathComponent];
-    NSArray *possibleDetritus = [fileManager contentsOfDirectoryAtURL:directory includingPropertiesForKeys:nil options:0 error:nil];
-    NSString *extension = storeURL.pathExtension;
-    NSArray *extensionsToDelete = @[ [extension stringByAppendingString:@"-shm"],
-                                     [extension stringByAppendingString:@"-wal"] ];
-    for (NSURL *detritusURL in possibleDetritus) {
-        if ([detritusURL.path hasPrefix:storeURL.path] && [extensionsToDelete containsObject:detritusURL.pathExtension]) {
-            NSError *error;
-            BOOL ok = [fileManager removeItemAtURL:detritusURL error:&error];
-            if (!ok) {
-                NSLog(@"%s error deleting SQLite store detritus at %@: %@", __PRETTY_FUNCTION__, detritusURL, error);
-            }
+    NSArray *URLs = URLsForStoreURL(storeURL);
+    for (NSURL *URL in URLs) {
+        NSError *error;
+        if (![[NSFileManager defaultManager] removeItemAtURL:URL error:&error]) {
+            NSLog(@"%s error deleting part of SQLite store at %@: %@", __PRETTY_FUNCTION__, storeURL, error);
         }
     }
 }
 
 @end
+
+void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *destinationFolder = [destinationURL URLByDeletingLastPathComponent];
+    NSError *error;
+    if (![fileManager createDirectoryAtURL:destinationFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
+        @throw [NSException exceptionWithName:NSGenericException
+                                       reason:@"could not create destination data store folder"
+                                     userInfo:@{ NSURLErrorKey: destinationFolder, NSUnderlyingErrorKey: error }];
+    }
+    
+    NSArray *sourceURLs = URLsForStoreURL(sourceURL);
+    NSArray *destinationURLs = URLsForStoreURL(destinationURL);
+    [sourceURLs enumerateObjectsUsingBlock:^(NSURL *sourceURL, NSUInteger i, BOOL *stop) {
+        NSURL *destinationURL = destinationURLs[i];
+        NSError *error;
+        if (![fileManager moveItemAtURL:sourceURL toURL:destinationURL error:&error]) {
+            if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
+                if (error.code == NSFileWriteFileExistsError || error.code == NSFileReadNoSuchFileError) return;
+            }
+            
+            @throw [NSException exceptionWithName:NSGenericException
+                                           reason:@"could not move part of the data store"
+                                         userInfo:@{ NSFilePathErrorKey: sourceURL.path, NSURLErrorKey: destinationURL, NSUnderlyingErrorKey: error }];
+        }
+    }];
+}

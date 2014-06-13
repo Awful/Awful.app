@@ -28,3 +28,11 @@
 - (void)deleteStoreAndResetStack;
 
 @end
+
+/**
+ * Moves a data store from one place to another. Throws an exception if the move fails for any reason other than when no file exists at the source URL.
+ *
+ * @param sourceURL      The current location of the data store, including filename and extension.
+ * @param destinationURL The desired location of the data store, including filename and extension.
+ */
+extern void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL);
