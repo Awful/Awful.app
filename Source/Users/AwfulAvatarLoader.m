@@ -51,9 +51,7 @@
 {
     NSURL *avatarURL = user.avatarURL;
     if (avatarURL.path.length == 0) {
-        if (completionBlock) {
-            completionBlock(nil, YES, nil);
-        }
+        if (completionBlock) completionBlock(nil, YES, nil);
         return;
     }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:avatarURL];
@@ -75,7 +73,7 @@
     NSURLSessionDownloadTask *downloadTask =
     [self.sessionManager downloadTaskWithRequest:request
                                         progress:nil
-                                     destination:^NSURL *(NSURL *targetPath, NSURLResponse *response)
+                                     destination:^(NSURL *targetPath, NSURLResponse *response)
      {
          return [self imageURLForUser:user];
      } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
