@@ -12,13 +12,14 @@
 
 - (id)initWithStoreURL:(NSURL *)storeURL modelURL:(NSURL *)modelURL
 {
-    if (!(self = [super init])) return nil;
-    _storeURL = storeURL;
-    _modelURL = modelURL;
-    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:_modelURL];
-    _managedObjectContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    [self addPersistentStore];
+    if ((self = [super init])) {
+        _storeURL = storeURL;
+        _modelURL = modelURL;
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:_modelURL];
+        _managedObjectContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+        [self addPersistentStore];
+    }
     return self;
 }
 
@@ -66,8 +67,7 @@
     NSPersistentStoreCoordinator *persistentStoreCoordinator = _managedObjectContext.persistentStoreCoordinator;
     for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
         NSError *error;
-        BOOL ok = [persistentStoreCoordinator removePersistentStore:store error:&error];
-        if (!ok) {
+        if (![persistentStoreCoordinator removePersistentStore:store error:&error]) {
             NSLog(@"%s error removing store at %@: %@", __PRETTY_FUNCTION__, store.URL, error);
         }
         
