@@ -60,4 +60,9 @@
  */
 @property (strong, nonatomic) NSString *fontName;
 
+/**
+ * A gesture recognizer, lazily created on first access, intended to be used to show the represented thread's actions.
+ */
+@property (readonly, strong, nonatomic) UILongPressGestureRecognizer *showActionsGestureRecognizer;
+
 @end

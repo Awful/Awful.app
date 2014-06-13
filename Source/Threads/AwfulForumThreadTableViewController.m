@@ -237,29 +237,6 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
     }
 }
 
-#pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
-
-- (BOOL)canDeleteObject:(id)object atIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-}
-
-- (void)deleteObject:(AwfulThread *)thread
-{
-    [[AwfulForumsClient client] markThreadUnread:thread andThen:^(NSError *error) {
-        if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-        } else {
-            thread.seenPosts = 0;
-            NSError *error;
-            BOOL ok = [thread.managedObjectContext save:&error];
-            if (!ok) {
-                NSLog(@"%s error saving thread %@ marked unread: %@", __PRETTY_FUNCTION__, thread.threadID, error);
-            }
-        }
-    }];
-}
-
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(AwfulNewThreadViewController *)newThreadViewController
@@ -338,13 +315,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [[AwfulRefreshMinder minder] forgetForum:self.forum];
     [self updateFilter];
     [self refresh];
-}
-
-#pragma mark - UITableViewDelegate
-
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return @"Mark Unread";
 }
 
 #pragma mark - State preservation and restoration
