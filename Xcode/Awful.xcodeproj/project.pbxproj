@@ -623,7 +623,6 @@
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		63F3DF9C27054D9A93B744A1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
 		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
 		836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTMLNode+CachedSelector.m"; sourceTree = "<group>"; };
@@ -1353,7 +1352,6 @@
 			children = (
 				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
 				5A0A70D650DA4CEE875C5173 /* libPods.a */,
-				63F3DF9C27054D9A93B744A1 /* libPods.a */,
 				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
 			);
 			name = Frameworks;
