@@ -151,16 +151,21 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self updateAvatarImageFromCache];
+    if (![self updateAvatarImageFromCache]) {
+        [self refreshIfNecessary];
+    }
     [self.tableView awful_hideExtraneousSeparators];
 }
 
-- (void)updateAvatarImageFromCache
+- (BOOL)updateAvatarImageFromCache
 {
     if ([AwfulSettings settings].showAvatars) {
-        self.headerView.avatarImageView.image = [[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser];
+        UIImage *image = [[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser];
+        self.headerView.avatarImageView.image = image;
+        return !!image;
     } else {
         self.headerView.avatarImageView.image = nil;
+        return YES;
     }
 }
 
@@ -179,12 +184,12 @@ static NSString * const CellIdentifier = @"Cell";
     [super viewWillAppear:animated];
     [self updateHeaderView];
     [self selectRowForSelectedItem];
+    [self refreshIfNecessary];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self refreshIfNecessary];
     
     // Fixes iOS 7 bug whereby the first cell's separator would never appear.
     if (!_didAppearAlready) {
@@ -195,6 +200,8 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)refreshIfNecessary
 {
+    if (![AwfulSettings settings].showAvatars) return;
+    
     if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
