@@ -8,6 +8,7 @@
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
+#import "AwfulNewThreadTagObserver.h"
 #import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
@@ -18,10 +19,18 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
+@interface AwfulThreadTableViewController ()
+
+@property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
+
+@end
+
 @implementation AwfulThreadTableViewController
 {
     AwfulFetchedResultsControllerDataSource *_threadDataSource;
 }
+
+@synthesize threadTagObservers = _threadTagObservers;
 
 - (AwfulFetchedResultsControllerDataSource *)threadDataSource
 {
@@ -56,6 +65,12 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     _threadDataSource.updatesTableView = NO;
 }
 
+- (NSMutableDictionary *)threadTagObservers
+{
+    if (!_threadTagObservers) _threadTagObservers = [NSMutableDictionary new];
+    return _threadTagObservers;
+}
+
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
 - (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
@@ -67,17 +82,34 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 		cell.threadTagHidden = NO;
         AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
         
-		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
-		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
-		// the empty thread tag for anyone lame enough to pick the same tag twice.
+		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart. Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (thread.threadTag.imageName.length > 0 && ![thread.threadTag isEqual:thread.secondaryThreadTag]) {
-			UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.threadTag.imageName];
-			tagAndRatingView.threadTagImage = threadTag;
+            NSString *imageName = thread.threadTag.imageName;
+			UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
+			tagAndRatingView.threadTagImage = image;
+            if (!image) {
+                tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
+                
+                NSString *threadID = thread.threadID;
+                AwfulNewThreadTagObserver *observer = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
+                    
+                    // Make sure the cell represents the same thread it did when we started waiting for a new thread tag.
+                    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+                    if (indexPath) {
+                        AwfulThread *currentThread = [self.threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+                        if ([currentThread.threadID isEqualToString:threadID]) {
+                            tagAndRatingView.threadTagImage = image;
+                        }
+                    }
+                    [self.threadTagObservers removeObjectForKey:threadID];
+                }];
+                self.threadTagObservers[threadID] = observer;
+            }
 		} else {
-            tagAndRatingView.threadTagImage = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+            tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
 		}
 		if (thread.secondaryThreadTag) {
-			UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:thread.secondaryThreadTag.imageName];
+			UIImage *secondaryThreadTag = [AwfulThreadTagLoader imageNamed:thread.secondaryThreadTag.imageName];
 			tagAndRatingView.secondaryThreadTagImage = secondaryThreadTag;
 		} else {
 			tagAndRatingView.secondaryThreadTagImage = nil;

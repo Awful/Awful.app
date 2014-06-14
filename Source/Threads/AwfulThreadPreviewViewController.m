@@ -110,13 +110,13 @@
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
 		// the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (self.threadTag.imageName.length > 0 && ![self.threadTag isEqual:self.secondaryThreadTag]) {
-			UIImage *threadTag = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
+			UIImage *threadTag = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
 			tagAndRatingView.threadTagImage = threadTag;
 		} else {
-            tagAndRatingView.threadTagImage = [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+            tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
 		}
 		if (self.secondaryThreadTag) {
-			UIImage *secondaryThreadTag = [[AwfulThreadTagLoader loader] imageNamed:self.secondaryThreadTag.imageName];
+			UIImage *secondaryThreadTag = [AwfulThreadTagLoader imageNamed:self.secondaryThreadTag.imageName];
 			tagAndRatingView.secondaryThreadTagImage = secondaryThreadTag;
 		} else {
 			tagAndRatingView.secondaryThreadTagImage = nil;

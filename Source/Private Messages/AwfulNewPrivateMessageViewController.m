@@ -144,9 +144,9 @@
 {
     UIImage *image;
     if (self.threadTag.imageName) {
-        image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
+        image = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
     } else {
-        image = [[AwfulThreadTagLoader loader] unsetThreadTagImage];
+        image = [AwfulThreadTagLoader unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
 }
@@ -224,13 +224,13 @@
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+        return [AwfulThreadTagLoader emptyPrivateMessageImage];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
         if (tag.imageName) {
-            return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+            return [AwfulThreadTagLoader imageNamed:tag.imageName];
         } else {
-            return [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+            return [AwfulThreadTagLoader emptyPrivateMessageImage];
         }
     }
 }

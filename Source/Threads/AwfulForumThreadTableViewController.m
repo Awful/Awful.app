@@ -269,13 +269,13 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     if (index == 0) {
         if ([picker.title isEqualToString:kFilterThreadsTitle]) {
-            return [[AwfulThreadTagLoader loader] noFilterTagImage];
+            return [AwfulThreadTagLoader noFilterTagImage];
         } else {
-            return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+            return [AwfulThreadTagLoader emptyThreadTagImage];
         }
     } else {
         AwfulThreadTag *threadTag = self.forum.threadTags[index - 1];
-        return [[AwfulThreadTagLoader loader] imageNamed:threadTag.imageName];
+        return [AwfulThreadTagLoader imageNamed:threadTag.imageName];
     }
 }
 

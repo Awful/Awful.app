@@ -140,14 +140,14 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [[AwfulThreadTagLoader loader] imageNamed:self.threadTag.imageName];
+        image = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
     } else {
-        image = [[AwfulThreadTagLoader loader] unsetThreadTagImage];
+        image = [AwfulThreadTagLoader unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
         AwfulThreadTag *tag = self.secondaryThreadTag;
-        image = [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+        image = [AwfulThreadTagLoader imageNamed:tag.imageName];
     } else {
         image = nil;
     }
@@ -248,10 +248,10 @@ static NSString * const DefaultTitle = @"New Thread";
 - (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
 {
     if (index == 0) {
-        return [[AwfulThreadTagLoader loader] emptyThreadTagImage];
+        return [AwfulThreadTagLoader emptyThreadTagImage];
     } else {
         AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [[AwfulThreadTagLoader loader] imageNamed:tag.imageName];
+        return [AwfulThreadTagLoader imageNamed:tag.imageName];
     }
 }
 

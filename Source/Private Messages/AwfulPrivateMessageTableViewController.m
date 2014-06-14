@@ -11,6 +11,7 @@
 #import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
 #import "AwfulNewPrivateMessageViewController.h"
+#import "AwfulNewThreadTagObserver.h"
 #import "AwfulPrivateMessageCell.h"
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulRefreshMinder.h"
@@ -22,16 +23,20 @@
 @interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
-
 @property (strong, nonatomic) UIBarButtonItem *backItem;
+
+@property (strong, nonatomic) AwfulNewPrivateMessageViewController *composeViewController;
+
+@property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
 
 @end
 
 @implementation AwfulPrivateMessageTableViewController
 {
     AwfulFetchedResultsControllerDataSource *_dataSource;
-    AwfulNewPrivateMessageViewController *_composeViewController;
 }
+
+@synthesize threadTagObservers = _threadTagObservers;
 
 - (void)dealloc
 {
@@ -40,42 +45,41 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _managedObjectContext = managedObjectContext;
-    self.title = @"Private Messages";
-    self.tabBarItem.accessibilityLabel = @"Private messages";
-    self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
-    NSInteger unreadMessages = [AwfulNewMessageChecker checker].unreadMessageCount;
-    if (unreadMessages > 0) {
-        self.tabBarItem.badgeValue = [@(unreadMessages) stringValue];
+    if ((self = [super init])) {
+        _managedObjectContext = managedObjectContext;
+        self.title = @"Private Messages";
+        self.tabBarItem.accessibilityLabel = @"Private messages";
+        self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
+        NSInteger unreadMessages = [AwfulNewMessageChecker checker].unreadMessageCount;
+        if (unreadMessages > 0) {
+            self.tabBarItem.badgeValue = [@(unreadMessages) stringValue];
+        }
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.navigationItem.rightBarButtonItem = self.composeItem;
+        self.navigationItem.leftBarButtonItem = self.editButtonItem;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didGetNewPMCount:)
+                                                     name:AwfulDidFinishCheckingNewPrivateMessagesNotification
+                                                   object:nil];
     }
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.navigationItem.rightBarButtonItem = self.composeItem;
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didGetNewPMCount:) name:AwfulDidFinishCheckingNewPrivateMessagesNotification object:nil];
-    
     return self;
 }
 
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                                                 target:self
-                                                                 action:@selector(didTapCompose)];
+    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    _composeItem.awful_actionBlock = ^(UIBarButtonItem *item) {
+        __typeof__(self) self = weakSelf;
+        if (!self.composeViewController) {
+            self.composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
+            self.composeViewController.restorationIdentifier = @"Message compose view";
+            self.composeViewController.delegate = self;
+        }
+        [self presentViewController:[self.composeViewController enclosingNavigationController] animated:YES completion:nil];
+    };
     return _composeItem;
-}
-
-- (void)didTapCompose
-{
-    if (!_composeViewController) {
-        _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
-        _composeViewController.restorationIdentifier = @"Message compose view";
-        _composeViewController.delegate = self;
-    }
-    [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
 }
 
 - (void)didGetNewPMCount:(NSNotification *)notification
@@ -167,18 +171,43 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     _dataSource.updatesTableView = NO;
 }
 
+- (NSMutableDictionary *)threadTagObservers
+{
+    if (!_threadTagObservers) _threadTagObservers = [NSMutableDictionary new];
+    return _threadTagObservers;
+}
+
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
     if (AwfulSettings.settings.showThreadTags) {
         cell.threadTagHidden = NO;
-        AwfulThreadTag *threadTag = pm.threadTag;
-        if (threadTag) {
-            cell.imageView.image = [[AwfulThreadTagLoader loader] imageNamed:pm.threadTag.imageName];
+        NSString *imageName = pm.threadTag.imageName;
+        if (imageName.length > 0) {
+            UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
+            if (image) {
+                cell.imageView.image = image;
+            } else {
+                cell.imageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
+                
+                NSString *messageID = pm.messageID;
+                AwfulNewThreadTagObserver *observer = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
+                    
+                    // Make sure the cell represents the same message as when we started.
+                    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+                    if (indexPath) {
+                        AwfulPrivateMessage *currentMessage = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+                        if ([currentMessage.messageID isEqualToString:messageID]) {
+                            cell.imageView.image = image;
+                        }
+                    }
+                    [self.threadTagObservers removeObjectForKey:messageID];
+                }];
+                self.threadTagObservers[messageID] = observer;
+            }
         } else {
-            // TODO handle updated thread tags
-            cell.imageView.image = [[AwfulThreadTagLoader loader] emptyPrivateMessageImage];
+            cell.imageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
         }
         
         if (pm.replied) {

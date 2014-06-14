@@ -8,204 +8,237 @@
 
 @interface AwfulThreadTagLoader ()
 
-@property (nonatomic) BOOL downloadingNewTags;
+@property (readonly, strong, nonatomic) NSURL *shippedThreadTagFolder;
+@property (readonly, copy, nonatomic) NSArray *shippedThreadTagImageNames;
+@property (readonly, copy, nonatomic) NSArray *cachedThreadTagImageNames;
+
+@property (readonly, strong, nonatomic) AFHTTPSessionManager *HTTPManager;
+@property (readonly, strong, nonatomic) NSDate *lastUpdate;
+@property (readonly, strong, nonatomic) NSURL *cachedTagsFileURL;
+@property (assign, nonatomic) BOOL downloadingNewTags;
 
 @end
 
 @implementation AwfulThreadTagLoader
-{
-    AFHTTPSessionManager *_HTTPManager;
-}
 
-- (id)init
+@synthesize shippedThreadTagImageNames = _shippedThreadTagImageNames;
+@synthesize HTTPManager = _HTTPManager;
+
+- (instancetype)initWithTagListURL:(NSURL *)tagListURL cacheFolder:(NSURL *)cacheFolder
 {
-    if (!(self = [super init])) return nil;
-    NSString *URLString = [NSBundle mainBundle].infoDictionary[kNewThreadTagURLKey];
-    _HTTPManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:URLString]];
+    if ((self = [super init])) {
+        _tagListURL = tagListURL;
+        _cacheFolder = cacheFolder;
+        _HTTPManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[tagListURL URLByDeletingLastPathComponent]];
+        
+        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+        responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
+        _HTTPManager.responseSerializer = responseSerializer;
+    }
     return self;
-}
-
-static NSString * const kNewThreadTagURLKey = @"AwfulNewThreadTagURL";
-
-+ (AwfulThreadTagLoader *)loader
-{
-    static AwfulThreadTagLoader *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [self new];
-    });
-    return instance;
 }
 
 - (UIImage *)imageNamed:(NSString *)imageName
 {
     NSParameterAssert(imageName.length > 0);
-    NSString *imagePath = [@"Thread Tags" stringByAppendingPathComponent:imageName];
-    UIImage *shipped = [UIImage imageNamed:imagePath];
-    if (shipped) return EnsureDoubleScaledImage(shipped);
     
-    NSURL *url = [[self cacheFolder] URLByAppendingPathComponent:imageName];
-    if (url.pathExtension.length == 0) {
-        url = [url URLByAppendingPathExtension:@"png"];
-    }
-    UIImage *cached = [UIImage imageWithContentsOfFile:url.path];
-    if (cached) return EnsureDoubleScaledImage(cached);
-    
-    [self downloadNewThreadTags];
-    return nil;
+    imageName = [imageName stringByDeletingPathExtension];
+    UIImage *image = [self shippedImageNamed:imageName] ?: [self cachedImageNamed:imageName];
+    if (!image) [self updateIfNecessary];
+    return image;
 }
 
-static UIImage *EnsureDoubleScaledImage(UIImage *image)
+#pragma mark - Resource images
+
+static NSString * const ResourceSubfolder = @"Thread Tags";
+
+- (NSURL *)shippedThreadTagFolder
 {
-    if (image.scale == 2) return image;
-    return [UIImage imageWithCGImage:image.CGImage scale:2 orientation:image.imageOrientation];
+    return [[NSBundle bundleForClass:self.class].resourceURL URLByAppendingPathComponent:ResourceSubfolder];
 }
 
-#pragma mark - Downloading tags
+- (NSArray *)shippedThreadTagImageNames
+{
+    if (_shippedThreadTagImageNames) return _shippedThreadTagImageNames;
+    NSError *error;
+    NSArray *URLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:self.shippedThreadTagFolder
+                                                  includingPropertiesForKeys:@[ NSURLPathKey ]
+                                                                     options:NSDirectoryEnumerationSkipsHiddenFiles
+                                                                       error:&error];
+    if (!URLs) {
+        NSLog(@"%s error listing thread tag resources: %@", __PRETTY_FUNCTION__, error);
+        return nil;
+    }
+    _shippedThreadTagImageNames = [URLs valueForKey:@"lastPathComponent"];
+    return _shippedThreadTagImageNames;
+}
 
-- (void)downloadNewThreadTags
+- (UIImage *)shippedImageNamed:(NSString *)imageName
+{
+    NSString *path = [ResourceSubfolder stringByAppendingPathComponent:imageName];
+    UIImage *image = [UIImage imageNamed:path];
+    return EnsureDoubleScaledImage(image);
+}
+
+static UIImage * EnsureDoubleScaledImage(UIImage *image)
+{
+    if (!image) return nil;
+    
+    if (image.scale >= 2) {
+        return image;
+    } else {
+        return [UIImage imageWithCGImage:image.CGImage scale:2 orientation:image.imageOrientation];
+    }
+}
+
+#pragma mark - Downloading images
+
+- (NSDate *)lastUpdate
+{
+    NSURL *URL = self.cachedTagsFileURL;
+    NSError *error;
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:URL.path error:&error];
+    if (!attributes && error.code != NSFileReadNoSuchFileError) {
+        NSLog(@"%s error checking modification date of cached thread tags list %@: %@", __PRETTY_FUNCTION__, URL, error);
+    }
+    if (attributes) {
+        return [attributes fileModificationDate];
+    } else {
+        return [NSDate distantPast];
+    }
+}
+
+- (void)updateIfNecessary
 {
     if (self.downloadingNewTags) return;
-    NSDate *checked = [self lastCheck];
-    // At most one check every six hours.
-    if (checked && [checked timeIntervalSinceNow] > -60 * 60 * 6) return;
-    self.downloadingNewTags = YES;
     
-    [self ensureCacheFolder];
-    [_HTTPManager GET:@"tags.txt" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        NSString *tagsFile = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+    // At most one check every hour.
+    if (self.lastUpdate.timeIntervalSinceNow > -60 * 60) return;
+    
+    self.downloadingNewTags = YES;
+    [_HTTPManager GET:@"tags.txt" parameters:nil success:^(NSURLSessionDataTask *task, NSData *textData) {
+        NSString *tagsFile = [[NSString alloc] initWithData:textData encoding:NSUTF8StringEncoding];
         [self saveTagsFile:tagsFile];
-        NSCharacterSet *newlines = [NSCharacterSet newlineCharacterSet];
-        NSArray *lines = [tagsFile componentsSeparatedByCharactersInSet:newlines];
-        NSRange rest = NSMakeRange(1, [lines count] - 1);
-        [self downloadNewThreadTagsInList:[lines subarrayWithRange:rest] fromRelativePath:lines[0]];
-    } failure:nil];
+        NSArray *lines = [tagsFile componentsSeparatedByString:@"\n"];
+        NSString *relativePath = lines[0];
+        NSArray *threadTags = [lines subarrayWithRange:NSMakeRange(1, lines.count - 1)];
+        [self downloadNewThreadTags:threadTags fromRelativePath:relativePath completionBlock:^{
+            self.downloadingNewTags = NO;
+        }];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%s error downloading new thread tag list: %@", __PRETTY_FUNCTION__, error);
+        self.downloadingNewTags = NO;
+    }];
 }
 
-- (void)downloadNewThreadTagsInList:(NSArray *)threadTags fromRelativePath:(NSString *)relativePath
+- (void)downloadNewThreadTags:(NSArray *)threadTags fromRelativePath:(NSString *)relativePath completionBlock:(void (^)(void))completionBlock
 {
-    NSMutableArray *tagsToDownload = [threadTags mutableCopy];
-    [tagsToDownload removeObjectsInArray:[self availableThreadTagNames]];
-    __block NSUInteger remaining = tagsToDownload.count;
+    // Using an ordered set because NSSet doesn't have -removeObjectsInArray:.
+    NSMutableOrderedSet *tagsToDownload = [NSMutableOrderedSet orderedSetWithArray:threadTags];
+    [tagsToDownload removeObjectsInArray:self.shippedThreadTagImageNames];
+    [tagsToDownload removeObjectsInArray:self.cachedThreadTagImageNames];
+    
+    dispatch_group_t group = dispatch_group_create();
     for (NSString *threadTagName in tagsToDownload) {
-        NSURL *URL = [NSURL URLWithString:[relativePath stringByAppendingPathComponent:threadTagName]
-                            relativeToURL:_HTTPManager.baseURL];
-        NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
-                                                                        URLString:URL.absoluteString
-                                                                       parameters:nil
-																			error:nil];
-        NSURLSessionTask *task = [_HTTPManager downloadTaskWithRequest:request
-                                                              progress:nil
-                                                           destination:^(NSURL *targetPath, NSURLResponse *response)
-        {
-            return [[self cacheFolder] URLByAppendingPathComponent:threadTagName];
+        dispatch_group_enter(group);
+        NSURL *URL = [NSURL URLWithString:[relativePath stringByAppendingPathComponent:threadTagName] relativeToURL:_HTTPManager.baseURL];
+        NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:nil error:nil];
+        NSURLSessionTask *task = [_HTTPManager downloadTaskWithRequest:request progress:nil destination:^(NSURL *targetPath, NSURLResponse *response) {
+            return [self.cacheFolder URLByAppendingPathComponent:threadTagName];
         } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
-            remaining--;
-            if (remaining == 0) {
-                self.downloadingNewTags = NO;
+            dispatch_group_leave(group);
+            if (error) {
+                NSLog(@"%s error downloading thread tag from %@: %@", __PRETTY_FUNCTION__, URL, error);
+            } else {
+                NSDictionary *userInfo = @{ AwfulThreadTagLoaderNewImageNameKey: [threadTagName stringByDeletingPathExtension] };
+                [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagLoaderNewImageAvailableNotification object:self userInfo:userInfo];
             }
-            if (error) return;
-            NSDictionary *userInfo = @{ AwfulThreadTagLoaderNewImageNameKey: [threadTagName stringByDeletingPathExtension] };
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulThreadTagLoaderNewImageAvailableNotification
-                                                                object:self
-                                                              userInfo:userInfo];
         }];
         [task resume];
     }
+    if (completionBlock) dispatch_group_notify(group, dispatch_get_main_queue(), completionBlock);
 }
 
-#pragma mark - Caching tags
+#pragma mark - Caching images
 
-- (NSURL *)cacheFolder
+- (NSURL *)cachedTagsFileURL
 {
-    NSURL *caches = [[NSFileManager defaultManager] cachesDirectory];
-    return [caches URLByAppendingPathComponent:@"Thread Tags"];
-}
-
-- (void)ensureCacheFolder
-{
-    NSError *error;
-    BOOL ok = [[NSFileManager defaultManager] createDirectoryAtURL:[self cacheFolder]
-                                       withIntermediateDirectories:YES
-                                                        attributes:nil
-                                                             error:&error];
-    if (!ok) {
-        NSLog(@"error creating thread tag cache folder %@: %@", [self cacheFolder], error);
-    }
-}
-
-- (NSDate *)lastCheck
-{
-    NSURL *url = [self cachedTagsFile];
-    NSError *error;
-    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[url path]
-                                                                                error:&error];
-    if (!attributes && [error code] != NSFileReadNoSuchFileError) {
-        NSLog(@"error checking modification date of cached thread tags list %@: %@", url, error);
-        return nil;
-    }
-    return [attributes fileModificationDate];
-}
-
-- (NSURL *)cachedTagsFile
-{
-    return [[self cacheFolder] URLByAppendingPathComponent:@"tags.txt"];
+    return [self.cacheFolder URLByAppendingPathComponent:@"tags.txt"];
 }
 
 - (void)saveTagsFile:(NSString *)tagsFile
 {
     [self ensureCacheFolder];
     NSError *error;
-    BOOL ok = [tagsFile writeToURL:[self cachedTagsFile]
-                        atomically:NO
-                          encoding:NSUTF8StringEncoding
-                             error:&error];
-    if (!ok) {
-        NSLog(@"error saving tags file to %@: %@", [self cachedTagsFile], error);
+    if (![tagsFile writeToURL:self.cachedTagsFileURL atomically:NO encoding:NSUTF8StringEncoding error:&error]) {
+        NSLog(@"%s error saving tags file to %@: %@", __PRETTY_FUNCTION__, self.cachedTagsFileURL, error);
     }
 }
 
-- (NSArray *)availableThreadTagNames
+- (void)ensureCacheFolder
 {
-    NSString *pathToResources = [[NSBundle mainBundle] resourcePath];
     NSError *error;
-    NSArray *resources = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToResources
-                                                                             error:&error];
-    if (!resources) {
-        NSLog(@"error listing resources at %@: %@", pathToResources, error);
-        return @[];
+    if (![[NSFileManager defaultManager] createDirectoryAtURL:self.cacheFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
+        NSLog(@"%s error creating thread tag cache folder %@: %@", __PRETTY_FUNCTION__, self.cacheFolder, error);
     }
-    resources = [resources valueForKey:@"lastPathComponent"];
-    
-    NSArray *cached = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[self cacheFolder]
-                                                    includingPropertiesForKeys:nil
-                                                                       options:0
-                                                                         error:&error];
-    if (!cached) {
-        NSLog(@"error listing cached thread tags at %@: %@", [self cacheFolder], error);
-        return resources;
-    }
-    cached = [cached valueForKey:@"lastPathComponent"];
-    
-    return [resources arrayByAddingObjectsFromArray:cached];
 }
 
-- (UIImage *)emptyThreadTagImage
+- (NSArray *)cachedThreadTagImageNames
+{
+    NSError *error;
+    NSArray *URLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:self.cacheFolder
+                                                  includingPropertiesForKeys:@[ NSURLPathKey ]
+                                                                     options:NSDirectoryEnumerationSkipsHiddenFiles
+                                                                       error:&error];
+    if (!URLs) {
+        NSLog(@"%s error listing cached thread tags: %@", __PRETTY_FUNCTION__, error);
+        return nil;
+    }
+    return [URLs valueForKey:@"lastPathComponent"];
+}
+
+- (UIImage *)cachedImageNamed:(NSString *)imageName
+{
+    NSURL *URL = [[self.cacheFolder URLByAppendingPathComponent:imageName] URLByAppendingPathExtension:@"png"];
+    UIImage *image = [UIImage imageWithContentsOfFile:URL.path];
+    return EnsureDoubleScaledImage(image);
+}
+
+#pragma mark - Conveniences
+
++ (AwfulThreadTagLoader *)loader
+{
+    static AwfulThreadTagLoader *instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURL *tagListURL = [NSURL URLWithString:[NSBundle mainBundle].infoDictionary[@"AwfulNewThreadTagListURL"]];
+        NSURL *cacheFolder = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"Thread Tags"];
+        instance = [[self alloc] initWithTagListURL:tagListURL cacheFolder:cacheFolder];
+    });
+    return instance;
+}
+
++ (UIImage *)imageNamed:(NSString *)imageName
+{
+    return [[self loader] imageNamed:imageName];
+}
+
++ (UIImage *)emptyThreadTagImage
 {
     return [UIImage imageNamed:@"empty-thread-tag"];
 }
 
-- (UIImage *)emptyPrivateMessageImage
++ (UIImage *)emptyPrivateMessageImage
 {
     return [UIImage imageNamed:@"empty-pm-tag"];
 }
 
-- (UIImage *)unsetThreadTagImage
++ (UIImage *)unsetThreadTagImage
 {
     return [UIImage imageNamed:@"unset-tag"];
 }
 
-- (UIImage *)noFilterTagImage
++ (UIImage *)noFilterTagImage
 {
     return [UIImage imageNamed:@"no-filter-icon"];
 }
