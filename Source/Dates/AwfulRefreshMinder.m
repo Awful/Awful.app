@@ -61,8 +61,8 @@
     X(Bookmarks, @"com.awfulapp.Awful.LastBookmarksRefreshDate", 60 * 10) \
     X(ForumList, @"com.awfulapp.Awful.LastForumRefreshDate", 60 * 60 * 6) \
     X(LoggedInUser, @"LastLoggedInUserRefreshDate", 60 * 5) \
-    X(PrivateMessagesInbox, @"LastPrivateMessageInboxRefreshDate", 60 * 10) \
     X(NewPrivateMessages, @"com.awfulapp.Awful.LastMessageCheckDate", 60 * 10) \
+    X(PrivateMessagesInbox, @"LastPrivateMessageInboxRefreshDate", 60 * 10) \
 
 // X Macro good times ahead.
 
