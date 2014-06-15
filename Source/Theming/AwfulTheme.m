@@ -3,9 +3,9 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulTheme.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
-#import "UIColor+AwfulConvenience.h"
 
 @implementation AwfulTheme
 
