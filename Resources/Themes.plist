@@ -84,9 +84,9 @@
 		<key>postsViewCSS</key>
 		<string>posts-view.css</string>
 		<key>postsTopBarTextColor</key>
-		<string>#000000</string>
+		<string>#eeeeee</string>
 		<key>postsTopBarBackgroundColor</key>
-		<string>#fafafa</string>
+		<string>#1773a1</string>
 		<key>splitViewBackgroundColor</key>
 		<string>#f5f5f5</string>
 		<key>splitDividerColor</key>
@@ -185,7 +185,7 @@
 		<key>postsTopBarTextColor</key>
 		<string>#dddddd</string>
 		<key>postsTopBarBackgroundColor</key>
-		<string>#151515</string>
+		<string>#0c3c57</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-dark.css</string>
 		<key>settingsSwitchColor</key>
@@ -383,6 +383,10 @@
 		<string>#57FF57</string>
 		<key>markReadUpToHereIconColor</key>
 		<string>#57FF57</string>
+		<key>postsTopBarBackgroundColor</key>
+		<string>#57FF57</string>
+		<key>postsTopBarTextColor</key>
+		<string>#000000</string>
 		<key>profileIconColor</key>
 		<string>#57FF57</string>
 		<key>quoteIconColor</key>
@@ -434,6 +438,10 @@
 		<string>#ebd04b</string>
 		<key>markReadUpToHereIconColor</key>
 		<string>#ebd04b</string>
+		<key>postsTopBarBackgroundColor</key>
+		<string>#ebd04b</string>
+		<key>postsTopBarTextColor</key>
+		<string>#000000</string>
 		<key>profileIconColor</key>
 		<string>#ebd04b</string>
 		<key>quoteIconColor</key>
