@@ -20,32 +20,30 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
-    if (!self) return nil;
-    
-    _stickyImageView = [UIImageView new];
-    _stickyImageView.contentMode = UIViewContentModeTopRight;
-    [self.contentView addSubview:_stickyImageView];
-    
-	_tagAndRatingView = [AwfulThreadTagAndRatingView new];
-	[self.contentView addSubview:_tagAndRatingView];
-    
-    self.textLabel.numberOfLines = 2;
-    
-    _numberOfPagesLabel = [UILabel new];
-    [self.contentView addSubview:_numberOfPagesLabel];
-    
-    UIImage *pageTemplateImage = [[UIImage imageNamed:@"pages"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    _pagesIconImageView = [[UIImageView alloc] initWithImage:pageTemplateImage];
-    [self.contentView addSubview:_pagesIconImageView];
-    
-    [self setFontName:nil];
-    
-    _badgeLabel = [UILabel new];
-    _badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.textLabel.font.pointSize];
-    _badgeLabel.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview:_badgeLabel];
-    
+    if ((self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier])) {
+        _stickyImageView = [UIImageView new];
+        _stickyImageView.contentMode = UIViewContentModeTopRight;
+        [self.contentView addSubview:_stickyImageView];
+        
+        _tagAndRatingView = [AwfulThreadTagAndRatingView new];
+        [self.contentView addSubview:_tagAndRatingView];
+        
+        self.textLabel.numberOfLines = 2;
+        
+        _numberOfPagesLabel = [UILabel new];
+        [self.contentView addSubview:_numberOfPagesLabel];
+        
+        UIImage *pageTemplateImage = [[UIImage imageNamed:@"pages"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        _pagesIconImageView = [[UIImageView alloc] initWithImage:pageTemplateImage];
+        [self.contentView addSubview:_pagesIconImageView];
+        
+        [self setFontName:nil];
+        
+        _badgeLabel = [UILabel new];
+        _badgeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.textLabel.font.pointSize];
+        _badgeLabel.textAlignment = NSTextAlignmentRight;
+        [self.contentView addSubview:_badgeLabel];
+    }
     return self;
 }
 
