@@ -75,8 +75,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
 {
-    [cell.showActionsGestureRecognizer removeTarget:nil action:nil];
-    [cell.showActionsGestureRecognizer addTarget:self action:@selector(showThreadActions:)];
+    [cell setLongPressTarget:self action:@selector(showThreadActions:)];
     
 	if ([AwfulSettings settings].showThreadTags) {
 		cell.threadTagHidden = NO;
@@ -176,10 +175,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     }
 }
 
-- (void)showThreadActions:(UILongPressGestureRecognizer *)longPress
+- (void)showThreadActions:(AwfulThreadCell *)cell
 {
-    if (longPress.state != UIGestureRecognizerStateBegan) return;
-    UITableViewCell *cell = (UITableViewCell *)longPress.view;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     AwfulThread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
     [self showThreadActionsForThread:thread];

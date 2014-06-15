@@ -8,12 +8,15 @@
 
 @property (strong, nonatomic) UIImageView *pagesIconImageView;
 
+@property (strong, nonatomic) id longPressTarget;
+@property (assign, nonatomic) SEL longPressAction;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPressRecognizer;
+
 @end
 
 @implementation AwfulThreadCell
 
 @synthesize fontName = _fontName;
-@synthesize showActionsGestureRecognizer = _showActionsGestureRecognizer;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -103,12 +106,24 @@
                                                 size:detailTextLabelDescriptor.pointSize];
 }
 
-- (UILongPressGestureRecognizer *)showActionsGestureRecognizer
+- (void)setLongPressTarget:(id)target action:(SEL)action
 {
-    if (_showActionsGestureRecognizer) return _showActionsGestureRecognizer;
-    _showActionsGestureRecognizer = [UILongPressGestureRecognizer new];
-    [self addGestureRecognizer:_showActionsGestureRecognizer];
-    return _showActionsGestureRecognizer;
+    if (target || action) {
+        self.longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress:)];
+        [self addGestureRecognizer:self.longPressRecognizer];
+    } else {
+        [self.longPressRecognizer.view removeGestureRecognizer:self.longPressRecognizer];
+        self.longPressRecognizer = nil;
+    }
+    self.longPressTarget = target;
+    self.longPressAction = action;
+}
+
+- (void)didLongPress:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [[UIApplication sharedApplication] sendAction:self.longPressAction to:self.longPressTarget from:self forEvent:nil];
+    }
 }
 
 - (void)layoutSubviews

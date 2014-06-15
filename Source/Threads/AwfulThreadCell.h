@@ -61,8 +61,8 @@
 @property (strong, nonatomic) NSString *fontName;
 
 /**
- * A gesture recognizer, lazily created on first access, intended to be used to show the represented thread's actions.
+ * Sets a target and an action for when the cell is long-pressed. If target is nil, the action is handled by the responder chain.
  */
-@property (readonly, strong, nonatomic) UILongPressGestureRecognizer *showActionsGestureRecognizer;
+- (void)setLongPressTarget:(id)target action:(SEL)action;
 
 @end
