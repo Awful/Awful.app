@@ -16,5 +16,6 @@
 #import "UIPasteboard+AwfulStringyURLs.h"
 #import "UITableView+HideStuff.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "UIView+AwfulConvenient.h"
 #import "UIViewController+AwfulTheme.h"
 #import "UIWebView+AwfulConvenience.h"

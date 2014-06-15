@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSemiModalViewController.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulHoleyDimmingView.h"
 
 @interface AwfulSemiModalViewController () <UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning, UIPopoverControllerDelegate>
@@ -34,7 +35,7 @@
     self.modalPresentationStyle = UIModalPresentationCustom;
     self.transitioningDelegate = self;
     
-    self.directlyPresentingViewController = ViewControllerForView(view);
+    self.directlyPresentingViewController = view.awful_viewController;
     if (!self.directlyPresentingViewController) {
         [NSException raise:NSInternalInconsistencyException format:@"Semi-modal view controllers must be presented from a view within a view controller"];
     }
@@ -79,18 +80,6 @@
     if (sender.state == UIGestureRecognizerStateEnded) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
-}
-
-static inline UIViewController * ViewControllerForView(UIView *view)
-{
-    id responder = view;
-    while (responder) {
-        responder = [responder nextResponder];
-        if ([responder isKindOfClass:[UIViewController class]]) {
-            return responder;
-        }
-    }
-    return nil;
 }
 
 - (void)dismissCompletion:(void (^)(void))completionBlock
