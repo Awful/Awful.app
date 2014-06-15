@@ -8,16 +8,16 @@
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulNewThreadFieldView.h"
-#import "AwfulPostIconPickerController.h"
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
+#import "AwfulThreadTagPickerController.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulNewThreadViewController () <AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
+@interface AwfulNewThreadViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulNewThreadFieldView *fieldView;
-@property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
+@property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 @property (strong, nonatomic) AwfulThreadTag *threadTag;
 @property (strong, nonatomic) AwfulThreadTag *secondaryThreadTag;
 
@@ -83,7 +83,6 @@ static NSString * const DefaultTitle = @"New Thread";
     [[AwfulForumsClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
         _availableThreadTags = [form.threadTags copy];
         _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
-        [_postIconPicker reloadData];
     }];
 }
 
@@ -156,29 +155,39 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)didTapThreadTagButton:(UIButton *)button
 {
-    if (self.threadTag) {
-        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag] + 1;
-    } else {
-        self.postIconPicker.selectedIndex = -1;
+    // TODO better handle waiting for the available thread tags to download
+    if (!_availableThreadTags) return;
+    
+    NSString *selectedImageName = self.threadTag.imageName ?: AwfulThreadTagLoaderEmptyThreadTagImageName;
+    [self.threadTagPicker selectImageName:selectedImageName];
+    if (_availableSecondaryThreadTags.count > 0) {
+        NSString *selectedSecondaryImageName = self.secondaryThreadTag.imageName ?: [_availableSecondaryThreadTags[0] imageName];
+        [self.threadTagPicker selectSecondaryImageName:selectedSecondaryImageName];
     }
-    if (self.secondaryThreadTag) {
-        self.postIconPicker.secondarySelectedIndex = [_availableSecondaryThreadTags indexOfObject:self.secondaryThreadTag];
-    } else if (_availableSecondaryThreadTags.count > 0) {
-        self.postIconPicker.secondarySelectedIndex = -1;
-    }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.postIconPicker showFromRect:button.bounds inView:button];
-    } else {
-        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES completion:nil];
-    }
+    [self.threadTagPicker presentFromView:button];
+    
+    // HACK: Calling -endEditing: once doesn't work if the Subject field is selected. But twice works. I assume this is some weirdness from adding a text field as a subview to a text view.
+    [self.view endEditing:YES];
+    [self.view endEditing:YES];
 }
 
-- (AwfulPostIconPickerController *)postIconPicker
+- (AwfulThreadTagPickerController *)threadTagPicker
 {
-    if (_postIconPicker) return _postIconPicker;
-    _postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
-    [_postIconPicker reloadData];
-    return _postIconPicker;
+    if (_threadTagPicker) return _threadTagPicker;
+    if (!_availableThreadTags) return nil;
+    
+    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderEmptyThreadTagImageName];
+    [imageNames addObjectsFromArray:[_availableThreadTags valueForKey:@"imageName"]];
+    NSArray *secondaryImageNames = [_availableSecondaryThreadTags valueForKey:@"imageName"];
+    _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:secondaryImageNames];
+    _threadTagPicker.delegate = self;
+    _threadTagPicker.title = @"Choose Thread Tag";
+    if (_availableSecondaryThreadTags.count > 0) {
+        _threadTagPicker.navigationItem.rightBarButtonItem = _threadTagPicker.doneButtonItem;
+    } else {
+        _threadTagPicker.navigationItem.leftBarButtonItem = _threadTagPicker.cancelButtonItem;
+    }
+    return _threadTagPicker;
 }
 
 - (void)subjectFieldDidChange:(UITextField *)subjectTextField
@@ -232,80 +241,39 @@ static NSString * const DefaultTitle = @"New Thread";
     }];
 }
 
-#pragma mark - AwfulPostIconPickerControllerDelegate
+#pragma mark - AwfulThreadTagPickerControllerDelegate
 
-- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
 {
-    // +1 for the empty thread tag.
-    return _availableThreadTags.count + 1;
-}
-
-- (NSInteger)numberOfSecondaryIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
-{
-    return _availableSecondaryThreadTags.count;
-}
-
-- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
-{
-    if (index == 0) {
-        return [AwfulThreadTagLoader emptyThreadTagImage];
-    } else {
-        AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        return [AwfulThreadTagLoader imageNamed:tag.imageName];
-    }
-}
-
-- (NSString *)postIconPicker:(AwfulPostIconPickerController *)picker nameOfSecondaryIconAtIndex:(NSInteger)index
-{
-    // TODO grab new style from thread table view controller
-    AwfulThreadTag *tag = _availableSecondaryThreadTags[index];
-    return tag.imageName;
-}
-
-- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
-{
-    // On iPad we update immediately and there is no "cancel". On iPhone we update only on successful completion.
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if (index == 0) {
-            self.threadTag = nil;
-        } else {
-            self.threadTag = _availableThreadTags[index - 1];
-        }
-    }
-}
-
-- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectSecondaryIconAtIndex:(NSInteger)index
-{
-    // On iPad we update immediately and there is no "cancel". On iPhone we update only on successful completion.
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.secondaryThreadTag = _availableSecondaryThreadTags[index];
-    }
-}
-
-- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
-{
-    if (picker.selectedIndex == 0) {
+    if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyThreadTagImageName]) {
         self.threadTag = nil;
     } else {
-        self.threadTag = _availableThreadTags[picker.selectedIndex - 1];
-    }
-    if (_availableSecondaryThreadTags.count > 0) {
-        self.secondaryThreadTag = _availableSecondaryThreadTags[picker.secondarySelectedIndex];
-    }
-    // On iPad the modal view controller is the compose screen rather than the tag picker,
-    // so we don't want to dismiss it.
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        [self dismissViewControllerAnimated:YES completion:^{
-            [self focusInitialFirstResponder];
+        [_availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+            if ([threadTag.imageName isEqualToString:imageName]) {
+                self.threadTag = threadTag;
+                *stop = YES;
+            }
         }];
+    }
+    if (_availableSecondaryThreadTags.count == 0) {
+        [picker dismiss];
+        [self focusInitialFirstResponder];
     }
 }
 
-- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
+- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectSecondaryImageName:(NSString *)secondaryImageName
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self focusInitialFirstResponder];
+    [_availableSecondaryThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
+        if ([secondaryThreadTag.imageName isEqualToString:secondaryImageName]) {
+            self.secondaryThreadTag = secondaryThreadTag;
+            *stop = YES;
+        }
     }];
+}
+
+- (void)threadTagPickerDidDismiss:(AwfulThreadTagPickerController *)picker
+{
+    [self focusInitialFirstResponder];
 }
 
 #pragma mark - State preservation and restoration

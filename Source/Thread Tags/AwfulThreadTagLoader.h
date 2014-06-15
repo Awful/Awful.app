@@ -87,3 +87,11 @@ extern NSString * const AwfulThreadTagLoaderNewImageAvailableNotification;
  * Value is an NSString suitable for -[AwfulThreadTagLoader threadTagNamed:].
  */
 extern NSString * const AwfulThreadTagLoaderNewImageNameKey;
+
+/**
+ * Names of placeholder images. Each of these has a convenience method on the AwfulThreadTagLoader class.
+ */
+extern NSString * AwfulThreadTagLoaderEmptyThreadTagImageName;
+extern NSString * AwfulThreadTagLoaderEmptyPrivateMessageImageName;
+extern NSString * AwfulThreadTagLoaderUnsetThreadTagImageName;
+extern NSString * AwfulThreadTagLoaderNoFilterImageName;

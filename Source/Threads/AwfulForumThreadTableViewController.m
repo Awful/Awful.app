@@ -17,15 +17,15 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
-#import "AwfulPostIconPickerController.h"
+#import "AwfulThreadTagPickerController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
+@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
 @property (strong, nonatomic) UIButton *filterButton;
 @property (strong, nonatomic) AwfulThreadTag *filterThreadTag;
-@property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
+@property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 
 @end
 
@@ -76,13 +76,16 @@
 
 static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
-- (AwfulPostIconPickerController *)postIconPicker
+- (AwfulThreadTagPickerController *)threadTagPicker
 {
-    if (_postIconPicker) return _postIconPicker;
-    _postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
-    _postIconPicker.title = kFilterThreadsTitle;
-    [_postIconPicker reloadData];
-    return _postIconPicker;
+    if (_threadTagPicker) return _threadTagPicker;
+    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderNoFilterImageName];
+    [imageNames addObjectsFromArray:[self.forum.threadTags.array valueForKey:@"imageName"]];
+    _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:nil];
+    _threadTagPicker.delegate = self;
+    _threadTagPicker.title = kFilterThreadsTitle;
+    _threadTagPicker.navigationItem.leftBarButtonItem = _threadTagPicker.cancelButtonItem;
+    return _threadTagPicker;
 }
 
 - (NSFetchedResultsController *)createFetchedResultsController
@@ -131,16 +134,9 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
 - (void)showFilterPicker:(UIButton *)button
 {
-    if (self.filterThreadTag) {
-        self.postIconPicker.selectedIndex = [self.forum.threadTags indexOfObject:self.filterThreadTag] + 1;
-    } else {
-        self.postIconPicker.selectedIndex = 0;
-    }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.postIconPicker showFromRect:button.bounds inView:button];
-    } else {
-        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES completion:nil];
-    }
+    NSString *selectedTagImageName = self.filterThreadTag.imageName ?: AwfulThreadTagLoaderNoFilterImageName;
+    [self.threadTagPicker selectImageName:selectedTagImageName];
+    [self.threadTagPicker presentFromView:button];
 }
 
 - (void)updateFilterButtonText
@@ -257,64 +253,26 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }];
 }
 
-#pragma mark - AwfulPostIconPickerControllerDelegate
+#pragma mark - AwfulThreadTagPickerControllerDelegate
 
-- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
 {
-    // +1 for empty thread tag (aka "no filter").
-    return self.forum.threadTags.count + 1;
-}
-
-- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
-{
-    if (index == 0) {
-        if ([picker.title isEqualToString:kFilterThreadsTitle]) {
-            return [AwfulThreadTagLoader noFilterTagImage];
-        } else {
-            return [AwfulThreadTagLoader emptyThreadTagImage];
-        }
-    } else {
-        AwfulThreadTag *threadTag = self.forum.threadTags[index - 1];
-        return [AwfulThreadTagLoader imageNamed:threadTag.imageName];
-    }
-}
-
-- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) return;
-    NSInteger index = picker.selectedIndex;
-    if (index == 0 || index == NSNotFound) {
+    if ([imageName isEqualToString:AwfulThreadTagLoaderNoFilterImageName]) {
         self.filterThreadTag = nil;
     } else {
-        self.filterThreadTag = self.forum.threadTags[index - 1];
+        [self.forum.threadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+            if ([threadTag.imageName isEqualToString:imageName]) {
+                self.filterThreadTag = threadTag;
+                *stop = YES;
+            }
+        }];
     }
-    [self refreshForFilterChange];
-    [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.tableView.tableHeaderView.frame)) animated:NO];
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
-{
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return;
-    if (index == 0) {
-        self.filterThreadTag = nil;
-    } else {
-        self.filterThreadTag = self.forum.threadTags[index - 1];
-    }
-    [self refreshForFilterChange];
-}
-
-- (void)refreshForFilterChange
-{
+    
     [self updateFilterButtonText];
     [[AwfulRefreshMinder minder] forgetForum:self.forum];
     [self updateFilter];
     [self refresh];
+    [picker dismiss];
 }
 
 #pragma mark - State preservation and restoration

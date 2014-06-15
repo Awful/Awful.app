@@ -60,6 +60,12 @@ static NSString * const ResourceSubfolder = @"Thread Tags";
 - (NSArray *)shippedThreadTagImageNames
 {
     if (_shippedThreadTagImageNames) return _shippedThreadTagImageNames;
+    
+    NSArray *placeholderImageNames = @[ AwfulThreadTagLoaderEmptyThreadTagImageName,
+                                        AwfulThreadTagLoaderEmptyPrivateMessageImageName,
+                                        AwfulThreadTagLoaderUnsetThreadTagImageName,
+                                        AwfulThreadTagLoaderNoFilterImageName ];
+    
     NSError *error;
     NSArray *URLs = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:self.shippedThreadTagFolder
                                                   includingPropertiesForKeys:@[ NSURLPathKey ]
@@ -69,14 +75,15 @@ static NSString * const ResourceSubfolder = @"Thread Tags";
         NSLog(@"%s error listing thread tag resources: %@", __PRETTY_FUNCTION__, error);
         return nil;
     }
-    _shippedThreadTagImageNames = [URLs valueForKey:@"lastPathComponent"];
+    
+    _shippedThreadTagImageNames = [placeholderImageNames arrayByAddingObjectsFromArray:[URLs valueForKey:@"lastPathComponent"]];
     return _shippedThreadTagImageNames;
 }
 
 - (UIImage *)shippedImageNamed:(NSString *)imageName
 {
     NSString *path = [ResourceSubfolder stringByAppendingPathComponent:imageName];
-    UIImage *image = [UIImage imageNamed:path];
+    UIImage *image = [UIImage imageNamed:path] ?: [UIImage imageNamed:imageName];
     return EnsureDoubleScaledImage(image);
 }
 
@@ -225,22 +232,22 @@ static UIImage * EnsureDoubleScaledImage(UIImage *image)
 
 + (UIImage *)emptyThreadTagImage
 {
-    return [UIImage imageNamed:@"empty-thread-tag"];
+    return [UIImage imageNamed:AwfulThreadTagLoaderEmptyThreadTagImageName];
 }
 
 + (UIImage *)emptyPrivateMessageImage
 {
-    return [UIImage imageNamed:@"empty-pm-tag"];
+    return [UIImage imageNamed:AwfulThreadTagLoaderEmptyPrivateMessageImageName];
 }
 
 + (UIImage *)unsetThreadTagImage
 {
-    return [UIImage imageNamed:@"unset-tag"];
+    return [UIImage imageNamed:AwfulThreadTagLoaderUnsetThreadTagImageName];
 }
 
 + (UIImage *)noFilterTagImage
 {
-    return [UIImage imageNamed:@"no-filter-icon"];
+    return [UIImage imageNamed:AwfulThreadTagLoaderNoFilterImageName];
 }
 
 @end
@@ -248,3 +255,8 @@ static UIImage * EnsureDoubleScaledImage(UIImage *image)
 NSString * const AwfulThreadTagLoaderNewImageAvailableNotification = @"com.awfulapp.Awful.ThreadTagLoaderNewImageAvailable";
 
 NSString * const AwfulThreadTagLoaderNewImageNameKey = @"AwfulThreadTagLoaderNewImageName";
+
+NSString * AwfulThreadTagLoaderEmptyThreadTagImageName = @"empty-thread-tag";
+NSString * AwfulThreadTagLoaderEmptyPrivateMessageImageName = @"empty-pm-tag";
+NSString * AwfulThreadTagLoaderUnsetThreadTagImageName = @"unset-tag";
+NSString * AwfulThreadTagLoaderNoFilterImageName = @"no-filter-icon";

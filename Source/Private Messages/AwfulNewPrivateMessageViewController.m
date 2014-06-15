@@ -8,52 +8,55 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewPrivateMessageFieldView.h"
-#import "AwfulPostIconPickerController.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
+#import "AwfulThreadTagPickerController.h"
 
-@interface AwfulNewPrivateMessageViewController () <AwfulPostIconPickerControllerDelegate, UIViewControllerRestoration>
+@interface AwfulNewPrivateMessageViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulNewPrivateMessageFieldView *fieldView;
+
 @property (strong, nonatomic) AwfulThreadTag *threadTag;
-@property (strong, nonatomic) AwfulPostIconPickerController *postIconPicker;
+@property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
+@property (copy, nonatomic) NSArray *availableThreadTags;
 
 @end
 
 @implementation AwfulNewPrivateMessageViewController
-{
-    NSArray *_availableThreadTags;
-}
 
 - (id)initWithRecipient:(AwfulUser *)recipient
 {
-    if (!(self = [self initWithNibName:nil bundle:nil])) return nil;
-    _recipient = recipient;
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _recipient = recipient;
+    }
     return self;
 }
 
 - (id)initWithRegardingMessage:(AwfulPrivateMessage *)regardingMessage initialContents:(NSString *)initialContents
 {
-    if (!(self = [self initWithNibName:nil bundle:nil])) return nil;
-    _regardingMessage = regardingMessage;
-    _initialContents = [initialContents copy];
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _regardingMessage = regardingMessage;
+        _initialContents = [initialContents copy];
+    }
     return self;
 }
 
 - (id)initWithForwardingMessage:(AwfulPrivateMessage *)forwardingMessage initialContents:(NSString *)initialContents
 {
-    if (!(self = [self initWithNibName:nil bundle:nil])) return nil;
-    _forwardingMessage = forwardingMessage;
-    _initialContents = [initialContents copy];
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _forwardingMessage = forwardingMessage;
+        _initialContents = [initialContents copy];
+    }
     return self;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.title = @"Private Message";
-    self.submitButtonItem.title = @"Send";
-    self.restorationClass = self.class;
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        self.title = @"Private Message";
+        self.submitButtonItem.title = @"Send";
+        self.restorationClass = self.class;
+    }
     return self;
 }
 
@@ -117,8 +120,7 @@
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] listAvailablePrivateMessageThreadTagsAndThen:^(NSError *error, NSArray *threadTags) {
         __typeof__(self) self = weakSelf;
-        self->_availableThreadTags = [threadTags copy];
-        [_postIconPicker reloadData];
+        self.availableThreadTags = threadTags;
     }];
 }
 
@@ -153,24 +155,29 @@
 
 - (void)didTapThreadTagButton:(AwfulThreadTagButton *)button
 {
-    if (self.threadTag) {
-        self.postIconPicker.selectedIndex = [_availableThreadTags indexOfObject:self.threadTag] + 1;
-    } else {
-        self.postIconPicker.selectedIndex = 0;
-    }
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.postIconPicker showFromRect:button.bounds inView:button];
-    } else {
-        [self presentViewController:[self.postIconPicker enclosingNavigationController] animated:YES completion:nil];
-    }
+    // TODO better handle waiting for available thread tags to download.
+    if (self.availableThreadTags.count == 0) return;
+    
+    NSString *selectedImageName = self.threadTag.imageName ?: AwfulThreadTagLoaderEmptyPrivateMessageImageName;
+    [self.threadTagPicker selectImageName:selectedImageName];
+    [self.threadTagPicker presentFromView:button];
+    
+    // HACK: Calling -endEditing: once doesn't work if the To or Subject fields are selected. But twice works. I assume this is some weirdness from adding text fields as subviews to a text view.
+    [self.view endEditing:YES];
+    [self.view endEditing:YES];
 }
 
-- (AwfulPostIconPickerController *)postIconPicker
+- (AwfulThreadTagPickerController *)threadTagPicker
 {
-    if (_postIconPicker) return _postIconPicker;
-    _postIconPicker = [[AwfulPostIconPickerController alloc] initWithDelegate:self];
-    [_postIconPicker reloadData];
-    return _postIconPicker;
+    if (_threadTagPicker) return _threadTagPicker;
+    if (self.availableThreadTags.count == 0) return nil;
+    
+    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderEmptyPrivateMessageImageName];
+    [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
+    _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:nil];
+    _threadTagPicker.delegate = self;
+    _threadTagPicker.navigationItem.leftBarButtonItem = _threadTagPicker.cancelButtonItem;
+    return _threadTagPicker;
 }
 
 - (void)toFieldDidChange
@@ -214,59 +221,22 @@
     }];
 }
 
-#pragma mark - AwfulPostIconPickerControllerDelegate
+#pragma mark - AwfulThreadTagPickerControllerDelegate
 
-- (NSInteger)numberOfIconsInPostIconPicker:(AwfulPostIconPickerController *)picker
+- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
 {
-    return _availableThreadTags.count + 1;
-}
-
-- (UIImage *)postIconPicker:(AwfulPostIconPickerController *)picker postIconAtIndex:(NSInteger)index
-{
-    if (index == 0) {
-        return [AwfulThreadTagLoader emptyPrivateMessageImage];
-    } else {
-        AwfulThreadTag *tag = _availableThreadTags[index - 1];
-        if (tag.imageName) {
-            return [AwfulThreadTagLoader imageNamed:tag.imageName];
-        } else {
-            return [AwfulThreadTagLoader emptyPrivateMessageImage];
-        }
-    }
-}
-
-- (void)postIconPicker:(AwfulPostIconPickerController *)picker didSelectIconAtIndex:(NSInteger)index
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if (index == 0) {
-            self.threadTag = nil;
-        } else {
-            self.threadTag = _availableThreadTags[index - 1];
-        }
-    }
-}
-
-- (void)postIconPickerDidComplete:(AwfulPostIconPickerController *)picker
-{
-    if (picker.selectedIndex == 0) {
+    if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyPrivateMessageImageName]) {
         self.threadTag = nil;
     } else {
-        self.threadTag = _availableThreadTags[picker.selectedIndex - 1];
-    }
-    // On iPad the modal view controller is the compose screen rather than the tag picker,
-    // so we don't want to dismiss it.
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        [self dismissViewControllerAnimated:YES completion:^{
-            [self focusInitialFirstResponder];
+        [self.availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+            if ([threadTag.imageName isEqualToString:imageName]) {
+                self.threadTag = threadTag;
+                *stop = YES;
+            }
         }];
     }
-}
-
-- (void)postIconPickerDidCancel:(AwfulPostIconPickerController *)picker
-{
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self focusInitialFirstResponder];
-    }];
+    [picker dismiss];
+    [self focusInitialFirstResponder];
 }
 
 #pragma mark - UIViewControllerRestoration
