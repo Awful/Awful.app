@@ -49,8 +49,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        [self updateTweaks];
-        [self updateSubmitButtonTitle];
         self.restorationClass = self.class;
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
@@ -93,6 +91,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self updateTweaks];
+    [self updateSubmitButtonTitle];
     if (self.textView.text.length == 0) {
         self.textView.text = self.originalText ?: self.quotedText;
     }
