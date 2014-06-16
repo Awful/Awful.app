@@ -46,7 +46,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -124,7 +123,6 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
 }
 .role-admin .username:before {
   color: #990011;
@@ -401,7 +399,7 @@ body {
   background-color: #060606;
 }
 post {
-  background-color: #262626;
+  background-color: #151515;
   border-bottom-color: #060606;
   border-top-color: #060606;
 }
@@ -452,6 +450,9 @@ header {
 }
 .bbc-block.mention h4 .mention {
   color: #dd89ff;
+}
+.bbc-block {
+  border-left: 2px solid rgba(255, 255, 255, 0.15);
 }
 footer {
   margin-top: 0.6em;

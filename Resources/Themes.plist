@@ -167,9 +167,9 @@
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
 		<key>listSecondaryTextColor</key>
-		<string>#808080</string>
+		<string>#ffffff</string>
 		<key>listSecondaryBackgroundColor</key>
-		<string>#151515</string>
+		<string>#262626</string>
 		<key>splitViewBackgroundColor</key>
 		<string>060606</string>
 		<key>splitDividerColor</key>
@@ -191,15 +191,15 @@
 		<key>settingsSwitchColor</key>
 		<string>#237733</string>
 		<key>listBackgroundColor</key>
-		<string>#262626</string>
+		<string>#151515</string>
 		<key>collectionViewBackgroundColor</key>
-		<string>#262626</string>
+		<string>#151515</string>
 		<key>collectionViewTextColor</key>
 		<string>#dddddd</string>
 		<key>listSelectedBackgroundColor</key>
-		<string>#525252</string>
+		<string>#333333</string>
 		<key>listSeparatorColor</key>
-		<string>#111111</string>
+		<string>#262626</string>
 		<key>listTextColor</key>
 		<string>#dddddd</string>
 		<key>keyboardAppearance</key>
@@ -209,7 +209,7 @@
 		<key>sheetTitleColor</key>
 		<string>#ffffff</string>
 		<key>sheetTitleBackgroundColor</key>
-		<string>#151515</string>
+		<string>#0c0c0c</string>
 		<key>sheetTextColor</key>
 		<string>#ffffff</string>
 		<key>sheetDimColor</key>
