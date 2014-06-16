@@ -18,6 +18,8 @@
 
 @property (strong, nonatomic) AwfulThreadTag *threadTag;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
+
+@property (assign, nonatomic) BOOL updatingThreadTags;
 @property (copy, nonatomic) NSArray *availableThreadTags;
 
 @end
@@ -117,10 +119,25 @@
             self.textView.text = self.initialContents;
         }
     }
+    
+    [self updateAvailableThreadTagsIfNecessary];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateAvailableThreadTagsIfNecessary];
+}
+
+- (void)updateAvailableThreadTagsIfNecessary
+{
+    if (self.availableThreadTags.count > 0 || self.updatingThreadTags) return;
+    self.updatingThreadTags = YES;
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] listAvailablePrivateMessageThreadTagsAndThen:^(NSError *error, NSArray *threadTags) {
         __typeof__(self) self = weakSelf;
         self.availableThreadTags = threadTags;
+        self.updatingThreadTags = NO;
     }];
 }
 

@@ -16,6 +16,8 @@
 
 @interface AwfulNewThreadViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
+@property (strong, nonatomic) AwfulThread *thread;
+
 @property (strong, nonatomic) AwfulNewThreadFieldView *fieldView;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 @property (strong, nonatomic) AwfulThreadTag *threadTag;
@@ -23,14 +25,15 @@
 
 @property (copy, nonatomic) void (^onAppearBlock)(void);
 
+@property (copy, nonatomic) NSArray *availableThreadTags;
+@property (copy, nonatomic) NSArray *availableSecondaryThreadTags;
+@property (assign, nonatomic) BOOL updatingThreadTags;
+
+@property (copy, nonatomic) NSString *secondaryIconKey;
+
 @end
 
 @implementation AwfulNewThreadViewController
-{
-    NSString *_secondaryIconKey;
-    NSArray *_availableThreadTags;
-    NSArray *_availableSecondaryThreadTags;
-}
 
 - (id)initWithForum:(AwfulForum *)forum
 {
@@ -80,9 +83,20 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     [super viewDidLoad];
     [self updateThreadTagButtonImage];
+    [self updateAvailableThreadTagsIfNecessary];
+}
+
+- (void)updateAvailableThreadTagsIfNecessary
+{
+    if (self.availableThreadTags.count > 0 || self.updatingThreadTags) return;
+    
+    self.updatingThreadTags = YES;
+    __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] listAvailablePostIconsForForumWithID:self.forum.forumID andThen:^(NSError *error, AwfulForm *form) {
-        _availableThreadTags = [form.threadTags copy];
-        _availableSecondaryThreadTags = [form.secondaryThreadTags copy];
+        __typeof__(self) self = weakSelf;
+        self.availableThreadTags = form.threadTags;
+        self.availableSecondaryThreadTags = form.secondaryThreadTags;
+        self.updatingThreadTags = NO;
     }];
 }
 
@@ -95,6 +109,12 @@ static NSString * const DefaultTitle = @"New Thread";
     NSDictionary *styleAttrs = @{NSForegroundColorAttributeName: self.theme[@"placeholderTextColor"]};
     NSAttributedString *themedString = [[NSAttributedString alloc] initWithString:@"Subject" attributes:styleAttrs];
     self.fieldView.subjectField.textField.attributedPlaceholder = themedString;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateAvailableThreadTagsIfNecessary];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -156,12 +176,12 @@ static NSString * const DefaultTitle = @"New Thread";
 - (void)didTapThreadTagButton:(UIButton *)button
 {
     // TODO better handle waiting for the available thread tags to download
-    if (!_availableThreadTags) return;
+    if (self.availableThreadTags.count == 0) return;
     
     NSString *selectedImageName = self.threadTag.imageName ?: AwfulThreadTagLoaderEmptyThreadTagImageName;
     [self.threadTagPicker selectImageName:selectedImageName];
-    if (_availableSecondaryThreadTags.count > 0) {
-        NSString *selectedSecondaryImageName = self.secondaryThreadTag.imageName ?: [_availableSecondaryThreadTags[0] imageName];
+    if (self.availableSecondaryThreadTags.count > 0) {
+        NSString *selectedSecondaryImageName = self.secondaryThreadTag.imageName ?: [self.availableSecondaryThreadTags[0] imageName];
         [self.threadTagPicker selectSecondaryImageName:selectedSecondaryImageName];
     }
     [self.threadTagPicker presentFromView:button];
@@ -174,15 +194,15 @@ static NSString * const DefaultTitle = @"New Thread";
 - (AwfulThreadTagPickerController *)threadTagPicker
 {
     if (_threadTagPicker) return _threadTagPicker;
-    if (!_availableThreadTags) return nil;
+    if (self.availableThreadTags.count == 0) return nil;
     
     NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderEmptyThreadTagImageName];
-    [imageNames addObjectsFromArray:[_availableThreadTags valueForKey:@"imageName"]];
-    NSArray *secondaryImageNames = [_availableSecondaryThreadTags valueForKey:@"imageName"];
+    [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
+    NSArray *secondaryImageNames = [self.availableSecondaryThreadTags valueForKey:@"imageName"];
     _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:secondaryImageNames];
     _threadTagPicker.delegate = self;
     _threadTagPicker.title = @"Choose Thread Tag";
-    if (_availableSecondaryThreadTags.count > 0) {
+    if (self.availableSecondaryThreadTags.count > 0) {
         _threadTagPicker.navigationItem.rightBarButtonItem = _threadTagPicker.doneButtonItem;
     } else {
         _threadTagPicker.navigationItem.leftBarButtonItem = _threadTagPicker.cancelButtonItem;
@@ -222,12 +242,12 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] postThreadInForum:self.forum
-                                    withSubject:self.fieldView.subjectField.textField.text
-                                      threadTag:_threadTag
-                                   secondaryTag:_secondaryThreadTag
-                            secondaryTagFormKey:_secondaryIconKey
-                                         BBcode:composition
-                                        andThen:^(NSError *error, AwfulThread *thread)
+                                      withSubject:self.fieldView.subjectField.textField.text
+                                        threadTag:self.threadTag
+                                     secondaryTag:self.secondaryThreadTag
+                              secondaryTagFormKey:self.secondaryIconKey
+                                           BBcode:composition
+                                          andThen:^(NSError *error, AwfulThread *thread)
     {
         __typeof__(self) self = weakSelf;
         if (error) {
@@ -235,7 +255,7 @@ static NSString * const DefaultTitle = @"New Thread";
                 completionHandler(NO);
             }];
         } else {
-            self->_thread = thread;
+            self.thread = thread;
             completionHandler(YES);
         }
     }];
@@ -248,14 +268,14 @@ static NSString * const DefaultTitle = @"New Thread";
     if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyThreadTagImageName]) {
         self.threadTag = nil;
     } else {
-        [_availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+        [self.availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
             if ([threadTag.imageName isEqualToString:imageName]) {
                 self.threadTag = threadTag;
                 *stop = YES;
             }
         }];
     }
-    if (_availableSecondaryThreadTags.count == 0) {
+    if (self.availableSecondaryThreadTags.count == 0) {
         [picker dismiss];
         [self focusInitialFirstResponder];
     }
@@ -263,7 +283,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectSecondaryImageName:(NSString *)secondaryImageName
 {
-    [_availableSecondaryThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
+    [self.availableSecondaryThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
         if ([secondaryThreadTag.imageName isEqualToString:secondaryImageName]) {
             self.secondaryThreadTag = secondaryThreadTag;
             *stop = YES;
