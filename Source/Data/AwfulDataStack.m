@@ -113,7 +113,7 @@ void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
     NSError *error;
     if (![fileManager createDirectoryAtURL:destinationFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
         @throw [NSException exceptionWithName:NSGenericException
-                                       reason:@"could not create destination data store folder"
+                                       reason:[NSString stringWithFormat:@"could not create destination data store folder: %@", error]
                                      userInfo:@{ NSURLErrorKey: destinationFolder, NSUnderlyingErrorKey: error }];
     }
     
@@ -128,7 +128,7 @@ void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
             }
             
             @throw [NSException exceptionWithName:NSGenericException
-                                           reason:@"could not move part of the data store"
+                                           reason:[NSString stringWithFormat:@"could not move part of the data store: %@", error]
                                          userInfo:@{ NSFilePathErrorKey: sourceURL.path, NSURLErrorKey: destinationURL, NSUnderlyingErrorKey: error }];
         }
     }];
