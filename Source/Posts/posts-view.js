@@ -159,14 +159,19 @@ function highlightMentions(post) {
     return $('.postbody img').not('[src*=somethingawful]');
   }
 
-  /* 200 px slop to try to get a bit ahead of scrolling */
+  /* Use a (viewport/2)-sized buffer below to get a bit ahead of the scroll. */
   function isInViewport() {
     var rect = this.getBoundingClientRect();
-    return rect.bottom > -200 && rect.top < (window.innerHeight + 200);
+    var viewportHeight = window.innerHeight;
+    return rect.bottom > 0 && rect.top < viewportHeight * 1.5;
   }
 
   function showImage() {
     var img = $(this); /* why is this not already zepto-wrapped? */
+    if (!img.attr("data-orig-src")) {
+      /* hasn't been hidden */
+      return;
+    }
     img.attr("src", img.attr("data-orig-src"));
     if (img.attr("width") == 0) {
       /*
@@ -177,13 +182,19 @@ function highlightMentions(post) {
        img.attr("width", null);
        img.attr("height", null);
      }
+
      // console.log("Showing: ", img.attr("src"));
    }
 
    function hideImage() {
     var img = $(this);
-    // console.log("Hiding: ", img.attr("src"));
+    var src = img.attr("src");
+    if (src == "about:blank" || !src) {
+      /* already hidden, happens when multiple events trip */
+      return;
+    }
 
+    // console.log("Hiding: ", src);
     img.attr("data-orig-src", img.attr("src"));
     img.attr("height", img.height());
     img.attr("width", img.width());
@@ -193,22 +204,17 @@ function highlightMentions(post) {
   function handleScroll() {
     var visibleSet = postImages().filter(isInViewport);
 
-    visibleSet.not(lastVisibleSet).each(showImage);
-    lastVisibleSet.not(visibleSet).each(hideImage);
-
-    lastVisibleSet = visibleSet;
+    postImages().filter(isInViewport).each(showImage);
+    postImages().not(isInViewport).each(hideImage);
   }
 
-  var lastVisibleSet;
 
   $(function () {
-    /* hide images that are initially off-screen */
-    lastVisibleSet = postImages().filter(isInViewport);
-    postImages().not(isInViewport).each(hideImage);
+    handleScroll();
   });
 
   /* The UIWebView scroll event model can bite me. */
   document.addEventListener("touchmove", handleScroll, false);
-  document.addEventListener("onscroll", handleScroll, false);
+  document.addEventListener("scroll", handleScroll, false);
   document.addEventListener("gesturechange", handleScroll, false);
 })();
