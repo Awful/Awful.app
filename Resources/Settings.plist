@@ -11,7 +11,7 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Logged In as</string>
+					<string>Logged In As</string>
 					<key>ValueIdentifier</key>
 					<string>Username</string>
 					<key>Action</key>
