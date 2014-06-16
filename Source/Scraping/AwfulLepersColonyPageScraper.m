@@ -4,8 +4,9 @@
 
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
+#import "AwfulErrorDomain.h"
+#import "AwfulFrameworkCategories.h"
 #import "HTMLNode+CachedSelector.h"
-#import "NSURL+QueryDictionary.h"
 
 @interface AwfulLepersColonyPageScraper ()
 
@@ -22,6 +23,10 @@
     
     NSMutableArray *bans = [NSMutableArray new];
     NSMutableArray *rows = [[self.node awful_nodesMatchingCachedSelector:@"table.standard tr"] mutableCopy];
+    if (rows.count == 0) {
+        self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"Could not find table rows" }];
+        return;
+    }
     
     // First row just has headers.
     [rows removeObjectAtIndex:0];
