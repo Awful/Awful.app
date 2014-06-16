@@ -208,7 +208,7 @@
                 if (currentIndexPath && currentIndexPath.item == item) {
                     cell.image = image;
                 }
-                self.threadTagObservers[@(item)] = nil;
+                [self.threadTagObservers removeObjectForKey:@(item)];
             }];
         }
         
