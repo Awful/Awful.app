@@ -141,3 +141,74 @@ function highlightMentions(post) {
     replaceAll(rest)
   }
 }
+
+/*
+ * Hide offscreen images and load them as they come into view.
+ * Complication 1: the server doesn't send the image dimensions, so
+ *                we set them ourselves based on what they are
+ *                once loaded.
+ * Complication 2: we want to prevent offscreen images from loading
+ *                 on first display, before any scrolling, and before
+ *                 load the image's dimensions default to 0x0. If we
+ *                 are about to show an image with width of 0, forget
+ *                 our saved values and save them again when next hidden.
+ */
+(function () {
+  function postImages() {
+    /* we only hide post-content images that aren't smilies */
+    return $('.postbody img').not('[src*=somethingawful]');
+  }
+
+  /* 200 px slop to try to get a bit ahead of scrolling */
+  function isInViewport() {
+    var rect = this.getBoundingClientRect();
+    return rect.bottom > -200 && rect.top < (window.innerHeight + 200);
+  }
+
+  function showImage() {
+    var img = $(this); /* why is this not already zepto-wrapped? */
+    img.attr("src", img.attr("data-orig-src"));
+    if (img.attr("width") == 0) {
+      /*
+       * We've never loaded this image, so width was defaulted to 0 during 
+       * the initial scan. Remove those attributes so we get natural sizing
+       * and we'll capture them when next we hide them.
+       */
+       img.attr("width", null);
+       img.attr("height", null);
+     }
+     // console.log("Showing: ", img.attr("src"));
+   }
+
+   function hideImage() {
+    var img = $(this);
+    // console.log("Hiding: ", img.attr("src"));
+
+    img.attr("data-orig-src", img.attr("src"));
+    img.attr("height", img.height());
+    img.attr("width", img.width());
+    img.attr("src", "about:blank");
+  }
+
+  function handleScroll() {
+    var visibleSet = postImages().filter(isInViewport);
+
+    visibleSet.not(lastVisibleSet).each(showImage);
+    lastVisibleSet.not(visibleSet).each(hideImage);
+
+    lastVisibleSet = visibleSet;
+  }
+
+  var lastVisibleSet;
+
+  $(function () {
+    /* hide images that are initially off-screen */
+    lastVisibleSet = postImages().filter(isInViewport);
+    postImages().not(isInViewport).each(hideImage);
+  });
+
+  /* The UIWebView scroll event model can bite me. */
+  document.addEventListener("touchmove", handleScroll, false);
+  document.addEventListener("onscroll", handleScroll, false);
+  document.addEventListener("gesturechange", handleScroll, false);
+})();
