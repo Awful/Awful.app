@@ -167,9 +167,9 @@
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
 		<key>listSecondaryTextColor</key>
-		<string>#ffffff</string>
+		<string>#808080</string>
 		<key>listSecondaryBackgroundColor</key>
-		<string>#262626</string>
+		<string>#1c1c1c</string>
 		<key>splitViewBackgroundColor</key>
 		<string>060606</string>
 		<key>splitDividerColor</key>
@@ -183,7 +183,7 @@
 		<key>postsLoadingViewTintColor</key>
 		<string>#060606</string>
 		<key>postsTopBarTextColor</key>
-		<string>#dddddd</string>
+		<string>#eeeeee</string>
 		<key>postsTopBarBackgroundColor</key>
 		<string>#0c3c57</string>
 		<key>postsViewCSS</key>
