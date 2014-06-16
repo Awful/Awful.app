@@ -50,6 +50,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>20010</string>
+	<key>ImgurAnonymousAPIClientID</key>
+	<string>4db466addcb5cfc</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIInterfaceOrientation</key>
@@ -73,7 +75,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>ImgurAnonymousAPIClientID</key>
-	<string>4db466addcb5cfc</string>
 </dict>
 </plist>
