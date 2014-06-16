@@ -29,8 +29,6 @@
 @property (copy, nonatomic) NSArray *availableSecondaryThreadTags;
 @property (assign, nonatomic) BOOL updatingThreadTags;
 
-@property (copy, nonatomic) NSString *secondaryIconKey;
-
 @end
 
 @implementation AwfulNewThreadViewController
@@ -245,7 +243,6 @@ static NSString * const DefaultTitle = @"New Thread";
                                       withSubject:self.fieldView.subjectField.textField.text
                                         threadTag:self.threadTag
                                      secondaryTag:self.secondaryThreadTag
-                              secondaryTagFormKey:self.secondaryIconKey
                                            BBcode:composition
                                           andThen:^(NSError *error, AwfulThread *thread)
     {

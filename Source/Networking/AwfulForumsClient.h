@@ -144,7 +144,6 @@
                        withSubject:(NSString *)subject
                          threadTag:(AwfulThreadTag *)threadTag
                       secondaryTag:(AwfulThreadTag *)secondaryTag
-               secondaryTagFormKey:(NSString *)secondaryTagFormKey
                             BBcode:(NSString *)text
                            andThen:(void (^)(NSError *error, AwfulThread *thread))callback;
 
