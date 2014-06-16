@@ -19,6 +19,9 @@ extern const struct AwfulErrorCodes
     // Could not parse the response from SA.
     NSInteger parseError;
     
+    // SA's database is down.
+    NSInteger databaseUnavailable;
+    
     // Migrating the Core Data store failed.
     NSInteger dataMigrationError;
     

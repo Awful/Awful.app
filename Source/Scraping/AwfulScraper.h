@@ -30,7 +30,7 @@
 @property (strong, nonatomic) NSError *error;
 
 /**
- * Subclasses must implement. Do not call the superclass implementation.
+ * Subclasses must implement. Call super to perform some basic checks for typical site-wide errors (like "database unavailable").
  */
 - (void)scrape;
 

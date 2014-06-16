@@ -274,7 +274,7 @@
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.threads) {
+            if (scraper.threads && !error) {
                 if (page == 1) {
                     NSMutableSet *threadsToHide = [scraper.forum.threads mutableCopy];
                     for (AwfulThread *thread in scraper.threads) {
@@ -313,7 +313,7 @@
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.threads) {
+            if (scraper.threads && !error) {
                 if (page == 1) {
                     NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
                     NSArray *threadsToForget = [AwfulThread fetchAllInManagedObjectContext:managedObjectContext
@@ -1025,7 +1025,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     }];
 }
 
-#pragma mark - PUnishments
+#pragma mark - Punishments
 
 - (NSOperation *)listBansOnPage:(NSInteger)page
                         forUser:(AwfulUser *)user

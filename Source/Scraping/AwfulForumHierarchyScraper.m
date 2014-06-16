@@ -18,6 +18,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     // There's a pulldown menu at the bottom of forumdisplay.php and showthread.php that has (among other things) a depth-first traversal of the category/forum hierarchy:
     //
     // ```

@@ -20,6 +20,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
     if (!authorScraper.author) {
         NSString *message = @"Failed parsing user profile; could not find either username or user ID";

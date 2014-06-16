@@ -21,6 +21,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     NSString *messageID;
     HTMLElement *replyLink = [self.node awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];

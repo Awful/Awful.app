@@ -26,6 +26,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     self.thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];

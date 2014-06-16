@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulScraper.h"
+#import "AwfulErrorDomain.h"
 
 @implementation AwfulScraper
 
@@ -26,7 +27,12 @@
 
 - (void)scrape
 {
-    [self doesNotRecognizeSelector:_cmd];
+    HTMLElement *body = [self.node firstNodeMatchingSelector:@"body.database_error"];
+    if (body) {
+        NSString *reason = [[body firstNodeMatchingSelector:@"#msg h1"].textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (reason.length == 0) reason = @"Database unavailable";
+        self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.databaseUnavailable userInfo:@{ NSLocalizedDescriptionKey: reason }];
+    }
 }
 
 @end

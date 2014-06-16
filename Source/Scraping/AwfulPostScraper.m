@@ -17,6 +17,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     // Presumably we're scraping a post that wasn't previously shown because its author is ignored. The only information that's hidden in that case, and thus the information we need to get here, is some author info (namely avatar) and the post contents.
     
     HTMLElement *table = [self.node firstNodeMatchingSelector:@"table.post[id]"];

@@ -18,6 +18,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     NSMutableArray *messages = [NSMutableArray new];
     NSArray *rows = [self.node awful_nodesMatchingCachedSelector:@"table.standard tbody tr"];
     for (HTMLElement *row in rows) {

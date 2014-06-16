@@ -17,6 +17,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     NSMutableArray *bans = [NSMutableArray new];
     NSMutableArray *rows = [[self.node awful_nodesMatchingCachedSelector:@"table.standard tr"] mutableCopy];
     

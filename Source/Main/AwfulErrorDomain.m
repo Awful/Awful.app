@@ -13,4 +13,5 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .dataMigrationError = -1003,
     .missingDataStore = -1004,
     .forbidden = -1005,
+    .databaseUnavailable = -1006,
 };

@@ -24,6 +24,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
     HTMLElement *profileLink = [self.node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
     if (profileLink) {

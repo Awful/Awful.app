@@ -15,6 +15,9 @@
 
 - (void)scrape
 {
+    [super scrape];
+    if (self.error) return;
+    
     self.unreadPrivateMessageCount = [self.node awful_nodesMatchingCachedSelector:@"table.standard img[src*='newpm']"].count;
 }
 
