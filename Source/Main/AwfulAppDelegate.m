@@ -111,7 +111,7 @@ static id _instance;
     
     [GRMustache preventNSUndefinedKeyExceptionAttack];
     
-    NSURL *oldStoreURL = [NSFileManager.defaultManager.documentDirectory URLByAppendingPathComponent:@"AwfulData.sqlite"];
+    NSURL *oldStoreURL = [[[NSFileManager defaultManager] documentDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
     NSURL *storeURL = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
     MoveDataStore(oldStoreURL, storeURL);
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
