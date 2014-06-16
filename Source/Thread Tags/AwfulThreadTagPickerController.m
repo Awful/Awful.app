@@ -4,6 +4,7 @@
 
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulFrameworkCategories.h"
+#import "AwfulNewThreadTagObserver.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerCell.h"
 
@@ -12,12 +13,15 @@
 @property (strong, nonatomic) UIPopoverController *popover;
 @property (weak, nonatomic) UIView *presentingView;
 
+@property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
+
 @end
 
 @implementation AwfulThreadTagPickerController
 
 @synthesize cancelButtonItem = _cancelButtonItem;
 @synthesize doneButtonItem = _doneButtonItem;
+@synthesize threadTagObservers = _threadTagObservers;
 
 - (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames
 {
@@ -64,6 +68,12 @@
         }
     };
     return _doneButtonItem;
+}
+
+- (NSMutableDictionary *)threadTagObservers
+{
+    if (!_threadTagObservers) _threadTagObservers = [NSMutableDictionary new];
+    return _threadTagObservers;
 }
 
 - (void)loadView
@@ -184,10 +194,24 @@
         return cell;
     } else {
         AwfulThreadTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+        NSInteger item = indexPath.item;
+        NSString *imageName = self.imageNames[item];
+        cell.tagImageName = [imageName stringByDeletingPathExtension];
+        UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
+        cell.image = image;
         
-        // TODO download missing thread tags and update cell
+        if (!image) {
+            self.threadTagObservers[@(item)] = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
+                
+                // Make sure the cell still refers to the same tag before changing its image.
+                NSIndexPath *currentIndexPath = [collectionView indexPathForCell:cell];
+                if (currentIndexPath && currentIndexPath.item == item) {
+                    cell.image = image;
+                }
+                self.threadTagObservers[@(item)] = nil;
+            }];
+        }
         
-        cell.image = [AwfulThreadTagLoader imageNamed:self.imageNames[indexPath.item]];
         return cell;
     }
 }

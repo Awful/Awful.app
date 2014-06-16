@@ -9,7 +9,15 @@
  */
 @interface AwfulThreadTagPickerCell : UICollectionViewCell
 
+/**
+ * An image representing the thread tag.
+ */
 @property (strong, nonatomic) UIImage *image;
+
+/**
+ * Displayed as text in lieu of an image.
+ */
+@property (copy, nonatomic) NSString *tagImageName;
 
 @end
 

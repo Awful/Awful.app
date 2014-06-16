@@ -9,6 +9,7 @@
 @interface AwfulThreadTagPickerCell ()
 
 @property (strong, nonatomic) AwfulThreadTagView *tagView;
+@property (strong, nonatomic) UILabel *imageNameLabel;
 @property (strong, nonatomic) UIImageView *selectedIcon;
 
 @end
@@ -18,6 +19,12 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame])) {
+        self.imageNameLabel = [UILabel new];
+        self.imageNameLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.imageNameLabel.numberOfLines = 0;
+        self.imageNameLabel.lineBreakMode = NSLineBreakByCharWrapping;
+        [self.contentView addSubview:self.imageNameLabel];
+        
         self.tagView = [AwfulThreadTagView new];
         self.tagView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self.contentView addSubview:self.tagView];
@@ -40,6 +47,16 @@
     self.tagView.tagImage = icon;
 }
 
+- (NSString *)tagImageName
+{
+    return self.imageNameLabel.text;
+}
+
+- (void)setTagImageName:(NSString *)tagImageName
+{
+    self.imageNameLabel.text = tagImageName;
+}
+
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
@@ -50,6 +67,7 @@ static const CGFloat kSelectedIconSize = 31;
 
 - (void)layoutSubviews
 {
+    self.imageNameLabel.frame = self.bounds;
     self.tagView.frame = self.bounds;
     self.selectedIcon.frame = CGRectMake(self.bounds.size.width-kSelectedIconSize,
                                          self.bounds.size.height-kSelectedIconSize,
