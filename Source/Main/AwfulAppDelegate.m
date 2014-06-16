@@ -106,6 +106,9 @@ static id _instance;
     _instance = self;
     [[AwfulSettings settings] registerDefaults];
     [[AwfulSettings settings] migrateOldSettings];
+    
+    SetCrashlyticsUsername();
+    
     [GRMustache preventNSUndefinedKeyExceptionAttack];
     
     NSURL *oldStoreURL = [NSFileManager.defaultManager.documentDirectory URLByAppendingPathComponent:@"AwfulData.sqlite"];
