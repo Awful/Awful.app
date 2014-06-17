@@ -20,8 +20,9 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
-    self.title = @"Alternate Server";
+    if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+        self.title = @"Alternate Server";
+    }
     return self;
 }
 
