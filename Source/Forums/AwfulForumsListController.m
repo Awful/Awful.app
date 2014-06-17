@@ -336,8 +336,8 @@ static void ThemeCell(AwfulTheme *theme, UITableViewCell *cell)
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:HeaderIdentifier];
-    header.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
-    header.textLabel.textColor = self.theme[@"listSecondaryTextColor"];
+    header.textLabel.textColor = self.theme[@"listHeaderTextColor"];
+    header.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
     } else {

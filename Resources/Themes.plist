@@ -63,10 +63,18 @@
 		<string>#ffffff55</string>
 		<key>browserBackgroundColor</key>
 		<string>#f5f5f5</string>
-		<key>listSecondaryBackgroundColor</key>
+		<key>listHeaderTextColor</key>
+		<string>#808080</string>
+		<key>listHeaderBackgroundColor</key>
 		<string>#e4e4e4</string>
+		<key>listTextColor</key>
+		<string>#000000</string>
 		<key>listSecondaryTextColor</key>
 		<string>#808080</string>
+		<key>listBackgroundColor</key>
+		<string>#ffffff</string>
+		<key>listSelectedBackgroundColor</key>
+		<string>#cccccc</string>
 		<key>jumpToPageBackgroundColor</key>
 		<string>#ffffff</string>
 		<key>jumpToPageNavigationBarTextColor</key>
@@ -93,15 +101,9 @@
 		<string>#e9e9e9</string>
 		<key>tabBarBackgroundColor</key>
 		<string>#444444</string>
-		<key>listBackgroundColor</key>
-		<string>#ffffff</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#ffffff</string>
 		<key>collectionViewTextColor</key>
-		<string>#000000</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#cccccc</string>
-		<key>listTextColor</key>
 		<string>#000000</string>
 		<key>unreadBadgeOrangeColor</key>
 		<string>#ff8000</string>
@@ -166,10 +168,20 @@
 		<string>#060606</string>
 		<key>tabBarBackgroundColor</key>
 		<string>#151515</string>
+		<key>listHeaderTextColor</key>
+		<string>#ffffff</string>
+		<key>listHeaderBackgroundColor</key>
+		<string>#1c1c1c</string>
+		<key>listTextColor</key>
+		<string>#dddddd</string>
 		<key>listSecondaryTextColor</key>
 		<string>#808080</string>
-		<key>listSecondaryBackgroundColor</key>
-		<string>#1c1c1c</string>
+		<key>listBackgroundColor</key>
+		<string>#151515</string>
+		<key>listSelectedBackgroundColor</key>
+		<string>#333333</string>
+		<key>listSeparatorColor</key>
+		<string>#262626</string>
 		<key>splitViewBackgroundColor</key>
 		<string>060606</string>
 		<key>splitDividerColor</key>
@@ -190,17 +202,9 @@
 		<string>posts-view-dark.css</string>
 		<key>settingsSwitchColor</key>
 		<string>#237733</string>
-		<key>listBackgroundColor</key>
-		<string>#151515</string>
 		<key>collectionViewBackgroundColor</key>
 		<string>#151515</string>
 		<key>collectionViewTextColor</key>
-		<string>#dddddd</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#333333</string>
-		<key>listSeparatorColor</key>
-		<string>#262626</string>
-		<key>listTextColor</key>
 		<string>#dddddd</string>
 		<key>keyboardAppearance</key>
 		<string>Dark</string>

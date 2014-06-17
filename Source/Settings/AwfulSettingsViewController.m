@@ -289,14 +289,12 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
 {
-    // Background color
-    view.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
+    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
 {
-    // Background color
-    view.contentView.backgroundColor = self.theme[@"listSecondaryBackgroundColor"];
+    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
 }
 
 - (void)hitSwitch:(UISwitch *)switchView
