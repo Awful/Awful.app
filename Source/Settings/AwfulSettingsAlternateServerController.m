@@ -26,6 +26,12 @@
     return self;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -41,15 +47,9 @@
 
 static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString * const Identifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:Identifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:Identifier];
-    }
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (indexPath.row == 0) {
         cell.textLabel.text = @"forums.somethingawful.com";
         if (![AwfulSettings settings].customBaseURL) {
@@ -76,6 +76,8 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
     
     return cell;
 }
+
+static NSString * const CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
