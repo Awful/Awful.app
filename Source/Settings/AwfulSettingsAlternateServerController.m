@@ -28,7 +28,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.backgroundView = nil;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
@@ -67,6 +66,13 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
     }
+    
+    AwfulTheme *theme = self.theme;
+    cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.textLabel.textColor = theme[@"listTextColor"];
+    if (!cell.selectedBackgroundView) cell.selectedBackgroundView = [UIView new];
+    cell.selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    
     return cell;
 }
 
