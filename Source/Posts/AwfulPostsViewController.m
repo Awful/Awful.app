@@ -20,8 +20,8 @@
 #import "AwfulModels.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
-#import "AwfulPageTopBar.h"
 #import "AwfulPostsView.h"
+#import "AwfulPostsViewTopBar.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -41,7 +41,7 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (nonatomic) AwfulPageTopBar *topBar;
+@property (nonatomic) AwfulPostsViewTopBar *topBar;
 @property (readonly, strong, nonatomic) AwfulPostsView *postsView;
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
@@ -499,15 +499,15 @@
         [self.view addSubview:self.loadingView];
     }
     
-    AwfulPageTopBar *topBar = self.topBar;
+    AwfulPostsViewTopBar *topBar = self.topBar;
     topBar.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     void (^configureButton)(UIButton *) = ^(UIButton *button){
         [button setTitleColor:theme[@"postsTopBarTextColor"] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
         button.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     };
-    configureButton(topBar.goToForumButton);
-    configureButton(topBar.loadReadPostsButton);
+    configureButton(topBar.parentForumButton);
+    configureButton(topBar.previousPostsButton);
     configureButton(topBar.scrollToBottomButton);
     
     [self.replyViewController themeDidChange];
@@ -555,7 +555,7 @@
     }
     
     self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
-    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
+    self.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     
     SVPullToRefreshView *refresh = self.postsView.pullToRefreshView;
     if (self.numberOfPages > self.page) {
@@ -927,19 +927,19 @@
     webView.backgroundColor = nil;
     self.view = [[AwfulPostsView alloc] initWithWebView:webView];
     
-    self.topBar = [AwfulPageTopBar new];
+    self.topBar = [AwfulPostsViewTopBar new];
     self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
-    [self.topBar.goToForumButton addTarget:self action:@selector(goToParentForum)
+    [self.topBar.parentForumButton addTarget:self action:@selector(goToParentForum)
                           forControlEvents:UIControlEventTouchUpInside];
-    [self.topBar.loadReadPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
+    [self.topBar.previousPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
                               forControlEvents:UIControlEventTouchUpInside];
-    self.topBar.loadReadPostsButton.enabled = self.hiddenPosts > 0;
+    self.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
                                forControlEvents:UIControlEventTouchUpInside];
     [self.postsView addSubview:self.topBar];
     self.postsView.delegate = self.topBar;
     
-    NSArray *buttons = @[ self.topBar.goToForumButton, self.topBar.loadReadPostsButton, self.topBar.scrollToBottomButton ];
+    NSArray *buttons = @[ self.topBar.parentForumButton, self.topBar.previousPostsButton, self.topBar.scrollToBottomButton ];
     for (UIButton *button in buttons) {
         [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];

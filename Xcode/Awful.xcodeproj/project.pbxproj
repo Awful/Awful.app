@@ -59,7 +59,7 @@
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */; };
-		1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */; };
+		1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */; };
 		1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */; };
 		1C5F700117D8521F005ABD6F /* AwfulBasementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700017D8521F005ABD6F /* AwfulBasementViewController.m */; };
 		1C5F700417D853AA005ABD6F /* AwfulBasementSidebarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5F700317D853AA005ABD6F /* AwfulBasementSidebarViewController.m */; };
@@ -347,8 +347,8 @@
 		1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationController.h; sourceTree = "<group>"; };
 		1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationController.m; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPage.h; sourceTree = "<group>"; };
-		1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageTopBar.h; sourceTree = "<group>"; };
-		1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageTopBar.m; sourceTree = "<group>"; };
+		1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewTopBar.h; sourceTree = "<group>"; };
+		1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewTopBar.m; sourceTree = "<group>"; };
 		1C5BA3E816CB886600375A72 /* AwfulScrollViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScrollViewTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E916CB886600375A72 /* AwfulScrollViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrollViewTopBar.m; sourceTree = "<group>"; };
 		1C5F6FF517D738BF005ABD6F /* Awful.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Awful.xcdatamodel; sourceTree = "<group>"; };
@@ -1182,8 +1182,8 @@
 				1C7DFA7717EB58640009F2C6 /* AwfulPageSettingsView.m */,
 				1C7DFA7317EB578F0009F2C6 /* AwfulPageSettingsViewController.h */,
 				1C7DFA7417EB578F0009F2C6 /* AwfulPageSettingsViewController.m */,
-				1C5BA3E516CA4D9400375A72 /* AwfulPageTopBar.h */,
-				1C5BA3E616CA4D9400375A72 /* AwfulPageTopBar.m */,
+				1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */,
+				1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */,
 				1CB060771936C7B4005263EA /* AwfulPostPreviewViewController.h */,
 				1CB060781936C7B4005263EA /* AwfulPostPreviewViewController.m */,
 				1C7D8956192E954B00003576 /* AwfulPostsView.h */,
@@ -1807,7 +1807,7 @@
 				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
-				1C5BA3E716CA4D9400375A72 /* AwfulPageTopBar.m in Sources */,
+				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
 				1C5BA3EA16CB886700375A72 /* AwfulScrollViewTopBar.m in Sources */,
 				1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */,
