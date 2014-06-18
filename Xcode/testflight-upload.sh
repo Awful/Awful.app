@@ -114,7 +114,11 @@ if [ -z "$VERSION" ]; then
   open_log
   exit 1
 fi
-( cd "$SRCROOT"; git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1 )
+(
+  cd "$SRCROOT" &&
+  git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1 &&
+  git push origin "$VERSION" >> "$LOG" 2>&1
+)
 if [ $? -ne 0 ]; then
   error "Failed to tag release. Please see log for details."
   open_log
