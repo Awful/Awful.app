@@ -106,17 +106,17 @@ void DeleteDataStoreAtURL(NSURL *storeURL)
 
 @end
 
-void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
+BOOL MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *destinationFolder = [destinationURL URLByDeletingLastPathComponent];
     NSError *error;
     if (![fileManager createDirectoryAtURL:destinationFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
-        @throw [NSException exceptionWithName:NSGenericException
-                                       reason:[NSString stringWithFormat:@"could not create destination data store folder: %@", error]
-                                     userInfo:@{ NSURLErrorKey: destinationFolder, NSUnderlyingErrorKey: error }];
+        NSLog(@"%s error creating data store directory %@: %@", __PRETTY_FUNCTION__, destinationFolder, error);
+        return NO;
     }
     
+    __block BOOL success = YES;
     NSArray *sourceURLs = URLsForStoreURL(sourceURL);
     NSArray *destinationURLs = URLsForStoreURL(destinationURL);
     [sourceURLs enumerateObjectsUsingBlock:^(NSURL *sourceURL, NSUInteger i, BOOL *stop) {
@@ -126,10 +126,9 @@ void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
             if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
                 if (error.code == NSFileWriteFileExistsError || error.code == NSFileReadNoSuchFileError) return;
             }
-            
-            @throw [NSException exceptionWithName:NSGenericException
-                                           reason:[NSString stringWithFormat:@"could not move part of the data store: %@", error]
-                                         userInfo:@{ NSFilePathErrorKey: sourceURL.path, NSURLErrorKey: destinationURL, NSUnderlyingErrorKey: error }];
+            NSLog(@"%s error moving part %@ of data store: %@", __PRETTY_FUNCTION__, sourceURL, error);
+            success = NO;
         }
     }];
+    return success;
 }

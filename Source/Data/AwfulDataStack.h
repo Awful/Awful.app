@@ -30,9 +30,16 @@
 @end
 
 /**
- * Moves a data store from one place to another. Throws an exception if the move fails for any reason other than when no file exists at the source URL.
+ * Moves a data store from one place to another.
  *
  * @param sourceURL      The current location of the data store, including filename and extension.
  * @param destinationURL The desired location of the data store, including filename and extension.
+ *
+ * @return YES on success, or NO on failure.
  */
-extern void MoveDataStore(NSURL *sourceURL, NSURL *destinationURL);
+extern BOOL MoveDataStore(NSURL *sourceURL, NSURL *destinationURL);
+
+/**
+ * Deletes a data store.
+ */
+extern void DeleteDataStoreAtURL(NSURL *storeURL);

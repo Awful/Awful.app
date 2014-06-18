@@ -113,7 +113,9 @@ static id _instance;
     
     NSURL *oldStoreURL = [[[NSFileManager defaultManager] documentDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
     NSURL *storeURL = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    MoveDataStore(oldStoreURL, storeURL);
+    if (!MoveDataStore(oldStoreURL, storeURL)) {
+        DeleteDataStoreAtURL(oldStoreURL);
+    }
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
     _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
     
