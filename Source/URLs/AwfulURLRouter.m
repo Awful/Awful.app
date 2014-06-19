@@ -22,12 +22,12 @@
     JLRoutes *_routes;
 }
 
-- (id)initWithRootViewController:(UIViewController *)rootViewController
-            managedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (id)initWithRootViewController:(UIViewController *)rootViewController managedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super init])) return nil;
-    _rootViewController = rootViewController;
-    _managedObjectContext = managedObjectContext;
+    if ((self = [super init])) {
+        _rootViewController = rootViewController;
+        _managedObjectContext = managedObjectContext;
+    }
     return self;
 }
 
@@ -40,8 +40,7 @@
     [_routes addRoute:@"/forums/:forumID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         NSString *forumID = parameters[@"forumID"];
-        AwfulForum *forum = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext
-                                                     matchingPredicateFormat:@"forumID = %@", forumID];
+        AwfulForum *forum = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = %@", forumID];
         if (forum) {
             return [self jumpToForum:forum];
         } else {
@@ -95,6 +94,10 @@
                     [postsViewController loadPage:page updatingCache:YES];
                     [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
+                    NSError *error;
+                    if (![self.managedObjectContext save:&error]) {
+                        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+                    }
                 }];
             }
         }];
@@ -119,7 +122,7 @@
             AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
-        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:parameters[@"userID"] username:nil inManagedObjectContext:self.managedObjectContext];
+        AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
         if (user) {
             success(user);
             return YES;
@@ -151,7 +154,7 @@
 			AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
 			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		};
-		AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:parameters[@"userID"] username:nil inManagedObjectContext:self.managedObjectContext];
+		AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
 		if (user) {
 			success(user);
 			return YES;
@@ -232,12 +235,14 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     AwfulPostsViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
-        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID
-                                                     username:nil
-                                       inManagedObjectContext:self.managedObjectContext];
+        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:nil inManagedObjectContext:self.managedObjectContext];
         postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread author:user];
     } else {
         postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+    }
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
     }
     NSString *pageString = parameters[@"page"];
     AwfulThreadPage page = AwfulThreadPageNone;
