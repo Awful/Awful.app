@@ -174,7 +174,6 @@
     [super setTitle:title];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.navigationItem.titleLabel.text = title;
-        [self.navigationItem.titleView setNeedsLayout];
     }
 }
 
