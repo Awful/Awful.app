@@ -20,10 +20,16 @@ typedef enum : NSInteger {
 @property (readonly, assign, nonatomic) TopBarState topBarState;
 @property (assign, nonatomic) BOOL ignoreScrollViewDidScroll;
 @property (assign, nonatomic) BOOL maintainTopBarState;
+@property (assign, nonatomic) BOOL topBarAlwaysVisible;
 
 @end
 
 @implementation AwfulPostsView
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -35,6 +41,9 @@ typedef enum : NSInteger {
         
         _topBar = [AwfulPostsViewTopBar new];
         [self addSubview:_topBar];
+        
+        [self updateForVoiceOverAnimated:NO];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusDidChange:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
     }
     return self;
 }
@@ -47,6 +56,22 @@ typedef enum : NSInteger {
     self.topBar.frame = topBarFrame;
     
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(topBarFrame), CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
+}
+
+- (void)updateForVoiceOverAnimated:(BOOL)animated
+{
+    self.topBarAlwaysVisible = UIAccessibilityIsVoiceOverRunning();
+    if (self.topBarAlwaysVisible) {
+        self.exposedTopBarSlice = CGRectGetHeight(self.topBar.bounds);
+        [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
+            [self layoutIfNeeded];
+        }];
+    }
+}
+
+- (void)voiceOverStatusDidChange:(NSNotification *)notification
+{
+    [self updateForVoiceOverAnimated:YES];
 }
 
 - (void)furtherExposeTopBarSlice:(CGFloat)delta
@@ -92,7 +117,7 @@ typedef enum : NSInteger {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (self.ignoreScrollViewDidScroll) return;
+    if (self.ignoreScrollViewDidScroll || self.topBarAlwaysVisible) return;
     
     CGFloat scrollDistance = scrollView.contentOffset.y - self.lastContentOffset.y;
     if (scrollDistance == 0) return;
