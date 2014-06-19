@@ -624,7 +624,7 @@
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
-    [AwfulAppDelegate.instance openAwfulURL:[NSURL URLWithString:url]];
+    [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
 }
 
 - (void)showHiddenSeenPosts
