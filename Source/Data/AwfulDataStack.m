@@ -124,7 +124,7 @@ BOOL MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
         NSError *error;
         if (![fileManager moveItemAtURL:sourceURL toURL:destinationURL error:&error]) {
             if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
-                if (error.code == NSFileWriteFileExistsError || error.code == NSFileReadNoSuchFileError) return;
+                if (error.code == NSFileWriteFileExistsError || error.code == NSFileReadNoSuchFileError || error.code == NSFileNoSuchFileError) return;
             }
             NSLog(@"%s error moving part %@ of data store: %@", __PRETTY_FUNCTION__, sourceURL, error);
             success = NO;
