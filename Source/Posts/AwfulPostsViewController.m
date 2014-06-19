@@ -602,7 +602,24 @@
 
 - (void)loadNextPageOrRefresh
 {
-    AwfulThreadPage nextPage = self.numberOfPages > self.page ? self.page + 1 : self.page;
+    // There's surprising sublety in figuring out what "next page" means.
+    AwfulThreadPage nextPage;
+    
+    // When we're showing a partial page, just fill in the rest by reloading the current page.
+    if (self.posts.count < 40) {
+        nextPage = self.page;
+    }
+    
+    // When we've got a full page but we're not sure there's another, just reload. The next page arrow will light up if we've found more pages. This is pretty subtle and not at all ideal. (Though doing something like going to the next unread page is even more confusing!)
+    else if (self.page == self.numberOfPages) {
+        nextPage = self.page;
+    }
+    
+    // Otherwise we know there's another page, so fire away.
+    else {
+        nextPage = self.page + 1;
+    }
+    
     [self loadPage:nextPage updatingCache:YES];
 }
 
