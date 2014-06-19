@@ -8,6 +8,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
+    frame.size.height = 40;
     if ((self = [super initWithFrame:frame])) {
         _parentForumButton = [UIButton new];
         [_parentForumButton setTitle:@"Parent Forum" forState:UIControlStateNormal];
@@ -33,7 +34,7 @@
 
 - (void)layoutSubviews
 {
-    CGFloat buttonWidth = floor(CGRectGetWidth(self.bounds) - 2 / 3);
+    CGFloat buttonWidth = floor((CGRectGetWidth(self.bounds) - 2) / 3);
     CGFloat leftoverWidth = CGRectGetWidth(self.bounds) - buttonWidth * 3 - 2;
     CGFloat buttonHeight = CGRectGetHeight(self.bounds);
 

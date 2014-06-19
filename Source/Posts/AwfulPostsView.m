@@ -3,90 +3,135 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsView.h"
+#import "AwfulFrameworkCategories.h"
 
-@interface AwfulPostsView ()
+typedef enum : NSInteger {
+    TopBarHidden,
+    TopBarPartiallyVisible,
+    TopBarVisible,
+} TopBarState;
+
+@interface AwfulPostsView () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) UIWebView *webView;
+
+@property (assign, nonatomic) CGFloat exposedTopBarSlice;
+@property (assign, nonatomic) CGPoint lastContentOffset;
+@property (readonly, assign, nonatomic) TopBarState topBarState;
+@property (assign, nonatomic) BOOL ignoreScrollViewDidScroll;
+@property (assign, nonatomic) BOOL maintainTopBarState;
 
 @end
 
 @implementation AwfulPostsView
-{
-    BOOL _ignoreObservedContentOffsetChange;
-}
 
-- (void)dealloc
+- (id)initWithFrame:(CGRect)frame
 {
-    [self.webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContentSizeContext];
-    [self.webView.scrollView removeObserver:self forKeyPath:@"contentOffset" context:KVOContentOffsetContext];
-}
-
-- (id)initWithWebView:(UIWebView *)webView
-{
-    if ((self = [super initWithFrame:CGRectZero])) {
-        _webView = webView;
-        [self addSubview:webView];
-        UIScrollView *scrollView = webView.scrollView;
-        scrollView.scrollEnabled = NO;
-        scrollView.showsVerticalScrollIndicator = NO;
-        [scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionOld context:KVOContentSizeContext];
-        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionOld context:KVOContentOffsetContext];
+    if ((self = [super initWithFrame:frame])) {
+        _webView = [UIWebView awful_nativeFeelingWebView];
+        _webView.backgroundColor = nil;
+        [self addSubview:_webView];
+        _webView.scrollView.delegate = self;
+        
+        _topBar = [AwfulPostsViewTopBar new];
+        [self addSubview:_topBar];
     }
     return self;
 }
 
-static void * KVOContentSizeContext = &KVOContentSizeContext;
-static void * KVOContentOffsetContext = &KVOContentOffsetContext;
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void)layoutSubviews
 {
-    if (context == KVOContentSizeContext) {
-        UIScrollView *scrollView = object;
-        CGSize oldContentSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
-        if (!CGSizeEqualToSize(scrollView.contentSize, oldContentSize)) {
-            [self setNeedsLayout];
-        }
-    } else if (context == KVOContentOffsetContext) {
-        if (!_ignoreObservedContentOffsetChange) {
-            UIScrollView *scrollView = object;
-            CGPoint oldOffset = [change[NSKeyValueChangeOldKey] CGPointValue];
-            if (!CGPointEqualToPoint(oldOffset, scrollView.contentOffset)) {
-                self.contentOffset = scrollView.contentOffset;
-            }
-        }
+    CGRect topBarFrame = self.topBar.bounds;
+    topBarFrame.origin.y = self.exposedTopBarSlice - CGRectGetHeight(topBarFrame);
+    topBarFrame.size.width = CGRectGetWidth(self.bounds);
+    self.topBar.frame = topBarFrame;
+    
+    self.webView.frame = CGRectMake(0, CGRectGetMaxY(topBarFrame), CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
+}
+
+- (void)furtherExposeTopBarSlice:(CGFloat)delta
+{
+    CGFloat oldExposedSlice = self.exposedTopBarSlice;
+    #define CLAMP(low, x, high) MIN(MAX(low, x), high)
+    self.exposedTopBarSlice = CLAMP(0, self.exposedTopBarSlice + delta, CGRectGetHeight(self.topBar.bounds));
+    CGFloat exposedSliceDelta = self.exposedTopBarSlice - oldExposedSlice;
+    
+    self.ignoreScrollViewDidScroll = YES;
+    CGPoint contentOffset = self.webView.scrollView.contentOffset;
+    contentOffset.y = MAX(contentOffset.y + exposedSliceDelta, 0);
+    self.webView.scrollView.contentOffset = contentOffset;
+    self.ignoreScrollViewDidScroll = NO;
+}
+
+- (TopBarState)topBarState
+{
+    if (self.exposedTopBarSlice == 0) {
+        return TopBarHidden;
+    } else if (self.exposedTopBarSlice >= CGRectGetHeight(self.topBar.bounds)) {
+        return TopBarVisible;
     } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return TopBarPartiallyVisible;
     }
 }
 
-- (void)layoutSubviews
+- (void)setExposedTopBarSlice:(CGFloat)exposedTopBarSlice
 {
-    [super layoutSubviews];
-    CGRect frame = self.webView.frame;
-    UIScrollView *scrollView = self.webView.scrollView;
-    CGPoint contentOffset = scrollView.contentOffset;
+    if (exposedTopBarSlice != _exposedTopBarSlice) {
+        _exposedTopBarSlice = exposedTopBarSlice;
+        [self setNeedsLayout];
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    self.lastContentOffset = scrollView.contentOffset;
+    self.maintainTopBarState = NO;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.ignoreScrollViewDidScroll) return;
     
-    // Scrolled up past the top of the web view. Pin it to the top left.
-    if (self.contentOffset.y < 0) {
-        contentOffset.y = 0;
-        frame.origin.y = 0;
+    CGFloat scrollDistance = scrollView.contentOffset.y - self.lastContentOffset.y;
+    if (scrollDistance == 0) return;
+    
+    switch (self.topBarState) {
+        case TopBarHidden: {
+            if (scrollDistance < 0 && !self.maintainTopBarState) {
+                [self furtherExposeTopBarSlice:-scrollDistance];
+            }
+            break;
+        }
+            
+        case TopBarPartiallyVisible: {
+            [self furtherExposeTopBarSlice:-scrollDistance];
+            break;
+        }
+            
+        case TopBarVisible: {
+            if (self.maintainTopBarState) break;
+            if (scrollView.contentOffset.y < 0) break;
+            if (scrollDistance > 0) {
+                [self furtherExposeTopBarSlice:-scrollDistance];
+            }
+            break;
+        }
     }
     
-    // Scrolled down enough to scroll the web view.
-    else {
-        contentOffset.y = self.contentOffset.y;
-        frame.origin.y = self.contentOffset.y;
-    }
-    
-    frame.size = self.bounds.size;
-    self.webView.frame = frame;
-    
-    // Avoid infinite recursion.
-    _ignoreObservedContentOffsetChange = YES;
-    scrollView.contentOffset = contentOffset;
-    _ignoreObservedContentOffsetChange = NO;
-    
-    self.contentSize = scrollView.contentSize;
+    self.lastContentOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{
+    self.maintainTopBarState = YES;
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    self.maintainTopBarState = YES;
+    return YES;
 }
 
 @end

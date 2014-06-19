@@ -21,7 +21,6 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPostsView.h"
-#import "AwfulPostsViewTopBar.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -41,7 +40,6 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (nonatomic) AwfulPostsViewTopBar *topBar;
 @property (readonly, strong, nonatomic) AwfulPostsView *postsView;
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
@@ -138,7 +136,7 @@
     self.page = page;
     
     if (self.posts.count == 0 || !reloadingSamePage) {
-        [self.postsView.pullToRefreshView stopAnimating];
+        [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
         [self updateUserInterface];
         if (!_restoringState) {
             self.hiddenPosts = 0;
@@ -209,7 +207,7 @@
         }
         
         [self clearLoadingMessage];
-        [self.postsView.pullToRefreshView stopAnimating];
+        [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }
 
@@ -490,7 +488,7 @@
     
     AwfulTheme *theme = self.theme;
     self.view.backgroundColor = theme[@"backgroundColor"];
-    self.postsView.indicatorStyle = theme.scrollIndicatorStyle;
+    self.postsView.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     
     if (self.loadingView) {
@@ -499,7 +497,7 @@
         [self.view addSubview:self.loadingView];
     }
     
-    AwfulPostsViewTopBar *topBar = self.topBar;
+    AwfulPostsViewTopBar *topBar = self.postsView.topBar;
     topBar.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     void (^configureButton)(UIButton *) = ^(UIButton *button){
         [button setTitleColor:theme[@"postsTopBarTextColor"] forState:UIControlStateNormal];
@@ -554,10 +552,10 @@
         [self clearLoadingMessage];
     }
     
-    self.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
-    self.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
+    self.postsView.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
+    self.postsView.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     
-    SVPullToRefreshView *refresh = self.postsView.pullToRefreshView;
+    SVPullToRefreshView *refresh = self.postsView.webView.scrollView.pullToRefreshView;
     if (self.numberOfPages > self.page) {
         [refresh setTitle:@"Pull for next page…" forState:SVPullToRefreshStateStopped];
         [refresh setTitle:@"Release for next page…" forState:SVPullToRefreshStateTriggered];
@@ -644,7 +642,7 @@
 
 - (void)scrollToBottom
 {
-    UIScrollView *scrollView = self.postsView;
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1) animated:YES];
 }
 
@@ -923,29 +921,13 @@
 
 - (void)loadView
 {
-    UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
-    webView.backgroundColor = nil;
-    self.view = [[AwfulPostsView alloc] initWithWebView:webView];
+    self.view = [AwfulPostsView new];
     
-    self.topBar = [AwfulPostsViewTopBar new];
-    self.topBar.frame = CGRectMake(0, -40, CGRectGetWidth(self.view.frame), 40);
-    [self.topBar.parentForumButton addTarget:self action:@selector(goToParentForum)
-                          forControlEvents:UIControlEventTouchUpInside];
-    [self.topBar.previousPostsButton addTarget:self action:@selector(showHiddenSeenPosts)
-                              forControlEvents:UIControlEventTouchUpInside];
-    self.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
-    [self.topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom)
-                               forControlEvents:UIControlEventTouchUpInside];
-    [self.postsView addSubview:self.topBar];
-    self.postsView.delegate = self.topBar;
-    
-    NSArray *buttons = @[ self.topBar.parentForumButton, self.topBar.previousPostsButton, self.topBar.scrollToBottomButton ];
-    for (UIButton *button in buttons) {
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-        button.backgroundColor = [UIColor colorWithRed:0.973 green:0.973 blue:0.973 alpha:1];
-    }
+    AwfulPostsViewTopBar *topBar = self.postsView.topBar;
+    [topBar.parentForumButton addTarget:self action:@selector(goToParentForum) forControlEvents:UIControlEventTouchUpInside];
+    [topBar.previousPostsButton addTarget:self action:@selector(showHiddenSeenPosts) forControlEvents:UIControlEventTouchUpInside];
+    topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
+    [topBar.scrollToBottomButton addTarget:self action:@selector(scrollToBottom) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidLoad
@@ -984,7 +966,7 @@
     
     // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
     __weak __typeof__(self) weakSelf = self;
-    [self.postsView addPullToRefreshWithActionHandler:^{
+    [self.postsView.webView.scrollView addPullToRefreshWithActionHandler:^{
         __typeof__(self) self = weakSelf;
         [self loadNextPageOrRefresh];
     } position:SVPullToRefreshPositionBottom];
