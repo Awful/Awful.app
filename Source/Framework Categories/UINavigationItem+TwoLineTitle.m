@@ -18,7 +18,7 @@
         label.font = [UIFont systemFontOfSize:13];
         label.numberOfLines = 2;
     }
-    label.frame = CGRectMake(0, 0, 320, label.font.lineHeight * label.numberOfLines);
+    label.frame = CGRectMake(0, 0, 320, 44);
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
     label.accessibilityTraits |= UIAccessibilityTraitHeader;
