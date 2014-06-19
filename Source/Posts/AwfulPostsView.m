@@ -42,6 +42,8 @@ typedef enum : NSInteger {
         _topBar = [AwfulPostsViewTopBar new];
         [self addSubview:_topBar];
         
+        self.maintainTopBarState = YES;
+        
         [self updateForVoiceOverAnimated:NO];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusDidChange:) name:UIAccessibilityVoiceOverStatusChanged object:nil];
     }
