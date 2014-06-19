@@ -1068,17 +1068,19 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey]
-                                             inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
     NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
     AwfulUser *author;
     if (authorUserID.length > 0) {
-        author = [AwfulUser firstOrNewUserWithUserID:authorUserID
-                                            username:nil
-                              inManagedObjectContext:AwfulAppDelegate.instance.managedObjectContext];
+        author = [AwfulUser firstOrNewUserWithUserID:authorUserID username:nil inManagedObjectContext:managedObjectContext];
     }
     AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return postsView;
 }
 

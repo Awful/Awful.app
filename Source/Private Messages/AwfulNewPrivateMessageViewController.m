@@ -285,6 +285,10 @@
         newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
     }
     newPrivateMessageViewController.restorationIdentifier = identifierComponents.lastObject;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return newPrivateMessageViewController;
 }
 

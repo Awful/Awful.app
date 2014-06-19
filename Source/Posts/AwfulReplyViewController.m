@@ -240,25 +240,27 @@
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     NSString *postID = [coder decodeObjectForKey:PostIDKey];
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
     AwfulReplyViewController *replyViewController;
     if (postID) {
-        AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID
-                                       inManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext];
+        AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
         replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:originalText];
     } else if (threadID) {
-        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                                 inManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext];
+        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
         replyViewController = [[AwfulReplyViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {
-        NSLog(@"%s no post or thread at %@; skipping restore",
-              __PRETTY_FUNCTION__, [identifierComponents componentsJoinedByString:@"/"]);
+        NSLog(@"%s no post or thread at %@; skipping restore", __PRETTY_FUNCTION__, [identifierComponents componentsJoinedByString:@"/"]);
         return nil;
     }
     replyViewController.restorationIdentifier = identifierComponents.lastObject;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return replyViewController;
 }
 

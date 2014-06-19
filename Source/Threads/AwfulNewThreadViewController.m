@@ -297,10 +297,14 @@ static NSString * const DefaultTitle = @"New Thread";
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext
-                                                                      withID:[coder decodeObjectForKey:ForumIDKey]];
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     AwfulNewThreadViewController *newThreadViewController = [[AwfulNewThreadViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return newThreadViewController;
 }
 

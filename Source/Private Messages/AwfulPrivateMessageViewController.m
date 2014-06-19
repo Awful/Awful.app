@@ -383,11 +383,16 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext
+    AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
                                                                             matchingPredicateFormat:@"messageID = %@", messageID];
     AwfulPrivateMessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return messageViewController;
 }
 

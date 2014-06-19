@@ -577,10 +577,11 @@
                 }
                 
                 NSArray *objectIDs = [scraper.posts valueForKey:@"objectID"];
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
                     NSArray *posts = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
+                    [mainManagedObjectContext refreshObject:thread mergeChanges:YES];
                     callback(nil, posts, firstUnreadPostIndex, scraper.advertisementHTML);
-                }];
+                });
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

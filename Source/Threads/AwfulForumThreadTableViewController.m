@@ -279,11 +279,15 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext
-                                                                      withID:[coder decodeObjectForKey:ForumIDKey]];
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     AwfulForumThreadTableViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;
+    NSError *error;
+    if (![managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
+    }
     return threadTableViewController;
 }
 
