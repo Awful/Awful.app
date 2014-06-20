@@ -126,8 +126,17 @@ typedef enum : NSInteger {
     
     switch (self.topBarState) {
         case TopBarHidden: {
-            if (scrollDistance < 0 && !self.maintainTopBarState) {
-                [self furtherExposeTopBarSlice:-scrollDistance];
+            
+            // Don't start showing a hidden topbar after bouncing.
+            if (self.maintainTopBarState) break;
+            
+            // Only moving the content down can expose the topbar.
+            if (scrollDistance < 0) {
+                
+                // Only start showing the topbar if we're scrolling past the bottom of the scrollview's contents. Otherwise we can briefly trap ourselves at the bottom, exposing some topbar causing the scrollview to bounce back.
+                if (CGRectGetMaxY(scrollView.bounds) - scrollView.contentInset.bottom - scrollDistance <= scrollView.contentSize.height) {
+                    [self furtherExposeTopBarSlice:-scrollDistance];
+                }
             }
             break;
         }
@@ -138,8 +147,14 @@ typedef enum : NSInteger {
         }
             
         case TopBarVisible: {
+            
+            // Don't start hiding a visible topbar after bouncing.
             if (self.maintainTopBarState) break;
+            
+            // Only start hiding the topbar if we're scrolling past the top of the scrollview's contents. Otherwise we can briefly trap ourselves at the top, hiding some topbar causing the scrollview to bounce back.
             if (scrollView.contentOffset.y < 0) break;
+            
+            // Only moving the content up can hide the topbar.
             if (scrollDistance > 0) {
                 [self furtherExposeTopBarSlice:-scrollDistance];
             }
