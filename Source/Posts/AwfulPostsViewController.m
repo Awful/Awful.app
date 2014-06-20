@@ -501,7 +501,7 @@
     topBar.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     void (^configureButton)(UIButton *) = ^(UIButton *button){
         [button setTitleColor:theme[@"postsTopBarTextColor"] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        [button setTitleColor:[theme[@"postsTopBarTextColor"] colorWithAlphaComponent:.5] forState:UIControlStateDisabled];
         button.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     };
     configureButton(topBar.parentForumButton);
