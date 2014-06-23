@@ -46,7 +46,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -124,7 +123,6 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
 }
 .role-admin .username:before {
   color: #990011;
@@ -406,7 +404,7 @@ body {
   font-family: Courier;
 }
 post {
-  background-color: #171717;
+  background-color: #151515;
   border-bottom-color: #000;
   border-top-color: #000;
 }

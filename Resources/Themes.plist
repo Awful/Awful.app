@@ -360,13 +360,13 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-yospos.css</string>
 		<key>listBackgroundColor</key>
-		<string>#171717</string>
+		<string>#151515</string>
 		<key>collectionViewBackgroundColor</key>
-		<string>#171717</string>
+		<string>#151515</string>
 		<key>collectionViewTextColor</key>
 		<string>#57FF57</string>
 		<key>listSelectedBackgroundColor</key>
-		<string>#3a3a3a</string>
+		<string>#333333</string>
 		<key>listTextColor</key>
 		<string>#57FF57</string>
 		<key>sheetTextColor</key>
