@@ -7,6 +7,7 @@
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerCell.h"
+#import "AwfulThreadTagPickerLayout.h"
 
 @interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverControllerDelegate>
 
@@ -25,7 +26,7 @@
 
 - (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames
 {
-    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+    AwfulThreadTagPickerLayout *layout = [AwfulThreadTagPickerLayout new];
     layout.itemSize = CGSizeMake(60, 60);
     layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 5;
