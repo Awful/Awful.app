@@ -22,6 +22,7 @@
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
 #import "AwfulNewMessageChecker.h"
+#import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulResourceURLProtocol.h"
@@ -262,6 +263,8 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     [self showPromptIfLoginCookieExpiresSoon];
     
     [[AwfulNewMessageChecker checker] refreshIfNecessary];
+    
+    [[AwfulPostsViewExternalStylesheetLoader loader] refreshIfNecessary];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)

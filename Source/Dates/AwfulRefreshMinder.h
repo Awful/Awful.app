@@ -65,4 +65,10 @@
 
 - (NSDate *)suggestedDateToRefreshNewPrivateMessages;
 
+- (BOOL)shouldRefreshExternalStylesheet;
+
+- (void)didFinishRefreshingExternalStylesheet;
+
+- (NSDate *)suggestedDateToRefreshExternalStylesheet;
+
 @end

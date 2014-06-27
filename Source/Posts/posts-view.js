@@ -10,6 +10,10 @@ startBridge(function(bridge) {
     $('#awful-inline-style').text(css);
   });
   
+  bridge.registerHandler('changeExternalStylesheet', function(css) {
+    $('#awful-external-style').text(css);
+  });
+  
   bridge.registerHandler('fontScale', function(scalePercentage) {
     fontScale(scalePercentage);
   });

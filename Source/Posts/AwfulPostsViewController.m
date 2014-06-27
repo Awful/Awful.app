@@ -21,6 +21,7 @@
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPostsView.h"
+#import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRapSheetViewController.h"
@@ -259,6 +260,7 @@
         context[@"fontScalePercentage"] = @(fontScalePercentage);
     }
     context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    context[@"externalStylesheet"] = [AwfulPostsViewExternalStylesheetLoader loader].stylesheet;
     NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
     if (!HTML) {
         NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
@@ -901,6 +903,11 @@
     }
 }
 
+- (void)externalStylesheetDidUpdate:(NSNotification *)notification
+{
+    [_webViewJavaScriptBridge callHandler:@"changeExternalStylesheet" data:notification.object];
+}
+
 - (AwfulPostsView *)postsView
 {
     return (AwfulPostsView *)self.view;
@@ -958,6 +965,11 @@
         NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
         [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(externalStylesheetDidUpdate:)
+                                                 name:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification
+                                               object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

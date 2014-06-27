@@ -143,6 +143,7 @@
 		1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6016EA030700C665B5 /* pmforwarded.gif */; };
 		1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6116EA030700C665B5 /* pmreplied.gif */; };
 		1CA04BE9195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA04BE8195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m */; };
+		1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA04BEB195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m */; };
 		1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1857F17E3472300462F20 /* AwfulToolbar.m */; };
 		1CA1EFFC1910424D00E85DB2 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
 		1CA1EFFE1910468100E85DB2 /* PostScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFD1910468100E85DB2 /* PostScrapingTests.m */; };
@@ -482,6 +483,8 @@
 		1C9FDE6116EA030700C665B5 /* pmreplied.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmreplied.gif; sourceTree = "<group>"; };
 		1CA04BE7195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagPickerLayout.h; sourceTree = "<group>"; };
 		1CA04BE8195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagPickerLayout.m; sourceTree = "<group>"; };
+		1CA04BEA195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewExternalStylesheetLoader.h; sourceTree = "<group>"; };
+		1CA04BEB195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewExternalStylesheetLoader.m; sourceTree = "<group>"; };
 		1CA1857E17E3472300462F20 /* AwfulToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulToolbar.h; sourceTree = "<group>"; };
 		1CA1857F17E3472300462F20 /* AwfulToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulToolbar.m; sourceTree = "<group>"; };
 		1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostScraper.h; sourceTree = "<group>"; };
@@ -1190,6 +1193,8 @@
 				1C7D8957192E954B00003576 /* AwfulPostsView.m */,
 				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
 				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
+				1CA04BEA195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.h */,
+				1CA04BEB195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m */,
 				1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */,
 				1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */,
 				1C3447DF175D9991007377C5 /* AwfulPostViewModel.h */,
@@ -1844,6 +1849,7 @@
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C5F701217D9B2BD005ABD6F /* AwfulTabBarButton.m in Sources */,
+				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
 				1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */,

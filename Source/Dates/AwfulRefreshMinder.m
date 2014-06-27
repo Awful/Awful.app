@@ -63,6 +63,7 @@
     X(LoggedInUser, @"LastLoggedInUserRefreshDate", 60 * 5) \
     X(NewPrivateMessages, @"com.awfulapp.Awful.LastMessageCheckDate", 60 * 10) \
     X(PrivateMessagesInbox, @"LastPrivateMessageInboxRefreshDate", 60 * 10) \
+    X(ExternalStylesheet, @"LastExternalStylesheetRefreshDate", 60 * 60) \
 
 // X Macro good times ahead.
 
