@@ -81,6 +81,11 @@
     [super loadView];
     [self.collectionView registerClass:[AwfulThreadTagPickerCell class] forCellWithReuseIdentifier:CellIdentifier];
     [self.collectionView registerClass:[AwfulSecondaryTagPickerCell class] forCellWithReuseIdentifier:SecondaryCellIdentifier];
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        const CGFloat popoverCornerRadius = 10;
+        self.collectionView.contentInset = UIEdgeInsetsMake(popoverCornerRadius, 0, popoverCornerRadius, 0);
+    }
 }
 
 - (void)presentFromView:(UIView *)view
@@ -239,20 +244,8 @@ static NSString * const SecondaryCellIdentifier = @"Secondary";
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
     UIEdgeInsets insets = UIEdgeInsetsZero;
-    
     if ([self sectionIsForSecondaryThreadTags:section]) {
         insets.bottom = 15;
-    }
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        const CGFloat popoverCornerRadius = 10;
-        if (section == 0) {
-            insets.top = popoverCornerRadius;
-        }
-        
-        if (section == collectionView.numberOfSections - 1) {
-            insets.bottom = popoverCornerRadius;
-        }
     }
     return insets;
 }
