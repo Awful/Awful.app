@@ -20,7 +20,7 @@ PODS:
     - AFNetworking/NSURLSession
   - GRMustache (6.9.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.5.4)
+  - HTMLReader (0.5.5)
   - ImgurAnonymousAPIClient (0.1.1):
     - AFNetworking (>= 2.2.2)
   - JLRoutes (1.5.1)
@@ -45,11 +45,12 @@ PODS:
   - PocketAPI (1.0.2)
   - PSMenuItem (0.0.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
-  - WebViewJavascriptBridge (HEAD based on 4.1.0)
+  - WebViewJavascriptBridge (4.1.2)
 
 DEPENDENCIES:
   - AFNetworking (= 2.2.4)
   - GRMustache (= 6.9.2)
+  - HTMLReader (= 0.5.5)
   - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - ImgurAnonymousAPIClient (from `https://github.com/nolanw/ImgurAnonymousAPIClient.git`, tag `v0.1.1`)
   - JLRoutes (= 1.5.1)
@@ -57,7 +58,7 @@ DEPENDENCIES:
   - PocketAPI (= 1.0.2)
   - PSMenuItem (= 0.0.1)
   - SVPullToRefresh (HEAD)
-  - WebViewJavascriptBridge (HEAD)
+  - WebViewJavascriptBridge (from `https://github.com/marcuswestin/WebViewJavascriptBridge.git`, tag `v4.1.2`)
 
 EXTERNAL SOURCES:
   HTMLReader:
@@ -65,11 +66,14 @@ EXTERNAL SOURCES:
   ImgurAnonymousAPIClient:
     :git: https://github.com/nolanw/ImgurAnonymousAPIClient.git
     :tag: v0.1.1
+  WebViewJavascriptBridge:
+    :git: https://github.com/marcuswestin/WebViewJavascriptBridge.git
+    :tag: v4.1.2
 
 SPEC CHECKSUMS:
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
   GRMustache: 2898651f8e5350df26c64196b347524508cebb86
-  HTMLReader: 6a037d5c3acd2810f049b58098fa4383ffecef68
+  HTMLReader: ac0aac91128d4a222741c58a63fe7e6940fb10cd
   ImgurAnonymousAPIClient: a59b74c3500b29b6d3b08c61c1304b65085f7aac
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
@@ -77,6 +81,6 @@ SPEC CHECKSUMS:
   PocketAPI: 801df1a3cdd094e5477add10c80dceb533c98a66
   PSMenuItem: 0b715b3c76482cdc4656a54d6d601205b49306e3
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
-  WebViewJavascriptBridge: 81cfaf48e1f9bafa8de3d4bf503981c9da10e08f
+  WebViewJavascriptBridge: 12fc9864b4da524ee4efb05dc1ba3d33d6986753
 
 COCOAPODS: 0.33.1
