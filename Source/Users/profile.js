@@ -8,6 +8,7 @@ startBridge(function(bridge) {
   });
 
   $(function() {
+	$('#headerBackground').css('height', $('#content > section > header').height());
     $('#contact').on('click', 'tr', function(event) {
       var row = $(this);
       var service = row.find('th').text();
