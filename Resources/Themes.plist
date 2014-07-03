@@ -116,9 +116,9 @@
 		<key>sheetBackgroundColor</key>
 		<string>#eeeeee</string>
 		<key>sheetTitleColor</key>
-		<string>#ffffff</string>
+		<string>#333333</string>
 		<key>sheetTitleBackgroundColor</key>
-		<string>#666666</string>
+		<string>#ffffff</string>
 		<key>sheetTextColor</key>
 		<string>#000000</string>
 		<key>sheetDimColor</key>
@@ -142,7 +142,7 @@
 		<key>profileIconColor</key>
 		<string>#e35e0d</string>
 		<key>quoteIconColor</key>
-		<string>#dbdbdb</string>
+		<string>#777777</string>
 		<key>rapSheetIconColor</key>
 		<string>#dc8c3e</string>
 		<key>removeBookmarkIconColor</key>
