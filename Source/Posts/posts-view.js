@@ -211,5 +211,7 @@ function highlightMentions(post) {
   });
 
   /* The UIWebView scroll event model can bite me. */
+  document.addEventListener("touchmove", handleScroll, false);
   document.addEventListener("scroll", handleScroll, false);
+  document.addEventListener("gesturechange", handleScroll, false);
 })();
