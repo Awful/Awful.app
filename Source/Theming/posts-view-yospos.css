@@ -448,6 +448,12 @@ post.seen {
 [title~=":yohoho:"] {
   -webkit-filter: invert(100%);
 }
+.postbody {
+  letter-spacing: -0.01em;
+  line-height: 1.05em;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
 .postdate {
   color: #57ff57;
 }
