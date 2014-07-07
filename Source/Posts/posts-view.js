@@ -153,9 +153,9 @@ function highlightMentions(post) {
  *                once loaded.
  * Complication 2: we want to prevent offscreen images from loading
  *                 on first display, before any scrolling, and before
- *                 load the image's dimensions default to 0x0. If we
- *                 are about to show an image with width of 0, forget
- *                 our saved values and save them again when next hidden.
+ *                 load the image's dimensions default to 0x0. Also, the
+ *                 placeholder image has dimensions, so reset height/width
+ *                 to their natural values when showing.
  */
 (function () {
   function postImages() {
@@ -163,11 +163,11 @@ function highlightMentions(post) {
     return $('.postbody img').not('[src*=somethingawful]');
   }
 
-  /* Use a (viewport/2)-sized buffer below to get a bit ahead of the scroll. */
+  /* Use a (viewport * 2)-sized buffer below to get a bit ahead of the scroll. */
   function isInViewport() {
     var rect = this.getBoundingClientRect();
     var viewportHeight = window.innerHeight;
-    return rect.bottom > 0 && rect.top < viewportHeight * 1.5;
+    return rect.bottom > (-2 * viewportHeight) && rect.top < viewportHeight * 3;
   }
 
   function showImage() {
@@ -211,7 +211,5 @@ function highlightMentions(post) {
   });
 
   /* The UIWebView scroll event model can bite me. */
-  document.addEventListener("touchmove", handleScroll, false);
   document.addEventListener("scroll", handleScroll, false);
-  document.addEventListener("gesturechange", handleScroll, false);
 })();
