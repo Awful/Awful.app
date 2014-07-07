@@ -177,18 +177,11 @@ function highlightMentions(post) {
       return;
     }
     img.attr("src", img.attr("data-orig-src"));
-    if (img.attr("width") == 0) {
-      /*
-       * We've never loaded this image, so width was defaulted to 0 during 
-       * the initial scan. Remove those attributes so we get natural sizing
-       * and we'll capture them when next we hide them.
-       */
-       img.attr("width", null);
-       img.attr("height", null);
-     }
+    img.attr("width", null);
+    img.attr("height", null);
 
      // console.log("Showing: ", img.attr("src"));
-   }
+  }
 
    function hideImage() {
     var img = $(this);
