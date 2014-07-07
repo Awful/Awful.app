@@ -55,7 +55,7 @@
 }
 
 // Specify the refresh dates we care about here, and the infrastructure for the public API will be generated thereafter.
-// Fields are: X(public name, NSUSerDefaults key, seconds between refreshes). The X should be blindly copied when adding a new row.
+// Fields are: X(public name, NSUserDefaults key, seconds between refreshes). The X should be blindly copied when adding a new row.
 #define REFRESH_DATES \
     X(Avatar, @"LastLoggedInUserAvatarRefreshDate", 60 * 10) \
     X(Bookmarks, @"com.awfulapp.Awful.LastBookmarksRefreshDate", 60 * 10) \
