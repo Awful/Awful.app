@@ -261,6 +261,12 @@
     }
     context[@"loggedInUsername"] = [AwfulSettings settings].username;
     context[@"externalStylesheet"] = [AwfulPostsViewExternalStylesheetLoader loader].stylesheet;
+    if (self.thread.threadID.length > 0) {
+        context[@"threadID"] = self.thread.threadID;
+    }
+    if (self.thread.forum.forumID.length > 0) {
+        context[@"forumID"] = self.thread.forum.forumID;
+    }
     NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostsView" bundle:nil error:&error];
     if (!HTML) {
         NSLog(@"%s error loading posts view HTML: %@", __PRETTY_FUNCTION__, error);
