@@ -41,6 +41,7 @@
         NSLog(@"%s could not find resource for URL %@", __PRETTY_FUNCTION__, URL);
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:@{ NSLocalizedDescriptionKey: @"Invalid URL" }];
         [self.client URLProtocol:self didFailWithError:error];
+        return;
     }
     
     NSError *error;
