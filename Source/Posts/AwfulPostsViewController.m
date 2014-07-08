@@ -245,8 +245,10 @@
     if ((NSInteger)self.posts.count > self.hiddenPosts) {
         range.length = self.posts.count - self.hiddenPosts;
     }
-    for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
-        [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
+    if (self.posts.count >= NSMaxRange(range)) {
+        for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
+            [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
+        }
     }
     context[@"posts"] = postViewModels;
     if (self.advertisementHTML.length) {
