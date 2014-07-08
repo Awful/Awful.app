@@ -261,7 +261,9 @@
     if (fontScalePercentage != 100) {
         context[@"fontScalePercentage"] = @(fontScalePercentage);
     }
-    context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    if ([AwfulSettings settings].username.length > 0) {
+        context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    }
     context[@"externalStylesheet"] = [AwfulPostsViewExternalStylesheetLoader loader].stylesheet;
     if (self.thread.threadID.length > 0) {
         context[@"threadID"] = self.thread.threadID;
