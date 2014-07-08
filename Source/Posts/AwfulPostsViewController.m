@@ -733,7 +733,7 @@
 
 - (NSString *)renderedPostAtIndex:(NSInteger)index
 {
-    AwfulPost *post = self.posts[index + self.hiddenPosts];
+    AwfulPost *post = self.posts[index];
     AwfulPostViewModel *viewModel = [[AwfulPostViewModel alloc] initWithPost:post];
     NSError *error;
     NSString *HTML = [GRMustacheTemplate renderObject:viewModel fromResource:@"Post" bundle:nil error:&error];
