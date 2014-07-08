@@ -578,8 +578,11 @@
                 
                 NSArray *objectIDs = [scraper.posts valueForKey:@"objectID"];
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    // The posts page scraper may have updated the passed-in thread, so we should make sure the passed-in thread is up-to-date. And although the AwfulForumsClient API is assumed to be called from the main thread, we cannot assume the passed-in thread's context is the same as our main thread context.
+                    [thread.managedObjectContext refreshObject:thread mergeChanges:YES];
+                    
                     NSArray *posts = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                    [mainManagedObjectContext refreshObject:thread mergeChanges:YES];
                     callback(nil, posts, firstUnreadPostIndex, scraper.advertisementHTML);
                 });
             }
