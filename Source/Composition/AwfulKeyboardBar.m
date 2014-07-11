@@ -115,6 +115,7 @@
  * "[foo attr]"          -> "foo"
  * "[code][b]"           -> "code"
  * "[b][code][/code]"    -> "b"
+ * "[list][*]"           -> "list"
  */
 
 - (NSString *)getCurrentlyOpenTag:(NSString *)content
@@ -179,7 +180,12 @@
     }
     
     tagRange.length--; // Omit the ] or =;
-    return [content substringWithRange:NSMakeRange(startingBracket + 1, tagRange.location - startingBracket - 1)];
+    NSString *tagName = [content substringWithRange:NSMakeRange(startingBracket + 1, tagRange.location - startingBracket - 1)];
+    if ([tagName isEqualToString:@"*"]) {
+        return [self getCurrentlyOpenTag:[content substringToIndex:startingBracket]];
+    }
+    
+    return tagName;
 }
 
 static NSCharacterSet * TagNameTerminators(void)
