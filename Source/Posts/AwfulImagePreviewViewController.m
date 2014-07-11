@@ -7,8 +7,9 @@
 #import "AwfulAlertView.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
+@import AssetsLibrary;
+@import SafariServices;
 #import <AFNetworking/AFNetworking.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <FVGifAnimation.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
@@ -158,7 +159,15 @@
         [UIPasteboard generalPasteboard].awful_URL = self.imageURL;
         [self hideBarsAfterShortDuration];
     }];
-    [sheet addButtonWithTitle:@"Copy Image to Clipboard" block:^{
+    if ([SSReadingList supportsURL:self.imageURL]) {
+        [sheet addButtonWithTitle:@"Send to Reading List" block:^{
+            NSError *error;
+            if (![[SSReadingList defaultReadingList] addReadingListItemWithURL:self.imageURL title:self.title previewText:nil error:&error]) {
+                [AwfulAlertView showWithTitle:@"Error Adding Image" error:error buttonTitle:@"OK"];
+            }
+        }];
+    }
+    [sheet addButtonWithTitle:@"Copy Image" block:^{
         if (self.imageIsGIF) {
             [[UIPasteboard generalPasteboard] setData:self.imageData forPasteboardType:(__bridge NSString *)kUTTypeGIF];
         } else {
