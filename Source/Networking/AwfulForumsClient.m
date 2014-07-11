@@ -127,6 +127,12 @@
     if (components.scheme.length == 0) {
         components.scheme = @"http";
     }
+    
+    // Bare IP address is parsed by NSURLComponents as a path.
+    if (!components.host && components.path) {
+        components.host = components.path;
+        components.path = nil;
+    }
     _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:components.URL];
 }
 
