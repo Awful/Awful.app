@@ -58,6 +58,8 @@
     }
     HTMLElement *customTitleDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
     if (customTitleDefinition) {
+        HTMLElement *superfluousLineBreak = [customTitleDefinition firstNodeMatchingSelector:@"br.pb"];
+        [superfluousLineBreak.parentNode.mutableChildren removeObject:superfluousLineBreak];
         otherAttributes[@"customTitleHTML"] = customTitleDefinition.innerHTML;
     }
     self.otherAttributes = otherAttributes;
