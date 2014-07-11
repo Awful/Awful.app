@@ -18,13 +18,24 @@ $(function() {
   $('body').on('tap', '.bbc-spoiler', function(event) {
     var target = $(event.target);
     var spoiler = target.closest('.bbc-spoiler');
-    var isLink = target.closest('a, [data-awful-linkified-image]').length > 0;
+    var nearestLink = target.closest('a, [data-awful-linkified-image]');
+    var isLink = nearestLink.length > 0;
     var isSpoiled = spoiler.hasClass('spoiled');
     if (!(isLink && isSpoiled)) {
       spoiler.toggleClass('spoiled');
     }
     if (isLink && !isSpoiled) {
-      event.preventDefault();
+      preventNextClickEvent();
+    }
+    
+    function preventNextClickEvent() {
+      var listener = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        document.body.removeEventListener('click', listener);
+        return false;
+      };
+      document.body.addEventListener('click', listener);
     }
   });
 });
