@@ -24,9 +24,11 @@
     _URLs = [NSMutableArray new];
     NSString *basePath = [[NSUUID UUID] UUIDString];
     NSMutableAttributedString *mutableString = [string mutableCopy];
+    
+    // I'm not sure how to modify the string within calls to -[NSMutableAttributedString enumerateAttribute:...] when the range has length one, unless we go in reverse. I'm not even sure it's a bug.
     [string enumerateAttribute:NSAttachmentAttributeName
                        inRange:NSMakeRange(0, string.length)
-                       options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
+                       options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired | NSAttributedStringEnumerationReverse
                     usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
     {
         if (!attachment) return;
