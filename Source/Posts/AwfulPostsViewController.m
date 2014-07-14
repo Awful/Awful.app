@@ -143,7 +143,9 @@
             self.hiddenPosts = 0;
         }
         [self refetchPosts];
-        [self renderPosts];
+        if (self.posts.count > 0) {
+            [self renderPosts];
+        }
     }
     
     BOOL renderedCachedPosts = self.posts.count > 0;
@@ -207,7 +209,6 @@
             self.thread.seenPosts = lastPost.threadIndex;
         }
         
-        [self clearLoadingMessage];
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }
@@ -280,7 +281,8 @@
 
 - (void)loadBlankPage
 {
-    [self.webView loadHTMLString:@"" baseURL:nil];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]];
+    [self.webView loadRequest:request];
 }
 
 - (AwfulTheme *)theme
@@ -1073,7 +1075,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    if (!_webViewDidLoadOnce) {
+    if (!_webViewDidLoadOnce && ![webView.request.URL isEqual:[NSURL URLWithString:@"about:blank"]]) {
         _webViewDidLoadOnce = YES;
         if (_jumpToPostIDAfterLoading) {
             [_webViewJavaScriptBridge callHandler:@"jumpToPostWithID" data:_jumpToPostIDAfterLoading];
@@ -1082,6 +1084,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         }
         _jumpToPostIDAfterLoading = nil;
         _scrollToFractionAfterLoading = 0;
+        [self clearLoadingMessage];
     }
 }
 
