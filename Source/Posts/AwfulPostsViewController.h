@@ -52,6 +52,9 @@
  */
 @property (readonly, copy, nonatomic) NSArray *posts;
 
-- (void)scrollPostToVisible:(AwfulPost*)topPost;
+/**
+ * Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
+ */
+- (void)scrollPostToVisible:(AwfulPost *)post;
 
 @end
