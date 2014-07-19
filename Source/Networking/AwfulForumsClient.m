@@ -23,6 +23,7 @@
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenience.h"
+#import <Crashlytics/Crashlytics.h>
 
 @implementation AwfulForumsClient
 {
@@ -491,6 +492,7 @@
                  HTMLElement *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  NSString *threadID = URL.queryDictionary[@"threadid"];
+                 CLSLog(@"%s newly-created thread ID is %@ from link %@", __PRETTY_FUNCTION__, threadID, link);
                  AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
                  if (callback) callback(nil, thread);
              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
