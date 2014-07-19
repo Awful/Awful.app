@@ -11,9 +11,9 @@
 
 @implementation AwfulActionSheet (WebViewSheets)
 
-+ (instancetype)actionSheetOpeningURL:(NSURL *)URL fromViewController:(UIViewController *)viewController
++ (instancetype)actionSheetOpeningURL:(NSURL *)URL fromViewController:(UIViewController *)viewController addingActions:(void (^)(AwfulActionSheet *sheet))extraActionsBlock
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    AwfulActionSheet *sheet = [self new];
     
     if ([URL opensInBrowser]) {
         sheet.title = URL.absoluteString;
@@ -53,6 +53,8 @@
             [[UIApplication sharedApplication] openURL:URL];
         }];
     }
+    
+    if (extraActionsBlock) extraActionsBlock(sheet);
     
     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
         [sheet addCancelButtonWithTitle:@"Cancel"];

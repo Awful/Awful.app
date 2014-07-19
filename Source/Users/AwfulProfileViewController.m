@@ -94,7 +94,7 @@
 
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:homepage fromViewController:self];
+    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:homepage fromViewController:self addingActions:nil];
     sheet.title = homepage.absoluteString;
     [sheet showFromRect:rect inView:self.view animated:YES];
 }

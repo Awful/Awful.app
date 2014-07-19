@@ -205,12 +205,13 @@
 
 - (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect withImageURL:(NSURL *)imageURL
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
-    if (imageURL) {
-        [sheet addButtonWithTitle:@"Show Image" block:^{
-            [self previewImageAtURL:imageURL];
-        }];
-    }
+    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self addingActions:^(AwfulActionSheet *sheet) {
+        if (imageURL) {
+            [sheet addButtonWithTitle:@"Show Image" block:^{
+                [self previewImageAtURL:imageURL];
+            }];
+        }
+    }];
     [sheet showFromRect:rect inView:self.view animated:YES];
 }
 

@@ -679,13 +679,14 @@
         if (elementInfo[@"spoiledLink"]) {
             NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
             NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self];
+            AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self addingActions:^(AwfulActionSheet *sheet) {
+                if (imageURL) {
+                    [sheet addButtonWithTitle:@"Show Image" block:^{
+                        [self previewImageAtURL:imageURL];
+                    }];
+                }
+            }];
             sheet.title = URL.absoluteString;
-            if (imageURL) {
-                [sheet addButtonWithTitle:@"Show Image" block:^{
-                    [self previewImageAtURL:imageURL];
-                }];
-            }
             CGRect rect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
             [sheet showFromRect:rect inView:self.view animated:YES];
         } else if (imageURL) {

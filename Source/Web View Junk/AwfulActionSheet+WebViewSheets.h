@@ -9,6 +9,6 @@
 /**
  * Returns an action sheet with the following actions: "Open"; "Open in [browser]"; "Send to [Read Later service]"; "Copy URL"; "Cancel".
  */
-+ (instancetype)actionSheetOpeningURL:(NSURL *)URL fromViewController:(UIViewController *)viewController;
++ (instancetype)actionSheetOpeningURL:(NSURL *)URL fromViewController:(UIViewController *)viewController addingActions:(void (^)(AwfulActionSheet *sheet))extraActionsBlock;
 
 @end
