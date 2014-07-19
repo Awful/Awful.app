@@ -120,7 +120,7 @@
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-        } else {
+        } else if (self) {
             self.fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
             AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
                                                                  username:[AwfulSettings settings].username

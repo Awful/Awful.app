@@ -77,7 +77,7 @@
         __typeof__(self) self = weakSelf;
         if (error) {
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
-        } else {
+        } else if (self) {
             self.networkOperation = nil;
             AwfulThread *fakeThread = [AwfulThread insertInManagedObjectContext:self.managedObjectContext];
             fakeThread.author = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
