@@ -9,7 +9,7 @@ function startBridge(callback) {
   } else {
     document.addEventListener('WebViewJavascriptBridgeReady', function() {
       callback(WebViewJavascriptBridge);
-    }, false);
+    });
   }
 }
 
