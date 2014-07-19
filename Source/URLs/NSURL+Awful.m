@@ -4,6 +4,7 @@
 
 #import "NSURL+Awful.h"
 #import "NSURL+QueryDictionary.h"
+#import "AwfulForumsClient.h"
 
 @implementation NSURL (Awful)
 
@@ -16,7 +17,8 @@
         return self;
     }
     if (   [self.host caseInsensitiveCompare:@"forums.somethingawful.com"] != NSOrderedSame
-		&& [self.host caseInsensitiveCompare:@"archives.somethingawful.com"] != NSOrderedSame) {
+        && [self.host caseInsensitiveCompare:@"archives.somethingawful.com"] != NSOrderedSame
+        && [self.host caseInsensitiveCompare:[AwfulForumsClient client].baseURL.host] != NSOrderedSame) {
         return nil;
     }
     
