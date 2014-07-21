@@ -78,7 +78,14 @@
         color.accessibilityLabel = theme.descriptiveName;
         [settingsView.themePicker insertThemeWithColor:color atIndex:i];
     }];
-    settingsView.themePicker.selectedThemeIndex = [self.themes indexOfObject:self.selectedTheme];
+    
+    NSUInteger selectedIndex = [self.themes indexOfObject:self.selectedTheme];
+    
+    // Might be NSNotFound if the current theme is no longer marked as ubiquitous.
+    if (selectedIndex != NSNotFound) {
+        settingsView.themePicker.selectedThemeIndex = selectedIndex;
+    }
+    
     self.view = settingsView;
 }
 

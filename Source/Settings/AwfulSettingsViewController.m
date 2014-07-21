@@ -144,6 +144,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     ChoiceSetting,
     ButtonSetting,
     StepperSetting,
+    DisclosureSetting,
 };
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -166,9 +167,12 @@ typedef NS_ENUM(NSUInteger, SettingType)
     } else if ([setting[@"Type"] isEqual:@"Stepper"]) {
         settingType = StepperSetting;
         identifier = @"Stepper";
+    } else if (setting[@"ViewController"]) {
+        settingType = DisclosureSetting;
+        identifier = @"Disclosure";
     }
     UITableViewCellStyle style = UITableViewCellStyleValue1;
-    if (settingType == OnOffSetting || settingType == ButtonSetting) {
+    if (settingType == OnOffSetting || settingType == ButtonSetting || settingType == DisclosureSetting) {
         style = UITableViewCellStyleDefault;
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -180,7 +184,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
                            action:@selector(hitSwitch:)
                  forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = switchView;
-        } else if (settingType == ChoiceSetting) {
+        } else if (settingType == ChoiceSetting || settingType == DisclosureSetting) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.accessibilityTraits |= UIAccessibilityTraitButton;
         } else if (settingType == StepperSetting) {
@@ -267,7 +271,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         stepperView.tag = tag;
     }
     
-    if (settingType == ChoiceSetting || settingType == ButtonSetting) {
+    if (settingType == ChoiceSetting || settingType == ButtonSetting || settingType == DisclosureSetting) {
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -320,7 +324,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
   willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *setting = [self settingForIndexPath:indexPath];
-    if (setting[@"Action"] || setting[@"Choices"]) {
+    if (setting[@"Action"] || setting[@"Choices"] || setting[@"ViewController"]) {
         return indexPath;
     }
     return nil;

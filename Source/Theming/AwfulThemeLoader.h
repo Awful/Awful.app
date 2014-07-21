@@ -30,4 +30,9 @@
  */
 - (NSArray *)themesForForumWithID:(NSString *)forumID;
 
+/**
+ * An array of AwfulTheme objects known to the loader.
+ */
+@property (readonly, copy, nonatomic) NSArray *themes;
+
 @end

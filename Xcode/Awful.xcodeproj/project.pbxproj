@@ -12,6 +12,7 @@
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
 		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
+		1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
@@ -276,6 +277,8 @@
 		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulSettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
 		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
+		1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsUbiquitousThemesController.h; sourceTree = "<group>"; };
+		1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsUbiquitousThemesController.m; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPunishmentCell.h; sourceTree = "<group>"; };
@@ -1003,20 +1006,22 @@
 		1C8694A216EF78D3003FE89E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				1CDD5197154294D400326C7B /* AwfulSettings.h */,
-				1CDD5198154294D400326C7B /* AwfulSettings.m */,
-				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
-				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
-				1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */,
-				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
 				1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */,
 				1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */,
 				F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */,
 				F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */,
+				1CDD5197154294D400326C7B /* AwfulSettings.h */,
+				1CDD5198154294D400326C7B /* AwfulSettings.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
+				1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */,
+				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
+				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
+				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
+				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
+				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1829,6 +1834,7 @@
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
 				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
 				1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */,
+				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
 				1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */,
 				1CE694A8182FEF8D00B24928 /* AwfulBan.m in Sources */,

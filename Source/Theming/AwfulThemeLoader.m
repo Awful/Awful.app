@@ -3,25 +3,28 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThemeLoader.h"
+#import "AwfulSettings.h"
 
 @implementation AwfulThemeLoader
-{
-    NSMutableArray *_themes;
-}
 
 - (id)init
 {
-    if (!(self = [super init])) return nil;
-    NSURL *themesURL = [[NSBundle mainBundle] URLForResource:@"Themes" withExtension:@"plist"];
-    NSDictionary *themesDictionary = [NSDictionary dictionaryWithContentsOfURL:themesURL];
-    _themes = [NSMutableArray new];
-    for (NSString *name in themesDictionary) {
-        [_themes addObject:[[AwfulTheme alloc] initWithName:name dictionary:themesDictionary[name]]];
-    }
-    for (AwfulTheme *theme in _themes) {
-        if ([theme.name isEqualToString:@"default"]) continue;
-        NSString *parentThemeName = theme.dictionary[@"parent"] ?: @"default";
-        theme.parentTheme = [self themeNamed:parentThemeName];
+    if ((self = [super init])) {
+        NSURL *themesURL = [[NSBundle mainBundle] URLForResource:@"Themes" withExtension:@"plist"];
+        NSDictionary *themesDictionary = [NSDictionary dictionaryWithContentsOfURL:themesURL];
+        NSMutableArray *themes = [NSMutableArray new];
+        NSMutableDictionary *themesByName = [NSMutableDictionary new];
+        for (NSString *name in themesDictionary) {
+            AwfulTheme *theme = [[AwfulTheme alloc] initWithName:name dictionary:themesDictionary[name]];
+            [themes addObject:theme];
+            themesByName[name] = theme;
+        }
+        for (AwfulTheme *theme in themes) {
+            if ([theme.name isEqualToString:@"default"]) continue;
+            NSString *parentThemeName = theme.dictionary[@"parent"] ?: @"default";
+            theme.parentTheme = themesByName[parentThemeName];
+        }
+        _themes = themes;
     }
     return self;
 }
@@ -43,7 +46,7 @@
 
 - (AwfulTheme *)themeNamed:(NSString *)themeName
 {
-    for (AwfulTheme *theme in _themes) {
+    for (AwfulTheme *theme in self.themes) {
         if ([theme.name isEqualToString:themeName]) {
             return theme;
         }
@@ -54,9 +57,10 @@
 - (NSArray *)themesForForumWithID:(NSString *)forumID
 {
     NSMutableArray *themes = [NSMutableArray new];
-    for (AwfulTheme *theme in _themes) {
+    NSArray *ubiquitousThemeNames = [AwfulSettings settings].ubiquitousThemeNames;
+    for (AwfulTheme *theme in self.themes) {
         NSString *relevantForumID = theme[@"relevantForumID"];
-        if (!relevantForumID || [relevantForumID isEqualToString:forumID]) {
+        if (!relevantForumID || [relevantForumID isEqualToString:forumID] || [ubiquitousThemeNames containsObject:theme.name]) {
             [themes addObject:theme];
         }
     }

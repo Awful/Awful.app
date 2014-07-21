@@ -314,6 +314,16 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
     return themeName.length == 0 || [themeName isEqualToString:@"default"] || [themeName isEqualToString:@"dark"];
 }
 
+- (NSArray *)ubiquitousThemeNames
+{
+    return self[AwfulSettingsKeys.ubiquitousThemeNames];
+}
+
+- (void)setUbiquitousThemeNames:(NSArray *)ubiquitousThemeNames
+{
+    self[AwfulSettingsKeys.ubiquitousThemeNames] = ubiquitousThemeNames;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -380,4 +390,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .instapaperUsername = @"instapaper_username",
     .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
     .fontScale = @"font_scale",
+    .ubiquitousThemeNames = @"ubiquitous_theme_names",
 };

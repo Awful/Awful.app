@@ -61,6 +61,8 @@
 
 - (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID;
 
+@property (copy, nonatomic) NSArray *ubiquitousThemeNames;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -105,4 +107,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *instapaperUsername;
     __unsafe_unretained NSString *hideSidebarInLandscape;
     __unsafe_unretained NSString *fontScale;
+    __unsafe_unretained NSString *ubiquitousThemeNames;
 } AwfulSettingsKeys;

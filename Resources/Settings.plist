@@ -42,16 +42,6 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Dark Mode</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>dark_theme</string>
-				</dict>
-				<dict>
-					<key>Title</key>
 					<string>Show Thread Tags</string>
 					<key>Type</key>
 					<string>Switch</string>
@@ -95,6 +85,31 @@
 					<integer>10</integer>
 					<key>Key</key>
 					<string>font_scale</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Themes</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Dark Mode</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Forum-Specific Themes</string>
+					<key>ViewController</key>
+					<string>AwfulSettingsUbiquitousThemesController</string>
+					<key>Key</key>
+					<string>ubiquitous_theme_names</string>
 				</dict>
 			</array>
 		</dict>
