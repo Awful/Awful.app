@@ -436,7 +436,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
                                       attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1] }
                                          context:nil];
     const CGFloat margin = 14;
-    return CGRectGetHeight(expected) + margin;
+    return ceil(CGRectGetHeight(expected)) + margin;
 }
 
 #pragma mark - AwfulInstapaperLogInControllerDelegate
