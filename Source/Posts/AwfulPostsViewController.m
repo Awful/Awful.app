@@ -529,7 +529,10 @@
 
 - (void)refetchPosts
 {
-    if (!self.thread || self.page < 1) return;
+    if (!self.thread || self.page < 1) {
+        self.posts = nil;
+        return;
+    }
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
     NSInteger lowIndex = (self.page - 1) * 40 + 1;
