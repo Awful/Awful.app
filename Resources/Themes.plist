@@ -162,6 +162,8 @@
 		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#151515</string>
+		<key>tintColor</key>
+		<string>#0f4f70</string>
 		<key>scrollIndicatorStyle</key>
 		<string>White</string>
 		<key>backgroundColor</key>
