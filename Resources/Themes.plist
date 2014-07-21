@@ -156,8 +156,6 @@
 	</dict>
 	<key>dark</key>
 	<dict>
-		<key>jumpToPageNavigationBarTintColor</key>
-		<string>#000000</string>
 		<key>description</key>
 		<string>Dark</string>
 		<key>descriptiveColor</key>
@@ -224,6 +222,8 @@
 		<string>#666666</string>
 		<key>quoteIconColor</key>
 		<string>#dbdbdb</string>
+		<key>jumpToPageNavigationBarTintColor</key>
+		<string>#000000</string>
 		<key>jumpToFirstPageIconColor</key>
 		<string>#eeeeee</string>
 		<key>jumpToLastPageIconColor</key>
