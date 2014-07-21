@@ -131,6 +131,7 @@ static id _instance;
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
     if ([AwfulForumsClient client].loggedIn) {
         self.window.rootViewController = [self createRootViewControllerStack];
     } else {
