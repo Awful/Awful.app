@@ -41,7 +41,7 @@ static const CGFloat reasonFontSize = 15;
                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                   attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:reasonFontSize] }
                                                      context:nil];
-    return CGRectGetHeight(reasonLabelRect) + reasonInsets.top + reasonInsets.bottom;
+    return ceil(CGRectGetHeight(reasonLabelRect)) + reasonInsets.top + reasonInsets.bottom;
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor
