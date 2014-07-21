@@ -2,19 +2,12 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 /**
  * An AwfulInfractionCell details a probation or ban.
  */
 @interface AwfulPunishmentCell : UITableViewCell
-
-/**
- * Returns an initialized AwfulInfractionCell. This is the designated initializer.
- *
- * @param reuseIdentifier A string used by a table view for reusing the cell.
- */
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
 /**
  * A label that explains why the infraction occurred.

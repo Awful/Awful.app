@@ -60,6 +60,7 @@
 {
     [super loadView];
     [self.tableView registerClass:[AwfulPunishmentCell class] forCellReuseIdentifier:CellIdentifier];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)viewDidLoad
@@ -182,6 +183,15 @@
     NSString *readableBanDate = [self.banDateFormatter stringFromDate:ban.date];
     cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”",
                                ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
+    
+    cell.textLabel.textColor = self.theme[@"listTextColor"];
+    cell.detailTextLabel.textColor = self.theme[@"listSecondaryTextColor"];
+    cell.reasonLabel.textColor = self.theme[@"listTextColor"];
+    cell.backgroundColor = self.theme[@"listBackgroundColor"];
+    if (!cell.selectedBackgroundView) {
+        cell.selectedBackgroundView = [UIView new];
+    }
+    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
     return cell;
 }
 
