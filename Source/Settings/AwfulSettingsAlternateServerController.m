@@ -109,4 +109,10 @@ static NSString * const CellIdentifier = @"Cell";
     [[AwfulRefreshMinder minder] forgetEverything];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    // BUG: On iOS 7 by default there's a stubborn 35pt top margin. This removes that margin.
+    return 0.1;
+}
+
 @end
