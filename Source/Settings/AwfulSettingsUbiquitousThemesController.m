@@ -139,11 +139,6 @@ static NSString * const CellIdentifier = @"Cell";
     self.ignoreSettingsChanges = NO;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
-{
-    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     // BUG: On iOS 7 by default there's a stubborn 35pt top margin. This removes that margin.
