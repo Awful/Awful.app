@@ -28,7 +28,6 @@
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
-		1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
 		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
 		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
@@ -306,8 +305,6 @@
 		1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeTextViewController.m; sourceTree = "<group>"; };
 		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
 		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
-		1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsChoiceViewController.h; sourceTree = "<group>"; };
-		1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsChoiceViewController.m; sourceTree = "<group>"; };
 		1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionItem.h; sourceTree = "<group>"; };
 		1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulIconActionItem.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1C28B3571729F38400254EE7 /* AwfulIconActionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionCell.h; sourceTree = "<group>"; };
@@ -1016,8 +1013,6 @@
 				1CDD5198154294D400326C7B /* AwfulSettings.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
-				1C277CA31543554700CD2CCE /* AwfulSettingsChoiceViewController.h */,
-				1C277CA41543554700CD2CCE /* AwfulSettingsChoiceViewController.m */,
 				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
 				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
 				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
@@ -1740,7 +1735,6 @@
 				1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */,
 				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
-				1C277CA51543554700CD2CCE /* AwfulSettingsChoiceViewController.m in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,

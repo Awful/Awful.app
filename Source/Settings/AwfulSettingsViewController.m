@@ -14,7 +14,6 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "AwfulSettingsChoiceViewController.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
 
@@ -141,10 +140,10 @@ typedef NS_ENUM(NSUInteger, SettingType)
 {
     ImmutableSetting,
     OnOffSetting,
-    ChoiceSetting,
     ButtonSetting,
     StepperSetting,
     DisclosureSetting,
+    DisclosureDetailSetting,
 };
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -158,9 +157,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
     if ([setting[@"Type"] isEqual:@"Switch"]) {
         settingType = OnOffSetting;
         identifier = @"Switch";
-    } else if (setting[@"Choices"]) {
-        settingType = ChoiceSetting;
-        identifier = @"Choices";
     } else if (setting[@"Action"] && ![setting[@"Action"] isEqual:@"ShowProfile"]) {
         settingType = ButtonSetting;
         identifier = @"Action";
@@ -168,8 +164,13 @@ typedef NS_ENUM(NSUInteger, SettingType)
         settingType = StepperSetting;
         identifier = @"Stepper";
     } else if (setting[@"ViewController"]) {
-        settingType = DisclosureSetting;
-        identifier = @"Disclosure";
+        if (setting[@"DisplayTransformer"]) {
+            settingType = DisclosureDetailSetting;
+            identifier = @"DisclosureDetail";
+        } else {
+            settingType = DisclosureSetting;
+            identifier = @"Disclosure";
+        }
     }
     UITableViewCellStyle style = UITableViewCellStyleValue1;
     if (settingType == OnOffSetting || settingType == ButtonSetting || settingType == DisclosureSetting) {
@@ -184,7 +185,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
                            action:@selector(hitSwitch:)
                  forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = switchView;
-        } else if (settingType == ChoiceSetting || settingType == DisclosureSetting) {
+        } else if (settingType == DisclosureSetting || settingType == DisclosureDetailSetting) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.accessibilityTraits |= UIAccessibilityTraitButton;
         } else if (settingType == StepperSetting) {
@@ -205,7 +206,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     
     if (setting[@"DisplayTransformer"]) {
         NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
-        if (settingType == ChoiceSetting) {
+        if (settingType == DisclosureDetailSetting) {
             cell.textLabel.text = setting[@"Title"];
             cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
         } else {
@@ -239,18 +240,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
             [self.switches addObject:indexPath];
         }
         switchView.tag = tag;
-    } else if (settingType == ChoiceSetting) {
-        if (setting[@"DisplayTransformer"]) {
-            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
-            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
-        } else {
-            for (NSDictionary *choice in setting[@"Choices"]) {
-                if ([choice[@"Value"] isEqual:valueForSetting]) {
-                    cell.detailTextLabel.text = choice[@"Title"];
-                    break;
-                }
-            }
-        }
     } else if (settingType == StepperSetting) {
         UIStepper *stepperView = (UIStepper *)cell.accessoryView;
         stepperView.minimumValue = [setting[@"Minimum"] integerValue];
@@ -271,7 +260,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         stepperView.tag = tag;
     }
     
-    if (settingType == ChoiceSetting || settingType == ButtonSetting || settingType == DisclosureSetting) {
+    if (settingType == ButtonSetting || settingType == DisclosureSetting || settingType == DisclosureDetailSetting) {
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -388,14 +377,11 @@ typedef NS_ENUM(NSUInteger, SettingType)
                 }
             }];
         }
-    } else {
-        UIViewController *viewController;
-        if (setting[@"ViewController"]) {
-            viewController = [NSClassFromString(setting[@"ViewController"]) new];
-        } else {
-            viewController = [[AwfulSettingsChoiceViewController alloc] initWithSetting:setting];
-        }
+    } else if (setting[@"ViewController"]) {
+        UIViewController *viewController = [NSClassFromString(setting[@"ViewController"]) new];
         [self.navigationController pushViewController:viewController animated:YES];
+    } else {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"don't know how to handle selection of setting" userInfo:nil];
     }
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
