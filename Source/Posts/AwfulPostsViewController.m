@@ -18,6 +18,7 @@
 #import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
+#import "AwfulNavigationController.h"
 #import "AwfulNewPrivateMessageViewController.h"
 #import "AwfulPageSettingsViewController.h"
 #import "AwfulPostsView.h"
@@ -1005,7 +1006,9 @@
 - (void)viewDidDisappear:(BOOL)animated
 {    
     // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos continuing to play their sound after the user switches to a different thread.
-    if (!self.navigationController) {
+    BOOL shouldClearView = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+    shouldClearView &= !self.navigationController;
+    if (shouldClearView) {
         [self loadBlankPage];
     }
     [super viewDidDisappear:animated];

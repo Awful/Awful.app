@@ -262,6 +262,7 @@
 		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
+		F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 /* End PBXBuildFile section */
 
@@ -668,6 +669,8 @@
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
 		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
+		F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnpoppingViewHandler.h; sourceTree = "<group>"; };
+		F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnpoppingViewHandler.m; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 		FF54849D34B84496B062B479 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -788,6 +791,8 @@
 				1C89A78D18AA084500D75854 /* AwfulSplitViewController.m */,
 				1C5F701017D9B2BD005ABD6F /* AwfulTabBarButton.h */,
 				1C5F701117D9B2BD005ABD6F /* AwfulTabBarButton.m */,
+				F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */,
+				F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */,
 				1C5F700A17D87C0C005ABD6F /* AwfulVerticalTabBar.h */,
 				1C5F700B17D87C0C005ABD6F /* AwfulVerticalTabBar.m */,
 				1C5F700717D87863005ABD6F /* AwfulVerticalTabBarController.h */,
@@ -1819,6 +1824,7 @@
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
+				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
 				1C89A79118AA12CB00D75854 /* AwfulSplitView.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */,

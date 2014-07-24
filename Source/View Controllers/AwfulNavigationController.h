@@ -6,6 +6,8 @@
 #import "AwfulNavigationBar.h"
 #import "AwfulToolbar.h"
 
+@class AwfulUnpoppingViewHandler;
+
 /**
  * An AwfulNavigationController calls -themeDidChange after its view loads.
  */
@@ -20,5 +22,10 @@
  * Returns a navigation controller's toolbar.
  */
 @property (readonly, strong, nonatomic) AwfulToolbar *toolbar;
+
+/**
+ * Returns the handler responsible for managing unpopping views
+ */
+@property (readonly, strong, nonatomic) AwfulUnpoppingViewHandler *unpopHandler;
 
 @end

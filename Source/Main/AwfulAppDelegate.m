@@ -30,6 +30,7 @@
 #import "AwfulSettingsViewController.h"
 #import "AwfulSplitViewController.h"
 #import "AwfulThemeLoader.h"
+#import "AwfulUnpoppingViewHandler.h"
 #import "AwfulURLRouter.h"
 #import "AwfulVerticalTabBarController.h"
 #import "AwfulWaffleimagesURLProtocol.h"
@@ -513,6 +514,61 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                     animated:(BOOL)animated
 {
     [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
+    if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
+        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        [anc.unpopHandler navigationControllerBeganAnimating:navigationController];
+        
+        // We need to hook into the transitionCoordinator's notifications rather than just the mirror
+        // didShowViewController because that isn't called when the default interactive pop action
+        // is cancelled.
+        // See http://stackoverflow.com/questions/23484310/canceling-interactive-uinavigationcontroller-pop-gesture-does-not-call-uinavigat
+        id <UIViewControllerTransitionCoordinator> coordinator = navigationController.transitionCoordinator;
+        [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+            if ([context isCancelled]) {
+                NSTimeInterval completion = [context transitionDuration] * [context percentComplete];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)completion * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                    [anc.unpopHandler navigationControllerFinishedAnimating:navigationController];
+                });
+            }
+        }];
+    }
 }
+
+
+- (void)navigationController:(UINavigationController *)navigationController
+       didShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated
+{
+    if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
+        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        [anc.unpopHandler navigationControllerFinishedAnimating:navigationController];
+    }
+}
+
+
+- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+                         interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
+{
+    if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
+        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        return anc.unpopHandler;
+    }
+    return nil;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                  animationControllerForOperation:(UINavigationControllerOperation)operation
+                                               fromViewController:(UIViewController *)fromVC
+                                                 toViewController:(UIViewController *)toVC
+{
+    if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
+        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        if ([anc.unpopHandler shouldHandleAnimatingTransitionForOperation:operation]) {
+            return anc.unpopHandler;
+        }
+    }
+    return nil;
+}
+
 
 @end
