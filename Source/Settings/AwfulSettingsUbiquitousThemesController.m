@@ -40,7 +40,7 @@
 {
     NSArray *themes = [AwfulThemeLoader sharedLoader].themes;
     NSIndexSet *forumSpecificThemeIndexes = [themes indexesOfObjectsPassingTest:^BOOL(AwfulTheme *theme, NSUInteger i, BOOL *stop) {
-        return theme[@"relevantForumID"];
+        return !!theme[@"relevantForumID"];
     }];
     self.themes = [themes objectsAtIndexes:forumSpecificThemeIndexes];
     self.selectedThemeNames = [AwfulSettings settings].ubiquitousThemeNames;
