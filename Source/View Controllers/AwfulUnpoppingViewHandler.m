@@ -61,6 +61,16 @@
     return (operation == UINavigationControllerOperationPush && self.interactiveTransitionIsTakingPlace);
 }
 
+- (NSArray *)viewControllers
+{
+    return [self.controllerStack copy];
+}
+
+- (void)setViewControllers:(NSArray *)viewControllers
+{
+    [self.controllerStack setArray:viewControllers];
+}
+
 #pragma mark - Gesture handling
 
 - (void)handlePan:(UIPanGestureRecognizer*)recognizer

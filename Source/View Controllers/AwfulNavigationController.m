@@ -56,6 +56,19 @@
     return nav;
 }
 
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super decodeRestorableStateWithCoder:coder];
+    self.unpopHandler.viewControllers = [coder decodeObjectForKey:FutureViewControllersKey];
+}
+
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    [super encodeRestorableStateWithCoder:coder];
+    [coder encodeObject:self.unpopHandler.viewControllers forKey:FutureViewControllersKey];
+}
+
+static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers";
 
 #pragma mark - AwfulNavigationControllerObserver helpers
 

@@ -24,4 +24,6 @@
 
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation;
 
+@property (copy, nonatomic) NSArray *viewControllers;
+
 @end
