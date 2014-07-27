@@ -87,10 +87,7 @@
 
 - (void)dismissCompletion:(void (^)(void))completionBlock
 {
-    [super dismissCompletion:^{
-        if (self.dismissalBlock) self.dismissalBlock();
-        if (completionBlock) completionBlock();
-    }];
+    [super dismissCompletion:completionBlock];
 }
 
 #pragma mark - UICollectionViewDataSource

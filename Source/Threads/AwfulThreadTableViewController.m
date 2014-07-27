@@ -265,31 +265,46 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     AwfulThreadCell *substituteCell = [AwfulThreadCell new];
     [self configureCell:substituteCell withObject:thread];
     substituteCell.textLabel.numberOfLines = 0;
-    CGSize sizeThatFits = [substituteCell sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), 0)];
-    sizeThatFits.height = MAX(self.tableView.rowHeight, sizeThatFits.height + 6);
-    substituteCell.bounds = (CGRect){ .size = sizeThatFits };
     UITableViewCell *actualCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (actualCell) {
-        substituteCell.center = [self.view convertPoint:actualCell.center fromView:actualCell.superview];
-        if (CGRectGetMinY(substituteCell.frame) < 0) {
-            CGRect frame = substituteCell.frame;
-            frame.origin.y = 0;
-            substituteCell.frame = frame;
-        } else if (CGRectGetMaxY(substituteCell.frame) > CGRectGetMaxY(self.view.bounds)) {
-            CGRect frame = substituteCell.frame;
-            frame.origin.y -= CGRectGetMaxY(substituteCell.frame) - CGRectGetMaxY(self.view.bounds);
-            substituteCell.frame = frame;
+    void (^positionSubstituteCell)() = ^{
+        CGSize sizeThatFits = [substituteCell sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), 0)];
+        sizeThatFits.height = MAX(self.tableView.rowHeight, sizeThatFits.height + 6);
+        substituteCell.bounds = (CGRect){ .size = sizeThatFits };
+        if (actualCell) {
+            substituteCell.center = [self.view convertPoint:actualCell.center fromView:actualCell.superview];
+            if (CGRectGetMinY(substituteCell.frame) < 0) {
+                CGRect frame = substituteCell.frame;
+                frame.origin.y = 0;
+                substituteCell.frame = frame;
+            } else if (CGRectGetMaxY(substituteCell.frame) > CGRectGetMaxY(self.view.bounds)) {
+                CGRect frame = substituteCell.frame;
+                frame.origin.y -= CGRectGetMaxY(substituteCell.frame) - CGRectGetMaxY(self.view.bounds);
+                substituteCell.frame = frame;
+            }
+        } else {
+            substituteCell.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetHeight(substituteCell.bounds) / 2);
         }
-    } else {
-        substituteCell.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetHeight(substituteCell.bounds) / 2);
-    }
-    [self.view addSubview:substituteCell];
-    sheet.dismissalBlock = ^{
-        [substituteCell removeFromSuperview];
+    };
+    positionSubstituteCell();
+    sheet.additionalPresentationBlock = ^(BOOL presenting, NSTimeInterval duration) {
+        if (presenting) {
+            substituteCell.alpha = 0;
+            [self.view addSubview:substituteCell];
+            [UIView animateWithDuration:duration animations:^{
+                substituteCell.alpha = 1;
+            }];
+        } else {
+            [UIView animateWithDuration:duration animations:^{
+                substituteCell.alpha = 0;
+            } completion:^(BOOL finished) {
+                [substituteCell removeFromSuperview];
+            }];
+        }
     };
     
-    [sheet presentFromView:substituteCell highlightingRegionReturnedByBlock:^(UIView *view) {
-        return CGRectInset(view.bounds, 0, 1);
+    [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
+        positionSubstituteCell();
+        return CGRectInset(substituteCell.frame, 0, 1);
     }];
 }
 

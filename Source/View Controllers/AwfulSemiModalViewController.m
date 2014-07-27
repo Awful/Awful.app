@@ -244,6 +244,7 @@
             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
         }];
     }
+    if (self.additionalPresentationBlock) self.additionalPresentationBlock(_presenting, [self transitionDuration:transitionContext]);
 }
 
 #pragma mark - UIPopoverControllerDelegate

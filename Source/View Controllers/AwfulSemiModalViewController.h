@@ -40,6 +40,11 @@ typedef CGRect (^AwfulSemiModalRectInViewBlock)(UIView *view);
 - (void)dismissCompletion:(void (^)(void))completionBlock;
 
 /**
+ * An optional block to call during presentation or dismissal, which takes two parameters: YES if being presented, or NO if being dismissed; and the length of time any animations should take.
+ */
+@property (copy, nonatomic) void (^additionalPresentationBlock)(BOOL presenting, NSTimeInterval duration);
+
+/**
  * Subclasses must override to return a size that considers the view's current size a maximum in both dimensions. If it is impossible to fulfill those constraints, try not to stray too far.
  */
 - (CGSize)preferredContentSize;
