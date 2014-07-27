@@ -4,7 +4,6 @@
 
 #import "AwfulNavigationController.h"
 #import "UIViewController+AwfulTheme.h"
-#import "AwfulUnpoppingViewHandler.h"
 
 @interface AwfulNavigationController () <UIViewControllerRestoration>
 
@@ -16,18 +15,20 @@
 
 - (id)init
 {
-    if (!(self = [self initWithNavigationBarClass:[AwfulNavigationBar class] toolbarClass:[AwfulToolbar class]])) return nil;
-    self.restorationClass = self.class;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        _unpopHandler = [[AwfulUnpoppingViewHandler alloc] initWithNavigationController:self];
+    if ((self = [self initWithNavigationBarClass:[AwfulNavigationBar class] toolbarClass:[AwfulToolbar class]])) {
+        self.restorationClass = self.class;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            _unpopHandler = [[AwfulUnpoppingViewHandler alloc] initWithNavigationController:self];
+        }
     }
     return self;
 }
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController
 {
-    if (!(self = [self init])) return nil;
-    self.viewControllers = @[ rootViewController ];
+    if ((self = [self init])) {
+        self.viewControllers = @[ rootViewController ];
+    }
     return self;
 }
 
@@ -72,23 +73,23 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
 
 #pragma mark - AwfulNavigationControllerObserver helpers
 
-- (UIViewController*) popViewControllerAnimated:(BOOL)animated
+- (UIViewController *)popViewControllerAnimated:(BOOL)animated
 {
     UIViewController *viewController = [super popViewControllerAnimated:animated];
     [self.unpopHandler navigationController:self didPopViewController:viewController];
     return viewController;
 }
 
-- (NSArray*) popToViewController:(UIViewController *)viewController animated:(BOOL)animated
+- (NSArray *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    NSArray* popped = [super popToViewController:viewController animated:animated];
+    NSArray *popped = [super popToViewController:viewController animated:animated];
     for (UIViewController *viewController in popped) {
         [self.unpopHandler navigationController:self didPopViewController:viewController];
     }
     return popped;
 }
 
-- (NSArray*) popToRootViewControllerAnimated:(BOOL)animated
+- (NSArray *)popToRootViewControllerAnimated:(BOOL)animated
 {
     NSArray *popped = [super popToRootViewControllerAnimated:animated];
     for (UIViewController *viewController in popped) {
@@ -97,7 +98,7 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
     return popped;
 }
 
-- (void) pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     [super pushViewController:viewController animated:animated];
     [self.unpopHandler navigationController:self didPushViewController:viewController];

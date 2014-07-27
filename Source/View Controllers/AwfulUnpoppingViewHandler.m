@@ -5,18 +5,24 @@
 #import "AwfulUnpoppingViewHandler.h"
 
 @interface AwfulUnpoppingViewHandler ()
-@property (nonatomic, weak) UINavigationController *navigationController;
-@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *panRecognizer;
-@property (nonatomic) CGFloat gestureStartPointX;
-@property (nonatomic) BOOL interactiveTransitionIsTakingPlace;
-@property (nonatomic) BOOL navigationControllerIsAnimating;
-@property (nonatomic, strong) NSMutableArray *controllerStack;
+
+@property (weak, nonatomic) UINavigationController *navigationController;
+@property (assign, nonatomic) BOOL navigationControllerIsAnimating;
+@property (strong, nonatomic) NSMutableArray *controllerStack;
+
+@property (strong, nonatomic) UIScreenEdgePanGestureRecognizer *panRecognizer;
+@property (assign, nonatomic) CGFloat gestureStartPointX;
+@property (assign, nonatomic) BOOL interactiveTransitionIsTakingPlace;
+
 @end
 
 
 @implementation AwfulUnpoppingViewHandler
 
-#pragma mark - Initialisation
+- (void)dealloc
+{
+    [self.navigationController.view removeGestureRecognizer:self.panRecognizer];
+}
 
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController
 {
@@ -34,17 +40,6 @@
     }
     return self;
 }
-
-- (void)dealloc
-{
-    [self.navigationController.view removeGestureRecognizer:self.panRecognizer];
-    self.panRecognizer = nil;
-    self.navigationController = nil;
-    self.controllerStack = nil;
-}
-
-
-#pragma mark - Member functions
 
 - (void)navigationControllerBeganAnimating:(UINavigationController *)navigationController
 {
@@ -114,17 +109,16 @@
     }
 }
 
-
 #pragma mark - UIViewControllerInteractiveTransitioning
 
-- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext
+- (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext
 {
     // TODO: Can we match this up to the default? Does it matter if it will always be interactive?
     // Only takes effect when the system completes a half-swipe
     return 0.35;
 }
 
-- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
+- (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext
 {
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -140,13 +134,13 @@
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                           delay:0
                         options:UIViewAnimationOptionCurveLinear
-                     animations:^{
-                         toViewController.view.frame = toTargetFrame;
-                         fromViewController.view.frame = fromTargetFrame;
-                     }
-                     completion:^(BOOL finished) {
-                         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-                     }];
+                     animations:^
+    {
+        toViewController.view.frame = toTargetFrame;
+        fromViewController.view.frame = fromTargetFrame;
+    } completion:^(BOOL finished) {
+        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+    }];
 }
 
 - (void)animationEnded:(BOOL)transitionCompleted
@@ -174,7 +168,6 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     }
     return NO;
 }
-
 
 #pragma mark - AwfulNavigationControllerObserver
 

@@ -518,10 +518,8 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
         AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
         [anc.unpopHandler navigationControllerBeganAnimating:navigationController];
         
-        // We need to hook into the transitionCoordinator's notifications rather than just the mirror
-        // didShowViewController because that isn't called when the default interactive pop action
-        // is cancelled.
-        // See http://stackoverflow.com/questions/23484310/canceling-interactive-uinavigationcontroller-pop-gesture-does-not-call-uinavigat
+        // We need to hook into the transitionCoordinator's notifications rather than just the mirror didShowViewController because that isn't called when the default interactive pop action is cancelled.
+        // See http://stackoverflow.com/questions/23484310
         id <UIViewControllerTransitionCoordinator> coordinator = navigationController.transitionCoordinator;
         [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
             if ([context isCancelled]) {
@@ -540,35 +538,34 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                     animated:(BOOL)animated
 {
     if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
         [anc.unpopHandler navigationControllerFinishedAnimating:navigationController];
     }
 }
 
 
-- (id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
-                         interactionControllerForAnimationController:(id<UIViewControllerAnimatedTransitioning>)animationController
+- (id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+                          interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>)animationController
 {
     if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
         return anc.unpopHandler;
     }
     return nil;
 }
 
-- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                  animationControllerForOperation:(UINavigationControllerOperation)operation
-                                               fromViewController:(UIViewController *)fromVC
-                                                 toViewController:(UIViewController *)toVC
+- (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                   animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                fromViewController:(UIViewController *)fromVC
+                                                  toViewController:(UIViewController *)toVC
 {
     if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
+        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
         if ([anc.unpopHandler shouldHandleAnimatingTransitionForOperation:operation]) {
             return anc.unpopHandler;
         }
     }
     return nil;
 }
-
 
 @end
