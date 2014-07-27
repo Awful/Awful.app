@@ -85,6 +85,14 @@
     return self.view.bounds.size;
 }
 
+- (void)dismissCompletion:(void (^)(void))completionBlock
+{
+    [super dismissCompletion:^{
+        if (self.dismissalBlock) self.dismissalBlock();
+        if (completionBlock) completionBlock();
+    }];
+}
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

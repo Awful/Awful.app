@@ -14,4 +14,9 @@
 
 - (void)addItem:(AwfulIconActionItem  *)item;
 
+/**
+ * An optional block to call upon dismissal.
+ */
+@property (copy, nonatomic) void (^dismissalBlock)(void);
+
 @end

@@ -78,7 +78,7 @@
 - (void)didTapDimmingView:(UIGestureRecognizer *)sender
 {
     if (sender.state == UIGestureRecognizerStateEnded) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissCompletion:nil];
     }
 }
 
