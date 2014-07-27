@@ -6,7 +6,7 @@
 
 @interface AwfulUnpoppingViewHandler ()
 @property (nonatomic, weak) UINavigationController *navigationController;
-@property (nonatomic, strong) UIPanGestureRecognizer *panRecognizer;
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *panRecognizer;
 @property (nonatomic) CGFloat gestureStartPointX;
 @property (nonatomic) BOOL interactiveTransitionIsTakingPlace;
 @property (nonatomic) BOOL navigationControllerIsAnimating;
@@ -23,7 +23,8 @@
     if (self = [super init]) {
         self.navigationController = navigationController;
         
-        self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        self.panRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        self.panRecognizer.edges = UIRectEdgeRight;
         self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
       
@@ -62,20 +63,16 @@
 
 #pragma mark - Gesture handling
 
-static const CGFloat kMarginThreshold = 50;
-
 - (void)handlePan:(UIPanGestureRecognizer*)recognizer
 {
     const CGPoint point = [recognizer locationInView:recognizer.view];
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
-            if (CGRectGetWidth(recognizer.view.frame) - point.x < kMarginThreshold) {
-                if (self.controllerStack.count) {
-                    self.interactiveTransitionIsTakingPlace = YES;
-                    self.gestureStartPointX = point.x;
-                    [self.navigationController pushViewController:self.controllerStack.lastObject animated:YES];
-                }
+            if (self.controllerStack.count) {
+                self.interactiveTransitionIsTakingPlace = YES;
+                self.gestureStartPointX = point.x;
+                [self.navigationController pushViewController:self.controllerStack.lastObject animated:YES];
             }
             break;
         }
