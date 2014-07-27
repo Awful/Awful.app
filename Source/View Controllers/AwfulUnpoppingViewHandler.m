@@ -128,6 +128,8 @@
     fromTargetFrame = CGRectOffset(fromTargetFrame, -CGRectGetWidth(fromTargetFrame)/3, 0);
     
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
                      animations:^{
                          toViewController.view.frame = toTargetFrame;
                          fromViewController.view.frame = fromTargetFrame;
