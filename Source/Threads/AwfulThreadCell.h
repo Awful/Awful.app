@@ -62,6 +62,8 @@
 
 /**
  * Sets a target and an action for when the cell is long-pressed. If target is nil, the action is handled by the responder chain.
+ *
+ * To remove the target/action pair, pass nil for both target and action.
  */
 - (void)setLongPressTarget:(id)target action:(SEL)action;
 
