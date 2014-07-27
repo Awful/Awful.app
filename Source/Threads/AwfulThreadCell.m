@@ -127,17 +127,15 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    CGRect remainder = CGRectInset(self.contentView.bounds, 4, 4);
-    remainder.size.width -= 4;
+    CGRect remainder = UIEdgeInsetsInsetRect(self.contentView.bounds, Padding);
     
     if (self.threadTagHidden) {
-        remainder.origin.x += 11;
-        remainder.size.width -= 11;
+        remainder = UIEdgeInsetsInsetRect(remainder, AdditionalPaddingHidingTag);
     } else {
         CGRect tagAndRatingFrame;
-        CGRectDivide(remainder, &tagAndRatingFrame, &remainder, 45 + 9, CGRectMinXEdge);
-        tagAndRatingFrame.size.width -= 9;
+        CGRectDivide(remainder, &tagAndRatingFrame, &remainder, TagWidth, CGRectMinXEdge);
         self.tagAndRatingView.frame = tagAndRatingFrame;
+        remainder = UIEdgeInsetsInsetRect(remainder, AdditionalTagPadding);
     }
     
     self.separatorInset = UIEdgeInsetsMake(0, CGRectGetMinX(remainder), 0, 0);
@@ -155,7 +153,7 @@
     [self.numberOfPagesLabel sizeToFit];
     self.detailTextLabel.frame = CGRectMake(0, 0, CGRectGetWidth(remainder), 0);
     [self.detailTextLabel sizeToFit];
-    CGFloat totalHeight = CGRectGetHeight(self.textLabel.bounds) + 2 + CGRectGetHeight(self.detailTextLabel.bounds);
+    CGFloat totalHeight = CGRectGetHeight(self.textLabel.bounds) + TextDetailTextSeparatorHeight + CGRectGetHeight(self.detailTextLabel.bounds);
     CGRect textRect = CGRectInset(remainder, 0, (CGRectGetHeight(remainder) - totalHeight) / 2);
     
     CGRect titleFrame = textRect;
@@ -190,6 +188,26 @@
     stickyFrame.origin.x = CGRectGetMaxX(self.contentView.bounds) - CGRectGetWidth(stickyFrame);
     stickyFrame.origin.y = CGRectGetMinY(self.contentView.bounds);
     self.stickyImageView.frame = stickyFrame;
+}
+
+static const UIEdgeInsets Padding = { .left = 4, .right = 8 };
+static const UIEdgeInsets AdditionalPaddingHidingTag = { .left = 11 };
+static const CGFloat TagWidth = 45;
+static const UIEdgeInsets AdditionalTagPadding = { .left = 9 };
+static const CGFloat TextDetailTextSeparatorHeight = 2;
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    CGFloat initialWidth = size.width;
+    size.width -= Padding.left + Padding.right;
+    if (self.threadTagHidden) {
+        size.width -= AdditionalPaddingHidingTag.left + AdditionalPaddingHidingTag.right;
+    } else {
+        size.width -= TagWidth + AdditionalTagPadding.left + AdditionalTagPadding.right;
+    }
+    size.width -= [self.badgeLabel sizeThatFits:size].width;
+    CGFloat textHeight = [self.textLabel sizeThatFits:size].height + [self.detailTextLabel sizeThatFits:size].height;
+    return CGSizeMake(initialWidth, textHeight + TextDetailTextSeparatorHeight);
 }
 
 @end
