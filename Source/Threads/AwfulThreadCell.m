@@ -106,7 +106,7 @@
 
 - (void)setLongPressTarget:(id)target action:(SEL)action
 {
-    if (target || action) {
+    if (action) {
         self.longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress:)];
         [self addGestureRecognizer:self.longPressRecognizer];
     } else {
