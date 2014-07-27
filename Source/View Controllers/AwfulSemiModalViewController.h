@@ -7,7 +7,7 @@
 /**
  * An AwfulSemiModalViewController has custom modal presentation behavior intended to provide context by appearing next to, or pointing at, relevant content in the presenting view controller.
  *
- * Semi-modal view controllers inherit their presented view controller's theme.
+ * Semi-modal view controllers inherit their presenting view controller's theme.
  */
 @interface AwfulSemiModalViewController : AwfulViewController
 
