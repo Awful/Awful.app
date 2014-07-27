@@ -509,60 +509,55 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
 
 #pragma mark - UINavigationControllerDelegate
 
-- (void)navigationController:(UINavigationController *)navigationController
+- (void)navigationController:(AwfulNavigationController *)navigationController
       willShowViewController:(UIViewController *)viewController
                     animated:(BOOL)animated
 {
     [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
+    
     if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController*)navigationController;
-        [anc.unpopHandler navigationControllerBeganAnimating:navigationController];
+        [navigationController.unpopHandler navigationControllerDidBeginAnimating];
         
-        // We need to hook into the transitionCoordinator's notifications rather than just the mirror didShowViewController because that isn't called when the default interactive pop action is cancelled.
+        // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
         // See http://stackoverflow.com/questions/23484310
         id <UIViewControllerTransitionCoordinator> coordinator = navigationController.transitionCoordinator;
-        [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [coordinator notifyWhenInteractionEndsUsingBlock:^(id <UIViewControllerTransitionCoordinatorContext> context) {
             if ([context isCancelled]) {
                 NSTimeInterval completion = [context transitionDuration] * [context percentComplete];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)completion * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                    [anc.unpopHandler navigationControllerFinishedAnimating:navigationController];
+                    [navigationController.unpopHandler navigationControllerDidFinishAnimating];
                 });
             }
         }];
     }
 }
 
-
-- (void)navigationController:(UINavigationController *)navigationController
+- (void)navigationController:(AwfulNavigationController *)navigationController
        didShowViewController:(UIViewController *)viewController
                     animated:(BOOL)animated
 {
     if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
-        [anc.unpopHandler navigationControllerFinishedAnimating:navigationController];
+        [navigationController.unpopHandler navigationControllerDidFinishAnimating];
     }
 }
 
-
-- (id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+- (id <UIViewControllerInteractiveTransitioning>)navigationController:(AwfulNavigationController *)navigationController
                           interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>)animationController
 {
     if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
-        return anc.unpopHandler;
+        return navigationController.unpopHandler;
     }
     return nil;
 }
 
-- (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+- (id <UIViewControllerAnimatedTransitioning>)navigationController:(AwfulNavigationController *)navigationController
                                    animationControllerForOperation:(UINavigationControllerOperation)operation
                                                 fromViewController:(UIViewController *)fromVC
                                                   toViewController:(UIViewController *)toVC
 {
     if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        AwfulNavigationController *anc = (AwfulNavigationController *)navigationController;
-        if ([anc.unpopHandler shouldHandleAnimatingTransitionForOperation:operation]) {
-            return anc.unpopHandler;
+        if ([navigationController.unpopHandler shouldHandleAnimatingTransitionForOperation:operation]) {
+            return navigationController.unpopHandler;
         }
     }
     return nil;

@@ -19,8 +19,10 @@
 
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController;
 
-- (void)navigationControllerBeganAnimating:(UINavigationController *)navigationController;
-- (void)navigationControllerFinishedAnimating:(UINavigationController *)navigationController;
+@property (readonly, weak, nonatomic) UINavigationController *navigationController;
+
+- (void)navigationControllerDidBeginAnimating;
+- (void)navigationControllerDidFinishAnimating;
 
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation;
 

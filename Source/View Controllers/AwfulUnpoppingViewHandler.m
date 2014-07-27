@@ -33,7 +33,7 @@
         self.panRecognizer.edges = UIRectEdgeRight;
         self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
-      
+
         self.navigationController.interactivePopGestureRecognizer.delegate = self;
       
         self.controllerStack = [NSMutableArray array];
@@ -41,12 +41,12 @@
     return self;
 }
 
-- (void)navigationControllerBeganAnimating:(UINavigationController *)navigationController
+- (void)navigationControllerDidBeginAnimating
 {
     self.navigationControllerIsAnimating = YES;
 }
 
-- (void)navigationControllerFinishedAnimating:(UINavigationController *)navigationController
+- (void)navigationControllerDidFinishAnimating
 {
     self.navigationControllerIsAnimating = NO;
 }
@@ -147,7 +147,6 @@
 {
     if (!transitionCompleted) {
         self.navigationControllerIsAnimating = NO;
-    } else {
     }
 }
 
