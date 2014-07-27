@@ -51,16 +51,6 @@
     [self.webView.scrollView addSubview:self.threadCell];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.threadCell.frame = CGRectMake(0, -75, CGRectGetWidth(self.view.bounds), 75);
-    UIEdgeInsets insets = self.webView.scrollView.contentInset;
-    insets.top += CGRectGetHeight(self.threadCell.bounds);
-    self.webView.scrollView.contentInset = insets;
-}
-
 - (AwfulTheme *)theme
 {
     return [AwfulTheme currentThemeForForum:self.forum];
@@ -125,6 +115,7 @@
 		cell.threadTagHidden = YES;
 	}
 	
+    cell.textLabel.numberOfLines = 0;
     cell.textLabel.text = [self.subject stringByCollapsingWhitespace];
     cell.tagAndRatingView.alpha = 1;
     cell.textLabel.enabled = YES;
@@ -137,6 +128,18 @@
     cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
     cell.tintColor = theme[@"listSecondaryTextColor"];
     cell.fontName = theme[@"listFontName"];
+    
+    CGSize cellSize = [cell sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), 0)];
+    if (cellSize.height < 75) {
+        cellSize.height = 75;
+    } else {
+        cellSize.height += 6;
+    }
+    
+    cell.frame = (CGRect){ .origin.y = -cellSize.height, .size = cellSize };
+    UIEdgeInsets insets = self.webView.scrollView.contentInset;
+    insets.top = self.topLayoutGuide.length + CGRectGetHeight(self.threadCell.bounds);
+    self.webView.scrollView.contentInset = insets;
 }
 
 - (NSManagedObjectContext *)managedObjectContext
