@@ -161,12 +161,18 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    if (gestureRecognizer == self.panRecognizer || gestureRecognizer == self.navigationController.interactivePopGestureRecognizer) {
-        if (otherGestureRecognizer == self.panRecognizer || otherGestureRecognizer == self.navigationController.interactivePopGestureRecognizer) {
-            return YES;
-        }
+    // There's three recognizers here that may need simultaneous recognition:
+    //   1. Our own pan from right screen edge.
+    //   2. The navigation controller's pan from left screen edge.
+    //   3. On iPhone, the basement's pan from left screen edge.
+    // As a poor substitute, we'll just allow all screen edge pans to recognize at once.
+    if (gestureRecognizer.delegate == self) {
+        return [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
+    } else if (otherGestureRecognizer.delegate == self) {
+        return [gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
+    } else {
+        return NO;
     }
-    return NO;
 }
 
 #pragma mark - AwfulNavigationControllerObserver
