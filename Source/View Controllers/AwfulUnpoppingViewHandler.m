@@ -121,7 +121,7 @@
     
     [[transitionContext containerView] addSubview:toViewController.view];
     
-    CGRect toTargetFrame = [[transitionContext containerView] frame];
+    CGRect toTargetFrame = fromViewController.view.frame; // New view should occupy same space as previous
     toViewController.view.frame = CGRectOffset(toTargetFrame, CGRectGetWidth(toTargetFrame), 0);
     
     CGRect fromTargetFrame = fromViewController.view.frame;
