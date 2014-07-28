@@ -14,4 +14,5 @@ const struct AwfulErrorCodes AwfulErrorCodes = {
     .missingDataStore = -1004,
     .forbidden = -1005,
     .databaseUnavailable = -1006,
+    .archivesRequired = -1007,
 };

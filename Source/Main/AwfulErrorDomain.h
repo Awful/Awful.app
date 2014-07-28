@@ -16,6 +16,9 @@ extern const struct AwfulErrorCodes
     // Some action isn't allowed because the thread is closed.
     NSInteger threadIsClosed;
     
+    // Thread is archived and user doesn't have access.
+    NSInteger archivesRequired;
+    
     // Could not parse the response from SA.
     NSInteger parseError;
     

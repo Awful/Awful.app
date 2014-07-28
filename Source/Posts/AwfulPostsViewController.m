@@ -9,6 +9,7 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDateFormatters.h"
+#import "AwfulErrorDomain.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumThreadTableViewController.h"
@@ -172,9 +173,13 @@
         
         if (error) {
             [self clearLoadingMessage];
-            BOOL offlineMode = ![AwfulForumsClient client].reachable && [error.domain isEqualToString:NSURLErrorDomain];
-            if (self.posts.count == 0 || !offlineMode) {
-                [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+            if (error.code == AwfulErrorCodes.archivesRequired) {
+                [AwfulAlertView showWithTitle:@"Archives Required" error:error buttonTitle:@"OK"];
+            } else {
+                BOOL offlineMode = ![AwfulForumsClient client].reachable && [error.domain isEqualToString:NSURLErrorDomain];
+                if (self.posts.count == 0 || !offlineMode) {
+                    [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+                }
             }
         }
         

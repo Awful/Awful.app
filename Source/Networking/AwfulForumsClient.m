@@ -591,7 +591,7 @@
                     [thread.managedObjectContext refreshObject:thread mergeChanges:YES];
                     
                     NSArray *posts = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                    callback(nil, posts, firstUnreadPostIndex, scraper.advertisementHTML);
+                    callback(error, posts, firstUnreadPostIndex, scraper.advertisementHTML);
                 });
             }
         }];

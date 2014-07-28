@@ -34,6 +34,13 @@
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
     self.thread.forum = forum;
     
+    if (!self.thread.threadID && [body awful_firstNodeMatchingCachedSelector:@"div.standard div.inner a[href*=archives.php]"]) {
+        self.error = [NSError errorWithDomain:AwfulErrorDomain
+                                         code:AwfulErrorCodes.archivesRequired
+                                     userInfo:@{ NSLocalizedDescriptionKey: @"Viewing this content requires the archives upgrade." }];
+        return;
+    }
+    
     HTMLElement *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
     
     // Last hierarchy link is the thread.
