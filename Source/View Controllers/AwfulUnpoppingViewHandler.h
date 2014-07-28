@@ -20,10 +20,12 @@
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController;
 
 @property (readonly, weak, nonatomic) UINavigationController *navigationController;
+@property (readonly, nonatomic) BOOL interactiveUnpopIsTakingPlace;
 
 - (void)navigationControllerDidBeginAnimating;
 - (void)navigationControllerDidFinishAnimating;
 - (void)navigationControllerDidCancelInteractivePop;
+- (void)navigationControllerDidCancelInteractiveUnpop;
 
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation;
 

@@ -12,7 +12,6 @@
 
 @property (strong, nonatomic) UIScreenEdgePanGestureRecognizer *panRecognizer;
 @property (assign, nonatomic) CGFloat gestureStartPointX;
-@property (assign, nonatomic) BOOL interactiveTransitionIsTakingPlace;
 
 @end
 
@@ -60,9 +59,14 @@
     [self.controllerStack removeLastObject];
 }
 
+- (void)navigationControllerDidCancelInteractiveUnpop
+{
+    self.navigationControllerIsAnimating = NO;
+}
+
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation
 {
-    return (operation == UINavigationControllerOperationPush && self.interactiveTransitionIsTakingPlace);
+    return (operation == UINavigationControllerOperationPush && self.interactiveUnpopIsTakingPlace);
 }
 
 - (NSArray *)viewControllers
@@ -84,14 +88,14 @@
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
             if (self.controllerStack.count) {
-                self.interactiveTransitionIsTakingPlace = YES;
+                _interactiveUnpopIsTakingPlace = YES;
                 self.gestureStartPointX = point.x;
                 [self.navigationController pushViewController:self.controllerStack.lastObject animated:YES];
             }
             break;
         }
         case UIGestureRecognizerStateChanged: {
-            if (self.interactiveTransitionIsTakingPlace) {
+            if (_interactiveUnpopIsTakingPlace) {
                 CGFloat percent = (self.gestureStartPointX - point.x) / self.gestureStartPointX;
                 [self updateInteractiveTransition:percent];
             }
@@ -99,7 +103,7 @@
         }
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateEnded: {
-            if (self.interactiveTransitionIsTakingPlace) {
+            if (_interactiveUnpopIsTakingPlace) {
                 CGFloat percent = (self.gestureStartPointX - point.x) / self.gestureStartPointX;
                 // TODO: Use [recognizer velocityInView] too?
                 if (percent <= 0.3) {
@@ -109,7 +113,7 @@
                     [self finishInteractiveTransition];
                 }
                 self.gestureStartPointX = 0;
-                self.interactiveTransitionIsTakingPlace = NO;
+                _interactiveUnpopIsTakingPlace = NO;
             }
             break;
         }
@@ -196,7 +200,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 - (void)navigationController:(UINavigationController *)navigationController
        didPushViewController:(UIViewController *)viewController
 {
-    if (!self.interactiveTransitionIsTakingPlace) {
+    if (!self.interactiveUnpopIsTakingPlace) {
         [self.controllerStack removeAllObjects];
     }
 }
