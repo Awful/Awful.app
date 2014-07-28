@@ -539,6 +539,9 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
     if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
         [navigationController.unpopHandler navigationControllerDidFinishAnimating];
     }
+    
+    // AwfulNavigationController disables its interactivePopGestureRecognizer when a view controller gets pushed. Here we reenable it when appropriate.
+    navigationController.interactivePopGestureRecognizer.enabled = viewController != navigationController.viewControllers.firstObject;
 }
 
 - (id <UIViewControllerInteractiveTransitioning>)navigationController:(AwfulNavigationController *)navigationController

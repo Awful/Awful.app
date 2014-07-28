@@ -100,6 +100,9 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+    // If we don't disable the interactivePopGestureRecognizer, we can get into a weird state where the pushed view doesn't appear and touches get no response. (The navigation controller's delegate will reenable the gesture recognizer as appropriate.)
+    self.interactivePopGestureRecognizer.enabled = NO;
+    
     [super pushViewController:viewController animated:animated];
     [self.unpopHandler navigationController:self didPushViewController:viewController];
 }
