@@ -526,6 +526,7 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                 NSTimeInterval completion = [context transitionDuration] * [context percentComplete];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)completion * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     [navigationController.unpopHandler navigationControllerDidCancelInteractivePop];
+                    navigationController.interactivePopGestureRecognizer.enabled = navigationController.viewControllers.count > 1;
                 });
             }
         }];
