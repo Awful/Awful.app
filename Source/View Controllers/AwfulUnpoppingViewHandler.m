@@ -51,6 +51,15 @@
     self.navigationControllerIsAnimating = NO;
 }
 
+- (void)navigationControllerDidCancelInteractivePop
+{
+    // We get a call to didPopViewController when the interactive pop
+    // starts, but no (automatic) inverse call if the gesture is cancelled.
+    // This cleans up the state by removing the falsely stacked controller.
+    self.navigationControllerIsAnimating = NO;
+    [self.controllerStack removeLastObject];
+}
+
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation
 {
     return (operation == UINavigationControllerOperationPush && self.interactiveTransitionIsTakingPlace);

@@ -23,6 +23,7 @@
 
 - (void)navigationControllerDidBeginAnimating;
 - (void)navigationControllerDidFinishAnimating;
+- (void)navigationControllerDidCancelInteractivePop;
 
 - (BOOL)shouldHandleAnimatingTransitionForOperation:(UINavigationControllerOperation)operation;
 
