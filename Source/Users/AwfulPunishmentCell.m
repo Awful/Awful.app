@@ -118,6 +118,8 @@ static UIColor * BottomColorForBackgroundColor(UIColor *color)
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
+    
     const UIEdgeInsets cellMargin = (UIEdgeInsets){
         .left = 10, .right = 10,
         .top = 5, .bottom = 10,
@@ -141,12 +143,8 @@ static UIColor * BottomColorForBackgroundColor(UIColor *color)
         .origin.y = CGRectGetMaxY(self.imageView.frame) + imageViewBottomMargin,
         .size.width = CGRectGetWidth(self.contentView.bounds) - cellMargin.left - reasonLabelRightMargin,
     };
-    CGFloat cellHeight = [self.class rowHeightWithBanReason:self.reasonLabel.text
-                                                      width:CGRectGetWidth(self.contentView.frame)];
-    reasonFrame.size.height = cellHeight - CGRectGetMinY(reasonFrame) - cellMargin.bottom;
+    reasonFrame.size.height = CGRectGetHeight(self.contentView.bounds) - CGRectGetMinY(reasonFrame) - cellMargin.bottom;
     self.reasonLabel.frame = reasonFrame;
-    
-    self.backgroundView.frame = (CGRect){ .size = self.bounds.size };
 }
 
 @end
