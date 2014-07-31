@@ -1202,7 +1202,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                                         userInfo:@{ NSLocalizedDescriptionKey: description }];
             }
             if (callback) {
-                callback(error, message);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    callback(error, message);
+                });
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
