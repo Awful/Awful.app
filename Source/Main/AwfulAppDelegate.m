@@ -525,13 +525,15 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
             if ([context isCancelled]) {
                 BOOL unpopping = navigationController.unpopHandler.interactiveUnpopIsTakingPlace;
                 NSTimeInterval completion = [context transitionDuration] * [context percentComplete];
+                NSUInteger viewControllerCount = navigationController.viewControllers.count;
+                if (!unpopping) viewControllerCount++;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)completion * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     if (unpopping) {
                         [navigationController.unpopHandler navigationControllerDidCancelInteractiveUnpop];
                     } else {
                         [navigationController.unpopHandler navigationControllerDidCancelInteractivePop];
                     }
-                    navigationController.interactivePopGestureRecognizer.enabled = navigationController.viewControllers.count > 1;
+                    navigationController.interactivePopGestureRecognizer.enabled = viewControllerCount > 1;
                 });
             }
         }];
