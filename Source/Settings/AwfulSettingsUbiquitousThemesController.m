@@ -78,6 +78,7 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     AwfulTheme *theme = self.themes[indexPath.row];
+    
     {{
         cell.textLabel.text = theme.descriptiveName;
         if ([self.selectedThemeNames containsObject:theme.name]) {
@@ -119,7 +120,6 @@ static NSString * const CellIdentifier = @"Cell";
                                          context:nil];
     const CGFloat margin = 14;
     return ceil(CGRectGetHeight(expected)) + margin;
-
 }
 
 #pragma mark - UITableViewDelegate
