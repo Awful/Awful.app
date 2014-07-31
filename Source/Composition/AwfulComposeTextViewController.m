@@ -195,12 +195,23 @@
     overlay.tintColor = self.theme[@"tintColor"];
     
     NSMutableArray *images = [NSMutableArray new];
+    ALAssetsLibrary *library = [ALAssetsLibrary new];
     for (AwfulTextAttachment *attachment in attachments) {
+        
+        // Images in the assets library can be uploaded directly from the library.
         if ([attachment isKindOfClass:[AwfulTextAttachment class]] && attachment.assetURL) {
-            [images addObject:attachment.assetURL];
-        } else {
-            [images addObject:attachment.image];
+            NSError *error;
+            ALAsset *asset = [library awful_assetForURL:attachment.assetURL error:&error];
+            if (!asset) NSLog(@"%s error loading asset at URL %@: %@", __PRETTY_FUNCTION__, attachment.assetURL, error);
+            
+            // However, images that have been edited on the device (e.g. cropped in the Photos app) should fall back to the UIImage object, which has those edits applied. The asset library will only give us the unadjusted image.
+            if (asset && !asset.defaultRepresentation.metadata[@"AdjustmentXMP"]) {
+                [images addObject:attachment.assetURL];
+                continue;
+            }
         }
+        
+        [images addObject:attachment.image];
     }
     
     _imageUploadProgress = [self uploadImages:images completionHandler:^(NSArray *URLs, NSError *error) {
