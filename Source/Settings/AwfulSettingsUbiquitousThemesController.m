@@ -77,8 +77,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    AwfulTheme *theme = self.themes[indexPath.row];
     {{
-        AwfulTheme *theme = self.themes[indexPath.row];
         cell.textLabel.text = theme.descriptiveName;
         if ([self.selectedThemeNames containsObject:theme.name]) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -86,10 +86,14 @@
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
     }}
+    
     {{
-        AwfulTheme *theme = self.theme;
-        cell.backgroundColor = theme[@"listBackgroundColor"];
         cell.textLabel.textColor = theme[@"listTextColor"];
+        UIFontDescriptor *textLabelDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleSubheadline];
+        cell.textLabel.font = [UIFont fontWithName:(theme[@"listFontName"] ?: [textLabelDescriptor objectForKey:UIFontDescriptorNameAttribute])
+                                              size:textLabelDescriptor.pointSize];
+        cell.tintColor = theme[@"listSecondaryTextColor"];
+        cell.backgroundColor = theme[@"listBackgroundColor"];
         if (!cell.selectedBackgroundView) {
             cell.selectedBackgroundView = [UIView new];
         }
