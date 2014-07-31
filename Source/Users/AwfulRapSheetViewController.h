@@ -15,7 +15,7 @@
  *
  * @param user The user whose bans and probations are shown, or nil to show all users.
  */
-- (id)initWithUser:(AwfulUser *)user;
+- (instancetype)initWithUser:(AwfulUser *)user;
 
 /**
  * The user whose bans and probations are shown. Can be nil, in which case all users' bans and probations are shown.

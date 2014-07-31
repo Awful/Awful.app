@@ -14,28 +14,24 @@
 @interface AwfulRapSheetViewController ()
 
 @property (strong, nonatomic) UIBarButtonItem *doneItem;
+@property (assign, nonatomic) NSInteger mostRecentlyLoadedPage;
+@property (strong, nonatomic) NSMutableOrderedSet *bans;
 
 @end
 
 @implementation AwfulRapSheetViewController
-{
-    NSInteger _mostRecentlyLoadedPage;
-    NSMutableOrderedSet *_bans;
-}
 
 - (id)initWithUser:(AwfulUser *)user
 {
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (!self) return nil;
-    
-    _user = user;
-    _bans = [NSMutableOrderedSet new];
-    self.title = user ? @"Rap Sheet" : @"Leper's Colony";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
-    self.modalPresentationStyle = UIModalPresentationFormSheet;
-    self.hidesBottomBarWhenPushed = YES;
-    
+    if ((self = [super initWithStyle:UITableViewStylePlain])) {
+        _user = user;
+        _bans = [NSMutableOrderedSet new];
+        self.title = user ? @"Rap Sheet" : @"Leper's Colony";
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
+        self.modalPresentationStyle = UIModalPresentationFormSheet;
+        self.hidesBottomBarWhenPushed = YES;
+    }
     return self;
 }
 
@@ -87,7 +83,7 @@
 
 - (void)refreshIfNecessary
 {
-    if (_bans.count == 0) {
+    if (self.bans.count == 0) {
         [self refresh];
     }
 }
@@ -107,21 +103,21 @@
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
             return;
         }
-        _mostRecentlyLoadedPage = page;
+        self.mostRecentlyLoadedPage = page;
         if (page == 1) {
-            [_bans removeAllObjects];
-            [_bans addObjectsFromArray:bans];
+            [self.bans removeAllObjects];
+            [self.bans addObjectsFromArray:bans];
             [self.tableView reloadData];
-            if (_bans.count == 0) {
+            if (self.bans.count == 0) {
                 [self showNothingToSeeView];
             } else {
                 [self setUpInfiniteScroll];
             }
         } else {
-            NSUInteger oldCount = _bans.count;
-            [_bans addObjectsFromArray:bans];
+            NSUInteger oldCount = self.bans.count;
+            [self.bans addObjectsFromArray:bans];
             NSMutableArray *indexPaths = [NSMutableArray new];
-            for (NSUInteger i = oldCount; i < _bans.count; i++) {
+            for (NSUInteger i = oldCount; i < self.bans.count; i++) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -136,9 +132,9 @@
     UILabel *nothing = [UILabel new];
     nothing.text = @"Nothing to see here…";
     nothing.frame = (CGRect){ .size = self.view.bounds.size };
-    nothing.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    nothing.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     nothing.textAlignment = NSTextAlignmentCenter;
-	nothing.textColor = self.theme[@"listTextColor"];
+    nothing.textColor = self.theme[@"listTextColor"];
     [self.view addSubview:nothing];
 }
 
@@ -147,51 +143,56 @@
     __weak __typeof__(self) weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         __typeof__(self) self = weakSelf;
-        [self loadPage:self->_mostRecentlyLoadedPage + 1];
+        [self loadPage:self.mostRecentlyLoadedPage + 1];
     }];
 }
 
-#pragma mark - UITableViewDataSource and UITableViewDelegate
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _bans.count;
+    return self.bans.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulPunishmentCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    AwfulBan *ban = _bans[indexPath.row];
+    AwfulBan *ban = self.bans[indexPath.row];
     
-    if (ban.punishment == AwfulPunishmentProbation) {
-        cell.imageView.image = [UIImage imageNamed:@"title-probation"];
-    } else if (ban.punishment == AwfulPunishmentPermaban) {
-        cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
-    } else {
-        cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
-    }
+    {{
+        if (ban.punishment == AwfulPunishmentProbation) {
+            cell.imageView.image = [UIImage imageNamed:@"title-probation"];
+        } else if (ban.punishment == AwfulPunishmentPermaban) {
+            cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
+        } else {
+            cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
+        }
+        cell.textLabel.text = ban.user.username;
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ by %@", [self.banDateFormatter stringFromDate:ban.date], ban.requester.username];
+        cell.reasonLabel.text = ban.reasonHTML;
+    }}
     
-    cell.textLabel.text = ban.user.username;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ by %@",
-                                 [self.banDateFormatter stringFromDate:ban.date], ban.requester.username];
-    cell.reasonLabel.text = ban.reasonHTML;
+    {{
+        NSString *banDescription = @"banned";
+        if (ban.punishment == AwfulPunishmentProbation) {
+            banDescription = @"probated";
+        } else if (ban.punishment == AwfulPunishmentPermaban) {
+            banDescription = @"permabanned";
+        }
+        NSString *readableBanDate = [self.banDateFormatter stringFromDate:ban.date];
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”", ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
+    }}
     
-    NSString *banDescription = @"banned";
-    if (ban.punishment == AwfulPunishmentProbation) banDescription = @"probated";
-    else if (ban.punishment == AwfulPunishmentPermaban) banDescription = @"permabanned";
-    NSString *readableBanDate = [self.banDateFormatter stringFromDate:ban.date];
-    cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”",
-                               ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
-    
-    cell.textLabel.textColor = self.theme[@"listTextColor"];
-    cell.detailTextLabel.textColor = self.theme[@"listSecondaryTextColor"];
-    cell.reasonLabel.textColor = self.theme[@"listTextColor"];
-    cell.backgroundColor = self.theme[@"listBackgroundColor"];
-    if (!cell.selectedBackgroundView) {
+    {{
+        AwfulTheme *theme = self.theme;
+        cell.textLabel.textColor = theme[@"listTextColor"];
+        cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
+        cell.reasonLabel.textColor = theme[@"listTextColor"];
+        cell.backgroundColor = theme[@"listBackgroundColor"];
         cell.selectedBackgroundView = [UIView new];
-    }
-    cell.selectedBackgroundView.backgroundColor = self.theme[@"listSelectedBackgroundColor"];
+        cell.selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
+    }}
+    
     return cell;
 }
 
@@ -211,18 +212,20 @@
 
 static NSString * const CellIdentifier = @"Infraction Cell";
 
+#pragma mark - UITableViewDelegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulBan *ban = _bans[indexPath.row];
+    AwfulBan *ban = self.bans[indexPath.row];
     return [AwfulPunishmentCell rowHeightWithBanReason:ban.reasonHTML width:CGRectGetWidth(tableView.bounds)];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulBan *ban = _bans[indexPath.row];
+    AwfulBan *ban = self.bans[indexPath.row];
     if (!ban.post) return;
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.post.postID]];
-    [AwfulAppDelegate.instance openAwfulURL:url];
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.post.postID]];
+    [[AwfulAppDelegate instance] openAwfulURL:URL];
     if (self.presentingViewController) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }

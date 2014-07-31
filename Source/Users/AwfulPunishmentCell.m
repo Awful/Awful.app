@@ -48,9 +48,7 @@ static const CGFloat reasonFontSize = 15;
 {
     [super setBackgroundColor:backgroundColor];
     UIImage *backgroundImage = BackgroundImageWithColor(self.backgroundColor);
-    if (!self.backgroundView) {
-        self.backgroundView = [UIImageView new];
-    }
+    if (!self.backgroundView) self.backgroundView = [UIImageView new];
     ((UIImageView *)self.backgroundView).image = backgroundImage;
 }
 
@@ -75,28 +73,27 @@ static UIImage * BackgroundImageWithColor(UIColor *color)
         // Subtract 2: 1 for shadow, 1 for resizable part.
         CGRect topHalf = CGRectMake(0, 0, size.width, size.height - 2);
         
-        CGContextSaveGState(context);
-        CGContextSetFillColorWithColor(context, bottomColor.CGColor);
-        CGContextFillRect(context, (CGRect){ .size = size });
-        CGContextRestoreGState(context);
+        CGContextSaveGState(context); {
+            CGContextSetFillColorWithColor(context, bottomColor.CGColor);
+            CGContextFillRect(context, (CGRect){ .size = size });
+        } CGContextRestoreGState(context);
         
-        CGContextSaveGState(context);
+        CGContextSaveGState(context); {
         
-        // For whatever reason drawing a shadow in the little triangular notch draws the shadow all the
-        // way down, like a stripe. We clip first to prevent the stripe.
-        CGContextClipToRect(context, CGRectInset(topHalf, 0, -1));
-        
-        CGContextMoveToPoint(context, CGRectGetMinX(topHalf), CGRectGetMinY(topHalf));
-        CGContextAddLineToPoint(context, CGRectGetMinX(topHalf), CGRectGetMaxY(topHalf));
-        CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 25, CGRectGetMaxY(topHalf));
-        CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 31, CGRectGetMaxY(topHalf) - 4);
-        CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 37, CGRectGetMaxY(topHalf));
-        CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMaxY(topHalf));
-        CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMinY(topHalf));
-        CGContextSetFillColorWithColor(context, topColor.CGColor);
-        CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 1, shadowColor.CGColor);
-        CGContextFillPath(context);
-        CGContextRestoreGState(context);
+            // For whatever reason drawing a shadow in the little triangular notch draws the shadow all the way down, like a stripe. We clip first to prevent the stripe.
+            CGContextClipToRect(context, CGRectInset(topHalf, 0, -1));
+            
+            CGContextMoveToPoint(context, CGRectGetMinX(topHalf), CGRectGetMinY(topHalf));
+            CGContextAddLineToPoint(context, CGRectGetMinX(topHalf), CGRectGetMaxY(topHalf));
+            CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 25, CGRectGetMaxY(topHalf));
+            CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 31, CGRectGetMaxY(topHalf) - 4);
+            CGContextAddLineToPoint(context, CGRectGetMinX(topHalf) + 37, CGRectGetMaxY(topHalf));
+            CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMaxY(topHalf));
+            CGContextAddLineToPoint(context, CGRectGetMaxX(topHalf), CGRectGetMinY(topHalf));
+            CGContextSetFillColorWithColor(context, topColor.CGColor);
+            CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 1, shadowColor.CGColor);
+            CGContextFillPath(context);
+        } CGContextRestoreGState(context);
         
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -134,8 +131,7 @@ static UIColor * BottomColorForBackgroundColor(UIColor *color)
         .origin = { CGRectGetMaxX(self.imageView.frame) + imageViewRightMargin, 9 },
         .size.height = self.textLabel.font.lineHeight,
     };
-    textLabelFrame.size.width = (CGRectGetWidth(self.contentView.frame) -
-                                 CGRectGetMinX(textLabelFrame) - cellMargin.right);
+    textLabelFrame.size.width = (CGRectGetWidth(self.contentView.bounds) - CGRectGetMinX(textLabelFrame) - cellMargin.right);
     self.textLabel.frame = textLabelFrame;
     self.detailTextLabel.frame = CGRectOffset(textLabelFrame, 0, CGRectGetHeight(textLabelFrame));
     
@@ -143,7 +139,7 @@ static UIColor * BottomColorForBackgroundColor(UIColor *color)
     CGRect reasonFrame = (CGRect){
         .origin.x = cellMargin.left,
         .origin.y = CGRectGetMaxY(self.imageView.frame) + imageViewBottomMargin,
-        .size.width = (CGRectGetWidth(self.contentView.frame) - cellMargin.left - reasonLabelRightMargin),
+        .size.width = CGRectGetWidth(self.contentView.bounds) - cellMargin.left - reasonLabelRightMargin,
     };
     CGFloat cellHeight = [self.class rowHeightWithBanReason:self.reasonLabel.text
                                                       width:CGRectGetWidth(self.contentView.frame)];
