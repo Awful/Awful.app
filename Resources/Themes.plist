@@ -302,14 +302,14 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
-		<key>postsLoadingViewTintColor</key>
-		<string>#159933</string>
 		<key>description</key>
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
 		<string>#68cc24</string>
 		<key>relevantForumID</key>
 		<string>25</string>
+		<key>postsLoadingViewTintColor</key>
+		<string>#159933</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-gas-chamber.css</string>
 	</dict>
@@ -341,6 +341,12 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>description</key>
+		<string>Green console</string>
+		<key>descriptiveColor</key>
+		<string>#57ff57</string>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>parent</key>
 		<string>dark</string>
 		<key>backgroundColor</key>
@@ -349,12 +355,6 @@
 		<string>#57FF57</string>
 		<key>listFontName</key>
 		<string>Courier</string>
-		<key>description</key>
-		<string>Green console</string>
-		<key>descriptiveColor</key>
-		<string>#57ff57</string>
-		<key>relevantForumID</key>
-		<string>219</string>
 		<key>postsLoadingViewType</key>
 		<string>YOSPOS</string>
 		<key>postsLoadingViewTintColor</key>
