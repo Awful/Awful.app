@@ -1008,17 +1008,6 @@
     } position:SVPullToRefreshPositionBottom];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{    
-    // Blank the web view if we're leaving for good. Otherwise we get weirdness like videos continuing to play their sound after the user switches to a different thread.
-    BOOL shouldClearView = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-    shouldClearView &= !self.navigationController;
-    if (shouldClearView) {
-        [self loadBlankPage];
-    }
-    [super viewDidDisappear:animated];
-}
-
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
