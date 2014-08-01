@@ -287,6 +287,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
 {
+    view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
 }
 
@@ -419,7 +420,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     CGSize max = CGSizeMake(tableView.bounds.size.width - 40, CGFLOAT_MAX);
     CGRect expected = [text boundingRectWithSize:max
                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1] }
+                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline] }
                                          context:nil];
     const CGFloat margin = 14;
     return ceil(CGRectGetHeight(expected)) + margin;

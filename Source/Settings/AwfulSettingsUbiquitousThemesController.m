@@ -116,7 +116,7 @@ static NSString * const CellIdentifier = @"Cell";
     CGSize max = CGSizeMake(CGRectGetWidth(tableView.bounds) - 40, CGFLOAT_MAX);
     CGRect expected = [text boundingRectWithSize:max
                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1] }
+                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline] }
                                          context:nil];
     const CGFloat margin = 14;
     return ceil(CGRectGetHeight(expected)) + margin;
@@ -147,6 +147,17 @@ static NSString * const CellIdentifier = @"Cell";
 {
     // BUG: On iOS 7 by default there's a stubborn 35pt top margin. This removes that margin.
     return 0.1;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
+{
+    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
+{
+    view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
 }
 
 @end
