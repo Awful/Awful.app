@@ -116,7 +116,7 @@ static NSString * const CellIdentifier = @"Cell";
     CGSize max = CGSizeMake(CGRectGetWidth(tableView.bounds) - 40, CGFLOAT_MAX);
     CGRect expected = [text boundingRectWithSize:max
                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline] }
+                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote] }
                                          context:nil];
     const CGFloat margin = 14;
     return ceil(CGRectGetHeight(expected)) + margin;
@@ -156,7 +156,7 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
 {
-    view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
     view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
 }
 
