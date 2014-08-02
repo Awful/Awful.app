@@ -4,6 +4,8 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>listFontName</key>
+		<string>ChalkboardSE-Regular</string>
 		<key>sheetTitleColor</key>
 		<string>#ffffff</string>
 		<key>sheetTitleBackgroundColor</key>
@@ -17,7 +19,7 @@
 		<key>listSelectedBackgroundColor</key>
 		<string>#e7e7ff</string>
 		<key>description</key>
-		<string>yob</string>
+		<string>Chill</string>
 		<key>jumpToPageNavigationBarTintColor</key>
 		<string>#9999ff</string>
 		<key>listSecondaryTextColor</key>
@@ -302,6 +304,10 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
+		<string>#68cc24</string>
 		<key>description</key>
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
@@ -315,6 +321,10 @@
 	</dict>
 	<key>Macinyos</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
+		<string>#888888</string>
 		<key>description</key>
 		<string>Macinyos</string>
 		<key>descriptiveColor</key>
@@ -328,6 +338,10 @@
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
+		<string>#107f7f</string>
 		<key>description</key>
 		<string>Winpos 95</string>
 		<key>descriptiveColor</key>
