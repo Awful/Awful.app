@@ -13,8 +13,9 @@ function startBridge(callback) {
   }
 }
 
-// Toggles spoilers on tap.
 $(function() {
+  
+  // Toggles spoilers on tap.
   $('body').on('tap', '.bbc-spoiler', function(event) {
     var target = $(event.target);
     var spoiler = target.closest('.bbc-spoiler');
@@ -25,31 +26,33 @@ $(function() {
       spoiler.toggleClass('spoiled');
     }
     if (isLink && !isSpoiled) {
+      event.stopImmediatePropagation();
       preventNextClickEvent();
     }
-    
-    function preventNextClickEvent() {
-      var listener = function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        document.body.removeEventListener('click', listener);
-        return false;
-      };
-      document.body.addEventListener('click', listener);
-    }
   });
-});
 
-// Shows linkified images on tap.
-$('body').on('tap', '[data-awful-linkified-image]', function(event) {
-  var link = $(event.target);
-  if (link.closest('.bbc-spoiler:not(.spoiled)').length > 0) {
-    return;
-  }
-  showLinkifiedImage(link);
+  // Shows linkified images on tap.
+  $('body').on('tap', '[data-awful-linkified-image]', function(event) {
+    var link = $(event.target);
+    if (link.closest('.bbc-spoiler:not(.spoiled)').length > 0) {
+      return;
+    }
+    showLinkifiedImage(link);
+    preventNextClickEvent();
+  });
   
-  // Don't follow links when showing linkified images.
-  event.preventDefault();
+  // Utility function intended to siphon off a 300ms-delayed click event that will follow a handled tap event.
+  var preventNextClickEventListener;
+  function preventNextClickEvent() {
+    if (preventNextClickEventListener) return;
+    preventNextClickEventListener = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.body.removeEventListener('click', preventNextClickEventListener, true);
+      preventNextClickEventListener = null;
+    };
+    document.body.addEventListener('click', preventNextClickEventListener, true);
+  }
 });
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
