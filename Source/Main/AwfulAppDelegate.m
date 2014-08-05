@@ -38,7 +38,7 @@
 #import <GRMustache/GRMustache.h>
 #import <PocketAPI/PocketAPI.h>
 
-@interface AwfulAppDelegate () <AwfulLoginControllerDelegate, UINavigationControllerDelegate>
+@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
 @property (strong, nonatomic) AwfulBasementViewController *basementViewController;
 @property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
@@ -197,7 +197,6 @@ static inline void SetCrashlyticsUsername(void)
     nav.restorationIdentifier = SettingsNavigationControllerIdentifier;
     [viewControllers addObject:nav];
     
-    [viewControllers makeObjectsPerformSelector:@selector(setDelegate:) withObject:self];
     [viewControllers makeObjectsPerformSelector:@selector(setRestorationClass:) withObject:nil];
     
     UIViewController *rootViewController;
@@ -505,73 +504,6 @@ static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"OK"
                        completion:nil];
-}
-
-#pragma mark - UINavigationControllerDelegate
-
-- (void)navigationController:(AwfulNavigationController *)navigationController
-      willShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated
-{
-    [navigationController setToolbarHidden:(viewController.toolbarItems.count == 0) animated:animated];
-    
-    if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        [navigationController.unpopHandler navigationControllerDidBeginAnimating];
-        
-        // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
-        // See http://stackoverflow.com/questions/23484310
-        id <UIViewControllerTransitionCoordinator> coordinator = navigationController.transitionCoordinator;
-        [coordinator notifyWhenInteractionEndsUsingBlock:^(id <UIViewControllerTransitionCoordinatorContext> context) {
-            if ([context isCancelled]) {
-                BOOL unpopping = navigationController.unpopHandler.interactiveUnpopIsTakingPlace;
-                NSTimeInterval completion = [context transitionDuration] * [context percentComplete];
-                NSUInteger viewControllerCount = navigationController.viewControllers.count;
-                if (!unpopping) viewControllerCount++;
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (uint64_t)completion * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                    if (unpopping) {
-                        [navigationController.unpopHandler navigationControllerDidCancelInteractiveUnpop];
-                    } else {
-                        [navigationController.unpopHandler navigationControllerDidCancelInteractivePop];
-                    }
-                    navigationController.interactivePopGestureRecognizer.enabled = viewControllerCount > 1;
-                });
-            }
-        }];
-    }
-}
-
-- (void)navigationController:(AwfulNavigationController *)navigationController
-       didShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated
-{
-    if (animated && [navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        [navigationController.unpopHandler navigationControllerDidFinishAnimating];
-    }
-    
-    // AwfulNavigationController disables its interactivePopGestureRecognizer when a view controller gets pushed. Here we reenable it when appropriate.
-    navigationController.interactivePopGestureRecognizer.enabled = viewController != navigationController.viewControllers.firstObject;
-}
-
-- (id <UIViewControllerInteractiveTransitioning>)navigationController:(AwfulNavigationController *)navigationController
-                          interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>)animationController
-{
-    if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        return navigationController.unpopHandler;
-    }
-    return nil;
-}
-
-- (id <UIViewControllerAnimatedTransitioning>)navigationController:(AwfulNavigationController *)navigationController
-                                   animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                fromViewController:(UIViewController *)fromVC
-                                                  toViewController:(UIViewController *)toVC
-{
-    if ([navigationController isKindOfClass:[AwfulNavigationController class]]) {
-        if ([navigationController.unpopHandler shouldHandleAnimatingTransitionForOperation:operation]) {
-            return navigationController.unpopHandler;
-        }
-    }
-    return nil;
 }
 
 @end
