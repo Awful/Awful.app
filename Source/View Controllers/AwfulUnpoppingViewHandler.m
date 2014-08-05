@@ -4,7 +4,7 @@
 
 #import "AwfulUnpoppingViewHandler.h"
 
-@interface AwfulUnpoppingViewHandler ()
+@interface AwfulUnpoppingViewHandler () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) UINavigationController *navigationController;
 @property (assign, nonatomic) BOOL navigationControllerIsAnimating;
@@ -14,7 +14,6 @@
 @property (assign, nonatomic) CGFloat gestureStartPointX;
 
 @end
-
 
 @implementation AwfulUnpoppingViewHandler
 
@@ -32,8 +31,6 @@
         self.panRecognizer.edges = UIRectEdgeRight;
         self.panRecognizer.delegate = self;
         [self.navigationController.view addGestureRecognizer:self.panRecognizer];
-
-        self.navigationController.interactivePopGestureRecognizer.delegate = self;
       
         self.controllerStack = [NSMutableArray array];
     }
@@ -167,24 +164,16 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-    return !self.navigationControllerIsAnimating;
+    return self.controllerStack.count > 0 && !self.navigationControllerIsAnimating;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-    // There's three recognizers here that may need simultaneous recognition:
-    //   1. Our own pan from right screen edge.
-    //   2. The navigation controller's pan from left screen edge.
-    //   3. On iPhone, the basement's pan from left screen edge.
-    // As a poor substitute, we'll just allow all screen edge pans to recognize at once.
-    if (gestureRecognizer.delegate == self) {
-        return [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
-    } else if (otherGestureRecognizer.delegate == self) {
-        return [gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
-    } else {
-        return NO;
-    }
+    // Allow simultaneous recognition with:
+    //   1. The swipe-to-pop gesture recognizer.
+    //   2. The swipe-to-show-basement gesture recognizer.
+    return [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
 }
 
 #pragma mark - AwfulNavigationControllerObserver

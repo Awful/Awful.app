@@ -14,7 +14,7 @@
 @end
 
 
-@interface AwfulUnpoppingViewHandler : UIPercentDrivenInteractiveTransition <AwfulNavigationControllerObserver, UIGestureRecognizerDelegate,
+@interface AwfulUnpoppingViewHandler : UIPercentDrivenInteractiveTransition <AwfulNavigationControllerObserver,
      UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning>
 
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController;

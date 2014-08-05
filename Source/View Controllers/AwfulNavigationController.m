@@ -5,9 +5,10 @@
 #import "AwfulNavigationController.h"
 #import "UIViewController+AwfulTheme.h"
 
-@interface AwfulNavigationController () <UINavigationControllerDelegate, UIViewControllerRestoration>
+@interface AwfulNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulUnpoppingViewHandler *unpopHandler;
+@property (assign, nonatomic) BOOL pushAnimationInProgress;
 
 @property (weak, nonatomic) id <UINavigationControllerDelegate> realDelegate;
 
@@ -38,6 +39,7 @@
 {
     [super viewDidLoad];
     [self themeDidChange];
+    self.interactivePopGestureRecognizer.delegate = self;
 }
 
 - (void)themeDidChange
@@ -110,9 +112,7 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    // If we don't disable the interactivePopGestureRecognizer, we can get into a weird state where the pushed view doesn't appear and touches get no response.
-    self.interactivePopGestureRecognizer.enabled = NO;
-    
+    self.pushAnimationInProgress = YES;
     [super pushViewController:viewController animated:animated];
     [self.unpopHandler navigationController:self didPushViewController:viewController];
 }
@@ -143,7 +143,6 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
                     } else {
                         [self.unpopHandler navigationControllerDidCancelInteractivePop];
                     }
-                    navigationController.interactivePopGestureRecognizer.enabled = viewControllerCount > 1;
                 });
             }
         }];
@@ -160,7 +159,7 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
                     animated:(BOOL)animated
 {
     if (animated) [self.unpopHandler navigationControllerDidFinishAnimating];
-    self.interactivePopGestureRecognizer.enabled = viewController != self.viewControllers.firstObject;
+    self.pushAnimationInProgress = NO;
     
     if ([self.realDelegate respondsToSelector:_cmd]) {
         [self.realDelegate navigationController:navigationController didShowViewController:viewController animated:animated];
@@ -194,6 +193,23 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
     } else {
         return nil;
     }
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    // Disable swipe-to-pop gesture recognizer during pop animations and when we have nothing to pop. If we don't do this, something bad happens in conjunction with the swipe-to-unpop that causes a pushed view controller not to actually appear on the screen. It looks like the app has simply frozen.
+    // See http://holko.pl/ios/2014/04/06/interactive-pop-gesture/ for more, and https://github.com/fastred/AHKNavigationController for the fix.
+    return self.viewControllers.count > 1 && !self.pushAnimationInProgress;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    // Allow simultaneous recognition with:
+    //   1. The swipe-to-unpop gesture recognizer.
+    //   2. The swipe-to-show-basement gesture recognizer.
+    return [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
 }
 
 #pragma mark - Delegate delegation
