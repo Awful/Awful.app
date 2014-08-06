@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import UIKit;
 
 /**
  * An AwfulAvatarLoader fetches and caches avatar images.
