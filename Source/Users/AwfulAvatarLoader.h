@@ -25,16 +25,20 @@
 @property (readonly, strong, nonatomic) NSURL *cacheFolder;
 
 /**
- * Returns a cached avatar image for a user, or nil if no cached image is found.
+ * If a cached avatar image exists for a user, it's applied to the given image view and YES is returned. Otherwise the image view is not modified, and NO is returned.
+ *
+ * (Why doesn't this method simply return a UIImage? So it can handle animated GIFs.)
  */
-- (UIImage *)cachedAvatarImageForUser:(AwfulUser *)user;
+- (BOOL)applyCachedAvatarImageForUser:(AwfulUser *)user toImageView:(UIImageView *)imageView;
 
 /**
  * Finds and caches a user's current avatar image.
  *
- * @param completionBlock A block to call after finding an avatar image, which returns nothing and takes three parameter: the user's avatar image if downloaded, or nil otherwise; YES if a new avatar was downloaded, or NO otherwise; and nil on success, or an error on failure.
+ * @param completionBlock A block to call after finding an avatar image, which returns the image view to fill with the avatar and takes two parameters: YES if a new avatar was downloaded, or NO if the avatar had not changed; and nil on success, or an error on failure.
+ *
+ * (Why does't the completion block simply receive a UIImage? So it can handle animated GIFs.)
  */
-- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, BOOL modified, NSError *error))completionBlock;
+- (void)applyAvatarImageForUser:(AwfulUser *)user toImageViewAfterCompletion:(UIImageView *(^)(BOOL modified, NSError *error))completionBlock;
 
 /**
  * Deletes all cached images and information.

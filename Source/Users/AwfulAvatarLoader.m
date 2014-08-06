@@ -5,6 +5,7 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulFrameworkCategories.h"
 #import <AFNetworking/AFNetworking.h>
+#import "FVGifAnimation.h"
 
 @interface AwfulAvatarLoader ()
 
@@ -42,17 +43,17 @@
     }
 }
 
-- (UIImage *)cachedAvatarImageForUser:(AwfulUser *)user
+- (BOOL)applyCachedAvatarImageForUser:(AwfulUser *)user toImageView:(UIImageView *)imageView
 {
     NSURL *imageURL = [self imageURLForUser:user];
-    return [UIImage imageWithContentsOfFile:imageURL.path];
+    return ApplyImageAtURLToImageView(imageURL, imageView);
 }
 
-- (void)avatarImageForUser:(AwfulUser *)user completion:(void (^)(UIImage *avatarImage, BOOL modified, NSError *error))completionBlock
+- (void)applyAvatarImageForUser:(AwfulUser *)user toImageViewAfterCompletion:(UIImageView *(^)(BOOL modified, NSError *error))completionBlock
 {
     NSURL *avatarURL = user.avatarURL;
     if (avatarURL.path.length == 0) {
-        if (completionBlock) completionBlock(nil, YES, nil);
+        if (completionBlock) completionBlock(YES, nil);
         return;
     }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:avatarURL];
@@ -96,20 +97,31 @@
      } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
          [NSKeyedArchiver archiveRootObject:response toFile:cachedResponseURL.path];
          if (completionBlock) {
-             UIImage *image;
              if (error) {
                  NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
                  if (response.statusCode == 304) {
-                     completionBlock(nil, NO, nil);
+                     completionBlock(NO, nil);
                      return;
                  }
-             } else {
-                 image = [UIImage imageWithContentsOfFile:filePath.path];
              }
-             completionBlock(image, YES, error);
+             UIImageView *imageView = completionBlock(YES, error);
+             if (!error) ApplyImageAtURLToImageView(filePath, imageView);
          }
      }];
     [downloadTask resume];
+}
+
+static BOOL ApplyImageAtURLToImageView(NSURL *imageURL, UIImageView *imageView)
+{
+    if ([FVGifAnimation canAnimateImageURL:imageURL]) {
+        FVGifAnimation *gif = [[FVGifAnimation alloc] initWithURL:imageURL];
+        [gif setAnimationToImageView:imageView];
+        return YES;
+    } else {
+        UIImage *image = [UIImage imageWithContentsOfFile:imageURL.path];
+        if (image) imageView.image = image;
+        return !!image;
+    }
 }
 
 - (NSURL *)imageURLForUser:(AwfulUser *)user

@@ -165,9 +165,7 @@ static NSString * const CellIdentifier = @"Cell";
 - (BOOL)updateAvatarImageFromCache
 {
     if ([AwfulSettings settings].showAvatars) {
-        UIImage *image = [[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser];
-        self.headerView.avatarImageView.image = image;
-        return !!image;
+        return [[AwfulAvatarLoader loader] applyCachedAvatarImageForUser:self.loggedInUser toImageView:self.headerView.avatarImageView];
     } else {
         self.headerView.avatarImageView.image = nil;
         return YES;
@@ -190,6 +188,7 @@ static NSString * const CellIdentifier = @"Cell";
     [self updateHeaderView];
     [self selectRowForSelectedItem];
     [self refreshIfNecessary];
+    [self.headerView.avatarImageView startAnimating];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -201,6 +200,12 @@ static NSString * const CellIdentifier = @"Cell";
         [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ] withRowAnimation:UITableViewRowAnimationNone];
         self.didAppearAlready = YES;
     }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.headerView.avatarImageView stopAnimating];
 }
 
 - (void)refreshIfNecessary
@@ -234,16 +239,17 @@ static NSString * const CellIdentifier = @"Cell";
     if (![AwfulSettings settings].showAvatars) return;
     
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulAvatarLoader loader] avatarImageForUser:self.loggedInUser completion:^(UIImage *avatarImage, BOOL modified, NSError *error) {
+    [[AwfulAvatarLoader loader] applyAvatarImageForUser:self.loggedInUser toImageViewAfterCompletion:^UIImageView *(BOOL modified, NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
             NSLog(@"%s error loading avatar image: %@", __PRETTY_FUNCTION__, error);
         } else {
-            if (modified && [self isViewLoaded]) {
-                self.headerView.avatarImageView.image = avatarImage;
-            }
             [[AwfulRefreshMinder minder] didFinishRefreshingAvatar];
+            if (modified && [self isViewLoaded]) {
+                return self.headerView.avatarImageView;
+            }
         }
+        return nil;
     }];
 }
 
