@@ -143,6 +143,7 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
                     } else {
                         [self.unpopHandler navigationControllerDidCancelInteractivePop];
                     }
+                    self.pushAnimationInProgress = NO;
                 });
             }
         }];
