@@ -74,10 +74,25 @@
     NSURLSessionDownloadTask *downloadTask =
     [self.sessionManager downloadTaskWithRequest:request
                                         progress:nil
-                                     destination:^(NSURL *targetPath, NSURLResponse *response)
+                                     destination:^NSURL *(NSURL *targetPath, NSURLResponse *response)
      {
-         [self createCacheFolderIfNecessary];
-         return [self imageURLForUser:user];
+         // The download task won't overwrite an existing file, so we need to delete it here if we got an OK response. This block still gets called on e.g. a 304 response, even though the resulting file has no data, so we need to consider that.
+         NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+         if (HTTPResponse.statusCode >= 200 && HTTPResponse.statusCode < 300) {
+             [self createCacheFolderIfNecessary];
+             NSURL *destinationURL = [self imageURLForUser:user];
+             NSError *error;
+             if (![[NSFileManager defaultManager] removeItemAtURL:destinationURL error:&error]) {
+                 
+                 // It's OK if deletion fails because the file wasn't there in the first place.
+                 if ([error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
+                     NSLog(@"%s error saving avatar to %@: %@", __PRETTY_FUNCTION__, destinationURL, error);
+                 }
+             }
+             return destinationURL;
+         } else {
+             return nil;
+         }
      } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
          [NSKeyedArchiver archiveRootObject:response toFile:cachedResponseURL.path];
          if (completionBlock) {
