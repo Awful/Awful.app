@@ -16,19 +16,16 @@
 @interface AwfulBasementSidebarViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) AwfulBasementHeaderView *headerView;
-
+@property (strong, nonatomic) NSLayoutConstraint *headerHeightConstraint;
 @property (strong, nonatomic) UITableView *tableView;
 
-@property (strong, nonatomic) NSLayoutConstraint *headerHeightConstraint;
+@property (assign, nonatomic) BOOL didAppearAlready;
 
 @property (readonly, strong, nonatomic) AwfulUser *loggedInUser;
 
 @end
 
 @implementation AwfulBasementSidebarViewController
-{
-    BOOL _didAppearAlready;
-}
 
 - (void)dealloc
 {
@@ -38,23 +35,21 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (!self) return nil;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationDidBecomeActive:)
-                                                 name:UIApplicationDidBecomeActiveNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogIn:) name:AwfulUserDidLogInNotification object:nil];
-    
-    [self refreshIfNecessary];
-    
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidBecomeActive:)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidLogIn:) name:AwfulUserDidLogInNotification object:nil];
+        
+        [self refreshIfNecessary];
+    }
     return self;
 }
 
@@ -150,7 +145,7 @@ static NSString * const CellIdentifier = @"Cell";
 
 - (void)applicationDidBecomeActive:(NSNotification *)note
 {
-    _didAppearAlready = NO;
+    self.didAppearAlready = NO;
 }
 
 - (void)userDidLogIn:(NSNotification *)notification
@@ -202,9 +197,9 @@ static NSString * const CellIdentifier = @"Cell";
     [super viewDidAppear:animated];
     
     // Fixes iOS 7 bug whereby the first cell's separator would never appear.
-    if (!_didAppearAlready) {
+    if (!self.didAppearAlready) {
         [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:0 inSection:0] ] withRowAnimation:UITableViewRowAnimationNone];
-        _didAppearAlready = YES;
+        self.didAppearAlready = YES;
     }
 }
 
