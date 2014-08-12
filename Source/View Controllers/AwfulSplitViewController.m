@@ -174,6 +174,7 @@
         case UIInterfaceOrientationLandscapeLeft: return UIInterfaceOrientationMaskLandscapeLeft;
         case UIInterfaceOrientationLandscapeRight: return UIInterfaceOrientationMaskLandscapeRight;
         case UIInterfaceOrientationPortraitUpsideDown: return UIInterfaceOrientationMaskPortraitUpsideDown;
+        default: @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unknown interface orientation" userInfo:nil];
     }
 }
 
