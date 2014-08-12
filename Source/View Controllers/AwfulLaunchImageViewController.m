@@ -41,7 +41,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.imageView.highlighted = UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
+    #pragma clang diagnostic pop
 }
 
 - (UIImageView *)imageView
