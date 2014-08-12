@@ -97,7 +97,11 @@
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    #pragma clang diagnostic pop
+    
     [self positionViewAndPunchHole];
 }
 

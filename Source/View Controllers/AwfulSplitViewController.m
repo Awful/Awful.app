@@ -169,7 +169,11 @@
 
 - (UIInterfaceOrientationMask)interfaceOrientationMask
 {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     switch (self.interfaceOrientation) {
+    #pragma clang diagnostic pop
+        
         case UIInterfaceOrientationPortrait: return UIInterfaceOrientationMaskPortrait;
         case UIInterfaceOrientationLandscapeLeft: return UIInterfaceOrientationMaskLandscapeLeft;
         case UIInterfaceOrientationLandscapeRight: return UIInterfaceOrientationMaskLandscapeRight;
