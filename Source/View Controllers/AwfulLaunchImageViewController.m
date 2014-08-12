@@ -41,7 +41,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.imageView.highlighted = UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
+    self.imageView.highlighted = CGRectGetWidth(self.view.bounds) == self.imageView.highlightedImage.size.width;
 }
 
 - (UIImageView *)imageView
@@ -49,27 +49,21 @@
     return (UIImageView *)self.view;
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
-
 - (NSUInteger)supportedInterfaceOrientations
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         return UIInterfaceOrientationMaskAll;
     } else {
         return (UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown);
     }
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator
 {
-    [UIView transitionWithView:self.imageView
-                      duration:duration
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{ self.imageView.highlighted = UIInterfaceOrientationIsLandscape(toInterfaceOrientation); }
-                    completion:nil];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
+        self.imageView.highlighted = size.width == self.imageView.highlightedImage.size.width;
+    } completion:nil];
 }
 
 @end

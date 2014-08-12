@@ -117,7 +117,12 @@ static NSString * const CellIdentifier = @"Cell";
 {
     AwfulBasementHeaderView *headerView = self.headerView;
     headerView.usernameLabel.text = [AwfulSettings settings].username;
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+    #pragma clang diagnostic pop
+        
         self.headerHeightConstraint.constant = 64;
         headerView.bottomOffset = 12;
     } else {

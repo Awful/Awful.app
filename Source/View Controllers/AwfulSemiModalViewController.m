@@ -95,10 +95,12 @@
     }
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self positionViewAndPunchHole];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self positionViewAndPunchHole];
+    }];
 }
 
 - (CGRect)contextRegion
