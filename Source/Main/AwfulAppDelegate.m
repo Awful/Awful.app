@@ -97,8 +97,6 @@ static id _instance;
     return _dataStack.managedObjectContext;
 }
 
-#pragma mark - UIApplicationDelegate
-
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     StartCrashlytics();
@@ -414,6 +412,8 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
                      onAcceptance:^{ [self openAwfulURL:URL.awfulURL]; }];
 }
 
+#pragma mark - State preservation and restoration
+
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
     return [AwfulForumsClient client].loggedIn;
@@ -470,6 +470,8 @@ typedef NS_ENUM(NSInteger, AwfulInterfaceVersion)
 };
 
 static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
+
+#pragma mark -
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)URL
