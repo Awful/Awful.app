@@ -7,7 +7,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import "AwfulAlertView.h"
 #import "AwfulAvatarLoader.h"
-#import "AwfulBasementViewController.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
@@ -32,7 +31,6 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulUnpoppingViewHandler.h"
 #import "AwfulURLRouter.h"
-#import "AwfulVerticalTabBarController.h"
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
@@ -40,8 +38,7 @@
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
-@property (strong, nonatomic) AwfulBasementViewController *basementViewController;
-@property (strong, nonatomic) AwfulVerticalTabBarController *verticalTabBarController;
+@property (strong, nonatomic) UITabBarController *tabBarController;
 @property (strong, nonatomic) AwfulSplitViewController *splitViewController;
 
 @end
@@ -199,18 +196,16 @@ static inline void SetCrashlyticsUsername(void)
     
     [viewControllers makeObjectsPerformSelector:@selector(setRestorationClass:) withObject:nil];
     
-    UIViewController *rootViewController;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        self.basementViewController = [[AwfulBasementViewController alloc] initWithViewControllers:viewControllers];
-        self.basementViewController.restorationIdentifier = RootViewControllerIdentifier;
-        rootViewController = self.basementViewController;
-    } else {
-        self.verticalTabBarController = [[AwfulVerticalTabBarController alloc] initWithViewControllers:viewControllers];
-        self.verticalTabBarController.restorationIdentifier = RootViewControllerIdentifier;
+    self.tabBarController = [UITabBarController new];
+    self.tabBarController.viewControllers = viewControllers;
+    self.tabBarController.restorationIdentifier = RootViewControllerIdentifier;
+    
+    UIViewController *rootViewController = self.tabBarController;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.splitViewController = [AwfulSplitViewController new];
         AwfulEmptyViewController *emptyViewController = [AwfulEmptyViewController new];
         UINavigationController *detailViewController = [emptyViewController enclosingNavigationController];
-        self.splitViewController.viewControllers = @[ self.verticalTabBarController, detailViewController ];
+        self.splitViewController.viewControllers = @[ self.tabBarController, detailViewController ];
         self.splitViewController.restorationIdentifier = RootExpandingSplitViewControllerIdentifier;
         [self configureSplitViewControllerSettings];
         rootViewController = self.splitViewController;
@@ -223,8 +218,7 @@ static inline void SetCrashlyticsUsername(void)
 
 - (void)destroyRootViewControllerStack
 {
-    self.basementViewController = nil;
-    self.verticalTabBarController = nil;
+    self.tabBarController = nil;
     self.splitViewController = nil;
     self.window.rootViewController = nil;
     _awfulURLRouter = nil;
@@ -289,7 +283,7 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     if ([setting isEqualToString:AwfulSettingsKeys.canSendPrivateMessages]) {
         
         // Add the private message list if it's needed, or remove it if it isn't.
-        NSMutableArray *roots = [(self.basementViewController ?: self.verticalTabBarController) mutableArrayValueForKey:@"viewControllers"];
+        NSMutableArray *roots = [self.tabBarController mutableArrayValueForKey:@"viewControllers"];
         NSUInteger i = [roots indexOfObjectPassingTest:^(UINavigationController *nav, NSUInteger i, BOOL *stop) {
             return [nav.viewControllers.firstObject isKindOfClass:[AwfulPrivateMessageTableViewController class]];
         }];
@@ -427,13 +421,15 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)application:(UIApplication *)application willEncodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    [coder encodeInteger:0 forKey:InterfaceVersionKey];
+    [coder encodeInteger:CurrentInterfaceVersion forKey:InterfaceVersionKey];
 }
 
 - (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
     NSNumber *userInterfaceIdiom = [coder decodeObjectForKey:UIApplicationStateRestorationUserInterfaceIdiomKey];
-    return userInterfaceIdiom.integerValue == UI_USER_INTERFACE_IDIOM() && [AwfulForumsClient client].loggedIn;
+    if (userInterfaceIdiom.integerValue != UI_USER_INTERFACE_IDIOM() || ![AwfulForumsClient client].loggedIn) return NO;
+    NSNumber *interfaceVersion = [coder decodeObjectForKey:InterfaceVersionKey];
+    return interfaceVersion.integerValue == CurrentInterfaceVersion;
 }
 
 - (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
@@ -453,9 +449,27 @@ static UIViewController * ViewControllerWithRestorationIdentifier(UIViewControll
 }
 
 /**
- * Incremented whenever the state-preservable/restorable user interface changes so restoration code can migrate old saved state.
+ * An NSNumber containing an AwfulInterfaceVersion. Encoded when preserving state, and possibly useful for determining whether to decode state or to somehow migrate the preserved state.
  */
 static NSString * const InterfaceVersionKey = @"AwfulInterfaceVersion";
+
+/**
+ * Historic Awful interface versions.
+ */
+typedef NS_ENUM(NSInteger, AwfulInterfaceVersion)
+{
+    /**
+     * Interface for Awful 2, the version that runs on iOS 7. On iPhone, a basement-style menu is the root view controller. On iPad, a custom split view controller is the root view controller, and it hosts a vertical tab bar controller as its primary view controller.
+     */
+    AwfulInterfaceVersion2,
+    
+    /**
+     * Interface for Awful 3, the version that runs on iOS 8. The primary view controller is a UITabBarController, which is hosted in a custom split view controller on iPad.
+     */
+    AwfulInterfaceVersion3,
+};
+
+static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)URL

@@ -48,6 +48,7 @@
     if ((self = [super init])) {
         _managedObjectContext = managedObjectContext;
         self.title = @"Private Messages";
+        self.tabBarItem.title = @"Messages";
         self.tabBarItem.accessibilityLabel = @"Private messages";
         self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
         NSInteger unreadMessages = [AwfulNewMessageChecker checker].unreadMessageCount;

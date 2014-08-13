@@ -93,6 +93,8 @@
     self.navigationItem.rightBarButtonItem = self.composeItem;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     
+    self.hidesBottomBarWhenPushed = YES;
+    
     const CGFloat spacerWidth = 12;
     self.toolbarItems = @[ self.settingsItem,
                            [UIBarButtonItem awful_flexibleSpace],
