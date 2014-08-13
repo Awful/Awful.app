@@ -18,5 +18,6 @@
 #import "UITableView+HideStuff.h"
 #import "UIView+AwfulConvenient.h"
 #import "UIViewController+AwfulTheme.h"
+#import "UIViewController+HierarchySearch.h"
 #import "UIViewController+NavigationEnclosure.h"
 #import "UIWebView+AwfulConvenience.h"

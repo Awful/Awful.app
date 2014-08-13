@@ -180,13 +180,12 @@
 
 - (BOOL)jumpToForum:(AwfulForum *)forum
 {
-    AwfulForumThreadTableViewController *threadList = FindViewControllerOfClass(self.rootViewController,
-                                                                                [AwfulForumThreadTableViewController class]);
+    AwfulForumThreadTableViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[AwfulForumThreadTableViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
-        AwfulForumsListController *forumsList = FindViewControllerOfClass(self.rootViewController, [AwfulForumsListController class]);
+        AwfulForumsListController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[AwfulForumsListController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList showForum:forum animated:NO];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
@@ -204,7 +203,7 @@
     if (![root respondsToSelector:@selector(viewControllers)]) return NO;
     if (![root respondsToSelector:@selector(setSelectedViewController:)]) return NO;
     for (UIViewController *topmost in [root valueForKey:@"viewControllers"]) {
-        if (FindViewControllerOfClass(topmost, class)) {
+        if ([topmost awful_firstDescendantViewControllerOfClass:class]) {  
             [root setValue:topmost forKey:@"selectedViewController"];
             if (split) {
                 [split setSidebarHidden:NO animated:YES];
@@ -213,18 +212,6 @@
         }
     }
     return NO;
-}
-
-static id FindViewControllerOfClass(UIViewController *viewController, Class class)
-{
-    if ([viewController isKindOfClass:class]) return viewController;
-    if ([viewController respondsToSelector:@selector(viewControllers)]) {
-        for (UIViewController *child in [viewController valueForKey:@"viewControllers"]) {
-            UIViewController *found = FindViewControllerOfClass(child, class);
-            if (found) return found;
-        }
-    }
-    return nil;
 }
 
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
