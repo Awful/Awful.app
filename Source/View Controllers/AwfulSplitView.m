@@ -47,7 +47,7 @@
     NSDictionary *views = @{ @"master": _masterContainerView,
                              @"detail": _detailContainerView };
     [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0@750-[master(383)]"
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0@750-[master(320)]"
                                              options:0
                                              metrics:nil
                                                views:views]];

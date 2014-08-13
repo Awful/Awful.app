@@ -2,14 +2,12 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulExpandingSplitViewController.h"
+#import "UIViewController+AwfulTheme.h"
 
 /**
  * An AwfulSplitViewController contains a master view controller and a detail view controller.
- *
- * See AwfulExpandingSplitViewController for an explanation of this odd class hierarchy.
  */
-@interface AwfulSplitViewController : AwfulExpandingSplitViewController
+@interface AwfulSplitViewController : AwfulViewController
 
 /**
  * An array of two view controllers: the master view controller and the detail view controller. Setting is equivalent to calling -setViewControllers:animated: and passing NO for the second parameter.
