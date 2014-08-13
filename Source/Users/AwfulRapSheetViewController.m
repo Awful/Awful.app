@@ -26,11 +26,16 @@
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _user = user;
         _bans = [NSMutableOrderedSet new];
-        self.title = user ? @"Rap Sheet" : @"Leper's Colony";
+        if (user) {
+            self.title = @"Rap Sheet";
+            self.hidesBottomBarWhenPushed = YES;
+            self.modalPresentationStyle = UIModalPresentationFormSheet;
+        } else {
+            self.title = @"Leper's Colony";
+            self.tabBarItem.title = @"Lepers";
+            self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
+        }
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-        self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
-        self.modalPresentationStyle = UIModalPresentationFormSheet;
-        self.hidesBottomBarWhenPushed = YES;
     }
     return self;
 }
