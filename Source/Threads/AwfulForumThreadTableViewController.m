@@ -245,7 +245,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
             [postsViewController loadPage:1 updatingCache:YES];
-            [self showPostsViewController:postsViewController];
+            [self showDetailViewController:postsViewController sender:self];
         }
         if (!keepDraft) {
             _newThreadViewController = nil;

@@ -5,6 +5,7 @@
 #import "AwfulURLRouter.h"
 #import "AwfulAlertView.h"
 #import "AwfulBookmarkedThreadTableViewController.h"
+#import "AwfulEmptyViewController.h"
 #import "AwfulForumsListController.h"
 #import "AwfulForumThreadTableViewController.h"
 #import "AwfulForumsClient.h"
@@ -194,20 +195,12 @@
 
 - (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
-    UIViewController *root = self.rootViewController;
-    AwfulSplitViewController *split = nil;
-    if ([root isKindOfClass:[AwfulSplitViewController class]]) {
-        split = (AwfulSplitViewController *)root;
-        root = split.viewControllers.firstObject;
-    }
-    if (![root respondsToSelector:@selector(viewControllers)]) return NO;
-    if (![root respondsToSelector:@selector(setSelectedViewController:)]) return NO;
-    for (UIViewController *topmost in [root valueForKey:@"viewControllers"]) {
-        if ([topmost awful_firstDescendantViewControllerOfClass:class]) {  
-            [root setValue:topmost forKey:@"selectedViewController"];
-            if (split) {
-                [split setSidebarHidden:NO animated:YES];
-            }
+    UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
+    UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
+    for (UIViewController *topmost in tabBarController.viewControllers) {
+        if ([topmost awful_firstDescendantViewControllerOfClass:class]) {
+            tabBarController.selectedViewController = topmost;
+            [splitViewController awful_showPrimaryViewController];
             return YES;
         }
     }
@@ -250,25 +243,30 @@
 - (BOOL)showPostsViewController:(AwfulPostsViewController *)postsViewController
 {
     postsViewController.restorationIdentifier = @"Posts from URL";
-    if ([self.rootViewController isKindOfClass:[AwfulSplitViewController class]]) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.rootViewController;
-        UINavigationController *navigationController = split.viewControllers.lastObject;
-        if ([navigationController isKindOfClass:[UINavigationController class]]) {
-            postsViewController.navigationItem.leftItemsSupplementBackButton = YES;
-            [navigationController pushViewController:postsViewController animated:YES];
-        } else {
-            [split setDetailViewController:[postsViewController enclosingNavigationController] sidebarHidden:YES animated:YES];
+    
+    // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
+    UINavigationController *targetNavigationController;
+    UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
+    if (splitViewController.collapsed) {
+        UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
+        targetNavigationController = (UINavigationController *)tabBarController.selectedViewController;
+    } else {
+        targetNavigationController = splitViewController.viewControllers.lastObject;
+        
+        // If the detail view controller is empty, showing the posts view controller actually is as simple as showing a detail view controller, and we can exit early.
+        if ([targetNavigationController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) {
+            [splitViewController showDetailViewController:postsViewController sender:self];
+            return YES;
         }
-        return YES;
     }
-    if (![self.rootViewController respondsToSelector:@selector(selectedViewController)]) return NO;
-    UIViewController *selected = [self.rootViewController valueForKey:@"selectedViewController"];
-    if ([selected isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *navigationController = (UINavigationController *)selected;
-        [navigationController pushViewController:postsViewController animated:YES];
-        return YES;
+    
+    // Posts view controllers by default hide the bottom bar when pushed. This moves the tab bar controller's tab bar out of the way, making room for the toolbar. However, if some earlier posts view controller has already done this for us, and we went ahead oblivious, we would hide our own toolbar!
+    if ([targetNavigationController.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
+        postsViewController.hidesBottomBarWhenPushed = NO;
     }
-    return NO;
+    
+    [targetNavigationController pushViewController:postsViewController animated:YES];
+    return YES;
 }
 
 - (BOOL)routeURL:(NSURL *)URL
