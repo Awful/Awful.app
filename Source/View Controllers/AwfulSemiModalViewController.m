@@ -95,14 +95,12 @@
     }
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    #pragma clang diagnostic pop
-    
-    [self positionViewAndPunchHole];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self positionViewAndPunchHole];
+    }];
 }
 
 - (CGRect)contextRegion

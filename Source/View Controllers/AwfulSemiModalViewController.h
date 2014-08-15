@@ -49,9 +49,4 @@ typedef CGRect (^AwfulSemiModalRectInViewBlock)(UIView *view);
  */
 - (CGSize)preferredContentSize;
 
-/**
- * Handy reminder to call super.
- */
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration __attribute__((objc_requires_super));
-
 @end
