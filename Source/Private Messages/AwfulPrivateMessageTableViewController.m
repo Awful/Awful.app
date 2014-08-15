@@ -274,13 +274,9 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     if (!pm.seen) {
         [self decrementBadgeValue];
     }
-    AwfulPrivateMessageViewController *vc = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
-    vc.restorationIdentifier = @"Private Message";
-    if (self.splitViewController) {
-        [self.splitViewController setDetailViewController:[vc enclosingNavigationController] sidebarHidden:YES animated:YES];
-    } else {
-        [self.navigationController pushViewController:vc animated:YES];
-    }
+    AwfulPrivateMessageViewController *messageViewController = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
+    messageViewController.restorationIdentifier = @"Private Message";
+    [self showDetailViewController:messageViewController sender:self];
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate

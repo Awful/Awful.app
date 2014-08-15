@@ -91,6 +91,7 @@
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
 		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
+		1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */; };
 		1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */; };
 		1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60BE18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m */; };
 		1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */; };
@@ -103,8 +104,6 @@
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C7DFA7517EB578F0009F2C6 /* AwfulPageSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7DFA7417EB578F0009F2C6 /* AwfulPageSettingsViewController.m */; };
 		1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7DFA7717EB58640009F2C6 /* AwfulPageSettingsView.m */; };
-		1C89A78E18AA084500D75854 /* AwfulSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A78D18AA084500D75854 /* AwfulSplitViewController.m */; };
-		1C89A79118AA12CB00D75854 /* AwfulSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79018AA12CB00D75854 /* AwfulSplitView.m */; };
 		1C89A79418AF4DA500D75854 /* AwfulEmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
@@ -388,6 +387,8 @@
 		1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulKeyboardBar.m; sourceTree = "<group>"; };
 		1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HierarchySearch.h"; sourceTree = "<group>"; };
 		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
+		1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISplitViewController+AwfulConvenient.h"; sourceTree = "<group>"; };
+		1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UISplitViewController+AwfulConvenient.m"; sourceTree = "<group>"; };
 		1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivateMessage.mustache; sourceTree = "<group>"; };
 		1C7C60BD18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewModel.h; sourceTree = "<group>"; };
 		1C7C60BE18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewModel.m; sourceTree = "<group>"; };
@@ -409,10 +410,6 @@
 		1C7DFA7417EB578F0009F2C6 /* AwfulPageSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageSettingsViewController.m; sourceTree = "<group>"; };
 		1C7DFA7617EB58640009F2C6 /* AwfulPageSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageSettingsView.h; sourceTree = "<group>"; };
 		1C7DFA7717EB58640009F2C6 /* AwfulPageSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageSettingsView.m; sourceTree = "<group>"; };
-		1C89A78C18AA084500D75854 /* AwfulSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitViewController.h; sourceTree = "<group>"; };
-		1C89A78D18AA084500D75854 /* AwfulSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitViewController.m; sourceTree = "<group>"; };
-		1C89A78F18AA12CB00D75854 /* AwfulSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSplitView.h; sourceTree = "<group>"; };
-		1C89A79018AA12CB00D75854 /* AwfulSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSplitView.m; sourceTree = "<group>"; };
 		1C89A79218AF4DA500D75854 /* AwfulEmptyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulEmptyViewController.h; sourceTree = "<group>"; };
 		1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmptyViewController.m; sourceTree = "<group>"; };
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
@@ -754,10 +751,6 @@
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
 				1C22EE7918BE57CA00ED5289 /* AwfulSemiModalViewController.h */,
 				1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */,
-				1C89A78F18AA12CB00D75854 /* AwfulSplitView.h */,
-				1C89A79018AA12CB00D75854 /* AwfulSplitView.m */,
-				1C89A78C18AA084500D75854 /* AwfulSplitViewController.h */,
-				1C89A78D18AA084500D75854 /* AwfulSplitViewController.m */,
 				F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */,
 				F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */,
 			);
@@ -1284,6 +1277,8 @@
 				1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */,
 				1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */,
 				1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */,
+				1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */,
+				1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */,
 				1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */,
 				1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */,
 				1CD82F52194D976D00B0C5BD /* UIView+AwfulConvenient.h */,
@@ -1774,7 +1769,6 @@
 				1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */,
 				1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */,
-				1C89A78E18AA084500D75854 /* AwfulSplitViewController.m in Sources */,
 				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C7DFA7817EB58640009F2C6 /* AwfulPageSettingsView.m in Sources */,
@@ -1786,7 +1780,6 @@
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
 				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
-				1C89A79118AA12CB00D75854 /* AwfulSplitView.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
@@ -1835,6 +1828,7 @@
 				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
 				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
 				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
+				1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */,
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 				1C6D2EA8182E81B000785766 /* AwfulPrivateMessageScraper.m in Sources */,
 				1CE694AB182FF0E500B24928 /* AwfulLepersColonyPageScraper.m in Sources */,

@@ -340,14 +340,10 @@ typedef NS_ENUM(NSUInteger, SettingType)
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:setting[@"ThreadID"]
                                                  inManagedObjectContext:self.managedObjectContext];
-        AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread];
-        postsView.restorationIdentifier = @"Awful's Thread";
-        [postsView loadPage:AwfulThreadPageNextUnread updatingCache:YES];
-        if (self.splitViewController) {
-            [self.splitViewController setDetailViewController:[postsView enclosingNavigationController] sidebarHidden:YES animated:YES];
-        } else {
-            [self.navigationController pushViewController:postsView animated:YES];
-        }
+        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsViewController.restorationIdentifier = @"Awful's Thread";
+        [postsViewController loadPage:AwfulThreadPageNextUnread updatingCache:YES];
+        [self showDetailViewController:postsViewController sender:self];
     } else if ([action isEqualToString:@"InstapaperLogIn"]) {
         if ([AwfulSettings settings].instapaperUsername) {
             [AwfulSettings settings].instapaperUsername = nil;
