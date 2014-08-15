@@ -20,9 +20,4 @@
  */
 @property (readonly, strong, nonatomic) AwfulFetchedResultsControllerDataSource *threadDataSource;
 
-/**
- * Pushes a posts view controller on to the navigation stack or shows it in the expanding split view, as appropriate.
- */
-- (void)showPostsViewController:(AwfulPostsViewController *)postsViewController;
-
 @end

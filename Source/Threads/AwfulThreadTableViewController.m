@@ -188,14 +188,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-        [self showPostsViewController:postsViewController];
         [postsViewController loadPage:1 updatingCache:YES];
+        [self showDetailViewController:postsViewController sender:self];
     }]];
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
-        [self showPostsViewController:postsViewController];
         [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
+        [self showDetailViewController:postsViewController sender:self];
     }]];
     AwfulIconActionItemType bookmarkItemType;
     if (thread.bookmarked) {
@@ -313,17 +313,6 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)showPostsViewController:(AwfulPostsViewController *)postsViewController
-{
-    if (self.splitViewController) {
-        [self.splitViewController setDetailViewController:[postsViewController enclosingNavigationController]
-                                            sidebarHidden:YES
-                                                 animated:YES];
-    } else {
-        [self.navigationController pushViewController:postsViewController animated:YES];
-    }
-}
-
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -336,7 +325,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
     [postsViewController loadPage:(thread.beenSeen ? AwfulThreadPageNextUnread : 1) updatingCache:YES];
     
-    [self showPostsViewController:postsViewController];
+    [self showDetailViewController:postsViewController sender:self];
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
