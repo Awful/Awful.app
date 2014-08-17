@@ -79,13 +79,13 @@ startBridge(function(bridge) {
     var $posts = $("post");
     var $post = null;
     $posts.each(function(j) {
-               if (isScrolledIntoView(this)) {
-                $post = $(this);
-               return false;
-               }
-               });
-                         var obj = {index: ($post? $post.index() - 1 : -1)}
-                         callback(obj);
+      if (isScrolledIntoView(this)) {
+        $post = $(this);
+        return false;
+      }
+    });
+    var obj = {index: ($post? $post.index() - 1 : -1)}
+    callback(obj);
   });
   
   $(function() {
