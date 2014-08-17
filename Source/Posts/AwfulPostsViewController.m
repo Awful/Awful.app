@@ -16,7 +16,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJavaScript.h"
-#import "AwfulJumpToPageController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
@@ -37,10 +36,11 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <WebViewJavascriptBridge.h>
+#import "Awful-Swift.h"
 
 @interface AwfulPostsViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
 
-@property (assign, nonatomic) AwfulThreadPage page;
+@property (assign, nonatomic) NSInteger page;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -128,7 +128,7 @@
     }
 }
 
-- (void)loadPage:(AwfulThreadPage)page updatingCache:(BOOL)updateCache
+- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache
 {
     [self.networkOperation cancel];
     self.networkOperation = nil;
@@ -364,15 +364,9 @@
     _currentPageItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.loadingView) return;
-        AwfulJumpToPageController *jump = [[AwfulJumpToPageController alloc] initWithPostsViewController:self];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [jump presentInPopoverFromBarButtonItem:sender];
-        } else {
-            UIToolbar *toolbar = self.navigationController.toolbar;
-            [jump presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-                return [view convertRect:toolbar.bounds fromView:toolbar];
-            }];
-        }
+        Selectotron *selectotron = [[Selectotron alloc] initWithPostsViewController:self];
+        [self presentViewController:selectotron animated:YES completion:nil];
+        selectotron.popoverPresentationController.barButtonItem = sender;
     };
     return _currentPageItem;
 }
