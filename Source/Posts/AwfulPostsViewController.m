@@ -64,6 +64,9 @@
 
 @property (copy, nonatomic) NSArray *posts;
 
+
+@property (assign,nonatomic) UIBackgroundTaskIdentifier backgroundUpdateTask;
+
 @end
 
 @implementation AwfulPostsViewController
@@ -107,6 +110,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)
                                                  name:AwfulSettingsDidChangeNotification
+                                               object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didEnterBackground:)
+                                                 name:AwfulDidEnterBackgroundNotification
                                                object:nil];
     
     return self;
@@ -502,6 +511,41 @@
         }
     }
 }
+
+- (void)didEnterBackground:(NSNotification*)notification
+{
+    [self beginBackgroundUpdateTask];
+    
+    [_webViewJavaScriptBridge callHandler:@"findFirstVisiblePost" data:NULL responseCallback:^(id responseData) {
+        NSDictionary* dict = (NSDictionary*)responseData;
+        int postIndex = [[dict objectForKey:@"index"] intValue];
+        
+        if (postIndex < 0) {
+            [self endBackgroundUpdateTask];
+            return;
+        }
+        
+        AwfulPost* post = self.posts[postIndex];
+        
+        [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
+            [self endBackgroundUpdateTask];
+        }];
+    }];
+}
+
+- (void) beginBackgroundUpdateTask
+{
+    self.backgroundUpdateTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [self endBackgroundUpdateTask];
+    }];
+}
+
+- (void) endBackgroundUpdateTask
+{
+    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundUpdateTask];
+    self.backgroundUpdateTask = UIBackgroundTaskInvalid;
+}
+
 
 - (void)themeDidChange
 {

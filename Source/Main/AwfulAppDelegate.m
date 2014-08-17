@@ -245,6 +245,8 @@ static NSString * const MessagesNavigationControllerIdentifier = @"AwfulMessages
 static NSString * const LepersColonyNavigationControllerIdentifier = @"AwfulLepersColonyNavigationController";
 static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettingsNavigationController";
 
+NSString * const AwfulDidEnterBackgroundNotification = @"com.awfulapp.Awful.EnterBackground";
+
 - (void)themeDidChange
 {
     self.window.tintColor = AwfulTheme.currentTheme[@"tintColor"];
@@ -341,6 +343,9 @@ static NSString * const SettingsNavigationControllerIdentifier = @"AwfulSettings
     if (!ok) {
         NSLog(@"%s error saving main managed object context: %@", __PRETTY_FUNCTION__, error);
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDidEnterBackgroundNotification
+                                                        object:self];
 }
 
 - (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo

@@ -20,3 +20,9 @@
 - (BOOL)openAwfulURL:(NSURL *)url;
 
 @end
+
+
+/**
+ * Sent to default center when app enters background.
+ */
+extern NSString * const AwfulDidEnterBackgroundNotification;
