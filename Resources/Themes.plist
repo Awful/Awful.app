@@ -20,8 +20,6 @@
 		<string>#e7e7ff</string>
 		<key>description</key>
 		<string>Chill</string>
-		<key>jumpToPageNavigationBarTintColor</key>
-		<string>#9999ff</string>
 		<key>listSecondaryTextColor</key>
 		<string>#9999ff</string>
 		<key>backgroundColor</key>
@@ -77,12 +75,6 @@
 		<string>#ffffff</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#cccccc</string>
-		<key>jumpToPageBackgroundColor</key>
-		<string>#ffffff</string>
-		<key>jumpToPageNavigationBarTextColor</key>
-		<string>#1483b1</string>
-		<key>jumpToPageNavigationBarTintColor</key>
-		<string>#f9f9f9</string>
 		<key>navigationBarTextColor</key>
 		<string>#ffffff</string>
 		<key>navigationBarTintColor</key>
@@ -224,8 +216,6 @@
 		<string>#666666</string>
 		<key>quoteIconColor</key>
 		<string>#dbdbdb</string>
-		<key>jumpToPageNavigationBarTintColor</key>
-		<string>#000000</string>
 		<key>jumpToFirstPageIconColor</key>
 		<string>#eeeeee</string>
 		<key>jumpToLastPageIconColor</key>

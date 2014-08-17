@@ -31,9 +31,9 @@
 @property (readonly, strong, nonatomic) AwfulUser *author;
 
 /**
- * The currently-visible (or currently-loading) page of posts.
+ * The currently-visible (or currently-loading) page of posts. Values of AwfulThreadPage are allowed here too (but it's typed NSInteger for Swift compatibility).
  */
-@property (readonly, assign, nonatomic) AwfulThreadPage page;
+@property (readonly, assign, nonatomic) NSInteger page;
 
 /**
  * The number of pages in the thread, taking any filters into account.
@@ -43,9 +43,10 @@
 /**
  * Changes the page.
  *
+ * @param page        The page to load. Values of AwfulThreadPage are allowed here too (but it's typed NSInteger for Swift compatibility).
  * @param updateCache Whether to fetch posts from the client, or simply render any posts that are cached.
  */
-- (void)loadPage:(AwfulThreadPage)page updatingCache:(BOOL)updateCache;
+- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache;
 
 /**
  * An array of AwfulPost objects of the currently-visible posts.
