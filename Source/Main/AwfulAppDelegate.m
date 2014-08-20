@@ -23,6 +23,7 @@
 #import "AwfulNewMessageChecker.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPrivateMessageTableViewController.h"
+#import "AwfulPrivateMessageViewController.h"
 #import "AwfulRapSheetViewController.h"
 #import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
@@ -39,6 +40,12 @@
 
 @property (strong, nonatomic) UISplitViewController *splitViewController;
 @property (strong, nonatomic) UITabBarController *tabBarController;
+
+@end
+
+@interface UIViewController (AwfulSecondaryViewController)
+
+@property (readonly, assign, nonatomic) BOOL prefersSecondaryViewController;
 
 @end
 
@@ -537,8 +544,36 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
 {
-    // Discard the secondaryViewController if it's the empty view controller. Otherwise, allow the default action.
-    return !![secondaryViewController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]];
+    // Discard the secondaryViewController if it's the empty view controller.
+    if ([secondaryViewController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) return YES;
+    
+    // Collapse the entire secondary navigation stack on to the primary navigation stack.
+    UINavigationController *primaryNavigationController = (UINavigationController *)self.tabBarController.selectedViewController;
+    UINavigationController *secondaryNavigationController = (UINavigationController *)secondaryViewController;
+    primaryNavigationController.viewControllers = [primaryNavigationController.viewControllers arrayByAddingObjectsFromArray:secondaryNavigationController.viewControllers];
+    
+    // TODO bring along the swipe-from-right-edge-to-unpop stack too.
+    
+    return YES;
+}
+
+- (UIViewController *)splitViewController:(UISplitViewController *)splitViewController separateSecondaryViewControllerFromPrimaryViewController:(UIViewController *)primaryViewController
+{
+    // Split the view controller stack at the first view controller that prefers to be a secondary view controller. Everything before stays where it is. Everything there and after go into a new navigation controller.
+    UINavigationController *primary = (UINavigationController *)self.tabBarController.selectedViewController;
+    UINavigationController *secondary = [AwfulNavigationController new];
+    NSUInteger firstIndexThatWantsSecondary = [primary.viewControllers indexOfObjectPassingTest:^(UIViewController *viewController, NSUInteger i, BOOL *stop) {
+        return viewController.prefersSecondaryViewController;
+    }];
+    if (firstIndexThatWantsSecondary == NSNotFound) {
+        secondary.viewControllers = @[[AwfulEmptyViewController new]];
+    } else {
+        secondary.viewControllers = [primary.viewControllers subarrayWithRange:NSMakeRange(firstIndexThatWantsSecondary, primary.viewControllers.count - firstIndexThatWantsSecondary)];
+        primary.viewControllers = [primary.viewControllers subarrayWithRange:NSMakeRange(0, firstIndexThatWantsSecondary)];
+    }
+    
+    // TODO bring along the swipe-from-right-edge-to-unpop stack too.
+    return secondary;
 }
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController showDetailViewController:(UIViewController *)detailViewController sender:(id)sender
@@ -568,6 +603,33 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
     } else {
         [rootViewController.navigationItem setLeftBarButtonItem:[splitViewController displayModeButtonItem] animated:YES];
     }
+}
+
+@end
+
+@implementation UIViewController (AwfulSecondaryViewController)
+
+- (BOOL)prefersSecondaryViewController
+{
+    return NO;
+}
+
+@end
+
+@implementation AwfulPostsViewController (AwfulSecondaryViewController)
+
+- (BOOL)prefersSecondaryViewController
+{
+    return YES;
+}
+
+@end
+
+@implementation AwfulPrivateMessageViewController (AwfulSecondaryViewController)
+
+- (BOOL)prefersSecondaryViewController
+{
+    return YES;
 }
 
 @end
