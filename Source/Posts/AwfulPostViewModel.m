@@ -3,9 +3,9 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostViewModel.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulPostViewModel
 

@@ -6,7 +6,6 @@
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAlertView.h"
 #import "AwfulBrowserViewController.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"

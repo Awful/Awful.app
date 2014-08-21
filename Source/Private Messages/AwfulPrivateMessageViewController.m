@@ -9,7 +9,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
 #import "AwfulDataStack.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"

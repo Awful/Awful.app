@@ -3,10 +3,10 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPrivateMessageViewModel.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulJavaScript.h"
 #import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulPrivateMessageViewModel
 
