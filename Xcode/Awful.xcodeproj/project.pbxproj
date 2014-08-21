@@ -154,7 +154,6 @@
 		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */; };
 		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */; };
-		1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
 		1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* AwfulReplyViewController.m */; };
 		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
@@ -228,6 +227,7 @@
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
+		83410EF219A582B8002CD019 /* AwfulDateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */; };
 		836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
@@ -490,8 +490,6 @@
 		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* AwfulNewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewMessageChecker.h; sourceTree = "<group>"; };
 		1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewMessageChecker.m; sourceTree = "<group>"; };
-		1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDateFormatters.h; sourceTree = "<group>"; };
-		1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDateFormatters.m; sourceTree = "<group>"; };
 		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
 		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
@@ -608,6 +606,7 @@
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
+		83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulDateFormatters.swift; sourceTree = "<group>"; };
 		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
 		836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTMLNode+CachedSelector.m"; sourceTree = "<group>"; };
 		837D67ED1861C25000464055 /* ForumTweaks.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumTweaks.plist; sourceTree = "<group>"; };
@@ -983,8 +982,7 @@
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
 			isa = PBXGroup;
 			children = (
-				1CB6011716DBFB7B00CBEE22 /* AwfulDateFormatters.h */,
-				1CB6011816DBFB7B00CBEE22 /* AwfulDateFormatters.m */,
+				83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */,
 				1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */,
 				1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */,
 			);
@@ -1688,6 +1686,7 @@
 			files = (
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
+				83410EF219A582B8002CD019 /* AwfulDateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
 				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
@@ -1779,7 +1778,6 @@
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
-				1CB6011916DBFB7B00CBEE22 /* AwfulDateFormatters.m in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
