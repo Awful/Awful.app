@@ -4,7 +4,6 @@
 
 #import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulAlertView.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -19,6 +18,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
+#import "Awful-Swift.h"
 
 @interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
