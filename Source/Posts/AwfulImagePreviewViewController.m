@@ -155,7 +155,7 @@
         });
     }];
     [sheet addButtonWithTitle:@"Copy Image URL" block:^{
-        [AwfulSettings settings].lastOfferedPasteboardURL = self.imageURL.absoluteString;
+        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = self.imageURL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = self.imageURL;
         [self hideBarsAfterShortDuration];
     }];

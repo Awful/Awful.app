@@ -122,8 +122,8 @@
             [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
         } else if (self) {
             self.fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
-            AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
-                                                                 username:[AwfulSettings settings].username
+            AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
+                                                                 username:[AwfulSettings sharedSettings].username
                                                    inManagedObjectContext:self.managedObjectContext];
             if (self.editingPost) {
                 
@@ -169,7 +169,7 @@
 	context[@"version"] = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
     context[@"post"] = [[AwfulPostViewModel alloc] initWithPost:self.fakePost];
-    int fontScalePercentage = [AwfulSettings settings].fontScale;
+    int fontScalePercentage = [AwfulSettings sharedSettings].fontScale;
     if (fontScalePercentage != 100) {
         context[@"fontScalePercentage"] = @(fontScalePercentage);
     }

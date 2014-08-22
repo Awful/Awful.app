@@ -42,7 +42,7 @@
 
 - (BOOL)isLoggedInToInstapaper
 {
-    return !![AwfulSettings settings].instapaperUsername;
+    return !![AwfulSettings sharedSettings].instapaperUsername;
 }
 
 - (BOOL)isLoggedInToPocket
@@ -67,7 +67,7 @@
         currentDevice = @"iPad";
     }
     NSMutableArray *sections = [NSMutableArray new];
-    for (NSDictionary *section in [AwfulSettings settings].sections) {
+    for (NSDictionary *section in [AwfulSettings sharedSettings].sections) {
         if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
         if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) {
             continue;
@@ -208,9 +208,9 @@ typedef NS_ENUM(NSUInteger, SettingType)
         NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
         if (settingType == DisclosureDetailSetting) {
             cell.textLabel.text = setting[@"Title"];
-            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
         } else {
-            cell.textLabel.text = [transformer transformedValue:[AwfulSettings settings]];
+            cell.textLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
         }
     } else {
         cell.textLabel.text = setting[@"Title"];
@@ -220,11 +220,11 @@ typedef NS_ENUM(NSUInteger, SettingType)
     if (settingType == ImmutableSetting) {
         NSString *valueID = setting[@"ValueIdentifier"];
         if ([valueID isEqualToString:@"Username"]) {
-            cell.detailTextLabel.text = [AwfulSettings settings].username;
+            cell.detailTextLabel.text = [AwfulSettings sharedSettings].username;
         } else if ([valueID isEqualToString:@"InstapaperUsername"]) {
-            cell.detailTextLabel.text = [AwfulSettings settings].instapaperUsername;
+            cell.detailTextLabel.text = [AwfulSettings sharedSettings].instapaperUsername;
         } else if ([valueID isEqualToString:@"PocketUsername"]) {
-            cell.detailTextLabel.text = [AwfulSettings settings].pocketUsername;
+            cell.detailTextLabel.text = [AwfulSettings sharedSettings].pocketUsername;
         }
     }
     
@@ -296,7 +296,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     NSIndexPath *indexPath = self.switches[switchView.tag];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
-    [AwfulSettings settings][key] = @(switchView.on);
+    [AwfulSettings sharedSettings][key] = @(switchView.on);
 }
 
 - (void)stepperPressed:(UIStepper *)stepperView
@@ -304,7 +304,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     NSIndexPath *indexPath = self.steppers[stepperView.tag];
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *key = setting[@"Key"];
-    [AwfulSettings settings][key] = @(stepperView.value);
+    [AwfulSettings sharedSettings][key] = @(stepperView.value);
 
     // Redisplay to update title
     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -325,8 +325,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *action = setting[@"Action"];
     if ([action isEqualToString:@"ShowProfile"]) {
-        AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
-                                                             username:[AwfulSettings settings].username
+        AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
+                                                             username:[AwfulSettings sharedSettings].username
                                                inManagedObjectContext:self.managedObjectContext];
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:loggedInUser];
         [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
@@ -345,9 +345,9 @@ typedef NS_ENUM(NSUInteger, SettingType)
         [postsViewController loadPage:AwfulThreadPageNextUnread updatingCache:YES];
         [self showDetailViewController:postsViewController sender:self];
     } else if ([action isEqualToString:@"InstapaperLogIn"]) {
-        if ([AwfulSettings settings].instapaperUsername) {
-            [AwfulSettings settings].instapaperUsername = nil;
-            [AwfulSettings settings].instapaperPassword = nil;
+        if ([AwfulSettings sharedSettings].instapaperUsername) {
+            [AwfulSettings sharedSettings].instapaperUsername = nil;
+            [AwfulSettings sharedSettings].instapaperPassword = nil;
             [self reloadSections];
             [tableView reloadData];
         } else {
@@ -426,8 +426,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 - (void)instapaperLogInControllerDidSucceed:(AwfulInstapaperLogInController *)logIn
 {
-    [AwfulSettings settings].instapaperUsername = logIn.username;
-    [AwfulSettings settings].instapaperPassword = logIn.password;
+    [AwfulSettings sharedSettings].instapaperUsername = logIn.username;
+    [AwfulSettings sharedSettings].instapaperPassword = logIn.password;
     [self reloadSections];
     [self.tableView reloadData];
     [logIn dismissViewControllerAnimated:YES completion:nil];

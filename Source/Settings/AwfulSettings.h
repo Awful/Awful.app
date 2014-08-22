@@ -9,7 +9,7 @@
 /**
  * Returns a convenient singleton instance.
  */
-+ (AwfulSettings *)settings;
++ (instancetype)sharedSettings;
 
 - (void)registerDefaults;
 

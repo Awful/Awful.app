@@ -138,7 +138,7 @@
     AwfulTheme *theme = self.theme;
     self.view.backgroundColor = theme[@"backgroundColor"];
     self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
-    [_webViewJavaScriptBridge callHandler:@"darkMode" data:@([AwfulSettings settings].darkTheme)];
+    [_webViewJavaScriptBridge callHandler:@"darkMode" data:@([AwfulSettings sharedSettings].darkTheme)];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -66,7 +66,7 @@
 
 - (void)updateSubmitButtonTitle
 {
-    if ([AwfulSettings settings].confirmNewPosts) {
+    if ([AwfulSettings sharedSettings].confirmNewPosts) {
         self.submitButtonItem.title = @"Preview";
     } else {
         if (self.post) {
@@ -102,7 +102,7 @@
 {
     [super viewDidAppear:animated];
     
-    if (!self.longPressRecognizer && ![AwfulSettings settings].confirmNewPosts) {
+    if (!self.longPressRecognizer && ![AwfulSettings sharedSettings].confirmNewPosts) {
         self.longPressRecognizer = [UILongPressGestureRecognizer new];
         [self.longPressRecognizer addTarget:self action:@selector(didLongPressNextButtonItem:)];
         
@@ -138,7 +138,7 @@
 
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
-    if ([AwfulSettings settings].confirmNewPosts) {
+    if ([AwfulSettings sharedSettings].confirmNewPosts) {
         [self previewPostWithSubmitBlock:^{ handler(YES); } cancelBlock:^{ handler(NO); }];
     } else {
         handler(YES);

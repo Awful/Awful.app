@@ -77,7 +77,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 {
     [cell setLongPressTarget:self action:@selector(showThreadActions:)];
     
-	if ([AwfulSettings settings].showThreadTags) {
+	if ([AwfulSettings sharedSettings].showThreadTags) {
 		cell.threadTagHidden = NO;
         AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
         
@@ -238,7 +238,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
         components.query = [@"threadid=" stringByAppendingString:thread.threadID];
         NSURL *URL = components.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     if (thread.beenSeen) {

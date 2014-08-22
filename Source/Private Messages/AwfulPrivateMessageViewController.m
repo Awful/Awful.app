@@ -263,13 +263,13 @@
     
     NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([changedSetting isEqualToString:AwfulSettingsKeys.showAvatars]) {
-        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings settings].showAvatars)];
+        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings sharedSettings].showAvatars)];
     } else if ([changedSetting isEqualToString:AwfulSettingsKeys.showImages]) {
-        if ([AwfulSettings settings].showImages) {
+        if ([AwfulSettings sharedSettings].showImages) {
             [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
     } else if ([changedSetting isEqualToString:AwfulSettingsKeys.fontScale]) {
-        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@((int)[AwfulSettings settings].fontScale)];
+        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@((int)[AwfulSettings sharedSettings].fontScale)];
     }
 }
 
