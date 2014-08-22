@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.8" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
+        <capability name="Constraints with attributes relative to the layout margin" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PostsPageSettingsViewController" customModule="Awful" customModuleProvider="target">
+            <connections>
+                <outlet property="avatarsSwitch" destination="l4w-sl-F1e" id="SkF-iy-ybB"/>
+                <outlet property="fontScaleLabel" destination="TSi-RM-B3I" id="yXO-0i-YaF"/>
+                <outlet property="fontScaleStepper" destination="Xho-0N-tKL" id="v8f-eG-omD"/>
+                <outlet property="headerBackground" destination="PWM-Qs-8gj" id="D3T-fk-OjS"/>
+                <outlet property="headerLabel" destination="nRF-Tv-dRt" id="M0H-hP-139"/>
+                <outlet property="imagesSwitch" destination="kv2-c9-5sj" id="oa0-RD-5iN"/>
+                <outlet property="themePicker" destination="mYe-FY-VF2" id="m8X-VZ-eOU"/>
+                <outlet property="view" destination="iN0-l3-epB" id="gXv-4o-mMl"/>
+                <outletCollection property="labels" destination="rif-rC-wd0" collectionClass="NSMutableArray" id="qKz-gB-yC8"/>
+                <outletCollection property="labels" destination="xqX-OM-5FZ" collectionClass="NSMutableArray" id="Jiv-fY-Gpg"/>
+                <outletCollection property="labels" destination="09i-VH-Faf" collectionClass="NSMutableArray" id="8vw-lf-Qx6"/>
+                <outletCollection property="labels" destination="TSi-RM-B3I" collectionClass="NSMutableArray" id="7GW-KG-F8T"/>
+                <outletCollection property="labels" destination="jBq-go-frF" collectionClass="NSMutableArray" id="J8X-8E-PYa"/>
+                <outletCollection property="switches" destination="l4w-sl-F1e" collectionClass="NSMutableArray" id="Rwc-OR-LCo"/>
+                <outletCollection property="switches" destination="kv2-c9-5sj" collectionClass="NSMutableArray" id="Q21-oF-pe1"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PWM-Qs-8gj" userLabel="Header Background">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="36"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Formatting" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nRF-Tv-dRt" userLabel="Header">
+                            <rect key="frame" x="121" y="8" width="79" height="20"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.95657655423280419" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="bottomMargin" secondItem="nRF-Tv-dRt" secondAttribute="bottom" id="JhV-FW-Wd4"/>
+                        <constraint firstAttribute="centerX" secondItem="nRF-Tv-dRt" secondAttribute="centerX" id="bYe-QR-DFa"/>
+                        <constraint firstItem="nRF-Tv-dRt" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="topMargin" id="gvl-Of-SS6"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avatars" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rif-rC-wd0">
+                    <rect key="frame" x="8" y="56" width="55" height="20"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l4w-sl-F1e" userLabel="Avatars Switch">
+                    <rect key="frame" x="71" y="51" width="51" height="31"/>
+                    <connections>
+                        <action selector="toggleAvatarsEnabled:" destination="-1" eventType="valueChanged" id="Qtq-gd-WPK"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Images" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqX-OM-5FZ">
+                    <rect key="frame" x="202" y="56" width="53" height="20"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kv2-c9-5sj" userLabel="Images Switch">
+                    <rect key="frame" x="263" y="51" width="51" height="31"/>
+                    <connections>
+                        <action selector="toggleImagesEnabled:" destination="-1" eventType="valueChanged" id="Lsg-fU-lDd"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Font Scale:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
+                    <rect key="frame" x="8" y="102" width="83" height="20"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TSi-RM-B3I">
+                    <rect key="frame" x="99" y="102" width="44" height="20"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="100" minimumValue="50" maximumValue="200" stepValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Xho-0N-tKL" userLabel="Font Scale Stepper">
+                    <rect key="frame" x="218" y="97" width="94" height="29"/>
+                    <connections>
+                        <action selector="changeFontScale:" destination="-1" eventType="valueChanged" id="aGM-84-6j0"/>
+                    </connections>
+                </stepper>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
+                    <rect key="frame" x="8" y="156" width="50" height="20"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="AwfulThemePicker">
+                    <rect key="frame" x="66" y="146" width="246" height="40"/>
+                    <color key="backgroundColor" white="0.95657655419999998" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <action selector="changeSelectedTheme:" destination="-1" eventType="valueChanged" id="2DZ-Ar-SHV"/>
+                    </connections>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="TSi-RM-B3I" firstAttribute="leading" secondItem="09i-VH-Faf" secondAttribute="trailing" constant="8" id="1Ea-BX-gav"/>
+                <constraint firstItem="jBq-go-frF" firstAttribute="centerY" secondItem="mYe-FY-VF2" secondAttribute="centerY" id="3AW-n2-DSs"/>
+                <constraint firstItem="mYe-FY-VF2" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="trailing" constant="8" id="5I8-Kx-bLi"/>
+                <constraint firstItem="PWM-Qs-8gj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="79o-Fw-uc2"/>
+                <constraint firstAttribute="trailing" secondItem="kv2-c9-5sj" secondAttribute="trailing" constant="8" id="7t1-Mx-pP2"/>
+                <constraint firstItem="rif-rC-wd0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="8hj-Ve-cu5"/>
+                <constraint firstItem="rif-rC-wd0" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="EER-iy-1xh"/>
+                <constraint firstAttribute="bottom" secondItem="mYe-FY-VF2" secondAttribute="bottom" constant="14" id="Kae-og-gOZ"/>
+                <constraint firstAttribute="trailing" secondItem="PWM-Qs-8gj" secondAttribute="trailing" id="LDb-Ns-qD6"/>
+                <constraint firstItem="09i-VH-Faf" firstAttribute="top" secondItem="l4w-sl-F1e" secondAttribute="bottom" constant="20" id="NmB-Aw-UoW"/>
+                <constraint firstItem="jBq-go-frF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Xcw-hW-Cb2"/>
+                <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="l4w-sl-F1e" secondAttribute="centerY" id="Y94-YE-Utn"/>
+                <constraint firstItem="TSi-RM-B3I" firstAttribute="centerY" secondItem="Xho-0N-tKL" secondAttribute="centerY" id="YPz-Qs-GgA"/>
+                <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="8" id="cZu-ef-6a4"/>
+                <constraint firstAttribute="trailing" secondItem="mYe-FY-VF2" secondAttribute="trailing" constant="8" id="deU-3H-5AK"/>
+                <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Xho-0N-tKL" secondAttribute="bottom" constant="20" id="fkf-gC-Hem"/>
+                <constraint firstItem="xqX-OM-5FZ" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="gBQ-41-aji"/>
+                <constraint firstItem="l4w-sl-F1e" firstAttribute="leading" secondItem="rif-rC-wd0" secondAttribute="trailing" constant="8" id="gId-cF-Y2h"/>
+                <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="kv2-c9-5sj" secondAttribute="centerY" id="jaC-Sd-nj6"/>
+                <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="xqX-OM-5FZ" secondAttribute="centerY" id="kib-cp-qOn"/>
+                <constraint firstAttribute="trailing" secondItem="Xho-0N-tKL" secondAttribute="trailing" constant="8" id="ljC-op-rew"/>
+                <constraint firstItem="PWM-Qs-8gj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="raR-G9-Bjq"/>
+                <constraint firstItem="09i-VH-Faf" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="voI-g3-r08"/>
+                <constraint firstItem="TSi-RM-B3I" firstAttribute="centerY" secondItem="09i-VH-Faf" secondAttribute="centerY" id="xNG-Za-9nm"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="330" y="531"/>
+        </view>
+    </objects>
+</document>

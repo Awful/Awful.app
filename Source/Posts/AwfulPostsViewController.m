@@ -20,7 +20,6 @@
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
 #import "AwfulNewPrivateMessageViewController.h"
-#import "AwfulPageSettingsViewController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
@@ -327,16 +326,10 @@
     __weak __typeof__(self) weakSelf = self;
     _settingsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
-        AwfulPageSettingsViewController *settings = [[AwfulPageSettingsViewController alloc] initWithForum:self.thread.forum];
+        PostsPageSettingsViewController *settings = [[PostsPageSettingsViewController alloc] initWithForum:self.thread.forum];
         settings.selectedTheme = self.theme;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [settings presentInPopoverFromBarButtonItem:sender];
-        } else {
-            UIToolbar *toolbar = self.navigationController.toolbar;
-            [settings presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-                return [view convertRect:toolbar.bounds fromView:toolbar];
-            }];
-        }
+        [self presentViewController:settings animated:YES completion:nil];
+        settings.popoverPresentationController.barButtonItem = sender;
     };
     return _settingsItem;
 }
