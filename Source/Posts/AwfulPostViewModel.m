@@ -27,8 +27,8 @@
     RemoveSpoilerStylingAndEvents(document);
     RemoveEmptyEditedByParagraphs(document);
     UseHTML5VimeoPlayer(document);
-    HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings settings].username);
-    if (![AwfulSettings settings].showImages) {
+    HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
+    if (![AwfulSettings sharedSettings].showImages) {
         LinkifyNonSmileyImages(document);
     }
     if (self.post.ignored) {
@@ -58,7 +58,7 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 
 - (BOOL)showAvatars
 {
-    return [AwfulSettings settings].showAvatars;
+    return [AwfulSettings sharedSettings].showAvatars;
 }
 
 - (NSArray *)roles

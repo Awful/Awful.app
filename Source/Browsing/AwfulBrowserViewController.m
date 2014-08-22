@@ -114,7 +114,7 @@
         }];
     }
     [sheet addButtonWithTitle:@"Copy URL" block:^{
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
     [sheet addCancelButtonWithTitle:@"Cancel"];

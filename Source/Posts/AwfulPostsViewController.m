@@ -267,12 +267,12 @@
     if (postViewModels.count > 0 && self.page > 0 && self.page >= self.numberOfPages) {
         context[@"endMessage"] = @"End of the thread";
     }
-    int fontScalePercentage = [AwfulSettings settings].fontScale;
+    int fontScalePercentage = [AwfulSettings sharedSettings].fontScale;
     if (fontScalePercentage != 100) {
         context[@"fontScalePercentage"] = @(fontScalePercentage);
     }
-    if ([AwfulSettings settings].username.length > 0) {
-        context[@"loggedInUsername"] = [AwfulSettings settings].username;
+    if ([AwfulSettings sharedSettings].username.length > 0) {
+        context[@"loggedInUsername"] = [AwfulSettings sharedSettings].username;
     }
     context[@"externalStylesheet"] = [AwfulPostsViewExternalStylesheetLoader loader].stylesheet;
     if (self.thread.threadID.length > 0) {
@@ -407,7 +407,7 @@
             }
             components.query = [queryParts componentsJoinedByString:@"&"];
             NSURL *URL = components.URL;
-            [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+            [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
             [UIPasteboard generalPasteboard].awful_URL = URL;
         }];
         copyURL.title = @"Copy Thread URL";
@@ -487,13 +487,13 @@
     
     NSString *settingKey = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([settingKey isEqualToString:AwfulSettingsKeys.showAvatars]) {
-        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings settings].showAvatars)];
+        [_webViewJavaScriptBridge callHandler:@"showAvatars" data:@([AwfulSettings sharedSettings].showAvatars)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.username]) {
-        [_webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:[AwfulSettings settings].username];
+        [_webViewJavaScriptBridge callHandler:@"highlightMentionUsername" data:[AwfulSettings sharedSettings].username];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.fontScale]) {
-        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@([AwfulSettings settings].fontScale)];
+        [_webViewJavaScriptBridge callHandler:@"fontScale" data:@([AwfulSettings sharedSettings].fontScale)];
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.showImages]) {
-        if ([AwfulSettings settings].showImages) {
+        if ([AwfulSettings sharedSettings].showImages) {
             [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
     }
@@ -794,8 +794,8 @@
         }]];
 	}
     
-	if ([AwfulSettings settings].canSendPrivateMessages && user.canReceivePrivateMessages) {
-        if (![user.userID isEqual:[AwfulSettings settings].userID]) {
+	if ([AwfulSettings sharedSettings].canSendPrivateMessages && user.canReceivePrivateMessages) {
+        if (![user.userID isEqual:[AwfulSettings sharedSettings].userID]) {
             [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
                 self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
                 self.messageViewController.delegate = self;
@@ -831,7 +831,7 @@
     
     AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
     NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
-    if ([post.author.username isEqualToString:[AwfulSettings settings].username]) {
+    if ([post.author.username isEqualToString:[AwfulSettings sharedSettings].username]) {
         possessiveUsername = @"Your";
     }
     AwfulActionViewController *sheet = [AwfulActionViewController new];
@@ -848,7 +848,7 @@
         components.query = [queryParts componentsJoinedByString:@"&"];
         components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
         NSURL *URL = components.URL;
-        [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     

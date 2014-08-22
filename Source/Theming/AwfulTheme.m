@@ -11,7 +11,7 @@
 
 + (instancetype)currentTheme
 {
-	if ([AwfulSettings settings].darkTheme) {
+	if ([AwfulSettings sharedSettings].darkTheme) {
 		return [[AwfulThemeLoader sharedLoader] themeNamed:@"dark"];
 	}
 	else {
@@ -24,7 +24,7 @@
     if (!forum) {
         return self.currentTheme;
     }
-	NSString *specificThemeName = [[AwfulSettings settings] themeNameForForumID:forum.forumID];
+	NSString *specificThemeName = [[AwfulSettings sharedSettings] themeNameForForumID:forum.forumID];
     if (specificThemeName) {
         return [[AwfulThemeLoader sharedLoader] themeNamed:specificThemeName];
     } else {

@@ -43,7 +43,7 @@
 
 - (BOOL)dark
 {
-    return [AwfulSettings settings].darkTheme;
+    return [AwfulSettings sharedSettings].darkTheme;
 }
 
 - (NSDateFormatter *)regDateFormat
@@ -69,7 +69,7 @@
 
 - (BOOL)privateMessagesWork
 {
-    return self.user.canReceivePrivateMessages && [AwfulSettings settings].canSendPrivateMessages;
+    return self.user.canReceivePrivateMessages && [AwfulSettings sharedSettings].canSendPrivateMessages;
 }
 
 - (NSString *)customTitleHTML

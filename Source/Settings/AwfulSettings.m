@@ -14,7 +14,7 @@
 
 @implementation AwfulSettings
 
-+ (AwfulSettings *)settings
++ (AwfulSettings *)sharedSettings
 {
     static AwfulSettings *instance;
     static dispatch_once_t onceToken;

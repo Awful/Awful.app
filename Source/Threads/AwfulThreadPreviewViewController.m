@@ -70,8 +70,8 @@
         } else if (self) {
             self.networkOperation = nil;
             AwfulThread *fakeThread = [AwfulThread insertInManagedObjectContext:self.managedObjectContext];
-            fakeThread.author = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings settings].userID
-                                                           username:[AwfulSettings settings].username
+            fakeThread.author = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
+                                                           username:[AwfulSettings sharedSettings].username
                                              inManagedObjectContext:self.managedObjectContext];
             self.fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
             self.fakePost.thread = fakeThread;
@@ -92,7 +92,7 @@
 - (void)configureCell
 {
     AwfulThreadCell *cell = self.threadCell;
-    if ([AwfulSettings settings].showThreadTags) {
+    if ([AwfulSettings sharedSettings].showThreadTags) {
 		cell.threadTagHidden = NO;
         AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
         

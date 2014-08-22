@@ -62,7 +62,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
     NSMutableArray *sortDescriptors = [NSMutableArray new];
-    if ([AwfulSettings settings].bookmarksSortedByUnread) {
+    if ([AwfulSettings sharedSettings].bookmarksSortedByUnread) {
         [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
 	}
     [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
