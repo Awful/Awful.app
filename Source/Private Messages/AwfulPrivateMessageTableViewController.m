@@ -137,7 +137,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)refreshIfNecessary
 {
-    if (![AwfulSettings settings].canSendPrivateMessages) return;
+    if (![AwfulSettings sharedSettings].canSendPrivateMessages) return;
     
     if (_dataSource.fetchedResultsController.fetchedObjects.count == 0 || [[AwfulRefreshMinder minder] shouldRefreshPrivateMessagesInbox]) {
         [self refresh];
@@ -182,7 +182,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
-    if (AwfulSettings.settings.showThreadTags) {
+    if ([AwfulSettings sharedSettings].showThreadTags) {
         cell.threadTagHidden = NO;
         NSString *imageName = pm.threadTag.imageName;
         if (imageName.length > 0) {

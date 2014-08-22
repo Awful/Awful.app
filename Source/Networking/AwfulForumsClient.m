@@ -122,7 +122,7 @@
 - (void)reset
 {
     [_HTTPManager.operationQueue cancelAllOperations];
-    NSString *URLString = [AwfulSettings settings].customBaseURL ?: @"http://forums.somethingawful.com";
+    NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: @"http://forums.somethingawful.com";
     NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
     if (components.scheme.length == 0) {
         components.scheme = @"http";
@@ -984,9 +984,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
             AwfulUser *user = scraper.user;
             if (user) {
                 [managedObjectContext save:&error];
-                [AwfulSettings settings].userID = user.userID;
-                [AwfulSettings settings].username = user.username;
-                [AwfulSettings settings].canSendPrivateMessages = user.canReceivePrivateMessages;
+                [AwfulSettings sharedSettings].userID = user.userID;
+                [AwfulSettings sharedSettings].username = user.username;
+                [AwfulSettings sharedSettings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }
             if (callback) {
                 NSManagedObjectID *objectID = scraper.user.objectID;

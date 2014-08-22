@@ -57,7 +57,7 @@
 - (NSArray *)themesForForumWithID:(NSString *)forumID
 {
     NSMutableArray *themes = [NSMutableArray new];
-    NSArray *ubiquitousThemeNames = [AwfulSettings settings].ubiquitousThemeNames;
+    NSArray *ubiquitousThemeNames = [AwfulSettings sharedSettings].ubiquitousThemeNames;
     for (AwfulTheme *theme in self.themes) {
         NSString *relevantForumID = theme[@"relevantForumID"];
         if (!relevantForumID || [relevantForumID isEqualToString:forumID] || [ubiquitousThemeNames containsObject:theme.name]) {

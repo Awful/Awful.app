@@ -86,7 +86,7 @@
 
 - (BOOL)isReady
 {
-    return !![AwfulSettings settings].instapaperUsername;
+    return !![AwfulSettings sharedSettings].instapaperUsername;
 }
 
 - (NSString *)callToAction
@@ -107,7 +107,7 @@
 - (void)saveURL:(NSURL *)url
 {
     [self showProgressHUD];
-    AwfulSettings *settings = [AwfulSettings settings];
+    AwfulSettings *settings = [AwfulSettings sharedSettings];
     [[InstapaperAPIClient client] addURL:url
                              forUsername:settings.instapaperUsername
                                 password:settings.instapaperPassword

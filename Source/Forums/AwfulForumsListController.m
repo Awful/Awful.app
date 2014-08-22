@@ -57,7 +57,7 @@
 
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
 {
-    NSArray *forumIDs = [AwfulSettings settings].favoriteForums;
+    NSArray *forumIDs = [AwfulSettings sharedSettings].favoriteForums;
     if (forumIDs.count == 0) {
         return @[];
     }
@@ -250,7 +250,7 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 - (void)saveFavoriteForumsToSettings
 {
     self.userDrivenChange = YES;
-    [AwfulSettings settings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
+    [AwfulSettings sharedSettings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
     self.userDrivenChange = NO;
 }
 

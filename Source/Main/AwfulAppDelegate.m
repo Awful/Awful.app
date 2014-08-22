@@ -76,7 +76,7 @@ static id _instance;
         [cookieStorage deleteCookie:cookie];
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
-    [[AwfulSettings settings] reset];
+    [[AwfulSettings sharedSettings] reset];
     [[PocketAPI sharedAPI] logout];
     [[AwfulAvatarLoader loader] emptyCache];
     
@@ -107,8 +107,8 @@ static id _instance;
 {
     StartCrashlytics();
     _instance = self;
-    [[AwfulSettings settings] registerDefaults];
-    [[AwfulSettings settings] migrateOldSettings];
+    [[AwfulSettings sharedSettings] registerDefaults];
+    [[AwfulSettings sharedSettings] migrateOldSettings];
     
     SetCrashlyticsUsername();
     
@@ -156,7 +156,7 @@ static inline void StartCrashlytics(void)
 static inline void SetCrashlyticsUsername(void)
 {
     #if CRASHLYTICS_ENABLED && AWFUL_BETA
-        [Crashlytics setUserName:[AwfulSettings settings].username];
+        [Crashlytics setUserName:[AwfulSettings sharedSettings].username];
     #endif
 }
 
@@ -178,7 +178,7 @@ static inline void SetCrashlyticsUsername(void)
     nav.restorationIdentifier = BookmarksNavigationIdentifier;
     [viewControllers addObject:nav];
     
-    if ([AwfulSettings settings].canSendPrivateMessages) {
+    if ([AwfulSettings sharedSettings].canSendPrivateMessages) {
         vc = [[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
         vc.restorationIdentifier = MessagesListIdentifier;
         nav = [vc enclosingNavigationController];
@@ -301,7 +301,7 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
         NSUInteger i = [roots indexOfObjectPassingTest:^(UINavigationController *nav, NSUInteger i, BOOL *stop) {
             return [nav.viewControllers.firstObject isKindOfClass:[AwfulPrivateMessageTableViewController class]];
         }];
-        if ([AwfulSettings settings].canSendPrivateMessages) {
+        if ([AwfulSettings sharedSettings].canSendPrivateMessages) {
             if (i == NSNotFound) {
                 UINavigationController *nav = [[[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
                 [roots insertObject:nav atIndex:2];
@@ -338,7 +338,7 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
 
 - (void)configureSplitViewControllerSettings
 {
-    if ([AwfulSettings settings].hideSidebarInLandscape) {
+    if ([AwfulSettings sharedSettings].hideSidebarInLandscape) {
         self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryOverlay;
     } else {
         self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
@@ -405,10 +405,10 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     }
     
     // Don't ask about the same URL over and over.
-    if ([[AwfulSettings settings].lastOfferedPasteboardURL isEqualToString:URL.absoluteString]) {
+    if ([[AwfulSettings sharedSettings].lastOfferedPasteboardURL isEqualToString:URL.absoluteString]) {
         return;
     }
-    [AwfulSettings settings].lastOfferedPasteboardURL = URL.absoluteString;
+    [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
     
     NSMutableString *abbreviatedURL = [URL.awful_absoluteUnicodeString mutableCopy];
     NSRange upToHost = [abbreviatedURL rangeOfString:@"://"];
@@ -513,7 +513,7 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 - (void)loginController:(AwfulLoginController *)login
          didLogInAsUser:(AwfulUser *)user
 {
-    AwfulSettings *settings = [AwfulSettings settings];
+    AwfulSettings *settings = [AwfulSettings sharedSettings];
     settings.username = user.username;
     settings.userID = user.userID;
     settings.canSendPrivateMessages = user.canReceivePrivateMessages;

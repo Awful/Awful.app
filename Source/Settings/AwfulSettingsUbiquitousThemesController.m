@@ -43,7 +43,7 @@
         return !!theme[@"relevantForumID"];
     }];
     self.themes = [themes objectsAtIndexes:forumSpecificThemeIndexes];
-    self.selectedThemeNames = [AwfulSettings settings].ubiquitousThemeNames;
+    self.selectedThemeNames = [AwfulSettings sharedSettings].ubiquitousThemeNames;
 }
 
 - (void)settingsDidChange:(NSNotification *)notification
@@ -138,7 +138,7 @@ static NSString * const CellIdentifier = @"Cell";
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
     self.ignoreSettingsChanges = YES;
-    [AwfulSettings settings].ubiquitousThemeNames = updatedSelection;
+    [AwfulSettings sharedSettings].ubiquitousThemeNames = updatedSelection;
     self.selectedThemeNames = updatedSelection;
     self.ignoreSettingsChanges = NO;
 }
