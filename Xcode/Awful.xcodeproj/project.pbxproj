@@ -20,6 +20,7 @@
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
 		1C1ADC3618E65BFF00E865BF /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
+		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
 		1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */; };
@@ -117,8 +118,6 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
-		1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */; };
-		1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */; };
 		1C9381C6181A95EC00258191 /* AwfulNewThreadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
@@ -205,6 +204,7 @@
 		1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */; };
 		1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */; };
 		1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */; };
+		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */; };
@@ -289,6 +289,7 @@
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
+		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
 		1C1D2FDA171A75CB00AC6387 /* AwfulSingleUserThreadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSingleUserThreadInfo.h; sourceTree = "<group>"; };
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
@@ -434,10 +435,6 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
-		1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionViewController.h; sourceTree = "<group>"; };
-		1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionViewController.m; sourceTree = "<group>"; };
-		1C91B43518BEAE0F00E9AAB3 /* AwfulActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionView.h; sourceTree = "<group>"; };
-		1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionView.m; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* AwfulNewThreadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -596,6 +593,7 @@
 		1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemePicker.m; sourceTree = "<group>"; };
 		1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemeButton.h; sourceTree = "<group>"; };
 		1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThemeButton.m; sourceTree = "<group>"; };
+		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF3A465180C768100EC2450 /* AwfulURLRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulURLRouter.h; sourceTree = "<group>"; };
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
@@ -823,21 +821,19 @@
 			path = URLs;
 			sourceTree = "<group>";
 		};
-		1C28B34A1729DC9700254EE7 /* Action Sheets */ = {
+		1C28B34A1729DC9700254EE7 /* In-App Actions */ = {
 			isa = PBXGroup;
 			children = (
 				1CE2D9BF166ABD0D0024AC1C /* AwfulActionSheet.h */,
 				1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */,
-				1C91B43518BEAE0F00E9AAB3 /* AwfulActionView.h */,
-				1C91B43618BEAE0F00E9AAB3 /* AwfulActionView.m */,
-				1C91B43218BEABD900E9AAB3 /* AwfulActionViewController.h */,
-				1C91B43318BEABD900E9AAB3 /* AwfulActionViewController.m */,
 				1C28B3571729F38400254EE7 /* AwfulIconActionCell.h */,
 				1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */,
 				1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */,
 				1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */,
+				1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */,
+				1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */,
 			);
-			path = "Action Sheets";
+			path = "In-App Actions";
 			sourceTree = "<group>";
 		};
 		1C304BD216C78B6E0022AF15 /* Browsing */ = {
@@ -873,13 +869,13 @@
 		1C3857A115675AFE0078AF95 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				1C28B34A1729DC9700254EE7 /* Action Sheets */,
 				1C304BD216C78B6E0022AF15 /* Browsing */,
 				1CF2462016DD957300C75E05 /* Composition */,
 				1C6474A61569989800C72657 /* Data */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1CE2D99D16688AC40024AC1C /* Framework Categories */,
+				1C28B34A1729DC9700254EE7 /* In-App Actions */,
 				1C7D22EC173B330E008A802C /* Instapaper API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
@@ -1491,6 +1487,7 @@
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
+				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
@@ -1747,7 +1744,6 @@
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
 				837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */,
-				1C91B43418BEABD900E9AAB3 /* AwfulActionViewController.m in Sources */,
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C73921A17DF350F00089248 /* AwfulForumCell.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */,
@@ -1761,7 +1757,6 @@
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */,
-				1C91B43718BEAE0F00E9AAB3 /* AwfulActionView.m in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
 				1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,
@@ -1790,6 +1785,7 @@
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
+				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */,
 				1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */,

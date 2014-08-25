@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTableViewController.h"
-#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
@@ -18,6 +17,7 @@
 #import "AwfulThreadTagLoader.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "Awful-Swift.h"
 
 @interface AwfulThreadTableViewController ()
 
@@ -184,14 +184,15 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 - (void)showThreadActionsForThread:(AwfulThread *)thread
 {
-    AwfulActionViewController *sheet = [AwfulActionViewController new];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
+    InAppActionViewController *actionViewController = [InAppActionViewController new];
+    NSMutableArray *items = [NSMutableArray new];
+    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [postsViewController loadPage:1 updatingCache:YES];
         [self showDetailViewController:postsViewController sender:self];
     }]];
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
+    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
         AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
@@ -203,7 +204,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     } else {
         bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
     }
-    [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+    [items addObject:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulForumsClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
             if (error) {
                 [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
@@ -232,9 +233,9 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             }
         }];
         profileItem.title = @"View OP's Profile";
-        [sheet addItem:profileItem];
+        [items addObject:profileItem];
     }
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
         components.query = [@"threadid=" stringByAppendingString:thread.threadID];
         NSURL *URL = components.URL;
@@ -242,7 +243,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     if (thread.beenSeen) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread action:^{
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkAsUnread action:^{
             if (!thread.threadID) {
                 return NSLog(@"thread %@ is missing a thread ID; cannot mark unseen", thread.title);
             }
@@ -261,51 +262,14 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
         }]];
     }
     
-    NSIndexPath *indexPath = [_threadDataSource.fetchedResultsController indexPathForObject:thread];
-    AwfulThreadCell *substituteCell = [AwfulThreadCell new];
-    [self configureCell:substituteCell withObject:thread];
-    substituteCell.textLabel.numberOfLines = 0;
-    UITableViewCell *actualCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    void (^positionSubstituteCell)() = ^{
-        CGSize sizeThatFits = [substituteCell sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), 0)];
-        sizeThatFits.height = MAX(self.tableView.rowHeight, sizeThatFits.height + 6);
-        substituteCell.bounds = (CGRect){ .size = sizeThatFits };
-        if (actualCell) {
-            substituteCell.center = [self.view convertPoint:actualCell.center fromView:actualCell.superview];
-            if (CGRectGetMinY(substituteCell.frame) < 0) {
-                CGRect frame = substituteCell.frame;
-                frame.origin.y = 0;
-                substituteCell.frame = frame;
-            } else if (CGRectGetMaxY(substituteCell.frame) > CGRectGetMaxY(self.view.bounds)) {
-                CGRect frame = substituteCell.frame;
-                frame.origin.y -= CGRectGetMaxY(substituteCell.frame) - CGRectGetMaxY(self.view.bounds);
-                substituteCell.frame = frame;
-            }
-        } else {
-            substituteCell.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetHeight(substituteCell.bounds) / 2);
-        }
+    actionViewController.items = items;
+    actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
+        NSIndexPath *indexPath = [_threadDataSource.fetchedResultsController indexPathForObject:thread];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        *sourceRect = cell.bounds;
+        *sourceView = cell;
     };
-    positionSubstituteCell();
-    sheet.additionalPresentationBlock = ^(BOOL presenting, NSTimeInterval duration) {
-        if (presenting) {
-            substituteCell.alpha = 0;
-            [self.view addSubview:substituteCell];
-            [UIView animateWithDuration:duration animations:^{
-                substituteCell.alpha = 1;
-            }];
-        } else {
-            [UIView animateWithDuration:duration animations:^{
-                substituteCell.alpha = 0;
-            } completion:^(BOOL finished) {
-                [substituteCell removeFromSuperview];
-            }];
-        }
-    };
-    
-    [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-        positionSubstituteCell();
-        return CGRectInset(substituteCell.frame, 0, 1);
-    }];
+    [self presentViewController:actionViewController animated:YES completion:nil];
 }
 
 - (void)doneWithProfile
