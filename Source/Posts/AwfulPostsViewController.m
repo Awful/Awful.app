@@ -4,7 +4,6 @@
 
 #import "AwfulPostsViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
@@ -388,9 +387,10 @@
     __weak __typeof__(self) weakSelf = self;
     _actionsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
-        AwfulActionViewController *sheet = [AwfulActionViewController new];
-        sheet.title = self.title;
-        AwfulIconActionItem *copyURL = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        InAppActionViewController *actionViewController = [InAppActionViewController new];
+        actionViewController.title = self.title;
+        NSMutableArray *items = [NSMutableArray new];
+        AwfulIconActionItem *copyURLItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
             NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
             NSMutableArray *queryParts = [NSMutableArray new];
             [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
@@ -403,9 +403,9 @@
             [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
             [UIPasteboard generalPasteboard].awful_URL = URL;
         }];
-        copyURL.title = @"Copy Thread URL";
-        [sheet addItem:copyURL];
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
+        copyURLItem.title = @"Copy Thread URL";
+        [items addObject:copyURLItem];
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
             AwfulActionSheet *vote = [AwfulActionSheet new];
             for (int i = 5; i >= 1; i--) {
                 [vote addButtonWithTitle:[@(i) stringValue] block:^{
@@ -437,7 +437,7 @@
         } else {
             bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
         }
-        [sheet addItem:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+        [items addObject:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
             [[AwfulForumsClient client] setThread:self.thread
                                      isBookmarked:!self.thread.bookmarked
                                           andThen:^(NSError *error)
@@ -461,15 +461,10 @@
                  }
              }];
         }]];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [sheet presentInPopoverFromBarButtonItem:sender];
-        } else {
-            UINavigationController *navigationController = self.navigationController;
-            [sheet presentFromView:self.view highlightingRegionReturnedByBlock:^(UIView *view) {
-                UIToolbar *toolbar = navigationController.toolbar;
-                return [view convertRect:toolbar.bounds fromView:toolbar];
-            }];
-        }
+        
+        actionViewController.items = items;
+        [self presentViewController:actionViewController animated:YES completion:nil];
+        actionViewController.popoverPresentationController.barButtonItem = sender;
     };
     return _actionsItem;
 }
@@ -772,15 +767,16 @@
 {
     AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
     AwfulUser *user = post.author;
-	AwfulActionViewController *sheet = [AwfulActionViewController new];
+    InAppActionViewController *actionViewController = [InAppActionViewController new];
+    NSMutableArray *items = [NSMutableArray new];
     
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
         [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
 	}]];
     
 	if (!self.author) {
-		[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
+		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
             AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
             [postsView loadPage:1 updatingCache:YES];
             [self.navigationController pushViewController:postsView animated:YES];
@@ -789,7 +785,7 @@
     
 	if ([AwfulSettings sharedSettings].canSendPrivateMessages && user.canReceivePrivateMessages) {
         if (![user.userID isEqual:[AwfulSettings sharedSettings].userID]) {
-            [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
+            [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
                 self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
                 self.messageViewController.delegate = self;
                 self.messageViewController.restorationIdentifier = @"New PM from posts view";
@@ -798,7 +794,7 @@
         }
 	}
     
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
         AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
@@ -807,15 +803,13 @@
         }
 	}]];
     
-    AwfulSemiModalRectInViewBlock headerRectBlock = ^(UIView *view) {
-        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu, %@)", (unsigned long)postIndex, UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"true" : @"false"];
-        return [self.webView awful_rectForElementBoundingRect:rectString];
+    actionViewController.items = items;
+    actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
+        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu, true)", (unsigned long)postIndex];
+        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        *sourceView = self.webView;
     };
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.webView pointingToRegionReturnedByBlock:headerRectBlock];
-    } else {
-        [sheet presentFromView:self.webView highlightingRegionReturnedByBlock:headerRectBlock];
-    }
+    [self presentViewController:actionViewController animated:YES completion:nil];
 }
 
 - (void)didTapActionButtonWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
@@ -827,11 +821,13 @@
     if ([post.author.username isEqualToString:[AwfulSettings sharedSettings].username]) {
         possessiveUsername = @"Your";
     }
-    AwfulActionViewController *sheet = [AwfulActionViewController new];
-    sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+
+    InAppActionViewController *actionViewController = [InAppActionViewController new];
+    actionViewController.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    NSMutableArray *items = [NSMutableArray new];
     __weak __typeof__(self) weakSelf = self;
     
-    [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
         NSMutableArray *queryParts = [NSMutableArray new];
         [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
@@ -847,7 +843,7 @@
     }]];
     
     if (!self.author) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
@@ -861,7 +857,7 @@
     }
     
     if (post.editable) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
@@ -877,7 +873,7 @@
     }
     
     if (!self.thread.closed) {
-        [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
@@ -907,17 +903,13 @@
         }]];
     }
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.webView pointingToRegionReturnedByBlock:^(UIView *view) {
-            NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-            return [self.webView awful_rectForElementBoundingRect:rectString];
-        }];
-    } else {
-        [sheet presentFromView:self.webView highlightingRegionReturnedByBlock:^(UIView *view) {
-            NSString *rectString = [self.webView awful_evalJavaScript:@"FooterRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-            return [self.webView awful_rectForElementBoundingRect:rectString];
-        }];
-    }
+    actionViewController.items = items;
+    actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
+        NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
+        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        *sourceView = self.webView;
+    };
+    [self presentViewController:actionViewController animated:YES completion:nil];
 }
 
 - (void)externalStylesheetDidUpdate:(NSNotification *)notification

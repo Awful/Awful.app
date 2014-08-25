@@ -4,7 +4,6 @@
 
 #import "AwfulPrivateMessageViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulActionViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulBrowserViewController.h"
@@ -25,6 +24,7 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache/GRMustache.h>
 #import <WebViewJavascriptBridge.h>
+#import "Awful-Swift.h"
 
 @interface AwfulPrivateMessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
@@ -137,10 +137,11 @@
 
 - (void)showUserActionsFromRect:(CGRect)rect
 {
-	AwfulActionViewController *sheet = [AwfulActionViewController new];
+	InAppActionViewController *actionViewController = [InAppActionViewController new];
+    NSMutableArray *items = [NSMutableArray new];
     AwfulUser *user = self.privateMessage.from;
     
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
@@ -149,7 +150,7 @@
         }
 	}]];
     
-	[sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
         AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
@@ -158,16 +159,13 @@
         }
 	}]];
     
-    AwfulSemiModalRectInViewBlock headerBlock = ^(UIView *view) {
-        UIWebView *webView = self.webView;
-        NSString *rectString = [webView awful_evalJavaScript:@"HeaderRect(%@)", UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"true" : @"false"];
-        return [webView awful_rectForElementBoundingRect:rectString];
+    actionViewController.items = items;
+    actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
+        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRect(true)"];
+        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        *sourceView = self.webView;
     };
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [sheet presentInPopoverFromView:self.view pointingToRegionReturnedByBlock:headerBlock];
-    } else {
-        [sheet presentFromView:self.view highlightingRegionReturnedByBlock:headerBlock];
-    }
+    [self presentViewController:actionViewController animated:YES completion:nil];
 }
 
 - (void)didLongPressWebView:(UILongPressGestureRecognizer *)sender
