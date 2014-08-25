@@ -1438,7 +1438,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = Awful;
+				CLASSPREFIX = "";
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Awful Contributors";
 			};
