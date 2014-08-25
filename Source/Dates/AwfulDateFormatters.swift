@@ -1,10 +1,6 @@
-//
 //  AwfulDateFormatters.swift
-//  Awful
 //
-//  Created by Chris on 6/7/14.
-//  Copyright (c) 2014 Awful Contributors. All rights reserved.
-//
+//  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
 
