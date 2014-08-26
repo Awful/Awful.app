@@ -7,45 +7,30 @@
 #import <AVFoundation/AVFoundation.h>
 #import "AwfulAlertView.h"
 #import "AwfulAvatarLoader.h"
-#import "AwfulBookmarkedThreadTableViewController.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
-#import "AwfulEmptyViewController.h"
 #import "AwfulForumsClient.h"
-#import "AwfulForumsListController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
 #import "AwfulLaunchImageViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
-#import "AwfulNavigationController.h"
 #import "AwfulNewMessageChecker.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
-#import "AwfulPrivateMessageTableViewController.h"
-#import "AwfulPrivateMessageViewController.h"
-#import "AwfulRapSheetViewController.h"
 #import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
-#import "AwfulSettingsViewController.h"
 #import "AwfulThemeLoader.h"
-#import "AwfulUnpoppingViewHandler.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import <PocketAPI/PocketAPI.h>
+#import "Awful-Swift.h"
 
-@interface AwfulAppDelegate () <AwfulLoginControllerDelegate, UISplitViewControllerDelegate>
+@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
-@property (strong, nonatomic) UISplitViewController *splitViewController;
-@property (strong, nonatomic) UITabBarController *tabBarController;
-
-@end
-
-@interface UIViewController (AwfulSecondaryViewController)
-
-@property (readonly, assign, nonatomic) BOOL prefersSecondaryViewController;
+@property (strong, nonatomic) RootViewControllerStack *rootViewControllerStack;
 
 @end
 
@@ -160,72 +145,24 @@ static inline void SetCrashlyticsUsername(void)
     #endif
 }
 
+- (RootViewControllerStack *)rootViewControllerStack
+{
+    if (!_rootViewControllerStack) {
+        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
+    }
+    return _rootViewControllerStack;
+}
+
 - (UIViewController *)createRootViewControllerStack
 {
-    NSMutableArray *viewControllers = [NSMutableArray new];
-    UINavigationController *nav;
-    UIViewController *vc;
-    
-    vc = [[AwfulForumsListController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-    vc.restorationIdentifier = ForumListIdentifier;
-    nav = [vc enclosingNavigationController];
-    nav.restorationIdentifier = ForumListNavigationIdentifier;
-    [viewControllers addObject:nav];
-    
-    vc = [[AwfulBookmarkedThreadTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-    vc.restorationIdentifier = BookmarksIdentifier;
-    nav = [vc enclosingNavigationController];
-    nav.restorationIdentifier = BookmarksNavigationIdentifier;
-    [viewControllers addObject:nav];
-    
-    if ([AwfulSettings sharedSettings].canSendPrivateMessages) {
-        vc = [[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-        vc.restorationIdentifier = MessagesListIdentifier;
-        nav = [vc enclosingNavigationController];
-        nav.restorationIdentifier = MessagesListNavigationIdentifier;
-        [viewControllers addObject:nav];
-    }
-
-    vc = [AwfulRapSheetViewController new];
-    vc.restorationIdentifier = LepersColonyIdentifier;
-    nav = [vc enclosingNavigationController];
-    nav.restorationIdentifier = LepersColonyNavigationIdentifier;
-    [viewControllers addObject:nav];
-    
-    vc = [[AwfulSettingsViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-    vc.restorationIdentifier = SettingsIdentifier;
-    nav = [vc enclosingNavigationController];
-    nav.restorationIdentifier = SettingsNavigationIdentifier;
-    [viewControllers addObject:nav];
-    
-    self.tabBarController = [UITabBarController new];
-    self.tabBarController.viewControllers = viewControllers;
-    self.tabBarController.restorationIdentifier = TabBarControllerIdentifier;
-    
-    AwfulEmptyViewController *emptyViewController = [AwfulEmptyViewController new];
-    UINavigationController *detailNavigationController = [emptyViewController enclosingNavigationController];
-    detailNavigationController.restorationIdentifier = DetailNavigationIdentifier;
-    
-    // AwfulNavigationController sets itself as its restoration class, which is generally fine, but for the root navigation controllers we'll do everything ourselves.
-    [viewControllers makeObjectsPerformSelector:@selector(setRestorationClass:) withObject:nil];
-    detailNavigationController.restorationClass = nil;
-
-    self.splitViewController = [UISplitViewController new];
-    self.splitViewController.delegate = self;
-    self.splitViewController.viewControllers = @[self.tabBarController, detailNavigationController];
-    self.splitViewController.minimumPrimaryColumnWidth = self.splitViewController.maximumPrimaryColumnWidth = 350;
-    self.splitViewController.restorationIdentifier = SplitViewControllerIdentifier;
-    [self configureSplitViewControllerSettings];
-    
-    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.splitViewController
+    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.rootViewControllerStack.rootViewController
                                                     managedObjectContext:_dataStack.managedObjectContext];
-    return self.splitViewController;
+    return self.rootViewControllerStack.rootViewController;
 }
 
 - (void)destroyRootViewControllerStack
 {
-    self.tabBarController = nil;
-    self.splitViewController = nil;
+    self.rootViewControllerStack = nil;
     self.window.rootViewController = nil;
     _awfulURLRouter = nil;
 }
@@ -262,17 +199,7 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
         [self.window.rootViewController presentViewController:[login enclosingNavigationController] animated:NO completion:nil];
     }
     
-    // Show the primary view controller if all that's visible is the empty view controller.
-    if ([self.splitViewController.viewControllers.lastObject awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) {
-        [self.splitViewController awful_showPrimaryViewController];
-    }
-    
-    // Make sure the "show sidebar" button item is in place after restoring from state. UISplitViewControllerDelegate methods won't help us then.
-    if (!self.splitViewController.collapsed && self.splitViewController.displayMode != UISplitViewControllerDisplayModeAllVisible) {
-        UINavigationController *navigationController = self.splitViewController.viewControllers.lastObject;
-        UIViewController *rootViewController = navigationController.viewControllers.firstObject;
-        rootViewController.navigationItem.leftBarButtonItem = [self.splitViewController displayModeButtonItem];
-    }
+    [self.rootViewControllerStack didAppear];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
 
@@ -301,27 +228,8 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
 - (void)settingsDidChange:(NSNotification *)note
 {
     NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([setting isEqualToString:AwfulSettingsKeys.canSendPrivateMessages]) {
-        
-        // Add the private message list if it's needed, or remove it if it isn't.
-        NSMutableArray *roots = [self.tabBarController mutableArrayValueForKey:@"viewControllers"];
-        NSUInteger i = [roots indexOfObjectPassingTest:^(UINavigationController *nav, NSUInteger i, BOOL *stop) {
-            return [nav.viewControllers.firstObject isKindOfClass:[AwfulPrivateMessageTableViewController class]];
-        }];
-        if ([AwfulSettings sharedSettings].canSendPrivateMessages) {
-            if (i == NSNotFound) {
-                UINavigationController *nav = [[[AwfulPrivateMessageTableViewController alloc] initWithManagedObjectContext:_dataStack.managedObjectContext] enclosingNavigationController];
-                [roots insertObject:nav atIndex:2];
-            }
-        } else {
-            if (i != NSNotFound) {
-                [roots removeObjectAtIndex:i];
-            }
-        }
-    } else if ([setting isEqualToString:AwfulSettingsKeys.username]) {
+    if ([setting isEqualToString:AwfulSettingsKeys.username]) {
         SetCrashlyticsUsername();
-    } else if ([setting isEqualToString:AwfulSettingsKeys.hideSidebarInLandscape]) {
-        [self configureSplitViewControllerSettings];
     } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
         // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
         UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
@@ -341,15 +249,6 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
 - (void)preferredContentSizeDidChange:(NSNotification *)note
 {
     [self themeDidChange];
-}
-
-- (void)configureSplitViewControllerSettings
-{
-    if ([AwfulSettings sharedSettings].hideSidebarInLandscape) {
-        self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModePrimaryOverlay;
-    } else {
-        self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
-    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -459,18 +358,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (UIViewController *)application:(UIApplication *)application viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    return ViewControllerWithRestorationIdentifier(self.window.rootViewController, identifierComponents.lastObject);
-}
-
-static UIViewController * ViewControllerWithRestorationIdentifier(UIViewController *viewController, NSString *identifier)
-{
-    if ([viewController.restorationIdentifier isEqualToString:identifier]) return viewController;
-    if (![viewController respondsToSelector:@selector(viewControllers)]) return nil;
-    for (UIViewController *child in [viewController valueForKey:@"viewControllers"]) {
-        UIViewController *found = ViewControllerWithRestorationIdentifier(child, identifier);
-        if (found) return found;
-    }
-    return nil;
+    return [self.rootViewControllerStack viewControllerWithRestorationIdentifierPath:identifierComponents];
 }
 
 /**
@@ -545,98 +433,6 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
                           message:@"Double-check your username and password, then try again."
                       buttonTitle:@"OK"
                        completion:nil];
-}
-
-#pragma mark - UISplitViewControllerDelegate
-
-- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
-{
-    // Discard the secondaryViewController if it's the empty view controller.
-    if ([secondaryViewController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) return YES;
-    
-    // Collapse the entire secondary navigation stack on to the primary navigation stack.
-    UINavigationController *primaryNavigationController = (UINavigationController *)self.tabBarController.selectedViewController;
-    UINavigationController *secondaryNavigationController = (UINavigationController *)secondaryViewController;
-    primaryNavigationController.viewControllers = [primaryNavigationController.viewControllers arrayByAddingObjectsFromArray:secondaryNavigationController.viewControllers];
-    
-    // TODO bring along the swipe-from-right-edge-to-unpop stack too.
-    
-    return YES;
-}
-
-- (UIViewController *)splitViewController:(UISplitViewController *)splitViewController separateSecondaryViewControllerFromPrimaryViewController:(UIViewController *)primaryViewController
-{
-    // Split the view controller stack at the first view controller that prefers to be a secondary view controller. Everything before stays where it is. Everything there and after go into a new navigation controller.
-    UINavigationController *primary = (UINavigationController *)self.tabBarController.selectedViewController;
-    UINavigationController *secondary = [AwfulNavigationController new];
-    NSUInteger firstIndexThatWantsSecondary = [primary.viewControllers indexOfObjectPassingTest:^(UIViewController *viewController, NSUInteger i, BOOL *stop) {
-        return viewController.prefersSecondaryViewController;
-    }];
-    if (firstIndexThatWantsSecondary == NSNotFound) {
-        secondary.viewControllers = @[[AwfulEmptyViewController new]];
-    } else {
-        secondary.viewControllers = [primary.viewControllers subarrayWithRange:NSMakeRange(firstIndexThatWantsSecondary, primary.viewControllers.count - firstIndexThatWantsSecondary)];
-        primary.viewControllers = [primary.viewControllers subarrayWithRange:NSMakeRange(0, firstIndexThatWantsSecondary)];
-    }
-    
-    // TODO bring along the swipe-from-right-edge-to-unpop stack too.
-    return secondary;
-}
-
-- (BOOL)splitViewController:(UISplitViewController *)splitViewController showDetailViewController:(UIViewController *)detailViewController sender:(id)sender
-{
-    if (splitViewController.collapsed) {
-        UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
-        UINavigationController *navigationController = (UINavigationController *)tabBarController.selectedViewController;
-        [navigationController pushViewController:detailViewController animated:YES];
-    } else {
-        if (splitViewController.displayMode != UISplitViewControllerDisplayModeAllVisible) {
-            detailViewController.navigationItem.leftBarButtonItem = [splitViewController displayModeButtonItem];
-        }
-        
-        UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-        [navigationController setViewControllers:@[detailViewController] animated:YES];
-        [splitViewController awful_hidePrimaryViewController];
-    }
-    return YES;
-}
-
-- (void)splitViewController:(UISplitViewController *)splitViewController willChangeToDisplayMode:(UISplitViewControllerDisplayMode)displayMode
-{
-    UINavigationController *navigationController = splitViewController.viewControllers.lastObject;
-    UIViewController *rootViewController = navigationController.viewControllers.firstObject;
-    if (displayMode == UISplitViewControllerDisplayModeAllVisible) {
-        [rootViewController.navigationItem setLeftBarButtonItem:nil animated:YES];
-    } else {
-        [rootViewController.navigationItem setLeftBarButtonItem:[splitViewController displayModeButtonItem] animated:YES];
-    }
-}
-
-@end
-
-@implementation UIViewController (AwfulSecondaryViewController)
-
-- (BOOL)prefersSecondaryViewController
-{
-    return NO;
-}
-
-@end
-
-@implementation AwfulPostsViewController (AwfulSecondaryViewController)
-
-- (BOOL)prefersSecondaryViewController
-{
-    return YES;
-}
-
-@end
-
-@implementation AwfulPrivateMessageViewController (AwfulSecondaryViewController)
-
-- (BOOL)prefersSecondaryViewController
-{
-    return YES;
 }
 
 @end

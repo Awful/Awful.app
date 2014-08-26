@@ -109,6 +109,7 @@
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C89A79418AF4DA500D75854 /* AwfulEmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
+		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
@@ -423,6 +424,7 @@
 		1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulEmptyViewController.m; sourceTree = "<group>"; };
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+AwfulConvenience.m"; sourceTree = "<group>"; };
+		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10451914B5F00010007B /* Awful 2.0.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.8.xcdatamodel"; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
@@ -701,6 +703,7 @@
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
 				1190F7F113BE4EDA00B9D271 /* Prefix.pch */,
+				1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1771,6 +1774,7 @@
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
 				1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */,
 				1CA04BE9195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m in Sources */,
+				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
