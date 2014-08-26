@@ -267,6 +267,13 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
         [self.splitViewController awful_showPrimaryViewController];
     }
     
+    // Make sure the "show sidebar" button item is in place after restoring from state. UISplitViewControllerDelegate methods won't help us then.
+    if (!self.splitViewController.collapsed && self.splitViewController.displayMode != UISplitViewControllerDisplayModeAllVisible) {
+        UINavigationController *navigationController = self.splitViewController.viewControllers.lastObject;
+        UIViewController *rootViewController = navigationController.viewControllers.firstObject;
+        rootViewController.navigationItem.leftBarButtonItem = [self.splitViewController displayModeButtonItem];
+    }
+    
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
 
     [self showPromptIfLoginCookieExpiresSoon];
