@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostComposeViewController.h"
-#import "AwfulActionSheet.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
@@ -199,15 +198,16 @@
 {
     if (self.post) {
         if (self.delegate) {
-            AwfulActionSheet *actionSheet = [AwfulActionSheet new];
-            [actionSheet addDestructiveButtonWithTitle:@"Delete Edit" block:^{
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
+            [actionSheet addAction:[UIAlertAction actionWithTitle:@"Delete Edit" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:NO];
-            }];
-            [actionSheet addButtonWithTitle:@"Save Draft" block:^{
+            }]];
+            [actionSheet addActionWithTitle:@"Save Draft" handler:^{
                 [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
             }];
-            [actionSheet addCancelButtonWithTitle:@"Cancel"];
-            [actionSheet showFromBarButtonItem:self.cancelButtonItem animated:YES];
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:YES completion:nil];
+            actionSheet.popoverPresentationController.barButtonItem = self.cancelButtonItem;
         } else {
             [self dismissViewControllerAnimated:YES completion:nil];
         }
@@ -221,8 +221,8 @@
 - (void)didLongPressNextButtonItem:(UILongPressGestureRecognizer *)sender
 {
     if (sender.state == UIGestureRecognizerStateBegan) {
-        AwfulActionSheet *actionSheet = [AwfulActionSheet new];
-        [actionSheet addButtonWithTitle:@"Preview" block:^{
+        UIAlertController *actionSheet = [UIAlertController actionSheet];
+        [actionSheet addActionWithTitle:@"Preview" handler:^{
             [self previewPostWithSubmitBlock:^{
                 
                 #pragma clang diagnostic push
@@ -232,8 +232,9 @@
                 
             } cancelBlock:nil];
         }];
-        [actionSheet addCancelButtonWithTitle:@"Cancel"];
-        [actionSheet showFromBarButtonItem:self.submitButtonItem animated:YES];
+        [actionSheet addCancelActionWithHandler:nil];
+        [self presentViewController:actionSheet animated:YES completion:nil];
+        actionSheet.popoverPresentationController.barButtonItem = self.submitButtonItem;
     }
 }
 

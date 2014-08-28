@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImagePreviewViewController.h"
-#import "AwfulActionSheet.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 @import AssetsLibrary;
@@ -31,9 +30,6 @@
 
 
 @implementation AwfulImagePreviewViewController
-{
-    AwfulActionSheet *_visibleActionSheet;
-}
 
 - (id)initWithURL:(NSURL *)imageURL
 {
@@ -133,10 +129,11 @@
 
 - (void)showActions
 {
-    if (_visibleActionSheet) return;
+    if (self.presentedViewController) return;
     [self.automaticallyHideBarsTimer invalidate];
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Save to Photos" block:^{
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
+    
+    [actionSheet addActionWithTitle:@"Save to Photos" handler:^{
         MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
                                                                              title:@"Saving"
                                                                               mode:MRProgressOverlayViewModeIndeterminate
@@ -157,20 +154,23 @@
             }];
         });
     }];
-    [sheet addButtonWithTitle:@"Copy Image URL" block:^{
+    
+    [actionSheet addActionWithTitle:@"Copy Image URL" handler:^{
         [AwfulSettings sharedSettings].lastOfferedPasteboardURL = self.imageURL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = self.imageURL;
         [self hideBarsAfterShortDuration];
     }];
+    
     if ([SSReadingList supportsURL:self.imageURL]) {
-        [sheet addButtonWithTitle:@"Send to Reading List" block:^{
+        [actionSheet addActionWithTitle:@"Send to Reading List" handler:^{
             NSError *error;
             if (![[SSReadingList defaultReadingList] addReadingListItemWithURL:self.imageURL title:self.title previewText:nil error:&error]) {
                 [self presentViewController:[UIAlertController alertWithTitle:@"Error Adding Image" error:error] animated:YES completion:nil];
             }
         }];
     }
-    [sheet addButtonWithTitle:@"Copy Image" block:^{
+    
+    [actionSheet addActionWithTitle:@"Copy Image" handler:^{
         if (self.imageIsGIF) {
             [[UIPasteboard generalPasteboard] setData:self.imageData forPasteboardType:(__bridge NSString *)kUTTypeGIF];
         } else {
@@ -178,14 +178,13 @@
         }
         [self hideBarsAfterShortDuration];
     }];
-    [sheet addCancelButtonWithTitle:@"Cancel" block:^{
+    
+    [actionSheet addCancelActionWithHandler:^{
         [self hideBarsAfterShortDuration];
     }];
-    [sheet showFromBarButtonItem:self.actionButton animated:YES];
-    [sheet setCompletionBlock:^{
-        _visibleActionSheet = nil;
-    }];
-    _visibleActionSheet = sheet;
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.barButtonItem = self.actionButton;
 }
 
 - (void)hideBarsAfterShortDuration

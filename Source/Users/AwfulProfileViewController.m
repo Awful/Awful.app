@@ -3,8 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileViewController.h"
-#import "AwfulActionSheet+WebViewSheets.h"
-#import "BrowserViewController.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -14,7 +12,9 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
+#import "BrowserViewController.h"
 #import <GRMustache.h>
+#import "UIAlertAction+WebViewSheets.h"
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -93,9 +93,13 @@
 
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:homepage fromViewController:self addingActions:nil];
-    sheet.title = homepage.absoluteString;
-    [sheet showFromRect:rect inView:self.view animated:YES];
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
+    actionSheet.title = homepage.absoluteString;
+    [actionSheet addActions:[UIAlertAction actionsOpeningURL:homepage fromViewController:self]];
+    [actionSheet addCancelActionWithHandler:nil];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.sourceRect = rect;
+    actionSheet.popoverPresentationController.sourceView = self.view;
 }
 
 - (UIWebView *)webView

@@ -3,9 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageViewController.h"
-#import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAppDelegate.h"
-#import "BrowserViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
@@ -20,8 +18,10 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import "RapSheetViewController.h"
+#import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
+#import "RapSheetViewController.h"
+#import "UIAlertAction+WebViewSheets.h"
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -97,10 +97,10 @@
 - (void)didTapReplyButtonItem:(UIBarButtonItem *)buttonItem
 {
     AwfulPrivateMessage *privateMessage = self.privateMessage;
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
     __weak __typeof__(self) weakSelf = self;
     
-    [sheet addButtonWithTitle:@"Reply" block:^{
+    [actionSheet addActionWithTitle:@"Reply" handler:^{
         [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
@@ -115,7 +115,7 @@
         }];
     }];
     
-    [sheet addButtonWithTitle:@"Forward" block:^{
+    [actionSheet addActionWithTitle:@"Forward" handler:^{
         [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
@@ -130,8 +130,9 @@
         }];
     }];
     
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromBarButtonItem:buttonItem animated:YES];
+    [actionSheet addCancelActionWithHandler:nil];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.barButtonItem = buttonItem;
 }
 
 - (void)showUserActionsFromRect:(CGRect)rect
@@ -201,14 +202,17 @@
 
 - (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect withImageURL:(NSURL *)imageURL
 {
-    AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self addingActions:^(AwfulActionSheet *sheet) {
-        if (imageURL) {
-            [sheet addButtonWithTitle:@"Show Image" block:^{
-                [self previewImageAtURL:imageURL];
-            }];
-        }
-    }];
-    [sheet showFromRect:rect inView:self.view animated:YES];
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
+    actionSheet.title = URL.absoluteString;
+    [actionSheet addActions:[UIAlertAction actionsOpeningURL:URL fromViewController:self]];
+    if (imageURL) {
+        [actionSheet addActionWithTitle:@"Show Image" handler:^{
+            [self previewImageAtURL:imageURL];
+        }];
+    }
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.sourceRect = rect;
+    actionSheet.popoverPresentationController.sourceView = self.view;
 }
 
 - (void)showMenuForVideoAtURL:(NSURL *)URL fromRect:(CGRect)rect
@@ -227,20 +231,24 @@
         return;
     }
     
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Open" block:^{
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
+    
+    [actionSheet addActionWithTitle:@"Open" handler:^{
         [BrowserViewController presentBrowserForURL:components.URL fromViewController:self];
     }];
     
-    void (^openInSafariOrYouTube)(void) = ^{ [[UIApplication sharedApplication] openURL:components.URL]; };
+    NSString *openInTitle = @"Open in Safari";
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
-        [sheet addButtonWithTitle:@"Open in YouTube" block:openInSafariOrYouTube];
-    } else {
-        [sheet addButtonWithTitle:@"Open in Safari" block:openInSafariOrYouTube];
+        openInTitle = @"Open in YouTube";
     }
+    [actionSheet addActionWithTitle:openInTitle handler:^{
+        [[UIApplication sharedApplication] openURL:components.URL];
+    }];
     
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    [sheet showFromRect:rect inView:self.view animated:YES];
+    [actionSheet addCancelActionWithHandler:nil];
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.sourceRect = rect;
+    actionSheet.popoverPresentationController.sourceView = self.view;
 }
 
 - (void)previewImageAtURL:(NSURL *)url

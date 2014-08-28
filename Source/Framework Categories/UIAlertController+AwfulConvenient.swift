@@ -5,6 +5,9 @@
 import UIKit
 
 extension UIAlertController {
+
+    // MARK: Convenience initializers
+
     class func alertWithTitle(title: String, error: NSError, handler: (action: UIAlertAction!) -> Void) -> UIAlertController {
         return informationalAlertWithTitle(title, message: messageForError(error), handler: handler)
     }
@@ -25,6 +28,28 @@ extension UIAlertController {
 
     class func informationalAlertWithTitle(title: String, message: String) -> UIAlertController {
         return informationalAlertWithTitle(title, message: message, handler: nil)
+    }
+
+    class func actionSheet() -> UIAlertController {
+        return self(title: nil, message: nil, preferredStyle: .ActionSheet)
+    }
+
+    // MARK: Convenient actions
+
+    func addActionWithTitle(title: String, handler: (() -> Void)!) {
+        addAction(UIAlertAction(title: title, style: .Default) { _ in
+            if handler != nil { handler() } })
+    }
+
+    func addCancelActionWithHandler(handler: (() -> Void)!) {
+        addAction(UIAlertAction(title: "Cancel", style: .Cancel) { _ in
+            if handler != nil { handler() } })
+    }
+
+    func addActions(actions: [UIAlertAction]) {
+        for action in actions {
+            addAction(action)
+        }
     }
 }
 

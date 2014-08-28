@@ -3,12 +3,12 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "BrowserViewController.h"
-#import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import "Awful-Swift.h"
 
 @interface BrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
 
@@ -22,7 +22,6 @@
 
 @implementation BrowserViewController
 {
-    AwfulActionSheet *_visibleActionSheet;
     BOOL _restoringState;
 }
 
@@ -93,35 +92,39 @@
 
 - (void)actOnCurrentPage:(UIBarButtonItem *)sender
 {
-    if (_visibleActionSheet) return;
+    if (self.presentedViewController) return;
     NSURL *URL = self.webView.request.URL;
     if (URL.absoluteString.length == 0) {
         URL = self.URL;
     }
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Open in Safari" block:^{
+    UIAlertController *actionSheet = [UIAlertController actionSheet];
+    
+    [actionSheet addActionWithTitle:@"Open in Safari" handler:^{
         [[UIApplication sharedApplication] openURL:URL];
     }];
+    
     for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
         if (![browser canOpenURL:URL]) continue;
-        [sheet addButtonWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title]
-                            block:^{ [browser openURL:URL]; }];
+        [actionSheet addActionWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title] handler:^{
+            [browser openURL:URL];
+        }];
     }
+    
     for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [sheet addButtonWithTitle:service.callToAction block:^{
+        [actionSheet addActionWithTitle:service.callToAction handler:^{
             [service saveURL:URL];
         }];
     }
-    [sheet addButtonWithTitle:@"Copy URL" block:^{
+    
+    [actionSheet addActionWithTitle:@"Copy URL" handler:^{
         [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
-    [sheet addCancelButtonWithTitle:@"Cancel"];
-    _visibleActionSheet = sheet;
-    [sheet setCompletionBlock:^{
-        _visibleActionSheet = nil;
-    }];
-    [sheet showFromBarButtonItem:sender animated:YES];
+    
+    [actionSheet addCancelActionWithHandler:nil];
+    
+    [self presentViewController:actionSheet animated:YES completion:nil];
+    actionSheet.popoverPresentationController.barButtonItem = sender;
 }
 
 - (UIBarButtonItem *)backItem
