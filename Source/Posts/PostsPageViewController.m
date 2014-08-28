@@ -1,33 +1,33 @@
-//  AwfulPostsViewController.m
+//  PostsPageViewController.m
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPostsViewController.h"
+#import "PostsPageViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulBrowserViewController.h"
+#import "BrowserViewController.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
-#import "AwfulForumThreadTableViewController.h"
+#import "ThreadListViewController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
-#import "AwfulNewPrivateMessageViewController.h"
+#import "MessageComposeViewController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
-#import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
-#import "AwfulReplyViewController.h"
+#import "PostComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
+#import "RapSheetViewController.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache.h>
 #import <MRProgress/MRProgressOverlayView.h>
@@ -35,7 +35,7 @@
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
-@interface AwfulPostsViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
+@interface PostsPageViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
 
 @property (assign, nonatomic) NSInteger page;
 
@@ -56,14 +56,14 @@
 @property (copy, nonatomic) NSString *advertisementHTML;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
-@property (strong, nonatomic) AwfulReplyViewController *replyViewController;
-@property (strong, nonatomic) AwfulNewPrivateMessageViewController *messageViewController;
+@property (strong, nonatomic) PostComposeViewController *replyViewController;
+@property (strong, nonatomic) MessageComposeViewController *messageViewController;
 
 @property (copy, nonatomic) NSArray *posts;
 
 @end
 
-@implementation AwfulPostsViewController
+@implementation PostsPageViewController
 {
     AwfulWebViewNetworkActivityIndicatorManager *_webViewNetworkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
@@ -306,7 +306,7 @@
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (!self.replyViewController) {
-            self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:nil];
+            self.replyViewController = [[PostComposeViewController alloc] initWithThread:self.thread quotedText:nil];
             self.replyViewController.delegate = self;
             self.replyViewController.restorationIdentifier = @"Reply composition";
         }
@@ -777,7 +777,7 @@
     
 	if (!self.author) {
 		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
-            AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:self.thread author:user];
+            PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:self.thread author:user];
             [postsView loadPage:1 updatingCache:YES];
             [self.navigationController pushViewController:postsView animated:YES];
         }]];
@@ -786,7 +786,7 @@
 	if ([AwfulSettings sharedSettings].canSendPrivateMessages && user.canReceivePrivateMessages) {
         if (![user.userID isEqual:[AwfulSettings sharedSettings].userID]) {
             [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
-                self.messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:user];
+                self.messageViewController = [[MessageComposeViewController alloc] initWithRecipient:user];
                 self.messageViewController.delegate = self;
                 self.messageViewController.restorationIdentifier = @"New PM from posts view";
                 [self presentViewController:[self.messageViewController enclosingNavigationController] animated:YES completion:nil];
@@ -795,7 +795,7 @@
 	}
     
 	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-        AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+        RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
         } else {
@@ -864,7 +864,7 @@
                     [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
                     return;
                 }
-                self.replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:text];
+                self.replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:text];
                 self.replyViewController.restorationIdentifier = @"Edit composition";
                 self.replyViewController.delegate = self;
                 [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
@@ -893,7 +893,7 @@
                     }
                     appendString(quotedText);
                 } else {
-                    self.replyViewController = [[AwfulReplyViewController alloc] initWithThread:self.thread quotedText:quotedText];
+                    self.replyViewController = [[PostComposeViewController alloc] initWithThread:self.thread quotedText:quotedText];
                     self.replyViewController.delegate = self;
                     self.replyViewController.restorationIdentifier = @"Reply composition";
                 }
@@ -995,7 +995,7 @@
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+- (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
@@ -1051,7 +1051,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                 [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
             }
         } else if ([URL opensInBrowser]) {
-            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
+            [BrowserViewController presentBrowserForURL:URL fromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }
@@ -1087,7 +1087,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     if (authorUserID.length > 0) {
         author = [AwfulUser firstOrNewUserWithUserID:authorUserID username:nil inManagedObjectContext:managedObjectContext];
     }
-    AwfulPostsViewController *postsView = [[AwfulPostsViewController alloc] initWithThread:thread author:author];
+    PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;
     if (![managedObjectContext save:&error]) {

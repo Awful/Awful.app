@@ -56,12 +56,12 @@
 
 - (NSDateFormatter *)regDateFormat
 {
-    return [AwfulDateFormatters regDateFormatter];
+    return [NSDateFormatter regDateFormatter];
 }
 
 - (NSDateFormatter *)sentDateFormat
 {
-    return [AwfulDateFormatters postDateFormatter];
+    return [NSDateFormatter postDateFormatter];
 }
 
 - (NSString *)javascript

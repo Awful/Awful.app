@@ -1,21 +1,21 @@
-//  AwfulComposeTextViewController.m
+//  ComposeTextViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulComposeTextViewController.h"
+#import "ComposeTextViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
 #import "AwfulTextAttachment.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
-@interface AwfulComposeTextViewController ()
+@interface ComposeTextViewController ()
 
 @property (readonly, strong, nonatomic) UIView *viewToOverlay;
 
 @end
 
-@implementation AwfulComposeTextViewController
+@implementation ComposeTextViewController
 {
     UIBarButtonItem *_submitButtonItem;
     UIBarButtonItem *_cancelButtonItem;

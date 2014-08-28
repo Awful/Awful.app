@@ -1,8 +1,8 @@
-//  AwfulBrowserViewController.m
+//  BrowserViewController.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulBrowserViewController.h"
+#import "BrowserViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulFrameworkCategories.h"
@@ -11,7 +11,7 @@
 #import "AwfulSettings.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
-@interface AwfulBrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
+@interface BrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) UIBarButtonItem *actionItem;
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation AwfulBrowserViewController
+@implementation BrowserViewController
 {
     AwfulActionSheet *_visibleActionSheet;
     BOOL _restoringState;
@@ -70,7 +70,7 @@
 
 + (instancetype)presentBrowserForURL:(NSURL *)URL fromViewController:(UIViewController *)presentingViewController
 {
-    AwfulBrowserViewController *browser = [[self alloc] initWithURL:URL];
+    BrowserViewController *browser = [[self alloc] initWithURL:URL];
     browser.restorationIdentifier = [NSString stringWithFormat:@"Awful Browser for %@", presentingViewController.title];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || !presentingViewController.navigationController) {
         [presentingViewController presentViewController:[browser enclosingNavigationController] animated:YES completion:nil];
@@ -277,7 +277,7 @@
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
     NSURL *URL = [coder decodeObjectForKey:URLKey];
-    AwfulBrowserViewController *viewController = [[self alloc] initWithURL:URL];
+    BrowserViewController *viewController = [[self alloc] initWithURL:URL];
     viewController.restorationIdentifier = identifierComponents.lastObject;
     return viewController;
 }

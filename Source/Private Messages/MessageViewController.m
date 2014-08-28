@@ -1,12 +1,12 @@
-//  AwfulPrivateMessageViewController.m
+//  MessageViewController.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPrivateMessageViewController.h"
+#import "MessageViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulBrowserViewController.h"
+#import "BrowserViewController.h"
 #import "AwfulDataStack.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
@@ -14,19 +14,19 @@
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
-#import "AwfulNewPrivateMessageViewController.h"
+#import "MessageComposeViewController.h"
 #import "AwfulPrivateMessageViewModel.h"
 #import "AwfulProfileViewController.h"
-#import "AwfulRapSheetViewController.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
+#import "RapSheetViewController.h"
 #import <GRMustache/GRMustache.h>
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
-@interface AwfulPrivateMessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
+@interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
 
@@ -38,11 +38,11 @@
 
 @end
 
-@implementation AwfulPrivateMessageViewController
+@implementation MessageViewController
 {
     AwfulWebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
-    AwfulNewPrivateMessageViewController *_composeViewController;
+    MessageComposeViewController *_composeViewController;
     BOOL _didRender;
     BOOL _didLoadOnce;
     CGFloat _fractionalContentOffsetOnLoad;
@@ -108,7 +108,7 @@
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:privateMessage
+                _composeViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:privateMessage
                                                                                                 initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message replying to private message";
@@ -123,7 +123,7 @@
             if (error) {
                 [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
             } else {
-                _composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:self.privateMessage
+                _composeViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:self.privateMessage
                                                                                                  initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message forwarding private message";
@@ -152,7 +152,7 @@
 	}]];
     
 	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
-        AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+        RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
         } else {
@@ -231,7 +231,7 @@
     
     AwfulActionSheet *sheet = [AwfulActionSheet new];
     [sheet addButtonWithTitle:@"Open" block:^{
-        [AwfulBrowserViewController presentBrowserForURL:components.URL fromViewController:self];
+        [BrowserViewController presentBrowserForURL:components.URL fromViewController:self];
     }];
     
     void (^openInSafariOrYouTube)(void) = ^{ [[UIApplication sharedApplication] openURL:components.URL]; };
@@ -343,7 +343,7 @@
         if (awfulURL) {
             [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
         } else if ([URL opensInBrowser]) {
-            [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:self];
+            [BrowserViewController presentBrowserForURL:URL fromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }
@@ -370,7 +370,7 @@
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+- (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
@@ -386,7 +386,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
     AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
                                                                             matchingPredicateFormat:@"messageID = %@", messageID];
-    AwfulPrivateMessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
+    MessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;
     if (![managedObjectContext save:&error]) {

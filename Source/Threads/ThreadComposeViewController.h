@@ -1,14 +1,14 @@
-//  AwfulNewThreadViewController.h
+//  ThreadComposeViewController.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulComposeTextViewController.h"
+#import "ComposeTextViewController.h"
 #import "AwfulModels.h"
 
 /**
- * An AwfulNewThreadViewController is for writing the OP of a new thread.
+ * A ThreadComposeViewController is for writing the OP of a new thread.
  */
-@interface AwfulNewThreadViewController : AwfulComposeTextViewController
+@interface ThreadComposeViewController : ComposeTextViewController
 
 /**
  * Returns an initialized AwfulNewThreadViewController. This is the designated initializer.

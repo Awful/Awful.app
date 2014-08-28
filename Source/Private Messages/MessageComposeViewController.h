@@ -1,14 +1,14 @@
-//  AwfulNewPrivateMessageViewController.h
+//  MessageComposeViewController.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulComposeTextViewController.h"
+#import "ComposeTextViewController.h"
 #import "AwfulModels.h"
 
 /**
- * An AwfulNewPrivateMessageViewController is for writing private messages.
+ * A MessageComposeViewController is for writing private messages.
  */
-@interface AwfulNewPrivateMessageViewController : AwfulComposeTextViewController
+@interface MessageComposeViewController : ComposeTextViewController
 
 /**
  * Returns an initialized AwfulNewPrivateMessageViewController. This is one of three designated initializers.

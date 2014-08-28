@@ -1,4 +1,4 @@
-//  AwfulComposeTextViewController.h
+//  ComposeTextViewController.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,7 +6,7 @@
 @protocol AwfulComposeCustomView;
 @protocol AwfulComposeTextViewControllerDelegate;
 
-@interface AwfulComposeTextViewController : AwfulViewController <UITextViewDelegate>
+@interface ComposeTextViewController : AwfulViewController <UITextViewDelegate>
 
 /**
  * The composition text view. Set its text or attributedText property as appropriate.
@@ -91,7 +91,7 @@
  * @param success   YES if the submission was successful, otherwise NO.
  * @param keepDraft YES if the view controller should be kept around, otherwise NO.
  */
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+- (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft;
 

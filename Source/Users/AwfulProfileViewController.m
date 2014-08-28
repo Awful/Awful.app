@@ -5,12 +5,12 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAlertView.h"
-#import "AwfulBrowserViewController.h"
+#import "BrowserViewController.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
-#import "AwfulNewPrivateMessageViewController.h"
+#import "MessageComposeViewController.h"
 #import "AwfulProfileViewModel.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
@@ -120,7 +120,7 @@
         __typeof__(self) self = weakSelf;
         NSString *service = contactInfo[@"service"];
         if ([service isEqualToString:@"Private Message"]) {
-            AwfulNewPrivateMessageViewController *messageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:self.user];
+            MessageComposeViewController *messageViewController = [[MessageComposeViewController alloc] initWithRecipient:self.user];
             [self presentViewController:[messageViewController enclosingNavigationController] animated:YES completion:nil];
         } else if ([service isEqualToString:@"Homepage"]) {
             NSURL *URL = [NSURL URLWithString:contactInfo[@"address"] relativeToURL:[AwfulForumsClient client].baseURL];

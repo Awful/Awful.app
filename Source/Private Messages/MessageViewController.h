@@ -1,4 +1,4 @@
-//  AwfulPrivateMessageViewController.h
+//  MessageViewController.h
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,9 +6,9 @@
 #import "AwfulModels.h"
 
 /**
- * An AwfulPrivateMessageViewController displays a single private message.
+ * A MessageViewController displays a single private message.
  */
-@interface AwfulPrivateMessageViewController : AwfulViewController
+@interface MessageViewController : AwfulViewController
 
 /**
  * Designated initializer.

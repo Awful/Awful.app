@@ -8,13 +8,13 @@ import UIKit
 A Selectotron is a modal view controller for picking a particular page of a thread. By default it presents in a popover on all devices.
 */
 class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverPresentationControllerDelegate {
-    let postsViewController: AwfulPostsViewController
+    let postsViewController: PostsPageViewController
     
     @IBOutlet weak var jumpButton: UIButton!
     @IBOutlet weak var buttonRow: UIView!
     @IBOutlet weak var picker: UIPickerView!
     
-    init(postsViewController: AwfulPostsViewController) {
+    init(postsViewController: PostsPageViewController) {
         self.postsViewController = postsViewController
         super.init(nibName: "Selectotron", bundle: nil)
         modalPresentationStyle = .Popover

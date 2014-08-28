@@ -1,8 +1,8 @@
-//  AwfulForumThreadTableViewController.m
+//  ThreadListViewController.m
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulForumThreadTableViewController.h"
+#import "ThreadListViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
@@ -10,17 +10,17 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulNewThreadViewController.h"
-#import "AwfulPostsViewController.h"
+#import "ThreadComposeViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
+#import "PostsPageViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
+@interface ThreadListViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
 @property (strong, nonatomic) UIButton *filterButton;
@@ -29,10 +29,10 @@
 
 @end
 
-@implementation AwfulForumThreadTableViewController
+@implementation ThreadListViewController
 {
     NSInteger _mostRecentlyLoadedPage;
-    AwfulNewThreadViewController *_newThreadViewController;
+    ThreadComposeViewController *_newThreadViewController;
     BOOL _justLoaded;
 }
 
@@ -61,7 +61,7 @@
 
 - (void)didTapNewThreadButtonItem
 {
-    _newThreadViewController = [[AwfulNewThreadViewController alloc] initWithForum:self.forum];
+    _newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:self.forum];
     _newThreadViewController.restorationIdentifier = @"New thread composition";
     _newThreadViewController.delegate = self;
     [self presentViewController:[_newThreadViewController enclosingNavigationController] animated:YES completion:nil];
@@ -235,14 +235,14 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulNewThreadViewController *)newThreadViewController
+- (void)composeTextViewController:(ThreadComposeViewController *)newThreadViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
     [self dismissViewControllerAnimated:YES completion:^{
         if (success) {
             AwfulThread *thread = newThreadViewController.thread;
-            AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+            PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
             [postsViewController loadPage:1 updatingCache:YES];
             [self showDetailViewController:postsViewController sender:self];
@@ -281,7 +281,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
-    AwfulForumThreadTableViewController *threadTableViewController = [[self alloc] initWithForum:forum];
+    ThreadListViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;
     NSError *error;

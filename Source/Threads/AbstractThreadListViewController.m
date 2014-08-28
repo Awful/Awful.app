@@ -1,31 +1,31 @@
-//  AwfulThreadTableViewController.m
+//  AbstractThreadListViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulThreadTableViewController.h"
+#import "AbstractThreadListViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewThreadTagObserver.h"
-#import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
+#import "PostsPageViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
 
-@interface AwfulThreadTableViewController ()
+@interface AbstractThreadListViewController ()
 
 @property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
 
 @end
 
-@implementation AwfulThreadTableViewController
+@implementation AbstractThreadListViewController
 {
     AwfulFetchedResultsControllerDataSource *_threadDataSource;
 }
@@ -187,13 +187,13 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
     [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToFirstPage action:^{
-        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [postsViewController loadPage:1 updatingCache:YES];
         [self showDetailViewController:postsViewController sender:self];
     }]];
     [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeJumpToLastPage action:^{
-        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
         postsViewController.restorationIdentifier = @"AwfulPostsViewController";
         [postsViewController loadPage:AwfulThreadPageLast updatingCache:YES];
         [self showDetailViewController:postsViewController sender:self];
@@ -283,8 +283,8 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 {
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
     AwfulThread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
-    AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-    postsViewController.restorationIdentifier = @"AwfulPostsViewController";
+    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
+    postsViewController.restorationIdentifier = @"Posts";
     
     // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
     [postsViewController loadPage:(thread.beenSeen ? AwfulThreadPageNextUnread : 1) updatingCache:YES];

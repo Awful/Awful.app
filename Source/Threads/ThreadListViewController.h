@@ -1,14 +1,14 @@
-//  AwfulForumThreadTableViewController.h
+//  ThreadListViewController.h
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulThreadTableViewController.h"
+#import "AbstractThreadListViewController.h"
 #import "AwfulModels.h"
 
 /**
- * An AwfulForumThreadTableViewController displays a list of threads in a forum.
+ * A ThreadListViewController displays a list of threads in a forum.
  */
-@interface AwfulForumThreadTableViewController : AwfulThreadTableViewController
+@interface ThreadListViewController : AbstractThreadListViewController
 
 /**
  * Returns an initialized AwfulForumThreadTableViewController. This is the designated initializer.

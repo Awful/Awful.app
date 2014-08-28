@@ -1,8 +1,8 @@
-//  AwfulBookmarkedThreadTableViewController.m
+//  BookmarkedThreadListViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulBookmarkedThreadTableViewController.h"
+#import "BookmarkedThreadListViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
@@ -11,13 +11,13 @@
 #import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
-@interface AwfulBookmarkedThreadTableViewController ()
+@interface BookmarkedThreadListViewController ()
 
 @property (assign, nonatomic) NSUInteger mostRecentlyLoadedPage;
 
 @end
 
-@implementation AwfulBookmarkedThreadTableViewController
+@implementation BookmarkedThreadListViewController
 
 - (void)dealloc
 {
