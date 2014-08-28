@@ -1,4 +1,4 @@
-//  AwfulPostsViewController.h
+//  PostsPageViewController.h
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,9 +6,9 @@
 #import "AwfulModels.h"
 
 /**
- * An AwfulPostsViewController shows a list of posts in a thread.
+ * A PostsPageViewController shows a list of posts in a thread.
  */
-@interface AwfulPostsViewController : AwfulViewController
+@interface PostsPageViewController : AwfulViewController
 
 /**
  * Designated initializer.

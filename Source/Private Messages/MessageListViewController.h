@@ -1,13 +1,13 @@
-//  AwfulPrivateMessageTableViewController.h
+//  MessageListViewController.h
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
 
 /**
- * An AwfulPrivateMessageTableViewController shows a list of private messages.
+ * A MessageListViewController shows a list of private messages.
  */
-@interface AwfulPrivateMessageTableViewController : AwfulTableViewController
+@interface MessageListViewController : AwfulTableViewController
 
 /**
  * Returns an initialized AwfulPrivateMessageTableViewController. This is the designated initializer.

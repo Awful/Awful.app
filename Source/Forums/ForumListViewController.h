@@ -1,11 +1,11 @@
-//  AwfulForumsListController.h
+//  ForumListViewController.h
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
 
-@interface AwfulForumsListController : AwfulTableViewController
+@interface ForumListViewController : AwfulTableViewController
 
 // Designated initializer.
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;

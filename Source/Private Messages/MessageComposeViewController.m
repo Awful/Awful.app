@@ -1,8 +1,8 @@
-//  AwfulNewPrivateMessageViewController.m
+//  MessageComposeViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulNewPrivateMessageViewController.h"
+#import "MessageComposeViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
@@ -12,7 +12,7 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 
-@interface AwfulNewPrivateMessageViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
+@interface MessageComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulNewPrivateMessageFieldView *fieldView;
 
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation AwfulNewPrivateMessageViewController
+@implementation MessageComposeViewController
 
 - (id)initWithRecipient:(AwfulUser *)recipient
 {
@@ -265,24 +265,24 @@
     NSString *forwardingMessageID = [coder decodeObjectForKey:ForwardingMessageIDKey];
     NSString *initialContents = [coder decodeObjectForKey:InitialContentsKey];
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    AwfulNewPrivateMessageViewController *newPrivateMessageViewController;
+    MessageComposeViewController *newPrivateMessageViewController;
     if (recipientUserID) {
         AwfulUser *recipient = [AwfulUser firstOrNewUserWithUserID:recipientUserID
                                                           username:nil
                                             inManagedObjectContext:managedObjectContext];
-        newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:recipient];
+        newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:recipient];
     } else if (regardingMessageID) {
         AwfulPrivateMessage *regardingMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
                                                                                   matchingPredicateFormat:@"messageID = %@", regardingMessageID];
-        newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRegardingMessage:regardingMessage
+        newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:regardingMessage
                                                                                                  initialContents:initialContents];
     } else if (forwardingMessageID) {
         AwfulPrivateMessage *forwardingMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
                                                                                    matchingPredicateFormat:@"messageID = %@", forwardingMessageID];
-        newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithForwardingMessage:forwardingMessage
+        newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:forwardingMessage
                                                                                                   initialContents:initialContents];
     } else {
-        newPrivateMessageViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
+        newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:nil];
     }
     newPrivateMessageViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;

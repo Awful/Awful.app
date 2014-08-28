@@ -1,8 +1,8 @@
-//  AwfulSettingsViewController.m
+//  SettingsViewController.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulSettingsViewController.h"
+#import "SettingsViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
@@ -10,14 +10,13 @@
 #import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulPostsViewController.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
 
-@interface AwfulSettingsViewController () <AwfulInstapaperLogInControllerDelegate>
+@interface SettingsViewController () <AwfulInstapaperLogInControllerDelegate>
 
 @property (strong, nonatomic) NSArray *sections;
 @property (strong, nonatomic) NSMutableArray *switches;
@@ -26,7 +25,7 @@
 @end
 
 
-@implementation AwfulSettingsViewController
+@implementation SettingsViewController
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
@@ -338,12 +337,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
         [alert addButtonWithTitle:@"Log Out" block:^{ [[AwfulAppDelegate instance] logOut]; }];
         [alert show];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
-        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:setting[@"ThreadID"]
-                                                 inManagedObjectContext:self.managedObjectContext];
-        AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
-        postsViewController.restorationIdentifier = @"Awful's Thread";
-        [postsViewController loadPage:AwfulThreadPageNextUnread updatingCache:YES];
-        [self showDetailViewController:postsViewController sender:self];
+        NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
+        [[AwfulAppDelegate instance] openAwfulURL:URL];
     } else if ([action isEqualToString:@"InstapaperLogIn"]) {
         if ([AwfulSettings sharedSettings].instapaperUsername) {
             [AwfulSettings sharedSettings].instapaperUsername = nil;

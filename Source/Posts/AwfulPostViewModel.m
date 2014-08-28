@@ -73,12 +73,12 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 
 - (NSDateFormatter *)postDateFormat
 {
-    return [AwfulDateFormatters postDateFormatter];
+    return [NSDateFormatter postDateFormatter];
 }
 
 - (NSDateFormatter *)regDateFormat
 {
-    return [AwfulDateFormatters regDateFormatter];
+    return [NSDateFormatter regDateFormatter];
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

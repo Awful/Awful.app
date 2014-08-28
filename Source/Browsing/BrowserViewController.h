@@ -1,13 +1,13 @@
-//  AwfulBrowserViewController.h
+//  BrowserViewController.h
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
 
 /**
- * An AwfulBrowserViewController displays web content with a minimal browser interface. If presented, the left navigation item is a "Close" button that dismisses the view controller.
+ * A BrowserViewController displays web content with a minimal browser interface. If presented, the left navigation item is a "Close" button that dismisses the view controller.
  */
-@interface AwfulBrowserViewController : AwfulViewController
+@interface BrowserViewController : AwfulViewController
 
 /**
  * Designated initializer.

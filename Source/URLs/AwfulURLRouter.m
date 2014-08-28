@@ -4,17 +4,17 @@
 
 #import "AwfulURLRouter.h"
 #import "AwfulAlertView.h"
-#import "AwfulBookmarkedThreadTableViewController.h"
+#import "BookmarkedThreadListViewController.h"
 #import "AwfulEmptyViewController.h"
-#import "AwfulForumsListController.h"
-#import "AwfulForumThreadTableViewController.h"
+#import "ThreadListViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
-#import "AwfulPostsViewController.h"
-#import "AwfulPrivateMessageTableViewController.h"
 #import "AwfulProfileViewController.h"
-#import "AwfulRapSheetViewController.h"
-#import "AwfulSettingsViewController.h"
+#import "SettingsViewController.h"
+#import "ForumListViewController.h"
+#import "MessageListViewController.h"
+#import "PostsPageViewController.h"
+#import "RapSheetViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import <MRProgress/MRProgressOverlayView.h>
 
@@ -50,7 +50,7 @@
     }];
     
     [_routes addRoute:@"/forums" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulForumsListController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumListViewController class]];
     }];
     
     [_routes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *parameters) {
@@ -67,7 +67,7 @@
         AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                   matchingPredicateFormat:@"postID = %@", postID];
         if (post && post.page > 0) {
-            AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:post.thread];
+            PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
             [postsViewController scrollPostToVisible:post];
             return [self showPostsViewController:postsViewController];
@@ -91,7 +91,7 @@
                 [overlay dismiss:YES completion:^{
                     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
                                                              inManagedObjectContext:self.managedObjectContext];
-                    AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
                     [postsViewController loadPage:page updatingCache:YES];
                     [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
@@ -106,15 +106,15 @@
     }];
     
     [_routes addRoute:@"/messages" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulPrivateMessageTableViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
     }];
     
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulBookmarkedThreadTableViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
     }];
     
     [_routes addRoute:@"/settings" handler:^BOOL(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulSettingsViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[SettingsViewController class]];
     }];
     
     [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
@@ -141,7 +141,7 @@
 	[_routes addRoute:@"/banlist" handler:^BOOL(NSDictionary *parameters) {
 		__typeof__(self) self = weakSelf;
 		
-		AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:nil];
+		RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:nil];
 		[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		
 		return YES;
@@ -152,7 +152,7 @@
 		__typeof__(self) self = weakSelf;
 		
 		void (^success)(AwfulUser *) = ^(AwfulUser *user) {
-			AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+			RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
 			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		};
 		AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
@@ -181,12 +181,12 @@
 
 - (BOOL)jumpToForum:(AwfulForum *)forum
 {
-    AwfulForumThreadTableViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[AwfulForumThreadTableViewController class]];
+    ThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadListViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
-        AwfulForumsListController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[AwfulForumsListController class]];
+        ForumListViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumListViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList showForum:forum animated:NO];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
@@ -212,13 +212,13 @@
     NSString *threadID = parameters[@"threadID"];
     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
                                              inManagedObjectContext:self.managedObjectContext];
-    AwfulPostsViewController *postsViewController;
+    PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
         AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:nil inManagedObjectContext:self.managedObjectContext];
-        postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread author:user];
+        postsViewController = [[PostsPageViewController alloc] initWithThread:thread author:user];
     } else {
-        postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
     }
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
@@ -240,7 +240,7 @@
     return [self showPostsViewController:postsViewController];
 }
 
-- (BOOL)showPostsViewController:(AwfulPostsViewController *)postsViewController
+- (BOOL)showPostsViewController:(PostsPageViewController *)postsViewController
 {
     postsViewController.restorationIdentifier = @"Posts from URL";
     
@@ -261,7 +261,7 @@
     }
     
     // Posts view controllers by default hide the bottom bar when pushed. This moves the tab bar controller's tab bar out of the way, making room for the toolbar. However, if some earlier posts view controller has already done this for us, and we went ahead oblivious, we would hide our own toolbar!
-    if ([targetNavigationController.topViewController isKindOfClass:[AwfulPostsViewController class]]) {
+    if ([targetNavigationController.topViewController isKindOfClass:[PostsPageViewController class]]) {
         postsViewController.hidesBottomBarWhenPushed = NO;
     }
     

@@ -1,4 +1,4 @@
-//  AwfulRapSheetViewController.h
+//  RapSheetViewController.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,9 +6,9 @@
 #import "AwfulModels.h"
 
 /**
- * An AwfulRapSheetViewController displays a list of probations and bans.
+ * An RapSheetViewController displays a list of probations and bans.
  */
-@interface AwfulRapSheetViewController : AwfulTableViewController
+@interface RapSheetViewController : AwfulTableViewController
 
 /**
  * Returns an initialized AwfulRapSheetViewController. This is the designated initializer.

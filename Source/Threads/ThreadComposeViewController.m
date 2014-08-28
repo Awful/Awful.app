@@ -1,8 +1,8 @@
-//  AwfulNewThreadViewController.m
+//  ThreadComposeViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulNewThreadViewController.h"
+#import "ThreadComposeViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
@@ -14,7 +14,7 @@
 #import "AwfulThreadTagPickerController.h"
 #import "UINavigationItem+TwoLineTitle.h"
 
-@interface AwfulNewThreadViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
+@interface ThreadComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulThread *thread;
 
@@ -31,7 +31,7 @@
 
 @end
 
-@implementation AwfulNewThreadViewController
+@implementation ThreadComposeViewController
 
 - (id)initWithForum:(AwfulForum *)forum
 {
@@ -299,7 +299,7 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
-    AwfulNewThreadViewController *newThreadViewController = [[AwfulNewThreadViewController alloc] initWithForum:forum];
+    ThreadComposeViewController *newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;
     if (![managedObjectContext save:&error]) {

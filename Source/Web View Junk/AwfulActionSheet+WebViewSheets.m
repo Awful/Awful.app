@@ -4,7 +4,7 @@
 
 #import "AwfulActionSheet+WebViewSheets.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulBrowserViewController.h"
+#import "BrowserViewController.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
@@ -23,7 +23,7 @@
             if (awfulURL) {
                 [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
             } else {
-                [AwfulBrowserViewController presentBrowserForURL:URL fromViewController:viewController];
+                [BrowserViewController presentBrowserForURL:URL fromViewController:viewController];
             }
         }];
         

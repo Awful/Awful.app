@@ -10,7 +10,7 @@
 		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
-		11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* AwfulSettingsViewController.m */; };
+		11FDA296151018600014FDCD /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* SettingsViewController.m */; };
 		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
 		1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
@@ -26,7 +26,7 @@
 		1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */; };
 		1C22EE7E18BE64EC00ED5289 /* AwfulHoleyDimmingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
-		1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */; };
+		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
 		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
@@ -45,7 +45,7 @@
 		1C35FB7D1832A96000B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
-		1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */; };
+		1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* MessageComposeViewController.m */; };
 		1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C41B8A016CD4C7600718F79 /* Crashlytics.framework */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
@@ -119,10 +119,10 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
-		1C9381C6181A95EC00258191 /* AwfulNewThreadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */; };
+		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D084168010AF0043B194 /* UIImage+Resize.m */; };
-		1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */; };
+		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
@@ -151,11 +151,11 @@
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
 		1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */; };
-		1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */; };
-		1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */; };
+		1CB6010B16D826F000CBEE22 /* MessageListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010816D826F000CBEE22 /* MessageListViewController.m */; };
+		1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* MessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
-		1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* AwfulReplyViewController.m */; };
+		1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* PostComposeViewController.m */; };
 		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
@@ -164,13 +164,13 @@
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
-		1CC45267180B7C1A00F5F043 /* AwfulThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */; };
-		1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */; };
+		1CC45267180B7C1A00F5F043 /* AbstractThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45266180B7C1A00F5F043 /* AbstractThreadListViewController.m */; };
+		1CC4526A180B7D3900F5F043 /* BookmarkedThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */; };
 		1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m */; };
-		1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* AwfulForumsListController.m */; };
+		1CC7801C1612D8AF002AF958 /* ForumListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780171612D8AF002AF958 /* ForumListViewController.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
-		1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */; };
-		1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */; };
+		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
+		1CC780501612DA8E002AF958 /* ThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* ThreadListViewController.m */; };
 		1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */; };
 		1CD82F361946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */; };
 		1CD82F3C19479A1500B0C5BD /* NSURLQueryDictionaryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */; };
@@ -228,7 +228,7 @@
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
-		83410EF219A582B8002CD019 /* AwfulDateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */; };
+		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
@@ -248,7 +248,7 @@
 		8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47B19AD7CA300B67AAA /* platinum-member.png */; };
 		8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47C19AD7CA300B67AAA /* redpill.png */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
-		8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */; };
+		8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
 		8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100518CAACF9002E92DA /* posts-view-byob.css */; };
 		8CE6100818CAAF74002E92DA /* cat.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100718CAAF74002E92DA /* cat.gif */; };
@@ -272,8 +272,8 @@
 		1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../../Xcode/Prefix.pch; sourceTree = "<group>"; };
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		11FDA294151018600014FDCD /* AwfulSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsViewController.h; sourceTree = "<group>"; };
-		11FDA295151018600014FDCD /* AwfulSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulSettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		11FDA294151018600014FDCD /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		11FDA295151018600014FDCD /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
 		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
 		1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsUbiquitousThemesController.h; sourceTree = "<group>"; };
@@ -301,8 +301,8 @@
 		1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHoleyDimmingView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C24B0D919B51CF3005C60A9 /* Awful 2.0.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.13.xcdatamodel"; sourceTree = "<group>"; };
-		1C26BFDE1818E56F00E55887 /* AwfulComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeTextViewController.h; sourceTree = "<group>"; };
-		1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeTextViewController.m; sourceTree = "<group>"; };
+		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
+		1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextViewController.m; sourceTree = "<group>"; };
 		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
 		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
 		1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionItem.h; sourceTree = "<group>"; };
@@ -329,8 +329,8 @@
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
-		1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageViewController.h; sourceTree = "<group>"; };
-		1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageViewController.m; sourceTree = "<group>"; };
+		1C414F31181F79F400813EE2 /* MessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeViewController.h; sourceTree = "<group>"; };
+		1C414F32181F79F400813EE2 /* MessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeViewController.m; sourceTree = "<group>"; };
 		1C4191901763C8BD00EADE07 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
 		1C41B8A016CD4C7600718F79 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
 		1C41B8A216CD4F1900718F79 /* AwfulCrashlytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCrashlytics.h; sourceTree = "<group>"; };
@@ -437,14 +437,14 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
-		1C9381C4181A95EC00258191 /* AwfulNewThreadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadViewController.h; sourceTree = "<group>"; };
-		1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadViewController.m; sourceTree = "<group>"; };
+		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
+		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
 		1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadFieldView.m; sourceTree = "<group>"; };
 		1C96D083168010AF0043B194 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		1C96D084168010AF0043B194 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
-		1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBrowserViewController.h; sourceTree = "<group>"; };
-		1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBrowserViewController.m; sourceTree = "<group>"; };
+		1C96D0A0168298BF0043B194 /* BrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserViewController.h; sourceTree = "<group>"; };
+		1C96D0A1168298BF0043B194 /* BrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserViewController.m; sourceTree = "<group>"; };
 		1C96D0AA1682B1140043B194 /* NSURL+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Awful.h"; sourceTree = "<group>"; };
 		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
@@ -490,16 +490,16 @@
 		1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshMinder.m; sourceTree = "<group>"; };
 		1CB600FF16D8266700CBEE22 /* AwfulPrivateMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessage.h; sourceTree = "<group>"; };
 		1CB6010016D8266700CBEE22 /* AwfulPrivateMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessage.m; sourceTree = "<group>"; };
-		1CB6010716D826F000CBEE22 /* AwfulPrivateMessageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageTableViewController.h; sourceTree = "<group>"; };
-		1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageTableViewController.m; sourceTree = "<group>"; };
-		1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewController.h; sourceTree = "<group>"; };
-		1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewController.m; sourceTree = "<group>"; };
+		1CB6010716D826F000CBEE22 /* MessageListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListViewController.h; sourceTree = "<group>"; };
+		1CB6010816D826F000CBEE22 /* MessageListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListViewController.m; sourceTree = "<group>"; };
+		1CB6010916D826F000CBEE22 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
+		1CB6010A16D826F000CBEE22 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* AwfulNewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewMessageChecker.h; sourceTree = "<group>"; };
 		1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewMessageChecker.m; sourceTree = "<group>"; };
 		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
 		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
-		1CBC74AC181A16040076234E /* AwfulReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReplyViewController.h; sourceTree = "<group>"; };
-		1CBC74AD181A16040076234E /* AwfulReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReplyViewController.m; sourceTree = "<group>"; };
+		1CBC74AC181A16040076234E /* PostComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostComposeViewController.h; sourceTree = "<group>"; };
+		1CBC74AD181A16040076234E /* PostComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostComposeViewController.m; sourceTree = "<group>"; };
 		1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeTextView.h; sourceTree = "<group>"; };
 		1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeTextView.m; sourceTree = "<group>"; };
 		1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+AwfulStringyURLs.h"; sourceTree = "<group>"; };
@@ -521,20 +521,20 @@
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
-		1CC45265180B7C1A00F5F043 /* AwfulThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTableViewController.h; sourceTree = "<group>"; };
-		1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTableViewController.m; sourceTree = "<group>"; };
-		1CC45268180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulBookmarkedThreadTableViewController.h; sourceTree = "<group>"; };
-		1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulBookmarkedThreadTableViewController.m; sourceTree = "<group>"; };
+		1CC45265180B7C1A00F5F043 /* AbstractThreadListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractThreadListViewController.h; sourceTree = "<group>"; };
+		1CC45266180B7C1A00F5F043 /* AbstractThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractThreadListViewController.m; sourceTree = "<group>"; };
+		1CC45268180B7D3900F5F043 /* BookmarkedThreadListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkedThreadListViewController.h; sourceTree = "<group>"; };
+		1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedThreadListViewController.m; sourceTree = "<group>"; };
 		1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AwfulConvenience.m"; sourceTree = "<group>"; };
-		1CC780161612D8AF002AF958 /* AwfulForumsListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsListController.h; sourceTree = "<group>"; };
-		1CC780171612D8AF002AF958 /* AwfulForumsListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumsListController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1CC780161612D8AF002AF958 /* ForumListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForumListViewController.h; sourceTree = "<group>"; };
+		1CC780171612D8AF002AF958 /* ForumListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ForumListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
-		1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewController.h; sourceTree = "<group>"; };
-		1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewController.m; sourceTree = "<group>"; };
-		1CC7804C1612DA8E002AF958 /* AwfulForumThreadTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumThreadTableViewController.h; sourceTree = "<group>"; };
-		1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulForumThreadTableViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1CC780271612D9DE002AF958 /* PostsPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsPageViewController.h; sourceTree = "<group>"; };
+		1CC780281612D9DE002AF958 /* PostsPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageViewController.m; sourceTree = "<group>"; };
+		1CC7804C1612DA8E002AF958 /* ThreadListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadListViewController.h; sourceTree = "<group>"; };
+		1CC7804D1612DA8E002AF958 /* ThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ThreadListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1CD82F2B19428D0900B0C5BD /* AwfulImageURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImageURLProtocol.h; sourceTree = "<group>"; };
 		1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulImageURLProtocol.m; sourceTree = "<group>"; };
 		1CD82F341946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+AwfulConvenient.h"; sourceTree = "<group>"; };
@@ -613,7 +613,7 @@
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
-		83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulDateFormatters.swift; sourceTree = "<group>"; };
+		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
 		836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTMLNode+CachedSelector.m"; sourceTree = "<group>"; };
 		837D67ED1861C25000464055 /* ForumTweaks.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumTweaks.plist; sourceTree = "<group>"; };
@@ -636,8 +636,8 @@
 		8C8FA47B19AD7CA300B67AAA /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		8C8FA47C19AD7CA300B67AAA /* redpill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redpill.png; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
-		8CCA272B16B8C1EF00A4952A /* AwfulRapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRapSheetViewController.h; sourceTree = "<group>"; };
-		8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulRapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RapSheetViewController.h; sourceTree = "<group>"; };
+		8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Xcode/Info.plist; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CE6100518CAACF9002E92DA /* posts-view-byob.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-byob.css"; sourceTree = "<group>"; };
@@ -842,8 +842,8 @@
 		1C304BD216C78B6E0022AF15 /* Browsing */ = {
 			isa = PBXGroup;
 			children = (
-				1C96D0A0168298BF0043B194 /* AwfulBrowserViewController.h */,
-				1C96D0A1168298BF0043B194 /* AwfulBrowserViewController.m */,
+				1C96D0A0168298BF0043B194 /* BrowserViewController.h */,
+				1C96D0A1168298BF0043B194 /* BrowserViewController.m */,
 			);
 			path = Browsing;
 			sourceTree = "<group>";
@@ -882,10 +882,10 @@
 				1C7D22EC173B330E008A802C /* Instapaper API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
+				1CB6010616D826DA00CBEE22 /* Messages */,
 				1CC4525B180B35D700F5F043 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
-				1CB6010616D826DA00CBEE22 /* Private Messages */,
 				1C7D22F6173B66B3008A802C /* Read Later Services */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
@@ -924,8 +924,8 @@
 				1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */,
 				1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */,
 				1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */,
-				8CCA272B16B8C1EF00A4952A /* AwfulRapSheetViewController.h */,
-				8CCA272C16B8C1EF00A4952A /* AwfulRapSheetViewController.m */,
+				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
+				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
 				1C8E10431914AA730010007B /* profile.css */,
 				1C8E104B1916F85F0010007B /* profile.js */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
@@ -985,8 +985,8 @@
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
 				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
 				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
-				11FDA294151018600014FDCD /* AwfulSettingsViewController.h */,
-				11FDA295151018600014FDCD /* AwfulSettingsViewController.m */,
+				11FDA294151018600014FDCD /* SettingsViewController.h */,
+				11FDA295151018600014FDCD /* SettingsViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -994,33 +994,34 @@
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
 			isa = PBXGroup;
 			children = (
-				83410EF119A582B8002CD019 /* AwfulDateFormatters.swift */,
 				1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */,
 				1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */,
+				83410EF119A582B8002CD019 /* DateFormatters.swift */,
 			);
 			path = Dates;
 			sourceTree = "<group>";
 		};
-		1CB6010616D826DA00CBEE22 /* Private Messages */ = {
+		1CB6010616D826DA00CBEE22 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
 				1CB6011316D8376A00CBEE22 /* AwfulNewMessageChecker.h */,
 				1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */,
 				1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */,
 				1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */,
-				1C414F31181F79F400813EE2 /* AwfulNewPrivateMessageViewController.h */,
-				1C414F32181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m */,
 				1CFA2EB417E0A90F00DE5DE9 /* AwfulPrivateMessageCell.h */,
 				1CFA2EB517E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m */,
-				1CB6010716D826F000CBEE22 /* AwfulPrivateMessageTableViewController.h */,
-				1CB6010816D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m */,
-				1CB6010916D826F000CBEE22 /* AwfulPrivateMessageViewController.h */,
-				1CB6010A16D826F000CBEE22 /* AwfulPrivateMessageViewController.m */,
 				1C7C60BD18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.h */,
 				1C7C60BE18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m */,
+				1C414F31181F79F400813EE2 /* MessageComposeViewController.h */,
+				1C414F32181F79F400813EE2 /* MessageComposeViewController.m */,
+				1CB6010716D826F000CBEE22 /* MessageListViewController.h */,
+				1CB6010816D826F000CBEE22 /* MessageListViewController.m */,
+				1CB6010916D826F000CBEE22 /* MessageViewController.h */,
+				1CB6010A16D826F000CBEE22 /* MessageViewController.m */,
 				1C8E10471914D1010010007B /* private-message.js */,
 				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
 			);
+			name = Messages;
 			path = "Private Messages";
 			sourceTree = "<group>";
 		};
@@ -1112,10 +1113,10 @@
 				1C73921F17DFC0FA00089248 /* AwfulFavoriteForumCell.m */,
 				1C73921817DF350F00089248 /* AwfulForumCell.h */,
 				1C73921917DF350F00089248 /* AwfulForumCell.m */,
-				1CC780161612D8AF002AF958 /* AwfulForumsListController.h */,
-				1CC780171612D8AF002AF958 /* AwfulForumsListController.m */,
 				1C7C7F0218A16E74008A1B2E /* AwfulForumTreeDataSource.h */,
 				1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */,
+				1CC780161612D8AF002AF958 /* ForumListViewController.h */,
+				1CC780171612D8AF002AF958 /* ForumListViewController.m */,
 			);
 			path = Forums;
 			sourceTree = "<group>";
@@ -1152,25 +1153,25 @@
 				1CB060781936C7B4005263EA /* AwfulPostPreviewViewController.m */,
 				1C7D8956192E954B00003576 /* AwfulPostsView.h */,
 				1C7D8957192E954B00003576 /* AwfulPostsView.m */,
-				1CC780271612D9DE002AF958 /* AwfulPostsViewController.h */,
-				1CC780281612D9DE002AF958 /* AwfulPostsViewController.m */,
 				1CA04BEA195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.h */,
 				1CA04BEB195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m */,
 				1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */,
 				1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */,
 				1C3447DF175D9991007377C5 /* AwfulPostViewModel.h */,
 				1C3447E0175D9991007377C5 /* AwfulPostViewModel.m */,
-				1CBC74AC181A16040076234E /* AwfulReplyViewController.h */,
-				1CBC74AD181A16040076234E /* AwfulReplyViewController.m */,
 				1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */,
 				1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */,
 				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
 				1CE8FE461717B97F006A3B84 /* AwfulThemePicker.m */,
 				1C3447E3175D9CCE007377C5 /* Post.mustache */,
+				1CBC74AC181A16040076234E /* PostComposeViewController.h */,
+				1CBC74AD181A16040076234E /* PostComposeViewController.m */,
 				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
 				1C4191901763C8BD00EADE07 /* posts-view.js */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
+				1CC780271612D9DE002AF958 /* PostsPageViewController.h */,
+				1CC780281612D9DE002AF958 /* PostsPageViewController.m */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
 				1C82AC4C199F5C1500CB15FE /* Selectotron.xib */,
@@ -1181,22 +1182,22 @@
 		1CC780471612DA8D002AF958 /* Threads */ = {
 			isa = PBXGroup;
 			children = (
-				1CC45268180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.h */,
-				1CC45269180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m */,
-				1CC7804C1612DA8E002AF958 /* AwfulForumThreadTableViewController.h */,
-				1CC7804D1612DA8E002AF958 /* AwfulForumThreadTableViewController.m */,
+				1CC45265180B7C1A00F5F043 /* AbstractThreadListViewController.h */,
+				1CC45266180B7C1A00F5F043 /* AbstractThreadListViewController.m */,
 				1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */,
 				1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */,
-				1C9381C4181A95EC00258191 /* AwfulNewThreadViewController.h */,
-				1C9381C5181A95EC00258191 /* AwfulNewThreadViewController.m */,
 				1C73921B17DF850F00089248 /* AwfulThreadCell.h */,
 				1C73921C17DF850F00089248 /* AwfulThreadCell.m */,
 				1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */,
 				1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */,
-				1CC45265180B7C1A00F5F043 /* AwfulThreadTableViewController.h */,
-				1CC45266180B7C1A00F5F043 /* AwfulThreadTableViewController.m */,
 				1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */,
 				1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */,
+				1CC45268180B7D3900F5F043 /* BookmarkedThreadListViewController.h */,
+				1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */,
+				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
+				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
+				1CC7804C1612DA8E002AF958 /* ThreadListViewController.h */,
+				1CC7804D1612DA8E002AF958 /* ThreadListViewController.m */,
 			);
 			path = Threads;
 			sourceTree = "<group>";
@@ -1310,8 +1311,8 @@
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
 				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
-				1C26BFDE1818E56F00E55887 /* AwfulComposeTextViewController.h */,
-				1C26BFDF1818E56F00E55887 /* AwfulComposeTextViewController.m */,
+				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
+				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
 				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
 				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
@@ -1711,32 +1712,32 @@
 			files = (
 				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
-				83410EF219A582B8002CD019 /* AwfulDateFormatters.swift in Sources */,
+				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
 				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */,
-				11FDA296151018600014FDCD /* AwfulSettingsViewController.m in Sources */,
+				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1CFA2EB617E0A90F00DE5DE9 /* AwfulPrivateMessageCell.m in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
-				1CC7801C1612D8AF002AF958 /* AwfulForumsListController.m in Sources */,
+				1CC7801C1612D8AF002AF958 /* ForumListViewController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */,
 				1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
-				1CC780321612D9DE002AF958 /* AwfulPostsViewController.m in Sources */,
-				1CC780501612DA8E002AF958 /* AwfulForumThreadTableViewController.m in Sources */,
+				1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */,
+				1CC780501612DA8E002AF958 /* ThreadListViewController.m in Sources */,
 				1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */,
 				1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */,
 				1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */,
 				1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */,
 				1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */,
 				1C6D2EB2182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.m in Sources */,
-				1CC45267180B7C1A00F5F043 /* AwfulThreadTableViewController.m in Sources */,
+				1CC45267180B7C1A00F5F043 /* AbstractThreadListViewController.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
@@ -1772,7 +1773,7 @@
 				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
-				1C96D0A2168298BF0043B194 /* AwfulBrowserViewController.m in Sources */,
+				1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */,
 				1CA04BE9195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m in Sources */,
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
@@ -1782,13 +1783,13 @@
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
-				8CCA272D16B8C1EF00A4952A /* AwfulRapSheetViewController.m in Sources */,
+				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
-				1C26BFE01818E56F00E55887 /* AwfulComposeTextViewController.m in Sources */,
+				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */,
 				1C35FB7218301E9500B52724 /* AwfulThreadTag.m in Sources */,
-				1CC4526A180B7D3900F5F043 /* AwfulBookmarkedThreadTableViewController.m in Sources */,
+				1CC4526A180B7D3900F5F043 /* BookmarkedThreadListViewController.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
@@ -1796,12 +1797,12 @@
 				1CB060791936C7B4005263EA /* AwfulPostPreviewViewController.m in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
-				1CB6010B16D826F000CBEE22 /* AwfulPrivateMessageTableViewController.m in Sources */,
+				1CB6010B16D826F000CBEE22 /* MessageListViewController.m in Sources */,
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
-				1CB6010C16D826F000CBEE22 /* AwfulPrivateMessageViewController.m in Sources */,
+				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
-				1C414F33181F79F400813EE2 /* AwfulNewPrivateMessageViewController.m in Sources */,
+				1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */,
 				1C73922017DFC0FA00089248 /* AwfulFavoriteForumCell.m in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
@@ -1828,7 +1829,7 @@
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */,
 				1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */,
-				1CBC74AE181A16040076234E /* AwfulReplyViewController.m in Sources */,
+				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
 				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
@@ -1852,7 +1853,7 @@
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
 				1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */,
-				1C9381C6181A95EC00258191 /* AwfulNewThreadViewController.m in Sources */,
+				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,
 				1CA1EFFC1910424D00E85DB2 /* AwfulPostScraper.m in Sources */,
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
 				1CC0A44B1845FC1300A6F3FE /* AwfulLaunchImageViewController.m in Sources */,

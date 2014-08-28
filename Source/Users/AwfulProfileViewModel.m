@@ -48,12 +48,12 @@
 
 - (NSDateFormatter *)regDateFormat
 {
-    return [AwfulDateFormatters regDateFormatter];
+    return [NSDateFormatter regDateFormatter];
 }
 
 - (NSDateFormatter *)lastPostDateFormat
 {
-	return [AwfulDateFormatters postDateFormatter];
+	return [NSDateFormatter postDateFormatter];
 }
 
 - (BOOL)anyContactInfo

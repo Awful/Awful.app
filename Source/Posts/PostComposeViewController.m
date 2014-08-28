@@ -1,8 +1,8 @@
-//  AwfulReplyViewController.m
+//  PostComposeViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulReplyViewController.h"
+#import "PostComposeViewController.h"
 #import "AwfulActionSheet.h"
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
@@ -12,14 +12,14 @@
 #import "AwfulPostPreviewViewController.h"
 #import "AwfulSettings.h"
 
-@interface AwfulReplyViewController () <UIViewControllerRestoration>
+@interface PostComposeViewController () <UIViewControllerRestoration>
 
 @property (copy, nonatomic) void (^onAppearBlock)(void);
 @property (strong, nonatomic) UILongPressGestureRecognizer *longPressRecognizer;
 
 @end
 
-@implementation AwfulReplyViewController
+@implementation PostComposeViewController
 
 - (void)dealloc
 {
@@ -243,15 +243,15 @@
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     NSString *postID = [coder decodeObjectForKey:PostIDKey];
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
-    AwfulReplyViewController *replyViewController;
+    PostComposeViewController *replyViewController;
     if (postID) {
         AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
-        replyViewController = [[AwfulReplyViewController alloc] initWithPost:post originalText:originalText];
+        replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:originalText];
     } else if (threadID) {
         AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
-        replyViewController = [[AwfulReplyViewController alloc] initWithThread:thread quotedText:quotedText];
+        replyViewController = [[PostComposeViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {
         NSLog(@"%s no post or thread at %@; skipping restore", __PRETTY_FUNCTION__, [identifierComponents componentsJoinedByString:@"/"]);
         return nil;

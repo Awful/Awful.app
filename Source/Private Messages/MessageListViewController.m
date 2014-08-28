@@ -1,18 +1,18 @@
-//  AwfulPrivateMessageTableViewController.m
+//  MessageListViewController.m
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPrivateMessageTableViewController.h"
+#import "MessageListViewController.h"
 #import "AwfulAlertView.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
-#import "AwfulNewPrivateMessageViewController.h"
+#import "MessageComposeViewController.h"
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulPrivateMessageCell.h"
-#import "AwfulPrivateMessageViewController.h"
+#import "MessageViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
@@ -20,18 +20,18 @@
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 #import "Awful-Swift.h"
 
-@interface AwfulPrivateMessageTableViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
+@interface MessageListViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
 
-@property (strong, nonatomic) AwfulNewPrivateMessageViewController *composeViewController;
+@property (strong, nonatomic) MessageComposeViewController *composeViewController;
 
 @property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
 
 @end
 
-@implementation AwfulPrivateMessageTableViewController
+@implementation MessageListViewController
 {
     AwfulFetchedResultsControllerDataSource *_dataSource;
 }
@@ -74,7 +74,7 @@
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *item) {
         __typeof__(self) self = weakSelf;
         if (!self.composeViewController) {
-            self.composeViewController = [[AwfulNewPrivateMessageViewController alloc] initWithRecipient:nil];
+            self.composeViewController = [[MessageComposeViewController alloc] initWithRecipient:nil];
             self.composeViewController.restorationIdentifier = @"Message compose view";
             self.composeViewController.delegate = self;
         }
@@ -226,7 +226,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     
     cell.textLabel.text = pm.subject;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                                 pm.from.username, [[AwfulDateFormatters postDateFormatter] stringFromDate:pm.sentDate]];
+                                 pm.from.username, [[NSDateFormatter postDateFormatter] stringFromDate:pm.sentDate]];
     
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
@@ -274,14 +274,14 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     if (!pm.seen) {
         [self decrementBadgeValue];
     }
-    AwfulPrivateMessageViewController *messageViewController = [[AwfulPrivateMessageViewController alloc] initWithPrivateMessage:pm];
+    MessageViewController *messageViewController = [[MessageViewController alloc] initWithPrivateMessage:pm];
     messageViewController.restorationIdentifier = @"Private Message";
     [self showDetailViewController:messageViewController sender:self];
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate
 
-- (void)composeTextViewController:(AwfulComposeTextViewController *)composeTextViewController
+- (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {

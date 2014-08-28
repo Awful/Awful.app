@@ -1,14 +1,14 @@
-//  AwfulForumsListController.m
+//  ForumListViewController.m
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulForumsListController.h"
+#import "ForumListViewController.h"
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulFavoriteForumCell.h"
 #import "AwfulForumCell.h"
-#import "AwfulForumThreadTableViewController.h"
+#import "ThreadListViewController.h"
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -16,14 +16,14 @@
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 
-@interface AwfulForumsListController () <AwfulForumTreeDataSourceDelegate>
+@interface ForumListViewController () <AwfulForumTreeDataSourceDelegate>
 
 @property (nonatomic) NSMutableArray *favoriteForums;
 @property (nonatomic) BOOL userDrivenChange;
 
 @end
 
-@implementation AwfulForumsListController
+@implementation ForumListViewController
 {
     AwfulForumTreeDataSource *_treeDataSource;
     BOOL _observingReachability;
@@ -241,7 +241,7 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 
 - (void)showForum:(AwfulForum *)forum animated:(BOOL)animated
 {
-    AwfulForumThreadTableViewController *threadList = [[AwfulForumThreadTableViewController alloc] initWithForum:forum];
+    ThreadListViewController *threadList = [[ThreadListViewController alloc] initWithForum:forum];
     threadList.restorationClass = threadList.class;
     threadList.restorationIdentifier = @"Thread";
     [self.navigationController pushViewController:threadList animated:animated];

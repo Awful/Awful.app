@@ -22,16 +22,16 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         tabBarController = UITabBarController()
         super.init()
         
-        let forums = AwfulForumsListController(managedObjectContext: managedObjectContext)
+        let forums = ForumListViewController(managedObjectContext: managedObjectContext)
         forums.restorationIdentifier = "Forum list"
         
-        let bookmarks = AwfulBookmarkedThreadTableViewController(managedObjectContext: managedObjectContext)
+        let bookmarks = BookmarkedThreadListViewController(managedObjectContext: managedObjectContext)
         bookmarks.restorationIdentifier = "Bookmarks"
         
-        let lepers = AwfulRapSheetViewController()
+        let lepers = RapSheetViewController()
         lepers.restorationIdentifier = "Leper's Colony"
         
-        let settings = AwfulSettingsViewController(managedObjectContext: managedObjectContext)
+        let settings = SettingsViewController(managedObjectContext: managedObjectContext)
         settings.restorationIdentifier = "Settings"
         
         tabBarController.restorationIdentifier = "Tabbar"
@@ -85,7 +85,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         
         if AwfulSettings.sharedSettings().canSendPrivateMessages {
             if messagesTabIndex == nil {
-                let messages = AwfulPrivateMessageTableViewController(managedObjectContext: managedObjectContext)
+                let messages = MessageListViewController(managedObjectContext: managedObjectContext)
                 messages.restorationIdentifier = messagesRestorationIdentifier
                 let navigationController = messages.enclosingNavigationController
                 navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)
@@ -121,13 +121,13 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         // I can't recursively call a nested function? Toss it in a closure then I guess.
         var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
         search = { identifierComponents, viewControllers in
-            if let i = find(viewControllers.map({ $0.restorationIdentifier }), identifierComponents[0]) {
+            if let i = find(viewControllers.map({ $0.restorationIdentifier ?? "" }), identifierComponents[0]) {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
                 } else if currentViewController.respondsToSelector("viewControllers") {
 
-                    // Array(dropFirst(identifierComponents)) did weird stuff here, so I guess let's turn up the awkwardness.
+                    // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
                     let remainingPath = identifierComponents[1..<identifierComponents.count]
                     let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as [UIViewController]
                     return search(Array(remainingPath), subsequentViewControllers)
@@ -242,13 +242,13 @@ extension UIViewController {
     }
 }
 
-extension AwfulPostsViewController {
+extension PostsPageViewController {
     override var prefersSecondaryViewController: Bool {
         get { return true }
     }
 }
 
-extension AwfulPrivateMessageViewController {
+extension MessageViewController {
     override var prefersSecondaryViewController: Bool {
         get { return true }
     }
