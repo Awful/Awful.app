@@ -11,7 +11,6 @@
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* SettingsViewController.m */; };
-		1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */; };
 		1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -23,8 +22,6 @@
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
-		1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */; };
-		1C22EE7E18BE64EC00ED5289 /* AwfulHoleyDimmingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
@@ -274,8 +271,6 @@
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPageBarBackgroundView.h; sourceTree = "<group>"; };
-		1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPageBarBackgroundView.m; sourceTree = "<group>"; };
 		1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsUbiquitousThemesController.h; sourceTree = "<group>"; };
 		1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsUbiquitousThemesController.m; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
@@ -295,10 +290,6 @@
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
 		1C20562E1806700500A84C6D /* AwfulManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulManagedObject.m; sourceTree = "<group>"; };
-		1C22EE7918BE57CA00ED5289 /* AwfulSemiModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSemiModalViewController.h; sourceTree = "<group>"; };
-		1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSemiModalViewController.m; sourceTree = "<group>"; };
-		1C22EE7C18BE64EC00ED5289 /* AwfulHoleyDimmingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHoleyDimmingView.h; sourceTree = "<group>"; };
-		1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHoleyDimmingView.m; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C24B0D919B51CF3005C60A9 /* Awful 2.0.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.13.xcdatamodel"; sourceTree = "<group>"; };
 		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
@@ -739,12 +730,8 @@
 			children = (
 				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
 				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
-				1C22EE7C18BE64EC00ED5289 /* AwfulHoleyDimmingView.h */,
-				1C22EE7D18BE64EC00ED5289 /* AwfulHoleyDimmingView.m */,
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
-				1C00E0A81739F91E008895E7 /* AwfulPageBarBackgroundView.h */,
-				1C00E0A91739F91E008895E7 /* AwfulPageBarBackgroundView.m */,
 				1CA1857E17E3472300462F20 /* AwfulToolbar.h */,
 				1CA1857F17E3472300462F20 /* AwfulToolbar.m */,
 			);
@@ -760,8 +747,6 @@
 				1CC0A44A1845FC1300A6F3FE /* AwfulLaunchImageViewController.m */,
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
-				1C22EE7918BE57CA00ED5289 /* AwfulSemiModalViewController.h */,
-				1C22EE7A18BE57CA00ED5289 /* AwfulSemiModalViewController.m */,
 				F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */,
 				F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */,
 			);
@@ -1812,7 +1797,6 @@
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
 				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
-				1C22EE7B18BE57CA00ED5289 /* AwfulSemiModalViewController.m in Sources */,
 				1CE694A8182FEF8D00B24928 /* AwfulBan.m in Sources */,
 				1C9FDAFF16E486A600C665B5 /* AwfulThreadTagPickerCell.m in Sources */,
 				1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */,
@@ -1841,11 +1825,9 @@
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */,
 				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
-				1C00E0AA1739F91E008895E7 /* AwfulPageBarBackgroundView.m in Sources */,
 				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
 				1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */,
 				1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */,
-				1C22EE7E18BE64EC00ED5289 /* AwfulHoleyDimmingView.m in Sources */,
 				1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */,
 				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
 				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,

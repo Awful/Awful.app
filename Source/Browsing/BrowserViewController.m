@@ -6,7 +6,6 @@
 #import "AwfulActionSheet.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulPageBarBackgroundView.h"
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
