@@ -3,14 +3,13 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostComposeViewController.h"
-#import "AwfulActionSheet.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulPostPreviewViewController.h"
 #import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @interface PostComposeViewController () <UIViewControllerRestoration>
 
@@ -166,22 +165,23 @@
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL success))completionHandler
 {
+    __weak __typeof__(self) weakSelf = self;
     if (self.post) {
         [[AwfulForumsClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
+            __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             } else {
                 completionHandler(YES);
             }
         }];
     } else if (self.thread) {
-        __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, AwfulPost *post) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             } else {
                 completionHandler(YES);
                 if (post) {
@@ -198,15 +198,16 @@
 {
     if (self.post) {
         if (self.delegate) {
-            AwfulActionSheet *actionSheet = [AwfulActionSheet new];
-            [actionSheet addDestructiveButtonWithTitle:@"Delete Edit" block:^{
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
+            [actionSheet addAction:[UIAlertAction actionWithTitle:@"Delete Edit" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:NO];
-            }];
-            [actionSheet addButtonWithTitle:@"Save Draft" block:^{
+            }]];
+            [actionSheet addActionWithTitle:@"Save Draft" handler:^{
                 [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:NO shouldKeepDraft:YES];
             }];
-            [actionSheet addCancelButtonWithTitle:@"Cancel"];
-            [actionSheet showFromBarButtonItem:self.cancelButtonItem animated:YES];
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:YES completion:nil];
+            actionSheet.popoverPresentationController.barButtonItem = self.cancelButtonItem;
         } else {
             [self dismissViewControllerAnimated:YES completion:nil];
         }
@@ -220,8 +221,8 @@
 - (void)didLongPressNextButtonItem:(UILongPressGestureRecognizer *)sender
 {
     if (sender.state == UIGestureRecognizerStateBegan) {
-        AwfulActionSheet *actionSheet = [AwfulActionSheet new];
-        [actionSheet addButtonWithTitle:@"Preview" block:^{
+        UIAlertController *actionSheet = [UIAlertController actionSheet];
+        [actionSheet addActionWithTitle:@"Preview" handler:^{
             [self previewPostWithSubmitBlock:^{
                 
                 #pragma clang diagnostic push
@@ -231,8 +232,9 @@
                 
             } cancelBlock:nil];
         }];
-        [actionSheet addCancelButtonWithTitle:@"Cancel"];
-        [actionSheet showFromBarButtonItem:self.submitButtonItem animated:YES];
+        [actionSheet addCancelActionWithHandler:nil];
+        [self presentViewController:actionSheet animated:YES completion:nil];
+        actionSheet.popoverPresentationController.barButtonItem = self.submitButtonItem;
     }
 }
 

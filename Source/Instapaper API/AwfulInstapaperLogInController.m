@@ -3,9 +3,9 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulInstapaperLogInController.h"
-#import "AwfulAlertView.h"
 #import "AwfulTextEntryCell.h"
 #import "InstapaperAPIClient.h"
+#import "Awful-Swift.h"
 
 @interface AwfulInstapaperLogInController () <UITextFieldDelegate>
 
@@ -168,7 +168,7 @@ static NSString * const ButtonIdentifier = @"Button";
         __typeof__(self) self = weakSelf;
         _loggingIn = NO;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Could Not Log In to Instapaper" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Log In to Instapaper" error:error] animated:YES completion:nil];
         } else {
             [self.delegate instapaperLogInControllerDidSucceed:self];
         }

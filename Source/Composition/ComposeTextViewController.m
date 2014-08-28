@@ -3,11 +3,11 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ComposeTextViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulComposeTextView.h"
 #import "AwfulTextAttachment.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
+#import "Awful-Swift.h"
 
 @interface ComposeTextViewController ()
 
@@ -219,7 +219,7 @@
         _imageUploadProgress = nil;
         if (error) {
             [overlay dismiss:NO];
-            [AwfulAlertView showWithTitle:@"Image Upload Failed" error:error buttonTitle:@"OK" completion:^{
+            [self presentViewController:[UIAlertController alertWithTitle:@"Image Upload Failed" error:error] animated:YES completion:^{
                 [self enableEverything];
             }];
         } else {

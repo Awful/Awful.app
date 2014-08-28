@@ -5,7 +5,6 @@
 #import "AwfulAppDelegate.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AVFoundation/AVFoundation.h>
-#import "AwfulAlertView.h"
 #import "AwfulAvatarLoader.h"
 #import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
@@ -286,12 +285,10 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
             NSString *dateString = [dateFormatter stringFromDate:loginCookieExpiryDate];
             NSString *message = [NSString stringWithFormat:@"Your login cookie expires on %@", dateString];
 
-            [AwfulAlertView showWithTitle:@"Login Expiring Soon"
-                                  message:message
-                              buttonTitle:@"OK"
-                               completion:^{
-                                   [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
-                               }];
+            UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Login Expiring Soon" message:message handler:^(UIAlertAction *action) {
+                [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
+            }];
+            [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
         }
     }
 }
@@ -330,11 +327,12 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
         [abbreviatedURL replaceCharactersInRange:NSMakeRange(55, abbreviatedURL.length - 55) withString:@"…"];
     }
     NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", abbreviatedURL];
-    [AwfulAlertView showWithTitle:@"Open in Awful"
-                          message:message
-                    noButtonTitle:@"Cancel"
-                   yesButtonTitle:@"Open"
-                     onAcceptance:^{ [self openAwfulURL:URL.awfulURL]; }];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open in Awful" message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Open" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self openAwfulURL:URL.awfulURL];
+    }]];
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - State preservation and restoration
@@ -429,10 +427,9 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
 {
-    [AwfulAlertView showWithTitle:@"Problem Logging In"
-                          message:@"Double-check your username and password, then try again."
-                      buttonTitle:@"OK"
-                       completion:nil];
+    UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Problem Logging In"
+                                                                      message:@"Double-check your username and password, then try again."];
+    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
 @end

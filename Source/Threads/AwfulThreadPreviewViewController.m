@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
@@ -11,6 +10,7 @@
 #import "AwfulTheme.h"
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
+#import "Awful-Swift.h"
 
 @interface AwfulThreadPreviewViewController ()
 
@@ -66,7 +66,7 @@
     self.networkOperation = [[AwfulForumsClient client] previewOriginalPostForThreadInForum:self.forum withBBcode:interpolatedBBcode andThen:^(NSError *error, NSString *postHTML) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else if (self) {
             self.networkOperation = nil;
             AwfulThread *fakeThread = [AwfulThread insertInManagedObjectContext:self.managedObjectContext];

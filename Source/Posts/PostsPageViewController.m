@@ -3,35 +3,34 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostsPageViewController.h"
-#import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
-#import "BrowserViewController.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
-#import "ThreadListViewController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulNavigationController.h"
-#import "MessageComposeViewController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulReadLaterService.h"
-#import "PostComposeViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import "RapSheetViewController.h"
+#import "BrowserViewController.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache.h>
+#import "MessageComposeViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
+#import "PostComposeViewController.h"
+#import "RapSheetViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "ThreadListViewController.h"
+#import "UIAlertAction+WebViewSheets.h"
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -173,11 +172,11 @@
         if (error) {
             [self clearLoadingMessage];
             if (error.code == AwfulErrorCodes.archivesRequired) {
-                [AwfulAlertView showWithTitle:@"Archives Required" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithTitle:@"Archives Required" error:error] animated:YES completion:nil];
             } else {
                 BOOL offlineMode = ![AwfulForumsClient client].reachable && [error.domain isEqualToString:NSURLErrorDomain];
                 if (self.posts.count == 0 || !offlineMode) {
-                    [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Load Page" error:error] animated:YES completion:nil];
                 }
             }
         }
@@ -406,9 +405,9 @@
         copyURLItem.title = @"Copy Thread URL";
         [items addObject:copyURLItem];
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
-            AwfulActionSheet *vote = [AwfulActionSheet new];
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
             for (int i = 5; i >= 1; i--) {
-                [vote addButtonWithTitle:[@(i) stringValue] block:^{
+                [actionSheet addActionWithTitle:[@(i) stringValue] handler:^{
                     MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
                                                                                          title:[NSString stringWithFormat:@"Voting %i", i]
                                                                                           mode:MRProgressOverlayViewModeIndeterminate
@@ -417,7 +416,7 @@
                     [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
                         if (error) {
                             [overlay dismiss:NO];
-                            [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                            [self presentViewController:[UIAlertController alertWithTitle:@"Vote Failed" error:error] animated:YES completion:nil];
                         } else {
                             overlay.mode = MRProgressOverlayViewModeCheckmark;
                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -427,8 +426,9 @@
                     }];
                 }];
             }
-            [vote addCancelButtonWithTitle:@"Cancel"];
-            [vote showFromBarButtonItem:sender animated:NO];
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:NO completion:nil];
+            actionSheet.popoverPresentationController.barButtonItem = sender;
         }]];
         
         AwfulIconActionItemType bookmarkItemType;
@@ -673,16 +673,18 @@
         if (elementInfo[@"spoiledLink"]) {
             NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
             NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            AwfulActionSheet *sheet = [AwfulActionSheet actionSheetOpeningURL:URL fromViewController:self addingActions:^(AwfulActionSheet *sheet) {
-                if (imageURL) {
-                    [sheet addButtonWithTitle:@"Show Image" block:^{
-                        [self previewImageAtURL:imageURL];
-                    }];
-                }
-            }];
-            sheet.title = URL.absoluteString;
-            CGRect rect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
-            [sheet showFromRect:rect inView:self.view animated:YES];
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
+            actionSheet.title = URL.absoluteString;
+            [actionSheet addActions:[UIAlertAction actionsOpeningURL:URL fromViewController:self]];
+            if (imageURL) {
+                [actionSheet addActionWithTitle:@"Show Image" handler:^{
+                    [self previewImageAtURL:imageURL];
+                }];
+            }
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:YES completion:nil];
+            actionSheet.popoverPresentationController.sourceRect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
+            actionSheet.popoverPresentationController.sourceView = self.view;
         } else if (imageURL) {
             [self previewImageAtURL:imageURL];
         } else if (elementInfo[@"spoiledVideo"]) {
@@ -700,19 +702,19 @@
             }
             if (!safariURL) return;
             
-            AwfulActionSheet *sheet = [AwfulActionSheet new];
-            
-            void (^openInSafariOrYouTube)(void) = ^{ [[UIApplication sharedApplication] openURL:safariURL]; };
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
+            NSString *openInTitle = @"Open in Safari";
             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
-                [sheet addButtonWithTitle:@"Open in YouTube" block:openInSafariOrYouTube];
-            } else {
-                [sheet addButtonWithTitle:@"Open in Safari" block:openInSafariOrYouTube];
+                openInTitle = @"Open in YouTube";
             }
+            [actionSheet addActionWithTitle:openInTitle handler:^{
+                [[UIApplication sharedApplication] openURL:safariURL];
+            }];
             
-            [sheet addCancelButtonWithTitle:@"Cancel"];
-            
-            CGRect rect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
-            [sheet showFromRect:rect inView:self.webView animated:YES];
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:YES completion:nil];
+            actionSheet.popoverPresentationController.sourceRect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
+            actionSheet.popoverPresentationController.sourceView = self.webView;
         } else {
             NSLog(@"%s unexpected interesting elements: %@", __PRETTY_FUNCTION__, elementInfo);
         }
@@ -747,7 +749,7 @@
     [[AwfulForumsClient client] readIgnoredPost:post andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             return;
         }
         
@@ -842,12 +844,14 @@
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     
+    __weak __typeof__(self) weakSelf = self;
+    
     if (!self.author) {
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Mark Read" error:error] animated:YES completion:nil];
                 } else {
                     post.thread.seenPosts = post.threadIndex;
                     [self->_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
@@ -861,7 +865,7 @@
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Edit Post" error:error] animated:YES completion:nil];
                     return;
                 }
                 self.replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:text];
@@ -877,7 +881,7 @@
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Post" error:error] animated:YES completion:nil];
                     return;
                 }
                 if (self.replyViewController) {

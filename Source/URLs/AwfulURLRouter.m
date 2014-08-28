@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulURLRouter.h"
-#import "AwfulAlertView.h"
 #import "BookmarkedThreadListViewController.h"
 #import "AwfulEmptyViewController.h"
 #import "ThreadListViewController.h"
@@ -17,6 +16,7 @@
 #import "RapSheetViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import <MRProgress/MRProgressOverlayView.h>
+#import "Awful-Swift.h"
 
 @implementation AwfulURLRouter
 {
@@ -132,7 +132,7 @@
             if (user) {
                 success(user);
             } else if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+                [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
             }
         }];
         return YES;
@@ -165,7 +165,7 @@
 			if (user) {
 				success(user);
 			} else if (error) {
-				[AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+                [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
 			}
 		}];
 		return YES;

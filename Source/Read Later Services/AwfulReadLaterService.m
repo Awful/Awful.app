@@ -2,15 +2,14 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import SafariServices;
-
 #import "AwfulReadLaterService.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulSettings.h"
 #import "InstapaperAPIClient.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import <PocketAPI/PocketAPI.h>
+@import SafariServices;
+#import "Awful-Swift.h"
 
 @interface InstapaperReadLaterService : AwfulReadLaterService @end
 @interface PocketReadLaterService : AwfulReadLaterService @end
@@ -69,7 +68,9 @@
 {
     if (error) {
         [self.overlay dismiss:NO];
-        [AwfulAlertView showWithTitle:@"Could Not Send Link" error:error buttonTitle:@"OK"];
+        UIAlertController *alert = [UIAlertController alertWithTitle:@"Could Not Send Link" error:error];
+        UIWindow *mainWindow = [UIApplication sharedApplication].windows.firstObject;
+        [mainWindow.rootViewController presentViewController:alert animated:YES completion:nil];
     } else {
         self.overlay.titleLabelText = self.successfulStatusText;
         self.overlay.mode = MRProgressOverlayViewModeCheckmark;

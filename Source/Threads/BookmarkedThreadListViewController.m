@@ -3,13 +3,13 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "BookmarkedThreadListViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "Awful-Swift.h"
 
 @interface BookmarkedThreadListViewController ()
 
@@ -108,7 +108,7 @@
     [[AwfulForumsClient client] listBookmarkedThreadsOnPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else {
             [[AwfulRefreshMinder minder] didFinishRefreshingBookmarks];
             self.mostRecentlyLoadedPage = page;
@@ -130,7 +130,7 @@
 {
     [[AwfulForumsClient client] setThread:thread isBookmarked:NO andThen:^(NSError *error) {
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else {
             thread.bookmarked = NO;
             if (![thread.managedObjectContext save:&error]) {

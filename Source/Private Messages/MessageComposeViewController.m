@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageComposeViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -11,6 +10,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
+#import "Awful-Swift.h"
 
 @interface MessageComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
@@ -221,6 +221,7 @@
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL))completionHandler
 {
+    __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] sendPrivateMessageTo:self.fieldView.toField.textField.text
                                          withSubject:self.fieldView.subjectField.textField.text
                                            threadTag:self.threadTag
@@ -229,9 +230,10 @@
                                 forwardedFromMessage:self.forwardingMessage
                                              andThen:^(NSError *error)
     {
+        __typeof__(self) self = weakSelf;
         if (error) {
             completionHandler(NO);
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else {
             completionHandler(YES);
         }

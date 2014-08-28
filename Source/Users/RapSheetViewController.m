@@ -3,13 +3,13 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "RapSheetViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulPunishmentCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "Awful-Swift.h"
 
 @interface RapSheetViewController ()
 
@@ -105,7 +105,7 @@
     [[AwfulForumsClient client] listBansOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *bans) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             return;
         }
         self.mostRecentlyLoadedPage = page;

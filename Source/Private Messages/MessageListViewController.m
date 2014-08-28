@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageListViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -152,7 +151,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
         __typeof__(self) self = weakSelf;
         [self.refreshControl endRefreshing];
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else {
             [[AwfulRefreshMinder minder] didFinishRefreshingPrivateMessagesInbox];
         }
@@ -247,7 +246,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     [[AwfulForumsClient client] deletePrivateMessage:pm andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Could Not Delete Message" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Delete Message" error:error] animated:YES completion:nil];
         } else {
             [pm.managedObjectContext deleteObject:pm];
             [self decrementBadgeValue];
