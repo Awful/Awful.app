@@ -4,7 +4,6 @@
 
 #import "PostsPageViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "BrowserViewController.h"
 #import "AwfulErrorDomain.h"
@@ -173,11 +172,11 @@
         if (error) {
             [self clearLoadingMessage];
             if (error.code == AwfulErrorCodes.archivesRequired) {
-                [AwfulAlertView showWithTitle:@"Archives Required" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithTitle:@"Archives Required" error:error] animated:YES completion:nil];
             } else {
                 BOOL offlineMode = ![AwfulForumsClient client].reachable && [error.domain isEqualToString:NSURLErrorDomain];
                 if (self.posts.count == 0 || !offlineMode) {
-                    [AwfulAlertView showWithTitle:@"Could Not Load Page" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Load Page" error:error] animated:YES completion:nil];
                 }
             }
         }
@@ -417,7 +416,7 @@
                     [[AwfulForumsClient client] rateThread:self.thread :i andThen:^(NSError *error) {
                         if (error) {
                             [overlay dismiss:NO];
-                            [AwfulAlertView showWithTitle:@"Vote Failed" error:error buttonTitle:@"OK"];
+                            [self presentViewController:[UIAlertController alertWithTitle:@"Vote Failed" error:error] animated:YES completion:nil];
                         } else {
                             overlay.mode = MRProgressOverlayViewModeCheckmark;
                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -747,7 +746,7 @@
     [[AwfulForumsClient client] readIgnoredPost:post andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             return;
         }
         
@@ -842,12 +841,14 @@
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     
+    __weak __typeof__(self) weakSelf = self;
+    
     if (!self.author) {
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Mark Read" error:error] animated:YES completion:nil];
                 } else {
                     post.thread.seenPosts = post.threadIndex;
                     [self->_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
@@ -861,7 +862,7 @@
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Edit Post" error:error] animated:YES completion:nil];
                     return;
                 }
                 self.replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:text];
@@ -877,7 +878,7 @@
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Post" error:error] animated:YES completion:nil];
                     return;
                 }
                 if (self.replyViewController) {

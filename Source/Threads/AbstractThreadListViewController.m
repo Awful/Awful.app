@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AbstractThreadListViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -207,7 +206,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
     [items addObject:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
         [[AwfulForumsClient client] setThread:thread isBookmarked:!thread.bookmarked andThen:^(NSError *error) {
             if (error) {
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             } else {
                 NSString *status = thread.bookmarked ? @"Added Bookmark" : @"Removed Bookmark";
                 MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
@@ -249,7 +248,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
             }
             [[AwfulForumsClient client] markThreadUnread:thread andThen:^(NSError *error) {
                 if (error) {
-                    [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                    [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
                 } else {
                     thread.seenPosts = 0;
                     NSError *error;

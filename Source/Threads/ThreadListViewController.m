@@ -4,7 +4,6 @@
 
 #import "ThreadListViewController.h"
 #import "AwfulActionSheet.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -19,6 +18,7 @@
 #import "AwfulThreadTagPickerController.h"
 #import "PostsPageViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "Awful-Swift.h"
 
 @interface ThreadListViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
@@ -195,7 +195,7 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
     [[AwfulForumsClient client] listThreadsInForum:self.forum withThreadTag:self.filterThreadTag onPage:page andThen:^(NSError *error, NSArray *threads) {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else {
             if (page == 1) {
                 self.tableView.showsInfiniteScrolling = YES;

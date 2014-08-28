@@ -4,7 +4,6 @@
 
 #import "ForumListViewController.h"
 #import <AFNetworking/AFNetworking.h>
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulFavoriteForumCell.h"
 #import "AwfulForumCell.h"

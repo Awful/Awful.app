@@ -4,7 +4,6 @@
 
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulActionSheet.h"
-#import "AwfulAlertView.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 @import AssetsLibrary;
@@ -12,6 +11,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <FVGifAnimation.h>
 #import <MRProgress/MRProgressOverlayView.h>
+#import "Awful-Swift.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -103,7 +103,7 @@
         self.scrollView.maximumZoomScale = 40;
         [self centerImageInScrollView];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
+        [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Load Image" error:error] animated:YES completion:nil];
     }];
     [self.queue addOperation:op];
 }
@@ -147,7 +147,10 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [overlay dismiss:YES completion:^{
                         if (error) {
-                            [AwfulAlertView showWithTitle:@"Could Not Save Image" error:error buttonTitle:@"OK" completion:^{ [self hideBarsAfterShortDuration]; }];
+                            UIAlertController *alert = [UIAlertController alertWithTitle:@"Could Not Save Image" error:error handler:^(UIAlertAction *alert) {
+                                [self hideBarsAfterShortDuration];
+                            }];
+                            [self presentViewController:alert animated:YES completion:nil];
                         }
                     }];
                 });
@@ -163,7 +166,7 @@
         [sheet addButtonWithTitle:@"Send to Reading List" block:^{
             NSError *error;
             if (![[SSReadingList defaultReadingList] addReadingListItemWithURL:self.imageURL title:self.title previewText:nil error:&error]) {
-                [AwfulAlertView showWithTitle:@"Error Adding Image" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithTitle:@"Error Adding Image" error:error] animated:YES completion:nil];
             }
         }];
     }

@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SettingsViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -15,6 +14,7 @@
 #import "AwfulSettings.h"
 #import "InstapaperAPIClient.h"
 #import <PocketAPI/PocketAPI.h>
+#import "Awful-Swift.h"
 
 @interface SettingsViewController () <AwfulInstapaperLogInControllerDelegate>
 
@@ -330,12 +330,14 @@ typedef NS_ENUM(NSUInteger, SettingType)
         AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:loggedInUser];
         [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
     } else if ([action isEqualToString:@"LogOut"]) {
-        AwfulAlertView *alert = [AwfulAlertView new];
-        alert.title = @"Log Out";
-        alert.message = @"Are you sure you want to log out?";
-        [alert addCancelButtonWithTitle:@"Cancel" block:nil];
-        [alert addButtonWithTitle:@"Log Out" block:^{ [[AwfulAppDelegate instance] logOut]; }];
-        [alert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Log Out"
+                                                                       message:@"Are you sure you want to log out?"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [[AwfulAppDelegate instance] logOut];
+        }]];
+        [self presentViewController:alert animated:YES completion:nil];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
         [[AwfulAppDelegate instance] openAwfulURL:URL];
@@ -359,10 +361,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
             [[PocketAPI sharedAPI] loginWithHandler: ^(PocketAPI *API, NSError *error){
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error != nil) {
-                    [AwfulAlertView showWithTitle:@"Could Not Log in"
-                                            error:error
-                                      buttonTitle:@"Alright"];
+                if (error) {
+                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Log in" error:error] animated:YES completion:nil];
                 } else {
                     [self reloadSections];
                     [tableView reloadData];

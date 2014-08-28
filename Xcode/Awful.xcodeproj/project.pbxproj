@@ -107,6 +107,7 @@
 		1C89A79418AF4DA500D75854 /* AwfulEmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* AwfulEmptyViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
+		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
@@ -184,7 +185,6 @@
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF6FC017FCAA4E00F44174 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */; };
 		1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */; };
-		1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
 		1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */; };
@@ -416,6 +416,7 @@
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
+		1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+AwfulConvenient.swift"; sourceTree = "<group>"; };
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10451914B5F00010007B /* Awful 2.0.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.8.xcdatamodel"; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
@@ -555,8 +556,6 @@
 		1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDataStack.m; sourceTree = "<group>"; };
 		1CE2D9BF166ABD0D0024AC1C /* AwfulActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulActionSheet.h; sourceTree = "<group>"; };
 		1CE2D9C0166ABD0D0024AC1C /* AwfulActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulActionSheet.m; sourceTree = "<group>"; };
-		1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAlertView.h; sourceTree = "<group>"; };
-		1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAlertView.m; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
 		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
 		1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+UserDirectories.h"; sourceTree = "<group>"; };
@@ -728,8 +727,6 @@
 		1C00E0A71739F8BB008895E7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1CE2D9C1166ABD0D0024AC1C /* AwfulAlertView.h */,
-				1CE2D9C2166ABD0D0024AC1C /* AwfulAlertView.m */,
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
 				1CA1857E17E3472300462F20 /* AwfulToolbar.h */,
@@ -1263,6 +1260,7 @@
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
 				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
+				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */,
 				1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */,
 				F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */,
@@ -1703,6 +1701,7 @@
 				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1C73921D17DF850F00089248 /* AwfulThreadCell.m in Sources */,
+				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
@@ -1737,7 +1736,6 @@
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
 				1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */,
 				1CE2D9D6166ABD0D0024AC1C /* AwfulActionSheet.m in Sources */,
-				1CE2D9D7166ABD0D0024AC1C /* AwfulAlertView.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */,

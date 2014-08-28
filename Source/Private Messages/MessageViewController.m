@@ -4,7 +4,6 @@
 
 #import "MessageViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "BrowserViewController.h"
 #import "AwfulDataStack.h"
@@ -105,7 +104,7 @@
         [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
             } else {
                 _composeViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:privateMessage
                                                                                                 initialContents:BBcode];
@@ -120,7 +119,7 @@
         [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
             __typeof__(self) self = weakSelf;
             if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Quote Message" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
             } else {
                 _composeViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:self.privateMessage
                                                                                                  initialContents:BBcode];

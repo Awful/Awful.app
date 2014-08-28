@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ThreadComposeViewController.h"
-#import "AwfulAlertView.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
@@ -13,6 +12,7 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "UINavigationItem+TwoLineTitle.h"
+#import "Awful-Swift.h"
 
 @interface ThreadComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
@@ -248,9 +248,10 @@ static NSString * const DefaultTitle = @"New Thread";
     {
         __typeof__(self) self = weakSelf;
         if (error) {
-            [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK" completion:^{
+            UIAlertController *alert = [UIAlertController alertWithTitle:@"Network Error" error:error handler:^(UIAlertAction *action) {
                 completionHandler(NO);
             }];
+            [self presentViewController:alert animated:YES completion:nil];
         } else {
             self.thread = thread;
             completionHandler(YES);

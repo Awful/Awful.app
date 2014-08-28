@@ -4,7 +4,6 @@
 
 #import "AwfulProfileViewController.h"
 #import "AwfulActionSheet+WebViewSheets.h"
-#import "AwfulAlertView.h"
 #import "BrowserViewController.h"
 #import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
@@ -17,6 +16,7 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache.h>
 #import <WebViewJavascriptBridge.h>
+#import "Awful-Swift.h"
 
 @interface AwfulProfileViewController ()
 
@@ -57,7 +57,7 @@
         if (error) {
             NSLog(@"error fetching user profile for %@: %@", self.user.userID, error);
             if (!self.user) {
-                [AwfulAlertView showWithTitle:@"Network Error" error:error buttonTitle:@"OK"];
+                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
             }
         } else {
             [self renderUser];
