@@ -50,6 +50,7 @@
         otherAttributes[@"administrator"] = @([authorTerm hasClass:@"role-admin"]);
         otherAttributes[@"moderator"] = @([authorTerm hasClass:@"role-mod"]);
         otherAttributes[@"idiotKing"] = @([authorTerm hasClass:@"role-ik"]);
+		otherAttributes[@"authorClasses"] = authorTerm[@"class"];
     }
     HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
     NSDate *regdate = [RegdateParser() dateFromString:regdateDefinition.innerHTML];
