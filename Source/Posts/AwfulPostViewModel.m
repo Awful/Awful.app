@@ -61,24 +61,9 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
     return [AwfulSettings settings].showAvatars;
 }
 
-- (NSArray *)roles
+- (NSString *)roles
 {
-    NSMutableArray *roles = [NSMutableArray new];
-    AwfulPost *post = self.post;
-    AwfulUser *author = post.author;
-    if ([author isEqual:post.thread.author]) {
-        [roles addObject:@"op"];
-    }
-    if (author.moderator) {
-        [roles addObject:@"mod"];
-    }
-    if (author.administrator) {
-        [roles addObject:@"admin"];
-    }
-    if (author.idiotKing) {
-        [roles addObject:@"ik"];
-    }
-    return roles;
+	return self.post.author.authorClasses;
 }
 
 - (BOOL)authorIsOP

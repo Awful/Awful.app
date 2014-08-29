@@ -163,32 +163,23 @@ header {
   font-size: 1.1em;
   font-weight: 500;
   
-  .role-admin &:before {
-    color: #990011;
+  &:before {
+  	margin-right: .25em;
   }
   
+  .role-admin &:before {
+    color: #990011;
+  }  
   .role-mod &:before {
     color: #006699;
   }
-  
-  @-webkit-keyframes RalpStar {
-  	  0% { color: grey; }
-  	 49% { color: grey; }
-     50% { color: yellow; }
-    100% { color: yellow; }
-	}
-  .userid-61644 &:before {
-    -webkit-animation: RalpStar 20s;
-    -webkit-animation-iteration-count: infinite;
-  }
-  
+   
   .role-admin &:before,
-  .role-mod &:before,
-  .userid-61644 &:before {
-    content: '★ '; 
+  .role-mod &:before {
+    content: '★'; 
   }
   
-  .role-op & {
+  .op & {
     color: #199ed7;
   }
   
@@ -197,6 +188,33 @@ header {
   	color: rgba(0, 0, 0, 0.5);
 	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
+  
+	/*  Platinum users */
+
+	.platinum &:before {
+		content: url('awful-resource://platinum-member.png');
+	}
+
+	.coder &:before {
+		content: url('awful-resource://image-coder.png');
+	}
+
+	.idiotking &:before {
+		content: url('awful-resource://ik.png');
+	}
+
+	.diamond &:before {
+		content: url('awful-resource://diamond-icon.png');
+	}
+
+	.redpill &:before {
+		content: url('awful-resource://redpill.png');
+	}
+
+	.award &:before {
+		content: url('awful-resource://award.png');
+	}
+
 }
 
 .chevron {

@@ -46,6 +46,7 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
+
 }
 header:after {
   content: "";
@@ -123,6 +124,12 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
+
+  /*  Platinum users */
+
+}
+.username:before {
+  margin-right: .25em;
 }
 .role-admin .username:before {
   color: #990011;
@@ -130,35 +137,34 @@ header:after {
 .role-mod .username:before {
   color: #006699;
 }
-@-webkit-keyframes RalpStar {
-  0% {
-    color: grey;
-  }
-  49% {
-    color: grey;
-  }
-  50% {
-    color: yellow;
-  }
-  100% {
-    color: yellow;
-  }
-}
-.userid-61644 .username:before {
-  -webkit-animation: RalpStar 20s;
-  -webkit-animation-iteration-count: infinite;
-}
 .role-admin .username:before,
-.role-mod .username:before,
-.userid-61644 .username:before {
-  content: '★ ';
+.role-mod .username:before {
+  content: '★';
 }
-.role-op .username {
+.op .username {
   color: #199ed7;
 }
 .userid-182864 .username {
   color: rgba(0, 0, 0, 0.5);
   text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
+}
+.platinum .username:before {
+  content: url('awful-resource://platinum-member.png');
+}
+.coder .username:before {
+  content: url('awful-resource://image-coder.png');
+}
+.idiotking .username:before {
+  content: url('awful-resource://ik.png');
+}
+.diamond .username:before {
+  content: url('awful-resource://diamond-icon.png');
+}
+.redpill .username:before {
+  content: url('awful-resource://redpill.png');
+}
+.award .username:before {
+  content: url('awful-resource://award.png');
 }
 .chevron {
   position: relative;
@@ -328,7 +334,7 @@ header {
   margin-top: 8px;
   padding-bottom: 8px;
 }
-.role-op .username {
+.op .username {
   color: #000;
   text-transform: italic;
 }

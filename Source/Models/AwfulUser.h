@@ -25,6 +25,11 @@
 @property (copy, nonatomic) NSString *aimName;
 
 /**
+ * The SA-provided class attribute on the user. Admins (and mods?) can add arbitrary classes for styling, and we'll just pass those on through when rendering.
+ */
+@property (copy, nonatomic) NSString *authorClasses;
+
+/**
  * YES if the user can receive a private message, otherwise NO.
  */
 @property (assign, nonatomic) BOOL canReceivePrivateMessages;
