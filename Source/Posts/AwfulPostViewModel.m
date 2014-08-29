@@ -61,12 +61,9 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
     return [AwfulSettings settings].showAvatars;
 }
 
-- (NSArray *)roles
+- (NSString *)roles
 {
-    NSMutableArray *roles = [NSMutableArray new];
-    NSArray *rolesArray = [self.post.author.authorClasses componentsSeparatedByString:@" "];
-	[roles addObjectsFromArray:rolesArray];
-	return roles;
+	return self.post.author.authorClasses;
 }
 
 - (BOOL)authorIsOP

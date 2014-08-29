@@ -38,7 +38,7 @@
 /**
  * How the post's author is special. May contain any combination of: "op", "mod", "admin", "ik".
  */
-@property (readonly, copy, nonatomic) NSArray *roles;
+@property (readonly, copy, nonatomic) NSString *roles;
 
 /**
  * A formatter suitable for the date the post was written.
