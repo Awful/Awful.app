@@ -99,7 +99,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         }
     }
     
-    private func settingsDidChange(notification: NSNotification) {
+    func settingsDidChange(notification: NSNotification) {
         let userInfo = notification.userInfo as [String:String]
         let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]!
         if changeKey == AwfulSettingsKeys.canSendPrivateMessages {

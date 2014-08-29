@@ -3,17 +3,16 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ForumListViewController.h"
-#import <AFNetworking/AFNetworking.h>
 #import "AwfulAppDelegate.h"
-#import "AwfulFavoriteForumCell.h"
-#import "AwfulForumCell.h"
-#import "ThreadListViewController.h"
-#import "AwfulForumTreeDataSource.h"
 #import "AwfulForumsClient.h"
+#import "AwfulForumTreeDataSource.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
+#import <AFNetworking/AFNetworking.h>
+#import "ThreadListViewController.h"
+#import "Awful-Swift.h"
 
 @interface ForumListViewController () <AwfulForumTreeDataSourceDelegate>
 
@@ -35,23 +34,19 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super initWithStyle:UITableViewStylePlain])) return nil;
-    _managedObjectContext = managedObjectContext;
-    _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
-    
-    self.title = @"Forums";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.tabBarItem.accessibilityLabel = @"Forums list";
-    self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
-    [self showOrHideEditButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+    if ((self = [[UIStoryboard storyboardWithName:@"ForumList" bundle:nil] instantiateInitialViewController])) {
+        _managedObjectContext = managedObjectContext;
+        _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
+        
+        self.title = @"Forums";
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.tabBarItem.accessibilityLabel = @"Forums list";
+        self.tabBarItem.image = [UIImage imageNamed:@"list_icon"];
+        [self showOrHideEditButton];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+    }
     return self;
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    return [self initWithManagedObjectContext:nil];
 }
 
 - (NSArray *)fetchFavoriteForumsWithIDsFromSettings
@@ -83,24 +78,19 @@
 {
     [super loadView];
     [self.tableView registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:HeaderIdentifier];
-    [self.tableView registerClass:[AwfulForumCell class] forCellReuseIdentifier:ForumCellIdentifier];
-    [self.tableView registerClass:[AwfulFavoriteForumCell class] forCellReuseIdentifier:FavoriteCellIdentifier];
-    self.tableView.restorationIdentifier = @"Forum list";
 }
 
 static NSString * const HeaderIdentifier = @"Header";
-static NSString * const ForumCellIdentifier = @"Forum";
-static NSString * const FavoriteCellIdentifier = @"Favorite";
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.rowHeight = 45;
+    self.tableView.estimatedRowHeight = 37;
     self.tableView.backgroundView = nil;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 37, 0, 0);
     [self.tableView awful_unstickSectionHeaders];
     [self.tableView awful_hideExtraneousSeparators];
-    _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithTableView:self.tableView reuseIdentifier:ForumCellIdentifier];
+    _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Forum"];
     _treeDataSource.topDataSource = self;
     _treeDataSource.managedObjectContext = self.managedObjectContext;
     _treeDataSource.delegate = self;
@@ -272,9 +262,9 @@ static NSString * const FavoriteCellIdentifier = @"Favorite";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulFavoriteForumCell *cell = [tableView dequeueReusableCellWithIdentifier:FavoriteCellIdentifier forIndexPath:indexPath];
+    FavoriteForumCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Favorite" forIndexPath:indexPath];
     AwfulForum *forum = self.favoriteForums[indexPath.row];
-    cell.textLabel.text = forum.name;
+    cell.nameLabel.text = forum.name;
     cell.separatorInset = UIEdgeInsetsZero;
     ThemeCell(self.theme, cell);
     return cell;
@@ -389,7 +379,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 #pragma mark - AwfulForumTreeDataSourceDelegate
 
-- (void)configureCell:(AwfulForumCell *)cell withForum:(AwfulForum *)forum
+- (void)configureCell:(ForumCell *)cell withForum:(AwfulForum *)forum
 {
     BOOL hasSubforums = forum.children.count > 0;
     cell.disclosureButton.hidden = !hasSubforums;
@@ -399,7 +389,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
                         forControlEvents:UIControlEventTouchUpInside];
         cell.disclosureButton.selected = [_treeDataSource forumChildrenExpanded:forum];
     }
-    cell.textLabel.text = forum.name;
+    cell.nameLabel.text = forum.name;
     BOOL isFavorite = [self.favoriteForums containsObject:forum];
     cell.favoriteButton.hidden = isFavorite;
     if (!isFavorite) {
@@ -413,7 +403,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
         subforumLevel++;
         currentForum = currentForum.parentForum;
     }
-    cell.subforumLevel = subforumLevel;
+    cell.subforumDepth = subforumLevel;
     ThemeCell(self.theme, cell);
 }
 
