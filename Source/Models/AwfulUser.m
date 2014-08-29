@@ -11,6 +11,7 @@
 @dynamic aboutMe;
 @dynamic administrator;
 @dynamic aimName;
+@dynamic authorClasses;
 @dynamic canReceivePrivateMessages;
 @dynamic customTitleHTML;
 @dynamic gender;

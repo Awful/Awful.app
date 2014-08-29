@@ -25,6 +25,11 @@
 @property (copy, nonatomic) NSString *aimName;
 
 /**
+ * A user-supplied AOL Instant Messenger username.
+ */
+@property (copy, nonatomic) NSString *authorClasses;
+
+/**
  * YES if the user can receive a private message, otherwise NO.
  */
 @property (assign, nonatomic) BOOL canReceivePrivateMessages;

@@ -1,4 +1,4 @@
-<post id="{{ postID }}" class="{{# beenSeen }}seen{{/ }}{{# roles }} role-{{ . }}{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
+<post id="{{ postID }}" class="{{# beenSeen }}seen{{/ }}{{# roles }} {{ . }}{{/ }} {{^ visibleAvatarURL }}no-avatar{{/ }}">
     <header class="userid-{{ author.userID }}" {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>
         {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
 

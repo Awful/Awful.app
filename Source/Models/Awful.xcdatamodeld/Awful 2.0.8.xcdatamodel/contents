@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13C1021" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
         <attribute name="categoryID" attributeType="String" syncable="YES"/>
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
@@ -88,6 +88,7 @@
         <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="administrator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="aimName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="authorClasses" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="canReceivePrivateMessages" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="customTitleHTML" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
@@ -121,6 +122,6 @@
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
         <element name="AwfulThread" positionX="0" positionY="0" width="128" height="390"/>
         <element name="AwfulThreadTag" positionX="0" positionY="0" width="128" height="165"/>
-        <element name="AwfulUser" positionX="0" positionY="0" width="128" height="450"/>
+        <element name="AwfulUser" positionX="0" positionY="0" width="128" height="465"/>
     </elements>
 </model>
