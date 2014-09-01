@@ -109,6 +109,8 @@
 		1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D114C19AFECB9005D46CB /* ForumList.storyboard */; };
 		1C8D114F19AFF16D005D46CB /* ForumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114E19AFF16D005D46CB /* ForumCell.swift */; };
 		1C8D115119AFF346005D46CB /* FavoriteForumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D115019AFF346005D46CB /* FavoriteForumCell.swift */; };
+		1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D116019B3F686005D46CB /* ThreadCell.xib */; };
+		1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D116219B3F69D005D46CB /* ThreadCell.swift */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
@@ -416,6 +418,8 @@
 		1C8D114C19AFECB9005D46CB /* ForumList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ForumList.storyboard; sourceTree = "<group>"; };
 		1C8D114E19AFF16D005D46CB /* ForumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumCell.swift; sourceTree = "<group>"; };
 		1C8D115019AFF346005D46CB /* FavoriteForumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteForumCell.swift; sourceTree = "<group>"; };
+		1C8D116019B3F686005D46CB /* ThreadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadCell.xib; sourceTree = "<group>"; };
+		1C8D116219B3F69D005D46CB /* ThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10451914B5F00010007B /* Awful 2.0.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.8.xcdatamodel"; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
@@ -1170,6 +1174,8 @@
 				1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */,
 				1CC45268180B7D3900F5F043 /* BookmarkedThreadListViewController.h */,
 				1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */,
+				1C8D116219B3F69D005D46CB /* ThreadCell.swift */,
+				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
 				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
 				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
 				1CC7804C1612DA8E002AF958 /* ThreadListViewController.h */,
@@ -1484,6 +1490,7 @@
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
+				1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */,
 				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
@@ -1733,6 +1740,7 @@
 				1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */,
 				1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */,
 				1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */,
+				1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */,
 				1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */,
 				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,

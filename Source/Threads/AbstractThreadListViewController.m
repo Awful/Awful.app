@@ -10,7 +10,6 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
-#import "AwfulThreadCell.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "PostsPageViewController.h"
@@ -43,13 +42,13 @@
 - (void)loadView
 {
     [super loadView];
-    [self.tableView registerClass:[AwfulThreadCell class] forCellReuseIdentifier:ThreadCellIdentifier];
-    self.tableView.rowHeight = 75;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
+    [self.tableView registerNib:[UINib nibWithNibName:@"ThreadCell" bundle:nil] forCellReuseIdentifier:ThreadCellIdentifier];
+    self.tableView.estimatedRowHeight = 75;
     [self.tableView awful_hideExtraneousSeparators];
 }
 
-static NSString * const ThreadCellIdentifier = @"Thread Cell";
+static NSString * const ThreadCellIdentifier = @"Thread";
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -72,21 +71,21 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
 
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
-- (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
+- (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
 {
-    [cell setLongPressTarget:self action:@selector(showThreadActions:)];
+    // TODO Swift weirdness here, declaring -setLongPressTarget:action:'s second parameter as type `Selector` prevented it from appearing in Awful-Swift.h.
+    [cell setLongPressTarget:self action:@"showThreadActions:"];
     
 	if ([AwfulSettings sharedSettings].showThreadTags) {
-		cell.threadTagHidden = NO;
-        AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
+		cell.showsTag = YES;
         
 		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart. Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (thread.threadTag.imageName.length > 0 && ![thread.threadTag isEqual:thread.secondaryThreadTag]) {
             NSString *imageName = thread.threadTag.imageName;
 			UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
-			tagAndRatingView.threadTagImage = image;
+            cell.tagImageView.image = image;
             if (!image) {
-                tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
+                cell.tagImageView.image = [AwfulThreadTagLoader emptyThreadTagImage];
                 
                 NSString *threadID = thread.threadID;
                 AwfulNewThreadTagObserver *observer = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
@@ -96,7 +95,7 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
                     if (indexPath) {
                         AwfulThread *currentThread = [self.threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
                         if ([currentThread.threadID isEqualToString:threadID]) {
-                            tagAndRatingView.threadTagImage = image;
+                            cell.tagImageView.image = image;
                         }
                     }
                     [self.threadTagObservers removeObjectForKey:threadID];
@@ -104,77 +103,77 @@ static NSString * const ThreadCellIdentifier = @"Thread Cell";
                 self.threadTagObservers[threadID] = observer;
             }
 		} else {
-            tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
+            cell.tagImageView.image = [AwfulThreadTagLoader emptyThreadTagImage];
 		}
 		if (thread.secondaryThreadTag) {
 			UIImage *secondaryThreadTag = [AwfulThreadTagLoader imageNamed:thread.secondaryThreadTag.imageName];
-			tagAndRatingView.secondaryThreadTagImage = secondaryThreadTag;
+            cell.secondaryTagImageView.image = secondaryThreadTag;
+            cell.secondaryTagImageView.hidden = NO;
 		} else {
-			tagAndRatingView.secondaryThreadTagImage = nil;
+            cell.secondaryTagImageView.hidden = YES;
 		}
 		
 		if ([AwfulForumTweaks tweaksForForumId:thread.forum.forumID].showRatings) {
-			cell.tagAndRatingView.ratingImage = nil;
+            cell.showsRating = NO;
 		} else {
 			NSInteger rating = lroundf(thread.rating.floatValue);
 			if (rating <= 0) {
-				cell.tagAndRatingView.ratingImage = nil;
+                cell.showsRating = NO;
 			} else {
 				if (rating < 1) {
 					rating = 1;
 				} else if (rating > 5) {
 					rating = 5;
 				}
-				cell.tagAndRatingView.ratingImage = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
+                cell.showsRating = YES;
+                cell.ratingImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"rating%zd", rating]];
 			}
 		}
 	} else {
-		cell.threadTagHidden = YES;
+		cell.showsTag = NO;
 	}
 	
 	
-    cell.textLabel.text = [thread.title stringByCollapsingWhitespace];
+    cell.titleLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.sticky || !thread.closed) {
-        cell.tagAndRatingView.alpha = 1;
-        cell.textLabel.enabled = YES;
+        cell.tagAndRatingContainerView.alpha = 1;
+        cell.titleLabel.enabled = YES;
     } else {
-        cell.tagAndRatingView.alpha = 0.5;
-        cell.textLabel.enabled = NO;
+        cell.tagAndRatingContainerView.alpha = 0.5;
+        cell.titleLabel.enabled = NO;
     }
     cell.numberOfPagesLabel.text = @(thread.numberOfPages).stringValue;
     if (thread.beenSeen) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
-        cell.badgeLabel.text = @(thread.unreadPosts).stringValue;
+        cell.killedByLabel.text = [NSString stringWithFormat:@"Killed by %@", thread.lastPostAuthorName];
+        cell.unreadRepliesLabel.text = @(thread.unreadPosts).stringValue;
     } else {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
-        cell.badgeLabel.text = nil;
+        cell.killedByLabel.text = [NSString stringWithFormat:@"Posted by %@", thread.author.username];
+        cell.unreadRepliesLabel.text = nil;
     }
     
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
-    cell.textLabel.textColor = theme[@"listTextColor"];
+    cell.titleLabel.textColor = theme[@"listTextColor"];
     cell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];
-    cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
+    cell.killedByLabel.textColor = theme[@"listSecondaryTextColor"];
     cell.tintColor = theme[@"listSecondaryTextColor"];
-    cell.fontName = theme[@"listFontName"];
+    [cell setFontNameForLabels:theme[@"listFontName"]];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;
     if (thread.unreadPosts == 0) {
-        cell.badgeLabel.textColor = [UIColor grayColor];
-        cell.lightenBadgeLabel = YES;
+        cell.unreadRepliesLabel.textColor = [UIColor grayColor];
     } else {
         switch (thread.starCategory) {
-            case AwfulStarCategoryOrange: cell.badgeLabel.textColor = theme[@"unreadBadgeOrangeColor"]; break;
-            case AwfulStarCategoryRed: cell.badgeLabel.textColor = theme[@"unreadBadgeRedColor"]; break;
-            case AwfulStarCategoryYellow: cell.badgeLabel.textColor = theme[@"unreadBadgeYellowColor"]; break;
-            default: cell.badgeLabel.textColor = theme[@"tintColor"]; break;
+            case AwfulStarCategoryOrange: cell.unreadRepliesLabel.textColor = theme[@"unreadBadgeOrangeColor"]; break;
+            case AwfulStarCategoryRed: cell.unreadRepliesLabel.textColor = theme[@"unreadBadgeRedColor"]; break;
+            case AwfulStarCategoryYellow: cell.unreadRepliesLabel.textColor = theme[@"unreadBadgeYellowColor"]; break;
+            default: cell.unreadRepliesLabel.textColor = theme[@"tintColor"]; break;
         }
-        cell.lightenBadgeLabel = NO;
     }
 }
 
-- (void)showThreadActions:(AwfulThreadCell *)cell
+- (void)showThreadActions:(ThreadCell *)cell
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     AwfulThread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];

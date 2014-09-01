@@ -12,7 +12,6 @@
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "PostsPageViewController.h"
@@ -222,14 +221,10 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
-- (void)configureCell:(AwfulThreadCell *)cell withObject:(AwfulThread *)thread
+- (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
 {
     [super configureCell:cell withObject:thread];
-    if (thread.sticky) {
-        cell.stickyImageView.image = [UIImage imageNamed:@"sticky"];
-    } else {
-        cell.stickyImageView.image = nil;
-    }
+    cell.stickyImageView.hidden = !thread.sticky;
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate

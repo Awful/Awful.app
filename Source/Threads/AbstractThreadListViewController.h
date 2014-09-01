@@ -5,12 +5,11 @@
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulModels.h"
-#import "AwfulThreadCell.h"
 
 /**
  * An AbstractThreadListViewController shows a list of threads.
  *
- * Subclasses may want to implement -configureCell:withObject: (from AwfulFetchedResultsControllerDataSourceDelegate) for more specific customization of the AwfulThreadCell objects.
+ * Subclasses may want to implement -configureCell:withObject: (from AwfulFetchedResultsControllerDataSourceDelegate) for more specific customization of the ThreadCell objects.
  */
 @interface AbstractThreadListViewController : AwfulTableViewController <AwfulFetchedResultsControllerDataSourceDelegate>
 
