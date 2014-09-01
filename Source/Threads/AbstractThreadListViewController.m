@@ -42,7 +42,6 @@
 - (void)loadView
 {
     [super loadView];
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, 60, 0, 0);
     [self.tableView registerNib:[UINib nibWithNibName:@"ThreadCell" bundle:nil] forCellReuseIdentifier:ThreadCellIdentifier];
     self.tableView.estimatedRowHeight = 75;
     [self.tableView awful_hideExtraneousSeparators];
@@ -55,6 +54,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     [super viewWillAppear:animated];
     _threadDataSource.updatesTableView = YES;
 	[self themeDidChange];
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, [AwfulSettings sharedSettings].showThreadTags ? 60 : 8, 0, 0);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
