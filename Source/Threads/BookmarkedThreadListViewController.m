@@ -7,7 +7,6 @@
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
 

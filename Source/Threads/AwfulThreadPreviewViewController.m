@@ -8,13 +8,12 @@
 #import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
-#import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 
 @interface AwfulThreadPreviewViewController ()
 
-@property (strong, nonatomic) AwfulThreadCell *threadCell;
+@property (strong, nonatomic) ThreadCell *threadCell;
 
 @property (strong, nonatomic) NSOperation *networkOperation;
 @property (strong, nonatomic) AwfulSelfHostingAttachmentInterpolator *imageInterpolator;
@@ -45,10 +44,15 @@
 - (void)loadView
 {
     [super loadView];
-    self.threadCell = [[AwfulThreadCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    self.threadCell = [[NSBundle mainBundle] loadNibNamed:@"ThreadCell" owner:nil options:nil][0];
     self.threadCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.threadCell.pageIconHidden = YES;
     [self.webView.scrollView addSubview:self.threadCell];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    [self repositionCell];
 }
 
 - (AwfulTheme *)theme
@@ -91,52 +95,56 @@
 
 - (void)configureCell
 {
-    AwfulThreadCell *cell = self.threadCell;
     if ([AwfulSettings sharedSettings].showThreadTags) {
-		cell.threadTagHidden = NO;
-        AwfulThreadTagAndRatingView *tagAndRatingView = cell.tagAndRatingView;
+		self.threadCell.showsTag = YES;
         
 		// It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
 		// the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (self.threadTag.imageName.length > 0 && ![self.threadTag isEqual:self.secondaryThreadTag]) {
 			UIImage *threadTag = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
-			tagAndRatingView.threadTagImage = threadTag;
+            self.threadCell.tagImageView.image = threadTag;
 		} else {
-            tagAndRatingView.threadTagImage = [AwfulThreadTagLoader emptyThreadTagImage];
+            self.threadCell.tagImageView.image = [AwfulThreadTagLoader emptyThreadTagImage];
 		}
 		if (self.secondaryThreadTag) {
 			UIImage *secondaryThreadTag = [AwfulThreadTagLoader imageNamed:self.secondaryThreadTag.imageName];
-			tagAndRatingView.secondaryThreadTagImage = secondaryThreadTag;
+            self.threadCell.secondaryTagImageView.image = secondaryThreadTag;
 		} else {
-			tagAndRatingView.secondaryThreadTagImage = nil;
+            self.threadCell.secondaryTagImageView.image = nil;
 		}
 	} else {
-		cell.threadTagHidden = YES;
+		self.threadCell.showsTag = NO;
 	}
 	
-    cell.textLabel.numberOfLines = 0;
-    cell.textLabel.text = [self.subject stringByCollapsingWhitespace];
-    cell.tagAndRatingView.alpha = 1;
-    cell.textLabel.enabled = YES;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"Posting in %@", self.forum.name];
+    self.threadCell.titleLabel.text = [self.subject stringByCollapsingWhitespace];
+    self.threadCell.tagAndRatingContainerView.alpha = 1;
+    self.threadCell.titleLabel.enabled = YES;
+    self.threadCell.numberOfPagesLabel.text = @"1";
+    self.threadCell.killedByLabel.text = [NSString stringWithFormat:@"Posting in %@", self.forum.name];
     
     AwfulTheme *theme = self.theme;
-    cell.backgroundColor = theme[@"listBackgroundColor"];
-    cell.textLabel.textColor = theme[@"listTextColor"];
-    cell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];
-    cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
-    cell.tintColor = theme[@"listSecondaryTextColor"];
-    cell.fontName = theme[@"listFontName"];
+    self.threadCell.backgroundColor = theme[@"listBackgroundColor"];
+    self.threadCell.titleLabel.textColor = theme[@"listTextColor"];
+    self.threadCell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];
+    self.threadCell.killedByLabel.textColor = theme[@"listSecondaryTextColor"];
+    self.threadCell.tintColor = theme[@"listSecondaryTextColor"];
+    [self.threadCell setFontNameForLabels:theme[@"listFontName"]];
     
-    CGSize cellSize = [cell sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), 0)];
-    if (cellSize.height < 75) {
-        cellSize.height = 75;
-    } else {
-        cellSize.height += 6;
-    }
+    [self repositionCell];
+}
+                       
+- (void)repositionCell
+{
+    CGSize cellSize = CGSizeMake(CGRectGetWidth(self.view.bounds), 10000);
+    self.threadCell.frame = (CGRect){.size = cellSize};
+    [self.threadCell setNeedsLayout];
+    [self.threadCell layoutIfNeeded];
     
-    cell.frame = (CGRect){ .origin.y = -cellSize.height, .size = cellSize };
+    // TODO Not sure how Interface Builder's "automatic" works programmatically, so fake it here.
+    self.threadCell.titleLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.threadCell.titleLabel.bounds);
+    cellSize.height = [self.threadCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    self.threadCell.frame = (CGRect){ .origin.y = -cellSize.height, .size = cellSize };
     UIEdgeInsets insets = self.webView.scrollView.contentInset;
     insets.top = self.topLayoutGuide.length + CGRectGetHeight(self.threadCell.bounds);
     self.webView.scrollView.contentInset = insets;
