@@ -89,6 +89,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 messages.restorationIdentifier = messagesRestorationIdentifier
                 let navigationController = messages.enclosingNavigationController
                 navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)
+                navigationController.restorationClass = nil
                 roots.insertObject(navigationController, atIndex: 2)
             }
         } else {
