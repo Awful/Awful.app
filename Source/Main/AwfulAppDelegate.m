@@ -184,7 +184,7 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
 
 - (void)themeDidChange
 {
-    self.window.tintColor = AwfulTheme.currentTheme[@"tintColor"];
+    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
 	[self.window.rootViewController themeDidChange];
 }
 
