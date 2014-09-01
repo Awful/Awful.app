@@ -47,6 +47,9 @@
     
     NSMutableDictionary *otherAttributes = [NSMutableDictionary new];
     if (authorTerm[@"class"]) {
+        otherAttributes[@"administrator"] = @([authorTerm hasClass:@"role-admin"]);
+        otherAttributes[@"moderator"] = @([authorTerm hasClass:@"role-mod"]);
+        otherAttributes[@"idiotKing"] = @([authorTerm hasClass:@"role-ik"]);
 		otherAttributes[@"authorClasses"] = authorTerm[@"class"];
     }
     HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
