@@ -8,14 +8,13 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
-#import "MessageComposeViewController.h"
 #import "AwfulNewThreadTagObserver.h"
-#import "AwfulPrivateMessageCell.h"
-#import "MessageViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
+#import "MessageComposeViewController.h"
+#import "MessageViewController.h"
 #import <SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h>
 #import "Awful-Swift.h"
 
@@ -44,9 +43,8 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if ((self = [super init])) {
+    if ((self = [[UIStoryboard storyboardWithName:@"MessageList" bundle:nil] instantiateInitialViewController])) {
         _managedObjectContext = managedObjectContext;
-        self.title = @"Private Messages";
         self.tabBarItem.title = @"Messages";
         self.tabBarItem.accessibilityLabel = @"Private messages";
         self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
@@ -61,6 +59,7 @@
                                                  selector:@selector(didGetNewPMCount:)
                                                      name:AwfulDidFinishCheckingNewPrivateMessagesNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
     }
     return self;
 }
@@ -88,22 +87,21 @@
     self.tabBarItem.badgeValue = count.integerValue ? count.stringValue : nil;
 }
 
-- (void)loadView
+- (void)settingsDidChange:(NSNotification *)notification
 {
-    [super loadView];
-    [self.tableView registerClass:[AwfulPrivateMessageCell class] forCellReuseIdentifier:MessageCellIdentifier];
+    if ([notification.userInfo[AwfulSettingsDidChangeSettingKey] isEqualToString:AwfulSettingsKeys.showThreadTags]) {
+        [self.tableView reloadData];
+    }
 }
-
-static NSString * const MessageCellIdentifier = @"Message cell";
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.rowHeight = 75;
+    self.tableView.estimatedRowHeight = 75;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     [self.tableView awful_hideExtraneousSeparators];
     
-    _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView
-                                                                     reuseIdentifier:MessageCellIdentifier];
+    _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Message"];
     _dataSource.delegate = self;
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulPrivateMessage.entityName];
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"sentDate" ascending:NO] ];
@@ -143,7 +141,7 @@ static NSString * const MessageCellIdentifier = @"Message cell";
     }
 }
 
-- (void)refresh
+- (IBAction)refresh
 {
     [self.refreshControl beginRefreshing];
     __weak __typeof__(self) weakSelf = self;
@@ -179,17 +177,17 @@ static NSString * const MessageCellIdentifier = @"Message cell";
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
 
-- (void)configureCell:(AwfulPrivateMessageCell *)cell withObject:(AwfulPrivateMessage *)pm
+- (void)configureCell:(MessageCell *)cell withObject:(AwfulPrivateMessage *)pm
 {
     if ([AwfulSettings sharedSettings].showThreadTags) {
-        cell.threadTagHidden = NO;
+        cell.showsTag = YES;
         NSString *imageName = pm.threadTag.imageName;
         if (imageName.length > 0) {
             UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
             if (image) {
-                cell.imageView.image = image;
+                cell.tagImageView.image = image;
             } else {
-                cell.imageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
+                cell.tagImageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
                 
                 NSString *messageID = pm.messageID;
                 AwfulNewThreadTagObserver *observer = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
@@ -207,29 +205,28 @@ static NSString * const MessageCellIdentifier = @"Message cell";
                 self.threadTagObservers[messageID] = observer;
             }
         } else {
-            cell.imageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
+            cell.tagImageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
         }
         
         if (pm.replied) {
-            cell.overlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
+            cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
         } else if (pm.forwarded) {
-            cell.overlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
+            cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
         } else if (!pm.seen) {
-            cell.overlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
+            cell.tagOverlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
         } else {
-            cell.overlayImageView.image = nil;
+            cell.tagOverlayImageView.image = nil;
         }
     } else {
-        cell.threadTagHidden = YES;
+        cell.showsTag = NO;
     }
     
-    cell.textLabel.text = pm.subject;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                                 pm.from.username, [[NSDateFormatter postDateFormatter] stringFromDate:pm.sentDate]];
+    cell.subjectLabel.text = pm.subject;
+    cell.fromDateLabel.text = [NSString stringWithFormat:@"%@ - %@", pm.from.username, [[NSDateFormatter postDateFormatter] stringFromDate:pm.sentDate]];
     
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
-    cell.textLabel.textColor = theme[@"listTextColor"];
+    cell.subjectLabel.textColor = theme[@"listTextColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;
