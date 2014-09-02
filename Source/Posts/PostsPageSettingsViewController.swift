@@ -31,7 +31,7 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
         self.forum = forum
         super.init(nibName: "PostsPageSettings", bundle: nil)
         modalPresentationStyle = .Popover
-        popoverPresentationController.delegate = self
+        popoverPresentationController!.delegate = self
     }
     
     @IBOutlet weak var headerLabel: UILabel!
@@ -105,11 +105,11 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
         view.tintColor = theme["tintColor"] as? UIColor
         let backgroundColor = theme["sheetBackgroundColor"] as? UIColor
         view.backgroundColor = backgroundColor
-        popoverPresentationController.backgroundColor = backgroundColor
-        headerLabel.textColor = theme["sheetTitleColor"] as? UIColor
+        popoverPresentationController?.backgroundColor = backgroundColor
+		headerLabel.textColor = theme["sheetTitleColor"] as? UIColor ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
         for label in labels {
-            label.textColor = theme["sheetTextColor"] as? UIColor
+            label.textColor = theme["sheetTextColor"] as? UIColor ?? UIColor.blackColor()
         }
         for uiswitch in switches {
             uiswitch.onTintColor = theme["settingsSwitchColor"] as? UIColor
