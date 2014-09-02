@@ -21,27 +21,40 @@
 // THE SOFTWARE.
 
 #import "GRMustacheAST_private.h"
+#import "GRMustacheASTNode_private.h"
+#import "GRMustacheASTVisitor_private.h"
 
 @implementation GRMustacheAST
-@synthesize templateComponents=_templateComponents;
+@synthesize ASTNodes=_ASTNodes;
 @synthesize contentType=_contentType;
 
 - (void)dealloc
 {
-    [_templateComponents release];
+    [_ASTNodes release];
     [super dealloc];
 }
 
-+ (instancetype)ASTWithTemplateComponents:(NSArray *)templateComponents contentType:(GRMustacheContentType)contentType
++ (instancetype)placeholderAST
 {
-    return [[[self alloc] initWithTemplateComponents:templateComponents contentType:contentType] autorelease];
+    return [[[self alloc] initWithASTNodes:nil contentType:GRMustacheContentTypeHTML] autorelease];
 }
 
-- (id)initWithTemplateComponents:(NSArray *)templateComponents contentType:(GRMustacheContentType)contentType
++ (instancetype)ASTWithASTNodes:(NSArray *)ASTNodes contentType:(GRMustacheContentType)contentType
+{
+    NSAssert(ASTNodes, @"nil ASTNodes");
+    return [[[self alloc] initWithASTNodes:ASTNodes contentType:contentType] autorelease];
+}
+
+- (BOOL)isPlaceholder
+{
+    return (_ASTNodes == nil);
+}
+
+- (instancetype)initWithASTNodes:(NSArray *)ASTNodes contentType:(GRMustacheContentType)contentType
 {
     self = [super init];
     if (self) {
-        _templateComponents = [templateComponents retain];
+        _ASTNodes = [ASTNodes retain];
         _contentType = contentType;
     }
     return self;

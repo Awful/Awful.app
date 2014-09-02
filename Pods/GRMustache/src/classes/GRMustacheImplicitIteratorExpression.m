@@ -21,32 +21,33 @@
 // THE SOFTWARE.
 
 #import "GRMustacheImplicitIteratorExpression_private.h"
-#import "GRMustacheContext_private.h"
+#import "GRMustacheExpressionVisitor_private.h"
+
+static GRMustacheImplicitIteratorExpression *instance;
 
 @implementation GRMustacheImplicitIteratorExpression
 
-+ (instancetype)expression
++ (void)initialize
 {
-    return [[[self alloc] init] autorelease];
+    instance = [[self alloc] init];
 }
 
-- (BOOL)isEqual:(id)expression
++ (instancetype)expression
 {
-    return [expression isKindOfClass:[GRMustacheImplicitIteratorExpression class]];
+    return instance;
 }
 
 
 #pragma mark - GRMustacheExpression
 
-- (BOOL)hasValue:(id *)value withContext:(GRMustacheContext *)context protected:(BOOL *)protected error:(NSError **)error
+- (BOOL)isEqual:(id)expression
 {
-    if (protected != NULL) {
-        *protected = NO;
-    }
-    if (value != NULL) {
-        *value = [context topMustacheObject];
-    }
-    return YES;
+    return expression == instance;
+}
+
+- (BOOL)acceptVisitor:(id<GRMustacheExpressionVisitor>)visitor error:(NSError **)error
+{
+    return [visitor visitImplicitIteratorExpression:self error:error];
 }
 
 @end

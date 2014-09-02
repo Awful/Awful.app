@@ -37,7 +37,7 @@ typedef struct {
 @interface GRMustache: NSObject
 
 // Documented in GRMustache.h
-+ (GRMustacheVersion)version GRMUSTACHE_API_PUBLIC;
++ (GRMustacheVersion)libraryVersion GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustache.h
 + (void)preventNSUndefinedKeyExceptionAttack GRMUSTACHE_API_PUBLIC;
@@ -46,9 +46,9 @@ typedef struct {
 + (NSObject *)standardLibrary GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustache.h
-+ (id<GRMustacheRendering>)renderingObjectForObject:(id)object GRMUSTACHE_API_PUBLIC;
++ (id<GRMustacheRendering>)renderingObjectForObject:(id)object GRMUSTACHE_API_PUBLIC_BUT_DEPRECATED;
 
 // Documented in GRMustache.h
-+ (id<GRMustacheRendering>)renderingObjectWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block GRMUSTACHE_API_PUBLIC;
++ (id<GRMustacheRendering>)renderingObjectWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block GRMUSTACHE_API_PUBLIC_BUT_DEPRECATED;
 
 @end

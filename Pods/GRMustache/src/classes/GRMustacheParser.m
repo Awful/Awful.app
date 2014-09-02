@@ -40,21 +40,6 @@
 // Documented in GRMustacheParser_private.h
 @property (nonatomic, strong) NSMutableSet *pragmas;
 
-/**
- * Wrapper around the delegate's `parser:shouldContinueAfterParsingToken:`
- * method.
- */
-- (BOOL)shouldContinueAfterParsingToken:(GRMustacheToken *)token;
-
-/**
- * Wrapper around the delegate's `parser:didFailWithError:` method.
- *
- * @param line          The line at which the error occurred.
- * @param description   A human-readable error message
- * @param templateID    A template ID (see GRMustacheTemplateRepository)
- */
-- (void)failWithParseErrorAtLine:(NSInteger)line description:(NSString *)description templateID:(id)templateID;
-
 @end
 
 @implementation GRMustacheParser
@@ -63,7 +48,7 @@
 @synthesize tagEndDelimiter=_tagEndDelimiter;
 @synthesize pragmas=_pragmas;
 
-- (id)initWithConfiguration:(GRMustacheConfiguration *)configuration
+- (instancetype)initWithConfiguration:(GRMustacheConfiguration *)configuration
 {
     self = [super init];
     if (self) {
@@ -278,7 +263,7 @@
                             tagInnerRange = (NSRange){ .location = start+tagStartDelimiterLength+1, .length = i-(start+tagStartDelimiterLength+1) };
                             break;
                         case '$':
-                            type = GRMustacheTokenTypeOverridableSectionOpening;
+                            type = GRMustacheTokenTypeInheritableSectionOpening;
                             tagInnerRange = (NSRange){ .location = start+tagStartDelimiterLength+1, .length = i-(start+tagStartDelimiterLength+1) };
                             break;
                         case '/':
@@ -290,7 +275,7 @@
                             tagInnerRange = (NSRange){ .location = start+tagStartDelimiterLength+1, .length = i-(start+tagStartDelimiterLength+1) };
                             break;
                         case '<':
-                            type = GRMustacheTokenTypeOverridablePartial;
+                            type = GRMustacheTokenTypeInheritablePartial;
                             tagInnerRange = (NSRange){ .location = start+tagStartDelimiterLength+1, .length = i-(start+tagStartDelimiterLength+1) };
                             break;
                         case '{':
@@ -431,6 +416,37 @@
     }
 }
 
+- (NSString *)parseInheritableSectionName:(NSString *)string empty:(BOOL *)empty error:(NSError **)error
+{
+    NSCharacterSet *whiteSpace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSString *inheritableSectionName = [string stringByTrimmingCharactersInSet:whiteSpace];
+    if (inheritableSectionName.length == 0) {
+        if (empty != NULL) {
+            *empty = YES;
+        }
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:GRMustacheErrorDomain
+                                         code:GRMustacheErrorCodeParseError
+                                     userInfo:[NSDictionary dictionaryWithObject:@"Missing inheritable section name"
+                                                                          forKey:NSLocalizedDescriptionKey]];
+        }
+        return nil;
+    }
+    if ([inheritableSectionName rangeOfCharacterFromSet:whiteSpace].location != NSNotFound) {
+        if (empty != NULL) {
+            *empty = NO;
+        }
+        if (error != NULL) {
+            *error = [NSError errorWithDomain:GRMustacheErrorDomain
+                                         code:GRMustacheErrorCodeParseError
+                                     userInfo:[NSDictionary dictionaryWithObject:@"Invalid inheritable section name"
+                                                                          forKey:NSLocalizedDescriptionKey]];
+        }
+        return nil;
+    }
+    return inheritableSectionName;
+}
+
 - (NSString *)parseTemplateName:(NSString *)string empty:(BOOL *)empty error:(NSError **)error
 {
     NSCharacterSet *whiteSpace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
@@ -474,6 +490,10 @@
 
 #pragma mark - Private
 
+/**
+ * Wrapper around the delegate's `parser:shouldContinueAfterParsingToken:`
+ * method.
+ */
 - (BOOL)shouldContinueAfterParsingToken:(GRMustacheToken *)token
 {
     if ([_delegate respondsToSelector:@selector(parser:shouldContinueAfterParsingToken:)]) {
@@ -482,6 +502,13 @@
     return YES;
 }
 
+/**
+ * Wrapper around the delegate's `parser:didFailWithError:` method.
+ *
+ * @param line          The line at which the error occurred.
+ * @param description   A human-readable error message
+ * @param templateID    A template ID (see GRMustacheTemplateRepository)
+ */
 - (void)failWithParseErrorAtLine:(NSInteger)line description:(NSString *)description templateID:(id)templateID
 {
     if ([_delegate respondsToSelector:@selector(parser:didFailWithError:)]) {

@@ -160,7 +160,7 @@
                             state = stateFilterDone;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:NO];
+                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:NO];
                         } else {
                             state = stateError;
                         }
@@ -174,7 +174,7 @@
                             state = stateInitial;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:YES]];
+                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:YES]];
                             currentExpression = nil;
                         } else {
                             state = stateError;
@@ -212,7 +212,7 @@
                         // leave stateIdentifier
                         NSString *identifier = [string substringWithRange:(NSRange){ .location = identifierStart, .length = i - identifierStart }];
                         if (currentExpression) {
-                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
                         } else {
                             currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
                         }
@@ -224,7 +224,7 @@
                         // leave stateIdentifier
                         NSString *identifier = [string substringWithRange:(NSRange){ .location = identifierStart, .length = i - identifierStart }];
                         if (currentExpression) {
-                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
                         } else {
                             currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
                         }
@@ -236,7 +236,7 @@
                         // leave stateIdentifier
                         NSString *identifier = [string substringWithRange:(NSRange){ .location = identifierStart, .length = i - identifierStart }];
                         if (currentExpression) {
-                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
                         } else {
                             currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
                         }
@@ -251,7 +251,7 @@
                         // leave stateIdentifier
                         NSString *identifier = [string substringWithRange:(NSRange){ .location = identifierStart, .length = i - identifierStart }];
                         if (currentExpression) {
-                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
                         } else {
                             currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
                         }
@@ -262,7 +262,7 @@
                             state = stateFilterDone;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:NO];
+                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:NO];
                         } else {
                             state = stateError;
                         }
@@ -272,7 +272,7 @@
                         // leave stateIdentifier
                         NSString *identifier = [string substringWithRange:(NSRange){ .location = identifierStart, .length = i - identifierStart }];
                         if (currentExpression) {
-                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                            currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
                         } else {
                             currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
                         }
@@ -283,7 +283,7 @@
                             state = stateInitial;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:YES]];
+                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:YES]];
                             currentExpression = nil;
                         } else {
                             state = stateError;
@@ -369,7 +369,7 @@
                             state = stateFilterDone;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:NO];
+                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:NO];
                         } else {
                             state = stateError;
                         }
@@ -382,7 +382,7 @@
                             state = stateInitial;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:YES]];
+                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:YES]];
                             currentExpression = nil;
                         } else {
                             state = stateError;
@@ -421,7 +421,7 @@
                             state = stateFilterDone;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:NO];
+                            currentExpression = [GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:NO];
                         } else {
                             state = stateError;
                         }
@@ -434,7 +434,7 @@
                             state = stateInitial;
                             GRMustacheExpression *filterExpression = [filterExpressionStack lastObject];
                             [filterExpressionStack removeLastObject];
-                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curry:YES]];
+                            [filterExpressionStack addObject:[GRMustacheFilteredExpression expressionWithFilterExpression:filterExpression argumentExpression:currentExpression curried:YES]];
                             currentExpression = nil;
                         } else {
                             state = stateError;
@@ -478,7 +478,7 @@
             // leave stateIdentifier
             NSString *identifier = [string substringFromIndex:identifierStart];
             if (currentExpression) {
-                currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression scopeIdentifier:identifier];
+                currentExpression = [GRMustacheScopedExpression expressionWithBaseExpression:currentExpression identifier:identifier];
             } else {
                 currentExpression = [GRMustacheIdentifierExpression expressionWithIdentifier:identifier];
             }

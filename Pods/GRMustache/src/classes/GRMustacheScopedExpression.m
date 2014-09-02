@@ -21,41 +21,27 @@
 // THE SOFTWARE.
 
 #import "GRMustacheScopedExpression_private.h"
-#import "GRMustacheContext_private.h"
-#import "GRMustacheKeyAccess_private.h"
+#import "GRMustacheExpressionVisitor_private.h"
 
-@interface GRMustacheScopedExpression()
-@property (nonatomic, retain) GRMustacheExpression *baseExpression;
-@property (nonatomic, copy) NSString *scopeIdentifier;
-
-- (id)initWithBaseExpression:(GRMustacheExpression *)baseExpression scopeIdentifier:(NSString *)scopeIdentifier;
-@end
 
 @implementation GRMustacheScopedExpression
 @synthesize baseExpression=_baseExpression;
-@synthesize scopeIdentifier=_scopeIdentifier;
+@synthesize identifier=_identifier;
 
-+ (instancetype)expressionWithBaseExpression:(GRMustacheExpression *)baseExpression scopeIdentifier:(NSString *)scopeIdentifier
++ (instancetype)expressionWithBaseExpression:(GRMustacheExpression *)baseExpression identifier:(NSString *)identifier
 {
-    return [[[self alloc] initWithBaseExpression:baseExpression scopeIdentifier:scopeIdentifier] autorelease];
-}
-
-- (id)initWithBaseExpression:(GRMustacheExpression *)baseExpression scopeIdentifier:(NSString *)scopeIdentifier
-{
-    self = [super init];
-    if (self) {
-        self.baseExpression = baseExpression;
-        self.scopeIdentifier = scopeIdentifier;
-    }
-    return self;
+    return [[[self alloc] initWithBaseExpression:baseExpression identifier:identifier] autorelease];
 }
 
 - (void)dealloc
 {
     [_baseExpression release];
-    [_scopeIdentifier release];
+    [_identifier release];
     [super dealloc];
 }
+
+
+#pragma mark - GRMustacheExpression
 
 - (void)setToken:(GRMustacheToken *)token
 {
@@ -71,26 +57,30 @@
     if (![_baseExpression isEqual:((GRMustacheScopedExpression *)expression).baseExpression]) {
         return NO;
     }
-    return [_scopeIdentifier isEqual:((GRMustacheScopedExpression *)expression).scopeIdentifier];
+    return [_identifier isEqual:((GRMustacheScopedExpression *)expression).identifier];
+}
+
+- (NSUInteger)hash
+{
+    return [_baseExpression hash] ^ [_identifier hash];
+}
+
+- (BOOL)acceptVisitor:(id<GRMustacheExpressionVisitor>)visitor error:(NSError **)error
+{
+    return [visitor visitScopedExpression:self error:error];
 }
 
 
-#pragma mark - GRMustacheExpression
+#pragma mark - Private
 
-- (BOOL)hasValue:(id *)value withContext:(GRMustacheContext *)context protected:(BOOL *)protected error:(NSError **)error
+- (instancetype)initWithBaseExpression:(GRMustacheExpression *)baseExpression identifier:(NSString *)identifier
 {
-    id scopedValue;
-    if (![_baseExpression hasValue:&scopedValue withContext:context protected:NULL error:error]) {
-        return NO;
+    self = [super init];
+    if (self) {
+        _baseExpression = [baseExpression retain];
+        _identifier = [identifier retain];
     }
-    
-    if (protected != NULL) {
-        *protected = NO;
-    }
-    if (value) {
-        *value = [GRMustacheKeyAccess valueForMustacheKey:_scopeIdentifier inObject:scopedValue];
-    }
-    return YES;
+    return self;
 }
 
 @end

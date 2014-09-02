@@ -23,21 +23,23 @@
 #import "GRMustacheTemplate_private.h"
 #import "GRMustacheContext_private.h"
 #import "GRMustacheTemplateRepository_private.h"
-#import "GRMustacheRendering.h"
-#import "GRMustacheTemplateComponent_private.h"
+#import "GRMustachePartialNode_private.h"
 #import "GRMustacheAST_private.h"
-
-@interface GRMustacheTemplate()<GRMustacheRendering>
-@end
+#import "GRMustacheRenderingEngine_private.h"
 
 @implementation GRMustacheTemplate
-@synthesize AST=_AST;
+@synthesize templateRepository=_templateRepository;
+@synthesize partialNode=_partialNode;
 @synthesize baseContext=_baseContext;
 
 + (instancetype)templateFromString:(NSString *)templateString error:(NSError **)error
 {
-    GRMustacheTemplateRepository *templateRepository = [GRMustacheTemplateRepository templateRepositoryWithBundle:[NSBundle mainBundle]];
-    return [templateRepository templateFromString:templateString error:error];
+    GRMustacheTemplateRepository *templateRepository = [GRMustacheRendering currentTemplateRepository];
+    if (templateRepository == nil) {
+        templateRepository = [GRMustacheTemplateRepository templateRepositoryWithBundle:[NSBundle mainBundle]];
+    }
+    GRMustacheContentType contentType = [GRMustacheRendering currentContentType];
+    return [templateRepository templateFromString:templateString contentType:contentType error:error];
 }
 
 + (instancetype)templateFromResource:(NSString *)name bundle:(NSBundle *)bundle error:(NSError **)error
@@ -78,8 +80,9 @@
 
 - (void)dealloc
 {
-    [_AST release];
+    [_partialNode release];
     [_baseContext release];
+    [_templateRepository release];
     [super dealloc];
 }
 
@@ -115,30 +118,16 @@
 
 - (NSString *)renderContentWithContext:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
 {
-    NSMutableString *buffer = [NSMutableString string];
-
-    if (!context) {
-        // With a nil context, the method would return nil without setting the
-        // error argument.
-        [NSException raise:NSInvalidArgumentException format:@"Invalid context:nil"];
-        return nil;
-    }
+    NSString *rendering = nil;
     
-    GRMustacheContentType templateContentType = _AST.contentType;
-    for (id<GRMustacheTemplateComponent> component in _AST.templateComponents) {
-        // component may be overriden by a GRMustachePartialOverride: resolve it.
-        component = [context resolveTemplateComponent:component];
-        
-        // render
-        if (![component renderContentType:templateContentType inBuffer:buffer withContext:context error:error]) {
-            return nil;
-        }
+    [GRMustacheRendering pushCurrentTemplateRepository:self.templateRepository];
+    GRMustacheRenderingEngine *renderingEngine = [GRMustacheRenderingEngine renderingEngineWithContentType:_partialNode.AST.contentType context:context];
+    if ([_partialNode acceptVisitor:renderingEngine error:error]) {
+        rendering = [renderingEngine renderHTMLSafe:HTMLSafe error:error];
     }
+    [GRMustacheRendering popCurrentTemplateRepository];
     
-    if (HTMLSafe) {
-        *HTMLSafe = (_AST.contentType == GRMustacheContentTypeHTML);
-    }
-    return buffer;
+    return rendering;
 }
 
 - (void)setBaseContext:(GRMustacheContext *)baseContext

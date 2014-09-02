@@ -58,14 +58,9 @@
             if (HTMLSafe != NULL) { *HTMLSafe = NO; }
             return [self description];
             
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ formatter }}...{{/ formatter }}
-            // Behave as a truthy object: don't render for inverted sections
-            return nil;
-            
-        default:
+        case GRMustacheTagTypeSection:
             // {{# formatter }}...{{/ formatter }}
-            // {{$ formatter }}...{{/ formatter }}
+            // {{^ formatter }}...{{/ formatter }}
             
             // Render normally, but listen to all inner tags rendering, so that
             // we can format them. See mustacheTag:willRenderObject: below.
@@ -81,29 +76,33 @@
  */
 - (id)mustacheTag:(GRMustacheTag *)tag willRenderObject:(id)object
 {
-    // Process {{ value }}, if and only if the value is processable
-    if (tag.type == GRMustacheTagTypeVariable) {
-        
-        NSString *formatted = [self stringForObjectValue:object];
-        
-        if (formatted == nil) {
-            // NSFormatter documentation for stringForObjectValue: states:
-            //
-            // > First test the passed-in object to see if it’s of the correct
-            // > class. If it isn’t, return nil; but if it is of the right class,
-            // > return a properly formatted and, if necessary, localized string.
-            //
-            // So nil result means that object is not of the correct class. Leave
-            // it untouched.
+    switch (tag.type) {
+        case GRMustacheTagTypeVariable: {
+            // {{ value }}
             
-            return object;
+            NSString *formatted = [self stringForObjectValue:object];
+            
+            if (formatted == nil) {
+                // NSFormatter documentation for stringForObjectValue: states:
+                //
+                // > First test the passed-in object to see if it’s of the correct
+                // > class. If it isn’t, return nil; but if it is of the right class,
+                // > return a properly formatted and, if necessary, localized string.
+                //
+                // So nil result means that object is not of the correct class. Leave
+                // it untouched.
+                
+                return object;
+            }
+            
+            return formatted;
         }
-        
-        return formatted;
+            
+        case GRMustacheTagTypeSection:
+            // {{# value }}
+            // {{^ value }}
+            return object;
     }
-    
-    // Don't process {{# value }}, {{^ value }}, {{$ value }}
-    return object;
 }
 
 @end

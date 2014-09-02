@@ -21,13 +21,7 @@
 // THE SOFTWARE.
 
 #import "GRMustacheIdentifierExpression_private.h"
-#import "GRMustacheContext_private.h"
-
-@interface GRMustacheIdentifierExpression()
-@property (nonatomic, copy) NSString *identifier;
-
-- (id)initWithIdentifier:(NSString *)identifier;
-@end
+#import "GRMustacheExpressionVisitor_private.h"
 
 @implementation GRMustacheIdentifierExpression
 @synthesize identifier=_identifier;
@@ -37,20 +31,14 @@
     return [[[self alloc] initWithIdentifier:identifier] autorelease];
 }
 
-- (id)initWithIdentifier:(NSString *)identifier
-{
-    self = [super init];
-    if (self) {
-        self.identifier = identifier;
-    }
-    return self;
-}
-
 - (void)dealloc
 {
     [_identifier release];
     [super dealloc];
 }
+
+
+#pragma mark - GRMustacheExpression
 
 - (BOOL)isEqual:(id)expression
 {
@@ -60,15 +48,26 @@
     return [_identifier isEqual:((GRMustacheIdentifierExpression *)expression).identifier];
 }
 
-
-#pragma mark - GRMustacheExpression
-
-- (BOOL)hasValue:(id *)value withContext:(GRMustacheContext *)context protected:(BOOL *)protected error:(NSError **)error
+- (NSUInteger)hash
 {
-    if (value != NULL) {
-        *value = [context valueForMustacheKey:_identifier protected:protected];
+    return [_identifier hash];
+}
+
+- (BOOL)acceptVisitor:(id<GRMustacheExpressionVisitor>)visitor error:(NSError **)error
+{
+    return [visitor visitIdentifierExpression:self error:error];
+}
+
+
+#pragma mark - Private
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+{
+    self = [super init];
+    if (self) {
+        _identifier = [identifier retain];
     }
-    return YES;
+    return self;
 }
 
 @end

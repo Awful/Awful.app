@@ -23,18 +23,19 @@
 #import "GRMustacheExpression_private.h"
 
 /**
- * The GRMustacheFilteredExpression is able to apply a filter to a value, and
- * to return the result.
- *
- * @see GRMustacheExpression
- * @see GRMustacheFilter
+ * The GRMustacheFilteredExpression represents expressions such as
+ * `<expression>(<expression>)`.
  */
 @interface GRMustacheFilteredExpression : GRMustacheExpression {
 @private
     GRMustacheExpression *_filterExpression;
     GRMustacheExpression *_argumentExpression;
-    BOOL _curry;
+    BOOL _curried;
 }
+
+@property (nonatomic, retain, readonly) GRMustacheExpression *filterExpression GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, retain, readonly) GRMustacheExpression *argumentExpression GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, getter=isCurried, readonly) BOOL curried GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a filtered expression, given an expression that returns a filter, and
@@ -49,9 +50,9 @@
  *                            to the <GRMustacheFilter> protocol.
  * @param argumentExpression  An expression whose value is the argument of the
  *                            filter.
- * @param curry               If YES, this expression must evaluate to a filter.
+ * @param curried             If YES, this expression must evaluate to a filter.
  *
  * @return A GRMustacheFilteredExpression.
  */
-+ (instancetype)expressionWithFilterExpression:(GRMustacheExpression *)filterExpression argumentExpression:(GRMustacheExpression *)argumentExpression curry:(BOOL)curry GRMUSTACHE_API_INTERNAL;
++ (instancetype)expressionWithFilterExpression:(GRMustacheExpression *)filterExpression argumentExpression:(GRMustacheExpression *)argumentExpression curried:(BOOL)curried GRMUSTACHE_API_INTERNAL;
 @end

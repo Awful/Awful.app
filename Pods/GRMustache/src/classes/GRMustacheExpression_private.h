@@ -23,20 +23,12 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 
-@class GRMustacheContext;
 @class GRMustacheToken;
+@protocol GRMustacheExpressionVisitor;
 
 /**
- * The GRMustacheExpression is the base class for objects that can provide
- * values out of a Mustache rendering context.
- *
- * GRMustacheExpression instances are built by GRMustacheParser. For example,
- * the `{{ name }}` tag would yield a GRMustacheIdentifierExpression.
- *
- * @see GRMustacheFilteredExpression
- * @see GRMustacheIdentifierExpression
- * @see GRMustacheImplicitIteratorExpression
- * @see GRMustacheScopedExpression
+ * The GRMustacheExpression is the base class for objects that represent
+ * Mustache expression such as `name`, `uppercase(name)`, or `user.name`.
  */
 @interface GRMustacheExpression : NSObject {
 @private
@@ -49,22 +41,6 @@
  * (`{{ foo }}` at line 23 of /path/to/template).
  */
 @property (nonatomic, retain) GRMustacheToken *token GRMUSTACHE_API_INTERNAL;
-
-/**
- * Evaluates an expression against a rendering context.
- *
- * @param value      Upon return contains the value of the expression
- * @param context    A Mustache rendering context
- * @param protected  Upon return contains YES if the computed value comes from
- *                   the protected stack of the context, NO otherwise.
- * @param error      If there is an error computing the value, upon return
- *                   contains an NSError object that describes the problem.
- *
- * @return YES if the value could be computed
- *
- * @see GRMustacheContext
- */
-- (BOOL)hasValue:(id *)value withContext:(GRMustacheContext *)context protected:(BOOL *)protected error:(NSError **)error GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a Boolean value that indicates whether the receiver and a given
@@ -81,4 +57,10 @@
  * @return YES if the receiver and anObject are equal, otherwise NO.
  */
 - (BOOL)isEqual:(id)anObject; // no availability macro for Foundation method declaration
+
+/**
+ * Has the visitor visit the expression.
+ */
+- (BOOL)acceptVisitor:(id<GRMustacheExpressionVisitor>)visitor error:(NSError **)error GRMUSTACHE_API_INTERNAL;
+
 @end

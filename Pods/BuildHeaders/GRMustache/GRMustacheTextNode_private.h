@@ -1,0 +1,1 @@
+../../GRMustache/src/classes/GRMustacheTextNode_private.h

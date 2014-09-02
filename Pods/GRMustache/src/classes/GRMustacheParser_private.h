@@ -107,7 +107,7 @@
  *                       parsing phase.
  * @return a compiler
  */
-- (id)initWithConfiguration:(GRMustacheConfiguration *)configuration GRMUSTACHE_API_INTERNAL;
+- (instancetype)initWithConfiguration:(GRMustacheConfiguration *)configuration GRMUSTACHE_API_INTERNAL;
 
 /**
  * The parser will invoke its delegate as it builds tokens from the template
@@ -130,6 +130,19 @@
  * @return a template name, or nil if the string is not a partial name.
  */
 - (NSString *)parseTemplateName:(NSString *)string empty:(BOOL *)empty error:(NSError **)error GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Returns an inheritable section name from a string.
+ *
+ * @param string  A string.
+ * @param empty   If there is an error parsing an identifier, upon return
+ *                contains YES if the string contains no information.
+ * @param error   If there is an error parsing an identifier, upon return
+ *                contains an NSError object that describes the problem.
+ *
+ * @return a template name, or nil if the string is not a partial name.
+ */
+- (NSString *)parseInheritableSectionName:(NSString *)string empty:(BOOL *)empty error:(NSError **)error GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a pragma from a string

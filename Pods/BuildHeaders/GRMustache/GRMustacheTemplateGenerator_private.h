@@ -1,0 +1,1 @@
+../../GRMustache/src/classes/GRMustacheTemplateGenerator_private.h

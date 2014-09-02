@@ -20,134 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <objc/runtime.h>
 #import "GRMustache_private.h"
 #import "GRMustacheKeyAccess_private.h"
 #import "GRMustacheVersion.h"
-#import "GRMustacheContext_private.h"
-#import "GRMustacheTag_private.h"
-#import "GRMustacheError.h"
-
+#import "GRMustacheRendering_private.h"
 #import "GRMustacheStandardLibrary_private.h"
 #import "GRMustacheJavascriptLibrary_private.h"
 #import "GRMustacheHTMLLibrary_private.h"
 #import "GRMustacheURLLibrary_private.h"
+#import "GRMustacheEachFilter_private.h"
 #import "GRMustacheLocalizer.h"
 
-
-// =============================================================================
-#pragma mark - Rendering declarations
-
-
-// GRMustacheNilRenderer renders for nil
-
-@interface GRMustacheNilRenderer : NSObject<GRMustacheRendering>
-@end
-static GRMustacheNilRenderer *nilRenderingObject;
-
-
-// GRMustacheBlockRenderer renders with a block
-
-@interface GRMustacheBlockRenderer:NSObject<GRMustacheRendering> {
-@private
-    NSString *(^_block)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-}
-- (id)initWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block;
-@end
-
-
-// NSNull, NSNumber, NSString, NSObject, NSFastEnumeration rendering
-
-typedef NSString *(*GRMustacheRenderIMP)(id self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderGeneric(id self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderNSNull(NSNull *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderNSNumber(NSNumber *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderNSString(NSString *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderNSObject(NSObject *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
-static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error);
+// For zip filter
+#import "GRMustacheContext_private.h"
+#import "GRMustacheTag_private.h"
+#import "GRMustacheError.h"
 
 
 // =============================================================================
 #pragma mark - GRMustache
 
-@interface GRMustache()
-
-+ (void)setupRendering;
-
-/**
- * Have the class _aClass_ conform to the GRMustacheRendering protocol by adding
- * the GRMustacheRendering protocol to the list of protocols _aClass_ conforms
- * to, and setting the implementation of
- * renderForMustacheTag:context:HTMLSafe:error: to _imp_.
- *
- * @param imp     an implementation
- * @param aClass  the class to modify
- */
-+ (void)registerRenderingImplementation:(GRMustacheRenderIMP)imp forClass:(Class)aClass;
-
-@end
-
-
 @implementation GRMustache
 
-+ (void)load
-{
-    [self setupRendering];
-}
-
-
-#pragma mark - Rendering
-
-+ (void)setupRendering
-{
-    // Once and for all
-    nilRenderingObject = [[GRMustacheNilRenderer alloc] init];
-    
-    // We could have declared categories on NSNull, NSNumber, NSString and
-    // NSDictionary.
-    //
-    // We do not, because many GRMustache users use the static library, and
-    // we don't want to force them adding the `-ObjC` option to their
-    // target's "Other Linker Flags" (which is required for code declared by
-    // categories to be loaded).
-    //
-    // Instead, dynamically alter the classes whose rendering implementation
-    // is already known.
-    //
-    // Other classes will be dynamically attached their rendering implementation
-    // in the GRMustacheRenderGeneric implementation attached to NSObject.
-    [self registerRenderingImplementation:GRMustacheRenderNSNull   forClass:[NSNull class]];
-    [self registerRenderingImplementation:GRMustacheRenderNSNumber forClass:[NSNumber class]];
-    [self registerRenderingImplementation:GRMustacheRenderNSString forClass:[NSString class]];
-    [self registerRenderingImplementation:GRMustacheRenderNSObject forClass:[NSDictionary class]];
-    [self registerRenderingImplementation:GRMustacheRenderGeneric  forClass:[NSObject class]];
-}
-
-+ (id<GRMustacheRendering>)renderingObjectForObject:(id)object
-{
-    // All objects but nil know how to render (see setupRendering).
-    return object ?: nilRenderingObject;
-}
-
-+ (id<GRMustacheRendering>)renderingObjectWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block
-{
-    return [[[GRMustacheBlockRenderer alloc] initWithBlock:block] autorelease];
-}
-
-+ (void)registerRenderingImplementation:(GRMustacheRenderIMP)imp forClass:(Class)klass
-{
-    SEL selector = @selector(renderForMustacheTag:context:HTMLSafe:error:);
-    Protocol *protocol = @protocol(GRMustacheRendering);
-
-    // Add method implementation
-    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, YES, YES);
-    class_addMethod(klass, selector, (IMP)imp, methodDescription.types);
-    
-    // Add protocol conformance
-    class_addProtocol(klass, protocol);
-}
-
-
+// =============================================================================
 #pragma mark - Global services
 
 + (void)preventNSUndefinedKeyExceptionAttack
@@ -155,7 +50,7 @@ static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, S
     [GRMustacheKeyAccess preventNSUndefinedKeyExceptionAttack];
 }
 
-+ (GRMustacheVersion)version
++ (GRMustacheVersion)libraryVersion
 {
     return (GRMustacheVersion){
         .major = GRMUSTACHE_MAJOR_VERSION,
@@ -168,6 +63,88 @@ static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, S
     static NSObject *standardLibrary = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        id zipFilter = [GRMustacheFilter variadicFilterWithBlock:^id(NSArray *arguments) {
+            
+            // GRMustache generally identifies collections as objects conforming
+            // to NSFastEnumeration, excluding NSDictionary.
+            //
+            // Let's validate our arguments first.
+            
+            for (id argument in arguments) {
+                if (![argument respondsToSelector:@selector(countByEnumeratingWithState:objects:count:)] || [argument isKindOfClass:[NSDictionary class]]) {
+                    return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error) {
+                        if (error) {
+                            *error = [NSError errorWithDomain:GRMustacheErrorDomain code:GRMustacheErrorCodeRenderingError userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"zip filter in tag %@ requires all its arguments to be enumerable. %@ is not.", tag, argument] }];
+                        }
+                        return nil;
+                    }];
+                }
+            }
+            
+            
+            // Turn NSFastEnumeration arguments into enumerators. This is
+            // because enumerators can be iterated all together, when
+            // NSFastEnumeration objects can not.
+            
+            NSMutableArray *enumerators = [NSMutableArray array];
+            for (id argument in arguments) {
+                if ([argument respondsToSelector:@selector(objectEnumerator)]) {
+                    // Assume objectEnumerator method returns what we need.
+                    [enumerators addObject:[argument objectEnumerator]];
+                } else {
+                    // Turn NSFastEnumeration argument into an array,
+                    // and extract enumerator from the array.
+                    NSMutableArray *array = [NSMutableArray array];
+                    for (id object in argument) {
+                        [array addObject:object];
+                    }
+                    [enumerators addObject:[array objectEnumerator]];
+                }
+            }
+            
+            
+            // Build an array of objects which will perform custom rendering.
+            
+            NSMutableArray *renderingObjects = [NSMutableArray array];
+            while (YES) {
+                
+                // Extract from all iterators the objects that should enter the
+                // rendering context at each iteration.
+                //
+                // Given the [1,2,3], [a,b,c] input collections, those objects
+                // would be [1,a] then [2,b] and finally [3,c].
+                
+                NSMutableArray *objects = [NSMutableArray array];
+                for (NSEnumerator *enumerator in enumerators) {
+                    id object = [enumerator nextObject];
+                    if (object) {
+                        [objects addObject:object];
+                    }
+                }
+                
+                
+                // All iterators have been enumerated: stop
+                
+                if (objects.count == 0) {
+                    break;
+                }
+                
+                
+                // Build a rendering object which extends the rendering context
+                // before rendering the tag.
+                
+                id<GRMustacheRendering> renderingObject = [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error) {
+                    for (id object in objects) {
+                        context = [context contextByAddingObject:object];
+                    }
+                    return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
+                }];
+                [renderingObjects addObject:renderingObject];
+            }
+            
+            return renderingObjects;
+        }];
+        
         standardLibrary = [[NSDictionary dictionaryWithObjectsAndKeys:
                             // {{ capitalized(value) }}
                             [[[GRMustacheCapitalizedFilter alloc] init] autorelease], @"capitalized",
@@ -185,8 +162,14 @@ static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, S
                             [[[GRMustacheEmptyFilter alloc] init] autorelease], @"isEmpty",
                             
                             // {{ localize(value) }}
-                            // {{^ localize }}...{{/}}
+                            // {{# localize }}...{{/}}
                             [[[GRMustacheLocalizer alloc] initWithBundle:nil tableName:nil] autorelease], @"localize",
+                            
+                            // {{# zip(collection1, collection2, ...) }}...{{/}}
+                            zipFilter, @"zip",
+                            
+                            // {{# each(collection) }}...{{/}}
+                            [[[GRMustacheEachFilter alloc] init] autorelease], @"each",
                             
                             [NSDictionary dictionaryWithObjectsAndKeys:
                              
@@ -214,314 +197,14 @@ static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, S
     return standardLibrary;
 }
 
-@end
-
-
-// =============================================================================
-#pragma mark - Rendering Implementations
-
-@implementation GRMustacheNilRenderer
-
-- (NSString *)renderForMustacheTag:(GRMustacheTag *)tag context:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
++ (id<GRMustacheRendering>)renderingObjectForObject:(id)object
 {
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-        case GRMustacheTagTypeSection:
-            // {{ nil }}
-            // {{# nil }}...{{/}}
-            return @"";
-            
-        case GRMustacheTagTypeOverridableSection:
-        case GRMustacheTagTypeInvertedSection:
-            // {{$ nil }}...{{/}}
-            // {{^ nil }}...{{/}}
-            return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-    }
+    return [GRMustacheRendering renderingObjectForObject:object];
+}
+
++ (id<GRMustacheRendering>)renderingObjectWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block
+{
+    return [GRMustacheRendering renderingObjectWithBlock:block];
 }
 
 @end
-
-
-@implementation GRMustacheBlockRenderer
-
-- (void)dealloc
-{
-    [_block release];
-    [super dealloc];
-}
-
-- (id)initWithBlock:(NSString *(^)(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error))block
-{
-    if (block == nil) {
-        [NSException raise:NSInvalidArgumentException format:@"Can't build a rendering object with a nil block."];
-    }
-    
-    self = [super init];
-    if (self) {
-        _block = [block copy];
-    }
-    return self;
-}
-
-- (NSString *)renderForMustacheTag:(GRMustacheTag *)tag context:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
-{
-    return _block(tag, context, HTMLSafe, error);
-}
-
-@end
-
-
-static NSString *GRMustacheRenderGeneric(id self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    // Self doesn't know (yet) how to render
-    
-    Class klass = object_getClass(self);
-    if ([self respondsToSelector:@selector(countByEnumeratingWithState:objects:count:)])
-    {
-        // Future invocations will use GRMustacheRenderNSFastEnumeration
-        [GRMustache registerRenderingImplementation:GRMustacheRenderNSFastEnumeration forClass:klass];
-        return GRMustacheRenderNSFastEnumeration(self, _cmd, tag, context, HTMLSafe, error);
-    }
-    
-    if (klass != [NSObject class])
-    {
-        // Future invocations will use GRMustacheRenderNSObject
-        [GRMustache registerRenderingImplementation:GRMustacheRenderNSObject forClass:klass];
-    }
-    
-    return GRMustacheRenderNSObject(self, _cmd, tag, context, HTMLSafe, error);
-}
-
-
-static NSString *GRMustacheRenderNSNull(NSNull *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-        case GRMustacheTagTypeSection:
-        case GRMustacheTagTypeOverridableSection:
-            // {{ null }}
-            // {{# null }}...{{/}}
-            // {{$ null }}...{{/}}
-            return @"";
-            
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ null }}...{{/}}
-            return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-    }
-}
-
-
-static NSString *GRMustacheRenderNSNumber(NSNumber *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-            // {{ number }}
-            if (HTMLSafe != NULL) {
-                *HTMLSafe = NO;
-            }
-            return [self description];
-            
-        case GRMustacheTagTypeSection:
-        case GRMustacheTagTypeOverridableSection:
-            // {{# number }}...{{/}}
-            // {{$ number }}...{{/}}
-            if ([self boolValue]) {
-                // janl/mustache.js and defunkt/mustache don't push bools in the
-                // context stack. Follow their path, and avoid the creation of a
-                // useless context nobody cares about.
-                return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-            } else {
-                return @"";
-            }
-            
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ number }}...{{/}}
-            if ([self boolValue]) {
-                return @"";
-            } else {
-                return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-            }
-    }
-}
-
-
-static NSString *GRMustacheRenderNSString(NSString *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-            // {{ string }}
-            if (HTMLSafe != NULL) {
-                *HTMLSafe = NO;
-            }
-            return self;
-            
-        case GRMustacheTagTypeSection:
-        case GRMustacheTagTypeOverridableSection:
-            // {{# string }}...{{/}}
-            // {{$ string }}...{{/}}
-            if (self.length > 0) {
-                context = [[context class] newContextWithParent:context addedObject:self];
-                NSString *rendering = [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-                [context release];
-                return rendering;
-            } else {
-                return @"";
-            }
-            
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ string }}...{{/}}
-            if (self.length > 0) {
-                return @"";
-            } else {
-                return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-            }
-    }
-}
-
-
-static NSString *GRMustacheRenderNSObject(NSObject *self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable:
-            // {{ object }}
-            if (HTMLSafe != NULL) {
-                *HTMLSafe = NO;
-            }
-            return [self description];
-            
-        case GRMustacheTagTypeSection:
-        case GRMustacheTagTypeOverridableSection: {
-            // {{# object }}...{{/}}
-            // {{$ object }}...{{/}}
-            context = [[context class] newContextWithParent:context addedObject:self];
-            NSString *rendering = [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-            [context release];
-            return rendering;
-        }
-            
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ object }}...{{/}}
-            return @"";
-    }
-}
-
-
-static NSString *GRMustacheRenderNSFastEnumeration(id<NSFastEnumeration> self, SEL _cmd, GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error)
-{
-    switch (tag.type) {
-        case GRMustacheTagTypeVariable: {
-            // {{ list }}
-            // Render the concatenation of the rendering of each item
-            
-            NSMutableString *buffer = [NSMutableString string];
-            BOOL oneItemHasRenderedHTMLSafe = NO;
-            BOOL oneItemHasRenderedHTMLUnescaped = NO;
-            
-            for (id item in self) {
-                @autoreleasepool {
-                    // Render item
-                    
-                    id<GRMustacheRendering> itemRenderingObject = [GRMustache renderingObjectForObject:item];
-                    BOOL itemHasRenderedHTMLSafe = NO;
-                    NSError *renderingError = nil;
-                    NSString *rendering = [itemRenderingObject renderForMustacheTag:tag context:context HTMLSafe:&itemHasRenderedHTMLSafe error:&renderingError];
-                    
-                    if (rendering == nil && renderingError == nil)
-                    {
-                        // Rendering is nil, but rendering error is not set.
-                        //
-                        // Assume a rendering object coded by a lazy programmer, whose
-                        // intention is to render nothing.
-                        
-                        rendering = @"";
-                    }
-                    
-                    if (rendering)
-                    {
-                        // Success
-                        
-                        if (rendering.length > 0)
-                        {
-                            // check consistency of HTML escaping before appending the rendering to the buffer
-                            
-                            if (itemHasRenderedHTMLSafe) {
-                                oneItemHasRenderedHTMLSafe = YES;
-                                if (oneItemHasRenderedHTMLUnescaped) {
-                                    [NSException raise:GRMustacheRenderingException format:@"Inconsistant HTML escaping of items in enumeration"];
-                                }
-                            } else {
-                                oneItemHasRenderedHTMLUnescaped = YES;
-                                if (oneItemHasRenderedHTMLSafe) {
-                                    [NSException raise:GRMustacheRenderingException format:@"Inconsistant HTML escaping of items in enumeration"];
-                                }
-                            }
-                            
-                            [buffer appendString:rendering];
-                        }
-                    }
-                    else
-                    {
-                        // Error
-                        
-                        if (error != NULL) {
-                            *error = [renderingError retain];   // retain error so that it survives the @autoreleasepool block
-                        } else {
-                            NSLog(@"GRMustache error: %@", renderingError.localizedDescription);
-                        }
-                        
-                        return nil;
-                    }
-                }
-            }
-            
-            if (HTMLSafe != NULL) {
-                *HTMLSafe = !oneItemHasRenderedHTMLUnescaped;   // YES if list is empty
-            }
-            return buffer;
-        }
-            
-        case GRMustacheTagTypeSection:
-        case GRMustacheTagTypeOverridableSection: {
-            // {{# list }}...{{/}}
-            // {{$ list }}...{{/}}
-            // Non inverted sections render for each item in the list
-            
-            NSMutableString *buffer = [NSMutableString string];
-            for (id item in self) {
-                // item enters the context as a context object
-                @autoreleasepool {
-                    GRMustacheContext *itemContext = [[context class] newContextWithParent:context addedObject:item];
-                    NSString *rendering = [tag renderContentWithContext:itemContext HTMLSafe:HTMLSafe error:error];
-                    [itemContext release];
-                    
-                    if (!rendering) {
-                        // make sure error is not released by autoreleasepool
-                        if (error != NULL) [*error retain];
-                        buffer = nil;
-                        break;
-                    }
-                    [buffer appendString:rendering];
-                }
-            }
-            if (!buffer && error != NULL) [*error autorelease];
-            return buffer;
-        }
-            
-        case GRMustacheTagTypeInvertedSection: {
-            // {{^ list }}...{{/}}
-            // Inverted section render if and only if self is empty.
-            
-            BOOL empty = YES;
-            for (id item in self) {
-                empty = NO;
-                break;
-            }
-            
-            if (empty) {
-                return [tag renderContentWithContext:context HTMLSafe:HTMLSafe error:error];
-            } else {
-                return @"";
-            }
-        }
-    }
-}

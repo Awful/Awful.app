@@ -23,7 +23,7 @@
 #import "GRMustacheHTMLLibrary_private.h"
 #import "GRMustacheTag_private.h"
 #import "GRMustacheContext_private.h"
-#import "GRMustacheHTMLEscape_private.h"
+#import "GRMustacheTranslateCharacters_private.h"
 
 // =============================================================================
 #pragma mark - GRMustacheHTMLEscapeFilter
@@ -33,7 +33,7 @@
 #pragma mark <GRMustacheFilter>
 
 /**
- * Support for {{ html.escape(value) }}
+ * Support for {{ HTML.escape(value) }}
  */
 - (id)transformedValue:(id)object
 {
@@ -46,32 +46,27 @@
     // Turns other objects into strings, and escape
     
     NSString *string = [object description];
-    return [GRMustacheHTMLEscape escapeHTML:string];
+    return GRMustacheTranslateHTMLCharacters(string);
 }
 
 
 #pragma mark - <GRMustacheRendering>
 
 /**
- * Support for {{# html.escape }}...{{ value }}...{{ value }}...{{/ html.escape }}
+ * Support for {{# HTML.escape }}...{{ value }}...{{ value }}...{{/ HTML.escape }}
  */
 - (NSString *)renderForMustacheTag:(GRMustacheTag *)tag context:(GRMustacheContext *)context HTMLSafe:(BOOL *)HTMLSafe error:(NSError **)error
 {
     switch (tag.type) {
         case GRMustacheTagTypeVariable:
-            // {{ html.escape }}
+            // {{ HTML.escape }}
             // Behave as a regular object: render self's description
             if (HTMLSafe != NULL) { *HTMLSafe = NO; }
             return [self description];
             
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ html.escape }}...{{/ html.escape }}
-            // Behave as a truthy object: don't render for inverted sections
-            return nil;
-            
-        default:
-            // {{# html.escape }}...{{/ html.escape }}
-            // {{$ html.escape }}...{{/ html.escape }}
+        case GRMustacheTagTypeSection:
+            // {{# HTML.escape }}...{{/ HTML.escape }}
+            // {{^ HTML.escape }}...{{/ HTML.escape }}
             
             // Render normally, but listen to all inner tags rendering, so that
             // we can format them. See mustacheTag:willRenderObject: below.
@@ -84,17 +79,29 @@
 #pragma mark - <GRMustacheTagDelegate>
 
 /**
- * Support for {{# html.escape }}...{{ value }}...{{ value }}...{{/ html.escape }}
+ * Support for {{# HTML.escape }}...{{ value }}...{{ value }}...{{/ HTML.escape }}
  */
 - (id)mustacheTag:(GRMustacheTag *)tag willRenderObject:(id)object
 {
-    // Process {{ value }}
-    if (tag.type == GRMustacheTagTypeVariable) {
-        return [self transformedValue:object];
+    switch (tag.type) {
+        case GRMustacheTagTypeVariable:
+            // {{ value }}
+            //
+            // We can not escape `object`, because it is not a string.
+            // We want to escape its rendering.
+            // So return a rendering object that will eventually render `object`,
+            // and escape its rendering.
+            return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error) {
+                id<GRMustacheRendering> renderingObject = [GRMustacheRendering renderingObjectForObject:object];
+                NSString *rendering = [renderingObject renderForMustacheTag:tag context:context HTMLSafe:HTMLSafe error:error];
+                return GRMustacheTranslateHTMLCharacters(rendering);
+            }];
+            
+        case GRMustacheTagTypeSection:
+            // {{# value }}
+            // {{^ value }}
+            return object;
     }
-    
-    // Don't process {{# value }}, {{^ value }}, {{$ value }}
-    return object;
 }
 
 @end

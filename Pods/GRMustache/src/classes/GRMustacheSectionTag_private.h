@@ -1,17 +1,17 @@
 // The MIT License
-// 
+//
 // Copyright (c) 2014 Gwendal Roué
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,54 +21,48 @@
 // THE SOFTWARE.
 
 #import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheTemplateComponent_private.h"
 #import "GRMustacheTag_private.h"
+#import "GRMustacheContentType.h"
 
-/**
- * A GRMustacheSectionTag is a template component that renders sections
- * such as `{{#name}}...{{/name}}`.
- *
- * @see GRMustacheTemplateComponent
- */
-@interface GRMustacheSectionTag: GRMustacheTag<GRMustacheTemplateComponent> {
+@class GRMustacheExpression;
+
+@interface GRMustacheSectionTag : GRMustacheTag {
 @private
+    GRMustacheExpression *_expression;
+    BOOL _inverted;
     NSString *_templateString;
     NSRange _innerRange;
-    NSArray *_components;
+    NSArray *_ASTNodes;
+    GRMustacheContentType _contentType;
 }
 
-// Documented in GRMustacheSectionTag.h
-@property (nonatomic, readonly) NSString *innerTemplateString GRMUSTACHE_API_PUBLIC;
+@property (nonatomic, retain, readonly) GRMustacheExpression *expression GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, retain, readonly) NSArray *ASTNodes GRMUSTACHE_API_INTERNAL;
 
 
 /**
  * Builds a GRMustacheSectionTag.
- * 
+ *
  * The rendering of Mustache sections depend on the value they are attached to.
  * The value is fetched by evaluating the _expression_ parameter against a
  * rendering context.
  *
- * The _components_ array contains the GRMustacheTemplateComponent objects
- * that make the section (texts, variables, other sections, etc.)
- * 
- * @param type                The type of the section.
- * @param templateRepository  The template repository that did provide the
- *                            template string.
- * @param expression          The expression that would evaluate against a
- *                            rendering context.
- * @param contentType         The content type of the tag rendering.
- * @param templateString      A Mustache template string.
- * @param innerRange          The range of the inner template string of the
- *                            section in _templateString_.
- * @param components          An array of GRMustacheTemplateComponent that make
- *                            the section.
+ * The ASTNodes array contains the GRMustacheASTNode objects that make the
+ * section (texts, variables, other sections, etc.)
+ *
+ * @param expression      The expression that would evaluate against a rendering
+ *                        context.
+ * @param inverted        NO for {{# section }}, YES for {{^ section }}.
+ * @param templateString  A Mustache template string.
+ * @param innerRange      The range of the inner template string of the section
+ *                        in _templateString_.
+ * @param ASTNodes        An array of GRMustacheASTNode that make the section.
+ * @param contentType     The content type of the tag rendering.
  *
  * @return A GRMustacheSectionTag
- * 
+ *
  * @see GRMustacheExpression
- * @see GRMustacheContext
- * @see GRMustacheContext
  */
-+ (instancetype)sectionTagWithType:(GRMustacheTagType)type templateRepository:(GRMustacheTemplateRepository *)templateRepository expression:(GRMustacheExpression *)expression contentType:(GRMustacheContentType)contentType templateString:(NSString *)templateString innerRange:(NSRange)innerRange components:(NSArray *)components GRMUSTACHE_API_INTERNAL;
++ (instancetype)sectionTagWithExpression:(GRMustacheExpression *)expression inverted:(BOOL)inverted templateString:(NSString *)templateString innerRange:(NSRange)innerRange ASTNodes:(NSArray *)ASTNodes contentType:(GRMustacheContentType)contentType GRMUSTACHE_API_INTERNAL;
 
 @end

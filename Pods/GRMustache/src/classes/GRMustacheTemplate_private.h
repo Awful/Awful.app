@@ -22,25 +22,31 @@
 
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
+#import "GRMustacheRendering_private.h"
 
 @class GRMustacheContext;
-@class GRMustacheAST;
+@class GRMustachePartialNode;
+@class GRMustacheTemplateRepository;
 @protocol GRMustacheTagDelegate;
 
 // Documented in GRMustacheTemplate.h
-@interface GRMustacheTemplate: NSObject {
+@interface GRMustacheTemplate: NSObject<GRMustacheRendering> {
 @private
-    GRMustacheAST *_AST;
+    GRMustacheTemplateRepository *_templateRepository;
+    GRMustachePartialNode *_partialNode;
     GRMustacheContext *_baseContext;
 }
 
 /**
- * The abstract syntax tree of the partial template.
+ * The underlying partial
  */
-@property (nonatomic, retain) GRMustacheAST *AST GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, retain) GRMustachePartialNode *partialNode GRMUSTACHE_API_INTERNAL;
 
 // Documented in GRMustacheTemplate.h
 @property (nonatomic, retain) GRMustacheContext *baseContext GRMUSTACHE_API_PUBLIC;
+
+// Documented in GRMustacheTemplate.h
+@property (nonatomic, retain) GRMustacheTemplateRepository *templateRepository GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheTemplate.h
 - (void)extendBaseContextWithObject:(id)object GRMUSTACHE_API_PUBLIC;

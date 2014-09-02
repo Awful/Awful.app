@@ -20,15 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
-#import "GRMustacheTag_private.h"
+#import "GRMustacheASTNode_private.h"
+
 
 /**
- * A tag that accumulates other tags in the context of overridable partials.
+ * A GRMustacheInheritableSection is an AST node that represents inheritable
+ * sections as `{{$name}}...{{/name}}`.
  */
-@interface GRMustacheAccumulatorTag : GRMustacheTag {
+@interface GRMustacheInheritableSection : NSObject<GRMustacheASTNode> {
 @private
-    NSArray *_tags;
+    NSString *_name;
+    NSArray *_ASTNodes;
 }
-+ (instancetype)accumulatorTagWithTag:(GRMustacheTag *)tag GRMUSTACHE_API_INTERNAL;
+
+/**
+ * The AST nodes inside the inheritable section:
+ *
+ *     {{$ section }} AST nodes {{/ }}
+ */
+@property (nonatomic, retain, readonly) NSArray *ASTNodes GRMUSTACHE_API_INTERNAL;
+
+/**
+ * The name of the inheritable section:
+ *
+ *     {{$ name }} ... {{/ }}
+ */
+@property (nonatomic, readonly) NSString *name GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Returns a new inheritable section.
+ *
+ * @param name      The name of the inheritable section
+ * @param ASTNodes  Array of GRMustacheASTNode objects
+ *
+ * @return a new GRMustacheInheritableSection.
+ *
+ * @see GRMustacheASTNode
+ */
++ (instancetype)inheritableSectionWithName:(NSString *)name ASTNodes:(NSArray *)ASTNodes GRMUSTACHE_API_INTERNAL;
+
 @end

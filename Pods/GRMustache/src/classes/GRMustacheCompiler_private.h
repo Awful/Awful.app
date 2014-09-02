@@ -25,17 +25,15 @@
 #import "GRMustacheParser_private.h"
 #import "GRMustacheContentType.h"
 
-@class GRMustacheConfiguration;
 @class GRMustacheTemplateRepository;
 @class GRMustacheAST;
 
 /**
  * The GRMustacheCompiler interprets GRMustacheTokens provided by a
  * GRMustacheParser, and outputs a syntax tree of objects conforming to the
- * GRMustacheTemplateComponent protocol, the template components that make a
- * Mustache template.
+ * GRMustacheASTNode protocol.
  *
- * @see GRMustacheTemplateComponent
+ * @see GRMustacheASTNode
  * @see GRMustacheToken
  * @see GRMustacheParser
  */
@@ -43,8 +41,8 @@
 @private
     NSError *_fatalError;
     
-    NSMutableArray *_currentComponents;
-    NSMutableArray *_componentsStack;
+    NSMutableArray *_currentASTNodes;
+    NSMutableArray *_ASTNodesStack;
     
     GRMustacheToken *_currentOpeningToken;
     NSMutableArray *_openingTokenStack;
@@ -71,11 +69,11 @@
 /**
  * Returns an initialized compiler.
  *
- * @param configuration  The GRMustacheConfiguration that affects the
- *                       compilation phase.
+ * @param contentType  The contentType that affects the compilation phase.
+ *
  * @return a compiler
  */
-- (id)initWithConfiguration:(GRMustacheConfiguration *)configuration GRMUSTACHE_API_INTERNAL;
+- (instancetype)initWithContentType:(GRMustacheContentType)contentType GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a Mustache Abstract Syntax Tree.
@@ -85,24 +83,26 @@
  *
  * For example:
  *
- *     // Create a Mustache compiler
- *     GRMustacheCompiler *compiler = [[[GRMustacheCompiler alloc] initWithConfiguration:...] autorelease];
+ * ```
+ * // Create a Mustache compiler
+ * GRMustacheCompiler *compiler = [[[GRMustacheCompiler alloc] initWithContentType:...] autorelease];
  *
- *     // Some GRMustacheCompilerDataSource tells the compiler where are the
- *     // partials.
- *     compiler.dataSource = ...;
+ * // Some GRMustacheCompilerDataSource tells the compiler where are the
+ * // partials.
+ * compiler.dataSource = ...;
  *
- *     // Create a Mustache parser
- *     GRMustacheParser *parser = [[[GRMustacheParser alloc] initWithConfiguration:...] autorelease];
+ * // Create a Mustache parser
+ * GRMustacheParser *parser = [[[GRMustacheParser alloc] initWithContentType:...] autorelease];
  *
- *     // The parser feeds the compiler
- *     parser.delegate = compiler;
+ * // The parser feeds the compiler
+ * parser.delegate = compiler;
  *
- *     // Parse some string
- *     [parser parseTemplateString:... templateID:...];
+ * // Parse some string
+ * [parser parseTemplateString:... templateID:...];
  *
- *     // Extract template components from the compiler
- *     GRMustacheAST *AST = [compiler ASTReturningError:...];
+ * // Extract template ASTNodes from the compiler
+ * GRMustacheAST *AST = [compiler ASTReturningError:...];
+ * ```
  *
  * @param error  If there is an error building the abstract syntax tree, upon
  *               return contains an NSError object that describes the problem.

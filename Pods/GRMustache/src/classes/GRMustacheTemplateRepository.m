@@ -25,7 +25,7 @@
 #import "GRMustacheCompiler_private.h"
 #import "GRMustacheError.h"
 #import "GRMustacheConfiguration_private.h"
-#import "GRMustachePartial_private.h"
+#import "GRMustachePartialNode_private.h"
 #import "GRMustacheAST_private.h"
 
 static NSString* const GRMustacheDefaultExtension = @"mustache";
@@ -44,7 +44,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
     NSString *_templateExtension;
     NSStringEncoding _encoding;
 }
-- (id)initWithBaseURL:(NSURL *)baseURL templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
+- (instancetype)initWithBaseURL:(NSURL *)baseURL templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
 @end
 
 
@@ -61,7 +61,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
     NSString *_templateExtension;
     NSStringEncoding _encoding;
 }
-- (id)initWithDirectory:(NSString *)directoryPath templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
+- (instancetype)initWithDirectory:(NSString *)directoryPath templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
 @end
 
 
@@ -78,7 +78,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
     NSString *_templateExtension;
     NSStringEncoding _encoding;
 }
-- (id)initWithBundle:(NSBundle *)bundle templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
+- (instancetype)initWithBundle:(NSBundle *)bundle templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding;
 @end
 
 
@@ -93,31 +93,12 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 @private
     NSDictionary *_partialsDictionary;
 }
-- (id)initWithPartialsDictionary:(NSDictionary *)partialsDictionary;
+- (instancetype)initWithPartialsDictionary:(NSDictionary *)partialsDictionary;
 @end
 
 
 // =============================================================================
 #pragma mark - GRMustacheTemplateRepository
-
-@interface GRMustacheTemplateRepository()
-
-/**
- * Parses templateString and returns an abstract syntax tree.
- * 
- * @param templateString  A Mustache template string.
- * @param templateID      The template ID of the template, or nil if the
- *                        template string is not tied to any identified template.
- * @param error           If there is an error, upon return contains an NSError
- *                        object that describes the problem.
- *
- * @return a GRMustacheAST instance.
- * 
- * @see GRMustacheTemplateRepository
- */
-- (GRMustacheAST *)ASTFromString:(NSString *)templateString templateID:(id)templateID error:(NSError **)error;
-
-@end
 
 @implementation GRMustacheTemplateRepository
 @synthesize dataSource=_dataSource;
@@ -163,11 +144,11 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
     return [[[GRMustacheTemplateRepository alloc] init] autorelease];
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
-        _partialForTemplateID = [[NSMutableDictionary alloc] init];
+        _ASTForTemplateID = [[NSMutableDictionary alloc] init];
         _configuration = [[GRMustacheConfiguration defaultConfiguration] copy];
     }
     return self;
@@ -175,35 +156,49 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 - (void)dealloc
 {
-    [_partialForTemplateID release];
+    [_ASTForTemplateID release];
     [_configuration release];
     [super dealloc];
 }
 
 - (GRMustacheTemplate *)templateNamed:(NSString *)name error:(NSError **)error
 {
-    GRMustachePartial *partial = [self partialNamed:name relativeToTemplateID:nil error:error];
-    if (!partial) {
+    GRMustacheAST *AST = [self ASTNamed:name relativeToTemplateID:nil error:error];
+    if (!AST) {
         return nil;
     }
     
     GRMustacheTemplate *template = [[[GRMustacheTemplate alloc] init] autorelease];
-    template.AST = partial.AST;
+    template.templateRepository = self;
+    template.partialNode = [GRMustachePartialNode partialNodeWithAST:AST name:name];
     template.baseContext = _configuration.baseContext;
     return template;
 }
 
 - (GRMustacheTemplate *)templateFromString:(NSString *)templateString error:(NSError **)error
 {
-    GRMustacheAST *AST = [self ASTFromString:templateString templateID:nil error:error];
+    return [self templateFromString:templateString contentType:_configuration.contentType error:error];
+}
+
+- (GRMustacheTemplate *)templateFromString:(NSString *)templateString contentType:(GRMustacheContentType)contentType error:(NSError **)error
+{
+    GRMustacheAST *AST = [self ASTFromString:templateString contentType:contentType templateID:nil error:error];
     if (!AST) {
         return nil;
     }
     
     GRMustacheTemplate *template = [[[GRMustacheTemplate alloc] init] autorelease];
-    template.AST = AST;
+    template.templateRepository = self;
+    template.partialNode = [GRMustachePartialNode partialNodeWithAST:AST name:nil];
     template.baseContext = _configuration.baseContext;
     return template;
+}
+
+- (void)reloadTemplates
+{
+    @synchronized(self) {
+        [_ASTForTemplateID removeAllObjects];
+    }
 }
 
 - (void)setConfiguration:(GRMustacheConfiguration *)configuration
@@ -222,7 +217,21 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 #pragma mark Private
 
-- (GRMustacheAST *)ASTFromString:(NSString *)templateString templateID:(id)templateID error:(NSError **)error
+/**
+ * Parses templateString and returns an abstract syntax tree.
+ *
+ * @param templateString  A Mustache template string.
+ * @param contentType     The content type of the returned AST.
+ * @param templateID      The template ID of the template, or nil if the
+ *                        template string is not tied to any identified template.
+ * @param error           If there is an error, upon return contains an NSError
+ *                        object that describes the problem.
+ *
+ * @return a GRMustacheAST instance.
+ *
+ * @see GRMustacheTemplateRepository
+ */
+- (GRMustacheAST *)ASTFromString:(NSString *)templateString contentType:(GRMustacheContentType)contentType templateID:(id)templateID error:(NSError **)error
 {
     GRMustacheAST *AST = nil;
     @autoreleasepool {
@@ -230,7 +239,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
         [_configuration lock];
         
         // Create a Mustache compiler that loads partials from self
-        GRMustacheCompiler *compiler = [[[GRMustacheCompiler alloc] initWithConfiguration:_configuration] autorelease];
+        GRMustacheCompiler *compiler = [[[GRMustacheCompiler alloc] initWithContentType:contentType] autorelease];
         compiler.templateRepository = self;
         compiler.baseTemplateID = templateID;
         
@@ -249,9 +258,9 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
     return [AST autorelease];
 }
 
-- (GRMustachePartial *)partialNamed:(NSString *)name relativeToTemplateID:(id)baseTemplateID error:(NSError **)error
+- (GRMustacheAST *)ASTNamed:(NSString *)name relativeToTemplateID:(id)baseTemplateID error:(NSError **)error
 {
-    // Protect our _partialForTemplateID dictionary, and our dataSource
+    // Protect our _ASTForTemplateID dictionary, and our dataSource
     @synchronized(self) {
         
         id templateID = nil;
@@ -271,9 +280,9 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
             return nil;
         }
         
-        GRMustachePartial *partial = [_partialForTemplateID objectForKey:templateID];
+        GRMustacheAST *AST = [_ASTForTemplateID objectForKey:templateID];
         
-        if (partial == nil) {
+        if (AST == nil) {
             // templateRepository:templateStringForTemplateID:error: is a dataSource method.
             // We are not sure the dataSource will set error when not returning any templateString.
             // We thus have to take extra care of error handling here.
@@ -295,30 +304,31 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
             }
             
             
-            // store an empty template before compiling, so that we support
+            // Store a placeholder AST before compiling, so that we support
             // recursive partials
-            
-            partial = [[[GRMustachePartial alloc] init] autorelease];
-            [_partialForTemplateID setObject:partial forKey:templateID];
+            AST = [GRMustacheAST placeholderAST];
+            [_ASTForTemplateID setObject:AST forKey:templateID];
             
             
             // Compile
             
-            GRMustacheAST *AST = [self ASTFromString:templateString templateID:templateID error:error];
+            GRMustacheAST *compiledAST = [self ASTFromString:templateString contentType:_configuration.contentType templateID:templateID error:error];
             
             
             // compiling done
             
-            if (AST) {
-                partial.AST = AST;
+            if (compiledAST) {
+                // update stored AST
+                AST.ASTNodes = compiledAST.ASTNodes;
+                AST.contentType = compiledAST.contentType;
             } else {
-                // forget invalid empty template
-                [_partialForTemplateID removeObjectForKey:templateID];
-                partial = nil;
+                // forget invalid empty AST
+                [_ASTForTemplateID removeObjectForKey:templateID];
+                AST = nil;
             }
         }
         
-        return partial;
+        return AST;
     }
 }
 
@@ -333,7 +343,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 @implementation GRMustacheTemplateRepositoryBaseURL
 
-- (id)initWithBaseURL:(NSURL *)baseURL templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
+- (instancetype)initWithBaseURL:(NSURL *)baseURL templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
 {
     self = [super init];
     if (self) {
@@ -396,7 +406,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 @implementation GRMustacheTemplateRepositoryDirectory
 
-- (id)initWithDirectory:(NSString *)directoryPath templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
+- (instancetype)initWithDirectory:(NSString *)directoryPath templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
 {
     self = [super init];
     if (self) {
@@ -460,7 +470,7 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 @implementation GRMustacheTemplateRepositoryBundle
 
-- (id)initWithBundle:(NSBundle *)bundle templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
+- (instancetype)initWithBundle:(NSBundle *)bundle templateExtension:(NSString *)templateExtension encoding:(NSStringEncoding)encoding
 {
     self = [super init];
     if (self) {
@@ -486,7 +496,20 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 - (id<NSCopying>)templateRepository:(GRMustacheTemplateRepository *)templateRepository templateIDForName:(NSString *)name relativeToTemplateID:(id)baseTemplateID
 {
-    return [_bundle pathForResource:name ofType:_templateExtension];
+    // Rebase template names starting with a /
+    if ([name characterAtIndex:0] == '/') {
+        name = [name substringFromIndex:1];
+        baseTemplateID = nil;
+    }
+    
+    if (baseTemplateID) {
+        NSString *relativePath = [baseTemplateID stringByDeletingLastPathComponent];
+        relativePath = [relativePath stringByReplacingOccurrencesOfString:_bundle.resourcePath withString:@""];
+        
+        return [_bundle pathForResource:name ofType:_templateExtension inDirectory:relativePath];
+    } else {
+        return [_bundle pathForResource:name ofType:_templateExtension];
+    }
 }
 
 - (NSString *)templateRepository:(GRMustacheTemplateRepository *)templateRepository templateStringForTemplateID:(id)templateID error:(NSError **)error
@@ -506,21 +529,11 @@ static NSString* const GRMustacheDefaultExtension = @"mustache";
 
 @implementation GRMustacheTemplateRepositoryPartialsDictionary
 
-- (id)initWithPartialsDictionary:(NSDictionary *)partialsDictionary
+- (instancetype)initWithPartialsDictionary:(NSDictionary *)partialsDictionary
 {
     self = [super init];
     if (self) {
-        NSMutableDictionary *deepCopy = [[NSMutableDictionary alloc] init];
-        [partialsDictionary enumerateKeysAndObjectsUsingBlock:^(NSString *templateName, NSString *templateString, BOOL *stop) {
-            if (![templateName isKindOfClass:[NSString class]]) {
-                [NSException raise:NSInvalidArgumentException format:@"Template name is not a string: %@", templateName];
-            }
-            if (![templateString isKindOfClass:[NSString class]]) {
-                [NSException raise:NSInvalidArgumentException format:@"Template is not a string: %@", templateString];
-            }
-            [deepCopy setObject:[[templateString copy] autorelease] forKey:templateName];
-        }];
-        _partialsDictionary = deepCopy;
+        _partialsDictionary = [partialsDictionary retain];
         self.dataSource = self;
     }
     return self;

@@ -23,14 +23,11 @@
 #import "GRMustacheURLLibrary_private.h"
 #import "GRMustacheTag_private.h"
 #import "GRMustacheContext_private.h"
+#import "GRMustacheTranslateCharacters_private.h"
 
 
 // =============================================================================
 #pragma mark - GRMustacheURLEscapeFilter
-
-@interface GRMustacheURLEscapeFilter()
-- (NSString *)escape:(NSString *)string;
-@end
 
 @implementation GRMustacheURLEscapeFilter
 
@@ -66,14 +63,9 @@
             if (HTMLSafe != NULL) { *HTMLSafe = NO; }
             return [self description];
             
-        case GRMustacheTagTypeInvertedSection:
-            // {{^ URL.escape }}...{{/ URL.escape }}
-            // Behave as a truthy object: don't render for inverted sections
-            return nil;
-            
-        default:
+        case GRMustacheTagTypeSection:
             // {{# URL.escape }}...{{/ URL.escape }}
-            // {{$ URL.escape }}...{{/ URL.escape }}
+            // {{^ URL.escape }}...{{/ URL.escape }}
             
             // Render normally, but listen to all inner tags rendering, so that
             // we can format them. See mustacheTag:willRenderObject: below.
@@ -90,13 +82,25 @@
  */
 - (id)mustacheTag:(GRMustacheTag *)tag willRenderObject:(id)object
 {
-    // Process {{ value }}
-    if (tag.type == GRMustacheTagTypeVariable) {
-        return [self transformedValue:object];
+    switch (tag.type) {
+        case GRMustacheTagTypeVariable:
+            // {{ value }}
+            //
+            // We can not escape `object`, because it is not a string.
+            // We want to escape its rendering.
+            // So return a rendering object that will eventually render `object`,
+            // and escape its rendering.
+            return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError **error) {
+                id<GRMustacheRendering> renderingObject = [GRMustacheRendering renderingObjectForObject:object];
+                NSString *rendering = [renderingObject renderForMustacheTag:tag context:context HTMLSafe:HTMLSafe error:error];
+                return [self escape:rendering];
+            }];
+            
+        case GRMustacheTagTypeSection:
+            // {{# value }}
+            // {{^ value }}
+            return object;
     }
-    
-    // Don't process {{# value }}, {{^ value }}, {{$ value }}
-    return object;
 }
 
 
@@ -108,27 +112,6 @@
     // It leaves many character unescaped. We'll have to go further.
     
     string = [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    
-    // Specific case for empty strings
-    
-    NSUInteger length = [string length];
-    if (length == 0) {
-        return string;
-    }
-    
-    
-    // Extract characters
-    
-    const UniChar *characters = CFStringGetCharactersPtr((CFStringRef)string);
-    if (!characters) {
-        NSMutableData *data = [NSMutableData dataWithLength:length * sizeof(UniChar)];
-        [string getCharacters:[data mutableBytes] range:(NSRange){ .location = 0, .length = length }];
-        characters = [data bytes];
-    }
-    
-    
-    // Set up the translation table
     
     static const NSString *escapeForCharacter[] = {
         ['$'] = @"%24",
@@ -151,34 +134,8 @@
         ['\r'] = @"%0D",
     };
     static const int escapeForCharacterLength = sizeof(escapeForCharacter) / sizeof(NSString *);
-    
-    
-    // Translate
-    
-    NSMutableString *buffer = nil;
-    const UniChar *unescapedStart = characters;
-    CFIndex unescapedLength = 0;
-    for (NSUInteger i=0; i<length; ++i, ++characters) {
-        const NSString *escape = (*characters < escapeForCharacterLength) ? escapeForCharacter[*characters] : nil;
-        if (escape) {
-            if (!buffer) {
-                buffer = [NSMutableString stringWithCapacity:length];
-            }
-            CFStringAppendCharacters((CFMutableStringRef)buffer, unescapedStart, unescapedLength);
-            CFStringAppend((CFMutableStringRef)buffer, (CFStringRef)escape);
-            unescapedStart = characters+1;
-            unescapedLength = 0;
-        } else {
-            ++unescapedLength;
-        }
-    }
-    if (!buffer) {
-        return string;
-    }
-    if (unescapedLength > 0) {
-        CFStringAppendCharacters((CFMutableStringRef)buffer, unescapedStart, unescapedLength);
-    }
-    return buffer;
+    NSUInteger capacity = ([string length] + 20) * 1.2;
+    return GRMustacheTranslateCharacters(string, escapeForCharacter, escapeForCharacterLength, capacity);
 }
 
 @end

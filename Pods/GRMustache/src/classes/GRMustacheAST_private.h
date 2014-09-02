@@ -23,40 +23,52 @@
 #import <Foundation/Foundation.h>
 #import "GRMustacheAvailabilityMacros_private.h"
 #import "GRMustacheContentType.h"
+#import "GRMustacheASTVisitor_private.h"
 
 /**
  * The GRMustacheAST represents the abstract syntax tree of a template.
  */
 @interface GRMustacheAST : NSObject {
 @private
-    NSArray *_templateComponents;
+    NSArray *_ASTNodes;
     GRMustacheContentType _contentType;
 }
 
 /**
- * An NSArray containing <GRMustacheTemplateComponent> instances
+ * An NSArray containing <GRMustacheASTNode> instances
  *
- * @see GRMustacheTemplateComponent
+ * @see GRMustacheASTNode
  */
-@property (nonatomic, retain, readonly) NSArray *templateComponents GRMUSTACHE_API_INTERNAL;
+@property (nonatomic, retain) NSArray *ASTNodes GRMUSTACHE_API_INTERNAL;
 
 /**
  * The content type of the AST
  */
-@property (nonatomic, readonly) GRMustacheContentType contentType GRMUSTACHE_API_INTERNAL;
+@property (nonatomic) GRMustacheContentType contentType GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Used by GRMustacheTemplateRepository, which uses placeholder ASTs when
+ * building recursive templates.
+ */
+@property (nonatomic, readonly, getter = isPlaceholder) BOOL placeholder GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a new allocated AST.
  *
- * @param templateComponents  An Array of <GRMustacheTemplateComponent>
- *                            instances.
- * @param contentType         A content type
+ * @param ASTNodes     An array of <GRMustacheASTNode> instances.
+ * @param contentType  A content type
  *
  * @return A new GRMustacheAST
  *
- * @see GRMustacheTemplateComponent
+ * @see GRMustacheASTNode
  */
-+ (instancetype)ASTWithTemplateComponents:(NSArray *)templateComponents contentType:(GRMustacheContentType)contentType GRMUSTACHE_API_INTERNAL;
++ (instancetype)ASTWithASTNodes:(NSArray *)ASTNodes contentType:(GRMustacheContentType)contentType GRMUSTACHE_API_INTERNAL;
+
+/**
+ * Returns a placeholder AST
+ * @see placeholder
+ */
++ (instancetype)placeholderAST GRMUSTACHE_API_INTERNAL;
 
 @end
 

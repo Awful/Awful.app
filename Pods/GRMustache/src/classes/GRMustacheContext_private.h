@@ -24,8 +24,8 @@
 #import "GRMustacheAvailabilityMacros_private.h"
 
 @protocol GRMustacheTagDelegate;
-@protocol GRMustacheTemplateComponent;
-@class GRMustachePartialOverride;
+@protocol GRMustacheASTNode;
+@class GRMustacheInheritablePartialNode;
 
 /**
  * The GRMustacheContext maintains the following stacks:
@@ -34,7 +34,7 @@
  * - a protected context stack,
  * - a hidden context stack,
  * - a tag delegate stack,
- * - a partial override stack.
+ * - an inheritable partial stack.
  *
  * As such, it is able to:
  *
@@ -49,52 +49,31 @@
  *
  * - Let tag delegates interpret rendered values.
  *
- * - Let partial templates override template components.
+ * - Let inheritable partial templates override AST nodes.
  */
 @interface GRMustacheContext : NSObject {
 @private
-    // Context stack
-    //
-    // The top of the stack is the pair (_contextObject, _managedPropertiesStore).
-    // Both of them may be nil.
-    // The rest of the stack is _contextParent.
-    GRMustacheContext *_contextParent;
-    id _contextObject;
-    NSMutableDictionary *_managedPropertiesStore;
-    
-    // Protected context stack
-    //
-    // If _protectedContextObject is nil, the stack is empty.
-    // If _protectedContextObject is not nil, the top of the stack is _protectedContextObject, and the rest of the stack is _protectedContextParent.
-    GRMustacheContext *_protectedContextParent;
-    id _protectedContextObject;
-    
-    // Hidden context stack
-    //
-    // If _hiddenContextObject is nil, the stack is empty.
-    // If _hiddenContextObject is not nil, the top of the stack is _hiddenContextObject, and the rest of the stack is _hiddenContextParent.
-    GRMustacheContext *_hiddenContextParent;
-    id _hiddenContextObject;
-    
-    // Tag delegate stack
-    //
-    // If _tagDelegate is nil, the stack is empty.
-    // If _tagDelegate is not nil, the top of the stack is _tagDelegate, and the rest of the stack is _tagDelegateParent.
-    GRMustacheContext *_tagDelegateParent;
-    id<GRMustacheTagDelegate> _tagDelegate;
-    
-    // Partial override stack
-    //
-    // If _partialOverride is nil, the stack is empty.
-    // If _partialOverride is not nil, the top of the stack is _partialOverride, and the rest of the stack is _partialOverrideParent.
-    GRMustacheContext *_partialOverrideParent;
-    GRMustachePartialOverride *_partialOverride;
 
-    NSDictionary *_depthsForAncestors;
+#define GRMUSTACHE_STACK_TOP_IVAR(stackName) _ ## stackName ## Object
+#define GRMUSTACHE_STACK_PARENT_IVAR(stackName) _ ## stackName ## Parent
+#define GRMUSTACHE_STACK_DECLARE_IVARS(stackName, type) \
+    GRMustacheContext *GRMUSTACHE_STACK_PARENT_IVAR(stackName); \
+    type GRMUSTACHE_STACK_TOP_IVAR(stackName)
+    
+    GRMUSTACHE_STACK_DECLARE_IVARS(contextStack, id);
+    GRMUSTACHE_STACK_DECLARE_IVARS(protectedContextStack, id);
+    GRMUSTACHE_STACK_DECLARE_IVARS(hiddenContextStack, id);
+    GRMUSTACHE_STACK_DECLARE_IVARS(tagDelegateStack, id<GRMustacheTagDelegate>);
+    GRMUSTACHE_STACK_DECLARE_IVARS(inheritablePartialNodeStack, GRMustacheInheritablePartialNode *);
+    
+    BOOL _unsafeKeyAccess;
 }
 
 // Documented in GRMustacheContext.h
 + (instancetype)context GRMUSTACHE_API_PUBLIC;
+
+// Documented in GRMustacheContext.h
++ (instancetype)contextWithUnsafeKeyAccess GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheContext.h
 + (instancetype)contextWithObject:(id)object GRMUSTACHE_API_PUBLIC;
@@ -115,7 +94,7 @@
 - (instancetype)contextByAddingTagDelegate:(id<GRMustacheTagDelegate>)tagDelegate GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheContext.h
-- (id)valueForMustacheExpression:(NSString *)expression error:(NSError **)error GRMUSTACHE_API_PUBLIC_BUT_DEPRECATED;
+- (instancetype)contextWithUnsafeKeyAccess GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheContext.h
 - (BOOL)hasValue:(id *)value forMustacheExpression:(NSString *)expression error:(NSError **)error GRMUSTACHE_API_PUBLIC;
@@ -124,17 +103,17 @@
 - (id)valueForMustacheKey:(NSString *)key GRMUSTACHE_API_PUBLIC;
 
 // Documented in GRMustacheContext.h
-- (id)valueForUndefinedMustacheKey:(NSString *)key GRMUSTACHE_API_PUBLIC;
-
-// Documented in GRMustacheContext.h
 // @see -[GRMustacheImplicitIteratorExpression hasValue:withContext:protected:error:]
 @property (nonatomic, readonly) id topMustacheObject GRMUSTACHE_API_PUBLIC;
 
+// Documented in GRMustacheContext.h
+@property (nonatomic, readonly) BOOL unsafeKeyAccess GRMUSTACHE_API_PUBLIC;
+
 /**
- * Same as [parent contextByAddingObject:object], but returns a retained object.
+ * Same as [contextByAddingObject:object], but returns a retained object.
  * This method helps efficiently managing memory, and targeting slow methods.
  */
-+ (instancetype)newContextWithParent:(GRMustacheContext *)parent addedObject:(id)object GRMUSTACHE_API_INTERNAL;
+- (instancetype)newContextByAddingObject:(id)object GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns a GRMustacheContext object identical to the receiver, but for the
@@ -157,24 +136,24 @@
 
 /**
  * Returns a GRMustacheContext object identical to the receiver, but for the
- * partial override stack that is extended with _partialOverride_.
+ * inheritable partial stack that is extended with _inheritablePartial_.
  *
- * @param partialOverride  A partial template override object
+ * @param inheritablePartialNode  An inheritable partial
  *
  * @return A GRMustacheContext object.
  *
- * @see GRMustachePartialOverride
- * @see [GRMustachePartialOverride renderWithContext:inBuffer:error:]
+ * @see GRMustacheInheritablePartialNode
+ * @see [GRMustacheInheritablePartialNode renderWithContext:inBuffer:error:]
  */
-- (instancetype)contextByAddingPartialOverride:(GRMustachePartialOverride *)partialOverride GRMUSTACHE_API_INTERNAL;
+- (instancetype)contextByAddingInheritablePartialNode:(GRMustacheInheritablePartialNode *)inheritablePartialNode GRMUSTACHE_API_INTERNAL;
 
 /**
  * Performs a key lookup in the receiver's context stack, and returns the found
  * value.
  *
- * @param key        The searched key.
- * @param protected  Upon return, is YES if the value comes from the protected
- *                   context stack.
+ * @param key       The searched key.
+ * @param protected Upon return, is YES if the value comes from the protected
+ *                  context stack.
  *
  * @return The value found in the context stack.
  *
@@ -183,16 +162,15 @@
 - (id)valueForMustacheKey:(NSString *)key protected:(BOOL *)protected GRMUSTACHE_API_INTERNAL;
 
 /**
- * In the context of overridable partials, return the component that should be
- * rendered in lieu of _component_, should _component_ be overriden by another
- * component.
+ * In the context of template inheritance, return the node that should be
+ * rendered in lieu of the node argument.
  *
- * @param component  A template component
+ * @param ASTNode  A node
  *
- * @return The resolution of the component in the context of Mustache
- *         overridable partials.
+ * @return The resolution of the node in the context of Mustache template
+ *         inheritance.
  */
-- (id<GRMustacheTemplateComponent>)resolveTemplateComponent:(id<GRMustacheTemplateComponent>)component GRMUSTACHE_API_INTERNAL;
+- (id<GRMustacheASTNode>)resolveASTNode:(id<GRMustacheASTNode>)ASTNode GRMUSTACHE_API_INTERNAL;
 
 /**
  * Returns an array containing all tag delegates in the delegate stack.
