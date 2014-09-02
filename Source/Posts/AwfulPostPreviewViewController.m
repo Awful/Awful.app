@@ -166,6 +166,7 @@
     
     NSMutableDictionary *context = [NSMutableDictionary new];
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
+	context[@"version"] = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
     context[@"post"] = [[AwfulPostViewModel alloc] initWithPost:self.fakePost];
     int fontScalePercentage = [AwfulSettings settings].fontScale;

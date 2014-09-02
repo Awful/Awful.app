@@ -246,6 +246,7 @@
         return;
     }
     context[@"script"] = script;
+	context[@"version"] = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
     NSMutableArray *postViewModels = [NSMutableArray new];

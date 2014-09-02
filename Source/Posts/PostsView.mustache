@@ -14,7 +14,7 @@
     {{> FontScale }}
 </style>
 
-<body class="{{ userInterfaceIdiom }} {{# threadID }}thread-{{.}}{{/ }} {{# forumID }}forum-{{.}}{{/ }}">
+<body class="{{ userInterfaceIdiom }} {{# threadID }}thread-{{.}}{{/ }} {{# forumID }}forum-{{.}}{{/ }}" data-version="{{ version }}">
     <div id="posts">
         {{# posts }}
             {{> Post }}
