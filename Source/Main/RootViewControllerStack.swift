@@ -224,7 +224,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 }
 
-private func navigationIdentifier(rootIdentifier: String) -> String {
+private func navigationIdentifier(rootIdentifier: String?) -> String {
     return "\(rootIdentifier) navigation"
 }
 

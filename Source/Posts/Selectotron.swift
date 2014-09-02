@@ -18,7 +18,7 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
         self.postsViewController = postsViewController
         super.init(nibName: "Selectotron", bundle: nil)
         modalPresentationStyle = .Popover
-        popoverPresentationController.delegate = self
+        popoverPresentationController!.delegate = self
     }
     
     @IBAction func firstPostButtonTapped() {
@@ -76,7 +76,7 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
         view.tintColor = theme["tintColor"] as? UIColor
         let backgroundColor = theme["sheetBackgroundColor"] as? UIColor
         view.backgroundColor = backgroundColor
-        popoverPresentationController.backgroundColor = backgroundColor
+        popoverPresentationController?.backgroundColor = backgroundColor
         buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
         picker.reloadAllComponents()
     }
@@ -89,11 +89,11 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
     
     // MARK: UIPickerViewDataSource
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int {
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return Int(postsViewController.thread.numberOfPages)
     }
     

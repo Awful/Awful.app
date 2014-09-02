@@ -39,7 +39,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     override init(nibName: String!, bundle: NSBundle!) {
         super.init(nibName: nibName, bundle: bundle)
         modalPresentationStyle = .Popover
-        popoverPresentationController.delegate = self
+        popoverPresentationController!.delegate = self
     }
     
     convenience override init() {
@@ -96,7 +96,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         let backgroundColor = theme["sheetBackgroundColor"] as? UIColor
         view.backgroundColor = backgroundColor
         collectionView.backgroundColor = backgroundColor
-        headerLabel.textColor = theme["sheetTitleColor"] as? UIColor
+        headerLabel.textColor = theme["sheetTitleColor"] as? UIColor ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
         collectionView.reloadItemsAtIndexPaths(collectionView.indexPathsForVisibleItems())
         if let popover = popoverPresentationController {
@@ -115,15 +115,15 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     
     // MARK: UICollectionViewDataSource
     
-    func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
     
-    func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell! {
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let item = items[indexPath.item]
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as AwfulIconActionCell
         cell.titleLabel.text = item.title
-        cell.titleLabel.textColor = theme["sheetTextColor"] as? UIColor
+        cell.titleLabel.textColor = theme["sheetTextColor"] as? UIColor ?? UIColor.blackColor()
         cell.iconImageView.image = item.icon
         cell.tintColor = theme[item.themeKey] as? UIColor
         cell.isAccessibilityElement = true
@@ -134,7 +134,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     
     // MARK: UICollectionViewDelegate
     
-    func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
         let item = items[indexPath.item]
         dismissViewControllerAnimated(true, completion: item.action)
     }
