@@ -8,11 +8,12 @@
 #import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+@import WebKit;
 #import "Awful-Swift.h"
 
-@interface BrowserViewController () <UIWebViewDelegate, UIViewControllerRestoration>
+@interface BrowserViewController () <UIViewControllerRestoration, WKNavigationDelegate, WKUIDelegate>
 
-@property (readonly, strong, nonatomic) UIWebView *webView;
+@property (readonly, strong, nonatomic) WKWebView *webView;
 @property (strong, nonatomic) UIBarButtonItem *actionItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
 @property (strong, nonatomic) UIBarButtonItem *forwardItem;
@@ -21,40 +22,37 @@
 @end
 
 @implementation BrowserViewController
-{
-    BOOL _restoringState;
-}
 
 - (void)dealloc
 {
-    if ([self isViewLoaded]) {
-        self.webView.delegate = nil;
-    }
     [self hideNetworkIndicator];
+    [self.webView removeObserver:self forKeyPath:@"title" context:KVOContext];
 }
 
 - (id)initWithURL:(NSURL *)URL
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    self.URL = URL;
-    self.title = @"Awful Browser";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.navigationItem.rightBarButtonItems = @[ self.actionItem, self.forwardItem, self.backItem ];
-        self.hidesBottomBarWhenPushed = YES;
-    } else {
-        self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem awful_flexibleSpace], self.actionItem ];
+    if ((self = [self initWithNibName:nil bundle:nil])) {
+        _URL = URL;
     }
-    self.restorationClass = self.class;
-    [self updateBackForwardItemEnabledState];
-    
     return self;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    return [self initWithURL:nil];
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        self.title = @"Awful Browser";
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.navigationItem.rightBarButtonItems = @[ self.actionItem, self.forwardItem, self.backItem ];
+            self.hidesBottomBarWhenPushed = YES;
+        } else {
+            self.toolbarItems = @[ self.backItem, self.forwardItem, [UIBarButtonItem awful_flexibleSpace], self.actionItem ];
+        }
+        
+        self.restorationClass = self.class;
+        [self updateBackForwardItemEnabledState];
+    }
+    return self;
 }
 
 - (void)setURL:(NSURL *)URL
@@ -78,9 +76,9 @@
     return browser;
 }
 
-- (UIWebView *)webView
+- (WKWebView *)webView
 {
-    return (UIWebView *)self.view;
+    return (WKWebView *)self.view;
 }
 
 - (UIBarButtonItem *)actionItem
@@ -93,7 +91,7 @@
 - (void)actOnCurrentPage:(UIBarButtonItem *)sender
 {
     if (self.presentedViewController) return;
-    NSURL *URL = self.webView.request.URL;
+	NSURL *URL = self.webView.URL;
     if (URL.absoluteString.length == 0) {
         URL = self.URL;
     }
@@ -168,7 +166,7 @@
 
 - (void)preventDefaultLongTapMenu
 {
-    [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none'"];
+	[self.webView evaluateJavaScript:@"document.body.style.webkitTouchCallout='none'" completionHandler:nil];
 }
 
 - (void)setTitle:(NSString *)title
@@ -181,26 +179,22 @@
 
 - (void)loadView
 {
-    UIWebView *webView = [UIWebView new];
+    WKWebView *webView = [WKWebView new];
     webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    webView.delegate = self;
-    webView.scalesPageToFit = YES;
+    webView.navigationDelegate = self;
+	webView.UIDelegate = self;
     webView.restorationIdentifier = @"Awful Browser web view";
     
     // Start with a clear background for the web view to avoid a FOUC.
     webView.backgroundColor = [UIColor clearColor];
     webView.opaque = NO;
     
+    [webView addObserver:self forKeyPath:@"title" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:KVOContext];
+    
     self.view = webView;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    if (self.URL && !_restoringState) {
-        [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
-    }
-}
+static void * KVOContext = &KVOContext;
 
 - (void)themeDidChange
 {
@@ -212,10 +206,8 @@
 {
     [super viewWillAppear:animated];
     
-    // State restoration isn't 100% automatic for UIWebView.
-    if (_restoringState) {
-        [self.webView reload];
-        _restoringState = NO;
+    if (self.URL) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:self.URL]];
     }
     
     if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
@@ -229,34 +221,38 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [super viewWillDisappear:animated];
-    
-    // We're seeing crashes in the WebThread in `-[_WebSafeForwarder forwardInvocation:]`, and calling -[UIWebView stopLoading] is a commonly-cited fix (along with nilling out the delegate, which we do up in -dealloc). Feels a bit cargo culty, but since I can't think of any ill effects from an unnecessary call to -stopLoading, here we go.
-    [self.webView stopLoading];
+    if (context == KVOContext) {
+        if ([keyPath isEqualToString:@"title"]) {
+            NSString *title = change[NSKeyValueChangeNewKey];
+            self.title = title.length > 0 ? title : @"Awful Browser";
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 #pragma mark - UIWebViewDelegate
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
+-(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
 {
-    [self showNetworkIndicator];
-    [self updateBackForwardItemEnabledState];
+	[self showNetworkIndicator];
+	[self updateBackForwardItemEnabledState];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+-(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
-    // We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
-    webView.backgroundColor = [UIColor whiteColor];
-    webView.opaque = YES;
-    [self hideNetworkIndicator];
-    _URL = webView.request.URL;
-    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    self.title = title.length > 0 ? title : @"Awful Browser";
-    [self preventDefaultLongTapMenu];
-    [self updateBackForwardItemEnabledState];
+
+	// We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
+	webView.backgroundColor = [UIColor whiteColor];
+	webView.opaque = YES;
+	[self hideNetworkIndicator];
+	_URL = self.webView.URL;
+	[self preventDefaultLongTapMenu];
+	[self updateBackForwardItemEnabledState];
 }
+
 
 - (void)showNetworkIndicator
 {
@@ -288,12 +284,6 @@
 {
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.URL forKey:URLKey];
-}
-
-- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
-{
-    [super decodeRestorableStateWithCoder:coder];
-    _restoringState = YES;
 }
 
 static NSString * const URLKey = @"Awful Browser URL";
