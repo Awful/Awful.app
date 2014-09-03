@@ -74,7 +74,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 - (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
 {
     // TODO Swift weirdness here, declaring -setLongPressTarget:action:'s second parameter as type `Selector` prevented it from appearing in Awful-Swift.h.
-    [cell setLongPressTarget:self action:@"showThreadActions"];
+    [cell setLongPressTarget:self action:@"showThreadActions:"];
     
 	if ([AwfulSettings sharedSettings].showThreadTags) {
 		cell.showsTag = YES;

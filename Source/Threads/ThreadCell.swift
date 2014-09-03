@@ -56,6 +56,7 @@ class ThreadCell: UITableViewCell {
         super.awakeFromNib()
         
         longPress = UILongPressGestureRecognizer(target: self, action: "didLongPress:")
+        contentView.addGestureRecognizer(longPress)
     }
     
     private weak var longPressTarget: AnyObject!
