@@ -35,8 +35,6 @@
 
 @property (assign, nonatomic) double fontScale;
 
-@property (nonatomic, readonly) NSString *pocketUsername;
-
 @property (assign, nonatomic) BOOL canSendPrivateMessages;
 
 @property (assign, nonatomic) BOOL showThreadTags;
@@ -46,10 +44,6 @@
 @property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
 
 @property (copy, nonatomic) NSString *customBaseURL;
-
-@property (copy, nonatomic) NSString *instapaperUsername;
-
-@property (copy, nonatomic) NSString *instapaperPassword;
 
 @property (assign, nonatomic) BOOL hideSidebarInLandscape;
 
@@ -104,7 +98,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *favoriteForums;
     __unsafe_unretained NSString *lastOfferedPasteboardURL;
     __unsafe_unretained NSString *customBaseURL;
-    __unsafe_unretained NSString *instapaperUsername;
     __unsafe_unretained NSString *hideSidebarInLandscape;
     __unsafe_unretained NSString *fontScale;
     __unsafe_unretained NSString *ubiquitousThemeNames;

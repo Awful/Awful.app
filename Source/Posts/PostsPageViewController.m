@@ -3,9 +3,9 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostsPageViewController.h"
+#import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
-#import "AwfulExternalBrowser.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImagePreviewViewController.h"
@@ -17,7 +17,6 @@
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
 #import "AwfulProfileViewController.h"
-#import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
@@ -30,7 +29,7 @@
 #import "RapSheetViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "ThreadListViewController.h"
-#import "UIAlertAction+WebViewSheets.h"
+#import <TUSafariActivity/TUSafariActivity.h>
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -673,18 +672,20 @@
         if (elementInfo[@"spoiledLink"]) {
             NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
             NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            UIAlertController *actionSheet = [UIAlertController actionSheet];
-            actionSheet.title = URL.absoluteString;
-            [actionSheet addActions:[UIAlertAction actionsOpeningURL:URL fromViewController:self]];
+            NSMutableArray *items = [NSMutableArray new];
+            [items addObject:URL];
+            if (imageURL) [items addObject:imageURL];
+            NSMutableArray *activities = [NSMutableArray new];
+            [activities addObject:[TUSafariActivity new]];
+            [activities addObject:[ARChromeActivity new]];
             if (imageURL) {
-                [actionSheet addActionWithTitle:@"Show Image" handler:^{
-                    [self previewImageAtURL:imageURL];
-                }];
+                [activities addObject:[ImagePreviewActivity new]];
             }
-            [actionSheet addCancelActionWithHandler:nil];
-            [self presentViewController:actionSheet animated:YES completion:nil];
-            actionSheet.popoverPresentationController.sourceRect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
-            actionSheet.popoverPresentationController.sourceView = self.view;
+            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];
+            [self presentViewController:activityViewController animated:YES completion:nil];
+            UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
+            popover.sourceRect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
+            popover.sourceView = self.view;
         } else if (imageURL) {
             [self previewImageAtURL:imageURL];
         } else if (elementInfo[@"spoiledVideo"]) {

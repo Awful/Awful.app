@@ -94,10 +94,6 @@
 		1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */; };
 		1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */; };
-		1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */; };
-		1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */; };
-		1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */; };
-		1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */; };
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
@@ -116,7 +112,6 @@
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
 		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
-		1C8E104F1918D5CC0010007B /* UIAlertAction+WebViewSheets.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E104E1918D5CC0010007B /* UIAlertAction+WebViewSheets.m */; };
 		1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */; };
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
@@ -127,7 +122,6 @@
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
-		1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
 		1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */; };
@@ -259,7 +253,6 @@
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
-		F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */; };
 		F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 /* End PBXBuildFile section */
@@ -394,14 +387,6 @@
 		1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRendering.m; sourceTree = "<group>"; };
 		1C7C7F0218A16E74008A1B2E /* AwfulForumTreeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTreeDataSource.h; sourceTree = "<group>"; };
 		1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeDataSource.m; sourceTree = "<group>"; };
-		1C7D22ED173B3335008A802C /* InstapaperAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstapaperAPIClient.h; sourceTree = "<group>"; };
-		1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstapaperAPIClient.m; sourceTree = "<group>"; };
-		1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulInstapaperStatusTransformer.h; sourceTree = "<group>"; };
-		1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulInstapaperStatusTransformer.m; sourceTree = "<group>"; };
-		1C7D22F3173B5D1A008A802C /* AwfulInstapaperLogInController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulInstapaperLogInController.h; sourceTree = "<group>"; };
-		1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulInstapaperLogInController.m; sourceTree = "<group>"; };
-		1C7D22F7173B66F7008A802C /* AwfulReadLaterService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulReadLaterService.h; sourceTree = "<group>"; };
-		1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulReadLaterService.m; sourceTree = "<group>"; };
 		1C7D8956192E954B00003576 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C7D8957192E954B00003576 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -425,8 +410,6 @@
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
 		1C8E10491916F78B0010007B /* common.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = common.js; sourceTree = "<group>"; };
 		1C8E104B1916F85F0010007B /* profile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = profile.js; sourceTree = "<group>"; };
-		1C8E104D1918D5CC0010007B /* UIAlertAction+WebViewSheets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertAction+WebViewSheets.h"; sourceTree = "<group>"; };
-		1C8E104E1918D5CC0010007B /* UIAlertAction+WebViewSheets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertAction+WebViewSheets.m"; sourceTree = "<group>"; };
 		1C8E10501918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWebViewNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWebViewNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
@@ -444,8 +427,6 @@
 		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
 		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
-		1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulExternalBrowser.h; sourceTree = "<group>"; };
-		1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulExternalBrowser.m; sourceTree = "<group>"; };
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPRequestOperationManager.h; sourceTree = "<group>"; };
 		1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPRequestOperationManager.m; sourceTree = "<group>"; };
@@ -641,8 +622,6 @@
 		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
 		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
-		F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPocketStatusTransformer.h; sourceTree = "<group>"; };
-		F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPocketStatusTransformer.m; sourceTree = "<group>"; };
 		F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnpoppingViewHandler.h; sourceTree = "<group>"; };
 		F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnpoppingViewHandler.m; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
@@ -787,8 +766,6 @@
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
 			isa = PBXGroup;
 			children = (
-				1C96D0B31682BBA80043B194 /* AwfulExternalBrowser.h */,
-				1C96D0B41682BBA80043B194 /* AwfulExternalBrowser.m */,
 				1CD82F2B19428D0900B0C5BD /* AwfulImageURLProtocol.h */,
 				1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */,
 				1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */,
@@ -858,14 +835,12 @@
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1CE2D99D16688AC40024AC1C /* Framework Categories */,
 				1C28B34A1729DC9700254EE7 /* In-App Actions */,
-				1C7D22EC173B330E008A802C /* Instapaper API */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CB6010616D826DA00CBEE22 /* Messages */,
 				1CC4525B180B35D700F5F043 /* Models */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
-				1C7D22F6173B66B3008A802C /* Read Later Services */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
@@ -923,30 +898,8 @@
 				1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */,
 				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
-				1C8E104D1918D5CC0010007B /* UIAlertAction+WebViewSheets.h */,
-				1C8E104E1918D5CC0010007B /* UIAlertAction+WebViewSheets.m */,
 			);
 			path = "Web View Junk";
-			sourceTree = "<group>";
-		};
-		1C7D22EC173B330E008A802C /* Instapaper API */ = {
-			isa = PBXGroup;
-			children = (
-				1C7D22ED173B3335008A802C /* InstapaperAPIClient.h */,
-				1C7D22EE173B3335008A802C /* InstapaperAPIClient.m */,
-				1C7D22F3173B5D1A008A802C /* AwfulInstapaperLogInController.h */,
-				1C7D22F4173B5D1A008A802C /* AwfulInstapaperLogInController.m */,
-			);
-			path = "Instapaper API";
-			sourceTree = "<group>";
-		};
-		1C7D22F6173B66B3008A802C /* Read Later Services */ = {
-			isa = PBXGroup;
-			children = (
-				1C7D22F7173B66F7008A802C /* AwfulReadLaterService.h */,
-				1C7D22F8173B66F7008A802C /* AwfulReadLaterService.m */,
-			);
-			path = "Read Later Services";
 			sourceTree = "<group>";
 		};
 		1C8694A216EF78D3003FE89E /* Settings */ = {
@@ -954,10 +907,6 @@
 			children = (
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
-				1C7D22F0173B553A008A802C /* AwfulInstapaperStatusTransformer.h */,
-				1C7D22F1173B553A008A802C /* AwfulInstapaperStatusTransformer.m */,
-				F432C2D71734572000012A88 /* AwfulPocketStatusTransformer.h */,
-				F432C2D81734572000012A88 /* AwfulPocketStatusTransformer.m */,
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
 				1CDD5198154294D400326C7B /* AwfulSettings.m */,
 				1CE8FDFF1709E728006A3B84 /* AwfulSettingsAlternateServerController.h */,
@@ -1754,7 +1703,6 @@
 				1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */,
 				1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */,
 				1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.m in Sources */,
-				1C8E104F1918D5CC0010007B /* UIAlertAction+WebViewSheets.m in Sources */,
 				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,
 				1C96D085168010AF0043B194 /* UIImage+Resize.m in Sources */,
@@ -1763,7 +1711,6 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
-				1C96D0B51682BBA80043B194 /* AwfulExternalBrowser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
@@ -1820,14 +1767,9 @@
 				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */,
-				F432C2D91734572000012A88 /* AwfulPocketStatusTransformer.m in Sources */,
-				1C7D22EF173B3335008A802C /* InstapaperAPIClient.m in Sources */,
 				1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */,
 				1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */,
 				1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */,
-				1C7D22F2173B553B008A802C /* AwfulInstapaperStatusTransformer.m in Sources */,
-				1C7D22F5173B5D1A008A802C /* AwfulInstapaperLogInController.m in Sources */,
-				1C7D22F9173B66F7008A802C /* AwfulReadLaterService.m in Sources */,
 				1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */,
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 				1C6D2EA8182E81B000785766 /* AwfulPrivateMessageScraper.m in Sources */,

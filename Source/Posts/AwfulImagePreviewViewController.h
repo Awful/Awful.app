@@ -11,3 +11,12 @@
 @property (nonatomic) NSURL *imageURL;
 
 @end
+
+/**
+ * An ImagePreviewActivity presents image URLs in an AwfulImagePreviewViewController.
+ *
+ * @note An ImagePreviewActivity shows the *last* URL passed to it.
+ */
+@interface ImagePreviewActivity : UIActivity
+
+@end

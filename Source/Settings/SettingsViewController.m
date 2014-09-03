@@ -6,17 +6,14 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulInstapaperLogInController.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "InstapaperAPIClient.h"
-#import <PocketAPI/PocketAPI.h>
 #import "Awful-Swift.h"
 
-@interface SettingsViewController () <AwfulInstapaperLogInControllerDelegate>
+@interface SettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
 @property (strong, nonatomic) NSMutableArray *switches;
@@ -35,18 +32,6 @@
     self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     self.tabBarItem.image = [UIImage imageNamed:@"cog"];
     return self;
-}
-
-#pragma mark - Settings predicates
-
-- (BOOL)isLoggedInToInstapaper
-{
-    return !![AwfulSettings sharedSettings].instapaperUsername;
-}
-
-- (BOOL)isLoggedInToPocket
-{
-    return [PocketAPI sharedAPI].isLoggedIn;
 }
 
 #pragma mark - UIViewController
@@ -77,9 +62,6 @@
         {
             NSString *device = setting[@"Device"];
             if (device && ![device isEqual:currentDevice]) return NO;
-            
-            NSString *keyPath = setting[@"PredicateKeyPath"];
-            if (keyPath) return [[self valueForKeyPath:setting[@"PredicateKeyPath"]] boolValue];
             return YES;
         }];
         filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
@@ -220,10 +202,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
         NSString *valueID = setting[@"ValueIdentifier"];
         if ([valueID isEqualToString:@"Username"]) {
             cell.detailTextLabel.text = [AwfulSettings sharedSettings].username;
-        } else if ([valueID isEqualToString:@"InstapaperUsername"]) {
-            cell.detailTextLabel.text = [AwfulSettings sharedSettings].instapaperUsername;
-        } else if ([valueID isEqualToString:@"PocketUsername"]) {
-            cell.detailTextLabel.text = [AwfulSettings sharedSettings].pocketUsername;
         }
     }
     
@@ -341,34 +319,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
         [[AwfulAppDelegate instance] openAwfulURL:URL];
-    } else if ([action isEqualToString:@"InstapaperLogIn"]) {
-        if ([AwfulSettings sharedSettings].instapaperUsername) {
-            [AwfulSettings sharedSettings].instapaperUsername = nil;
-            [AwfulSettings sharedSettings].instapaperPassword = nil;
-            [self reloadSections];
-            [tableView reloadData];
-        } else {
-            AwfulInstapaperLogInController *logIn = [AwfulInstapaperLogInController new];
-            logIn.delegate = self;
-            [self presentViewController:[logIn enclosingNavigationController] animated:YES completion:nil];
-        }
-    } else if ([action isEqualToString:@"PocketLogIn"]) {
-        if ([[PocketAPI sharedAPI] isLoggedIn]) {
-            [[PocketAPI sharedAPI] logout];
-            [self reloadSections];
-            [tableView reloadData];
-        } else {
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            [[PocketAPI sharedAPI] loginWithHandler: ^(PocketAPI *API, NSError *error){
-                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                if (error) {
-                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Log in" error:error] animated:YES completion:nil];
-                } else {
-                    [self reloadSections];
-                    [tableView reloadData];
-                }
-            }];
-        }
     } else if (setting[@"ViewController"]) {
         UIViewController *viewController = [NSClassFromString(setting[@"ViewController"]) new];
         [self.navigationController pushViewController:viewController animated:YES];
@@ -415,22 +365,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
                                          context:nil];
     const CGFloat margin = 14;
     return ceil(CGRectGetHeight(expected)) + margin;
-}
-
-#pragma mark - AwfulInstapaperLogInControllerDelegate
-
-- (void)instapaperLogInControllerDidSucceed:(AwfulInstapaperLogInController *)logIn
-{
-    [AwfulSettings sharedSettings].instapaperUsername = logIn.username;
-    [AwfulSettings sharedSettings].instapaperPassword = logIn.password;
-    [self reloadSections];
-    [self.tableView reloadData];
-    [logIn dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)instapaperLogInControllerDidCancel:(AwfulInstapaperLogInController *)logIn
-{
-    [logIn dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

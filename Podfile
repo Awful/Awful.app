@@ -4,14 +4,15 @@ link_with 'Awful', 'Imgur API Test'
 inhibit_all_warnings!
 
 pod 'AFNetworking', '2.3.1'
+pod 'ARChromeActivity', '1.0.2'
 pod 'GRMustache', '7.2.0'
 pod 'HTMLReader', '0.5.6'
 pod 'ImgurAnonymousAPIClient', :git => 'https://github.com/nolanw/ImgurAnonymousAPIClient.git', :tag => 'v0.1.1'
 pod 'JLRoutes', '1.5.1'
 pod 'MRProgress/Overlay', '0.4.1'
-pod 'PocketAPI', '1.0.2'
 pod 'PSMenuItem', '0.0.1'
 pod 'SVPullToRefresh', :head
+pod 'TUSafariActivity', '1.0.0'
 pod 'WebViewJavascriptBridge', :git => 'https://github.com/marcuswestin/WebViewJavascriptBridge.git', :tag => 'v4.1.2'
 
 target :ScrapingTests, :exclusive => true do

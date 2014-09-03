@@ -24,7 +24,6 @@
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
-#import <PocketAPI/PocketAPI.h>
 #import "Awful-Swift.h"
 
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
@@ -61,7 +60,6 @@ static id _instance;
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings sharedSettings] reset];
-    [[PocketAPI sharedAPI] logout];
     [[AwfulAvatarLoader loader] emptyCache];
     
     [UIView transitionWithView:self.window
@@ -217,10 +215,6 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
                                              selector:@selector(preferredContentSizeDidChange:)
                                                  name:UIContentSizeCategoryDidChangeNotification
                                                object:nil];
-    
-    [[PocketAPI sharedAPI] setURLScheme:@"awful-pocket-login"];
-    [[PocketAPI sharedAPI] setConsumerKey:@"13890-9e69d4d40af58edc2ef13ca0"];
-    
     return YES;
 }
 
@@ -393,7 +387,7 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
     if ([URL.scheme caseInsensitiveCompare:@"awfulhttp"] == NSOrderedSame) {
         return [self openAwfulURL:URL.awfulURL];
     }
-    return [self openAwfulURL:URL] || [[PocketAPI sharedAPI] handleOpenURL:URL];
+    return [self openAwfulURL:URL];
 }
 
 - (BOOL)openAwfulURL:(NSURL *)url
