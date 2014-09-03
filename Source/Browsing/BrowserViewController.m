@@ -235,15 +235,14 @@ static void * KVOContext = &KVOContext;
 
 #pragma mark - UIWebViewDelegate
 
--(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
 {
 	[self showNetworkIndicator];
 	[self updateBackForwardItemEnabledState];
 }
 
--(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
-
 	// We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
 	webView.backgroundColor = [UIColor whiteColor];
 	webView.opaque = YES;
@@ -252,7 +251,6 @@ static void * KVOContext = &KVOContext;
 	[self preventDefaultLongTapMenu];
 	[self updateBackForwardItemEnabledState];
 }
-
 
 - (void)showNetworkIndicator
 {
