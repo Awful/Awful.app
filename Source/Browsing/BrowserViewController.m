@@ -100,40 +100,33 @@
 - (UIBarButtonItem *)backItem
 {
     if (_backItem) return _backItem;
-    UIImage *image = [UIImage imageNamed:@"arrowleft"];
-    _backItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
+    _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _backItem.accessibilityLabel = @"Back";
+    __weak __typeof__(self) weakSelf = self;
+    [_backItem awful_setActionBlock:^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        [self.webView goBack];
+    }];
     return _backItem;
-}
-
-- (void)goBack
-{
-    [self.webView goBack];
 }
 
 - (UIBarButtonItem *)forwardItem
 {
     if (_forwardItem) return _forwardItem;
-    UIImage *image = [UIImage imageNamed:@"arrowright"];
-    _forwardItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
+    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _forwardItem.accessibilityLabel = @"Forward";
+    __weak __typeof__(self) weakSelf = self;
+    [_forwardItem awful_setActionBlock:^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        [self.webView goForward];
+    }];
     return _forwardItem;
-}
-
-- (void)goForward
-{
-    [self.webView goForward];
 }
 
 - (void)updateBackForwardItemEnabledState
 {
-    if ([self isViewLoaded]) {
-        self.backItem.enabled = self.webView.canGoBack;
-        self.forwardItem.enabled = self.webView.canGoForward;
-    } else {
-        self.backItem.enabled = NO;
-        self.forwardItem.enabled = NO;
-    }
+    self.backItem.enabled = [self isViewLoaded] && self.webView.canGoBack;
+    self.forwardItem.enabled = [self isViewLoaded] && self.webView.canGoForward;
 }
 
 - (void)preventDefaultLongTapMenu
@@ -184,13 +177,13 @@ static void * KVOContext = &KVOContext;
     
     if (self.presentingViewController && self.navigationController.viewControllers.count == 1) {
         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(dismiss)];
+        __weak __typeof__(self) weakSelf = self;
+        [item awful_setActionBlock:^(UIBarButtonItem *sender) {
+            __typeof__(self) self = weakSelf;
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
         self.navigationItem.leftBarButtonItem = item;
     }
-}
-
-- (void)dismiss
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
