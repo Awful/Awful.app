@@ -129,62 +129,17 @@
 
 - (void)showActions
 {
-    if (self.presentedViewController) return;
-    [self.automaticallyHideBarsTimer invalidate];
-    UIAlertController *actionSheet = [UIAlertController actionSheet];
-    
-    [actionSheet addActionWithTitle:@"Save to Photos" handler:^{
-        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                             title:@"Saving"
-                                                                              mode:MRProgressOverlayViewModeIndeterminate
-                                                                          animated:YES];
-        overlay.tintColor = self.theme[@"tintColor"];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[ALAssetsLibrary new] writeImageDataToSavedPhotosAlbum:self.imageData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [overlay dismiss:YES completion:^{
-                        if (error) {
-                            UIAlertController *alert = [UIAlertController alertWithTitle:@"Could Not Save Image" error:error handler:^(UIAlertAction *alert) {
-                                [self hideBarsAfterShortDuration];
-                            }];
-                            [self presentViewController:alert animated:YES completion:nil];
-                        }
-                    }];
-                });
-            }];
-        });
-    }];
-    
-    [actionSheet addActionWithTitle:@"Copy Image URL" handler:^{
-        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = self.imageURL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = self.imageURL;
-        [self hideBarsAfterShortDuration];
-    }];
-    
-    if ([SSReadingList supportsURL:self.imageURL]) {
-        [actionSheet addActionWithTitle:@"Send to Reading List" handler:^{
-            NSError *error;
-            if (![[SSReadingList defaultReadingList] addReadingListItemWithURL:self.imageURL title:self.title previewText:nil error:&error]) {
-                [self presentViewController:[UIAlertController alertWithTitle:@"Error Adding Image" error:error] animated:YES completion:nil];
-            }
-        }];
-    }
-    
-    [actionSheet addActionWithTitle:@"Copy Image" handler:^{
-        if (self.imageIsGIF) {
-            [[UIPasteboard generalPasteboard] setData:self.imageData forPasteboardType:(__bridge NSString *)kUTTypeGIF];
-        } else {
-            [UIPasteboard generalPasteboard].image = self.imageView.image;
-        }
-        [self hideBarsAfterShortDuration];
-    }];
-    
-    [actionSheet addCancelActionWithHandler:^{
-        [self hideBarsAfterShortDuration];
-    }];
-    
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    actionSheet.popoverPresentationController.barButtonItem = self.actionButton;
+	if (self.presentedViewController) return;
+	[self.automaticallyHideBarsTimer invalidate];
+	
+	UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageView.image, self.imageURL]
+																		   applicationActivities:nil];
+	
+	activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+		[self hideBarsAfterShortDuration];
+	};
+	
+	[self presentViewController:activity animated:YES completion:nil];
 }
 
 - (void)hideBarsAfterShortDuration
