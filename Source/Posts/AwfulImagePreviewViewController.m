@@ -5,11 +5,11 @@
 #import "AwfulImagePreviewViewController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
-@import AssetsLibrary;
-@import SafariServices;
 #import <AFNetworking/AFNetworking.h>
+@import AssetsLibrary;
 #import <FVGifAnimation.h>
 #import <MRProgress/MRProgressOverlayView.h>
+@import SafariServices;
 #import "Awful-Swift.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
@@ -33,8 +33,7 @@
 
 - (id)initWithURL:(NSURL *)imageURL
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         _imageURL = imageURL;
         self.navigationItem.leftBarButtonItem = self.doneButton;
         self.navigationItem.rightBarButtonItem = self.actionButton;
@@ -261,6 +260,60 @@
                         atScale:(CGFloat)scale
 {
     // Implemented so zooming works.
+}
+
+@end
+
+@interface ImagePreviewActivity ()
+
+@property (strong, nonatomic) UIViewController *activityViewController;
+
+@end
+
+@implementation ImagePreviewActivity
+
+- (NSString *)activityType
+{
+    return @"com.awfulapp.Awful.ImagePreview";
+}
+
+- (NSString *)activityTitle
+{
+    return @"Preview Image";
+}
+
+- (UIImage *)activityImage
+{
+    return [UIImage imageNamed:@"quick-look"];
+}
+
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems
+{
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSURL class]]) return YES;
+    }
+    return NO;
+}
+
+- (void)prepareWithActivityItems:(NSArray *)activityItems
+{
+    NSURL *imageURL;
+    for (id item in activityItems.reverseObjectEnumerator) {
+        if ([item isKindOfClass:[NSURL class]]) {
+            imageURL = item;
+            break;
+        }
+    }
+    
+    AwfulImagePreviewViewController *previewViewController = [[AwfulImagePreviewViewController alloc] initWithURL:imageURL];
+    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    [doneItem awful_setActionBlock:^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        [self activityDidFinish:YES];
+    }];
+    previewViewController.navigationItem.leftBarButtonItem = doneItem;
+    self.activityViewController = [previewViewController enclosingNavigationController];
 }
 
 @end

@@ -184,47 +184,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>“Read Later” Services</string>
-			<key>Explanation</key>
-			<string>Save off-Forums links for later reading.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Instapaper</string>
-					<key>ValueIdentifier</key>
-					<string>InstapaperUsername</string>
-					<key>PredicateKeyPath</key>
-					<string>isLoggedInToInstapaper</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Log In</string>
-					<key>Action</key>
-					<string>InstapaperLogIn</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulInstapaperStatusTransformer</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Pocket</string>
-					<key>ValueIdentifier</key>
-					<string>PocketUsername</string>
-					<key>PredicateKeyPath</key>
-					<string>isLoggedInToPocket</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Log In</string>
-					<key>Action</key>
-					<string>PocketLogIn</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulPocketStatusTransformer</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
 			<key>VisibleInSettingsTab</key>
 			<false/>
 			<key>Settings</key>

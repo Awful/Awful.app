@@ -3,18 +3,17 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileViewController.h"
-#import "AwfulExternalBrowser.h"
+#import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulModels.h"
-#import "MessageComposeViewController.h"
 #import "AwfulProfileViewModel.h"
-#import "AwfulReadLaterService.h"
 #import "AwfulSettings.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
 #import <GRMustache.h>
-#import "UIAlertAction+WebViewSheets.h"
+#import "MessageComposeViewController.h"
+#import <TUSafariActivity/TUSafariActivity.h>
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -93,13 +92,13 @@
 
 - (void)showActionsForHomepage:(NSURL *)homepage atRect:(CGRect)rect
 {
-    UIAlertController *actionSheet = [UIAlertController actionSheet];
-    actionSheet.title = homepage.absoluteString;
-    [actionSheet addActions:[UIAlertAction actionsOpeningURL:homepage fromViewController:self]];
-    [actionSheet addCancelActionWithHandler:nil];
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    actionSheet.popoverPresentationController.sourceRect = rect;
-    actionSheet.popoverPresentationController.sourceView = self.view;
+    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[homepage]
+                                                                                         applicationActivities:@[[TUSafariActivity new],
+                                                                                                                 [ARChromeActivity new]]];
+    [self presentViewController:activityViewController animated:YES completion:nil];
+    UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
+    popover.sourceRect = rect;
+    popover.sourceView = self.view;
 }
 
 - (UIWebView *)webView

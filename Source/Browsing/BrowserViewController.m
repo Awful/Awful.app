@@ -3,11 +3,10 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "BrowserViewController.h"
-#import "AwfulExternalBrowser.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulReadLaterService.h"
-#import "AwfulSettings.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import <ARChromeActivity/ARChromeActivity.h>
+#import <TUSafariActivity/TUSafariActivity.h>
 @import WebKit;
 #import "Awful-Swift.h"
 
@@ -84,45 +83,18 @@
 - (UIBarButtonItem *)actionItem
 {
     if (_actionItem) return _actionItem;
-    _actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actOnCurrentPage:)];
+    _actionItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    [_actionItem awful_setActionBlock:^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        TUSafariActivity *safariActivity = [TUSafariActivity new];
+        ARChromeActivity *chromeActivity = [ARChromeActivity new];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.URL]
+                                                                                             applicationActivities:@[safariActivity, chromeActivity]];
+        activityViewController.popoverPresentationController.barButtonItem = sender;
+        [self presentViewController:activityViewController animated:YES completion:nil];
+    }];
     return _actionItem;
-}
-
-- (void)actOnCurrentPage:(UIBarButtonItem *)sender
-{
-    if (self.presentedViewController) return;
-	NSURL *URL = self.webView.URL;
-    if (URL.absoluteString.length == 0) {
-        URL = self.URL;
-    }
-    UIAlertController *actionSheet = [UIAlertController actionSheet];
-    
-    [actionSheet addActionWithTitle:@"Open in Safari" handler:^{
-        [[UIApplication sharedApplication] openURL:URL];
-    }];
-    
-    for (AwfulExternalBrowser *browser in [AwfulExternalBrowser installedBrowsers]) {
-        if (![browser canOpenURL:URL]) continue;
-        [actionSheet addActionWithTitle:[NSString stringWithFormat:@"Open in %@", browser.title] handler:^{
-            [browser openURL:URL];
-        }];
-    }
-    
-    for (AwfulReadLaterService *service in [AwfulReadLaterService availableServices]) {
-        [actionSheet addActionWithTitle:service.callToAction handler:^{
-            [service saveURL:URL];
-        }];
-    }
-    
-    [actionSheet addActionWithTitle:@"Copy URL" handler:^{
-        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }];
-    
-    [actionSheet addCancelActionWithHandler:nil];
-    
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    actionSheet.popoverPresentationController.barButtonItem = sender;
 }
 
 - (UIBarButtonItem *)backItem
