@@ -86,4 +86,9 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
     return [self.post valueForKey:key];
 }
 
+@dynamic author;
+@dynamic beenSeen;
+@dynamic postDate;
+@dynamic postID;
+
 @end

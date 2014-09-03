@@ -98,4 +98,20 @@
     return [self.user valueForKey:key];
 }
 
+@dynamic aboutMe;
+@dynamic aimName;
+@dynamic avatarURL;
+@dynamic homepageURL;
+@dynamic icqName;
+@dynamic interests;
+@dynamic lastPost;
+@dynamic location;
+@dynamic occupation;
+@dynamic postCount;
+@dynamic postRate;
+@dynamic profilePictureURL;
+@dynamic regdate;
+@dynamic username;
+@dynamic yahooName;
+
 @end

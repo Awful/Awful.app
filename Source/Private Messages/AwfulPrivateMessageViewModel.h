@@ -15,9 +15,6 @@
  */
 - (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage;
 
-/**
- * Keys not described below are forwarded to a private message, making them available to the renderer.
- */
 @property (readonly, strong, nonatomic) AwfulPrivateMessage *privateMessage;
 
 /**
@@ -64,5 +61,12 @@
  * The current font scale.
  */
 @property (readonly, strong, nonatomic) NSNumber *fontScalePercentage;
+
+#pragma mark Keys forwarded to the message
+
+@property (readonly, nonatomic) AwfulUser *from;
+@property (readonly, nonatomic) NSString *messageID;
+@property (readonly, nonatomic) BOOL seen;
+@property (readonly, nonatomic) NSDate *sentDate;
 
 @end

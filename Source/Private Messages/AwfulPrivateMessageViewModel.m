@@ -89,4 +89,9 @@
     return [self.privateMessage valueForKey:key];
 }
 
+@dynamic from;
+@dynamic messageID;
+@dynamic seen;
+@dynamic sentDate;
+
 @end

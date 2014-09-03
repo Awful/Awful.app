@@ -15,9 +15,6 @@
  */
 - (id)initWithUser:(AwfulUser *)user;
 
-/**
- * Keys not described below are forwarded to a user, making them available to the renderer.
- */
 @property (readonly, strong, nonatomic) AwfulUser *user;
 
 /**
@@ -74,5 +71,23 @@
  * JavaScript used in rendering.
  */
 @property (readonly, copy, nonatomic) NSString *javascript;
+
+#pragma mark Keys forwarded to the user
+
+@property (readonly, nonatomic) NSString *aboutMe;
+@property (readonly, nonatomic) NSString *aimName;
+@property (readonly, nonatomic) NSURL *avatarURL;
+@property (readonly, nonatomic) NSURL *homepageURL;
+@property (readonly, nonatomic) NSString *icqName;
+@property (readonly, nonatomic) NSString *interests;
+@property (readonly, nonatomic) NSDate *lastPost;
+@property (readonly, nonatomic) NSString *location;
+@property (readonly, nonatomic) NSString *occupation;
+@property (readonly, nonatomic) int32_t postCount;
+@property (readonly, nonatomic) NSString *postRate;
+@property (readonly, nonatomic) NSURL *profilePictureURL;
+@property (readonly, nonatomic) NSDate *regdate;
+@property (readonly, nonatomic) NSString *username;
+@property (readonly, nonatomic) NSString *yahooName;
 
 @end

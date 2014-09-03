@@ -15,9 +15,6 @@
  */
 - (id)initWithPost:(AwfulPost *)post;
 
-/**
- * Keys not described below are forwarded to a post, making them available to the renderer.
- */
 @property (readonly, strong, nonatomic) AwfulPost *post;
 
 /**
@@ -49,5 +46,12 @@
  * A formatter suitable for the author's regdate.
  */
 @property (readonly, strong, nonatomic) NSDateFormatter *regDateFormat;
+
+#pragma mark Keys forwarded to the post itself
+
+@property (readonly, nonatomic) AwfulUser *author;
+@property (readonly, nonatomic) BOOL beenSeen;
+@property (readonly, nonatomic) NSDate *postDate;
+@property (readonly, nonatomic) NSString *postID;
 
 @end
