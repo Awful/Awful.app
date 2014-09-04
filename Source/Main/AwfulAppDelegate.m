@@ -11,7 +11,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
-#import "AwfulLaunchImageViewController.h"
 #import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
@@ -29,14 +28,14 @@
 @interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
 
 @property (strong, nonatomic) RootViewControllerStack *rootViewControllerStack;
+@property (strong, nonatomic) AwfulLoginController *loginController;
+
+@property (strong, nonatomic) AwfulDataStack *dataStack;
+@property (strong, nonatomic) AwfulURLRouter *URLRouter;
 
 @end
 
 @implementation AwfulAppDelegate
-{
-    AwfulDataStack *_dataStack;
-    AwfulURLRouter *_awfulURLRouter;
-}
 
 static id _instance;
 
@@ -45,11 +44,132 @@ static id _instance;
     return _instance;
 }
 
+- (void)setRootViewController:(UIViewController *)rootViewController animated:(BOOL)animated completion:(void (^)(void))completionBlock
+{
+    [UIView transitionWithView:self.window
+                      duration:animated ? 0.3 : 0
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^
+     {
+         self.window.rootViewController = rootViewController;
+     } completion:^(BOOL completed){
+         if (completionBlock) completionBlock();
+     }];
+}
+
+- (NSManagedObjectContext *)managedObjectContext
+{
+    return _dataStack.managedObjectContext;
+}
+
+#define CRASHLYTICS_ENABLED defined(CRASHLYTICS_API_KEY) && !DEBUG
+
+static inline void StartCrashlytics(void)
+{
+#if CRASHLYTICS_ENABLED
+    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+    SetCrashlyticsUsername();
+#endif
+}
+
+static inline void SetCrashlyticsUsername(void)
+{
+#if CRASHLYTICS_ENABLED && AWFUL_BETA
+    [Crashlytics setUserName:[AwfulSettings sharedSettings].username];
+#endif
+}
+
+- (RootViewControllerStack *)rootViewControllerStack
+{
+    if (!_rootViewControllerStack) {
+        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
+        _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.window.rootViewController
+                                                   managedObjectContext:_dataStack.managedObjectContext];
+    }
+    return _rootViewControllerStack;
+}
+
+- (AwfulLoginController *)loginController
+{
+    if (!_loginController) {
+        _loginController = [AwfulLoginController new];
+        _loginController.delegate = self;
+    }
+    return _loginController;
+}
+
+- (void)themeDidChange
+{
+    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+    [self.window.rootViewController themeDidChange];
+}
+
+- (void)settingsDidChange:(NSNotification *)note
+{
+    NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
+    if ([setting isEqualToString:AwfulSettingsKeys.username]) {
+        SetCrashlyticsUsername();
+    } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
+        // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
+        UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
+        [self.window addSubview:snapshot];
+        [self themeDidChange];
+        [UIView transitionFromView:snapshot
+                            toView:nil
+                          duration:0.2
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        completion:^(BOOL finished)
+         {
+             [snapshot removeFromSuperview];
+         }];
+    }
+}
+
+- (void)preferredContentSizeDidChange:(NSNotification *)note
+{
+    [self themeDidChange];
+}
+
+- (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
+{
+    NSError *error;
+    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if (!ok) {
+        NSLog(@"error setting shared audio session category: %@", error);
+    }
+}
+
+static NSString * const kLastExpiringCookiePromptDate = @"com.awfulapp.Awful.LastCookieExpiringPromptDate";
+static const NSTimeInterval kCookieExpiringSoonThreshold = 60 * 60 * 24 * 7; // One week
+static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 48 Hours
+
+- (void)showPromptIfLoginCookieExpiresSoon
+{
+    NSDate *loginCookieExpiryDate = [AwfulForumsClient client].loginCookieExpiryDate;
+    if (loginCookieExpiryDate && [loginCookieExpiryDate timeIntervalSinceNow] < kCookieExpiringSoonThreshold) {
+        NSDate *lastPromptDate = [[NSUserDefaults standardUserDefaults] objectForKey:kLastExpiringCookiePromptDate];
+        if (!lastPromptDate || [lastPromptDate timeIntervalSinceNow] > kCookieExpiryPromptFrequency) {
+            
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+            NSString *dateString = [dateFormatter stringFromDate:loginCookieExpiryDate];
+            NSString *message = [NSString stringWithFormat:@"Your login cookie expires on %@", dateString];
+            
+            UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Login Expiring Soon" message:message handler:^(UIAlertAction *action) {
+                [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
+            }];
+            [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+        }
+    }
+}
+
+- (BOOL)openAwfulURL:(NSURL *)url
+{
+    return [self.URLRouter routeURL:url];
+}
+
 - (void)logOut
 {
-    // Destroy root view controller before deleting data store so there's no lingering references to persistent objects or their controllers.
-    [self destroyRootViewControllerStack];
-    
     // Reset the HTTP client so it gets remade (if necessary) with the default URL.
     [[AwfulForumsClient client] reset];
     
@@ -62,28 +182,18 @@ static id _instance;
     [[AwfulSettings sharedSettings] reset];
     [[AwfulAvatarLoader loader] emptyCache];
     
-    [UIView transitionWithView:self.window
-                      duration:0.3
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^
-    {
-        [UIView performWithoutAnimation:^{
-            self.window.rootViewController = [AwfulLaunchImageViewController new];
-        }];
-    } completion:^(BOOL finished) {
-        AwfulLoginController *loginController = [AwfulLoginController new];
-        loginController.delegate = self;
-        [self.window.rootViewController presentViewController:[loginController enclosingNavigationController] animated:YES completion:nil];
-        
-        // If we delete the store earlier, the root view controller's still hanging around in an autorelease pool somewhere. If a posts view was open when logging out (which can happen on iPad), it'll crash when the store disappears out from under the managed object context. This seems like a reasonable time to delete the store, as it's not like anyone can do anything in the meantime.
-        [_dataStack deleteStoreAndResetStack];
+    __weak __typeof__(self) weakSelf = self;
+    [self setRootViewController:[self.loginController enclosingNavigationController] animated:YES completion:^{
+        __typeof__(self) self = weakSelf;
+        self.rootViewControllerStack = nil;
+        self.URLRouter = nil;
+        [self.dataStack deleteStoreAndResetStack];
     }];
 }
 
-- (NSManagedObjectContext *)managedObjectContext
-{
-    return _dataStack.managedObjectContext;
-}
+#pragma mark - UIApplicationDelegate
+
+#pragma mark Launching and backgrounding
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -114,92 +224,26 @@ static id _instance;
     [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
+    application.statusBarStyle = UIStatusBarStyleLightContent;
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
     if ([AwfulForumsClient client].loggedIn) {
-        self.window.rootViewController = [self createRootViewControllerStack];
+        [self setRootViewController:self.rootViewControllerStack.rootViewController animated:NO completion:nil];
     } else {
-        self.window.rootViewController = [AwfulLaunchImageViewController new];
+        [self setRootViewController:[self.loginController enclosingNavigationController] animated:NO completion:nil];
     }
     [self.window makeKeyAndVisible];
     return YES;
 }
 
-#define CRASHLYTICS_ENABLED defined(CRASHLYTICS_API_KEY) && !DEBUG
-
-static inline void StartCrashlytics(void)
-{
-    #if CRASHLYTICS_ENABLED
-        [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
-        SetCrashlyticsUsername();
-    #endif
-}
-
-static inline void SetCrashlyticsUsername(void)
-{
-    #if CRASHLYTICS_ENABLED && AWFUL_BETA
-        [Crashlytics setUserName:[AwfulSettings sharedSettings].username];
-    #endif
-}
-
-- (RootViewControllerStack *)rootViewControllerStack
-{
-    if (!_rootViewControllerStack) {
-        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-    }
-    return _rootViewControllerStack;
-}
-
-- (UIViewController *)createRootViewControllerStack
-{
-    _awfulURLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.rootViewControllerStack.rootViewController
-                                                    managedObjectContext:_dataStack.managedObjectContext];
-    return self.rootViewControllerStack.rootViewController;
-}
-
-- (void)destroyRootViewControllerStack
-{
-    self.rootViewControllerStack = nil;
-    self.window.rootViewController = nil;
-    _awfulURLRouter = nil;
-}
-
-static NSString * const SplitViewControllerIdentifier = @"Root splitview";
-static NSString * const TabBarControllerIdentifier = @"Primary tabbar";
-
-static NSString * const ForumListIdentifier = @"Forum list";
-static NSString * const BookmarksIdentifier = @"Bookmarks";
-static NSString * const MessagesListIdentifier = @"Messages list";
-static NSString * const LepersColonyIdentifier = @"Leper's Colony";
-static NSString * const SettingsIdentifier = @"Settings";
-
-static NSString * const ForumListNavigationIdentifier = @"Forum list navigation";
-static NSString * const BookmarksNavigationIdentifier = @"Bookmarks navigation";
-static NSString * const MessagesListNavigationIdentifier = @"Messages list navigation";
-static NSString * const LepersColonyNavigationIdentifier = @"Leper's Colony navigation";
-static NSString * const SettingsNavigationIdentifier = @"Settings navigation";
-static NSString * const DetailNavigationIdentifier = @"Detail navigation";
-
-- (void)themeDidChange
-{
-    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
-	[self.window.rootViewController themeDidChange];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    application.statusBarStyle = UIStatusBarStyleLightContent;
-    
-    if (![AwfulForumsClient client].loggedIn) {
-        AwfulLoginController *login = [AwfulLoginController new];
-        login.delegate = self;
-        [self.window.rootViewController presentViewController:[login enclosingNavigationController] animated:NO completion:nil];
-    }
-    
-    [self.rootViewControllerStack didAppear];
+    // Direct ivar access because we don't want to lazily create it now.
+    [_rootViewControllerStack didAppear];
     
     [self ignoreSilentSwitchWhenPlayingEmbeddedVideo];
-
+    
     [self showPromptIfLoginCookieExpiresSoon];
     
     [[AwfulNewMessageChecker checker] refreshIfNecessary];
@@ -218,72 +262,12 @@ static NSString * const DetailNavigationIdentifier = @"Detail navigation";
     return YES;
 }
 
-- (void)settingsDidChange:(NSNotification *)note
-{
-    NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([setting isEqualToString:AwfulSettingsKeys.username]) {
-        SetCrashlyticsUsername();
-    } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
-        // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
-        UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
-        [self.window addSubview:snapshot];
-        [self themeDidChange];
-        [UIView transitionFromView:snapshot
-                            toView:nil
-                          duration:0.2
-                           options:UIViewAnimationOptionTransitionCrossDissolve
-                        completion:^(BOOL finished)
-         {
-             [snapshot removeFromSuperview];
-         }];
-	}
-}
-
-- (void)preferredContentSizeDidChange:(NSNotification *)note
-{
-    [self themeDidChange];
-}
-
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     NSError *error;
     BOOL ok = [_dataStack.managedObjectContext save:&error];
     if (!ok) {
         NSLog(@"%s error saving main managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
-}
-
-- (void)ignoreSilentSwitchWhenPlayingEmbeddedVideo
-{
-    NSError *error;
-    BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if (!ok) {
-        NSLog(@"error setting shared audio session category: %@", error);
-    }
-}
-
-
-static NSString * const kLastExpiringCookiePromptDate = @"com.awfulapp.Awful.LastCookieExpiringPromptDate";
-static const NSTimeInterval kCookieExpiringSoonThreshold = 60 * 60 * 24 * 7; // One week
-static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 48 Hours
-
-- (void)showPromptIfLoginCookieExpiresSoon
-{
-    NSDate *loginCookieExpiryDate = [AwfulForumsClient client].loginCookieExpiryDate;
-    if (loginCookieExpiryDate && [loginCookieExpiryDate timeIntervalSinceNow] < kCookieExpiringSoonThreshold) {
-        NSDate *lastPromptDate = [[NSUserDefaults standardUserDefaults] objectForKey:kLastExpiringCookiePromptDate];
-        if (!lastPromptDate || [lastPromptDate timeIntervalSinceNow] > kCookieExpiryPromptFrequency) {
-
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-            NSString *dateString = [dateFormatter stringFromDate:loginCookieExpiryDate];
-            NSString *message = [NSString stringWithFormat:@"Your login cookie expires on %@", dateString];
-
-            UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Login Expiring Soon" message:message handler:^(UIAlertAction *action) {
-                [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
-            }];
-            [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
-        }
     }
 }
 
@@ -329,7 +313,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - State preservation and restoration
+#pragma mark State preservation and restoration
 
 - (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
@@ -376,7 +360,7 @@ typedef NS_ENUM(NSInteger, AwfulInterfaceVersion)
 
 static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 
-#pragma mark -
+#pragma mark URLs
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)URL
@@ -390,12 +374,7 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
     return [self openAwfulURL:URL];
 }
 
-- (BOOL)openAwfulURL:(NSURL *)url
-{
-    return [_awfulURLRouter routeURL:url];
-}
-
-#pragma mark - AwfulLoginControllerDelegate
+#pragma mark AwfulLoginControllerDelegate
 
 - (void)loginController:(AwfulLoginController *)login
          didLogInAsUser:(AwfulUser *)user
@@ -408,22 +387,20 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
     [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification object:user];
     
     [[AwfulForumsClient client] taxonomizeForumsAndThen:nil];
-    [UIView transitionWithView:self.window
-                      duration:0.3
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{
-                        [UIView performWithoutAnimation:^{
-                            [login dismissViewControllerAnimated:NO completion:nil];
-                            self.window.rootViewController = [self createRootViewControllerStack];;
-                        }];
-                    } completion:nil];
+
+    __weak __typeof__(self) weakSelf = self;
+    [self setRootViewController:self.rootViewControllerStack.rootViewController animated:YES completion:^{
+        __typeof__(self) self = weakSelf;
+        [self.rootViewControllerStack didAppear];
+        self.loginController = nil;
+    }];
 }
 
 - (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
 {
     UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Problem Logging In"
                                                                       message:@"Double-check your username and password, then try again."];
-    [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+    [login presentViewController:alert animated:YES completion:nil];
 }
 
 @end
