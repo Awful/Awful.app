@@ -154,7 +154,7 @@
     return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
 }
 
-- (NSDate*)loginCookieExpiryDate
+- (NSDate *)loginCookieExpiryDate
 {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:_HTTPManager.baseURL];
     for (NSHTTPCookie *cookie in cookies) {
