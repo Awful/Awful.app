@@ -106,7 +106,7 @@
                 [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
             } else {
                 _composeViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:privateMessage
-                                                                                                initialContents:BBcode];
+                                                                                        initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message replying to private message";
                 [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
@@ -121,7 +121,7 @@
                 [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
             } else {
                 _composeViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:self.privateMessage
-                                                                                                 initialContents:BBcode];
+                                                                                         initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message forwarding private message";
                 [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
@@ -386,7 +386,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     _composeViewController = nil;
 }
 
-#pragma mark State preservation and restoration
+#pragma mark - State preservation and restoration
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
