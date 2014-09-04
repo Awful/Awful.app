@@ -17,6 +17,11 @@
 + (AwfulForumsClient *)client;
 
 /**
+ * Swift-callable version of +client.
+ */
++ (instancetype)sharedClient;
+
+/**
  * The Forums endpoint for the client. Typically http://forums.somethingawful.com
  */
 @property (readonly, strong, nonatomic) NSURL *baseURL;

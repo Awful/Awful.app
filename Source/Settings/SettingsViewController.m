@@ -8,7 +8,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
-#import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "Awful-Swift.h"
@@ -305,7 +304,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
                                                              username:[AwfulSettings sharedSettings].username
                                                inManagedObjectContext:self.managedObjectContext];
-        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:loggedInUser];
+        ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:loggedInUser];
         [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
     } else if ([action isEqualToString:@"LogOut"]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Log Out"

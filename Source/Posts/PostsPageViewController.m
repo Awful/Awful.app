@@ -16,7 +16,6 @@
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulPostViewModel.h"
-#import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
@@ -774,8 +773,8 @@
     NSMutableArray *items = [NSMutableArray new];
     
 	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
-        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+        ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self presentViewController:[profileViewController enclosingNavigationController] animated:YES completion:nil];
 	}]];
     
 	if (!self.author) {
