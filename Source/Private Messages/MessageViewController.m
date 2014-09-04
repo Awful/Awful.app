@@ -12,7 +12,6 @@
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulPrivateMessageViewModel.h"
-#import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
@@ -142,7 +141,7 @@
     AwfulUser *user = self.privateMessage.from;
     
 	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-        AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+        ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         } else {

@@ -62,6 +62,11 @@
     return instance;
 }
 
++ (instancetype)sharedClient
+{
+    return [self client];
+}
+
 - (NSURL *)baseURL
 {
     return _HTTPManager.baseURL;

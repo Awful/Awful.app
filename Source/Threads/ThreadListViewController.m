@@ -9,7 +9,6 @@
 #import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "ThreadComposeViewController.h"
-#import "AwfulProfileViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTagLoader.h"

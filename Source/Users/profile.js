@@ -1,24 +1,22 @@
 // Assumes common.js is available.
 
-startBridge(function(bridge) {
-  bridge.init();
-  
-  bridge.registerHandler('darkMode', function(dark) {
-    $('body').toggleClass('dark', dark);
-  });
+function darkMode(dark) {
+  $('body').toggleClass('dark', dark);
+}
 
-  $(function() {
-	$('#headerBackground').css('height', $('#content > section > header').height());
-    $('#contact').on('click', 'tr', function(event) {
-      var row = $(this);
-      var service = row.find('th').text();
-      var address = row.find('td').text();
-      var data = {
-        service: service,
-        address: address,
+$(function() {
+  $('#headerBackground').css('height', $('#content > section > header').height());
+  
+  $('#contact').on('click', 'tr', function(event) {
+    var row = $(this);
+    var service = row.find('th').text();
+    if (service === "Private Message") {
+      webkit.messageHandlers.sendPrivateMessage.postMessage(true);
+    } else if (service === "Homepage") {
+      webkit.messageHandlers.showHomepageActions.postMessage({
+        URL: row.find('td').text(),
         rect: rectOfElement(row)
-      };
-      bridge.callHandler('contactInfo', data);
-    });
+      });
+    }
   });
 });

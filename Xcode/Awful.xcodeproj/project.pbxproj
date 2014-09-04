@@ -78,7 +78,6 @@
 		1C6D2EB4182FE1E400785766 /* MessageFolderScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.m */; };
 		1C6D2EB5182FE21A00785766 /* AwfulPrivateMessageFolderScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EB1182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.m */; };
 		1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */; };
-		1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */; };
 		1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFED8182A735E0014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFEDB182A74A60014311C /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
@@ -176,6 +175,7 @@
 		1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */; };
 		1CD82F56194E905C00B0C5BD /* DatabaseUnavailableTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F55194E905C00B0C5BD /* DatabaseUnavailableTests.m */; };
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
+		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */; };
 		1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
@@ -364,8 +364,6 @@
 		1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageFolderScrapingTests.m; sourceTree = "<group>"; };
 		1C6D3EE9168D7B1E00B91A65 /* AwfulUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUser.h; sourceTree = "<group>"; };
 		1C6D3EEA168D7B1E00B91A65 /* AwfulUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUser.m; sourceTree = "<group>"; };
-		1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewController.h; sourceTree = "<group>"; };
-		1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewController.m; sourceTree = "<group>"; };
 		1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCompoundDateParser.h; sourceTree = "<group>"; };
 		1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCompoundDateParser.m; sourceTree = "<group>"; };
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
@@ -526,6 +524,7 @@
 		1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AwfulConvenient.m"; sourceTree = "<group>"; };
 		1CD82F55194E905C00B0C5BD /* DatabaseUnavailableTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseUnavailableTests.m; sourceTree = "<group>"; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTheme.h; sourceTree = "<group>"; };
 		1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTheme.m; sourceTree = "<group>"; };
 		1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThemeLoader.h; sourceTree = "<group>"; };
@@ -870,17 +869,16 @@
 			children = (
 				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
 				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
-				1C6ED63B1691055E0015CDD5 /* AwfulProfileViewController.h */,
-				1C6ED63C1691055E0015CDD5 /* AwfulProfileViewController.m */,
 				1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */,
 				1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */,
 				1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */,
 				1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */,
-				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
-				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
 				1C8E10431914AA730010007B /* profile.css */,
 				1C8E104B1916F85F0010007B /* profile.js */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
+				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
+				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
+				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
 			);
 			path = Users;
 			sourceTree = "<group>";
@@ -1706,7 +1704,6 @@
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
-				1C6ED63D1691055E0015CDD5 /* AwfulProfileViewController.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
@@ -1742,6 +1739,7 @@
 				F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */,
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
+				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1CD82F451948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,

@@ -3,19 +3,18 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulURLRouter.h"
-#import "BookmarkedThreadListViewController.h"
 #import "AwfulEmptyViewController.h"
-#import "ThreadListViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
-#import "AwfulProfileViewController.h"
-#import "SettingsViewController.h"
+#import "BookmarkedThreadListViewController.h"
 #import "ForumListViewController.h"
+#import <JLRoutes/JLRoutes.h>
 #import "MessageListViewController.h"
+#import <MRProgress/MRProgressOverlayView.h>
 #import "PostsPageViewController.h"
 #import "RapSheetViewController.h"
-#import <JLRoutes/JLRoutes.h>
-#import <MRProgress/MRProgressOverlayView.h>
+#import "SettingsViewController.h"
+#import "ThreadListViewController.h"
 #import "Awful-Swift.h"
 
 @implementation AwfulURLRouter
@@ -120,7 +119,7 @@
     [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         void (^success)(AwfulUser *) = ^(AwfulUser *user) {
-            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+            ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
         AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];

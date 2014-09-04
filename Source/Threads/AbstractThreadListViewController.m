@@ -7,7 +7,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewThreadTagObserver.h"
-#import "AwfulProfileViewController.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTag.h"
@@ -222,7 +221,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     AwfulUser *author = thread.author;
     if (author.userID.length > 0 || author.username > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
-            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:thread.author];
+            ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:thread.author];
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
             } else {
