@@ -23,7 +23,6 @@
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenience.h"
-#import <Crashlytics/Crashlytics.h>
 
 @implementation AwfulForumsClient
 {
@@ -492,9 +491,14 @@
                  HTMLElement *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  NSString *threadID = URL.queryDictionary[@"threadid"];
-                 CLSLog(@"%s newly-created thread ID is %@ from link %@", __PRETTY_FUNCTION__, threadID, link);
-                 AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
-                 if (callback) callback(nil, thread);
+                 NSError *error;
+                 AwfulThread *thread;
+                 if (threadID) {
+                     thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
+                 } else {
+                     error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
+                 }
+                 if (callback) callback(error, thread);
              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                  if (callback) callback(error, nil);
              }];

@@ -18,7 +18,6 @@
 #import "AwfulThreadCell.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
-#import <Crashlytics/Crashlytics.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface AwfulForumThreadTableViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
@@ -243,7 +242,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [self dismissViewControllerAnimated:YES completion:^{
         if (success) {
             AwfulThread *thread = newThreadViewController.thread;
-            CLSLog(@"%s %@ supplied thread %@ with threadID %@", __PRETTY_FUNCTION__, newThreadViewController, thread, thread.threadID);
             AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
             [postsViewController loadPage:1 updatingCache:YES];
