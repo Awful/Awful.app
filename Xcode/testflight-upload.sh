@@ -116,7 +116,7 @@ if [ -z "$VERSION" ]; then
 fi
 (
   cd "$SRCROOT" &&
-  git tag -a -f -m <("$NOTES_FILE") "$VERSION" >> "$LOG" 2>&1 &&
+  git tag -a -f -m "$(< "$NOTES_FILE")" "$VERSION" >> "$LOG" 2>&1 &&
   git push origin "$VERSION" >> "$LOG" 2>&1
 )
 if [ $? -ne 0 ]; then
