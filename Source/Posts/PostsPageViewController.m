@@ -844,8 +844,6 @@
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }]];
     
-    __weak __typeof__(self) weakSelf = self;
-    
     if (!self.author) {
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
