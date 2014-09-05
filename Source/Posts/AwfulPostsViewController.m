@@ -841,6 +841,7 @@
     }
     AwfulActionViewController *sheet = [AwfulActionViewController new];
     sheet.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
+    __weak __typeof__(self) weakSelf = self;
     
     [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
@@ -860,11 +861,12 @@
     if (!self.author) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
+                __typeof__(self) self = weakSelf;
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Mark Read" error:error buttonTitle:@"Alright"];
                 } else {
                     post.thread.seenPosts = post.threadIndex;
-                    [_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
+                    [self->_webViewJavaScriptBridge callHandler:@"markReadUpToPostWithID" data:post.postID];
                 }
             }];
         }]];
@@ -873,6 +875,7 @@
     if (post.editable) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
+                __typeof__(self) self = weakSelf;
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Edit Post" error:error buttonTitle:@"OK"];
                     return;
@@ -888,6 +891,7 @@
     if (!self.thread.closed) {
         [sheet addItem:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
             [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
+                __typeof__(self) self = weakSelf;
                 if (error) {
                     [AwfulAlertView showWithTitle:@"Could Not Quote Post" error:error buttonTitle:@"OK"];
                     return;
