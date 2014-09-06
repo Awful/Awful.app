@@ -10,13 +10,12 @@
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
+#import "SettingsBinding.h"
 #import "Awful-Swift.h"
 
 @interface SettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
-@property (strong, nonatomic) NSMutableArray *switches;
-@property (strong, nonatomic) NSMutableArray *steppers;
 
 @end
 
@@ -38,8 +37,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.switches = [NSMutableArray new];
-    self.steppers = [NSMutableArray new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
 }
 
@@ -143,22 +140,19 @@ typedef NS_ENUM(NSUInteger, SettingType)
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:style  reuseIdentifier:identifier];
         if (settingType == OnOffSetting) {
-            UISwitch *switchView = [UISwitch new];
-            [switchView addTarget:self
-                           action:@selector(hitSwitch:)
-                 forControlEvents:UIControlEventValueChanged];
-            cell.accessoryView = switchView;
+            cell.accessoryView = [UISwitch new];
         } else if (settingType == DisclosureSetting || settingType == DisclosureDetailSetting) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.accessibilityTraits |= UIAccessibilityTraitButton;
         } else if (settingType == StepperSetting) {
-            UIStepper *stepperView = [UIStepper new];
-            [stepperView addTarget:self
-                           action:@selector(stepperPressed:)
-                 forControlEvents:UIControlEventValueChanged];
-            cell.accessoryView = stepperView;
+            cell.accessoryView = [UIStepper new];
         } else if (settingType == ButtonSetting) {
             cell.accessibilityTraits |= UIAccessibilityTraitButton;
+            if (setting[@"ThreadID"]) {
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            } else {
+                cell.accessoryType = UITableViewCellAccessoryNone;
+            }
         }
     }
     if (style == UITableViewCellStyleValue1) {
@@ -187,36 +181,14 @@ typedef NS_ENUM(NSUInteger, SettingType)
         }
     }
     
-    NSString *key = setting[@"Key"];
-    id valueForSetting = key ? [[NSUserDefaults standardUserDefaults] objectForKey:key] : nil;
-    
     if (settingType == OnOffSetting) {
         UISwitch *switchView = (UISwitch *)cell.accessoryView;
-        switchView.on = [valueForSetting boolValue];
-        NSUInteger tag = [self.switches indexOfObject:indexPath];
-        if (tag == NSNotFound) {
-            tag = self.switches.count;
-            [self.switches addObject:indexPath];
-        }
-        switchView.tag = tag;
+        switchView.awful_setting = setting[@"Key"];
     } else if (settingType == StepperSetting) {
-        UIStepper *stepperView = (UIStepper *)cell.accessoryView;
-        stepperView.minimumValue = [setting[@"Minimum"] integerValue];
-        NSNumber *maximum = setting[@"Maximum"];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            maximum = setting[@"Maximum~ipad"] ?: setting[@"Maximum"];
-        }
-        stepperView.maximumValue = [maximum integerValue];
-        stepperView.stepValue = [setting[@"Increment"] integerValue];
-        stepperView.value = [valueForSetting integerValue];
-        cell.textLabel.text = [NSString stringWithFormat:setting[@"Title"], (int)stepperView.value];
-        
-        NSUInteger tag = [self.steppers indexOfObject:indexPath];
-        if (tag == NSNotFound) {
-            tag = self.steppers.count;
-            [self.steppers addObject:indexPath];
-        }
-        stepperView.tag = tag;
+        UIStepper *stepper = (UIStepper *)cell.accessoryView;
+        stepper.awful_setting = setting[@"Key"];
+        cell.textLabel.awful_setting = setting[@"Key"];
+        cell.textLabel.awful_settingFormatString = setting[@"Title"];
     }
     
     if (settingType == ButtonSetting || settingType == DisclosureSetting || settingType == DisclosureDetailSetting) {
@@ -248,25 +220,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
 {
     view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
     view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
-}
-
-- (void)hitSwitch:(UISwitch *)switchView
-{
-    NSIndexPath *indexPath = self.switches[switchView.tag];
-    NSDictionary *setting = [self settingForIndexPath:indexPath];
-    NSString *key = setting[@"Key"];
-    [AwfulSettings sharedSettings][key] = @(switchView.on);
-}
-
-- (void)stepperPressed:(UIStepper *)stepperView
-{
-    NSIndexPath *indexPath = self.steppers[stepperView.tag];
-    NSDictionary *setting = [self settingForIndexPath:indexPath];
-    NSString *key = setting[@"Key"];
-    [AwfulSettings sharedSettings][key] = @(stepperView.value);
-
-    // Redisplay to update title
-    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath

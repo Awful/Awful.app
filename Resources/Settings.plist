@@ -70,7 +70,7 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Font Scale: %d%%</string>
+					<string>Scale Text %@%%</string>
 					<key>Type</key>
 					<string>Stepper</string>
 					<key>Minimum</key>

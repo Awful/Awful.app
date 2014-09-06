@@ -48,6 +48,7 @@
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */; };
 		1C5B99BC166FFA4F004C5D0E /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */; };
 		1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */; };
@@ -324,6 +325,8 @@
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
+		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
 		1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextAttachment.h; sourceTree = "<group>"; };
 		1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextAttachment.m; sourceTree = "<group>"; };
 		1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-amberpos.css"; sourceTree = "<group>"; };
@@ -909,6 +912,8 @@
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
 				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
 				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
+				1C54D30919BBC717002AC6B9 /* SettingsBinding.h */,
+				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
 				11FDA294151018600014FDCD /* SettingsViewController.h */,
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
 			);
@@ -1672,6 +1677,7 @@
 				1C6D2EB2182FDCBC00785766 /* AwfulPrivateMessageFolderScraper.m in Sources */,
 				1CC45267180B7C1A00F5F043 /* AbstractThreadListViewController.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
+				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */,
 				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
