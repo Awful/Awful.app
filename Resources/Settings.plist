@@ -5,6 +5,8 @@
 	<key>Sections</key>
 	<array>
 		<dict>
+			<key>Title</key>
+			<string>Awful x.y.z</string>
 			<key>Explanation</key>
 			<string>Logging out erases all cached forums, threads, and posts.</string>
 			<key>Settings</key>
