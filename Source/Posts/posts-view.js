@@ -74,6 +74,19 @@ startBridge(function(bridge) {
   bridge.registerHandler('endMessage', function(message) {
     $('#end').text(message || '');
   });
+            
+  bridge.registerHandler('findFirstVisiblePost', function(arg, callback) {
+    var $posts = $("post");
+    var $post = null;
+    $posts.each(function(j) {
+      if (isScrolledIntoView(this)) {
+        $post = $(this);
+        return false;
+      }
+    });
+    var obj = {index: ($post? $post.index() - 1 : -1)}
+    callback(obj);
+  });
   
   $(function() {
     $('body').on('tap', 'header .avatar, header .nameanddate', function(event) {
@@ -144,4 +157,15 @@ function highlightMentions(post) {
     node.parentNode.replaceChild(span, nameNode)
     replaceAll(rest)
   }
+}
+
+function isScrolledIntoView(elem)
+{
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+    
+    var elemTop = $(elem).offset().top;
+    var elemBottom = elemTop + $(elem).height();
+    
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
 }
