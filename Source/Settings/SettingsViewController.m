@@ -263,11 +263,13 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        NSDictionary *infoPlist = [NSBundle mainBundle].infoDictionary;
-        return [NSString stringWithFormat:@"Awful %@", infoPlist[@"CFBundleShortVersionString"]];
+    NSString *title = self.sections[section][@"Title"];
+    if ([title isEqualToString:@"Awful x.y.z"]) {
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        return [NSString stringWithFormat:@"Awful %@", version];
+    } else {
+        return title;
     }
-    return self.sections[section][@"Title"];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
