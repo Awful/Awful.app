@@ -45,28 +45,12 @@
 
 - (void)reloadSections
 {
-    NSString *currentDevice = @"iPhone";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        currentDevice = @"iPad";
-    }
-    NSMutableArray *sections = [NSMutableArray new];
-    for (NSDictionary *section in [AwfulSettings sharedSettings].sections) {
-        if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) continue;
-        if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) {
-            continue;
-        }
-        NSMutableDictionary *filteredSection = [section mutableCopy];
-        NSArray *settings = filteredSection[@"Settings"];
-        NSPredicate *predicate = [NSPredicate predicateWithBlock:^(NSDictionary *setting, id _)
-        {
-            NSString *device = setting[@"Device"];
-            if (device && ![device isEqual:currentDevice]) return NO;
-            return YES;
-        }];
-        filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
-        [sections addObject:filteredSection];
-    }
-    self.sections = sections;
+    NSString *currentDevice = self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
+    self.sections = [[AwfulSettings sharedSettings].sections filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSDictionary *section, NSDictionary *bindings) {
+        if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) return NO;
+        if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) return NO;
+        return YES;
+    }]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
