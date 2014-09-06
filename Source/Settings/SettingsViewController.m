@@ -20,16 +20,16 @@
 
 @end
 
-
 @implementation SettingsViewController
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if (!(self = [super initWithStyle:UITableViewStyleGrouped])) return nil;
-    _managedObjectContext = managedObjectContext;
-    self.title = @"Settings";
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.tabBarItem.image = [UIImage imageNamed:@"cog"];
+    if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+        _managedObjectContext = managedObjectContext;
+        self.title = @"Settings";
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.tabBarItem.image = [UIImage imageNamed:@"cog"];
+    }
     return self;
 }
 
@@ -110,8 +110,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     DisclosureDetailSetting,
 };
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Grab the cell we need.
     
@@ -270,8 +269,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView
-  willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     if (setting[@"Action"] || setting[@"Choices"] || setting[@"ViewController"]) {
