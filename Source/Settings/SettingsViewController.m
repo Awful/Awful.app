@@ -32,29 +32,23 @@
     return self;
 }
 
-#pragma mark - UIViewController
+- (NSArray *)sections
+{
+    if (!_sections) {
+        NSString *currentDevice = self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
+        _sections = [[AwfulSettings sharedSettings].sections filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSDictionary *section, NSDictionary *bindings) {
+            if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) return NO;
+            if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) return NO;
+            return YES;
+        }]];
+    }
+    return _sections;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-}
-
-- (void)reloadSections
-{
-    NSString *currentDevice = self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
-    self.sections = [[AwfulSettings sharedSettings].sections filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSDictionary *section, NSDictionary *bindings) {
-        if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) return NO;
-        if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) return NO;
-        return YES;
-    }]];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self reloadSections];
-    [self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -89,7 +83,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
 {
-    return [self.sections count];
+    return self.sections.count;
 } 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
