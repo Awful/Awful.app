@@ -205,17 +205,6 @@ typedef NS_ENUM(NSUInteger, SettingType)
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
-{
-    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UITableViewHeaderFooterView *)view forSection:(NSInteger)section
-{
-    view.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
-    view.contentView.backgroundColor = self.theme[@"listHeaderBackgroundColor"];
-}
-
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *setting = [self settingForIndexPath:indexPath];
@@ -272,29 +261,10 @@ typedef NS_ENUM(NSUInteger, SettingType)
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    NSString *title = [tableView.dataSource tableView:tableView titleForHeaderInSection:section];
-    return title ? 42 : 0;
-}
-
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     NSDictionary *sectionInfo = self.sections[section];
-    return sectionInfo[@"Explanation"] ?: @" ";
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    NSString *text = [tableView.dataSource tableView:tableView titleForFooterInSection:section];
-    if (!text) return 0;
-    CGSize max = CGSizeMake(tableView.bounds.size.width - 40, CGFLOAT_MAX);
-    CGRect expected = [text boundingRectWithSize:max
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote] }
-                                         context:nil];
-    const CGFloat margin = 14;
-    return ceil(CGRectGetHeight(expected)) + margin;
+    return sectionInfo[@"Explanation"];
 }
 
 @end
