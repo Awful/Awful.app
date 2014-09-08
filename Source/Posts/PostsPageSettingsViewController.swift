@@ -40,23 +40,6 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
     @IBOutlet var labels: [UILabel]!
     @IBOutlet var switches: [UISwitch]!
     
-    @IBOutlet weak var avatarsSwitch: UISwitch!
-    @IBAction func toggleAvatarsEnabled(sender: UISwitch) {
-        AwfulSettings.sharedSettings().showAvatars = sender.on
-    }
-    
-    @IBOutlet weak var imagesSwitch: UISwitch!
-    @IBAction func toggleImagesEnabled(sender: UISwitch) {
-        AwfulSettings.sharedSettings().showImages = sender.on
-    }
-    
-    @IBOutlet weak var fontScaleLabel: UILabel!
-    @IBOutlet weak var fontScaleStepper: UIStepper!
-    @IBAction func changeFontScale(sender: UIStepper) {
-        AwfulSettings.sharedSettings().fontScale = sender.value
-        updateFontScaleLabelFromStepper()
-    }
-    
     @IBOutlet weak var themePicker: AwfulThemePicker!
     @IBAction func changeSelectedTheme(sender: AwfulThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
@@ -78,19 +61,6 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
         
         let preferredHeight = view.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        avatarsSwitch.on = AwfulSettings.sharedSettings().showAvatars
-        imagesSwitch.on = AwfulSettings.sharedSettings().showImages
-        fontScaleStepper.value = AwfulSettings.sharedSettings().fontScale
-        updateFontScaleLabelFromStepper()
-    }
-    
-    private func updateFontScaleLabelFromStepper() {
-        fontScaleLabel.text = "\(Int(fontScaleStepper.value))%"
     }
     
     private func updateSelectedThemeInPicker() {
