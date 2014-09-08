@@ -27,18 +27,19 @@
 /**
  * If a cached avatar image exists for a user, it's applied to the given image view and YES is returned. Otherwise the image view is not modified, and NO is returned.
  *
- * (Why doesn't this method simply return a UIImage? So it can handle animated GIFs.)
+ * (Why doesn't this method simply return a UIImage, you ask? So it can handle animated GIFs.)
  */
 - (BOOL)applyCachedAvatarImageForUser:(AwfulUser *)user toImageView:(UIImageView *)imageView;
 
 /**
  * Finds and caches a user's current avatar image.
  *
- * @param completionBlock A block to call after finding an avatar image, which returns the image view to fill with the avatar and takes two parameters: YES if a new avatar was downloaded, or NO if the avatar had not changed; and nil on success, or an error on failure.
+ * @param completionBlock A block to call after finding an avatar image, which returns nothing and receives as parameters: YES if the avatar has changed from the cached image; a block to apply the avatar to a UIImageView; and an error if an error occurred.
  *
- * (Why does't the completion block simply receive a UIImage? So it can handle animated GIFs.)
+ * (Why doesn't the completion block simply receive a UIImage, you ask? So it can handle animated GIFs.)
  */
-- (void)applyAvatarImageForUser:(AwfulUser *)user toImageViewAfterCompletion:(UIImageView *(^)(BOOL modified, NSError *error))completionBlock;
+- (void)applyAvatarImageForUser:(AwfulUser *)user
+                completionBlock:(void (^)(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error))completionBlock;
 
 /**
  * Deletes all cached images and information.

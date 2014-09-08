@@ -49,6 +49,8 @@
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
+		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
+		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
 		1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */; };
 		1C5B99BC166FFA4F004C5D0E /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */; };
 		1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */; };
@@ -327,6 +329,8 @@
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
 		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
+		1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsAvatarHeader.swift; sourceTree = "<group>"; };
+		1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsAvatarHeader.xib; sourceTree = "<group>"; };
 		1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextAttachment.h; sourceTree = "<group>"; };
 		1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextAttachment.m; sourceTree = "<group>"; };
 		1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-amberpos.css"; sourceTree = "<group>"; };
@@ -912,6 +916,8 @@
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
 				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
 				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
+				1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */,
+				1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */,
 				1C54D30919BBC717002AC6B9 /* SettingsBinding.h */,
 				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
 				11FDA294151018600014FDCD /* SettingsViewController.h */,
@@ -1453,6 +1459,7 @@
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
+				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */,
@@ -1660,6 +1667,7 @@
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
+				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
 				1C6474CB1569989800C72657 /* AwfulThread.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,

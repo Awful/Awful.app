@@ -4,6 +4,7 @@
 
 #import "SettingsViewController.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulAvatarLoader.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoginController.h"
@@ -16,6 +17,7 @@
 @interface SettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
+@property (readonly, strong, nonatomic) AwfulUser *loggedInUser;
 
 @end
 
@@ -77,6 +79,19 @@
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self.tableView reloadData];
     }];
+}
+
+- (void)showProfile
+{
+    ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:self.loggedInUser];
+    [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+}
+
+- (AwfulUser *)loggedInUser
+{
+    return [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
+                                      username:[AwfulSettings sharedSettings].username
+                        inManagedObjectContext:self.managedObjectContext];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate
@@ -218,13 +233,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
 {
     NSDictionary *setting = [self settingForIndexPath:indexPath];
     NSString *action = setting[@"Action"];
-    if ([action isEqualToString:@"ShowProfile"]) {
-        AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
-                                                             username:[AwfulSettings sharedSettings].username
-                                               inManagedObjectContext:self.managedObjectContext];
-        ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:loggedInUser];
-        [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
-    } else if ([action isEqualToString:@"LogOut"]) {
+    if ([action isEqualToString:@"LogOut"]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Log Out"
                                                                        message:@"Are you sure you want to log out?"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -252,13 +261,49 @@ typedef NS_ENUM(NSUInteger, SettingType)
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    NSString *title = self.sections[section][@"Title"];
-    if ([title isEqualToString:@"Awful x.y.z"]) {
-        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        return [NSString stringWithFormat:@"Awful %@", version];
+    NSDictionary *settingSection = self.sections[section];
+    if (settingSection[@"TitleKey"]) {
+        return [AwfulSettings sharedSettings][settingSection[@"TitleKey"]];
     } else {
+        NSString *title = settingSection[@"Title"];
+        if ([title isEqualToString:@"Awful x.y.z"]) {
+            NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+            title = [NSString stringWithFormat:@"Awful %@", version];
+        }
         return title;
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSDictionary *settingSection = self.sections[section];
+    if (settingSection[@"Action"]) {
+        SettingsAvatarHeader *header = [SettingsAvatarHeader newFromNib];
+        if (settingSection[@"TitleKey"]) {
+            header.usernameLabel.awful_setting = settingSection[@"TitleKey"];
+        }
+        header.usernameLabel.textColor = self.theme[@"listTextColor"];
+        header.contentEdgeInsets = self.tableView.separatorInset;
+        if ([settingSection[@"Action"] isEqualToString:@"ShowProfile"]) {
+            [header setTarget:self action:NSStringFromSelector(@selector(showProfile))];
+        }
+        [[AwfulAvatarLoader loader] applyCachedAvatarImageForUser:self.loggedInUser toImageView:header.avatarImageView];
+        [header.avatarImageView startAnimating];
+        [[AwfulAvatarLoader loader] applyAvatarImageForUser:self.loggedInUser completionBlock:^(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error) {
+            if (modified) {
+                applyBlock(header.avatarImageView);
+                [header.avatarImageView startAnimating];
+            }
+        }];
+        return header;
+    } else {
+        return nil;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return UITableViewAutomaticDimension;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
