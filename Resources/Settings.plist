@@ -5,20 +5,29 @@
 	<key>Sections</key>
 	<array>
 		<dict>
+			<key>TitleKey</key>
+			<string>username</string>
 			<key>Explanation</key>
 			<string>Logging out erases all cached forums, threads, and posts.</string>
+			<key>Action</key>
+			<string>ShowProfile</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Logged In As</string>
-					<key>ValueIdentifier</key>
-					<string>Username</string>
+					<string>Log Out</string>
 					<key>Action</key>
-					<string>ShowProfile</string>
-					<key>Device</key>
-					<string>iPad</string>
+					<string>LogOut</string>
 				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Awful x.y.z</string>
+			<key>Explanation</key>
+			<string>Post feedback, bug reports, and feature suggestions. Please don&apos;t directly contact anyone from Something Awful about this app.</string>
+			<key>Settings</key>
+			<array>
 				<dict>
 					<key>Title</key>
 					<string>Go to Awful&apos;s Thread</string>
@@ -26,12 +35,6 @@
 					<string>GoToAwfulThread</string>
 					<key>ThreadID</key>
 					<string>3510131</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Log Out</string>
-					<key>Action</key>
-					<string>LogOut</string>
 				</dict>
 			</array>
 		</dict>
@@ -72,7 +75,7 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Font Scale: %d%%</string>
+					<string>Scale Text %@%%</string>
 					<key>Type</key>
 					<string>Stepper</string>
 					<key>Minimum</key>
@@ -180,47 +183,6 @@
 					<string>custom_base_URL</string>
 					<key>DisplayTransformer</key>
 					<string>AwfulCustomBaseURLTransformer</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>“Read Later” Services</string>
-			<key>Explanation</key>
-			<string>Save off-Forums links for later reading.</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Instapaper</string>
-					<key>ValueIdentifier</key>
-					<string>InstapaperUsername</string>
-					<key>PredicateKeyPath</key>
-					<string>isLoggedInToInstapaper</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Log In</string>
-					<key>Action</key>
-					<string>InstapaperLogIn</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulInstapaperStatusTransformer</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Pocket</string>
-					<key>ValueIdentifier</key>
-					<string>PocketUsername</string>
-					<key>PredicateKeyPath</key>
-					<string>isLoggedInToPocket</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Log In</string>
-					<key>Action</key>
-					<string>PocketLogIn</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulPocketStatusTransformer</string>
 				</dict>
 			</array>
 		</dict>

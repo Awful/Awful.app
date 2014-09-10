@@ -22,9 +22,4 @@
  */
 - (void)insertThemeWithColor:(UIColor *)color atIndex:(NSInteger)index;
 
-/**
- * If, during constraint-based layout, the picker would expand beyond this width, instead its height increases. Default is 0, indicating a single line of theme buttons.
- */
-@property (assign, nonatomic) CGFloat preferredMaxLayoutWidth;
-
 @end

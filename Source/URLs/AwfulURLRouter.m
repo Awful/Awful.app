@@ -3,19 +3,19 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulURLRouter.h"
-#import "AwfulAlertView.h"
-#import "AwfulBookmarkedThreadTableViewController.h"
-#import "AwfulForumsListController.h"
-#import "AwfulForumThreadTableViewController.h"
+#import "AwfulEmptyViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
-#import "AwfulPostsViewController.h"
-#import "AwfulPrivateMessageTableViewController.h"
-#import "AwfulProfileViewController.h"
-#import "AwfulRapSheetViewController.h"
-#import "AwfulSettingsViewController.h"
+#import "BookmarkedThreadListViewController.h"
+#import "ForumListViewController.h"
 #import <JLRoutes/JLRoutes.h>
+#import "MessageListViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
+#import "PostsPageViewController.h"
+#import "RapSheetViewController.h"
+#import "SettingsViewController.h"
+#import "ThreadListViewController.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulURLRouter
 {
@@ -49,7 +49,7 @@
     }];
     
     [_routes addRoute:@"/forums" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulForumsListController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumListViewController class]];
     }];
     
     [_routes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *parameters) {
@@ -66,7 +66,7 @@
         AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:self.managedObjectContext
                                                   matchingPredicateFormat:@"postID = %@", postID];
         if (post && post.page > 0) {
-            AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:post.thread];
+            PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
             [postsViewController scrollPostToVisible:post];
             return [self showPostsViewController:postsViewController];
@@ -90,7 +90,7 @@
                 [overlay dismiss:YES completion:^{
                     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
                                                              inManagedObjectContext:self.managedObjectContext];
-                    AwfulPostsViewController *postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
                     [postsViewController loadPage:page updatingCache:YES];
                     [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
@@ -105,21 +105,21 @@
     }];
     
     [_routes addRoute:@"/messages" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulPrivateMessageTableViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
     }];
     
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulBookmarkedThreadTableViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
     }];
     
     [_routes addRoute:@"/settings" handler:^BOOL(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[AwfulSettingsViewController class]];
+        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[SettingsViewController class]];
     }];
     
     [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         void (^success)(AwfulUser *) = ^(AwfulUser *user) {
-            AwfulProfileViewController *profile = [[AwfulProfileViewController alloc] initWithUser:user];
+            ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
         AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
@@ -131,7 +131,7 @@
             if (user) {
                 success(user);
             } else if (error) {
-                [AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+                [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
             }
         }];
         return YES;
@@ -140,7 +140,7 @@
 	[_routes addRoute:@"/banlist" handler:^BOOL(NSDictionary *parameters) {
 		__typeof__(self) self = weakSelf;
 		
-		AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:nil];
+		RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:nil];
 		[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		
 		return YES;
@@ -151,7 +151,7 @@
 		__typeof__(self) self = weakSelf;
 		
 		void (^success)(AwfulUser *) = ^(AwfulUser *user) {
-			AwfulRapSheetViewController *rapSheet = [[AwfulRapSheetViewController alloc] initWithUser:user];
+			RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
 			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		};
 		AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
@@ -164,7 +164,7 @@
 			if (user) {
 				success(user);
 			} else if (error) {
-				[AwfulAlertView showWithTitle:@"Could Not Find User" error:error buttonTitle:@"OK"];
+                [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
 			}
 		}];
 		return YES;
@@ -180,13 +180,12 @@
 
 - (BOOL)jumpToForum:(AwfulForum *)forum
 {
-    AwfulForumThreadTableViewController *threadList = FindViewControllerOfClass(self.rootViewController,
-                                                                                [AwfulForumThreadTableViewController class]);
+    ThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadListViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
-        AwfulForumsListController *forumsList = FindViewControllerOfClass(self.rootViewController, [AwfulForumsListController class]);
+        ForumListViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumListViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList showForum:forum animated:NO];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
@@ -195,36 +194,16 @@
 
 - (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
-    UIViewController *root = self.rootViewController;
-    AwfulSplitViewController *split = nil;
-    if ([root isKindOfClass:[AwfulSplitViewController class]]) {
-        split = (AwfulSplitViewController *)root;
-        root = split.viewControllers.firstObject;
-    }
-    if (![root respondsToSelector:@selector(viewControllers)]) return NO;
-    if (![root respondsToSelector:@selector(setSelectedViewController:)]) return NO;
-    for (UIViewController *topmost in [root valueForKey:@"viewControllers"]) {
-        if (FindViewControllerOfClass(topmost, class)) {
-            [root setValue:topmost forKey:@"selectedViewController"];
-            if (split) {
-                [split setSidebarHidden:NO animated:YES];
-            }
+    UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
+    UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
+    for (UIViewController *topmost in tabBarController.viewControllers) {
+        if ([topmost awful_firstDescendantViewControllerOfClass:class]) {
+            tabBarController.selectedViewController = topmost;
+            [splitViewController awful_showPrimaryViewController];
             return YES;
         }
     }
     return NO;
-}
-
-static id FindViewControllerOfClass(UIViewController *viewController, Class class)
-{
-    if ([viewController isKindOfClass:class]) return viewController;
-    if ([viewController respondsToSelector:@selector(viewControllers)]) {
-        for (UIViewController *child in [viewController valueForKey:@"viewControllers"]) {
-            UIViewController *found = FindViewControllerOfClass(child, class);
-            if (found) return found;
-        }
-    }
-    return nil;
 }
 
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
@@ -232,13 +211,13 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     NSString *threadID = parameters[@"threadID"];
     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
                                              inManagedObjectContext:self.managedObjectContext];
-    AwfulPostsViewController *postsViewController;
+    PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
         AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:nil inManagedObjectContext:self.managedObjectContext];
-        postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread author:user];
+        postsViewController = [[PostsPageViewController alloc] initWithThread:thread author:user];
     } else {
-        postsViewController = [[AwfulPostsViewController alloc] initWithThread:thread];
+        postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
     }
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
@@ -260,28 +239,33 @@ static id FindViewControllerOfClass(UIViewController *viewController, Class clas
     return [self showPostsViewController:postsViewController];
 }
 
-- (BOOL)showPostsViewController:(AwfulPostsViewController *)postsViewController
+- (BOOL)showPostsViewController:(PostsPageViewController *)postsViewController
 {
     postsViewController.restorationIdentifier = @"Posts from URL";
-    if ([self.rootViewController isKindOfClass:[AwfulSplitViewController class]]) {
-        AwfulSplitViewController *split = (AwfulSplitViewController *)self.rootViewController;
-        UINavigationController *navigationController = split.viewControllers.lastObject;
-        if ([navigationController isKindOfClass:[UINavigationController class]]) {
-            postsViewController.navigationItem.leftItemsSupplementBackButton = YES;
-            [navigationController pushViewController:postsViewController animated:YES];
-        } else {
-            [split setDetailViewController:[postsViewController enclosingNavigationController] sidebarHidden:YES animated:YES];
+    
+    // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
+    UINavigationController *targetNavigationController;
+    UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
+    if (splitViewController.collapsed) {
+        UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
+        targetNavigationController = (UINavigationController *)tabBarController.selectedViewController;
+    } else {
+        targetNavigationController = splitViewController.viewControllers.lastObject;
+        
+        // If the detail view controller is empty, showing the posts view controller actually is as simple as showing a detail view controller, and we can exit early.
+        if ([targetNavigationController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) {
+            [splitViewController showDetailViewController:postsViewController sender:self];
+            return YES;
         }
-        return YES;
     }
-    if (![self.rootViewController respondsToSelector:@selector(selectedViewController)]) return NO;
-    UIViewController *selected = [self.rootViewController valueForKey:@"selectedViewController"];
-    if ([selected isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *navigationController = (UINavigationController *)selected;
-        [navigationController pushViewController:postsViewController animated:YES];
-        return YES;
+    
+    // Posts view controllers by default hide the bottom bar when pushed. This moves the tab bar controller's tab bar out of the way, making room for the toolbar. However, if some earlier posts view controller has already done this for us, and we went ahead oblivious, we would hide our own toolbar!
+    if ([targetNavigationController.topViewController isKindOfClass:[PostsPageViewController class]]) {
+        postsViewController.hidesBottomBarWhenPushed = NO;
     }
-    return NO;
+    
+    [targetNavigationController pushViewController:postsViewController animated:YES];
+    return YES;
 }
 
 - (BOOL)routeURL:(NSURL *)URL

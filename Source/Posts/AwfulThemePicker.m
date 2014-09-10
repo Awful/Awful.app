@@ -12,13 +12,24 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    
-    _selectedThemeIndex = UISegmentedControlNoSegment;
-    _buttons = [NSMutableArray new];
-    
+    if ((self = [super initWithFrame:frame])) {
+        CommonInit(self);
+    }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        CommonInit(self);
+    }
+    return self;
+}
+
+static void CommonInit(AwfulThemePicker *self)
+{
+    self->_selectedThemeIndex = UISegmentedControlNoSegment;
+    self->_buttons = [NSMutableArray new];
 }
 
 - (void)setSelectedThemeIndex:(NSInteger)index
@@ -44,14 +55,8 @@
     }
     [self insertSubview:button atIndex:index];
     [_buttons addObject:button];
-    [self setNeedsLayout];
-}
-
-- (void)setPreferredMaxLayoutWidth:(CGFloat)preferredMaxLayoutWidth
-{
-    if (_preferredMaxLayoutWidth == preferredMaxLayoutWidth) return;
-    _preferredMaxLayoutWidth = preferredMaxLayoutWidth;
     [self invalidateIntrinsicContentSize];
+    [self setNeedsLayout];
 }
 
 - (void)didTapThemeButton:(UIButton *)button
@@ -85,13 +90,7 @@ static const CGFloat margin = 6;
     UIButton *firstButton = _buttons.firstObject;
     CGSize buttonSize = firstButton.intrinsicContentSize;
     
-    if (self.preferredMaxLayoutWidth <= 0) {
-        CGFloat width = buttonSize.width * numberOfButtons + (numberOfButtons - 1) * margin;
-        CGSize contentSize = CGSizeMake(width, buttonSize.height);
-        return contentSize;
-    }
-    
-    CGFloat maximumWidth = self.preferredMaxLayoutWidth;
+    CGFloat maximumWidth = CGRectGetWidth(self.bounds);
     NSAssert(maximumWidth >= buttonSize.width, @"can't lay out theme buttons in a view narrower than a single button");
     CGFloat remainingWidth = maximumWidth - buttonSize.width;
     NSInteger buttonsPerLine = 1 + floor(remainingWidth / (margin + buttonSize.width));

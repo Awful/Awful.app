@@ -52,7 +52,7 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (indexPath.row == 0) {
         cell.textLabel.text = @"forums.somethingawful.com";
-        if (![AwfulSettings settings].customBaseURL) {
+        if (![AwfulSettings sharedSettings].customBaseURL) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             self.currentIndexPath = indexPath;
         } else {
@@ -60,7 +60,7 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
         }
     } else {
         cell.textLabel.text = AgeOldSomethingAwfulIPAddress;
-        if ([[AwfulSettings settings].customBaseURL isEqual:AgeOldSomethingAwfulIPAddress]) {
+        if ([[AwfulSettings sharedSettings].customBaseURL isEqual:AgeOldSomethingAwfulIPAddress]) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             self.currentIndexPath = indexPath;
         } else {
@@ -83,7 +83,7 @@ static NSString * const CellIdentifier = @"Cell";
 {
     if ([indexPath isEqual:self.currentIndexPath]) return;
     if (indexPath.row == 0) {
-        [AwfulSettings settings].customBaseURL = nil;
+        [AwfulSettings sharedSettings].customBaseURL = nil;
     } else {
         // Copy the SA cookies over to its standard IP address so we don't have to log in again.
         // I guess if the Forums moves to another IP address someday this would allow someone to
@@ -95,7 +95,7 @@ static NSString * const CellIdentifier = @"Cell";
             properties[NSHTTPCookieDomain] = AgeOldSomethingAwfulIPAddress;
             [storage setCookie:[NSHTTPCookie cookieWithProperties:properties]];
         }
-        [AwfulSettings settings].customBaseURL = AgeOldSomethingAwfulIPAddress;
+        [AwfulSettings sharedSettings].customBaseURL = AgeOldSomethingAwfulIPAddress;
     }
     // TODO allow entering any old hostname or IP address.
     UITableViewCell *oldCell = [tableView cellForRowAtIndexPath:self.currentIndexPath];

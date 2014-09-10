@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A343f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Forums-->
+        <scene sceneID="3cc-sL-WLc">
+            <objects>
+                <tableViewController title="Forums" id="3Nj-BO-15y" customClass="ForumListViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Forum list" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gVM-WF-65Z">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Forum" id="fch-a9-8Gm" customClass="ForumListCell" customModule="Awful" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fch-a9-8Gm" id="Gtx-Zu-94i">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XR1-Rx-Ib8" userLabel="Disclosure Button">
+                                            <rect key="frame" x="0.0" y="11" width="32" height="22"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="32" id="AMC-yt-Wf0"/>
+                                            </constraints>
+                                            <state key="normal" image="forum-arrow-right">
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <state key="selected" image="forum-arrow-down"/>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forum Name" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H4b-1h-lY0">
+                                            <rect key="frame" x="40" y="8" width="522" height="27"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f4F-C2-ho3" userLabel="Favorite Button">
+                                            <rect key="frame" x="570" y="11" width="22" height="22"/>
+                                            <state key="normal" image="star-off">
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="centerY" secondItem="f4F-C2-ho3" secondAttribute="centerY" id="0x1-4J-iRz"/>
+                                        <constraint firstAttribute="centerY" secondItem="XR1-Rx-Ib8" secondAttribute="centerY" id="8qJ-OO-dTz"/>
+                                        <constraint firstItem="f4F-C2-ho3" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailingMargin" id="Ael-29-afm"/>
+                                        <constraint firstItem="f4F-C2-ho3" firstAttribute="leading" secondItem="H4b-1h-lY0" secondAttribute="trailing" constant="8" id="LdF-N7-Qzg"/>
+                                        <constraint firstItem="H4b-1h-lY0" firstAttribute="leading" secondItem="XR1-Rx-Ib8" secondAttribute="trailing" constant="8" id="YTM-ar-8Hd"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="H4b-1h-lY0" secondAttribute="bottom" id="aSS-IG-ysJ"/>
+                                        <constraint firstItem="H4b-1h-lY0" firstAttribute="top" secondItem="Gtx-Zu-94i" secondAttribute="topMargin" id="f3r-Cf-dML"/>
+                                        <constraint firstItem="XR1-Rx-Ib8" firstAttribute="leading" secondItem="Gtx-Zu-94i" secondAttribute="leading" id="tvX-Gt-Yom"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="disclosureButton" destination="XR1-Rx-Ib8" id="STs-LZ-UHG"/>
+                                    <outlet property="favoriteButton" destination="f4F-C2-ho3" id="IAu-dy-Ssm"/>
+                                    <outlet property="nameLabel" destination="H4b-1h-lY0" id="rCt-ri-KkT"/>
+                                    <outlet property="nameSpaceConstraint" destination="YTM-ar-8Hd" id="DcI-Mg-p9m"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Favorite" id="5ag-tw-4Cq" customClass="ForumCell" customModule="Awful" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5ag-tw-4Cq" id="a4y-em-PD0">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star-on" translatesAutoresizingMaskIntoConstraints="NO" id="neo-9c-Ym5">
+                                            <rect key="frame" x="0.0" y="12" width="32" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="32" id="iNm-ez-asW"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favorite Forum Name" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Cc-Eh-5gQ">
+                                            <rect key="frame" x="40" y="8" width="522" height="27"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="trailing" constant="30" id="E38-Qr-N6w"/>
+                                        <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="top" secondItem="a4y-em-PD0" secondAttribute="topMargin" id="Fnv-C8-amw"/>
+                                        <constraint firstItem="neo-9c-Ym5" firstAttribute="leading" secondItem="a4y-em-PD0" secondAttribute="leading" id="X4d-t5-q34"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="bottom" id="eew-rC-EDT"/>
+                                        <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="leading" secondItem="neo-9c-Ym5" secondAttribute="trailing" constant="8" id="vcv-C5-t7l"/>
+                                        <constraint firstAttribute="centerY" secondItem="neo-9c-Ym5" secondAttribute="centerY" id="wxk-HZ-9AE"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="nameLabel" destination="1Cc-Eh-5gQ" id="r1a-M4-giS"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="3Nj-BO-15y" id="asn-N9-riu"/>
+                            <outlet property="delegate" destination="3Nj-BO-15y" id="y8d-GY-pfI"/>
+                        </connections>
+                    </tableView>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NcL-zG-WET" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="348" y="632"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="forum-arrow-down" width="21" height="12"/>
+        <image name="forum-arrow-right" width="12" height="21"/>
+        <image name="star-off" width="22" height="21"/>
+        <image name="star-on" width="21" height="20"/>
+    </resources>
+</document>

@@ -42,11 +42,8 @@ startBridge(function(bridge) {
 });
 
 // Action sheet popovers need to synchronously get the bounding rect of the header. The bridge can't help us, so here's a function meant to be called directly from Objective-C.
-function HeaderRect(popover) {
-  if (popover) {
-    // Want to point to avatar + username, whereas the header goes the whole width of the view.
-    return rectOfElement($('.avatar, .nameanddate'));
-  } else {
-    return rectOfElement($('header'));
-  }
+function HeaderRect() {
+  
+  // Want to point to avatar + username, whereas the header goes the whole width of the view.
+  return rectOfElement($('.avatar, .nameanddate'));
 }

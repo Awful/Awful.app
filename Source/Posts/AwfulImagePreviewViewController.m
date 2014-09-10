@@ -3,15 +3,14 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImagePreviewViewController.h"
-#import "AwfulActionSheet.h"
-#import "AwfulAlertView.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
-@import AssetsLibrary;
-@import SafariServices;
 #import <AFNetworking/AFNetworking.h>
+@import AssetsLibrary;
 #import <FVGifAnimation.h>
 #import <MRProgress/MRProgressOverlayView.h>
+@import SafariServices;
+#import "Awful-Swift.h"
 
 @interface AwfulImagePreviewViewController () <UIScrollViewDelegate>
 
@@ -31,14 +30,10 @@
 
 
 @implementation AwfulImagePreviewViewController
-{
-    AwfulActionSheet *_visibleActionSheet;
-}
 
 - (id)initWithURL:(NSURL *)imageURL
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         _imageURL = imageURL;
         self.navigationItem.leftBarButtonItem = self.doneButton;
         self.navigationItem.rightBarButtonItem = self.actionButton;
@@ -103,7 +98,7 @@
         self.scrollView.maximumZoomScale = 40;
         [self centerImageInScrollView];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [AwfulAlertView showWithTitle:@"Could Not Load Image" error:error buttonTitle:@"OK"];
+        [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Load Image" error:error] animated:YES completion:nil];
     }];
     [self.queue addOperation:op];
 }
@@ -133,56 +128,17 @@
 
 - (void)showActions
 {
-    if (_visibleActionSheet) return;
-    [self.automaticallyHideBarsTimer invalidate];
-    AwfulActionSheet *sheet = [AwfulActionSheet new];
-    [sheet addButtonWithTitle:@"Save to Photos" block:^{
-        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                             title:@"Saving"
-                                                                              mode:MRProgressOverlayViewModeIndeterminate
-                                                                          animated:YES];
-        overlay.tintColor = self.theme[@"tintColor"];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[ALAssetsLibrary new] writeImageDataToSavedPhotosAlbum:self.imageData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [overlay dismiss:YES completion:^{
-                        if (error) {
-                            [AwfulAlertView showWithTitle:@"Could Not Save Image" error:error buttonTitle:@"OK" completion:^{ [self hideBarsAfterShortDuration]; }];
-                        }
-                    }];
-                });
-            }];
-        });
-    }];
-    [sheet addButtonWithTitle:@"Copy Image URL" block:^{
-        [AwfulSettings settings].lastOfferedPasteboardURL = self.imageURL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = self.imageURL;
-        [self hideBarsAfterShortDuration];
-    }];
-    if ([SSReadingList supportsURL:self.imageURL]) {
-        [sheet addButtonWithTitle:@"Send to Reading List" block:^{
-            NSError *error;
-            if (![[SSReadingList defaultReadingList] addReadingListItemWithURL:self.imageURL title:self.title previewText:nil error:&error]) {
-                [AwfulAlertView showWithTitle:@"Error Adding Image" error:error buttonTitle:@"OK"];
-            }
-        }];
-    }
-    [sheet addButtonWithTitle:@"Copy Image" block:^{
-        if (self.imageIsGIF) {
-            [[UIPasteboard generalPasteboard] setData:self.imageData forPasteboardType:(__bridge NSString *)kUTTypeGIF];
-        } else {
-            [UIPasteboard generalPasteboard].image = self.imageView.image;
-        }
-        [self hideBarsAfterShortDuration];
-    }];
-    [sheet addCancelButtonWithTitle:@"Cancel" block:^{
-        [self hideBarsAfterShortDuration];
-    }];
-    [sheet showFromBarButtonItem:self.actionButton animated:YES];
-    [sheet setCompletionBlock:^{
-        _visibleActionSheet = nil;
-    }];
-    _visibleActionSheet = sheet;
+	if (self.presentedViewController) return;
+	[self.automaticallyHideBarsTimer invalidate];
+	
+	UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageView.image, self.imageURL]
+																		   applicationActivities:nil];
+	
+	activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+		[self hideBarsAfterShortDuration];
+	};
+	
+	[self presentViewController:activity animated:YES completion:nil];
 }
 
 - (void)hideBarsAfterShortDuration
@@ -304,6 +260,60 @@
                         atScale:(CGFloat)scale
 {
     // Implemented so zooming works.
+}
+
+@end
+
+@interface ImagePreviewActivity ()
+
+@property (strong, nonatomic) UIViewController *activityViewController;
+
+@end
+
+@implementation ImagePreviewActivity
+
+- (NSString *)activityType
+{
+    return @"com.awfulapp.Awful.ImagePreview";
+}
+
+- (NSString *)activityTitle
+{
+    return @"Preview Image";
+}
+
+- (UIImage *)activityImage
+{
+    return [UIImage imageNamed:@"quick-look"];
+}
+
+- (BOOL)canPerformWithActivityItems:(NSArray *)activityItems
+{
+    for (id item in activityItems) {
+        if ([item isKindOfClass:[NSURL class]]) return YES;
+    }
+    return NO;
+}
+
+- (void)prepareWithActivityItems:(NSArray *)activityItems
+{
+    NSURL *imageURL;
+    for (id item in activityItems.reverseObjectEnumerator) {
+        if ([item isKindOfClass:[NSURL class]]) {
+            imageURL = item;
+            break;
+        }
+    }
+    
+    AwfulImagePreviewViewController *previewViewController = [[AwfulImagePreviewViewController alloc] initWithURL:imageURL];
+    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:nil action:nil];
+    __weak __typeof__(self) weakSelf = self;
+    [doneItem awful_setActionBlock:^(UIBarButtonItem *sender) {
+        __typeof__(self) self = weakSelf;
+        [self activityDidFinish:YES];
+    }];
+    previewViewController.navigationItem.leftBarButtonItem = doneItem;
+    self.activityViewController = [previewViewController enclosingNavigationController];
 }
 
 @end

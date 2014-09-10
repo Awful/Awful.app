@@ -89,7 +89,7 @@
 
 - (BOOL)forumChildrenExpanded:(AwfulForum *)forum
 {
-    return [[AwfulSettings settings] childrenExpandedForForumWithID:forum.forumID];
+    return [[AwfulSettings sharedSettings] childrenExpandedForForumWithID:forum.forumID];
 }
 
 - (void)setForum:(AwfulForum *)forum childrenExpanded:(BOOL)childrenExpanded
@@ -114,7 +114,7 @@
     
     NSArray *previouslyVisible = [self visibleForumsInSectionAtIndex:sectionIndex];
     
-    [[AwfulSettings settings] setChildrenExpanded:childrenExpanded forForumWithID:forum.forumID];
+    [[AwfulSettings sharedSettings] setChildrenExpanded:childrenExpanded forForumWithID:forum.forumID];
     
     NSArray *newlyVisible = [self visibleForumsInSectionAtIndex:sectionIndex];
     

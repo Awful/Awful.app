@@ -3,9 +3,9 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostViewModel.h"
-#import "AwfulDateFormatters.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulPostViewModel
 
@@ -27,8 +27,8 @@
     RemoveSpoilerStylingAndEvents(document);
     RemoveEmptyEditedByParagraphs(document);
     UseHTML5VimeoPlayer(document);
-    HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings settings].username);
-    if (![AwfulSettings settings].showImages) {
+    HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
+    if (![AwfulSettings sharedSettings].showImages) {
         LinkifyNonSmileyImages(document);
     }
     if (self.post.ignored) {
@@ -58,7 +58,7 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 
 - (BOOL)showAvatars
 {
-    return [AwfulSettings settings].showAvatars;
+    return [AwfulSettings sharedSettings].showAvatars;
 }
 
 - (NSString *)roles
@@ -73,12 +73,12 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 
 - (NSDateFormatter *)postDateFormat
 {
-    return [AwfulDateFormatters postDateFormatter];
+    return [NSDateFormatter postDateFormatter];
 }
 
 - (NSDateFormatter *)regDateFormat
 {
-    return [AwfulDateFormatters regDateFormatter];
+    return [NSDateFormatter regDateFormatter];
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

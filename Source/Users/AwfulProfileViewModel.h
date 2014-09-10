@@ -67,11 +67,6 @@
  */
 @property (readonly, copy, nonatomic) NSString *gender;
 
-/**
- * JavaScript used in rendering.
- */
-@property (readonly, copy, nonatomic) NSString *javascript;
-
 #pragma mark Keys forwarded to the user
 
 @property (readonly, nonatomic) NSString *aboutMe;

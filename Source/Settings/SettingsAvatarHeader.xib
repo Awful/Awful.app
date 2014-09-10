@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.9" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SettingsAvatarHeader" customModule="Awful" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="428" height="60"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" placeholderIntrinsicWidth="60" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="n9G-s6-gYc" userLabel="Avatar">
+                    <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="60" id="b0p-dc-UUi"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGH-gl-nS9">
+                    <rect key="frame" x="68" y="0.0" width="360" height="60"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="n9G-s6-gYc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="1eE-eb-KO3"/>
+                <constraint firstItem="eGH-gl-nS9" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" priority="900" id="76r-84-8Hv"/>
+                <constraint firstAttribute="bottom" secondItem="eGH-gl-nS9" secondAttribute="bottom" id="81g-FQ-cIq"/>
+                <constraint firstAttribute="trailing" secondItem="eGH-gl-nS9" secondAttribute="trailing" id="FJa-a5-PT7"/>
+                <constraint firstItem="eGH-gl-nS9" firstAttribute="leading" secondItem="n9G-s6-gYc" secondAttribute="trailing" constant="8" id="WEP-c2-C0R"/>
+                <constraint firstAttribute="bottom" secondItem="n9G-s6-gYc" secondAttribute="bottom" id="WXh-be-MZL"/>
+                <constraint firstItem="n9G-s6-gYc" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="WvX-D2-AzJ"/>
+                <constraint firstItem="eGH-gl-nS9" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Z3c-Qu-lJ8"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="avatarImageView" destination="n9G-s6-gYc" id="7Ki-3E-8pb"/>
+                <outlet property="tapGestureRecognizer" destination="JUi-9b-aRd" id="Uia-sb-2SI"/>
+                <outlet property="usernameLabel" destination="eGH-gl-nS9" id="uMq-kV-2Qk"/>
+                <outletCollection property="avatarConstraints" destination="1eE-eb-KO3" collectionClass="NSMutableArray" id="wft-bY-rzj"/>
+                <outletCollection property="avatarConstraints" destination="WXh-be-MZL" collectionClass="NSMutableArray" id="Zy6-pH-Qzg"/>
+                <outletCollection property="avatarConstraints" destination="WvX-D2-AzJ" collectionClass="NSMutableArray" id="f6o-Ab-i3T"/>
+                <outletCollection property="avatarConstraints" destination="WEP-c2-C0R" collectionClass="NSMutableArray" id="Lx4-GC-tEj"/>
+                <outletCollection property="insetConstraints" destination="1eE-eb-KO3" collectionClass="NSMutableArray" id="qHn-iX-0n6"/>
+                <outletCollection property="insetConstraints" destination="76r-84-8Hv" collectionClass="NSMutableArray" id="gs1-vU-1Ih"/>
+                <outletCollection property="insetConstraints" destination="FJa-a5-PT7" collectionClass="NSMutableArray" id="Kmb-16-67g"/>
+                <outletCollection property="gestureRecognizers" destination="JUi-9b-aRd" appends="YES" id="zaG-6r-kEG"/>
+            </connections>
+            <point key="canvasLocation" x="385" y="461"/>
+        </view>
+        <tapGestureRecognizer id="JUi-9b-aRd">
+            <connections>
+                <action selector="didTap:" destination="iN0-l3-epB" id="IMs-Y2-a8p"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+</document>

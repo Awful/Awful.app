@@ -3,9 +3,8 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulProfileViewModel.h"
-#import "AwfulDateFormatters.h"
-#import "AwfulJavaScript.h"
 #import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @interface AwfulProfileViewModel ()
 
@@ -43,17 +42,17 @@
 
 - (BOOL)dark
 {
-    return [AwfulSettings settings].darkTheme;
+    return [AwfulSettings sharedSettings].darkTheme;
 }
 
 - (NSDateFormatter *)regDateFormat
 {
-    return [AwfulDateFormatters regDateFormatter];
+    return [NSDateFormatter regDateFormatter];
 }
 
 - (NSDateFormatter *)lastPostDateFormat
 {
-	return [AwfulDateFormatters postDateFormatter];
+	return [NSDateFormatter postDateFormatter];
 }
 
 - (BOOL)anyContactInfo
@@ -69,7 +68,7 @@
 
 - (BOOL)privateMessagesWork
 {
-    return self.user.canReceivePrivateMessages && [AwfulSettings settings].canSendPrivateMessages;
+    return self.user.canReceivePrivateMessages && [AwfulSettings sharedSettings].canSendPrivateMessages;
 }
 
 - (NSString *)customTitleHTML
@@ -81,16 +80,6 @@
 - (NSString *)gender
 {
     return self.user.gender ?: @"porpoise";
-}
-
-- (NSString *)javascript
-{
-    NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"WebViewJavascriptBridge.js.txt", @"zepto.min.js", @"common.js", @"profile.js" ], &error);
-    if (!script) {
-        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
-    }
-    return script;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

@@ -20,6 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.3.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - ARChromeActivity (1.0.2)
   - GRMustache (7.2.0):
     - JRSwizzle (~> 1.0)
   - HTMLReader (0.5.6)
@@ -44,22 +45,23 @@ PODS:
     - MRProgress/Icons
   - MRProgress/Stopable (0.4.1):
     - MRProgress/Helper
-  - PocketAPI (1.0.2)
   - PSMenuItem (0.0.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
+  - TUSafariActivity (1.0.0)
   - WebViewJavascriptBridge (4.1.2)
 
 DEPENDENCIES:
   - AFNetworking (= 2.3.1)
+  - ARChromeActivity (= 1.0.2)
   - GRMustache (= 7.2.0)
   - HTMLReader (= 0.5.6)
   - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
   - ImgurAnonymousAPIClient (from `https://github.com/nolanw/ImgurAnonymousAPIClient.git`, tag `v0.1.1`)
   - JLRoutes (= 1.5.1)
   - MRProgress/Overlay (= 0.4.1)
-  - PocketAPI (= 1.0.2)
   - PSMenuItem (= 0.0.1)
   - SVPullToRefresh (HEAD)
+  - TUSafariActivity (= 1.0.0)
   - WebViewJavascriptBridge (from `https://github.com/marcuswestin/WebViewJavascriptBridge.git`, tag `v4.1.2`)
 
 EXTERNAL SOURCES:
@@ -74,15 +76,16 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 6d7b76aa5d04c8c37daad3eef4b7e3f2a7620da3
+  ARChromeActivity: 437b3e0c4cc43c19d7dd1af55bea98e008335151
   GRMustache: b6c9c1535cd41b5a62edaaaf06334e0270a7a94f
   HTMLReader: 4b0f09b7319babb412a3eb809bc1235ad9d16e15
   ImgurAnonymousAPIClient: a59b74c3500b29b6d3b08c61c1304b65085f7aac
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   MRProgress: 209cdf239e60feab2f5b1c605d375bf9cd32c8b0
-  PocketAPI: 801df1a3cdd094e5477add10c80dceb533c98a66
   PSMenuItem: 0b715b3c76482cdc4656a54d6d601205b49306e3
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
+  TUSafariActivity: afff9b1d2eacf7cbace752c5f2bf56db852714de
   WebViewJavascriptBridge: 12fc9864b4da524ee4efb05dc1ba3d33d6986753
 
 COCOAPODS: 0.33.1
