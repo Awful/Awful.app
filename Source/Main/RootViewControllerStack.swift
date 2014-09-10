@@ -57,6 +57,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
         
         configureSplitViewControllerDisplayMode()
+		configureTabBarColor()
     }
 
     deinit {
@@ -106,9 +107,21 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             updateMessagesTabPresence()
         } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape {
             configureSplitViewControllerDisplayMode()
-        }
+		} else if changeKey == AwfulSettingsKeys.darkTheme {
+			configureTabBarColor()
+		}
     }
-    
+	
+	private func configureTabBarColor() {
+		if AwfulSettings.sharedSettings().darkTheme {
+			self.tabBarController.tabBar.barTintColor = UIColor.blackColor()
+		} else {
+			//
+			self.tabBarController.tabBar.barTintColor = nil
+		}
+		self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
+	}
+	
     private func configureSplitViewControllerDisplayMode() {
         if AwfulSettings.sharedSettings().hideSidebarInLandscape {
             if splitViewController.displayMode == .PrimaryOverlay {
