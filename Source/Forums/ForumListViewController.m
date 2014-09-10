@@ -261,7 +261,7 @@ static NSString * const HeaderIdentifier = @"Header";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FavoriteForumCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Favorite" forIndexPath:indexPath];
+    ForumCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Favorite" forIndexPath:indexPath];
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.nameLabel.text = forum.name;
     cell.separatorInset = UIEdgeInsetsZero;
@@ -269,10 +269,10 @@ static NSString * const HeaderIdentifier = @"Header";
     return cell;
 }
 
-static void ThemeCell(AwfulTheme *theme, UITableViewCell *cell)
+static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
 {
     cell.backgroundColor = theme[@"listBackgroundColor"];
-	cell.textLabel.textColor = theme[@"listTextColor"];
+	cell.nameLabel.textColor = theme[@"listTextColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;
@@ -378,7 +378,7 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
 
 #pragma mark - AwfulForumTreeDataSourceDelegate
 
-- (void)configureCell:(ForumCell *)cell withForum:(AwfulForum *)forum
+- (void)configureCell:(ForumListCell *)cell withForum:(AwfulForum *)forum
 {
     BOOL hasSubforums = forum.children.count > 0;
     cell.disclosureButton.hidden = !hasSubforums;
