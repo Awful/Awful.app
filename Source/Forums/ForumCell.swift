@@ -5,10 +5,15 @@
 import UIKit
 
 class ForumCell: UITableViewCell {
+	
+	@IBOutlet weak var nameLabel: UILabel!
+}
+
+
+class ForumListCell: ForumCell {
 
     @IBOutlet weak var disclosureButton: UIButton!
     @IBOutlet weak var nameSpaceConstraint: NSLayoutConstraint!
-    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var favoriteButton: UIButton!
 
     var subforumDepth: Int = 0 {
