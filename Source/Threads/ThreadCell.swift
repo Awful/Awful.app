@@ -74,7 +74,7 @@ class ThreadCell: UITableViewCell {
         }
     }
     
-    func didLongPress(sender: UILongPressGestureRecognizer) {
+    @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .Began {
             UIApplication.sharedApplication().sendAction(longPressAction, to: longPressTarget, from: self, forEvent: nil)
         }
