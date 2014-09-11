@@ -11,7 +11,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
-#import "AwfulLoginController.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
@@ -25,10 +24,10 @@
 #import <GRMustache/GRMustache.h>
 #import "Awful-Swift.h"
 
-@interface AwfulAppDelegate () <AwfulLoginControllerDelegate>
+@interface AwfulAppDelegate ()
 
 @property (strong, nonatomic) RootViewControllerStack *rootViewControllerStack;
-@property (strong, nonatomic) AwfulLoginController *loginController;
+@property (strong, nonatomic) LoginViewController *loginViewController;
 
 @property (strong, nonatomic) AwfulDataStack *dataStack;
 @property (strong, nonatomic) AwfulURLRouter *URLRouter;
@@ -89,13 +88,21 @@ static inline void SetCrashlyticsUsername(void)
     return _rootViewControllerStack;
 }
 
-- (AwfulLoginController *)loginController
+- (LoginViewController *)loginViewController
 {
-    if (!_loginController) {
-        _loginController = [AwfulLoginController new];
-        _loginController.delegate = self;
+    if (!_loginViewController) {
+        _loginViewController = [LoginViewController newFromStoryboard];
+        __weak __typeof__(self) weakSelf = self;
+        _loginViewController.completionBlock = ^(LoginViewController *login) {
+            __typeof__(self) self = weakSelf;
+            [self setRootViewController:self.rootViewControllerStack.rootViewController animated:YES completion:^{
+                __typeof__(self) self = weakSelf;
+                [self.rootViewControllerStack didAppear];
+                self.loginViewController = nil;
+            }];
+        };
     }
-    return _loginController;
+    return _loginViewController;
 }
 
 - (void)themeDidChange
@@ -183,7 +190,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     [[AwfulAvatarLoader loader] emptyCache];
     
     __weak __typeof__(self) weakSelf = self;
-    [self setRootViewController:[self.loginController enclosingNavigationController] animated:YES completion:^{
+    [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:YES completion:^{
         __typeof__(self) self = weakSelf;
         self.rootViewControllerStack = nil;
         self.URLRouter = nil;
@@ -231,7 +238,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     if ([AwfulForumsClient client].loggedIn) {
         [self setRootViewController:self.rootViewControllerStack.rootViewController animated:NO completion:nil];
     } else {
-        [self setRootViewController:[self.loginController enclosingNavigationController] animated:NO completion:nil];
+        [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:NO completion:nil];
     }
     [self.window makeKeyAndVisible];
     return YES;
@@ -372,35 +379,6 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
         return [self openAwfulURL:URL.awfulURL];
     }
     return [self openAwfulURL:URL];
-}
-
-#pragma mark AwfulLoginControllerDelegate
-
-- (void)loginController:(AwfulLoginController *)login
-         didLogInAsUser:(AwfulUser *)user
-{
-    AwfulSettings *settings = [AwfulSettings sharedSettings];
-    settings.username = user.username;
-    settings.userID = user.userID;
-    settings.canSendPrivateMessages = user.canReceivePrivateMessages;
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulUserDidLogInNotification object:user];
-    
-    [[AwfulForumsClient client] taxonomizeForumsAndThen:nil];
-
-    __weak __typeof__(self) weakSelf = self;
-    [self setRootViewController:self.rootViewControllerStack.rootViewController animated:YES completion:^{
-        __typeof__(self) self = weakSelf;
-        [self.rootViewControllerStack didAppear];
-        self.loginController = nil;
-    }];
-}
-
-- (void)loginController:(AwfulLoginController *)login didFailToLogInWithError:(NSError *)error
-{
-    UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Problem Logging In"
-                                                                      message:@"Double-check your username and password, then try again."];
-    [login presentViewController:alert animated:YES completion:nil];
 }
 
 @end

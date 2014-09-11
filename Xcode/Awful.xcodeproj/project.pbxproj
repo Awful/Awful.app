@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* SettingsViewController.m */; };
@@ -156,7 +155,6 @@
 		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
-		1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */; };
 		1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
 		1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
@@ -184,6 +182,8 @@
 		1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48CA17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CDF6FC017FCAA4E00F44174 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */; };
+		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
+		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
 		1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */; };
@@ -260,8 +260,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1190F71913BE4EA900B9D271 /* AwfulLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoginController.h; sourceTree = "<group>"; };
-		1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoginController.m; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../../Xcode/Prefix.pch; sourceTree = "<group>"; };
@@ -483,8 +481,6 @@
 		1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+AwfulStringyURLs.m"; sourceTree = "<group>"; };
 		1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulMinusFixURLProtocol.h; sourceTree = "<group>"; };
 		1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulMinusFixURLProtocol.m; sourceTree = "<group>"; };
-		1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulTextEntryCell.h; sourceTree = "<group>"; };
-		1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulTextEntryCell.m; sourceTree = "<group>"; };
 		1CBDB5BC16259C6C0004BDF4 /* ScrapingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScrapingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CBDB5C316259C6D0004BDF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBDB5CA16259C6D0004BDF4 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
@@ -539,6 +535,8 @@
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CDF6FBE17FCAA4E00F44174 /* AwfulDataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulDataStack.h; sourceTree = "<group>"; };
 		1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulDataStack.m; sourceTree = "<group>"; };
+		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
 		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
 		1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+UserDirectories.h"; sourceTree = "<group>"; };
@@ -653,10 +651,8 @@
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				1190F71913BE4EA900B9D271 /* AwfulLoginController.h */,
-				1190F71A13BE4EA900B9D271 /* AwfulLoginController.m */,
-				1CBD5245162B66BC00928740 /* AwfulTextEntryCell.h */,
-				1CBD5246162B66BC00928740 /* AwfulTextEntryCell.m */,
+				1CE2B76A19C2374C00FDC33E /* Login.storyboard */,
+				1CE2B76619C2372200FDC33E /* LoginViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1441,6 +1437,7 @@
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */,
+				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				1C8D116519B4EBF2005D46CB /* MessageList.storyboard in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
@@ -1648,7 +1645,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1190F75C13BE4EA900B9D271 /* AwfulLoginController.m in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AwfulAuthorScraper.m in Sources */,
@@ -1668,6 +1664,7 @@
 				1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */,
 				1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
+				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */,
 				1CC780501612DA8E002AF958 /* ThreadListViewController.m in Sources */,
 				1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */,
@@ -1680,7 +1677,6 @@
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1C5B8BF318591C7600FDBCCE /* AwfulTextAttachment.m in Sources */,
-				1CBD5247162B66BC00928740 /* AwfulTextEntryCell.m in Sources */,
 				1C9F3AB4180CD39C00B3BCBA /* AwfulPopoverBackgroundView.m in Sources */,
 				837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */,
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,

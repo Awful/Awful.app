@@ -6,7 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulLoginController.h"
 #import "AwfulModels.h"
 #import "ThreadComposeViewController.h"
 #import "AwfulRefreshMinder.h"
