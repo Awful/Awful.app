@@ -89,6 +89,18 @@
 					<key>Key</key>
 					<string>font_scale</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Hide Sidebar in Landscape</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>hide_sidebar_in_landscape</string>
+					<key>Device</key>
+					<string>iPad-like</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -130,25 +142,6 @@
 					<false/>
 					<key>Key</key>
 					<string>bookmarks_sorted_unread</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>iPad</string>
-			<key>Device</key>
-			<string>iPad</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Hide Sidebar in Landscape</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>hide_sidebar_in_landscape</string>
 				</dict>
 			</array>
 		</dict>

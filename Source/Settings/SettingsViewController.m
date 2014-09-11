@@ -37,12 +37,32 @@
 - (NSArray *)sections
 {
     if (!_sections) {
-        NSString *currentDevice = self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad ? @"iPad" : @"iPhone";
-        _sections = [[AwfulSettings sharedSettings].sections filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSDictionary *section, NSDictionary *bindings) {
-            if (section[@"Device"] && ![section[@"Device"] isEqual:currentDevice]) return NO;
-            if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) return NO;
-            return YES;
-        }]];
+        NSString *currentDevice = @"iPhone";
+        
+        // For settings purposes, we consider devices with a regular horizontal size class in landscape to be iPads. This includes iPads and also the iPhone 6 Plus.
+        // TODO Find a better way of doing this than checking the displayScale.
+        if (self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad || self.traitCollection.displayScale == 3.0) {
+            currentDevice = @"iPad";
+        }
+        
+        NSMutableArray *sections = [NSMutableArray new];
+        for (NSDictionary *section in [AwfulSettings sharedSettings].sections) {
+            
+            // Check for prefix so that "iPad-like" also matches.
+            if (section[@"Device"] && ![section[@"Device"] hasPrefix:currentDevice]) continue;
+            if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) continue;
+            NSMutableDictionary *filteredSection = [section mutableCopy];
+            NSArray *settings = filteredSection[@"Settings"];
+            NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *setting, id _) {
+                NSString *device = setting[@"Device"];
+                
+                // Again, check for prefix so that "iPad-like" also matches.
+                return !device || [device hasPrefix:currentDevice];
+            }];
+            filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
+            [sections addObject:filteredSection];
+        }
+        _sections = sections;
     }
     return _sections;
 }
