@@ -4,6 +4,10 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>description</key>
+		<string>Chill</string>
+		<key>relevantForumID</key>
+		<string>268</string>
 		<key>listFontName</key>
 		<string>ChalkboardSE-Regular</string>
 		<key>sheetTitleColor</key>
@@ -18,8 +22,6 @@
 		<string>#000000</string>
 		<key>listSelectedBackgroundColor</key>
 		<string>#e7e7ff</string>
-		<key>description</key>
-		<string>Chill</string>
 		<key>listSecondaryTextColor</key>
 		<string>#9999ff</string>
 		<key>backgroundColor</key>
@@ -36,8 +38,6 @@
 		<string>#ccccff</string>
 		<key>collectionViewTextColor</key>
 		<string>#006666</string>
-		<key>relevantForumID</key>
-		<string>268</string>
 		<key>descriptiveColor</key>
 		<string>#9999ff</string>
 	</dict>

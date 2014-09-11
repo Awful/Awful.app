@@ -1239,14 +1239,14 @@
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
 				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
-				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
-				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
-				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
-				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
 				1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */,
+				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
+				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */,
 				1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */,
+				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
+				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
