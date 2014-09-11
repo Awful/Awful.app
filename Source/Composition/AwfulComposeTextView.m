@@ -26,22 +26,6 @@
     UIPopoverController *_imagePickerPopover;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (instancetype)initWithFrame:(CGRect)frame textContainer:(NSTextContainer *)textContainer
-{
-    self = [super initWithFrame:frame textContainer:textContainer];
-    if (!self) return nil;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textDidChange_iOS7Fixes)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:nil];
-    return self;
-}
-
 - (AwfulKeyboardBar *)BBcodeBar
 {
     if (_BBcodeBar) return _BBcodeBar;
@@ -369,62 +353,6 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
     return !_showingSubmenu && [super canPerformAction:action withSender:sender];
-}
-
-#pragma mark - iOS 7 Fixes
-
-// Found this stuff at https://github.com/Exile90/ICTextView/blob/master/ICTextView/ICTextView.m
-// Not totally sure which parts fix which issues.
-
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
-{
-    [super setSelectedTextRange:selectedTextRange];
-    if (selectedTextRange) {
-        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
-    }
-}
-
-- (void)textDidChange_iOS7Fixes
-{
-    UITextRange *selectedTextRange = self.selectedTextRange;
-    if (selectedTextRange) {
-        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
-    }
-}
-
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
-{
-    if (considerInsets) {
-        CGRect bounds = self.bounds;
-        UIEdgeInsets contentInset = self.contentInset;
-        CGRect visibleRect = [self visibleRectConsideringInsets:YES];
-        if (!CGRectContainsRect(visibleRect, rect)) {
-            CGPoint contentOffset = self.contentOffset;
-            if (rect.origin.y < visibleRect.origin.y) {
-                contentOffset.y = rect.origin.y - contentInset.top;
-            } else {
-                contentOffset.y = rect.origin.y + contentInset.bottom + rect.size.height - bounds.size.height;
-            }
-            [self setContentOffset:contentOffset animated:animated];
-        }
-    } else {
-        [super scrollRectToVisible:rect animated:animated];
-    }
-}
-
-- (CGRect)visibleRectConsideringInsets:(BOOL)considerInsets
-{
-    if (considerInsets) {
-        UIEdgeInsets contentInset = self.contentInset;
-        CGRect visibleRect = self.bounds;
-        visibleRect.origin.x += contentInset.left;
-        visibleRect.origin.y += contentInset.top;
-        visibleRect.size.width -= (contentInset.left + contentInset.right);
-        visibleRect.size.height -= (contentInset.top + contentInset.bottom);
-        return visibleRect;
-    } else {
-        return self.bounds;
-    }
 }
 
 @end
