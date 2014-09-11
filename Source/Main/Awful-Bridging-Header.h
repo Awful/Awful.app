@@ -4,7 +4,6 @@
 
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
-#import "AwfulEmptyViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
@@ -15,6 +14,7 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulThemePicker.h"
 #import "BookmarkedThreadListViewController.h"
+#import "EmptyViewController.h"
 #import "ForumListViewController.h"
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"

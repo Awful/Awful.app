@@ -64,7 +64,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = AwfulEmptyViewController().enclosingNavigationController
+        let emptyNavigationController = EmptyViewController().enclosingNavigationController
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController
@@ -111,9 +111,13 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
     private func configureSplitViewControllerDisplayMode() {
         if AwfulSettings.sharedSettings().hideSidebarInLandscape {
-            splitViewController.preferredDisplayMode = .PrimaryOverlay;
+            if splitViewController.displayMode == .PrimaryOverlay {
+                splitViewController.preferredDisplayMode = .PrimaryOverlay
+            } else {
+                splitViewController.preferredDisplayMode = .PrimaryHidden
+            }
         } else {
-            splitViewController.preferredDisplayMode = .Automatic;
+            splitViewController.preferredDisplayMode = .Automatic
         }
     }
 
@@ -141,9 +145,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 
     func didAppear() {
         if let detailNavigationController = detailNavigationController {
-            if detailNavigationController.awful_firstDescendantViewControllerOfClass(AwfulEmptyViewController.self) != nil {
-                splitViewController.awful_showPrimaryViewController()
-            }
 
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
@@ -169,7 +170,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     func splitViewController(splitViewController: UISplitViewController!, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         
         // We have no need for the empty view controller when collapsed.
-        if secondaryViewController.awful_firstDescendantViewControllerOfClass(AwfulEmptyViewController.self) != nil {
+        if secondaryViewController.awful_firstDescendantViewControllerOfClass(EmptyViewController.self) != nil {
             return true
         }
         

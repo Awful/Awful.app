@@ -3,10 +3,10 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulURLRouter.h"
-#import "AwfulEmptyViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulModels.h"
 #import "BookmarkedThreadListViewController.h"
+#import "EmptyViewController.h"
 #import "ForumListViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import "MessageListViewController.h"
@@ -253,7 +253,7 @@
         targetNavigationController = splitViewController.viewControllers.lastObject;
         
         // If the detail view controller is empty, showing the posts view controller actually is as simple as showing a detail view controller, and we can exit early.
-        if ([targetNavigationController awful_firstDescendantViewControllerOfClass:[AwfulEmptyViewController class]]) {
+        if ([targetNavigationController awful_firstDescendantViewControllerOfClass:[EmptyViewController class]]) {
             [splitViewController showDetailViewController:postsViewController sender:self];
             return YES;
         }
