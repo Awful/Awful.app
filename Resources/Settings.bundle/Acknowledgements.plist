@@ -318,21 +318,6 @@ IN THE SOFTWARE.
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
-		<dict>
-			<key>FooterText</key>
-			<string>
-UIImage+Resize.h
-
-
-Created by Trevor Harmon on 8/5/09.
-Free for personal or commercial use, with or without modification.
-No warranty is expressed or implied.
-</string>
-			<key>Title</key>
-			<string>UIImage+Resize</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
 	</array>
 	<key>StringsTable</key>
 	<string>Acknowledgements</string>
