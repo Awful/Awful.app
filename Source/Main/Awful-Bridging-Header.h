@@ -26,6 +26,7 @@
 #import <TUSafariActivity/TUSafariActivity.h>
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UISplitViewController+AwfulConvenient.h"
+#import "UIViewController+AwfulAnnoyingSwift.h"
 #import "UIViewController+AwfulTheme.h"
 #import "UIViewController+HierarchySearch.h"
 #import "UIViewController+NavigationEnclosure.h"
