@@ -131,7 +131,7 @@
 	if (self.presentedViewController) return;
 	[self.automaticallyHideBarsTimer invalidate];
 	
-	UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageView.image, self.imageURL]
+	UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageURL]
 																		   applicationActivities:nil];
 	
 	activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
