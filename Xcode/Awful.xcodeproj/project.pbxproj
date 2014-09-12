@@ -699,26 +699,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1C00E0A71739F8BB008895E7 /* Views */ = {
+		1C00E0AB173A006B008895E7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
 				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
 				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
-				1CA1857E17E3472300462F20 /* AwfulToolbar.h */,
-				1CA1857F17E3472300462F20 /* AwfulToolbar.m */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		1C00E0AB173A006B008895E7 /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
 				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
 				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
+				1CA1857E17E3472300462F20 /* AwfulToolbar.h */,
+				1CA1857F17E3472300462F20 /* AwfulToolbar.m */,
 				F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */,
 				F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */,
 			);
-			path = "View Controllers";
+			path = Navigation;
 			sourceTree = "<group>";
 		};
 		1C05EDAD16230BFE00FE567F /* Scraping */ = {
@@ -832,6 +825,7 @@
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CB6010616D826DA00CBEE22 /* Messages */,
 				1CC4525B180B35D700F5F043 /* Models */,
+				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
@@ -841,8 +835,6 @@
 				1CC780471612DA8D002AF958 /* Threads */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
 				1C6ED634169103FE0015CDD5 /* Users */,
-				1C00E0AB173A006B008895E7 /* View Controllers */,
-				1C00E0A71739F8BB008895E7 /* Views */,
 				1C7C60C018FCA4D7009BF4BB /* Web View Junk */,
 			);
 			name = Source;
