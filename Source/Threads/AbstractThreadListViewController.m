@@ -18,23 +18,27 @@
 
 @interface AbstractThreadListViewController ()
 
-@property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
+@property (strong, nonatomic) AwfulFetchedResultsControllerDataSource *threadDataSource;
+@property (strong, nonatomic) NSMutableDictionary *threadTagObservers;
+@property (strong, nonatomic) id <NSObject> settingsObserver;
 
 @end
 
 @implementation AbstractThreadListViewController
-{
-    AwfulFetchedResultsControllerDataSource *_threadDataSource;
-}
 
-@synthesize threadTagObservers = _threadTagObservers;
+- (void)dealloc
+{
+    if (_settingsObserver) {
+        [[NSNotificationCenter defaultCenter] removeObserver:_settingsObserver];
+    }
+}
 
 - (AwfulFetchedResultsControllerDataSource *)threadDataSource
 {
-    if (_threadDataSource) return _threadDataSource;
-    _threadDataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView
-                                                                           reuseIdentifier:ThreadCellIdentifier];
-    _threadDataSource.delegate = self;
+    if (!_threadDataSource) {
+        _threadDataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:ThreadCellIdentifier];
+        _threadDataSource.delegate = self;
+    }
     return _threadDataSource;
 }
 
@@ -48,12 +52,22 @@
 
 static NSString * const ThreadCellIdentifier = @"Thread";
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    __weak __typeof__(self) weakSelf = self;
+    _settingsObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AwfulSettingsDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+        if ([notification.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.showThreadTags]) {
+            __typeof__(self) self = weakSelf;
+            [self.tableView reloadData];
+        }
+    }];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     _threadDataSource.updatesTableView = YES;
-	[self themeDidChange];
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, [AwfulSettings sharedSettings].showThreadTags ? 60 : 8, 0, 0);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -64,7 +78,9 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 
 - (NSMutableDictionary *)threadTagObservers
 {
-    if (!_threadTagObservers) _threadTagObservers = [NSMutableDictionary new];
+    if (!_threadTagObservers) {
+        _threadTagObservers = [NSMutableDictionary new];
+    }
     return _threadTagObservers;
 }
 
