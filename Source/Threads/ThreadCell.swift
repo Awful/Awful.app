@@ -21,10 +21,10 @@ class ThreadCell: UITableViewCell {
     // MARK: Hide and show tag and/or rating
     
     /// Constraints needed when showing a rating image.
-    @IBOutlet var ratingConstraints: [NSLayoutConstraint]!
+    @IBOutlet private var ratingConstraints: [NSLayoutConstraint]!
     
     /// Constraints needed when showing a tag image.
-    @IBOutlet var tagConstraints: [NSLayoutConstraint]!
+    @IBOutlet private var tagConstraints: [NSLayoutConstraint]!
     
     var showsRating: Bool = true {
         didSet(wasShowingRating) {
