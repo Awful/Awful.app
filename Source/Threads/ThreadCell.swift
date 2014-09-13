@@ -48,19 +48,24 @@ class ThreadCell: UITableViewCell {
         }
     }
     
-    // MARK: Long-press
-    
-    private var longPress: UILongPressGestureRecognizer!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        // Can't put this in a nib used by UITableView ("must have exactly one top-level object hurf durf").
         longPress = UILongPressGestureRecognizer(target: self, action: "didLongPress:")
         contentView.addGestureRecognizer(longPress)
+        
+        // Can't do this in IB.
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
+        
+        // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
+        contentView.layoutMargins.left = 16
     }
     
-    private weak var longPressTarget: AnyObject!
-    private var longPressAction: Selector!
+    // MARK: Long-press
+    
+    private(set) weak var longPressTarget: AnyObject!
+    private(set) var longPressAction: Selector!
     
     func setLongPressTarget(target: AnyObject!, action: String!) {
         if let action = action {
@@ -73,6 +78,8 @@ class ThreadCell: UITableViewCell {
             longPressAction = nil
         }
     }
+    
+    private var longPress: UILongPressGestureRecognizer!
     
     @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .Began {

@@ -84,6 +84,13 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     return _threadTagObservers;
 }
 
+- (UIEdgeInsets)appropriateSeparatorInset
+{
+    // The minimum inset is the cell's layoutMargins, so 0 is effectively 16 here, just without hardcoding the 16.
+    CGFloat left = [AwfulSettings sharedSettings].showThreadTags ? 61 : 0;
+    return UIEdgeInsetsMake(0, left, 0, 0);
+}
+
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
 - (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
@@ -148,6 +155,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 		cell.showsTag = NO;
 	}
 	
+    cell.separatorInset = [self appropriateSeparatorInset];
 	
     cell.titleLabel.text = [thread.title stringByCollapsingWhitespace];
     if (thread.sticky || !thread.closed) {
