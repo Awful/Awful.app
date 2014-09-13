@@ -47,7 +47,7 @@
     [super loadView];
     [self.tableView registerNib:[UINib nibWithNibName:@"ThreadCell" bundle:nil] forCellReuseIdentifier:ThreadCellIdentifier];
     self.tableView.estimatedRowHeight = 75;
-    [self.tableView awful_hideExtraneousSeparators];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 static NSString * const ThreadCellIdentifier = @"Thread";

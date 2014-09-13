@@ -9,7 +9,7 @@
         <scene sceneID="3cc-sL-WLc">
             <objects>
                 <tableViewController title="Forums" id="3Nj-BO-15y" customClass="ForumListViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Forum list" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gVM-WF-65Z">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Forum list" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gVM-WF-65Z">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -30,7 +30,7 @@
                                             <state key="selected" image="forum-arrow-down"/>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forum Name" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H4b-1h-lY0">
-                                            <rect key="frame" x="40" y="8" width="522" height="27"/>
+                                            <rect key="frame" x="40" y="8" width="522" height="28"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -41,15 +41,25 @@
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQi-Ih-I5Z" userLabel="Cell Separator">
+                                            <rect key="frame" x="40" y="43" width="560" height="1"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="cWh-q9-BVu"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="centerY" secondItem="f4F-C2-ho3" secondAttribute="centerY" id="0x1-4J-iRz"/>
+                                        <constraint firstItem="fQi-Ih-I5Z" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailing" id="74b-Nq-hgb"/>
                                         <constraint firstAttribute="centerY" secondItem="XR1-Rx-Ib8" secondAttribute="centerY" id="8qJ-OO-dTz"/>
                                         <constraint firstItem="f4F-C2-ho3" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailingMargin" id="Ael-29-afm"/>
+                                        <constraint firstItem="fQi-Ih-I5Z" firstAttribute="leading" secondItem="H4b-1h-lY0" secondAttribute="leading" id="BAl-1W-K0s"/>
                                         <constraint firstItem="f4F-C2-ho3" firstAttribute="leading" secondItem="H4b-1h-lY0" secondAttribute="trailing" constant="8" id="LdF-N7-Qzg"/>
                                         <constraint firstItem="H4b-1h-lY0" firstAttribute="leading" secondItem="XR1-Rx-Ib8" secondAttribute="trailing" constant="8" id="YTM-ar-8Hd"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="H4b-1h-lY0" secondAttribute="bottom" id="aSS-IG-ysJ"/>
                                         <constraint firstItem="H4b-1h-lY0" firstAttribute="top" secondItem="Gtx-Zu-94i" secondAttribute="topMargin" id="f3r-Cf-dML"/>
+                                        <constraint firstItem="fQi-Ih-I5Z" firstAttribute="bottom" secondItem="Gtx-Zu-94i" secondAttribute="bottom" id="jKm-h8-WAY"/>
                                         <constraint firstItem="XR1-Rx-Ib8" firstAttribute="leading" secondItem="Gtx-Zu-94i" secondAttribute="leading" id="tvX-Gt-Yom"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -58,6 +68,7 @@
                                     <outlet property="favoriteButton" destination="f4F-C2-ho3" id="IAu-dy-Ssm"/>
                                     <outlet property="nameLabel" destination="H4b-1h-lY0" id="rCt-ri-KkT"/>
                                     <outlet property="nameSpaceConstraint" destination="YTM-ar-8Hd" id="DcI-Mg-p9m"/>
+                                    <outlet property="separatorHeightConstraint" destination="cWh-q9-BVu" id="5ME-Ke-Dr9"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Favorite" id="5ag-tw-4Cq" customClass="ForumCell" customModule="Awful" customModuleProvider="target">
@@ -65,30 +76,41 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5ag-tw-4Cq" id="a4y-em-PD0">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star-on" translatesAutoresizingMaskIntoConstraints="NO" id="neo-9c-Ym5">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star-on" translatesAutoresizingMaskIntoConstraints="NO" id="neo-9c-Ym5" userLabel="Star">
                                             <rect key="frame" x="0.0" y="12" width="32" height="20"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="32" id="iNm-ez-asW"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favorite Forum Name" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Cc-Eh-5gQ">
-                                            <rect key="frame" x="40" y="8" width="522" height="27"/>
+                                            <rect key="frame" x="40" y="8" width="522" height="28"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Svp-W1-S0b" userLabel="Cell Separator">
+                                            <rect key="frame" x="40" y="43" width="560" height="1"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="qUY-yn-Fmb"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailingMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="trailing" constant="30" id="E38-Qr-N6w"/>
                                         <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="top" secondItem="a4y-em-PD0" secondAttribute="topMargin" id="Fnv-C8-amw"/>
                                         <constraint firstItem="neo-9c-Ym5" firstAttribute="leading" secondItem="a4y-em-PD0" secondAttribute="leading" id="X4d-t5-q34"/>
+                                        <constraint firstItem="Svp-W1-S0b" firstAttribute="trailing" secondItem="a4y-em-PD0" secondAttribute="trailing" id="bAi-Sk-gJ8"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="bottom" id="eew-rC-EDT"/>
                                         <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="leading" secondItem="neo-9c-Ym5" secondAttribute="trailing" constant="8" id="vcv-C5-t7l"/>
+                                        <constraint firstItem="Svp-W1-S0b" firstAttribute="leading" secondItem="1Cc-Eh-5gQ" secondAttribute="leading" id="vnF-b7-YG8"/>
                                         <constraint firstAttribute="centerY" secondItem="neo-9c-Ym5" secondAttribute="centerY" id="wxk-HZ-9AE"/>
+                                        <constraint firstItem="Svp-W1-S0b" firstAttribute="bottom" secondItem="a4y-em-PD0" secondAttribute="bottom" id="xd3-rG-Llb"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="nameLabel" destination="1Cc-Eh-5gQ" id="r1a-M4-giS"/>
+                                    <outlet property="separatorHeightConstraint" destination="qUY-yn-Fmb" id="ODp-sY-mdM"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

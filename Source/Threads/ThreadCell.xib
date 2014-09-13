@@ -87,6 +87,13 @@
                             <constraint firstAttribute="width" id="mKJ-Ae-jGS"/>
                         </constraints>
                     </view>
+                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator">
+                        <rect key="frame" x="61" y="73" width="259" height="1"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="Uhf-EX-ezB"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="xCF-fO-pFt" firstAttribute="trailing" secondItem="fgr-Fq-s3K" secondAttribute="trailing" id="17c-7m-i4i"/>
@@ -95,6 +102,7 @@
                     <constraint firstItem="tWd-xq-Xgj" firstAttribute="centerY" secondItem="gua-cA-OlD" secondAttribute="centerY" id="4f1-ge-sqB"/>
                     <constraint firstItem="gua-cA-OlD" firstAttribute="top" secondItem="fgr-Fq-s3K" secondAttribute="bottom" constant="4" id="6aZ-Oy-bNQ"/>
                     <constraint firstItem="zeJ-Fa-EkM" firstAttribute="top" secondItem="fyk-yR-Pfe" secondAttribute="top" id="7Hx-JU-pYm"/>
+                    <constraint firstItem="gev-Wv-hue" firstAttribute="leading" secondItem="fgr-Fq-s3K" secondAttribute="leading" id="7aU-Jf-mhH"/>
                     <constraint firstItem="HZh-ZU-eMp" firstAttribute="leading" secondItem="fgr-Fq-s3K" secondAttribute="trailing" constant="5" id="Bdr-wx-K0N"/>
                     <constraint firstAttribute="centerY" secondItem="960-Hr-2KP" secondAttribute="centerY" id="Iwi-fB-jre"/>
                     <constraint firstItem="xCF-fO-pFt" firstAttribute="leading" secondItem="tWd-xq-Xgj" secondAttribute="trailing" constant="6" id="JgF-KE-ZD8"/>
@@ -106,11 +114,13 @@
                     <constraint firstItem="zeJ-Fa-EkM" firstAttribute="height" secondItem="uvA-wX-8qH" secondAttribute="height" id="PVL-Ud-BgD"/>
                     <constraint firstItem="fgr-Fq-s3K" firstAttribute="leading" secondItem="960-Hr-2KP" secondAttribute="trailing" constant="8" id="YyC-zi-gij"/>
                     <constraint firstAttribute="centerY" secondItem="HZh-ZU-eMp" secondAttribute="centerY" id="bq3-K0-Pff"/>
+                    <constraint firstItem="gev-Wv-hue" firstAttribute="bottom" secondItem="fyk-yR-Pfe" secondAttribute="bottom" id="cxc-Vs-hx3"/>
                     <constraint firstItem="xCF-fO-pFt" firstAttribute="baseline" secondItem="gua-cA-OlD" secondAttribute="baseline" id="eFs-ae-d5x"/>
                     <constraint firstItem="uvA-wX-8qH" firstAttribute="top" secondItem="xCF-fO-pFt" secondAttribute="bottom" id="gZB-jh-FoY"/>
                     <constraint firstItem="uvA-wX-8qH" firstAttribute="centerX" secondItem="zeJ-Fa-EkM" secondAttribute="centerX" id="iZJ-N3-Iou"/>
                     <constraint firstItem="gua-cA-OlD" firstAttribute="leading" secondItem="fgr-Fq-s3K" secondAttribute="leading" id="ktO-lM-aAm"/>
                     <constraint firstItem="tWd-xq-Xgj" firstAttribute="leading" secondItem="gua-cA-OlD" secondAttribute="trailing" constant="2" id="kz6-IX-my3"/>
+                    <constraint firstAttribute="trailing" secondItem="gev-Wv-hue" secondAttribute="trailing" id="mtX-Ae-WQc"/>
                     <constraint firstAttribute="trailing" secondItem="zuV-Ky-jz8" secondAttribute="trailing" id="skj-nr-WVR"/>
                 </constraints>
             </tableViewCellContentView>
@@ -120,6 +130,7 @@
                 <outlet property="numberOfPagesLabel" destination="gua-cA-OlD" id="c4x-5K-Ke7"/>
                 <outlet property="ratingImageView" destination="xoz-qp-irW" id="27e-kb-frT"/>
                 <outlet property="secondaryTagImageView" destination="xaO-nS-1bC" id="kla-qE-5eA"/>
+                <outlet property="separatorHeightConstraint" destination="Uhf-EX-ezB" id="PL7-Jx-y3n"/>
                 <outlet property="stickyImageView" destination="zuV-Ky-jz8" id="kWa-a6-CPM"/>
                 <outlet property="tagAndRatingContainerView" destination="960-Hr-2KP" id="e1v-5v-R7j"/>
                 <outlet property="tagImageView" destination="L5k-2S-cEh" id="sAO-hR-6fM"/>

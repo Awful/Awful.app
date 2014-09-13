@@ -5,13 +5,17 @@
 import UIKit
 
 class ForumCell: UITableViewCell {
-	@IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         // Can't do this in IB.
         contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44))
+        
+        // Can't do this in IB.
+        separatorHeightConstraint.constant = 0.5
     }
 }
 

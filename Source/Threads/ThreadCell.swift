@@ -18,6 +18,25 @@ class ThreadCell: UITableViewCell {
     @IBOutlet weak var killedByLabel: UILabel!
     @IBOutlet weak var stickyImageView: UIImageView!
     
+    @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        // Can't put this in a nib used by UITableView ("must have exactly one top-level object hurf durf").
+        longPress = UILongPressGestureRecognizer(target: self, action: "didLongPress:")
+        contentView.addGestureRecognizer(longPress)
+        
+        // Can't do this in IB.
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
+        
+        // Can't do this in IB.
+        separatorHeightConstraint.constant = 0.5
+        
+        // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
+        contentView.layoutMargins.left = 16
+    }
+    
     // MARK: Hide and show tag and/or rating
     
     /// Constraints needed when showing a rating image.
@@ -46,20 +65,6 @@ class ThreadCell: UITableViewCell {
                 tagAndRatingContainerView.removeFromSuperview()
             }
         }
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        // Can't put this in a nib used by UITableView ("must have exactly one top-level object hurf durf").
-        longPress = UILongPressGestureRecognizer(target: self, action: "didLongPress:")
-        contentView.addGestureRecognizer(longPress)
-        
-        // Can't do this in IB.
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
-        
-        // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
-        contentView.layoutMargins.left = 16
     }
     
     // MARK: Long-press

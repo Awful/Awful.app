@@ -86,9 +86,7 @@ static NSString * const HeaderIdentifier = @"Header";
     [super viewDidLoad];
     self.tableView.estimatedRowHeight = 44;
     self.tableView.backgroundView = nil;
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, 40, 0, 0);
     [self.tableView awful_unstickSectionHeaders];
-    [self.tableView awful_hideExtraneousSeparators];
     _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Forum"];
     _treeDataSource.topDataSource = self;
     _treeDataSource.managedObjectContext = self.managedObjectContext;
@@ -264,7 +262,6 @@ static NSString * const HeaderIdentifier = @"Header";
     ForumCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Favorite" forIndexPath:indexPath];
     AwfulForum *forum = self.favoriteForums[indexPath.row];
     cell.nameLabel.text = forum.name;
-    cell.separatorInset = UIEdgeInsetsZero;
     ThemeCell(self.theme, cell);
     return cell;
 }
