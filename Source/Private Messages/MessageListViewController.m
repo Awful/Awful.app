@@ -98,8 +98,6 @@
 {
     [super viewDidLoad];
     self.tableView.estimatedRowHeight = 75;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
-    [self.tableView awful_hideExtraneousSeparators];
     
     _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Message"];
     _dataSource.delegate = self;

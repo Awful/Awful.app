@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6206.8" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Xf7-Hm-dR8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Xf7-Hm-dR8">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
-        <capability name="Constraints with attributes relative to the layout margin" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Private Messages-->
         <scene sceneID="Dvi-qp-1px">
             <objects>
                 <tableViewController title="Private Messages" id="Xf7-Hm-dR8" customClass="MessageListViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="75" sectionHeaderHeight="22" sectionFooterHeight="22" id="gjv-xb-LsO">
-                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="75" sectionHeaderHeight="22" sectionFooterHeight="22" id="gjv-xb-LsO">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="300"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -40,13 +40,13 @@
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Subject" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSF-i6-vhj">
-                                            <rect key="frame" x="61" y="19" width="498" height="20"/>
+                                            <rect key="frame" x="61" y="19" width="218" height="20"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="From – Date" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lI3-VQ-2LR">
-                                            <rect key="frame" x="61" y="41" width="498" height="15"/>
+                                            <rect key="frame" x="61" y="41" width="218" height="15"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -57,11 +57,20 @@
                                                 <constraint firstAttribute="width" id="ncC-Iv-WYn"/>
                                             </constraints>
                                         </view>
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="05b-CS-oCt" userLabel="Cell Separator">
+                                            <rect key="frame" x="61" y="74" width="226" height="1"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="Acl-AE-8tf"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="05b-CS-oCt" firstAttribute="leading" secondItem="lSF-i6-vhj" secondAttribute="leading" id="6Ak-a9-hpX"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="lSF-i6-vhj" secondAttribute="trailing" id="6C9-O7-hfP"/>
                                         <constraint firstItem="lI3-VQ-2LR" firstAttribute="leading" secondItem="lSF-i6-vhj" secondAttribute="leading" id="7um-9c-bxJ"/>
                                         <constraint firstItem="lSF-i6-vhj" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leadingMargin" priority="750" id="9Ga-zV-L8N"/>
+                                        <constraint firstItem="05b-CS-oCt" firstAttribute="bottom" secondItem="cPp-qQ-6DX" secondAttribute="bottom" id="AKq-Ft-Obn"/>
                                         <constraint firstItem="lI3-VQ-2LR" firstAttribute="top" secondItem="lSF-i6-vhj" secondAttribute="bottom" constant="2" id="FUX-yM-vif"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="height" secondItem="dBu-QB-7Hg" secondAttribute="height" id="LL1-X9-HeJ"/>
                                         <constraint firstAttribute="centerY" secondItem="mJq-Py-HSR" secondAttribute="centerY" id="Ofj-Dg-K9l"/>
@@ -74,12 +83,15 @@
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="top" secondItem="lI3-VQ-2LR" secondAttribute="bottom" id="ejX-Xr-6fD"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="9Gh-3Y-wBN" secondAttribute="bottom" id="igB-Fp-6bo"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="leading" secondItem="dBu-QB-7Hg" secondAttribute="leading" id="m69-J0-sSE"/>
+                                        <constraint firstItem="05b-CS-oCt" firstAttribute="trailing" secondItem="cPp-qQ-6DX" secondAttribute="trailing" placeholder="YES" id="mYS-GH-7JP"/>
                                         <constraint firstItem="mJq-Py-HSR" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leadingMargin" id="oLO-ZF-POr"/>
                                         <constraint firstItem="dBu-QB-7Hg" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leading" id="xdU-b6-7Ss"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="fromDateLabel" destination="lI3-VQ-2LR" id="ega-rs-QL8"/>
+                                    <outlet property="separator" destination="05b-CS-oCt" id="O5Y-Qa-oep"/>
+                                    <outlet property="separatorHeightConstraint" destination="Acl-AE-8tf" id="QG6-H5-3f8"/>
                                     <outlet property="subjectLabel" destination="lSF-i6-vhj" id="I9q-w7-I8c"/>
                                     <outlet property="tagImageView" destination="mJq-Py-HSR" id="1Xd-6c-aoA"/>
                                     <outlet property="tagOverlayImageView" destination="n4L-ey-mVu" id="eho-9a-6Ll"/>
@@ -97,6 +109,8 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="300"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygI-t0-KZf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

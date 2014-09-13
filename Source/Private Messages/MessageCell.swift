@@ -13,8 +13,24 @@ class MessageCell: UITableViewCell {
     @IBOutlet weak var subjectLabel: UILabel!
     @IBOutlet weak var fromDateLabel: UILabel!
     
+    @IBOutlet private weak var separator: UIView!
+    @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        // Can't do this in IB.
+        separatorHeightConstraint.constant = 0.5
+        
+        // Can't do this in IB.
+        addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
+        
+        // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
+        contentView.layoutMargins.left = 16
+    }
+    
     // Constraints that get added or removed as the tag comes and goes.
-    @IBOutlet var tagConstraints: [NSLayoutConstraint]!
+    @IBOutlet private var tagConstraints: [NSLayoutConstraint]!
     
     var showsTag: Bool = true {
         didSet {
@@ -29,11 +45,5 @@ class MessageCell: UITableViewCell {
                 tagOverlayImageView.removeFromSuperview()
             }
         }
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        separatorInset = UIEdgeInsets(top: 0, left: CGRectGetMinX(subjectLabel.frame), bottom: 0, right: 0)
     }
 }
