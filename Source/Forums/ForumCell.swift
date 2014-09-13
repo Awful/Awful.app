@@ -5,15 +5,19 @@
 import UIKit
 
 class ForumCell: UITableViewCell {
-	
 	@IBOutlet weak var nameLabel: UILabel!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        // Can't do this in IB.
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44))
+    }
 }
 
-
 class ForumListCell: ForumCell {
-
     @IBOutlet weak var disclosureButton: UIButton!
-    @IBOutlet weak var nameSpaceConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var nameSpaceConstraint: NSLayoutConstraint!
     @IBOutlet weak var favoriteButton: UIButton!
 
     var subforumDepth: Int = 0 {

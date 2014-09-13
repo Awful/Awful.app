@@ -84,9 +84,9 @@ static NSString * const HeaderIdentifier = @"Header";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.estimatedRowHeight = 37;
+    self.tableView.estimatedRowHeight = 44;
     self.tableView.backgroundView = nil;
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, 37, 0, 0);
+    self.tableView.separatorInset = UIEdgeInsetsMake(0, 40, 0, 0);
     [self.tableView awful_unstickSectionHeaders];
     [self.tableView awful_hideExtraneousSeparators];
     _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Forum"];
