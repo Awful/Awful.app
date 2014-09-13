@@ -20,6 +20,9 @@ class MessageCell: UITableViewCell {
         super.awakeFromNib()
         
         // Can't do this in IB.
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 65))
+        
+        // Can't do this in IB.
         separatorHeightConstraint.constant = 0.5
         
         // Can't do this in IB.

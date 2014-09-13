@@ -14,13 +14,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Message" rowHeight="75" id="JWs-BP-OTU" customClass="MessageCell" customModule="Awful" customModuleProvider="target">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Message" rowHeight="65" id="JWs-BP-OTU" customClass="MessageCell" customModule="Awful" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JWs-BP-OTU" id="cPp-qQ-6DX">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" placeholderIntrinsicWidth="45" placeholderIntrinsicHeight="45" image="empty-pm-tag" translatesAutoresizingMaskIntoConstraints="NO" id="mJq-Py-HSR" userLabel="Tag">
-                                            <rect key="frame" x="8" y="15" width="45" height="45"/>
+                                            <rect key="frame" x="8" y="10" width="45" height="45"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="55" id="Y0T-b6-JcA"/>
                                             </constraints>
@@ -31,22 +31,23 @@
                                             </variation>
                                         </imageView>
                                         <imageView userInteractionEnabled="NO" contentMode="bottomRight" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="16" placeholderIntrinsicHeight="16" translatesAutoresizingMaskIntoConstraints="NO" id="n4L-ey-mVu" userLabel="Tag Overlay">
-                                            <rect key="frame" x="38" y="45" width="16" height="16"/>
+                                            <rect key="frame" x="38" y="41" width="16" height="16"/>
                                         </imageView>
                                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dBu-QB-7Hg" userLabel="Top Spacer">
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="4" id="Gem-UM-A90"/>
                                                 <constraint firstAttribute="width" id="tIv-aT-CA1"/>
                                             </constraints>
                                         </view>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Subject" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSF-i6-vhj">
-                                            <rect key="frame" x="61" y="19" width="218" height="20"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Subject" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSF-i6-vhj">
+                                            <rect key="frame" x="61" y="14" width="218" height="20"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="From – Date" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lI3-VQ-2LR">
-                                            <rect key="frame" x="61" y="41" width="218" height="15"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="From – Date" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lI3-VQ-2LR">
+                                            <rect key="frame" x="61" y="36" width="218" height="15"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
@@ -58,7 +59,7 @@
                                             </constraints>
                                         </view>
                                         <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="05b-CS-oCt" userLabel="Cell Separator">
-                                            <rect key="frame" x="61" y="74" width="226" height="1"/>
+                                            <rect key="frame" x="61" y="64" width="226" height="1"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="1" id="Acl-AE-8tf"/>
@@ -73,19 +74,19 @@
                                         <constraint firstItem="05b-CS-oCt" firstAttribute="bottom" secondItem="cPp-qQ-6DX" secondAttribute="bottom" id="AKq-Ft-Obn"/>
                                         <constraint firstItem="lI3-VQ-2LR" firstAttribute="top" secondItem="lSF-i6-vhj" secondAttribute="bottom" constant="2" id="FUX-yM-vif"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="height" secondItem="dBu-QB-7Hg" secondAttribute="height" id="LL1-X9-HeJ"/>
+                                        <constraint firstItem="dBu-QB-7Hg" firstAttribute="centerX" secondItem="cPp-qQ-6DX" secondAttribute="centerX" id="MqW-hi-Ybj"/>
                                         <constraint firstAttribute="centerY" secondItem="mJq-Py-HSR" secondAttribute="centerY" id="Ofj-Dg-K9l"/>
-                                        <constraint firstItem="dBu-QB-7Hg" firstAttribute="bottom" secondItem="lSF-i6-vhj" secondAttribute="top" id="PzH-9a-mPc"/>
+                                        <constraint firstItem="lSF-i6-vhj" firstAttribute="top" secondItem="dBu-QB-7Hg" secondAttribute="bottom" id="PzH-9a-mPc"/>
                                         <constraint firstItem="lSF-i6-vhj" firstAttribute="leading" secondItem="mJq-Py-HSR" secondAttribute="trailing" constant="8" id="RdJ-SM-ecK"/>
                                         <constraint firstItem="lI3-VQ-2LR" firstAttribute="trailing" secondItem="lSF-i6-vhj" secondAttribute="trailing" id="RnX-cT-wo5"/>
-                                        <constraint firstItem="n4L-ey-mVu" firstAttribute="bottom" secondItem="mJq-Py-HSR" secondAttribute="bottom" constant="1" id="UV6-i8-Rn8"/>
+                                        <constraint firstItem="n4L-ey-mVu" firstAttribute="bottom" secondItem="mJq-Py-HSR" secondAttribute="bottom" constant="2" id="UV6-i8-Rn8"/>
                                         <constraint firstItem="n4L-ey-mVu" firstAttribute="trailing" secondItem="mJq-Py-HSR" secondAttribute="trailing" constant="1" id="Yik-8f-Dsh"/>
                                         <constraint firstItem="dBu-QB-7Hg" firstAttribute="top" secondItem="cPp-qQ-6DX" secondAttribute="topMargin" id="cdl-k6-CqH"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="top" secondItem="lI3-VQ-2LR" secondAttribute="bottom" id="ejX-Xr-6fD"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="9Gh-3Y-wBN" secondAttribute="bottom" id="igB-Fp-6bo"/>
-                                        <constraint firstItem="9Gh-3Y-wBN" firstAttribute="leading" secondItem="dBu-QB-7Hg" secondAttribute="leading" id="m69-J0-sSE"/>
                                         <constraint firstItem="05b-CS-oCt" firstAttribute="trailing" secondItem="cPp-qQ-6DX" secondAttribute="trailing" placeholder="YES" id="mYS-GH-7JP"/>
-                                        <constraint firstItem="mJq-Py-HSR" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leadingMargin" id="oLO-ZF-POr"/>
-                                        <constraint firstItem="dBu-QB-7Hg" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leading" id="xdU-b6-7Ss"/>
+                                        <constraint firstItem="mJq-Py-HSR" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leading" constant="8" id="oLO-ZF-POr"/>
+                                        <constraint firstItem="9Gh-3Y-wBN" firstAttribute="centerX" secondItem="dBu-QB-7Hg" secondAttribute="centerX" id="uey-9B-NI7"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

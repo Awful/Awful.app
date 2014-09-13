@@ -97,7 +97,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.estimatedRowHeight = 75;
+    self.tableView.estimatedRowHeight = 65;
     
     _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Message"];
     _dataSource.delegate = self;
