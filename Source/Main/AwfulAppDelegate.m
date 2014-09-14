@@ -82,7 +82,7 @@ static inline void SetCrashlyticsUsername(void)
 {
     if (!_rootViewControllerStack) {
         _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-        _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:self.window.rootViewController
+        _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:_rootViewControllerStack.rootViewController
                                                    managedObjectContext:_dataStack.managedObjectContext];
     }
     return _rootViewControllerStack;
