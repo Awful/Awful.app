@@ -135,9 +135,9 @@ extension ProfileViewController: WKScriptMessageHandler {
 // MARK: -
 
 /**
-The network activity indicator will show in the status bar while *any* OnOffNetworkActivityIndicator is on.
+The network activity indicator will show in the status bar while *any* NetworkActivityIndicatorForWKWebView is on.
 
-OnOffNetworkActivityIndicator will turn off during deinitialization.
+NetworkActivityIndicatorForWKWebView will turn off during deinitialization.
 */
 private class NetworkActivityIndicatorForWKWebView: NSObject {
     private(set) var on: Bool = false {
