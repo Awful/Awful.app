@@ -219,7 +219,10 @@
         _imageUploadProgress = nil;
         if (error) {
             [overlay dismiss:NO];
-            [self presentViewController:[UIAlertController alertWithTitle:@"Image Upload Failed" error:error] animated:YES completion:^{
+            
+            // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
+            UIViewController *presenter = self.navigationController ?: self;
+            [presenter presentViewController:[UIAlertController alertWithTitle:@"Image Upload Failed" error:error] animated:YES completion:^{
                 [self enableEverything];
             }];
         } else {

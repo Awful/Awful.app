@@ -166,12 +166,20 @@
 - (void)submitComposition:(NSString *)composition completionHandler:(void (^)(BOOL success))completionHandler
 {
     __weak __typeof__(self) weakSelf = self;
+    
+    void (^showError)() = ^(NSError *error) {
+        __typeof__(self) self = weakSelf;
+        
+        // If we're showing a preview, we can't present an alert from self because we'll be detached. Aim for our navigation controller if possible.
+        UIViewController *presenter = self.navigationController ?: self;
+        [presenter presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
+    };
+    
     if (self.post) {
         [[AwfulForumsClient client] editPost:self.post setBBcode:composition andThen:^(NSError *error) {
-            __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
-                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
+                showError(error);
             } else {
                 completionHandler(YES);
             }
@@ -181,7 +189,7 @@
             __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
-                [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
+                showError(error);
             } else {
                 completionHandler(YES);
                 if (post) {
