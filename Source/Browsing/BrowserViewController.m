@@ -25,7 +25,10 @@
 - (void)dealloc
 {
     [self hideNetworkIndicator];
-    [self.webView removeObserver:self forKeyPath:@"title" context:KVOContext];
+    if ([self isViewLoaded]) {
+        [self.webView removeObserver:self forKeyPath:@"title" context:KVOContext];
+        [self.webView removeObserver:self forKeyPath:@"loading" context:KVOContext];
+    }
 }
 
 - (id)initWithURL:(NSURL *)URL
@@ -155,6 +158,7 @@
     webView.opaque = NO;
     
     [webView addObserver:self forKeyPath:@"title" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:KVOContext];
+    [webView addObserver:self forKeyPath:@"loading" options:NSKeyValueObservingOptionNew context:KVOContext];
     
     self.view = webView;
 }
@@ -192,29 +196,16 @@ static void * KVOContext = &KVOContext;
         if ([keyPath isEqualToString:@"title"]) {
             NSString *title = change[NSKeyValueChangeNewKey];
             self.title = title.length > 0 ? title : @"Awful Browser";
+        } else if ([keyPath isEqualToString:@"loading"]) {
+            if ([change[NSKeyValueChangeNewKey] boolValue]) {
+                [self showNetworkIndicator];
+            } else {
+                [self hideNetworkIndicator];
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-#pragma mark - UIWebViewDelegate
-
-- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
-{
-	[self showNetworkIndicator];
-	[self updateBackForwardItemEnabledState];
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
-{
-	// We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
-	webView.backgroundColor = [UIColor whiteColor];
-	webView.opaque = YES;
-	[self hideNetworkIndicator];
-	_URL = self.webView.URL;
-	[self preventDefaultLongTapMenu];
-	[self updateBackForwardItemEnabledState];
 }
 
 - (void)showNetworkIndicator
@@ -231,6 +222,23 @@ static void * KVOContext = &KVOContext;
         [AFNetworkActivityIndicatorManager.sharedManager decrementActivityCount];
         self.loading = NO;
     }
+}
+
+#pragma mark - UIWebViewDelegate
+
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
+{
+	[self updateBackForwardItemEnabledState];
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+	// We started with a clear background to avoid a FOUC, but websites expect a white background if they don't explicitly set one themselves. So now we need to set it white.
+	webView.backgroundColor = [UIColor whiteColor];
+	webView.opaque = YES;
+	_URL = self.webView.URL;
+	[self preventDefaultLongTapMenu];
+	[self updateBackForwardItemEnabledState];
 }
 
 #pragma mark - State preservation and restoration

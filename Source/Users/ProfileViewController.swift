@@ -9,7 +9,7 @@ import WebKit
 class ProfileViewController: AwfulViewController {
     let user: AwfulUser
     private var webView: WKWebView { get { return view as WKWebView } }
-    private let networkActivityIndicator = OnOffNetworkActivityIndicator()
+    private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
     init(user: AwfulUser) {
         self.user = user
@@ -38,7 +38,7 @@ class ProfileViewController: AwfulViewController {
         }
         configuration.userContentController = userContentController
         view = WKWebView(frame: CGRectZero, configuration: configuration)
-        webView.navigationDelegate = self
+        networkActivityIndicator = NetworkActivityIndicatorForWKWebView(webView)
     }
     
     override func viewDidLoad() {
@@ -104,16 +104,6 @@ private func baseURL() -> NSURL {
     return AwfulForumsClient.sharedClient().baseURL
 }
 
-extension ProfileViewController: WKNavigationDelegate {
-    func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation) {
-        networkActivityIndicator.on = true
-    }
-    
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation) {
-        networkActivityIndicator.on = false
-    }
-}
-
 extension ProfileViewController: WKScriptMessageHandler {
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         switch (message.name) {
@@ -149,8 +139,8 @@ The network activity indicator will show in the status bar while *any* OnOffNetw
 
 OnOffNetworkActivityIndicator will turn off during deinitialization.
 */
-private class OnOffNetworkActivityIndicator {
-    var on: Bool = false {
+private class NetworkActivityIndicatorForWKWebView: NSObject {
+    private(set) var on: Bool = false {
         didSet {
             if on && !oldValue {
                 AFNetworkActivityIndicatorManager.sharedManager().incrementActivityCount()
@@ -160,7 +150,29 @@ private class OnOffNetworkActivityIndicator {
         }
     }
     
+    let webView: WKWebView
+    
+    init(_ webView: WKWebView) {
+        self.webView = webView
+        super.init()
+        
+        webView.addObserver(self, forKeyPath: "loading", options: .New, context: KVOContext_wheremynamespacesat)
+    }
+    
     deinit {
+        webView.removeObserver(self, forKeyPath: "loading", context: KVOContext_wheremynamespacesat)
         on = false
     }
+    
+    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+        if context == KVOContext_wheremynamespacesat {
+            if let loading = change[NSKeyValueChangeNewKey] as? NSNumber {
+                on = loading.boolValue
+            }
+        } else {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
+    }
 }
+
+private let KVOContext_wheremynamespacesat = UnsafeMutablePointer<Void>()
