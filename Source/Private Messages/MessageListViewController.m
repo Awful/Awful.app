@@ -25,6 +25,9 @@
 
 @property (strong, nonatomic) MessageComposeViewController *composeViewController;
 
+@property (strong, nonatomic) NSDateFormatter *timeFormatter;
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
+
 @property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
 
 @end
@@ -94,10 +97,32 @@
     }
 }
 
+- (NSDateFormatter *)dateFormatter
+{
+    if (!_dateFormatter) {
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        _dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        _dateFormatter.doesRelativeDateFormatting = YES;
+    }
+    return _dateFormatter;
+}
+
+- (NSDateFormatter *)timeFormatter
+{
+    if (!_timeFormatter) {
+        _timeFormatter = [NSDateFormatter new];
+        _timeFormatter.dateStyle = NSDateFormatterNoStyle;
+        _timeFormatter.timeStyle = NSDateFormatterShortStyle;
+    }
+    return _timeFormatter;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.tableView.estimatedRowHeight = 65;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Message"];
     _dataSource.delegate = self;
@@ -219,15 +244,30 @@
         cell.showsTag = NO;
     }
     
+    cell.senderLabel.text = pm.from.username;
+    cell.dateLabel.text = [self stringForSentDate:pm.sentDate];
     cell.subjectLabel.text = pm.subject;
-    cell.fromDateLabel.text = [NSString stringWithFormat:@"%@ - %@", pm.from.username, [[NSDateFormatter postDateFormatter] stringFromDate:pm.sentDate]];
     
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
+    cell.senderLabel.textColor = theme[@"listTextColor"];
+    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleSubheadline];
+    cell.senderLabel.font = [UIFont boldSystemFontOfSize:descriptor.pointSize];
+    cell.dateLabel.textColor = theme[@"listTextColor"];
     cell.subjectLabel.textColor = theme[@"listTextColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;
+}
+
+- (NSString *)stringForSentDate:(NSDate *)date
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSCalendarUnit units = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear;
+    NSDateComponents *components = [calendar components:units fromDate:date];
+    NSDateComponents *today = [calendar components:units fromDate:[NSDate date]];
+    NSDateFormatter *formatter = [components isEqual:today] ? self.timeFormatter : self.dateFormatter;
+    return [formatter stringFromDate:date];
 }
 
 - (BOOL)canDeleteObject:(AwfulPrivateMessage *)object atIndexPath:(NSIndexPath *)indexPath

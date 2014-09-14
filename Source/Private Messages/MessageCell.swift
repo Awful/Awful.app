@@ -10,8 +10,9 @@ class MessageCell: UITableViewCell {
     @IBOutlet var tagImageView: UIImageView!
     @IBOutlet var tagOverlayImageView: UIImageView!
     
+    @IBOutlet weak var senderLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var subjectLabel: UILabel!
-    @IBOutlet weak var fromDateLabel: UILabel!
     
     @IBOutlet private weak var separator: UIView!
     @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
