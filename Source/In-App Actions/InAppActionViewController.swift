@@ -69,6 +69,12 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         recalculatePreferredContentSize()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        collectionView.flashScrollIndicators()
+    }
+    
     private func titleDidChange() {
         if countElements(title ?? "") == 0 {
             if headerHeightConstraint == nil {
