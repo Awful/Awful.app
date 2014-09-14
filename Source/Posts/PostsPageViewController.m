@@ -669,6 +669,8 @@
         
         NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
         if (elementInfo[@"spoiledLink"]) {
+            [self.postsView.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
+            
             NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
             NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
             NSMutableArray *items = [NSMutableArray new];

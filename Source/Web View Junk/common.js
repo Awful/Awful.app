@@ -43,7 +43,7 @@ $(function() {
   
   // Utility function intended to siphon off a 300ms-delayed click event that will follow a handled tap event.
   var preventNextClickEventListener;
-  function preventNextClickEvent() {
+  var preventer = function preventNextClickEvent() {
     if (preventNextClickEventListener) return;
     preventNextClickEventListener = function(event) {
       event.preventDefault();
@@ -53,6 +53,8 @@ $(function() {
     };
     document.body.addEventListener('click', preventNextClickEventListener, true);
   }
+  if (!Awful) Awful = {};
+  Awful.preventNextClickEvent = preventer;
 });
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
