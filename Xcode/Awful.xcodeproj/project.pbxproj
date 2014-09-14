@@ -829,17 +829,29 @@
 				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
+				1C6ED634169103FE0015CDD5 /* Profiles */,
+				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
-				1C6ED634169103FE0015CDD5 /* Users */,
 				1C7C60C018FCA4D7009BF4BB /* Web View Junk */,
 			);
 			name = Source;
 			path = ../Source;
+			sourceTree = "<group>";
+		};
+		1C4981F319C5389500502134 /* Rap Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */,
+				1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */,
+				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
+				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
+			);
+			path = "Rap Sheets";
 			sourceTree = "<group>";
 		};
 		1C6474A61569989800C72657 /* Data */ = {
@@ -853,23 +865,17 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		1C6ED634169103FE0015CDD5 /* Users */ = {
+		1C6ED634169103FE0015CDD5 /* Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
-				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
 				1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */,
 				1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */,
-				1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */,
-				1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */,
 				1C8E10431914AA730010007B /* profile.css */,
 				1C8E104B1916F85F0010007B /* profile.js */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
-				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
-				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
 			);
-			path = Users;
+			path = Profiles;
 			sourceTree = "<group>";
 		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
@@ -890,6 +896,8 @@
 		1C8694A216EF78D3003FE89E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
+				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
@@ -1542,7 +1550,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
-			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Theming:Users\" \"$@\"\n}\n\nLESSFILES=(Theming/posts-view*.less)\nLESSFILES+=(Users/profile.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
+			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Profiles/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 		1CBDB5BA16259C6C0004BDF4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
