@@ -831,7 +831,7 @@
     NSMutableArray *items = [NSMutableArray new];
     __weak __typeof__(self) weakSelf = self;
     
-    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    AwfulIconActionItem *shareItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
         NSMutableArray *queryParts = [NSMutableArray new];
         [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
@@ -842,9 +842,22 @@
         components.query = [queryParts componentsJoinedByString:@"&"];
         components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
         NSURL *URL = components.URL;
-        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }]];
+        
+        NSArray *browserActivities = @[[TUSafariActivity new], [ARChromeActivity new]];
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[URL]
+                                                                                             applicationActivities:browserActivities];
+        activityViewController.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+            if (completed && [activityType isEqualToString:UIActivityTypeCopyToPasteboard]) {
+                [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
+            }
+        };
+        [self presentViewController:activityViewController animated:NO completion:nil];
+        UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
+        popover.sourceView = actionViewController.popoverPresentationController.sourceView;
+        popover.sourceRect = actionViewController.popoverPresentationController.sourceRect;
+    }];
+    shareItem.title = @"Copy or Share URL";
+    [items addObject:shareItem];
     
     if (!self.author) {
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
