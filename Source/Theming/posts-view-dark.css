@@ -5,7 +5,7 @@
  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 */
 body {
-  font-family: "Helvetica Neue", sans-serif;
+  font: -apple-system-body;
   margin: 0;
   -webkit-text-size-adjust: 100%;
   -webkit-touch-callout: none;
