@@ -105,6 +105,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         headerLabel.textColor = theme["sheetTitleColor"] as? UIColor ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
         collectionView.reloadItemsAtIndexPaths(collectionView.indexPathsForVisibleItems())
+        collectionView.indicatorStyle = theme.scrollIndicatorStyle
         if let popover = popoverPresentationController {
             popover.backgroundColor = backgroundColor
         }
