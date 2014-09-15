@@ -46,7 +46,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -124,9 +123,7 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
   /*  Platinum users */
-
 }
 .username:before {
   margin-right: .25em;
@@ -254,6 +251,16 @@ blockquote img {
 }
 .postbody a {
   -webkit-tap-highlight-color: transparent;
+}
+.postbody b::before,
+.postbody i::before,
+.postbody s::before,
+.postbody span.bbc-spoiler::before,
+.postbody sub::before,
+.postbody sup::before,
+.postbody tt::before,
+.postbody u::before {
+  content: "\200C";
 }
 .iphone .postbody ol,
 .iphone .postbody ul {

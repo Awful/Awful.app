@@ -330,6 +330,15 @@ blockquote {
   -webkit-tap-highlight-color: transparent;
 }
 
+// Amazingly, smiley-busting empty tags (e.g. `v<b></b>:)<b></b>v` to get a shrugging happy face) break `word-wrap: break-word`. I guess it's not considered a word, so it doesn't trigger the start of the next line, but it's not considered several words, so there's no break. To fix, insert a U+200C Zero-Width Non-Joiner before potential smiley-busting tags.
+.postbody {
+  b, i, s, span.bbc-spoiler, sub, sup, tt, u {
+    &::before {
+      content: "\200C";
+    }
+  }
+}
+
 // Indenting lists on iPhone wastes too much space.
 .iphone .postbody {
   ol, ul {
