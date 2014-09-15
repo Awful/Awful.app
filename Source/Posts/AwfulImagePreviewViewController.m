@@ -66,10 +66,22 @@
 
 - (UIBarButtonItem *)actionButton
 {
-    if (_actionButton) return _actionButton;
-    _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                  target:self
-                                                                  action:@selector(showActions)];
+    if (!_actionButton) {
+        _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
+        __weak __typeof__(self) weakSelf = self;
+        _actionButton.awful_actionBlock = ^(UIBarButtonItem *sender) {
+            __typeof__(self) self = weakSelf;
+            if (self.presentedViewController) return;
+            [self.automaticallyHideBarsTimer invalidate];
+            
+            UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageURL] applicationActivities:nil];
+            activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
+                [self hideBarsAfterShortDuration];
+            };
+            [self presentViewController:activity animated:YES completion:nil];
+            activity.popoverPresentationController.barButtonItem = sender;
+        };
+    }
     return _actionButton;
 }
 
@@ -124,21 +136,6 @@
 - (void)done
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)showActions
-{
-	if (self.presentedViewController) return;
-	[self.automaticallyHideBarsTimer invalidate];
-	
-	UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageData, self.imageURL]
-																		   applicationActivities:nil];
-	
-	activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
-		[self hideBarsAfterShortDuration];
-	};
-	
-	[self presentViewController:activity animated:YES completion:nil];
 }
 
 - (void)hideBarsAfterShortDuration
