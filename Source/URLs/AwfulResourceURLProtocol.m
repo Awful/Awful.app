@@ -15,13 +15,7 @@
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
 {
-    NSURL *originalURL = request.URL;
-    NSURLComponents *components = [NSURLComponents new];
-    components.scheme = originalURL.scheme;
-    components.host = originalURL.host;
-    NSMutableURLRequest *newRequest = [request mutableCopy];
-    newRequest.URL = components.URL;
-    return newRequest;
+    return request;
 }
 
 - (void)startLoading
