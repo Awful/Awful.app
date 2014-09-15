@@ -4,7 +4,7 @@
 
 import UIKit
 
-class ThreadCell: UITableViewCell {
+class ThreadCell: DynamicTypeTableViewCell {
     @IBOutlet weak var tagImageView: UIImageView!
     @IBOutlet weak var secondaryTagImageView: UIImageView!
     
@@ -89,26 +89,6 @@ class ThreadCell: UITableViewCell {
     @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .Began {
             UIApplication.sharedApplication().sendAction(longPressAction, to: longPressTarget, from: self, forEvent: nil)
-        }
-    }
-    
-    // MARK: Fonts
-    
-    var fontNameForLabels: String? {
-        didSet {
-            if fontNameForLabels != oldValue {
-                let updateLabel = { (label: UILabel, textStyle: String) -> Void in
-                    let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(textStyle)
-                    let fontName = self.fontNameForLabels ?? descriptor.objectForKey(UIFontDescriptorNameAttribute) as String
-                    label.font = UIFont(name: fontName, size: descriptor.pointSize)
-                }
-                
-                // TODO remember to keep text styles in sync with nib. (This sucks; better way?)
-                updateLabel(titleLabel, UIFontTextStyleBody)
-                updateLabel(numberOfPagesLabel, UIFontTextStyleFootnote)
-                updateLabel(killedByLabel, UIFontTextStyleFootnote)
-                updateLabel(unreadRepliesLabel, UIFontTextStyleSubheadline)
-            }
         }
     }
 }

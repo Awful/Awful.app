@@ -143,6 +143,10 @@
                 <outletCollection property="tagConstraints" destination="2Nk-uZ-CoH" collectionClass="NSMutableArray" id="iP5-kb-bVZ"/>
                 <outletCollection property="tagConstraints" destination="Iwi-fB-jre" collectionClass="NSMutableArray" id="oJK-Pl-vA0"/>
                 <outletCollection property="tagConstraints" destination="YyC-zi-gij" collectionClass="NSMutableArray" id="3W7-wC-ETQ"/>
+                <outletCollection property="dynamicTypeLabels" destination="fgr-Fq-s3K" collectionClass="NSMutableArray" id="va2-uj-ogu"/>
+                <outletCollection property="dynamicTypeLabels" destination="gua-cA-OlD" collectionClass="NSMutableArray" id="Iwb-W8-W3I"/>
+                <outletCollection property="dynamicTypeLabels" destination="xCF-fO-pFt" collectionClass="NSMutableArray" id="aUq-fE-D3P"/>
+                <outletCollection property="dynamicTypeLabels" destination="HZh-ZU-eMp" collectionClass="NSMutableArray" id="x2G-D7-iv5"/>
             </connections>
             <point key="canvasLocation" x="68" y="73.5"/>
         </tableViewCell>

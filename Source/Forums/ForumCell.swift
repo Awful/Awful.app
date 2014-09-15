@@ -4,7 +4,7 @@
 
 import UIKit
 
-class ForumCell: UITableViewCell {
+class ForumCell: DynamicTypeTableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     

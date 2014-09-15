@@ -69,6 +69,7 @@
                                     <outlet property="nameLabel" destination="H4b-1h-lY0" id="rCt-ri-KkT"/>
                                     <outlet property="nameSpaceConstraint" destination="YTM-ar-8Hd" id="DcI-Mg-p9m"/>
                                     <outlet property="separatorHeightConstraint" destination="cWh-q9-BVu" id="5ME-Ke-Dr9"/>
+                                    <outletCollection property="dynamicTypeLabels" destination="H4b-1h-lY0" collectionClass="NSMutableArray" id="CMq-3W-Hj2"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Favorite" id="5ag-tw-4Cq" customClass="ForumCell" customModule="Awful" customModuleProvider="target">
@@ -111,6 +112,7 @@
                                 <connections>
                                     <outlet property="nameLabel" destination="1Cc-Eh-5gQ" id="r1a-M4-giS"/>
                                     <outlet property="separatorHeightConstraint" destination="qUY-yn-Fmb" id="ODp-sY-mdM"/>
+                                    <outletCollection property="dynamicTypeLabels" destination="1Cc-Eh-5gQ" collectionClass="NSMutableArray" id="Zek-pM-40z"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

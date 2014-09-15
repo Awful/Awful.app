@@ -19,8 +19,7 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JWs-BP-OTU" id="cPp-qQ-6DX">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dBu-QB-7Hg" userLabel="Top Spacer">
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dBu-QB-7Hg" userLabel="Top Spacer">
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="6" id="Gem-UM-A90"/>
                                                 <constraint firstAttribute="width" id="tIv-aT-CA1"/>
@@ -41,25 +40,24 @@
                                             <rect key="frame" x="38" y="41" width="16" height="16"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Forums Poster" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SbH-th-CVe" userLabel="Sender">
-                                            <rect key="frame" x="61" y="14" width="159" height="17"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <rect key="frame" x="61" y="11" width="151" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Subject" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSF-i6-vhj">
-                                            <rect key="frame" x="61" y="35" width="218" height="17"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                            <rect key="frame" x="61" y="35" width="218" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Yesterday" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nY0-YP-uIF" userLabel="Date">
-                                            <rect key="frame" x="224" y="16" width="55" height="15"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                            <rect key="frame" x="216" y="13" width="63" height="17"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Gh-3Y-wBN" userLabel="Bottom Spacer">
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Gh-3Y-wBN" userLabel="Bottom Spacer">
                                             <constraints>
                                                 <constraint firstAttribute="width" id="ncC-Iv-WYn"/>
                                             </constraints>
@@ -78,7 +76,7 @@
                                         <constraint firstItem="lSF-i6-vhj" firstAttribute="leading" secondItem="cPp-qQ-6DX" secondAttribute="leadingMargin" priority="750" id="9Ga-zV-L8N"/>
                                         <constraint firstItem="05b-CS-oCt" firstAttribute="bottom" secondItem="cPp-qQ-6DX" secondAttribute="bottom" id="AKq-Ft-Obn"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="top" secondItem="lSF-i6-vhj" secondAttribute="bottom" id="Eeu-va-Hz4"/>
-                                        <constraint firstItem="dBu-QB-7Hg" firstAttribute="height" secondItem="9Gh-3Y-wBN" secondAttribute="height" id="LL1-X9-HeJ"/>
+                                        <constraint firstItem="9Gh-3Y-wBN" firstAttribute="height" secondItem="dBu-QB-7Hg" secondAttribute="height" id="LL1-X9-HeJ"/>
                                         <constraint firstItem="dBu-QB-7Hg" firstAttribute="centerX" secondItem="cPp-qQ-6DX" secondAttribute="centerX" id="MqW-hi-Ybj"/>
                                         <constraint firstAttribute="centerY" secondItem="mJq-Py-HSR" secondAttribute="centerY" id="Ofj-Dg-K9l"/>
                                         <constraint firstItem="lSF-i6-vhj" firstAttribute="leading" secondItem="mJq-Py-HSR" secondAttribute="trailing" constant="8" id="RdJ-SM-ecK"/>
@@ -93,7 +91,7 @@
                                         <constraint firstItem="nY0-YP-uIF" firstAttribute="trailing" secondItem="lSF-i6-vhj" secondAttribute="trailing" id="pcX-Hy-qst"/>
                                         <constraint firstItem="nY0-YP-uIF" firstAttribute="leading" secondItem="SbH-th-CVe" secondAttribute="trailing" constant="4" id="qv4-NL-kB6"/>
                                         <constraint firstItem="nY0-YP-uIF" firstAttribute="baseline" secondItem="SbH-th-CVe" secondAttribute="baseline" id="r7a-rP-AeQ"/>
-                                        <constraint firstItem="dBu-QB-7Hg" firstAttribute="bottom" secondItem="SbH-th-CVe" secondAttribute="top" id="sM8-9w-3WX"/>
+                                        <constraint firstItem="SbH-th-CVe" firstAttribute="top" secondItem="dBu-QB-7Hg" secondAttribute="bottom" id="sM8-9w-3WX"/>
                                         <constraint firstItem="9Gh-3Y-wBN" firstAttribute="centerX" secondItem="dBu-QB-7Hg" secondAttribute="centerX" id="uey-9B-NI7"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -110,6 +108,9 @@
                                     <outletCollection property="tagConstraints" destination="UV6-i8-Rn8" collectionClass="NSMutableArray" id="zZG-Qu-80f"/>
                                     <outletCollection property="tagConstraints" destination="Yik-8f-Dsh" collectionClass="NSMutableArray" id="VbZ-Nf-i9c"/>
                                     <outletCollection property="tagConstraints" destination="RdJ-SM-ecK" collectionClass="NSMutableArray" id="VZA-me-vxc"/>
+                                    <outletCollection property="dynamicTypeLabels" destination="SbH-th-CVe" collectionClass="NSMutableArray" id="qoG-6x-4IB"/>
+                                    <outletCollection property="dynamicTypeLabels" destination="lSF-i6-vhj" collectionClass="NSMutableArray" id="AMs-Jq-PfE"/>
+                                    <outletCollection property="dynamicTypeLabels" destination="nY0-YP-uIF" collectionClass="NSMutableArray" id="5yG-C3-H34"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

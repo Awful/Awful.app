@@ -331,12 +331,11 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     return header;
 }
 
-- (void)tableView:(UITableView *)tableView
-willDisplayHeaderView:(UITableViewHeaderFooterView *)header
-       forSection:(NSInteger)section
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UITableViewHeaderFooterView *)header forSection:(NSInteger)section
 {
-    // For some unknown reason, this needs to happen here.
-    header.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    // For some unknown reason, setting this font apparently needs to happen here.
+    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+    header.textLabel.font = [UIFont fontWithDescriptor:descriptor size:MIN(descriptor.pointSize, 23)];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section

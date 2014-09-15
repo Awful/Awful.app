@@ -4,7 +4,7 @@
 
 import UIKit
 
-class MessageCell: UITableViewCell {
+class MessageCell: DynamicTypeTableViewCell {
 
     // Strong because they come and go from their superview.
     @IBOutlet var tagImageView: UIImageView!
@@ -48,6 +48,16 @@ class MessageCell: UITableViewCell {
                 tagImageView.removeFromSuperview()
                 tagOverlayImageView.removeFromSuperview()
             }
+        }
+    }
+    
+    // MARK: DynamicTypeTableViewCell
+    
+    override func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
+        if label == subjectLabel {
+            return suggestedPointSize - 1
+        } else {
+            return suggestedPointSize
         }
     }
 }

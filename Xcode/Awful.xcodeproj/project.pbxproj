@@ -13,6 +13,7 @@
 		1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */; };
 		1C03B52019C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */; };
 		1C090FBA163A40C1003FD0A3 /* AwfulPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C090FB9163A40C1003FD0A3 /* AwfulPost.m */; };
+		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
 		1C1015FD165414AE00302B19 /* AwfulImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1015FC165414AE00302B19 /* AwfulImagePreviewViewController.m */; };
 		1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */; };
@@ -272,6 +273,7 @@
 		1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AwfulAnnoyingSwift.m"; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
+		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPunishmentCell.h; sourceTree = "<group>"; };
 		1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPunishmentCell.m; sourceTree = "<group>"; };
 		1C1015FB165414AE00302B19 /* AwfulImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulImagePreviewViewController.h; sourceTree = "<group>"; };
@@ -750,6 +752,14 @@
 			path = Scraping;
 			sourceTree = "<group>";
 		};
+		1C098AE519C6B38E0031C12A /* Tables */ = {
+			isa = PBXGroup;
+			children = (
+				1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */,
+			);
+			path = Tables;
+			sourceTree = "<group>";
+		};
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
 			isa = PBXGroup;
 			children = (
@@ -833,6 +843,7 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
+				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
@@ -1750,6 +1761,7 @@
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
+				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CD82F451948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
