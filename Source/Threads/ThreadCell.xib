@@ -14,7 +14,7 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Cej-mm-sZZ" id="fyk-yR-Pfe">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zeJ-Fa-EkM" userLabel="Top Spacer">
+                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zeJ-Fa-EkM" userLabel="Top Spacer">
                         <rect key="frame" x="160" y="0.0" width="1" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="1" id="1OE-ee-AYX"/>
@@ -82,9 +82,8 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uvA-wX-8qH" userLabel="Bottom Spacer">
+                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uvA-wX-8qH" userLabel="Bottom Spacer">
                         <rect key="frame" x="160" y="57" width="1" height="17"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="1" id="mKJ-Ae-jGS"/>
                         </constraints>
