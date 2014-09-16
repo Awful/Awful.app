@@ -15,6 +15,7 @@ class ThreadCell: DynamicTypeTableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var unreadRepliesLabel: UILabel!
     @IBOutlet weak var numberOfPagesLabel: UILabel!
+    @IBOutlet weak var pageIcon: PageIcon!
     @IBOutlet weak var killedByLabel: UILabel!
     @IBOutlet weak var stickyImageView: UIImageView!
     
@@ -36,6 +37,9 @@ class ThreadCell: DynamicTypeTableViewCell {
         
         // Can't do this in IB.
         addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
+        
+        // Can't do this in IB.
+        contentView.addConstraint(NSLayoutConstraint(item: pageIcon, attribute: .Bottom, relatedBy: .Equal, toItem: numberOfPagesLabel, attribute: .Baseline, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
         contentView.layoutMargins.left = 16
@@ -94,5 +98,45 @@ class ThreadCell: DynamicTypeTableViewCell {
         if sender.state == .Began {
             UIApplication.sharedApplication().sendAction(longPressAction, to: longPressTarget, from: self, forEvent: nil)
         }
+    }
+}
+
+@IBDesignable
+private class TopCapAlignmentLabel: UILabel {
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        var insets = super.alignmentRectInsets()
+        insets.top = ceil(font.ascender - font.capHeight)
+        return insets
+    }
+}
+
+import AVFoundation
+
+@IBDesignable
+class PageIcon: UIView {
+    @IBInspectable var borderColor: UIColor = UIColor.darkGrayColor() {
+        didSet { setNeedsDisplay() }
+    }
+    
+    override func drawRect(rect: CGRect) {
+        
+        // Page shape.
+        let outline = AVMakeRectWithAspectRatioInsideRect(CGSize(width: 8.5, height: 11), bounds)
+        let borderPath = UIBezierPath()
+        borderPath.moveToPoint(CGPoint(x: CGRectGetMinX(outline), y: CGRectGetMinY(outline)))
+        borderPath.addLineToPoint(CGPoint(x: CGRectGetMinX(outline) + outline.width * 5/8, y: CGRectGetMinY(outline)))
+        borderPath.addLineToPoint(CGPoint(x: CGRectGetMaxX(outline), y: CGRectGetMinY(outline) + ceil(outline.height / 3)))
+        borderPath.addLineToPoint(CGPoint(x: CGRectGetMaxX(outline), y: CGRectGetMaxY(outline)))
+        borderPath.addLineToPoint(CGPoint(x: CGRectGetMinX(outline), y: CGRectGetMaxY(outline)))
+        borderPath.closePath()
+        borderPath.lineWidth = 1
+        
+        // Dog-eared corner.
+        let dogEar = UIBezierPath(rect: CGRect(x: CGRectGetMidX(outline), y: CGRectGetMinY(outline), width: CGRectGetWidth(outline) / 2, height: CGRectGetHeight(outline) / 2))
+        
+        borderPath.addClip()
+        borderColor.set()
+        borderPath.stroke()
+        dogEar.fill()
     }
 }

@@ -178,6 +178,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.titleLabel.textColor = theme[@"listTextColor"];
     cell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];
+    cell.pageIcon.borderColor = theme[@"listSecondaryTextColor"];
     cell.killedByLabel.textColor = theme[@"listSecondaryTextColor"];
     cell.tintColor = theme[@"listSecondaryTextColor"];
     [cell setFontNameForLabels:theme[@"listFontName"]];
