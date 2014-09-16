@@ -246,18 +246,18 @@ static NSString * const MessageCellIdentifier = @"Message";
         } else {
             cell.tagImageView.image = [AwfulThreadTagLoader emptyPrivateMessageImage];
         }
-        
-        if (pm.replied) {
-            cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
-        } else if (pm.forwarded) {
-            cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
-        } else if (!pm.seen) {
-            cell.tagOverlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
-        } else {
-            cell.tagOverlayImageView.image = nil;
-        }
     } else {
         cell.showsTag = NO;
+    }
+    
+    if (pm.replied) {
+        cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmreplied.gif"];
+    } else if (pm.forwarded) {
+        cell.tagOverlayImageView.image = [UIImage imageNamed:@"pmforwarded.gif"];
+    } else if (!pm.seen) {
+        cell.tagOverlayImageView.image = [UIImage imageNamed:@"newpm.gif"];
+    } else {
+        cell.tagOverlayImageView.image = nil;
     }
     
     cell.senderLabel.text = pm.from.username;

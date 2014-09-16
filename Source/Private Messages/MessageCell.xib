@@ -23,7 +23,7 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" placeholderIntrinsicWidth="45" placeholderIntrinsicHeight="45" translatesAutoresizingMaskIntoConstraints="NO" id="c7S-wT-hpE" userLabel="Tag">
                         <rect key="frame" x="8" y="10" width="45" height="45"/>
                     </imageView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="15" placeholderIntrinsicHeight="15" translatesAutoresizingMaskIntoConstraints="NO" id="WyK-9K-ZQD" userLabel="Tag Overlay">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" placeholderIntrinsicWidth="15" placeholderIntrinsicHeight="15" translatesAutoresizingMaskIntoConstraints="NO" id="WyK-9K-ZQD" userLabel="Tag Overlay">
                         <rect key="frame" x="39" y="42" width="15" height="15"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Sender" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rC6-rZ-FlE">
@@ -65,7 +65,9 @@
                     <constraint firstItem="YdY-58-en9" firstAttribute="height" secondItem="3MP-Kc-65A" secondAttribute="height" id="DlF-ja-BYy"/>
                     <constraint firstItem="3MP-Kc-65A" firstAttribute="top" secondItem="1Mm-yh-80T" secondAttribute="bottom" id="HML-ug-Wos"/>
                     <constraint firstItem="WyK-9K-ZQD" firstAttribute="trailing" secondItem="c7S-wT-hpE" secondAttribute="trailing" constant="1" id="Hyq-bs-RDR"/>
+                    <constraint firstItem="WyK-9K-ZQD" firstAttribute="leading" secondItem="70K-W3-JsG" secondAttribute="leading" priority="750" constant="2" id="LYY-EN-lBp"/>
                     <constraint firstItem="3MP-Kc-65A" firstAttribute="centerX" secondItem="YdY-58-en9" secondAttribute="centerX" id="M6z-nr-jv1"/>
+                    <constraint firstItem="WyK-9K-ZQD" firstAttribute="centerY" secondItem="rC6-rZ-FlE" secondAttribute="centerY" priority="750" id="OSW-ab-SLz"/>
                     <constraint firstItem="1Mm-yh-80T" firstAttribute="leading" secondItem="70K-W3-JsG" secondAttribute="leadingMargin" priority="750" id="PV3-JF-5Am"/>
                     <constraint firstItem="YdY-58-en9" firstAttribute="centerX" secondItem="70K-W3-JsG" secondAttribute="centerX" id="QRg-FG-2kt"/>
                     <constraint firstItem="YdY-58-en9" firstAttribute="bottom" secondItem="rC6-rZ-FlE" secondAttribute="top" id="R2L-4n-3Ii"/>

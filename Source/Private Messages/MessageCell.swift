@@ -6,10 +6,10 @@ import UIKit
 
 class MessageCell: DynamicTypeTableViewCell {
 
-    // Strong because they come and go from their superview.
+    // Strong because it comes and goes from its superview.
     @IBOutlet var tagImageView: UIImageView!
-    @IBOutlet var tagOverlayImageView: UIImageView!
-    
+
+    @IBOutlet weak var tagOverlayImageView: UIImageView!
     @IBOutlet weak var senderLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var subjectLabel: UILabel!
@@ -30,7 +30,7 @@ class MessageCell: DynamicTypeTableViewCell {
         addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
-        contentView.layoutMargins.left = 16
+        contentView.layoutMargins.left = 22
     }
     
     // Constraints that get added or removed as the tag comes and goes.
@@ -40,13 +40,11 @@ class MessageCell: DynamicTypeTableViewCell {
         didSet {
             if showsTag {
                 if tagImageView.superview == nil {
-                    contentView.addSubview(tagImageView)
-                    contentView.addSubview(tagOverlayImageView)
+                    contentView.insertSubview(tagImageView, belowSubview: tagOverlayImageView)
                     contentView.addConstraints(tagConstraints)
                 }
             } else {
                 tagImageView.removeFromSuperview()
-                tagOverlayImageView.removeFromSuperview()
             }
         }
     }
