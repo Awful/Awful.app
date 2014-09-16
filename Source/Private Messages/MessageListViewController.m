@@ -46,8 +46,10 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    if ((self = [[UIStoryboard storyboardWithName:@"MessageList" bundle:nil] instantiateInitialViewController])) {
+    if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _managedObjectContext = managedObjectContext;
+        
+        self.title = @"Private Messages";
         self.tabBarItem.title = @"Messages";
         self.tabBarItem.accessibilityLabel = @"Private messages";
         self.tabBarItem.image = [UIImage imageNamed:@"pm-icon"];
@@ -58,11 +60,15 @@
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.navigationItem.rightBarButtonItem = self.composeItem;
         self.navigationItem.leftBarButtonItem = self.editButtonItem;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didGetNewPMCount:)
                                                      name:AwfulDidFinishCheckingNewPrivateMessagesNotification
                                                    object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -118,13 +124,21 @@
     return _timeFormatter;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    [self.tableView registerNib:[UINib nibWithNibName:@"MessageCell" bundle:nil] forCellReuseIdentifier:MessageCellIdentifier];
+    self.tableView.estimatedRowHeight = 65;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.tableView.estimatedRowHeight = 65;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
-    _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Message"];
+    _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:MessageCellIdentifier];
     _dataSource.delegate = self;
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulPrivateMessage.entityName];
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"sentDate" ascending:NO] ];
@@ -136,6 +150,8 @@
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 }
+
+static NSString * const MessageCellIdentifier = @"Message";
 
 - (void)themeDidChange
 {

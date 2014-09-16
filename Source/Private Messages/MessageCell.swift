@@ -54,9 +54,10 @@ class MessageCell: DynamicTypeTableViewCell {
     // MARK: DynamicTypeTableViewCell
     
     override func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
-        if label == subjectLabel {
-            return suggestedPointSize - 1
-        } else {
+        switch (label) {
+        case subjectLabel, dateLabel:
+            return suggestedPointSize - 2
+        default:
             return suggestedPointSize
         }
     }
