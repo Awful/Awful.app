@@ -270,6 +270,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
 {
     cell.backgroundColor = theme[@"listBackgroundColor"];
 	cell.nameLabel.textColor = theme[@"listTextColor"];
+    cell.separator.backgroundColor = theme[@"listSeparatorColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;

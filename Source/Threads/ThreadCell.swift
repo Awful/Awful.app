@@ -18,6 +18,7 @@ class ThreadCell: DynamicTypeTableViewCell {
     @IBOutlet weak var killedByLabel: UILabel!
     @IBOutlet weak var stickyImageView: UIImageView!
     
+    @IBOutlet weak var separator: UIView!
     @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
@@ -32,6 +33,9 @@ class ThreadCell: DynamicTypeTableViewCell {
         
         // Can't do this in IB.
         separatorHeightConstraint.constant = 0.5
+        
+        // Can't do this in IB.
+        addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
         contentView.layoutMargins.left = 16

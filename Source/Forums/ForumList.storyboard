@@ -51,7 +51,7 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="centerY" secondItem="f4F-C2-ho3" secondAttribute="centerY" id="0x1-4J-iRz"/>
-                                        <constraint firstItem="fQi-Ih-I5Z" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailing" id="74b-Nq-hgb"/>
+                                        <constraint firstItem="fQi-Ih-I5Z" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailing" placeholder="YES" id="74b-Nq-hgb"/>
                                         <constraint firstAttribute="centerY" secondItem="XR1-Rx-Ib8" secondAttribute="centerY" id="8qJ-OO-dTz"/>
                                         <constraint firstItem="f4F-C2-ho3" firstAttribute="trailing" secondItem="Gtx-Zu-94i" secondAttribute="trailingMargin" id="Ael-29-afm"/>
                                         <constraint firstItem="fQi-Ih-I5Z" firstAttribute="leading" secondItem="H4b-1h-lY0" secondAttribute="leading" id="BAl-1W-K0s"/>
@@ -68,6 +68,7 @@
                                     <outlet property="favoriteButton" destination="f4F-C2-ho3" id="IAu-dy-Ssm"/>
                                     <outlet property="nameLabel" destination="H4b-1h-lY0" id="rCt-ri-KkT"/>
                                     <outlet property="nameSpaceConstraint" destination="YTM-ar-8Hd" id="DcI-Mg-p9m"/>
+                                    <outlet property="separator" destination="fQi-Ih-I5Z" id="nno-ZH-CVb"/>
                                     <outlet property="separatorHeightConstraint" destination="cWh-q9-BVu" id="5ME-Ke-Dr9"/>
                                     <outletCollection property="dynamicTypeLabels" destination="H4b-1h-lY0" collectionClass="NSMutableArray" id="CMq-3W-Hj2"/>
                                 </connections>
@@ -101,7 +102,7 @@
                                         <constraint firstAttribute="trailingMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="trailing" constant="30" id="E38-Qr-N6w"/>
                                         <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="top" secondItem="a4y-em-PD0" secondAttribute="topMargin" id="Fnv-C8-amw"/>
                                         <constraint firstItem="neo-9c-Ym5" firstAttribute="leading" secondItem="a4y-em-PD0" secondAttribute="leading" id="X4d-t5-q34"/>
-                                        <constraint firstItem="Svp-W1-S0b" firstAttribute="trailing" secondItem="a4y-em-PD0" secondAttribute="trailing" id="bAi-Sk-gJ8"/>
+                                        <constraint firstItem="Svp-W1-S0b" firstAttribute="trailing" secondItem="a4y-em-PD0" secondAttribute="trailing" placeholder="YES" id="bAi-Sk-gJ8"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="1Cc-Eh-5gQ" secondAttribute="bottom" id="eew-rC-EDT"/>
                                         <constraint firstItem="1Cc-Eh-5gQ" firstAttribute="leading" secondItem="neo-9c-Ym5" secondAttribute="trailing" constant="8" id="vcv-C5-t7l"/>
                                         <constraint firstItem="Svp-W1-S0b" firstAttribute="leading" secondItem="1Cc-Eh-5gQ" secondAttribute="leading" id="vnF-b7-YG8"/>
@@ -111,6 +112,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="nameLabel" destination="1Cc-Eh-5gQ" id="r1a-M4-giS"/>
+                                    <outlet property="separator" destination="Svp-W1-S0b" id="LWk-s6-Mm6"/>
                                     <outlet property="separatorHeightConstraint" destination="qUY-yn-Fmb" id="ODp-sY-mdM"/>
                                     <outletCollection property="dynamicTypeLabels" destination="1Cc-Eh-5gQ" collectionClass="NSMutableArray" id="Zek-pM-40z"/>
                                 </connections>

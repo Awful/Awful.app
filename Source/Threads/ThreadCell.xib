@@ -15,8 +15,9 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zeJ-Fa-EkM" userLabel="Top Spacer">
+                        <rect key="frame" x="160" y="0.0" width="1" height="18"/>
                         <constraints>
-                            <constraint firstAttribute="width" id="1OE-ee-AYX"/>
+                            <constraint firstAttribute="width" constant="1" id="1OE-ee-AYX"/>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="6" id="MeK-GW-Rjx"/>
                         </constraints>
                     </view>
@@ -82,9 +83,10 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uvA-wX-8qH" userLabel="Bottom Spacer">
+                        <rect key="frame" x="160" y="57" width="1" height="17"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="width" id="mKJ-Ae-jGS"/>
+                            <constraint firstAttribute="width" constant="1" id="mKJ-Ae-jGS"/>
                         </constraints>
                     </view>
                     <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator">
@@ -120,7 +122,7 @@
                     <constraint firstItem="uvA-wX-8qH" firstAttribute="centerX" secondItem="zeJ-Fa-EkM" secondAttribute="centerX" id="iZJ-N3-Iou"/>
                     <constraint firstItem="gua-cA-OlD" firstAttribute="leading" secondItem="fgr-Fq-s3K" secondAttribute="leading" id="ktO-lM-aAm"/>
                     <constraint firstItem="tWd-xq-Xgj" firstAttribute="leading" secondItem="gua-cA-OlD" secondAttribute="trailing" constant="2" id="kz6-IX-my3"/>
-                    <constraint firstAttribute="trailing" secondItem="gev-Wv-hue" secondAttribute="trailing" id="mtX-Ae-WQc"/>
+                    <constraint firstAttribute="trailing" secondItem="gev-Wv-hue" secondAttribute="trailing" placeholder="YES" id="mtX-Ae-WQc"/>
                     <constraint firstAttribute="trailing" secondItem="zuV-Ky-jz8" secondAttribute="trailing" id="skj-nr-WVR"/>
                 </constraints>
             </tableViewCellContentView>
@@ -130,6 +132,7 @@
                 <outlet property="numberOfPagesLabel" destination="gua-cA-OlD" id="c4x-5K-Ke7"/>
                 <outlet property="ratingImageView" destination="xoz-qp-irW" id="27e-kb-frT"/>
                 <outlet property="secondaryTagImageView" destination="xaO-nS-1bC" id="kla-qE-5eA"/>
+                <outlet property="separator" destination="gev-Wv-hue" id="VYw-7Q-3rD"/>
                 <outlet property="separatorHeightConstraint" destination="Uhf-EX-ezB" id="PL7-Jx-y3n"/>
                 <outlet property="stickyImageView" destination="zuV-Ky-jz8" id="kWa-a6-CPM"/>
                 <outlet property="tagAndRatingContainerView" destination="960-Hr-2KP" id="e1v-5v-R7j"/>

@@ -271,6 +271,7 @@ static NSString * const MessageCellIdentifier = @"Message";
     cell.senderLabel.font = [UIFont boldSystemFontOfSize:descriptor.pointSize];
     cell.dateLabel.textColor = theme[@"listTextColor"];
     cell.subjectLabel.textColor = theme[@"listTextColor"];
+    cell.separator.backgroundColor = theme[@"listSeparatorColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;

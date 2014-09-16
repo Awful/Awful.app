@@ -71,6 +71,8 @@
 		<string>#000000</string>
 		<key>listSecondaryTextColor</key>
 		<string>#808080</string>
+		<key>listSeparatorColor</key>
+		<string>#cccccc</string>
 		<key>listBackgroundColor</key>
 		<string>#ffffff</string>
 		<key>listSelectedBackgroundColor</key>

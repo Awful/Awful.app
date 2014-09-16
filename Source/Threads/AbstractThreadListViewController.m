@@ -181,6 +181,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     cell.killedByLabel.textColor = theme[@"listSecondaryTextColor"];
     cell.tintColor = theme[@"listSecondaryTextColor"];
     [cell setFontNameForLabels:theme[@"listFontName"]];
+    cell.separator.backgroundColor = theme[@"listSeparatorColor"];
     UIView *selectedBackgroundView = [UIView new];
     selectedBackgroundView.backgroundColor = theme[@"listSelectedBackgroundColor"];
     cell.selectedBackgroundView = selectedBackgroundView;

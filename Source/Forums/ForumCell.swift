@@ -6,6 +6,7 @@ import UIKit
 
 class ForumCell: DynamicTypeTableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var separator: UIView!
     @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
@@ -13,6 +14,9 @@ class ForumCell: DynamicTypeTableViewCell {
         
         // Can't do this in IB.
         contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44))
+        
+        // Can't do this in IB.
+        addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
         
         // Can't do this in IB.
         separatorHeightConstraint.constant = 0.5

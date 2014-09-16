@@ -14,7 +14,7 @@ class MessageCell: DynamicTypeTableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var subjectLabel: UILabel!
     
-    @IBOutlet private weak var separator: UIView!
+    @IBOutlet weak var separator: UIView!
     @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
