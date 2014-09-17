@@ -45,6 +45,14 @@ class ThreadCell: DynamicTypeTableViewCell {
         contentView.layoutMargins.left = 16
     }
     
+    override func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
+        if label == unreadRepliesLabel {
+            return suggestedPointSize + 2
+        } else {
+            return suggestedPointSize
+        }
+    }
+    
     // MARK: Hide and show tag and/or rating
     
     /// Constraints needed when showing a rating image.
