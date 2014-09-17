@@ -8,7 +8,6 @@
 #import "AwfulDataStack.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulImagePreviewViewController.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
 #import "AwfulPrivateMessageViewModel.h"
@@ -253,13 +252,11 @@
     actionSheet.popoverPresentationController.sourceView = self.view;
 }
 
-- (void)previewImageAtURL:(NSURL *)url
+- (void)previewImageAtURL:(NSURL *)URL
 {
-    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:url];
+    ImageViewController *preview = [[ImageViewController alloc] initWithURL:URL];
     preview.title = self.title;
-    UINavigationController *nav = [preview enclosingNavigationController];
-    nav.navigationBar.translucent = YES;
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:preview animated:YES completion:nil];
 }
 
 - (void)settingsDidChange:(NSNotification *)note

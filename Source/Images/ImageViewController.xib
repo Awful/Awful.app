@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ImageViewController" customModule="Awful" customModuleProvider="target">
+            <connections>
+                <outlet property="activityIndicator" destination="IJO-hy-jmY" id="ngd-Vo-Qfu"/>
+                <outlet property="imageView" destination="l6V-lC-TXd" id="KE4-5k-v2Q"/>
+                <outlet property="scrollView" destination="ZLh-kG-l6m" id="tZs-7X-gYN"/>
+                <outlet property="statusBarBackgroundViewHeightConstraint" destination="oaK-Qa-JlQ" id="0o7-7T-UjP"/>
+                <outlet property="swipeGestureRecognizer" destination="w93-BF-zAY" id="uIJ-FG-UpT"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outletCollection property="overlaidViews" destination="5rZ-lk-hWQ" collectionClass="NSMutableArray" id="iIB-1I-Gc3"/>
+                <outletCollection property="overlaidViews" destination="1rR-c0-50m" collectionClass="NSMutableArray" id="DCy-UM-8xx"/>
+                <outletCollection property="overlaidViews" destination="1A7-YA-0Y5" collectionClass="NSMutableArray" id="P4w-ug-sNm"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT" userLabel="Root View">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="IJO-hy-jmY" userLabel="Activity Indicator">
+                    <rect key="frame" x="281" y="282" width="37" height="37"/>
+                </activityIndicatorView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" delaysContentTouches="NO" maximumZoomScale="40" translatesAutoresizingMaskIntoConstraints="NO" id="ZLh-kG-l6m" customClass="ContentCenteringScrollView" customModule="Awful" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" placeholderIntrinsicWidth="600" placeholderIntrinsicHeight="600" translatesAutoresizingMaskIntoConstraints="NO" id="l6V-lC-TXd">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        </imageView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="l6V-lC-TXd" secondAttribute="trailing" id="J40-Pl-VJz"/>
+                        <constraint firstAttribute="leading" secondItem="l6V-lC-TXd" secondAttribute="leading" id="eut-rl-p9f"/>
+                        <constraint firstAttribute="top" secondItem="l6V-lC-TXd" secondAttribute="top" id="gqM-aW-3Mo"/>
+                        <constraint firstAttribute="bottom" secondItem="l6V-lC-TXd" secondAttribute="bottom" id="lY7-LB-5mw"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="delegate" destination="-1" id="is4-Th-5lr"/>
+                    </connections>
+                </scrollView>
+                <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1A7-YA-0Y5" userLabel="Status Bar Background">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="20"/>
+                    <color key="backgroundColor" red="0.14115631580352783" green="0.14118805527687073" blue="0.14115431904792786" alpha="0.70000000000000007" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="oaK-Qa-JlQ"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5rZ-lk-hWQ" userLabel="Done Button">
+                    <rect key="frame" x="10" y="40" width="55" height="30"/>
+                    <color key="backgroundColor" red="0.14115631580352783" green="0.14118805527687073" blue="0.14115431904792786" alpha="0.70000000000000007" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <inset key="contentEdgeInsets" minX="6" minY="4" maxX="6" maxY="4"/>
+                    <state key="normal" title="Done">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="8"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="didTapDone:" destination="-1" eventType="touchUpInside" id="eZU-eM-WhG"/>
+                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1rR-c0-50m" userLabel="Action Button">
+                    <rect key="frame" x="557" y="542" width="33" height="38"/>
+                    <color key="backgroundColor" red="0.14115631580352783" green="0.14118805527687073" blue="0.14115431904792786" alpha="0.70000000000000007" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <inset key="contentEdgeInsets" minX="7" minY="5" maxX="7" maxY="7"/>
+                    <state key="normal" image="action">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="8"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="didTapAction:" destination="-1" eventType="touchUpInside" id="NtJ-gz-4x1"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="ZLh-kG-l6m" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="1aa-oB-9ee"/>
+                <constraint firstAttribute="centerY" secondItem="IJO-hy-jmY" secondAttribute="centerY" constant="-0.5" id="29r-nr-wRO"/>
+                <constraint firstItem="5rZ-lk-hWQ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="79Q-YZ-N6H"/>
+                <constraint firstAttribute="trailing" secondItem="1A7-YA-0Y5" secondAttribute="trailing" id="HFd-c5-lIu"/>
+                <constraint firstAttribute="centerX" secondItem="IJO-hy-jmY" secondAttribute="centerX" constant="0.5" id="OOg-Oi-oaV"/>
+                <constraint firstItem="1A7-YA-0Y5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Um4-hf-M1Y"/>
+                <constraint firstItem="ZLh-kG-l6m" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="V2B-Ai-vd6"/>
+                <constraint firstItem="1A7-YA-0Y5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="aii-Dz-9Cm"/>
+                <constraint firstAttribute="bottom" secondItem="1rR-c0-50m" secondAttribute="bottom" constant="20" id="c5o-XW-u8J"/>
+                <constraint firstAttribute="trailing" secondItem="1rR-c0-50m" secondAttribute="trailing" constant="10" id="ej1-Ks-lKq"/>
+                <constraint firstItem="5rZ-lk-hWQ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="40" id="fvI-Xa-ktr"/>
+                <constraint firstItem="ZLh-kG-l6m" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="qsx-xf-Fho"/>
+                <constraint firstItem="ZLh-kG-l6m" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="rXK-ap-Kk7"/>
+            </constraints>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="w93-BF-zAY" appends="YES" id="Siy-5S-xww"/>
+                <outletCollection property="gestureRecognizers" destination="eQi-oZ-TBD" appends="YES" id="viY-NT-RgM"/>
+            </connections>
+        </view>
+        <tapGestureRecognizer id="eQi-oZ-TBD">
+            <connections>
+                <action selector="didTapImage:" destination="-1" id="YdM-RZ-VTa"/>
+            </connections>
+        </tapGestureRecognizer>
+        <swipeGestureRecognizer direction="down" id="w93-BF-zAY">
+            <connections>
+                <action selector="didSwipeDown:" destination="-1" id="ksH-Ez-MuY"/>
+            </connections>
+        </swipeGestureRecognizer>
+    </objects>
+    <resources>
+        <image name="action" width="19" height="26"/>
+    </resources>
+</document>

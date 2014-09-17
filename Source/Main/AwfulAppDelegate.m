@@ -162,7 +162,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
             NSString *dateString = [dateFormatter stringFromDate:loginCookieExpiryDate];
             NSString *message = [NSString stringWithFormat:@"Your login cookie expires on %@", dateString];
             
-            UIAlertController *alert = [UIAlertController informationalAlertWithTitle:@"Login Expiring Soon" message:message handler:^(UIAlertAction *action) {
+            UIAlertController *alert = [[UIAlertController alloc] initAlertWithTitle:@"Login Expiring Soon" message:message handler:^(UIAlertAction *action) {
                 [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastExpiringCookiePromptDate];
             }];
             [self.window.rootViewController presentViewController:alert animated:YES completion:nil];

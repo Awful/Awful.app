@@ -248,7 +248,7 @@ static NSString * const DefaultTitle = @"New Thread";
     {
         __typeof__(self) self = weakSelf;
         if (error) {
-            UIAlertController *alert = [UIAlertController alertWithTitle:@"Network Error" error:error handler:^(UIAlertAction *action) {
+            UIAlertController *alert = [[UIAlertController alloc] initWithTitle:@"Network Error" error:error handler:^(UIAlertAction *action) {
                 completionHandler(NO);
             }];
             [self presentViewController:alert animated:YES completion:nil];

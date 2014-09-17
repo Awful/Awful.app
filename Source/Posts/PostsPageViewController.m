@@ -8,7 +8,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulImagePreviewViewController.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
@@ -725,11 +724,9 @@
 
 - (void)previewImageAtURL:(NSURL *)URL
 {
-    AwfulImagePreviewViewController *preview = [[AwfulImagePreviewViewController alloc] initWithURL:URL];
+    ImageViewController *preview = [[ImageViewController alloc] initWithURL:URL];
     preview.title = self.title;
-    UINavigationController *nav = [preview enclosingNavigationController];
-    nav.navigationBar.translucent = YES;
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:preview animated:YES completion:nil];
 }
 
 - (NSString *)renderedPostAtIndex:(NSInteger)index

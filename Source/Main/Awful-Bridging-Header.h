@@ -16,6 +16,7 @@
 #import "BookmarkedThreadListViewController.h"
 #import "EmptyViewController.h"
 #import "ForumListViewController.h"
+#import "FVGifAnimation.h"
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
 #import "MessageListViewController.h"

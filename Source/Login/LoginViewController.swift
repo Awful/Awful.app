@@ -5,7 +5,6 @@
 import UIKit
 
 class LoginViewController: AwfulViewController {
-    
     var completionBlock: ((LoginViewController) -> Void)?
     
     @IBOutlet weak var scrollView: UIScrollView!
@@ -43,10 +42,10 @@ class LoginViewController: AwfulViewController {
                 activityIndicator.startAnimating()
             case .FailedLogin:
                 activityIndicator.stopAnimating()
-                let alert = UIAlertController.informationalAlertWithTitle("Problem Logging In", message: "Double-check your username and password, then try again.", handler: { (action) -> Void in
+                let alert = UIAlertController(title: "Problem Logging In", message: "Double-check your username and password, then try again.") { action in
                     self.state = .CanAttemptLogin
                     self.passwordTextField.becomeFirstResponder()
-                })
+                }
                 presentViewController(alert, animated: true, completion: nil)
             }
         }

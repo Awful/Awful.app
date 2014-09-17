@@ -7,27 +7,36 @@ import UIKit
 extension UIAlertController {
 
     // MARK: Convenience initializers
-
-    class func alertWithTitle(title: String, error: NSError, handler: (action: UIAlertAction!) -> Void) -> UIAlertController {
-        return informationalAlertWithTitle(title, message: messageForError(error), handler: handler)
+    
+    convenience init(title: String, error: NSError, handler: (action: UIAlertAction!) -> Void) {
+        self.init(title: title, message: messageForError(error), handler: handler)
     }
 
+    convenience init(title: String, error: NSError) {
+        self.init(title: title, message: messageForError(error))
+    }
+    
     class func alertWithTitle(title: String, error: NSError) -> UIAlertController {
-        return informationalAlertWithTitle(title, message: messageForError(error), handler: nil)
+        return UIAlertController(title: title, error: error)
     }
 
+    convenience init(networkError error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
+        self.init(title: "Network Error", error: error, handler: handler)
+    }
+    
     class func alertWithNetworkError(error: NSError) -> UIAlertController {
-        return alertWithTitle("Network Error", error: error)
+        return UIAlertController(networkError: error, handler: nil)
     }
 
-    class func informationalAlertWithTitle(title: String, message: String, handler: ((action: UIAlertAction!) -> Void)!) -> UIAlertController {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert);
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: handler))
-        return alert
+    @objc(initAlertWithTitle:message:handler:)
+    convenience init(title: String, message: String, handler: ((action: UIAlertAction!) -> Void)!) {
+        self.init(title: title, message: message, preferredStyle: .Alert)
+        addAction(UIAlertAction(title: "OK", style: .Default, handler: handler))
     }
 
-    class func informationalAlertWithTitle(title: String, message: String) -> UIAlertController {
-        return informationalAlertWithTitle(title, message: message, handler: nil)
+    @objc(initAlertWithTitle:message:)
+    convenience init(title: String, message: String) {
+        self.init(title: title, message: message, handler: nil)
     }
 
     class func actionSheet() -> UIAlertController {
