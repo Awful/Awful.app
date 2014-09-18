@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ImageViewController" customModule="Awful" customModuleProvider="target">
             <connections>
+                <outlet property="actionButton" destination="1rR-c0-50m" id="6Yj-zG-QCB"/>
                 <outlet property="activityIndicator" destination="IJO-hy-jmY" id="ngd-Vo-Qfu"/>
                 <outlet property="imageView" destination="l6V-lC-TXd" id="KE4-5k-v2Q"/>
                 <outlet property="scrollView" destination="ZLh-kG-l6m" id="tZs-7X-gYN"/>

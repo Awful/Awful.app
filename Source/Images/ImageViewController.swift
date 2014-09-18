@@ -19,6 +19,7 @@ class ImageViewController: AwfulViewController {
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private var swipeGestureRecognizer: UISwipeGestureRecognizer!
     @IBOutlet private var overlaidViews: [UIView]!
+    @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var statusBarBackgroundViewHeightConstraint: NSLayoutConstraint!
 
     init(URL: NSURL) {
@@ -61,6 +62,7 @@ class ImageViewController: AwfulViewController {
                     self.presentViewController(alert, animated: true, completion: nil)
                 } else {
                     self.configureWithImageData(data)
+                    self.actionButton.hidden = false
                     if self.visible {
                         self.flashOverlaidViews()
                     }
