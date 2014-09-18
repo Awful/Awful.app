@@ -7,7 +7,7 @@ pod 'AFNetworking', '2.3.1'
 pod 'ARChromeActivity', '1.0.2'
 pod 'GRMustache', '7.2.0'
 pod 'HTMLReader', '0.5.6'
-pod 'ImgurAnonymousAPIClient', :git => 'https://github.com/nolanw/ImgurAnonymousAPIClient.git', :tag => 'v0.1.1'
+pod 'ImgurAnonymousAPIClient', '0.2'
 pod 'JLRoutes', '1.5.1'
 pod 'MRProgress/Overlay', '0.4.1'
 pod 'PSMenuItem', '0.0.1'
@@ -16,7 +16,7 @@ pod 'TUSafariActivity', '1.0.0'
 pod 'WebViewJavascriptBridge', :git => 'https://github.com/marcuswestin/WebViewJavascriptBridge.git', :tag => 'v4.1.2'
 
 target :ScrapingTests, :exclusive => true do
-  pod 'HTMLReader', :git => "https://github.com/nolanw/HTMLReader"
+  pod 'HTMLReader', '0.5.6'
 end
 
 # Custom text atop the "Acknowledgements" Settings screen.

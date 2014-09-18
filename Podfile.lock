@@ -24,8 +24,8 @@ PODS:
   - GRMustache (7.2.0):
     - JRSwizzle (~> 1.0)
   - HTMLReader (0.5.6)
-  - ImgurAnonymousAPIClient (0.1.1):
-    - AFNetworking (>= 2.2.2)
+  - ImgurAnonymousAPIClient (0.2):
+    - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
   - JRSwizzle (1.0)
   - MRProgress/ActivityIndicator (0.4.1):
@@ -55,8 +55,7 @@ DEPENDENCIES:
   - ARChromeActivity (= 1.0.2)
   - GRMustache (= 7.2.0)
   - HTMLReader (= 0.5.6)
-  - HTMLReader (from `https://github.com/nolanw/HTMLReader`)
-  - ImgurAnonymousAPIClient (from `https://github.com/nolanw/ImgurAnonymousAPIClient.git`, tag `v0.1.1`)
+  - ImgurAnonymousAPIClient (= 0.2)
   - JLRoutes (= 1.5.1)
   - MRProgress/Overlay (= 0.4.1)
   - PSMenuItem (= 0.0.1)
@@ -65,11 +64,6 @@ DEPENDENCIES:
   - WebViewJavascriptBridge (from `https://github.com/marcuswestin/WebViewJavascriptBridge.git`, tag `v4.1.2`)
 
 EXTERNAL SOURCES:
-  HTMLReader:
-    :git: https://github.com/nolanw/HTMLReader
-  ImgurAnonymousAPIClient:
-    :git: https://github.com/nolanw/ImgurAnonymousAPIClient.git
-    :tag: v0.1.1
   WebViewJavascriptBridge:
     :git: https://github.com/marcuswestin/WebViewJavascriptBridge.git
     :tag: v4.1.2
@@ -79,7 +73,7 @@ SPEC CHECKSUMS:
   ARChromeActivity: 437b3e0c4cc43c19d7dd1af55bea98e008335151
   GRMustache: b6c9c1535cd41b5a62edaaaf06334e0270a7a94f
   HTMLReader: 4b0f09b7319babb412a3eb809bc1235ad9d16e15
-  ImgurAnonymousAPIClient: a59b74c3500b29b6d3b08c61c1304b65085f7aac
+  ImgurAnonymousAPIClient: 3b485250b3ebc216dc42c5cb5315f75e655dfabf
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   MRProgress: 209cdf239e60feab2f5b1c605d375bf9cd32c8b0

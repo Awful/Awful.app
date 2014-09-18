@@ -456,6 +456,9 @@ static BOOL FilenameSuggestsJPEG(NSString *filename)
     NSUInteger _readIndex;
 }
 
+@synthesize streamStatus = _streamStatus;
+@synthesize streamError = _streamError;
+
 - (id)initWithAssetURL:(NSURL *)assetURL representationUTI:(NSString *)UTI
 {
     if ((self = [super init])) {

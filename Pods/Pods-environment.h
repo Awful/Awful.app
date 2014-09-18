@@ -69,8 +69,8 @@
 // ImgurAnonymousAPIClient
 #define COCOAPODS_POD_AVAILABLE_ImgurAnonymousAPIClient
 #define COCOAPODS_VERSION_MAJOR_ImgurAnonymousAPIClient 0
-#define COCOAPODS_VERSION_MINOR_ImgurAnonymousAPIClient 1
-#define COCOAPODS_VERSION_PATCH_ImgurAnonymousAPIClient 1
+#define COCOAPODS_VERSION_MINOR_ImgurAnonymousAPIClient 2
+#define COCOAPODS_VERSION_PATCH_ImgurAnonymousAPIClient 0
 
 // JLRoutes
 #define COCOAPODS_POD_AVAILABLE_JLRoutes

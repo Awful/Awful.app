@@ -54,7 +54,7 @@ HTMLReader is in the public domain.
 
 ## ImgurAnonymousAPIClient
 
-ImgurHTTPClient is in the public domain.
+ImgurAnonymousAPIClient is in the public domain.
 
 
 ## JLRoutes

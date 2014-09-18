@@ -1,1 +1,1 @@
-ImgurHTTPClient is in the public domain.
+ImgurAnonymousAPIClient is in the public domain.
