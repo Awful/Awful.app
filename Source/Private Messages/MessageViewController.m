@@ -175,8 +175,12 @@
             location.y += offsetY;
         }
         NSDictionary *data = @{ @"x": @(location.x), @"y": @(location.y) };
+        __weak __typeof__(self) weakSelf = self;
         [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *response) {
+            __typeof__(self) self = weakSelf;
             if (response.count == 0) return;
+            
+            [self.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
             
             NSURL *imageURL = [NSURL URLWithString:response[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
             if (response[@"spoiledLink"]) {
@@ -192,7 +196,9 @@
                 CGRect rect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
                 [self showMenuForVideoAtURL:URL fromRect:rect];
             } else {
-                NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, response);
+                if (response.count > 1 || !response[@"unspoiledLink"]) {
+                    NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, response);
+                }
             }
         }];
     }

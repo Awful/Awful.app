@@ -1,7 +1,7 @@
 // Assumes common.js is available.
 
 // Storage for a couple globals.
-window.Awful = {};
+if (!window.Awful) { window.Awful = {}; }
 
 startBridge(function(bridge) {
   bridge.init();
@@ -52,7 +52,7 @@ startBridge(function(bridge) {
   });
   
   bridge.registerHandler('highlightMentionUsername', function(username) {
-    var oldUsername = Awful._highlightMentionUsername;
+    var oldUsername = window.Awful._highlightMentionUsername;
     if (!username || oldUsername !== username) {
       $('span.mention').each(function() {
         this.parentNode.replaceChild(this.firstChild, this);
@@ -60,7 +60,7 @@ startBridge(function(bridge) {
       });
     }
     
-    Awful._highlightMentionUsername = username
+    window.Awful._highlightMentionUsername = username
     if (username) {
       $('.postbody').each(highlightMentions);
     }
@@ -113,7 +113,7 @@ function ActionButtonRectForPostAtIndex(postIndex) {
 
 // Finds all occurrences of the logged-in user's name in post text and wrap each in a <span class="mention">.
 function highlightMentions(post) {
-  var username = Awful._highlightMentionUsername;
+  var username = window.Awful._highlightMentionUsername;
   if (!username) return;
   var regex = new RegExp("\\b" + regexEscape(username) + "\\b", "i");
   var posts = $(post);

@@ -13,6 +13,24 @@ function startBridge(callback) {
   }
 }
 
+;(function(){
+  // Utility function intended to siphon off a 300ms-delayed click event that will follow a handled tap event.
+  var preventNextClickEventListener;
+  if (!window.Awful) window.Awful = {};
+  window.Awful.preventNextClickEvent = function preventNextClickEvent() {
+    if (preventNextClickEventListener) { console.log("already preventing next click"); return; }
+    console.log("preventing next click");
+    preventNextClickEventListener = function(event) {
+      console.log("click prevented");
+      event.preventDefault();
+      event.stopPropagation();
+      document.body.removeEventListener('click', preventNextClickEventListener, true);
+      preventNextClickEventListener = null;
+    };
+    document.body.addEventListener('click', preventNextClickEventListener, true);
+  }
+})()
+
 $(function() {
   
   // Toggles spoilers on tap.
@@ -27,7 +45,7 @@ $(function() {
     }
     if (isLink && !isSpoiled) {
       event.stopImmediatePropagation();
-      preventNextClickEvent();
+      window.Awful.preventNextClickEvent();
     }
   });
 
@@ -38,23 +56,8 @@ $(function() {
       return;
     }
     showLinkifiedImage(link);
-    preventNextClickEvent();
+    window.Awful.preventNextClickEvent();
   });
-  
-  // Utility function intended to siphon off a 300ms-delayed click event that will follow a handled tap event.
-  var preventNextClickEventListener;
-  var preventer = function preventNextClickEvent() {
-    if (preventNextClickEventListener) return;
-    preventNextClickEventListener = function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      document.body.removeEventListener('click', preventNextClickEventListener, true);
-      preventNextClickEventListener = null;
-    };
-    document.body.addEventListener('click', preventNextClickEventListener, true);
-  }
-  if (!Awful) Awful = {};
-  Awful.preventNextClickEvent = preventer;
 });
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
@@ -149,11 +152,17 @@ function interestingElementsAtPoint(x, y) {
   }
 
   var a = elementAtPoint.closest('a');
-  if (a.length && isSpoiled(a)) {
-    items.spoiledLink = {
-      rect: rectOfElement(a),
-      URL: a.attr('href')
-    };
+  if (a.length) {
+    if (isSpoiled(a)) {
+      items.spoiledLink = {
+        rect: rectOfElement(a),
+        URL: a.attr('href')
+      };
+    } else {
+      
+      // Not passing the URL as we shouldn't be doing anything with an unspoiled link, but this informs native-side that there is a link here that's worth avoiding.
+      items.unspoiledLink = true;
+    }
   }
   
   var iframe = elementAtPoint.closest('iframe');

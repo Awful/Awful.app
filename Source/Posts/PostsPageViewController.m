@@ -663,7 +663,9 @@
         location.y += offsetY;
     }
     NSDictionary *data = @{ @"x": @(location.x), @"y": @(location.y) };
+    __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
+        __typeof__(self) self = weakSelf;
         if (elementInfo.count == 0) return;
         
         NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
@@ -717,7 +719,9 @@
             actionSheet.popoverPresentationController.sourceRect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
             actionSheet.popoverPresentationController.sourceView = self.webView;
         } else {
-            NSLog(@"%s unexpected interesting elements: %@", __PRETTY_FUNCTION__, elementInfo);
+            if (elementInfo.count > 1 || !elementInfo[@"unspoiledLink"]) {
+                NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, elementInfo);
+            }
         }
     }];
 }
