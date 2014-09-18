@@ -231,8 +231,6 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
-    application.statusBarStyle = UIStatusBarStyleLightContent;
-    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
     if ([AwfulForumsClient client].loggedIn) {

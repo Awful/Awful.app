@@ -175,6 +175,10 @@ class ImageViewController: AwfulViewController {
     override func prefersStatusBarHidden() -> Bool {
         return imageData != nil && !showingOverlaidViews
     }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
 }
 
 private class ContentCenteringScrollView: UIScrollView {

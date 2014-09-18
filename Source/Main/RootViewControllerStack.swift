@@ -13,12 +13,12 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         get { return splitViewController }
     }
     
-    private let splitViewController: UISplitViewController
+    private let splitViewController: AwfulSplitViewController
     private let tabBarController: UITabBarController
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        splitViewController = UISplitViewController()
+        splitViewController = AwfulSplitViewController()
         tabBarController = UITabBarController()
         super.init()
         
