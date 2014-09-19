@@ -53,6 +53,8 @@ class ThreadCell: DynamicTypeTableViewCell {
         }
     }
     
+    
+    
     // MARK: Hide and show tag and/or rating
     
     /// Constraints needed when showing a rating image.

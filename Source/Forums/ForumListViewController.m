@@ -150,6 +150,7 @@ static NSString * const HeaderIdentifier = @"Header";
 - (void)toggleExpanded:(UIButton *)button
 {
     button.selected = !button.selected;
+    UpdateDisclosureButtonAccessibilityLabel(button);
     UIView *cell = button.superview;
     while (cell && ![cell isKindOfClass:[UITableViewCell class]]) {
         cell = cell.superview;
@@ -238,6 +239,14 @@ static NSString * const HeaderIdentifier = @"Header";
     self.userDrivenChange = YES;
     [AwfulSettings sharedSettings].favoriteForums = [self.favoriteForums valueForKey:@"forumID"];
     self.userDrivenChange = NO;
+}
+
+static void UpdateDisclosureButtonAccessibilityLabel(UIButton *button) {
+    if (button.selected) {
+        button.accessibilityLabel = @"Hide subforums";
+    } else {
+        button.accessibilityLabel = @"Expand subforums";
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -355,19 +364,12 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     [self showForum:forum animated:YES];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return @"Unstar";
-}
-
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return self.favoriteForums.count > 0 && indexPath.section == 0;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView
-targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
-       toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
 {
     if (proposedDestinationIndexPath.section == 0) return proposedDestinationIndexPath;
     return [NSIndexPath indexPathForRow:[tableView numberOfRowsInSection:0] - 1 inSection:0];
@@ -380,19 +382,23 @@ targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
     BOOL hasSubforums = forum.children.count > 0;
     cell.disclosureButton.hidden = !hasSubforums;
     if (hasSubforums) {
-        [cell.disclosureButton addTarget:self
-                                  action:@selector(toggleExpanded:)
-                        forControlEvents:UIControlEventTouchUpInside];
+        [cell.disclosureButton addTarget:self action:@selector(toggleExpanded:) forControlEvents:UIControlEventTouchUpInside];
         cell.disclosureButton.selected = [_treeDataSource forumChildrenExpanded:forum];
     }
+    UpdateDisclosureButtonAccessibilityLabel(cell.disclosureButton);
     cell.nameLabel.text = forum.name;
     BOOL isFavorite = [self.favoriteForums containsObject:forum];
     cell.favoriteButton.hidden = isFavorite;
     if (!isFavorite) {
-        [cell.favoriteButton addTarget:self
-                                action:@selector(toggleFavorite:)
-                      forControlEvents:UIControlEventTouchUpInside];
+        [cell.favoriteButton addTarget:self action:@selector(toggleFavorite:) forControlEvents:UIControlEventTouchUpInside];
     }
+    
+    NSMutableString *accessibilityLabel = [cell.nameLabel.text mutableCopy];
+    if (hasSubforums) {
+        [accessibilityLabel appendFormat:@". %lu subforum%@", (unsigned long)forum.children.count, forum.children.count == 1 ? @"" : @"s"];
+    }
+    cell.accessibilityLabel = accessibilityLabel;
+    
     NSInteger subforumLevel = 0;
     AwfulForum *currentForum = forum.parentForum;
     while (currentForum) {
