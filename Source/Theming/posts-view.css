@@ -46,6 +46,7 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
+
 }
 header:after {
   content: "";
@@ -123,7 +124,9 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
+
   /*  Platinum users */
+
 }
 .username:before {
   margin-right: .25em;
@@ -312,7 +315,7 @@ post {
   border-top-color: #ddd;
 }
 post.seen {
-  background-color: #e7e8f1;
+  background-color: #e6eff8;
 }
 header {
   border-bottom: 0;
