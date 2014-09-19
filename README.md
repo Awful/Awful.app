@@ -6,7 +6,7 @@ Awful
 Development talk usually ends up in the [project.log][] thread, but we're not fussy.
 
 <p align="center">
-  <img src="screenshot.png" width="320" height="568" alt="Screenshot of Awful as it appears on an iPhone">
+  <img src="screenshot.png" width="320" height="548" alt="Screenshot of Awful as it appears on an iPhone">
 </p>
 
 [App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
