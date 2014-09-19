@@ -8,7 +8,7 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: NSError, handler: (action: UIAlertAction!) -> Void) {
+    convenience init(title: String, error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
         self.init(title: title, message: messageForError(error), handler: handler)
     }
 
