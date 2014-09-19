@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -37,6 +37,7 @@
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f4F-C2-ho3" userLabel="Favorite Button">
                                             <rect key="frame" x="570" y="11" width="22" height="22"/>
+                                            <accessibility key="accessibilityConfiguration" hint="Pins forum atop list" label="Mark as favorite"/>
                                             <state key="normal" image="star-off">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -80,6 +81,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star-on" translatesAutoresizingMaskIntoConstraints="NO" id="neo-9c-Ym5" userLabel="Star">
                                             <rect key="frame" x="0.0" y="12" width="32" height="20"/>
+                                            <accessibility key="accessibilityConfiguration" label="Favorite"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="32" id="iNm-ez-asW"/>
                                             </constraints>

@@ -298,6 +298,7 @@
 {
     if (_composeItem) return _composeItem;
     _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:nil action:nil];
+    _composeItem.accessibilityLabel = @"Reply to thread";
     __weak __typeof__(self) weakSelf = self;
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
@@ -314,10 +315,8 @@
 - (UIBarButtonItem *)settingsItem
 {
     if (_settingsItem) return _settingsItem;
-    _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"]
-                                                     style:UIBarButtonItemStylePlain
-                                                    target:nil
-                                                    action:nil];
+    _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    _settingsItem.accessibilityLabel = @"Settings";
     __weak __typeof__(self) weakSelf = self;
     _settingsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
@@ -333,6 +332,7 @@
 {
     if (_backItem) return _backItem;
     _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    _backItem.accessibilityLabel = @"Previous page";
     __weak __typeof__(self) weakSelf = self;
     _backItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
@@ -348,6 +348,7 @@
     if (_currentPageItem) return _currentPageItem;
     _currentPageItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     _currentPageItem.possibleTitles = [NSSet setWithObject:@"2345 / 2345"];
+    _currentPageItem.accessibilityHint = @"Opens page picker";
     __weak __typeof__(self) weakSelf = self;
     _currentPageItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
@@ -362,10 +363,8 @@
 - (UIBarButtonItem *)forwardItem
 {
     if (_forwardItem) return _forwardItem;
-    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"]
-                                                    style:UIBarButtonItemStylePlain
-                                                   target:nil
-                                                   action:nil];
+    _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    _forwardItem.accessibilityLabel = @"Next page";
     __weak __typeof__(self) weakSelf = self;
     _forwardItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
@@ -574,6 +573,7 @@
     self.backItem.enabled = self.page > 1;
     if (self.page > 0 && self.numberOfPages > 0) {
         self.currentPageItem.title = [NSString stringWithFormat:@"%ld / %ld", (long)self.page, (long)self.numberOfPages];
+        self.currentPageItem.accessibilityLabel = [NSString stringWithFormat:@"Page %ld of %ld", (long)self.page, (long)self.numberOfPages];
     } else {
         self.currentPageItem.title = @"";
     }

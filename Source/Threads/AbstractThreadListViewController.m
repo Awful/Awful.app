@@ -174,6 +174,18 @@ static NSString * const ThreadCellIdentifier = @"Thread";
         cell.unreadRepliesLabel.text = nil;
     }
     
+    NSMutableString *accessibilityLabel = [NSMutableString new];
+    [accessibilityLabel appendString:cell.titleLabel.text];
+    if (thread.beenSeen) {
+        [accessibilityLabel appendFormat:@"%d unread post%@. ", thread.unreadPosts, thread.unreadPosts == 1 ? @"": @"s"];
+    }
+    if (thread.sticky) {
+        [accessibilityLabel appendFormat:@"Stickied. "];
+    }
+    [accessibilityLabel appendFormat:@"%d page%@", thread.numberOfPages, thread.numberOfPages == 1 ? @"" : @"s"];
+    [accessibilityLabel appendFormat:@", %@", cell.killedByLabel.text];
+    cell.accessibilityLabel = accessibilityLabel;
+    
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.titleLabel.textColor = theme[@"listTextColor"];

@@ -52,6 +52,7 @@
     _newThreadButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                                                          target:self
                                                                          action:@selector(didTapNewThreadButtonItem)];
+    _newThreadButtonItem.accessibilityLabel = @"New thread";
     return _newThreadButtonItem;
 }
 

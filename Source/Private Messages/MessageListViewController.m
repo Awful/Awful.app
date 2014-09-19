@@ -264,6 +264,12 @@ static NSString * const MessageCellIdentifier = @"Message";
     cell.dateLabel.text = [self stringForSentDate:pm.sentDate];
     cell.subjectLabel.text = pm.subject;
     
+    NSMutableString *accessibilityLabel = [NSMutableString new];
+    [accessibilityLabel appendString:cell.senderLabel.text];
+    [accessibilityLabel appendFormat:@". %@", cell.subjectLabel.text];
+    [accessibilityLabel appendFormat:@". %@", cell.dateLabel.text];
+    cell.accessibilityLabel = accessibilityLabel;
+    
     AwfulTheme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.senderLabel.textColor = theme[@"listTextColor"];
