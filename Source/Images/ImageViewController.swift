@@ -89,6 +89,7 @@ class ImageViewController: AwfulViewController {
             let minimumZoom = CGSize(width: scrollView.bounds.width / image.size.width, height: scrollView.bounds.height / image.size.height)
             scrollView.minimumZoomScale = min(minimumZoom.width, minimumZoom.height, 1)
             scrollView.zoomScale = scrollView.minimumZoomScale
+            scrollView.maximumZoomScale = 25 * scrollView.minimumZoomScale
         } else {
             let alert = UIAlertController(title: "Missing or Invalid Image", message: "Could not find valid image data.") { action in
                 self.dismiss()
@@ -189,12 +190,12 @@ private class ContentCenteringScrollView: UIScrollView {
         if let contentView = delegate?.viewForZoomingInScrollView?(self) {
             var frame = contentView.frame
             if frame.width < bounds.width {
-                frame.origin.x = (bounds.width - frame.width) / 2
+                frame.origin.x = round(bounds.width - frame.width) / 2
             } else {
                 frame.origin.x = 0
             }
             if frame.height < bounds.height {
-                frame.origin.y = (bounds.height - frame.height) / 2
+                frame.origin.y = round(bounds.height - frame.height) / 2
             } else {
                 frame.origin.y = 0
             }

@@ -7,7 +7,7 @@ import UIKit
 /**
 A Selectotron is a modal view controller for picking a particular page of a thread. By default it presents in a popover on all devices.
 */
-class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDelegate, UIPopoverPresentationControllerDelegate {
+class Selectotron : AwfulViewController {
     let postsViewController: PostsPageViewController
     
     @IBOutlet weak var jumpButton: UIButton!
@@ -81,14 +81,22 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
         picker.reloadAllComponents()
     }
     
-    // MARK: UIAdaptivePresentationControllerDelegate
+    private override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
+        fatalError("Selectotron needs a posts view controller")
+    }
     
+    required init(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
+    }
+}
+
+extension Selectotron: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
         return .None
     }
-    
-    // MARK: UIPickerViewDataSource
-    
+}
+
+extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate {
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -96,8 +104,6 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return Int(postsViewController.thread.numberOfPages)
     }
-    
-    // MARK: UIPickerViewDelegate
     
     func pickerView(pickerView: UIPickerView!, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString! {
         let attributes = [
@@ -111,13 +117,7 @@ class Selectotron : AwfulViewController, UIPickerViewDataSource, UIPickerViewDel
         updateJumpButtonTitle()
     }
     
-    // MARK: Initializers not intended to be called
-    
-    private override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
-        fatalError("Selectotron needs a posts view controller")
-    }
-    
-    required init(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
+    func pickerView(pickerView: UIPickerView!, accessibilityLabelForComponent component: Int) -> String! {
+        return "Page \(component + 1)"
     }
 }
