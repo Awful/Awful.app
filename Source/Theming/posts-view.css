@@ -149,7 +149,13 @@ header:after {
   text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
 }
 .platinum .username:before {
-  content: url('awful-resource://platinum-member.png');
+  background-image: url('awful-resource://platinum-member.png');
+  content: "";
+  background-size: 12px 15px;
+  width: 12px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .coder .username:before {
   content: url('awful-resource://image-coder.png');
