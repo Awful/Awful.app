@@ -140,6 +140,8 @@
         if (ok) {
             [self submit];
         } else {
+            [_imageUploadProgress cancel];
+            _imageUploadProgress = nil;
             [self enableEverything];
             [self focusInitialFirstResponder];
         }
