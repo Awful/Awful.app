@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheRendering.h
+../../GRMustache/src/classes/Rendering/GRMustacheRendering.h

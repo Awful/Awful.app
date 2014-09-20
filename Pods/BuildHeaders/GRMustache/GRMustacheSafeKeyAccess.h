@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheSafeKeyAccess.h
+../../GRMustache/src/classes/Rendering/GRMustacheSafeKeyAccess.h

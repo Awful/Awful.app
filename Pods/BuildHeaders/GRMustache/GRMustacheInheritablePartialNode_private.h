@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheInheritablePartialNode_private.h
+../../GRMustache/src/classes/Compiling/TemplateAST/GRMustacheInheritablePartialNode_private.h

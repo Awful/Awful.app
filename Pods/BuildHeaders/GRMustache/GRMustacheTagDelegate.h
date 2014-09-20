@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheTagDelegate.h
+../../GRMustache/src/classes/Rendering/GRMustacheTagDelegate.h

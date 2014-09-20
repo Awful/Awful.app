@@ -11,7 +11,7 @@
 #import "MRStopButton.h"
 
 
-NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorViewSpinAnimationKey";
+static NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorViewSpinAnimationKey";
 
 
 @interface MRActivityIndicatorView ()
@@ -25,6 +25,10 @@ NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorV
 @implementation MRActivityIndicatorView
 
 @synthesize stopButton = _stopButton;
+
++ (void)load {
+    [self.appearance setLineWidth:2.0];
+}
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -43,11 +47,13 @@ NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorV
 }
 
 - (void)commonInit {
+    self.isAccessibilityElement = YES;
+    self.accessibilityLabel = NSLocalizedString(@"Indeterminate Progress", @"Accessibility label for activity indicator view");
+    
     self.hidesWhenStopped = YES;
     
     CAShapeLayer *shapeLayer = [CAShapeLayer new];
     shapeLayer.borderWidth = 0;
-    shapeLayer.lineWidth = 2.0f;
     shapeLayer.fillColor = UIColor.clearColor.CGColor;
     [self.layer addSublayer:shapeLayer];
     self.shapeLayer = shapeLayer;
@@ -57,6 +63,8 @@ NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorV
     self.stopButton = stopButton;
     
     self.mayStop = NO;
+    
+    [self tintColorDidChange];
 }
 
 - (void)dealloc {
@@ -77,11 +85,11 @@ NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorV
     [center removeObserver:self];
 }
 
-- (void)applicationDidEnterBackground:(NSNotificationCenter *)note {
+- (void)applicationDidEnterBackground:(NSNotification *)note {
     [self removeAnimation];
 }
 
-- (void)applicationWillEnterForeground:(NSNotificationCenter *)note {
+- (void)applicationWillEnterForeground:(NSNotification *)note {
     if (self.isAnimating) {
         [self addAnimation];
     }
@@ -94,7 +102,7 @@ NSString *const MRActivityIndicatorViewSpinAnimationKey = @"MRActivityIndicatorV
     [super layoutSubviews];
     
     CGRect frame = self.bounds;
-    if (frame.size.width != frame.size.height) {
+    if (ABS(frame.size.width - frame.size.height) < CGFLOAT_MIN) {
         // Ensure that we have a square frame
         CGFloat s = MIN(frame.size.width, frame.size.height);
         frame.size.width = s;

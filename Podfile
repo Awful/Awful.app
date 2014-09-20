@@ -1,19 +1,19 @@
-platform :ios, '7.0'
+platform :ios, '8.0'
 xcodeproj 'Xcode/Awful', 'Awful Beta' => :release, 'Awful App Store' => :release
-link_with 'Awful', 'Imgur API Test'
+link_with 'Awful'
 inhibit_all_warnings!
 
-pod 'AFNetworking', '2.3.1'
+pod 'AFNetworking', '2.4.1'
 pod 'ARChromeActivity', '1.0.2'
-pod 'GRMustache', '7.2.0'
+pod 'GRMustache', '7.3.0'
 pod 'HTMLReader', '0.5.6'
 pod 'ImgurAnonymousAPIClient', '0.2'
 pod 'JLRoutes', '1.5.1'
-pod 'MRProgress/Overlay', '0.4.1'
+pod 'MRProgress/Overlay', '0.7.0'
 pod 'PSMenuItem', '0.0.1'
 pod 'SVPullToRefresh', :head
 pod 'TUSafariActivity', '1.0.0'
-pod 'WebViewJavascriptBridge', :git => 'https://github.com/marcuswestin/WebViewJavascriptBridge.git', :tag => 'v4.1.2'
+pod 'WebViewJavascriptBridge', '4.1.4'
 
 target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', '0.5.6'

@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheFilter.h
+../../GRMustache/src/classes/Rendering/GRMustacheFilter.h

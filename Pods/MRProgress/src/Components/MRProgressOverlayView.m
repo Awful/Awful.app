@@ -16,8 +16,8 @@
 #import "MRProgressHelper.h"
 
 
-const CGFloat MRProgressOverlayViewCornerRadius = 7;
-const CGFloat MRProgressOverlayViewMotionEffectExtent = 10;
+static const CGFloat MRProgressOverlayViewCornerRadius = 7;
+static const CGFloat MRProgressOverlayViewMotionEffectExtent = 10;
 
 
 @interface MRProgressOverlayView () {
@@ -42,6 +42,8 @@ const CGFloat MRProgressOverlayViewMotionEffectExtent = 10;
 
 - (void)showModeView:(UIView *)modeView;
 - (void)hideModeView:(UIView *)modeView;
+
+- (BOOL)mayStop;
 
 - (void)setSubviewTransform:(CGAffineTransform)transform alpha:(CGFloat)alpha;
 
@@ -158,6 +160,8 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 }
 
 - (void)commonInit {
+    self.accessibilityViewIsModal = YES;
+    
     self.hidden = YES;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
@@ -188,6 +192,7 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
         NSFontAttributeName:            [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline],
         NSKernAttributeName:            NSNull.null,  // turn on auto-kerning
     }];
+    titleLabel.accessibilityTraits = UIAccessibilityTraitHeader;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 0;
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -199,6 +204,8 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     // Observe key paths and notification center
     [self registerForKVO];
     [self registerForNotificationCenter];
+    
+    [self tintColorDidChange];
 }
 
 
@@ -439,6 +446,7 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     _mode = mode;
     
     [self showModeView:[self createModeView]];
+    [self updateModeViewMayStop];
     
     if (!self.hidden) {
         [self manualLayoutSubviews];
@@ -465,11 +473,7 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 - (void)setStopBlock:(MRProgressOverlayViewStopBlock)stopBlock {
     _stopBlock = stopBlock;
     
-    BOOL mayStop = stopBlock != nil;
-    if ([self.modeView conformsToProtocol:@protocol(MRStopableView)]
-        && [self.modeView respondsToSelector:@selector(setMayStop:)]) {
-        [((id<MRStopableView>)self.modeView) setMayStop:mayStop];
-    } else {
+    if (![self updateModeViewMayStop]) {
         #if DEBUG
             NSLog(@"** WARNING - %@: %@ is only valid to call when the mode view supports %@ declared in %@!",
                   NSStringFromClass(self.class),
@@ -480,9 +484,34 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     }
 }
 
+- (BOOL)mayStop {
+    return _stopBlock != nil;
+}
+
+- (BOOL)updateModeViewMayStop {
+    if ([self.modeView conformsToProtocol:@protocol(MRStopableView)]
+        && [self.modeView respondsToSelector:@selector(setMayStop:)]) {
+        [((id<MRStopableView>)self.modeView) setMayStop:self.mayStop];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)modeViewStopButtonTouchUpInside {
     if (self.stopBlock) {
         self.stopBlock(self);
+    }
+}
+
+
+#pragma mark - A11y
+
+- (BOOL)accessibilityPerformEscape {
+    if (self.mayStop) {
+        [self modeViewStopButtonTouchUpInside];
+        return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -520,6 +549,9 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     } else {
         animBlock();
     }
+    
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, self.titleLabelText);
 }
 
 - (void)dismiss:(BOOL)animated {
@@ -550,6 +582,9 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     void(^animCompletionBlock)(BOOL) = ^(BOOL finished) {
         self.hidden = YES;
         [self hideModeView:self.modeView];
+        
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        
         if (completionBlock) {
             completionBlock();
         }
@@ -580,7 +615,16 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     self.transform = self.transformForOrientation;
     
     CGRect bounds = self.superview.bounds;
-    self.center = CGPointMake(bounds.size.width / 2.0f, bounds.size.height / 2.0f);
+    UIEdgeInsets insets = UIEdgeInsetsZero;
+    
+    if ([self.superview isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = (UIScrollView *)self.superview;
+        insets = scrollView.contentInset;
+    }
+    
+    self.center = CGPointMake((bounds.size.width - insets.left - insets.right) / 2.0f,
+                              (bounds.size.height - insets.top - insets.bottom) / 2.0f);
+
     if ([self.superview isKindOfClass:UIWindow.class] && UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation)) {
         // Swap width and height
         self.bounds = (CGRect){CGPointZero, {bounds.size.height, bounds.size.width}};
@@ -697,8 +741,14 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 }
 
 - (void)setProgress:(float)progress animated:(BOOL)animated {
+    NSParameterAssert(progress >= 0 && progress <= 1);
+    _progress = progress;
+    [self applyProgressAnimated:(BOOL)animated];
+}
+    
+- (void)applyProgressAnimated:(BOOL)animated {
     if ([self.modeView respondsToSelector:@selector(setProgress:animated:)]) {
-        [((id)self.modeView) setProgress:progress animated:animated];
+        [((id)self.modeView) setProgress:self.progress animated:animated];
     } else if ([self.modeView respondsToSelector:@selector(setProgress:)]) {
         if (animated) {
             #if DEBUG
@@ -708,7 +758,7 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
                       NSStringFromSelector(@selector(setProgress:animated:)));
             #endif
         }
-        [((id)self.modeView) setProgress:progress];
+        [((id)self.modeView) setProgress:self.progress];
     } else {
         NSAssert(self.mode == MRProgressOverlayViewModeDeterminateCircular
                  || self.mode == MRProgressOverlayViewModeDeterminateHorizontalBar,

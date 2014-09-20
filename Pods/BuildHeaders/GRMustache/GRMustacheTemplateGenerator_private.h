@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheTemplateGenerator_private.h
+../../GRMustache/src/classes/Services/GRMustacheTemplateGenerator_private.h

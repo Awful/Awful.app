@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheAvailabilityMacros_private.h
+../../GRMustache/src/classes/Shared/GRMustacheAvailabilityMacros_private.h

@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheBuffer_private.h
+../../GRMustache/src/classes/Shared/GRMustacheBuffer_private.h

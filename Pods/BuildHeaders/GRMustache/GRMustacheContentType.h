@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheContentType.h
+../../GRMustache/src/classes/Shared/GRMustacheContentType.h

@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheTranslateCharacters_private.h
+../../GRMustache/src/classes/Shared/GRMustacheTranslateCharacters_private.h

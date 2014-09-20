@@ -1,1 +1,1 @@
-../../GRMustache/src/classes/GRMustacheTextNode_private.h
+../../GRMustache/src/classes/Compiling/TemplateAST/GRMustacheTextNode_private.h

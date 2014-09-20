@@ -15,6 +15,8 @@
 
 @interface MRBlurView ()
 
+@property (nonatomic, assign) BOOL redrawOnFrameChange;
+
 @end
 
 
@@ -37,6 +39,7 @@
 }
 
 - (void)commonInit {
+    [self setPlaceholder];
     self.clipsToBounds = YES;
     [self registerForNotificationCenter];
 }
@@ -47,7 +50,33 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [self redraw];
+    if (self.redrawOnFrameChange) {
+        self.redrawOnFrameChange = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self redraw];
+        });
+    }
+}
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+    // See `didMoveToWindow`
+    if (self.window) {
+        [self redraw];
+    }
+}
+
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+    // As the documentation states: The window property may be nil by the time that this method is called
+    if (self.window) {
+        // This is needed e.g. for the push animation of UINavigationController.
+        CFTimeInterval timeInterval = CATransaction.animationDuration > 0 ? CATransaction.animationDuration : 0.25;
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeInterval * NSEC_PER_SEC));
+        dispatch_after(time, dispatch_get_main_queue(), ^{
+            [self redraw];
+        });
+    }
 }
 
 
@@ -55,7 +84,9 @@
 
 - (void)registerForNotificationCenter {
     NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
-    [center addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [center addObserver:self
+               selector:@selector(statusBarOrientationDidChange:)
+                   name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
 - (void)unregisterFromNotificationCenter {
@@ -63,28 +94,49 @@
     [center removeObserver:self];
 }
 
-- (void)deviceOrientationDidChange:(NSNotification *)notification {
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^{
-       [self redraw];
-    });
+- (void)statusBarOrientationDidChange:(NSNotification *)notification {
+    self.redrawOnFrameChange = YES;
 }
 
 
 #pragma mark - Redraw
 
+- (void)setPlaceholder {
+    self.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.96];
+}
+
+- (void)clearPlaceholder {
+    self.backgroundColor = UIColor.clearColor;
+}
+
 - (void)redraw {
+    #if DEBUG
+        if (!NSThread.isMainThread) {
+            NSLog(@"** WARNING - %@ -%@ should be always called on the main thread!",
+                  NSStringFromClass(self.class),
+                  NSStringFromSelector(_cmd));
+        }
+    #endif
+    
+    // This has to happen on the main queue, as the view hierachy will be redrawn.
     __block UIImage *image = self.snapshot;
+    
+    if (!self.image) {
+        [self setPlaceholder];
+    }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         image = [image mr_applyBlurWithRadius:30.0 tintColor:[UIColor colorWithWhite:0.97 alpha:0.82] saturationDeltaFactor:1.0 maskImage:nil];
         dispatch_async(dispatch_get_main_queue(), ^{
+            // Fade on content's change, dependent if there was already an image.
+            CATransition *transition = [CATransition new];
+            transition.duration = self.image ? 0.3 : 0.1;
+            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            transition.type = kCATransitionFade;
+            [self.layer addAnimation:transition forKey:nil];
+            
             if (self.image) {
-                // Fade on content's change, if there was already an image.
-                CATransition *transition = [CATransition new];
-                transition.duration = 0.3;
-                transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-                transition.type = kCATransitionFade;
-                [self.layer addAnimation:transition forKey:nil];
+                [self clearPlaceholder];
             }
             
             self.image = image;
