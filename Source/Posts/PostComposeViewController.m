@@ -232,12 +232,8 @@
         UIAlertController *actionSheet = [UIAlertController actionSheet];
         [actionSheet addActionWithTitle:@"Preview" handler:^{
             [self previewPostWithSubmitBlock:^{
-                
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                [self.submitButtonItem.target performSelector:self.submitButtonItem.action withObject:self];
-                #pragma clang diagnostic pop
-                
+                UIBarButtonItem *item = self.submitButtonItem;
+                [[UIApplication sharedApplication] sendAction:item.action to:item.target from:self forEvent:nil];
             } cancelBlock:nil];
         }];
         [actionSheet addCancelActionWithHandler:nil];
