@@ -123,6 +123,7 @@
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
+		1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */; };
 		1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
 		1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */; };
 		1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */; };
@@ -432,6 +433,8 @@
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
 		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
+		1C977C2719CD286200DD6459 /* CacheHeaderCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheHeaderCalculations.h; sourceTree = "<group>"; };
+		1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CacheHeaderCalculations.m; sourceTree = "<group>"; };
 		1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPRequestOperationManager.h; sourceTree = "<group>"; };
 		1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTTPRequestOperationManager.m; sourceTree = "<group>"; };
 		1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnreadPrivateMessageCountScraper.h; sourceTree = "<group>"; };
@@ -1077,16 +1080,18 @@
 		1CC7801D1612D988002AF958 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				1CC780201612D989002AF958 /* AwfulForumsClient.h */,
+				1CC780211612D989002AF958 /* AwfulForumsClient.m */,
 				1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */,
 				1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */,
 				1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */,
 				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
-				1CC780201612D989002AF958 /* AwfulForumsClient.h */,
-				1CC780211612D989002AF958 /* AwfulForumsClient.m */,
 				1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */,
 				1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */,
 				1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */,
 				1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */,
+				1C977C2719CD286200DD6459 /* CacheHeaderCalculations.h */,
+				1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */,
 				836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */,
 				836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */,
 				1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenience.h */,
@@ -1785,6 +1790,7 @@
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CD82F451948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m in Sources */,
+				1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,

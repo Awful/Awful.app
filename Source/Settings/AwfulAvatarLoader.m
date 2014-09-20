@@ -5,6 +5,7 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulFrameworkCategories.h"
 #import <AFNetworking/AFNetworking.h>
+#import "CacheHeaderCalculations.h"
 #import "FVGifAnimation.h"
 
 @interface AwfulAvatarLoader ()
@@ -67,15 +68,7 @@
     NSURL *cachedResponseURL = [self cachedResponseURLForUser:user];
     NSHTTPURLResponse *cachedResponse = [NSKeyedUnarchiver unarchiveObjectWithFile:cachedResponseURL.path];
     if ([cachedResponse.URL isEqual:avatarURL]) {
-        NSDictionary *headers = [cachedResponse allHeaderFields];
-        NSString *etag = headers[@"Etag"];
-        if (etag) {
-            [request setValue:etag forHTTPHeaderField:@"If-None-Match"];
-        }
-        NSString *lastModified = headers[@"Last-Modified"];
-        if (lastModified) {
-            [request setValue:lastModified forHTTPHeaderField:@"If-Modified-Since"];
-        }
+        SetCacheHeadersForRequest(request, cachedResponse);
     }
     
     NSURLSessionDownloadTask *downloadTask =

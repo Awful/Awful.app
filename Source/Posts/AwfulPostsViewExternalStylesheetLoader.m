@@ -5,6 +5,7 @@
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulRefreshMinder.h"
 #import <AFNetworking/AFNetworking.h>
+#import "CacheHeaderCalculations.h"
 
 @interface AwfulPostsViewExternalStylesheetLoader ()
 
@@ -78,15 +79,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.stylesheetURL];
     NSHTTPURLResponse *cachedResponse = [NSKeyedUnarchiver unarchiveObjectWithFile:self.cachedResponseURL.path];
     if ([cachedResponse.URL isEqual:self.stylesheetURL]) {
-        NSDictionary *headers = [cachedResponse allHeaderFields];
-        NSString *etag = headers[@"Etag"];
-        if (etag) {
-            [request setValue:etag forHTTPHeaderField:@"If-None-Match"];
-        }
-        NSString *lastModified = headers[@"Last-Modified"];
-        if (lastModified) {
-            [request setValue:lastModified forHTTPHeaderField:@"If-Modified-Since"];
-        }
+        SetCacheHeadersForRequest(request, cachedResponse);
     }
     
     NSURLSessionDownloadTask *task =
