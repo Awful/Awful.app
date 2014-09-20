@@ -265,6 +265,9 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     
     self.font = font;
 	self.textColor = textColor;
+    
+    // Notification doesn't get sent because we're manipulating the text storage directly. (I forget why, exactly, I chose the text storage over the text view's attributedString property. Naturally I didn't leave any useful commentary. I'm sorry.)
+    [[NSNotificationCenter defaultCenter] postNotificationName:UITextViewTextDidChangeNotification object:self];
 }
 
 - (void)showFormattingSubmenu
