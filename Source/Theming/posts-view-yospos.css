@@ -349,6 +349,9 @@ post.seen {
 }
 .op .username:before {
   content: "⌨ ";
+  background: none;
+  height: auto;
+  width: auto;
 }
 .username #bracket::before,
 .username #bracket::after {
