@@ -27,11 +27,14 @@
     [_buttons removeAllObjects];
     for (NSString *string in strings) {
         AwfulKeyboardButton *button = [[AwfulKeyboardButton alloc] initWithString:string];
+        button.accessibilityTraits &= ~UIAccessibilityTraitButton;
+        button.accessibilityTraits |= UIAccessibilityTraitKeyboardKey;
         [button addTarget:self action:@selector(keyPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         [_buttons addObject:button];
         if ([string isEqualToString:@"[/..]"]) {
             _autocloseButton = button;
+            button.accessibilityLabel = @"Close tag";
             [button setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
             [self updateAutocloseButtonState];
         }

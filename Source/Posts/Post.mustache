@@ -4,6 +4,8 @@
 
 		<section class="nameanddate">
 			<h1 class="username">{{ author.username }} <div class="chevron"></div></h1>
+      
+      {{# accessibilityRoles }}<span class="voiceover-only">{{ . }}</span>{{/ }}
 
 			<time class="regdate">Joined {{ regDateFormat(author.regdate) }}</time>
 		</section>

@@ -66,6 +66,23 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 	return self.post.author.authorClasses;
 }
 
+- (NSString *)accessibilityRoles
+{
+    NSArray *unsortedRoles = [self.roles componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSMutableArray *accessibilityRoles = [unsortedRoles mutableCopy];
+    const NSString * const rolesToSpokenRoles[] = {
+        @"ik", @"internet knight",
+        @"op", @"original poster",
+    };
+    for (NSUInteger i = 0, end = sizeof(rolesToSpokenRoles) / sizeof(*rolesToSpokenRoles); i < end; i += 2) {
+        NSUInteger roleIndex = [accessibilityRoles indexOfObject:rolesToSpokenRoles[i]];
+        if (roleIndex != NSNotFound) {
+            [accessibilityRoles replaceObjectAtIndex:roleIndex withObject:rolesToSpokenRoles[i + 1]];
+        }
+    }
+    return [accessibilityRoles componentsJoinedByString:@"; "];
+}
+
 - (BOOL)authorIsOP
 {
     return [self.post.author isEqual:self.post.thread.author];

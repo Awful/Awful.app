@@ -46,7 +46,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -124,9 +123,7 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
   /*  Platinum users */
-
 }
 .username:before {
   margin-right: .25em;
@@ -311,6 +308,11 @@ footer:after {
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
+}
+.voiceover-only {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
 }
 html {
   font-family: "Geeza Pro";

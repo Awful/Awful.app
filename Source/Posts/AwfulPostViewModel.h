@@ -38,6 +38,11 @@
 @property (readonly, copy, nonatomic) NSString *roles;
 
 /**
+ * Roles written out for reading by VoiceOver.
+ */
+@property (readonly, copy, nonatomic) NSString *accessibilityRoles;
+
+/**
  * A formatter suitable for the date the post was written.
  */
 @property (readonly, strong, nonatomic) NSDateFormatter *postDateFormat;
