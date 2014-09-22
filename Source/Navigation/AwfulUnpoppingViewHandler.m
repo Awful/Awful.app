@@ -141,6 +141,17 @@
     CGRect fromTargetFrame = fromViewController.view.frame;
     fromTargetFrame = CGRectOffset(fromTargetFrame, -CGRectGetWidth(fromTargetFrame)/3, 0);
     
+    BOOL animateTabBar = toViewController.hidesBottomBarWhenPushed && !fromViewController.hidesBottomBarWhenPushed;
+
+    UITabBar *tabBar = fromViewController.tabBarController.tabBar;
+    UIView *previousParent = tabBar.superview;
+    if (animateTabBar) {
+        // UIKit reparents the TabBar before this method gets called; restore its logical position
+        UIView *wrapper = toViewController.view.superview;
+        [wrapper insertSubview:tabBar belowSubview:toViewController.view];
+    }
+    CGRect tabBarTargetFrame = CGRectOffset(tabBar.frame, CGRectGetWidth(tabBar.frame)/3*2, 0);
+
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                           delay:0
                         options:UIViewAnimationOptionCurveLinear
@@ -148,7 +159,14 @@
     {
         toViewController.view.frame = toTargetFrame;
         fromViewController.view.frame = fromTargetFrame;
+        if (animateTabBar) {
+            tabBar.frame = tabBarTargetFrame;
+        }
     } completion:^(BOOL finished) {
+        if (animateTabBar) {
+            // Put the TabBar back where it belongs before UIKit takes over again
+            [previousParent addSubview:tabBar];
+        }
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
     }];
 }
