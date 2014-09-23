@@ -51,12 +51,3 @@
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
 
 @end
-
-/**
- * An AwfulPopoverController takes on its contentViewController's theme and uses an AwfulPopoverBackgroundView, sending -themeDidChange to both as appropriate.
- */
-@interface AwfulPopoverController : UIPopoverController
-
-@property (readonly, strong, nonatomic) AwfulTheme *theme;
-
-@end
