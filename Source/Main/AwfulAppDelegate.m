@@ -185,9 +185,8 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
         [cookieStorage deleteCookie:cookie];
     }
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings sharedSettings] reset];
-    [[AwfulAvatarLoader loader] emptyCache];
+    [self emptyCaches];
     
     __weak __typeof__(self) weakSelf = self;
     [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:YES completion:^{
@@ -196,6 +195,13 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
         self.URLRouter = nil;
         [self.dataStack deleteStoreAndResetStack];
     }];
+}
+
+- (void)emptyCaches
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[AwfulAvatarLoader loader] emptyCache];
+    [_dataStack deleteStoreAndResetStack];
 }
 
 #pragma mark - UIApplicationDelegate

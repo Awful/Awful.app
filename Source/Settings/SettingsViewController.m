@@ -261,6 +261,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
             [[AwfulAppDelegate instance] logOut];
         }]];
         [self presentViewController:alert animated:YES completion:nil];
+    } else if ([action isEqualToString:@"EmptyCache"]) {
+        [[AwfulAppDelegate instance] emptyCaches];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
         [[AwfulAppDelegate instance] openAwfulURL:URL];

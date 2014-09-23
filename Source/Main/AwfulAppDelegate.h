@@ -12,6 +12,8 @@
 
 - (void)logOut;
 
+- (void)emptyCaches;
+
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 // Handles an awful:// URL.
