@@ -272,7 +272,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     ThreadListViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;

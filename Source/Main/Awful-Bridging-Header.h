@@ -4,6 +4,7 @@
 
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
+#import "AwfulDataStack.h"
 #import "AwfulForumsClient.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"

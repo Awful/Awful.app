@@ -7,7 +7,7 @@ import UIKit
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
 class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
-    let managedObjectContext: NSManagedObjectContext
+    let dataStack: AwfulDataStack
     
     var rootViewController: UIViewController {
         get { return splitViewController }
@@ -16,22 +16,22 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     private let splitViewController: AwfulSplitViewController
     private let tabBarController: UITabBarController
     
-    init(managedObjectContext: NSManagedObjectContext) {
-        self.managedObjectContext = managedObjectContext
+    init(dataStack: AwfulDataStack) {
+        self.dataStack = dataStack
         splitViewController = AwfulSplitViewController()
         tabBarController = UITabBarController()
         super.init()
         
-        let forums = ForumListViewController(managedObjectContext: managedObjectContext)
+        let forums = ForumListViewController(dataStack: dataStack)
         forums.restorationIdentifier = "Forum list"
         
-        let bookmarks = BookmarkedThreadListViewController(managedObjectContext: managedObjectContext)
+        let bookmarks = BookmarkedThreadListViewController(managedObjectContext: dataStack.managedObjectContext)
         bookmarks.restorationIdentifier = "Bookmarks"
         
         let lepers = RapSheetViewController()
         lepers.restorationIdentifier = "Leper's Colony"
         
-        let settings = SettingsViewController(managedObjectContext: managedObjectContext)
+        let settings = SettingsViewController(dataStack: dataStack)
         settings.restorationIdentifier = "Settings"
         
         tabBarController.restorationIdentifier = "Tabbar"
@@ -86,7 +86,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         
         if AwfulSettings.sharedSettings().canSendPrivateMessages {
             if messagesTabIndex == nil {
-                let messages = MessageListViewController(managedObjectContext: managedObjectContext)
+                let messages = MessageListViewController(dataStack: dataStack)
                 messages.restorationIdentifier = messagesRestorationIdentifier
                 let navigationController = messages.enclosingNavigationController
                 navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)

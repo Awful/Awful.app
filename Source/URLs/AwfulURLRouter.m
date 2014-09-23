@@ -17,18 +17,27 @@
 #import "ThreadListViewController.h"
 #import "Awful-Swift.h"
 
-@implementation AwfulURLRouter
-{
-    JLRoutes *_routes;
-}
+@interface AwfulURLRouter ()
 
-- (id)initWithRootViewController:(UIViewController *)rootViewController managedObjectContext:(NSManagedObjectContext *)managedObjectContext
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) JLRoutes *routes;
+
+@end
+
+@implementation AwfulURLRouter
+
+- (id)initWithRootViewController:(UIViewController *)rootViewController dataStack:(AwfulDataStack *)dataStack
 {
     if ((self = [super init])) {
         _rootViewController = rootViewController;
-        _managedObjectContext = managedObjectContext;
+        _dataStack = dataStack;
     }
     return self;
+}
+
+- (NSManagedObjectContext *)managedObjectContext
+{
+    return self.dataStack.managedObjectContext;
 }
 
 - (JLRoutes *)routes

@@ -20,34 +20,29 @@
 
 @interface MessageListViewController () <AwfulFetchedResultsControllerDataSourceDelegate, AwfulComposeTextViewControllerDelegate>
 
+@property (strong, nonatomic) MessageComposeViewController *composeViewController;
 @property (strong, nonatomic) UIBarButtonItem *composeItem;
 @property (strong, nonatomic) UIBarButtonItem *backItem;
-
-@property (strong, nonatomic) MessageComposeViewController *composeViewController;
 
 @property (strong, nonatomic) NSDateFormatter *timeFormatter;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 
-@property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
+@property (strong, nonatomic) NSMutableDictionary *threadTagObservers;
+@property (strong, nonatomic) AwfulFetchedResultsControllerDataSource *dataSource;
 
 @end
 
 @implementation MessageListViewController
-{
-    AwfulFetchedResultsControllerDataSource *_dataSource;
-}
-
-@synthesize threadTagObservers = _threadTagObservers;
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (instancetype)initWithDataStack:(AwfulDataStack *)dataStack
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
-        _managedObjectContext = managedObjectContext;
+        _dataStack = dataStack;
         
         self.title = @"Private Messages";
         self.tabBarItem.title = @"Messages";
@@ -69,6 +64,7 @@
                                                  selector:@selector(settingsDidChange:)
                                                      name:AwfulSettingsDidChangeNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataStackWillReset:) name:AwfulDataStackWillResetNotification object:dataStack];
     }
     return self;
 }
@@ -90,6 +86,21 @@
     return _composeItem;
 }
 
+- (AwfulFetchedResultsControllerDataSource *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:MessageCellIdentifier];
+        _dataSource.delegate = self;
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulPrivateMessage.entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"sentDate" ascending:NO]];
+        _dataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                                   managedObjectContext:self.dataStack.managedObjectContext
+                                                                                     sectionNameKeyPath:nil
+                                                                                              cacheName:nil];
+    }
+    return _dataSource;
+}
+
 - (void)didGetNewPMCount:(NSNotification *)notification
 {
     NSNumber *count = notification.userInfo[AwfulNewPrivateMessageCountKey];
@@ -101,6 +112,12 @@
     if ([notification.userInfo[AwfulSettingsDidChangeSettingKey] isEqualToString:AwfulSettingsKeys.showThreadTags]) {
         [self.tableView reloadData];
     }
+}
+
+- (void)dataStackWillReset:(NSNotification *)notification
+{
+    self.dataSource.delegate = nil;
+    self.dataSource = nil;
 }
 
 - (NSDateFormatter *)dateFormatter
@@ -138,15 +155,6 @@
     self.tableView.estimatedRowHeight = 65;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
-    _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:MessageCellIdentifier];
-    _dataSource.delegate = self;
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulPrivateMessage.entityName];
-    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"sentDate" ascending:NO] ];
-    _dataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                               managedObjectContext:self.managedObjectContext
-                                                                                 sectionNameKeyPath:nil
-                                                                                          cacheName:nil];
-    
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
 }
@@ -156,13 +164,13 @@ static NSString * const MessageCellIdentifier = @"Message";
 - (void)themeDidChange
 {
     [super themeDidChange];
-    [_composeViewController themeDidChange];
+    [self.composeViewController themeDidChange];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    _dataSource.updatesTableView = YES;
+    self.dataSource.updatesTableView = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -175,7 +183,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 {
     if (![AwfulSettings sharedSettings].canSendPrivateMessages) return;
     
-    if (_dataSource.fetchedResultsController.fetchedObjects.count == 0 || [[AwfulRefreshMinder minder] shouldRefreshPrivateMessagesInbox]) {
+    if (self.dataSource.fetchedResultsController.fetchedObjects.count == 0 || [[AwfulRefreshMinder minder] shouldRefreshPrivateMessagesInbox]) {
         [self refresh];
     }
 }
@@ -205,7 +213,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    _dataSource.updatesTableView = NO;
+    self.dataSource.updatesTableView = NO;
 }
 
 - (NSMutableDictionary *)threadTagObservers
@@ -234,7 +242,7 @@ static NSString * const MessageCellIdentifier = @"Message";
                     // Make sure the cell represents the same message as when we started.
                     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
                     if (indexPath) {
-                        AwfulPrivateMessage *currentMessage = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+                        AwfulPrivateMessage *currentMessage = [self.dataSource.fetchedResultsController objectAtIndexPath:indexPath];
                         if ([currentMessage.messageID isEqualToString:messageID]) {
                             cell.imageView.image = image;
                         }
@@ -328,7 +336,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulPrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    AwfulPrivateMessage *pm = [self.dataSource.fetchedResultsController objectAtIndexPath:indexPath];
     if (!pm.seen) {
         [self decrementBadgeValue];
     }
@@ -345,7 +353,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     if (!keepDraft) {
-        _composeViewController = nil;
+        self.composeViewController = nil;
     }
 }
 
@@ -354,14 +362,14 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
+    [coder encodeObject:self.composeViewController forKey:ComposeViewControllerKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super decodeRestorableStateWithCoder:coder];
-    _composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
-    _composeViewController.delegate = self;
+    self.composeViewController = [coder decodeObjectForKey:ComposeViewControllerKey];
+    self.composeViewController.delegate = self;
 }
 
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";

@@ -3,6 +3,9 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulDataStack.h"
+#import <objc/runtime.h>
+
+static void *DataStackKey = &DataStackKey;
 
 @implementation AwfulDataStack
 {
@@ -16,6 +19,7 @@
         _storeURL = storeURL;
         _modelURL = modelURL;
         _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        objc_setAssociatedObject(_managedObjectContext, DataStackKey, self, OBJC_ASSOCIATION_ASSIGN);
         NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:_modelURL];
         _managedObjectContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
         [self addPersistentStore];
@@ -64,6 +68,8 @@
 
 - (void)deleteStoreAndResetStack
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDataStackWillResetNotification object:self];
+    
     NSPersistentStoreCoordinator *persistentStoreCoordinator = _managedObjectContext.persistentStoreCoordinator;
     for (NSPersistentStore *store in persistentStoreCoordinator.persistentStores) {
         NSError *error;
@@ -132,3 +138,14 @@ BOOL MoveDataStore(NSURL *sourceURL, NSURL *destinationURL)
     }];
     return success;
 }
+
+NSString * const AwfulDataStackWillResetNotification = @"Awful data stack will reset";
+
+@implementation NSManagedObjectContext (AwfulDataStack)
+
+- (AwfulDataStack *)dataStack
+{
+    return objc_getAssociatedObject(self, DataStackKey);
+}
+
+@end

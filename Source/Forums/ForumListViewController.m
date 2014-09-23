@@ -3,6 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ForumListViewController.h"
+#import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulFrameworkCategories.h"
@@ -15,27 +16,28 @@
 
 @interface ForumListViewController () <AwfulForumTreeDataSourceDelegate>
 
-@property (nonatomic) NSMutableArray *favoriteForums;
-@property (nonatomic) BOOL userDrivenChange;
+@property (strong, nonatomic) NSMutableArray *favoriteForums;
+@property (assign, nonatomic) BOOL userDrivenChange;
+@property (strong, nonatomic) AwfulForumTreeDataSource *treeDataSource;
+@property (assign, nonatomic) BOOL observingReachability;
 
 @end
 
 @implementation ForumListViewController
-{
-    AwfulForumTreeDataSource *_treeDataSource;
-    BOOL _observingReachability;
-}
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+// UIStoryboard instantiation indirectly calls designated initializer -initWithCoder:
+
+- (instancetype)initWithDataStack:(AwfulDataStack *)dataStack
 {
     if ((self = [[UIStoryboard storyboardWithName:@"ForumList" bundle:nil] instantiateInitialViewController])) {
-        _managedObjectContext = managedObjectContext;
-        _favoriteForums = [[self fetchFavoriteForumsWithIDsFromSettings] mutableCopy];
+        _dataStack = dataStack;
         
         self.title = @"Forums";
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
@@ -44,21 +46,42 @@
         [self showOrHideEditButton];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataStackWillReset:) name:AwfulDataStackWillResetNotification object:dataStack];
     }
     return self;
 }
 
-- (NSArray *)fetchFavoriteForumsWithIDsFromSettings
+#pragma clang diagnostic pop
+
+- (NSMutableArray *)favoriteForums
 {
-    NSArray *forumIDs = [AwfulSettings sharedSettings].favoriteForums;
-    if (forumIDs.count == 0) {
-        return @[];
+    if (!_favoriteForums) {
+        _favoriteForums = [NSMutableArray new];
+        NSArray *forumIDs = [AwfulSettings sharedSettings].favoriteForums;
+        if (forumIDs.count > 0) {
+            NSArray *favoriteForums = [AwfulForum fetchAllInManagedObjectContext:self.dataStack.managedObjectContext
+                                                         matchingPredicateFormat:@"forumID IN %@", forumIDs];
+            [_favoriteForums setArray:[favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
+                return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
+            }]];
+        }
     }
-    NSArray *favoriteForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
-                                                 matchingPredicateFormat:@"forumID IN %@", forumIDs];
-    return [favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
-        return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
-    }];
+    return _favoriteForums;
+}
+
+- (AwfulForumTreeDataSource *)treeDataSource
+{
+    if (!_treeDataSource) {
+        _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithReuseIdentifier:@"Forum"];
+        _treeDataSource.topDataSource = self;
+        _treeDataSource.managedObjectContext = self.dataStack.managedObjectContext;
+        _treeDataSource.delegate = self;
+        if ([self isViewLoaded]) {
+            self.tableView.dataSource = _treeDataSource;
+        }
+        
+    }
+    return _treeDataSource;
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -67,16 +90,23 @@
     
     NSString *changedSetting = note.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([changedSetting isEqualToString:AwfulSettingsKeys.favoriteForums]) {
-        [self.favoriteForums setArray:[self fetchFavoriteForumsWithIDsFromSettings]];
+        _favoriteForums = nil;
         [self showOrHideEditButton];
         [self.tableView reloadData];
     }
+}
+
+- (void)dataStackWillReset:(NSNotification *)notification
+{
+    _treeDataSource = nil;
+    _favoriteForums = nil;
 }
 
 - (void)loadView
 {
     [super loadView];
     [self.tableView registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:HeaderIdentifier];
+    self.tableView.dataSource = self.treeDataSource;
 }
 
 static NSString * const HeaderIdentifier = @"Header";
@@ -87,10 +117,6 @@ static NSString * const HeaderIdentifier = @"Header";
     self.tableView.estimatedRowHeight = 44;
     self.tableView.backgroundView = nil;
     [self.tableView awful_unstickSectionHeaders];
-    _treeDataSource = [[AwfulForumTreeDataSource alloc] initWithTableView:self.tableView reuseIdentifier:@"Forum"];
-    _treeDataSource.topDataSource = self;
-    _treeDataSource.managedObjectContext = self.managedObjectContext;
-    _treeDataSource.delegate = self;
 }
 
 - (void)showOrHideEditButton
@@ -112,13 +138,13 @@ static NSString * const HeaderIdentifier = @"Header";
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        forum = [_treeDataSource forumAtIndexPath:indexPath];
+        forum = [self.treeDataSource forumAtIndexPath:indexPath];
     }
     BOOL isFavorite = [self.favoriteForums containsObject:forum];
     
     [self.tableView beginUpdates];
     
-    [_treeDataSource reloadRowWithForum:forum];
+    [self.treeDataSource reloadRowWithForum:forum];
     
     if (isFavorite) {
         NSInteger row = [self.favoriteForums indexOfObject:forum];
@@ -157,14 +183,14 @@ static NSString * const HeaderIdentifier = @"Header";
     }
     if (!cell) return;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
-    AwfulForum *forum = [_treeDataSource forumAtIndexPath:indexPath];
-    [_treeDataSource setForum:forum childrenExpanded:button.selected];
+    AwfulForum *forum = [self.treeDataSource forumAtIndexPath:indexPath];
+    [self.treeDataSource setForum:forum childrenExpanded:button.selected];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    _treeDataSource.updatesTableView = YES;
+    self.treeDataSource.updatesTableView = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -178,7 +204,7 @@ static NSString * const HeaderIdentifier = @"Header";
     if (![AwfulForumsClient client].loggedIn) return;
     
     if ([[AwfulRefreshMinder minder] shouldRefreshForumList] || self.tableView.numberOfSections < 2 ||
-        [AwfulForum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
+        [AwfulForum anyInManagedObjectContext:self.dataStack.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
         if ([AwfulForumsClient client].reachable) {
             [self refresh];
         } else {
@@ -223,7 +249,7 @@ static NSString * const HeaderIdentifier = @"Header";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    _treeDataSource.updatesTableView = NO;
+    self.treeDataSource.updatesTableView = NO;
 }
 
 - (void)showForum:(AwfulForum *)forum animated:(BOOL)animated
@@ -290,7 +316,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     AwfulForum *forum = self.favoriteForums[favoriteIndexPath.row];
     
     // Let's delete the favorite row and update the forum's proper row in one fell swoop. To do so, we need the forum's index path before any potential deletion of the favorites section (in model or in view).
-    NSIndexPath *forumIndexPath = [_treeDataSource indexPathForForum:forum];
+    NSIndexPath *forumIndexPath = [self.treeDataSource indexPathForForum:forum];
     
     // Now it's safe to update the array of favorite forums.
     [self.favoriteForums removeObjectAtIndex:favoriteIndexPath.row];
@@ -336,7 +362,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     if (self.favoriteForums.count > 0 && section == 0) {
         header.textLabel.text = @"Favorites";
     } else {
-        header.textLabel.text = [_treeDataSource categoryNameAtIndex:section];
+        header.textLabel.text = [self.treeDataSource categoryNameAtIndex:section];
     }
     return header;
 }
@@ -359,7 +385,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
     } else {
-        forum = [_treeDataSource forumAtIndexPath:indexPath];
+        forum = [self.treeDataSource forumAtIndexPath:indexPath];
     }
     [self showForum:forum animated:YES];
 }
@@ -383,7 +409,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     cell.disclosureButton.hidden = !hasSubforums;
     if (hasSubforums) {
         [cell.disclosureButton addTarget:self action:@selector(toggleExpanded:) forControlEvents:UIControlEventTouchUpInside];
-        cell.disclosureButton.selected = [_treeDataSource forumChildrenExpanded:forum];
+        cell.disclosureButton.selected = [self.treeDataSource forumChildrenExpanded:forum];
     }
     UpdateDisclosureButtonAccessibilityLabel(cell.disclosureButton);
     cell.nameLabel.text = forum.name;

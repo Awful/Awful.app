@@ -22,10 +22,10 @@
 
 @implementation SettingsViewController
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (id)initWithDataStack:(AwfulDataStack *)dataStack
 {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-        _managedObjectContext = managedObjectContext;
+        _dataStack = dataStack;
         self.title = @"Settings";
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.tabBarItem.image = [UIImage imageNamed:@"cog"];
@@ -110,7 +110,7 @@
 {
     return [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
                                       username:[AwfulSettings sharedSettings].username
-                        inManagedObjectContext:self.managedObjectContext];
+                        inManagedObjectContext:self.dataStack.managedObjectContext];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate

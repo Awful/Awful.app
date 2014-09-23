@@ -10,10 +10,7 @@
  */
 @interface MessageViewController : AwfulViewController
 
-/**
- * Designated initializer.
- */
-- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage;
+- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, strong, nonatomic) AwfulPrivateMessage *privateMessage;
 

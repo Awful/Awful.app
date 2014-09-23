@@ -25,24 +25,22 @@
 @interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
+@property (copy, nonatomic) NSString *messageID;
+@property (strong, nonatomic) AwfulDataStack *dataStack;
+@property (strong, nonatomic) WebViewJavascriptBridge *webViewJavaScriptBridge;
+@property (strong, nonatomic) AwfulWebViewNetworkActivityIndicatorManager *networkActivityIndicatorManager;
+@property (assign, nonatomic) BOOL didRender;
+@property (assign, nonatomic) BOOL didLoadOnce;
+@property (assign, nonatomic) CGFloat fractionalContentOffsetOnLoad;
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
-
 @property (strong, nonatomic) AwfulLoadingView *loadingView;
-
 @property (strong, nonatomic) UIBarButtonItem *replyButtonItem;
+@property (strong, nonatomic) MessageComposeViewController *composeViewController;
 
 @end
 
 @implementation MessageViewController
-{
-    AwfulWebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
-    WebViewJavascriptBridge *_webViewJavaScriptBridge;
-    MessageComposeViewController *_composeViewController;
-    BOOL _didRender;
-    BOOL _didLoadOnce;
-    CGFloat _fractionalContentOffsetOnLoad;
-}
 
 - (void)dealloc
 {
@@ -51,21 +49,36 @@
 
 - (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    _privateMessage = privateMessage;
-    self.title = privateMessage.subject;
-    self.navigationItem.rightBarButtonItem = self.replyButtonItem;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.hidesBottomBarWhenPushed = YES;
-    self.restorationClass = self.class;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _privateMessage = privateMessage;
+        self.messageID = privateMessage.messageID;
+        _dataStack = privateMessage.managedObjectContext.dataStack;
+        
+        self.title = privateMessage.subject;
+        self.navigationItem.rightBarButtonItem = self.replyButtonItem;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.hidesBottomBarWhenPushed = YES;
+        self.restorationClass = self.class;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(dataStackWillReset:)
+                                                     name:AwfulDataStackWillResetNotification
+                                                   object:_dataStack];
+    }
     return self;
+}
+
+- (AwfulPrivateMessage *)privateMessage
+{
+    if (!_privateMessage && self.dataStack && self.messageID.length > 0) {
+        _privateMessage = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:self.messageID
+                                                              inManagedObjectContext:self.dataStack.managedObjectContext];
+    }
+    return _privateMessage;
 }
 
 - (void)renderMessage
@@ -85,52 +98,49 @@
 
 - (UIBarButtonItem *)replyButtonItem
 {
-    if (_replyButtonItem) return _replyButtonItem;
-    _replyButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply
-                                                                      target:self
-                                                                      action:@selector(didTapReplyButtonItem:)];
+    if (!_replyButtonItem) {
+        _replyButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:nil action:nil];
+        __weak __typeof__(self) weakSelf = self;
+        _replyButtonItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+          __typeof__(self) self = weakSelf;
+            UIAlertController *actionSheet = [UIAlertController actionSheet];
+            
+            [actionSheet addActionWithTitle:@"Reply" handler:^{
+                [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+                    __typeof__(self) self = weakSelf;
+                    if (error) {
+                        [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
+                    } else {
+                        self.composeViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:self.privateMessage
+                                                                                                initialContents:BBcode];
+                        self.composeViewController.delegate = self;
+                        self.composeViewController.restorationIdentifier = @"New private message replying to private message";
+                        [self presentViewController:[self.composeViewController enclosingNavigationController] animated:YES completion:nil];
+                    }
+                }];
+            }];
+            
+            [actionSheet addActionWithTitle:@"Forward" handler:^{
+                [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
+                    __typeof__(self) self = weakSelf;
+                    if (error) {
+                        [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
+                    } else {
+                        self.composeViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:self.privateMessage
+                                                                                                 initialContents:BBcode];
+                        self.composeViewController.delegate = self;
+                        self.composeViewController.restorationIdentifier = @"New private message forwarding private message";
+                        [self presentViewController:[self.composeViewController enclosingNavigationController] animated:YES completion:nil];
+                    }
+                }];
+            }];
+            
+            [actionSheet addCancelActionWithHandler:nil];
+            [self presentViewController:actionSheet animated:YES completion:nil];
+            actionSheet.popoverPresentationController.barButtonItem = sender;
+        };
+    }
     return _replyButtonItem;
-}
-
-- (void)didTapReplyButtonItem:(UIBarButtonItem *)buttonItem
-{
-    AwfulPrivateMessage *privateMessage = self.privateMessage;
-    UIAlertController *actionSheet = [UIAlertController actionSheet];
-    __weak __typeof__(self) weakSelf = self;
-    
-    [actionSheet addActionWithTitle:@"Reply" handler:^{
-        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:privateMessage andThen:^(NSError *error, NSString *BBcode) {
-            __typeof__(self) self = weakSelf;
-            if (error) {
-                [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
-            } else {
-                _composeViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:privateMessage
-                                                                                        initialContents:BBcode];
-                _composeViewController.delegate = self;
-                _composeViewController.restorationIdentifier = @"New private message replying to private message";
-                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
-            }
-        }];
-    }];
-    
-    [actionSheet addActionWithTitle:@"Forward" handler:^{
-        [[AwfulForumsClient client] quoteBBcodeContentsOfPrivateMessage:self.privateMessage andThen:^(NSError *error, NSString *BBcode) {
-            __typeof__(self) self = weakSelf;
-            if (error) {
-                [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Message" error:error] animated:YES completion:nil];
-            } else {
-                _composeViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:self.privateMessage
-                                                                                         initialContents:BBcode];
-                _composeViewController.delegate = self;
-                _composeViewController.restorationIdentifier = @"New private message forwarding private message";
-                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
-            }
-        }];
-    }];
-    
-    [actionSheet addCancelActionWithHandler:nil];
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    actionSheet.popoverPresentationController.barButtonItem = buttonItem;
 }
 
 - (void)showUserActionsFromRect:(CGRect)rect
@@ -281,6 +291,11 @@
     }
 }
 
+- (void)dataStackWillReset:(NSNotification *)notification
+{
+    _privateMessage = nil;
+}
+
 - (UIWebView *)webView
 {
     return (UIWebView *)self.view;
@@ -294,12 +309,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _networkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
-    _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:_networkActivityIndicatorManager handler:^(id data, WVJBResponseCallback _) {
+    self.networkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
+    self.webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:_networkActivityIndicatorManager handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
     __weak __typeof__(self) weakSelf = self;
-    [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSString *rectString, WVJBResponseCallback responseCallback) {
+    [self.webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSString *rectString, WVJBResponseCallback responseCallback) {
         __typeof__(self) self = weakSelf;
         CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
         [self showUserActionsFromRect:rect];
@@ -313,7 +328,6 @@
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         self.loadingView.message = @"Loading…";
         [self.view addSubview:self.loadingView];
-        __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
             __typeof__(self) self = weakSelf;
             self.title = self.privateMessage.subject;
@@ -330,8 +344,8 @@
 {
     [super themeDidChange];
     AwfulTheme *theme = self.theme;
-    if (_didRender) {
-        [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
+    if (self.didRender) {
+        [self.webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     }
     self.view.backgroundColor = theme[@"backgroundColor"];
     self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
@@ -366,9 +380,9 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    if (!_didLoadOnce) {
-        webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
-        _didLoadOnce = YES;
+    if (!self.didLoadOnce) {
+        webView.awful_fractionalContentOffset = self.fractionalContentOffsetOnLoad;
+        self.didLoadOnce = YES;
     }
 }
 
@@ -393,7 +407,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
     AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
                                                                             matchingPredicateFormat:@"messageID = %@", messageID];

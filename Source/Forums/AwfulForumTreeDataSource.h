@@ -11,16 +11,16 @@
 @interface AwfulForumTreeDataSource : NSObject <UITableViewDataSource>
 
 /**
- * Designated initializer for AwfulForumTreeDataSource.
- *
- * @param tableView       The table view provided with data.
  * @param reuseIdentifier A cell reuse identifier for dequeueing cells from the table view.
  */
-- (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier;
-
-@property (readonly, weak, nonatomic) UITableView *tableView;
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, copy, nonatomic) NSString *reuseIdentifier;
+
+/**
+ * The table view presumably sourcing data from the data source. Populated by setting the forum tree data source as the table view's dataSource.
+ */
+@property (readonly, weak, nonatomic) UITableView *tableView;
 
 /**
  * The managed object context to use for fetching categories and forums. Setting the managedObjectContext pauses the AwfulForumTreeDataSource.

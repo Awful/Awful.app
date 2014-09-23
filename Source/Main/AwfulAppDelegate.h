@@ -2,7 +2,8 @@
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+#import "AwfulDataStack.h"
 
 @interface AwfulAppDelegate : NSObject <UIApplicationDelegate>
 
@@ -14,7 +15,7 @@
 
 - (void)emptyCaches;
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) AwfulDataStack *dataStack;
 
 // Handles an awful:// URL.
 //
