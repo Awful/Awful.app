@@ -8,6 +8,9 @@
 
 @interface AwfulForumTreeDataSource () <NSFetchedResultsControllerDelegate>
 
+@property (weak, nonatomic) UITableView *tableView;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+
 /**
  * Does **not** account for the sectionOffset.
  */
@@ -21,24 +24,17 @@
 @end
 
 @implementation AwfulForumTreeDataSource
-{
-    NSFetchedResultsController *_fetchedResultsController;
-}
 
 - (void)dealloc
 {
     self.tableView.dataSource = nil;
 }
 
-- (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _tableView = tableView;
-    tableView.dataSource = self;
-    _reuseIdentifier = [reuseIdentifier copy];
-    
+    if ((self = [super init])) {
+        _reuseIdentifier = [reuseIdentifier copy];
+    }
     return self;
 }
 
@@ -188,6 +184,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    self.tableView = tableView;
     return _fetchedResultsController.sections.count + self.sectionOffset;
 }
 

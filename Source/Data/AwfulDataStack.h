@@ -43,3 +43,19 @@ extern BOOL MoveDataStore(NSURL *sourceURL, NSURL *destinationURL);
  * Deletes a data store.
  */
 extern void DeleteDataStoreAtURL(NSURL *storeURL);
+
+/**
+ * Sent just before the data stack is deleted and reset. Any references to the data stack's managedObjectContext, including instances of NSManagedObject therefrom, should immediately be released (on penalty of exception upon next access).
+ *
+ * The notification's object is the data stack that will reset.
+ */
+extern NSString * const AwfulDataStackWillResetNotification;
+
+@interface NSManagedObjectContext (AwfulDataStack)
+
+/**
+ * Returns the data stack that owns the managed object context.
+ */
+@property (readonly, weak, nonatomic) AwfulDataStack *dataStack;
+
+@end

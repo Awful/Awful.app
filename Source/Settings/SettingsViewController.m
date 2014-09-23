@@ -22,10 +22,10 @@
 
 @implementation SettingsViewController
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (id)initWithDataStack:(AwfulDataStack *)dataStack
 {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-        _managedObjectContext = managedObjectContext;
+        _dataStack = dataStack;
         self.title = @"Settings";
         self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.tabBarItem.image = [UIImage imageNamed:@"cog"];
@@ -110,7 +110,7 @@
 {
     return [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
                                       username:[AwfulSettings sharedSettings].username
-                        inManagedObjectContext:self.managedObjectContext];
+                        inManagedObjectContext:self.dataStack.managedObjectContext];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate
@@ -261,6 +261,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
             [[AwfulAppDelegate instance] logOut];
         }]];
         [self presentViewController:alert animated:YES completion:nil];
+    } else if ([action isEqualToString:@"EmptyCache"]) {
+        [[AwfulAppDelegate instance] emptyCaches];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
         [[AwfulAppDelegate instance] openAwfulURL:URL];

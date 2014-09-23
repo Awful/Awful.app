@@ -1098,7 +1098,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
     NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
     AwfulUser *author;

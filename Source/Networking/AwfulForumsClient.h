@@ -2,7 +2,8 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+#import "AwfulDataStack.h"
 #import "AwfulForm.h"
 #import "AwfulModels.h"
 
@@ -27,9 +28,9 @@
 @property (readonly, strong, nonatomic) NSURL *baseURL;
 
 /**
- * A managed object context into which data is imported after scraping.
+ * A data stack into whose managedObjectContext data is imported after scraping.
  */
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) AwfulDataStack *dataStack;
 
 /**
  * Cancels all in-flight operations and recreates the base URL from settings.

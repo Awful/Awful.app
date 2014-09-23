@@ -298,7 +298,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     ThreadComposeViewController *newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;

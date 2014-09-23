@@ -266,7 +266,7 @@
     NSString *regardingMessageID = [coder decodeObjectForKey:RegardingMessageIDKey];
     NSString *forwardingMessageID = [coder decodeObjectForKey:ForwardingMessageIDKey];
     NSString *initialContents = [coder decodeObjectForKey:InitialContentsKey];
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     MessageComposeViewController *newPrivateMessageViewController;
     if (recipientUserID) {
         AwfulUser *recipient = [AwfulUser firstOrNewUserWithUserID:recipientUserID

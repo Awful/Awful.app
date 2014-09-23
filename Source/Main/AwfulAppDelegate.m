@@ -56,34 +56,28 @@ static id _instance;
      }];
 }
 
-- (NSManagedObjectContext *)managedObjectContext
-{
-    return _dataStack.managedObjectContext;
-}
-
 #define CRASHLYTICS_ENABLED defined(CRASHLYTICS_API_KEY) && !DEBUG
 
 static inline void StartCrashlytics(void)
 {
-#if CRASHLYTICS_ENABLED
+    #if CRASHLYTICS_ENABLED
     [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
     SetCrashlyticsUsername();
-#endif
+    #endif
 }
 
 static inline void SetCrashlyticsUsername(void)
 {
-#if CRASHLYTICS_ENABLED && AWFUL_BETA
+    #if CRASHLYTICS_ENABLED && AWFUL_BETA
     [Crashlytics setUserName:[AwfulSettings sharedSettings].username];
-#endif
+    #endif
 }
 
 - (RootViewControllerStack *)rootViewControllerStack
 {
     if (!_rootViewControllerStack) {
-        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
-        _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:_rootViewControllerStack.rootViewController
-                                                   managedObjectContext:_dataStack.managedObjectContext];
+        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithDataStack:_dataStack];
+        _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:_rootViewControllerStack.rootViewController dataStack:self.dataStack];
     }
     return _rootViewControllerStack;
 }
@@ -142,13 +136,13 @@ static inline void SetCrashlyticsUsername(void)
     NSError *error;
     BOOL ok = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
     if (!ok) {
-        NSLog(@"error setting shared audio session category: %@", error);
+        NSLog(@"%s error setting shared audio session category: %@", __PRETTY_FUNCTION__, error);
     }
 }
 
 static NSString * const kLastExpiringCookiePromptDate = @"com.awfulapp.Awful.LastCookieExpiringPromptDate";
-static const NSTimeInterval kCookieExpiringSoonThreshold = 60 * 60 * 24 * 7; // One week
-static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 48 Hours
+static const NSTimeInterval kCookieExpiringSoonThreshold = 60 * 60 * 24 * 7;
+static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2;
 
 - (void)showPromptIfLoginCookieExpiresSoon
 {
@@ -185,17 +179,20 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
         [cookieStorage deleteCookie:cookie];
     }
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings sharedSettings] reset];
-    [[AwfulAvatarLoader loader] emptyCache];
+    [self emptyCaches];
     
-    __weak __typeof__(self) weakSelf = self;
-    [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:YES completion:^{
-        __typeof__(self) self = weakSelf;
-        self.rootViewControllerStack = nil;
-        self.URLRouter = nil;
-        [self.dataStack deleteStoreAndResetStack];
-    }];
+    self.rootViewControllerStack = nil;
+    self.URLRouter = nil;
+    
+    [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:YES completion:nil];
+}
+
+- (void)emptyCaches
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[AwfulAvatarLoader loader] emptyCache];
+    [self.dataStack deleteStoreAndResetStack];
 }
 
 #pragma mark - UIApplicationDelegate
@@ -219,9 +216,9 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
         DeleteDataStoreAtURL(oldStoreURL);
     }
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
-    _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
+    self.dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
     
-    [AwfulForumsClient client].managedObjectContext = _dataStack.managedObjectContext;
+    [AwfulForumsClient client].dataStack = self.dataStack;
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
@@ -270,7 +267,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     NSError *error;
-    BOOL ok = [_dataStack.managedObjectContext save:&error];
+    BOOL ok = [self.dataStack.managedObjectContext save:&error];
     if (!ok) {
         NSLog(@"%s error saving main managed object context: %@", __PRETTY_FUNCTION__, error);
     }

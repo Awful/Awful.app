@@ -25,9 +25,15 @@
 			<key>Title</key>
 			<string>Awful x.y.z</string>
 			<key>Explanation</key>
-			<string>Post feedback, bug reports, and feature suggestions. Please don&apos;t directly contact anyone from Something Awful about this app.</string>
+			<string>Post feedback, bug reports, and feature suggestions in Awful&apos;s thread. Please don&apos;t directly contact anyone from Something Awful about this app.</string>
 			<key>Settings</key>
 			<array>
+				<dict>
+					<key>Title</key>
+					<string>Empty Cache</string>
+					<key>Action</key>
+					<string>EmptyCache</string>
+				</dict>
 				<dict>
 					<key>Title</key>
 					<string>Go to Awful&apos;s Thread</string>

@@ -246,7 +246,7 @@
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].dataStack.managedObjectContext;
     NSString *postID = [coder decodeObjectForKey:PostIDKey];
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
     PostComposeViewController *replyViewController;

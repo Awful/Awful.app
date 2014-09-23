@@ -24,11 +24,15 @@
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenience.h"
 
+@interface AwfulForumsClient ()
+
+@property (readonly, strong, nonatomic) NSManagedObjectContext *mainManagedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectContext *backgroundManagedObjectContext;
+@property (strong, nonatomic) AwfulHTTPRequestOperationManager *HTTPManager;
+
+@end
+
 @implementation AwfulForumsClient
-{
-    AwfulHTTPRequestOperationManager *_HTTPManager;
-    NSManagedObjectContext *_backgroundManagedObjectContext;
-}
 
 - (void)dealloc
 {
@@ -37,18 +41,19 @@
 
 - (id)init
 {
-    if (!(self = [super init])) return nil;
-    [self reset];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
-    // When a user changes their password, subsequent HTTP operations will come back without a login cookie. So any operation might bear the news that we've been logged out.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(networkingOperationDidStart:)
-                                                 name:AFNetworkingOperationDidStartNotification
-                                               object:nil];
+    if ((self = [super init])) {
+        [self reset];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
+        
+        // When a user changes their password, subsequent HTTP operations will come back without a login cookie. So any operation might bear the news that we've been logged out.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(networkingOperationDidStart:)
+                                                     name:AFNetworkingOperationDidStartNotification
+                                                   object:nil];
+    }
     return self;
 }
 
@@ -69,33 +74,33 @@
 
 - (NSURL *)baseURL
 {
-    return _HTTPManager.baseURL;
+    return self.HTTPManager.baseURL;
 }
 
-- (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (void)setDataStack:(AwfulDataStack *)dataStack
 {
-    if (_managedObjectContext) {
+    if (_dataStack) {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:NSManagedObjectContextDidSaveNotification
-                                                      object:_managedObjectContext];
+                                                      object:_dataStack.managedObjectContext];
     }
-    if (_backgroundManagedObjectContext) {
+    if (self.backgroundManagedObjectContext) {
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:NSManagedObjectContextDidSaveNotification
-                                                      object:_backgroundManagedObjectContext];
+                                                      object:self.backgroundManagedObjectContext];
         _backgroundManagedObjectContext = nil;
     }
     
-    _managedObjectContext = managedObjectContext;
+    _dataStack = dataStack;
     
-    if (managedObjectContext) {
+    if (dataStack) {
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(mainManagedObjectContextDidSave:)
                                                      name:NSManagedObjectContextDidSaveNotification
-                                                   object:managedObjectContext];
+                                                   object:dataStack.managedObjectContext];
         
         _backgroundManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        _backgroundManagedObjectContext.persistentStoreCoordinator = managedObjectContext.persistentStoreCoordinator;
+        _backgroundManagedObjectContext.persistentStoreCoordinator = dataStack.managedObjectContext.persistentStoreCoordinator;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(backgroundManagedObjectContextDidSave:)
                                                      name:NSManagedObjectContextDidSaveNotification
@@ -103,9 +108,14 @@
     }
 }
 
+- (NSManagedObjectContext *)mainManagedObjectContext
+{
+    return self.dataStack.managedObjectContext;
+}
+
 - (void)mainManagedObjectContextDidSave:(NSNotification *)notification
 {
-    NSManagedObjectContext *context = _backgroundManagedObjectContext;
+    NSManagedObjectContext *context = self.backgroundManagedObjectContext;
     [context performBlock:^{
         [context mergeChangesFromContextDidSaveNotification:notification];
     }];
@@ -113,7 +123,7 @@
 
 - (void)backgroundManagedObjectContextDidSave:(NSNotification *)notification
 {
-    NSManagedObjectContext *context = self.managedObjectContext;
+    NSManagedObjectContext *context = self.mainManagedObjectContext;
     NSArray *updatedObjectIDs = [notification.userInfo[NSUpdatedObjectsKey] valueForKey:@"objectID"];
     [context performBlock:^{
         for (NSManagedObjectID *objectID in updatedObjectIDs) {
@@ -126,7 +136,7 @@
 
 - (void)reset
 {
-    [_HTTPManager.operationQueue cancelAllOperations];
+    [self.HTTPManager.operationQueue cancelAllOperations];
     NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: @"http://forums.somethingawful.com";
     NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
     if (components.scheme.length == 0) {
@@ -138,7 +148,7 @@
         components.host = components.path;
         components.path = nil;
     }
-    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:components.URL];
+    self.HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:components.URL];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
@@ -150,18 +160,18 @@
 
 - (BOOL)reachable
 {
-    return _HTTPManager.reachabilityManager.reachable;
+    return self.HTTPManager.reachabilityManager.reachable;
 }
 
 - (BOOL)loggedIn
 {
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:_HTTPManager.baseURL];
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
     return [[cookies valueForKey:NSHTTPCookieName] containsObject:@"bbuserid"];
 }
 
 - (NSDate *)loginCookieExpiryDate
 {
-    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:_HTTPManager.baseURL];
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:self.baseURL];
     for (NSHTTPCookie *cookie in cookies) {
         if ([cookie.name isEqualToString:@"bbuserid"]) {
             return cookie.expiresDate;
@@ -175,7 +185,7 @@
     // Only subscribe for notifications if we're logged in.
     if (!self.loggedIn) return;
     AFURLConnectionOperation *op = note.object;
-    if (![op.request.URL.absoluteString hasPrefix:_HTTPManager.baseURL.absoluteString]) return;
+    if (![op.request.URL.absoluteString hasPrefix:self.baseURL.absoluteString]) return;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(networkingOperationDidFinish:)
                                                  name:AFNetworkingOperationDidFinishNotification
@@ -201,14 +211,14 @@
                           password:(NSString *)password
                            andThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager POST:@"account.php?json=1"
-                   parameters:@{ @"action" : @"login",
-                                 @"username" : username,
-                                 @"password" : password,
-                                 @"next": @"/member.php?action=getinfo" }
-                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager POST:@"account.php?json=1"
+                       parameters:@{ @"action" : @"login",
+                                     @"username" : username,
+                                     @"password" : password,
+                                     @"next": @"/member.php?action=getinfo" }
+                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -241,11 +251,11 @@
 - (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *categories))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"forumdisplay.php"
-                  parameters:@{ @"forumid": @"48" }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"forumdisplay.php"
+                      parameters:@{ @"forumid": @"48" }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -279,9 +289,9 @@
     if (threadTag.threadTagID.length > 0) {
         parameters[@"posticon"] = threadTag.threadTagID;
     }
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"forumdisplay.php" parameters:parameters success:^(AFHTTPRequestOperation *operation, HTMLDocument *document) {
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"forumdisplay.php" parameters:parameters success:^(AFHTTPRequestOperation *operation, HTMLDocument *document) {
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
@@ -313,13 +323,13 @@
 - (NSOperation *)listBookmarkedThreadsOnPage:(NSInteger)page
                                      andThen:(void (^)(NSError *error, NSArray *threads))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"bookmarkthreads.php"
-                  parameters:@{ @"action": @"view",
-                                @"perpage": @40,
-                                @"pagenumber": @(page) }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"bookmarkthreads.php"
+                      parameters:@{ @"action": @"view",
+                                    @"perpage": @40,
+                                    @"pagenumber": @(page) }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -352,11 +362,11 @@
               isBookmarked:(BOOL)isBookmarked
                    andThen:(void (^)(NSError *error))callback
 {
-    return [_HTTPManager POST:@"bookmarkthreads.php"
-                   parameters:@{ @"json": @"1",
-                                 @"action": isBookmarked ? @"add" : @"remove",
-                                 @"threadid": thread.threadID }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager POST:@"bookmarkthreads.php"
+                       parameters:@{ @"json": @"1",
+                                     @"action": isBookmarked ? @"add" : @"remove",
+                                     @"threadid": thread.threadID }
+                          success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         thread.bookmarked = isBookmarked;
         if (callback) callback(nil);
@@ -369,10 +379,10 @@
                            :(NSInteger)rating
                     andThen:(void (^)(NSError *error))callback
 {
-    return [_HTTPManager POST:@"threadrate.php"
-                   parameters:@{ @"vote": @(MAX(5, MIN(1, rating))),
-                                 @"threadid": thread.threadID }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager POST:@"threadrate.php"
+                       parameters:@{ @"vote": @(MAX(5, MIN(1, rating))),
+                                     @"threadid": thread.threadID }
+                          success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -383,11 +393,11 @@
 - (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
                                 andThen:(void (^)(NSError *error))callback
 {
-    return [_HTTPManager GET:@"showthread.php"
-                  parameters:@{ @"action": @"setseen",
-                                @"threadid": post.thread.threadID,
-                                @"index": @(post.threadIndex) }
-                     success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager GET:@"showthread.php"
+                      parameters:@{ @"action": @"setseen",
+                                    @"threadid": post.thread.threadID,
+                                    @"index": @(post.threadIndex) }
+                         success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -398,11 +408,11 @@
 - (NSOperation *)markThreadUnread:(AwfulThread *)thread
                           andThen:(void (^)(NSError *error))callback
 {
-    return [_HTTPManager POST:@"showthread.php"
-                   parameters:@{ @"threadid": thread.threadID,
-                                 @"action": @"resetseen",
-                                 @"json": @"1" }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager POST:@"showthread.php"
+                       parameters:@{ @"threadid": thread.threadID,
+                                     @"action": @"resetseen",
+                                     @"json": @"1" }
+                          success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -413,12 +423,12 @@
 - (NSOperation *)listAvailablePostIconsForForumWithID:(NSString *)forumID
                                               andThen:(void (^)(NSError *error, AwfulForm *form))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"newthread.php"
-                  parameters:@{ @"action": @"newthread",
-                                @"forumid": forumID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"newthread.php"
+                      parameters:@{ @"action": @"newthread",
+                                    @"forumid": forumID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -450,11 +460,11 @@
                             BBcode:(NSString *)text
                            andThen:(void (^)(NSError *error, AwfulThread *thread))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"newthread.php"
-                  parameters:@{ @"action": @"newthread",
-                                @"forumid": forum.forumID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"newthread.php"
+                      parameters:@{ @"action": @"newthread",
+                                    @"forumid": forum.forumID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -489,9 +499,9 @@
                 parameters[form.selectedSecondaryThreadTagKey] = secondaryTag.threadTagID;
             }
             [parameters removeObjectForKey:@"preview"];
-            [_HTTPManager POST:@"newthread.php"
-                    parameters:parameters
-                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+            [self.HTTPManager POST:@"newthread.php"
+                        parameters:parameters
+                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
              {
                  HTMLElement *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
@@ -517,13 +527,13 @@
                                           withBBcode:(NSString *)BBcode
                                              andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
-    return [_HTTPManager POST:@"newthread.php"
-                   parameters:@{ @"forumid": forum.forumID,
-                                 @"action": @"postthread",
-                                 @"message": BBcode,
-                                 @"parseurl": @"yes",
-                                 @"preview": @"Preview Post" }
-                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [self.HTTPManager POST:@"newthread.php"
+                       parameters:@{ @"forumid": forum.forumID,
+                                     @"action": @"postthread",
+                                     @"message": BBcode,
+                                     @"parseurl": @"yes",
+                                     @"preview": @"Preview Post" }
+                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
         if (postbody) {
@@ -559,20 +569,18 @@
     if (author.userID) {
         parameters[@"userid"] = author.userID;
     }
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:_HTTPManager.baseURL];
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:self.baseURL];
     NSError *error;
-    NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters error:&error];
+    NSURLRequest *request = [self.HTTPManager.requestSerializer requestWithMethod:@"GET" URLString:URL.absoluteString parameters:parameters error:&error];
     if (!request) {
         if (callback) {
             callback(error, nil, 0, nil);
         }
         return nil;
     }
-    AFHTTPRequestOperation *operation = [_HTTPManager HTTPRequestOperationWithRequest:request
-                                                                              success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
-    {
+    AFHTTPRequestOperation *operation = [self.HTTPManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, HTMLDocument *document) {
         [managedObjectContext performBlock:^{
             AwfulPostsPageScraper *scraper = [AwfulPostsPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
@@ -629,11 +637,11 @@
 
 - (NSOperation *)readIgnoredPost:(AwfulPost *)post andThen:(void (^)(NSError *error))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"showthread.php"
-                  parameters:@{ @"action": @"showpost",
-                                @"postid": post.postID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"showthread.php"
+                      parameters:@{ @"action": @"showpost",
+                                    @"postid": post.postID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPostScraper *scraper = [AwfulPostScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -656,12 +664,12 @@
                     withBBcode:(NSString *)text
                        andThen:(void (^)(NSError *error, AwfulPost *post))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"newreply.php"
-                  parameters:@{ @"action" : @"newreply",
-                                @"threadid" : thread.threadID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"newreply.php"
+                      parameters:@{ @"action" : @"newreply",
+                                    @"threadid" : thread.threadID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -686,9 +694,9 @@
             NSMutableDictionary *parameters = [form recommendedParameters];
             parameters[@"message"] = text;
             [parameters removeObjectForKey:@"preview"];
-            [_HTTPManager POST:@"newreply.php"
-                    parameters:parameters
-                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+            [self.HTTPManager POST:@"newreply.php"
+                        parameters:parameters
+                           success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
              {
                  AwfulPost *post;
                  HTMLElement *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
@@ -714,13 +722,13 @@
                            withBBcode:(NSString *)BBcode
                               andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
-    return [_HTTPManager POST:@"newreply.php"
-                   parameters:@{ @"action": @"postreply",
-                                 @"threadid": thread.threadID,
-                                 @"message": BBcode,
-                                 @"parseurl": @"yes",
-                                 @"preview": @"Preview Reply" }
-                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [self.HTTPManager POST:@"newreply.php"
+                       parameters:@{ @"action": @"postreply",
+                                     @"threadid": thread.threadID,
+                                     @"message": BBcode,
+                                     @"parseurl": @"yes",
+                                     @"preview": @"Preview Reply" }
+                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         HTMLElement *element = [document firstNodeMatchingSelector:@".postbody"];
         if (element) {
@@ -740,11 +748,11 @@
 - (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
                                     andThen:(void (^)(NSError *error, NSString *text))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"editpost.php"
-                  parameters:@{ @"action": @"editpost",
-                                @"postid": post.postID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"editpost.php"
+                      parameters:@{ @"action": @"editpost",
+                                    @"postid": post.postID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -776,11 +784,11 @@
 - (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
                                      andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"newreply.php"
-                  parameters:@{ @"action": @"newreply",
-                                @"postid": post.postID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"newreply.php"
+                      parameters:@{ @"action": @"newreply",
+                                    @"postid": post.postID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         if (!callback) return;
         [managedObjectContext performBlock:^{
@@ -813,11 +821,11 @@
                 setBBcode:(NSString *)text
                   andThen:(void (^)(NSError *error))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"editpost.php"
-                  parameters:@{ @"action": @"editpost",
-                                @"postid": post.postID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"editpost.php"
+                      parameters:@{ @"action": @"editpost",
+                                    @"postid": post.postID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -844,9 +852,9 @@
             }
             parameters[@"message"] = text;
             [parameters removeObjectForKey:@"preview"];
-            [_HTTPManager POST:@"editpost.php"
-                    parameters:parameters
-                       success:^(AFHTTPRequestOperation *operation, id responseObject)
+            [self.HTTPManager POST:@"editpost.php"
+                        parameters:parameters
+                           success:^(AFHTTPRequestOperation *operation, id responseObject)
              {
                  if (callback) callback(nil);
              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -862,13 +870,13 @@
                         withBBcode:(NSString *)BBcode
                            andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
-    return [_HTTPManager POST:@"editpost.php"
-                   parameters:@{ @"action": @"updatepost",
-                                 @"postid": post.postID,
-                                 @"message": BBcode,
-                                 @"parseurl": @"yes",
-                                 @"preview": @"Preview Post" }
-                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [self.HTTPManager POST:@"editpost.php"
+                       parameters:@{ @"action": @"updatepost",
+                                     @"postid": post.postID,
+                                     @"message": BBcode,
+                                     @"parseurl": @"yes",
+                                     @"preview": @"Preview Post" }
+                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         HTMLElement *postbody = [document firstNodeMatchingSelector:@".postbody"];
         if (postbody) {
@@ -900,14 +908,14 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
-    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:_HTTPManager.baseURL];
-    NSURLRequest *request = [_HTTPManager.requestSerializer requestWithMethod:@"GET"
-                                                                    URLString:URL.absoluteString
-                                                                   parameters:@{ @"goto" : @"post",
-                                                                                 @"postid" : postID }
-																		error:nil];
+    NSURL *URL = [NSURL URLWithString:@"showthread.php" relativeToURL:self.baseURL];
+    NSURLRequest *request = [self.HTTPManager.requestSerializer requestWithMethod:@"GET"
+                                                                        URLString:URL.absoluteString
+                                                                       parameters:@{ @"goto" : @"post",
+                                                                                     @"postid" : postID }
+                                                                            error:nil];
     __block BOOL didSucceed = NO;
-    AFHTTPRequestOperation *op = [_HTTPManager HTTPRequestOperationWithRequest:request success:^(id _, id __) {
+    AFHTTPRequestOperation *op = [self.HTTPManager HTTPRequestOperationWithRequest:request success:^(id _, id __) {
         // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
         if (callback) {
             NSString *message = @"The post could not be found";
@@ -921,8 +929,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
             if (callback) callback(error, nil, 0);
         }
     }];
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
     __weak AFHTTPRequestOperation *weakOp = op;
     [op setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
         AFHTTPRequestOperation *op = weakOp;
@@ -969,7 +977,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         }
         return nil;
     }];
-    [_HTTPManager.operationQueue addOperation:op];
+    [self.HTTPManager.operationQueue addOperation:op];
     return op;
 }
 
@@ -977,11 +985,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 - (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"member.php"
-                  parameters:@{ @"action": @"getinfo" }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"member.php"
+                      parameters:@{ @"action": @"getinfo" }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -1020,11 +1028,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         parameters[@"username"] = username;
     }
     
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"member.php"
-                  parameters:parameters
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"member.php"
+                      parameters:parameters
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -1056,10 +1064,10 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         if (user.userID.length > 0) {
             parameters[@"userid"] = user.userID;
         }
-        NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-        return [_HTTPManager GET:@"banlist.php"
-                      parameters:parameters
-                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+        NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+        return [self.HTTPManager GET:@"banlist.php"
+                          parameters:parameters
+                             success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
         {
              [managedObjectContext performBlock:^{
                  AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -1096,11 +1104,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 - (NSOperation *)countUnreadPrivateMessagesInInboxAndThen:(void (^)(NSError *error, NSInteger unreadMessageCount))callback
 {
     // Not readlly doing anything with the background managed object context, just using its queue.
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
     
-    return [_HTTPManager GET:@"private.php"
-                  parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    return [self.HTTPManager GET:@"private.php"
+                      parameters:nil
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulUnreadPrivateMessageCountScraper *scraper = [AwfulUnreadPrivateMessageCountScraper scrapeNode:document
@@ -1118,11 +1126,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 - (NSOperation *)listPrivateMessageInboxAndThen:(void (^)(NSError *error, NSArray *messages))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"private.php"
-                  parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"private.php"
+                      parameters:nil
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPrivateMessageFolderScraper *scraper = [AwfulPrivateMessageFolderScraper scrapeNode:document
@@ -1147,11 +1155,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 - (NSOperation *)deletePrivateMessage:(AwfulPrivateMessage *)message
                               andThen:(void (^)(NSError *error))callback
 {
-    return [_HTTPManager POST:@"private.php"
-                   parameters:@{ @"action": @"dodelete",
-                                 @"privatemessageid": message.messageID,
-                                 @"delete": @"yes" }
-                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager POST:@"private.php"
+                       parameters:@{ @"action": @"dodelete",
+                                     @"privatemessageid": message.messageID,
+                                     @"delete": @"yes" }
+                          success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1162,11 +1170,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 - (NSOperation *)readPrivateMessage:(AwfulPrivateMessage *)message
                             andThen:(void (^)(NSError *error))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"private.php"
-                  parameters:@{ @"action": @"show",
-                                @"privatemessageid": message.messageID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"private.php"
+                      parameters:@{ @"action": @"show",
+                                    @"privatemessageid": message.messageID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
@@ -1188,11 +1196,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 - (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(AwfulPrivateMessage *)message
                                              andThen:(void (^)(NSError *error, NSString *BBcode))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    return [_HTTPManager GET:@"private.php"
-                  parameters:@{ @"action": @"newmessage",
-                                @"privatemessageid": message.messageID }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    return [self.HTTPManager GET:@"private.php"
+                      parameters:@{ @"action": @"newmessage",
+                                    @"privatemessageid": message.messageID }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -1223,11 +1231,11 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 - (NSOperation *)listAvailablePrivateMessageThreadTagsAndThen:(void (^)(NSError *error, NSArray *threadTags))callback
 {
-    NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
-    return [_HTTPManager GET:@"private.php"
-                  parameters:@{ @"action": @"newmessage" }
-                     success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
+    NSManagedObjectContext *managedObjectContext = self.backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.mainManagedObjectContext;
+    return [self.HTTPManager GET:@"private.php"
+                      parameters:@{ @"action": @"newmessage" }
+                         success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
             HTMLElement *formElement = [document firstNodeMatchingSelector:@"form[name='vbform']"];
@@ -1284,9 +1292,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     if (regardingMessage || forwardedMessage) {
         parameters[@"prevmessageid"] = regardingMessage.messageID ?: forwardedMessage.messageID;
     }
-    return [_HTTPManager POST:@"private.php"
-                   parameters:parameters
-                      success:^(AFHTTPRequestOperation *operation, id responseObject)
+    return [self.HTTPManager POST:@"private.php"
+                       parameters:parameters
+                          success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
