@@ -285,6 +285,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 
 - (NSString *)stringForSentDate:(NSDate *)date
 {
+    if (!date) return nil;
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSCalendarUnit units = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear;
     NSDateComponents *components = [calendar components:units fromDate:date];
