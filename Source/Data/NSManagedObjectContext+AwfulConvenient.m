@@ -1,10 +1,10 @@
-//  NSManagedObjectContext+AwfulConvenience.m
+//  NSManagedObjectContext+AwfulConvenient.m
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "NSManagedObjectContext+AwfulConvenience.h"
+#import "NSManagedObjectContext+AwfulConvenient.h"
 
-@implementation NSManagedObjectContext (AwfulConvenience)
+@implementation NSManagedObjectContext (AwfulConvenient)
 
 - (id)awful_objectWithID:(NSManagedObjectID *)objectID
 {

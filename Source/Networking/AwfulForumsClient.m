@@ -22,7 +22,7 @@
 #import "AwfulThreadTag.h"
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
-#import "NSManagedObjectContext+AwfulConvenience.h"
+#import "NSManagedObjectContext+AwfulConvenient.h"
 
 @implementation AwfulForumsClient
 {

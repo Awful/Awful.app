@@ -1,10 +1,10 @@
-//  NSManagedObjectContext+AwfulConvenience.h
+//  NSManagedObjectContext+AwfulConvenient.h
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <CoreData/CoreData.h>
+@import CoreData;
 
-@interface NSManagedObjectContext (AwfulConvenience)
+@interface NSManagedObjectContext (AwfulConvenient)
 
 /**
  * -objectWithID: except nil-safe and returns `id` for easy casting.
