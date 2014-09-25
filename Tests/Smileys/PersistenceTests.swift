@@ -16,27 +16,31 @@ class PersistenceTests: XCTestCase {
     }
     
     func testInsertingSmiley() {
-        let smiley = Smiley(managedObjectContext: context)
-        smiley.text = ":wotwot:"
-        smiley.metadata.lastUseDate = NSDate()
-        var error: NSError?
-        XCTAssert(context.save(&error), "context save error: \(error)")
+        context.performBlockAndWait {
+            let smiley = Smiley(managedObjectContext: self.context)
+            smiley.text = ":wotwot:"
+            smiley.metadata.lastUseDate = NSDate()
+            var error: NSError?
+            XCTAssert(self.context.save(&error), "context save error: \(error)")
+        }
     }
     
     func testRetrievingSmiley() {
-        let smiley = Smiley(managedObjectContext: context)
-        smiley.text = ":wotwot:"
-        let date = NSDate()
-        smiley.metadata.lastUseDate = date
-        context.save(nil)
-        
-        let fetchRequest = NSFetchRequest(entityName: "Smiley")
-        fetchRequest.predicate = NSPredicate(format: "text = %@", ":wotwot:")
-        var error: NSError?
-        let results = context.executeFetchRequest(fetchRequest, error: &error) as [Smiley]!
-        XCTAssert(results != nil, "fetch error: \(error)")
-        let retrieved = results[0]
-        XCTAssertEqual(retrieved.metadata.lastUseDate!, date, "same metadata fetched as inserted")
+        context.performBlockAndWait {
+            let smiley = Smiley(managedObjectContext: self.context)
+            smiley.text = ":wotwot:"
+            let date = NSDate()
+            smiley.metadata.lastUseDate = date
+            self.context.save(nil)
+            
+            let fetchRequest = NSFetchRequest(entityName: "Smiley")
+            fetchRequest.predicate = NSPredicate(format: "text = %@", ":wotwot:")
+            var error: NSError?
+            let results = self.context.executeFetchRequest(fetchRequest, error: &error) as [Smiley]!
+            XCTAssert(results != nil, "fetch error: \(error)")
+            let retrieved = results[0]
+            XCTAssertEqual(retrieved.metadata.lastUseDate!, date, "same metadata fetched as inserted")
+        }
     }
     
 }

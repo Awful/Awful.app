@@ -13,7 +13,7 @@ func inMemoryDataStack() -> NSManagedObjectContext {
     var error: NSError? = nil
     let store = storeCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
     assert(store != nil, "error adding in-memory store: \(error)")
-    let context = NSManagedObjectContext()
+    let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
     context.persistentStoreCoordinator = storeCoordinator
     return context
 }

@@ -33,7 +33,10 @@ class ScrapingTests: XCTestCase {
         request.propertiesToFetch = ["section"]
         request.returnsDistinctResults = true // seemingly ignored for NSInMemoryStore
         var error: NSError?
-        let resultDictionaries = context.executeFetchRequest(request, error: &error) as NSArray!
+        var resultDictionaries: NSArray! = nil
+        context.performBlockAndWait {
+            resultDictionaries = self.context.executeFetchRequest(request, error: &error) as NSArray!
+        }
         XCTAssert(resultDictionaries != nil, "fetching got \(error)")
         
         let results = resultDictionaries.valueForKeyPath("@distinctUnionOfObjects.section") as [String]
@@ -46,7 +49,10 @@ class ScrapingTests: XCTestCase {
         let request = NSFetchRequest(entityName: "Smiley")
         request.predicate = NSPredicate(format: "text = %@", ":wotwot:")
         var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as [Smiley]!
+        var results: [Smiley]! = nil
+        context.performBlockAndWait {
+            results = self.context.executeFetchRequest(request, error: &error) as [Smiley]!
+        }
         XCTAssert(results != nil, "fetching got \(error)")
         XCTAssertEqual(results.count, 1)
         

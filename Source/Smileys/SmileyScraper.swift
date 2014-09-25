@@ -15,13 +15,20 @@ public func scrapeSmileys(#HTML: NSString, intoManagedObjectContext context: NSM
     for (header, list) in Zip2(headers, lists) {
         let sectionName = header.textContent
         for item in list.nodesMatchingSelector("li") {
-            let smiley = Smiley(managedObjectContext: context)
-            smiley.text = item.firstNodeMatchingSelector(".text").textContent
-            let img = item.firstNodeMatchingSelector("img")
-            smiley.imageURL = img.objectForKeyedSubscript("src") as? NSString
-            smiley.section = sectionName
-            smiley.summary = img.objectForKeyedSubscript("title") as? NSString
+            context.performBlock {
+                let smiley = Smiley(managedObjectContext: context)
+                smiley.text = item.firstNodeMatchingSelector(".text").textContent
+                let img = item.firstNodeMatchingSelector("img")
+                smiley.imageURL = img.objectForKeyedSubscript("src") as? NSString
+                smiley.section = sectionName
+                smiley.summary = img.objectForKeyedSubscript("title") as? NSString
+            }
         }
     }
-    return context.save(error)
+    
+    var ok = false
+    context.performBlockAndWait {
+        ok = context.save(error)
+    }
+    return ok
 }
