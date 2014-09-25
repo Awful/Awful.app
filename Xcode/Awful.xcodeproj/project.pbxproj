@@ -129,6 +129,10 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
+		1C937FC319D4843700679552 /* showsmileys.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FC219D4843700679552 /* showsmileys.webarchive */; };
+		1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC419D4845C00679552 /* ScrapingTests.swift */; };
+		1C937FC719D4848F00679552 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC619D4848F00679552 /* Helpers.swift */; };
+		1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC819D4857C00679552 /* SmileyScraper.swift */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
@@ -270,6 +274,8 @@
 		8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */; };
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
+		CF101722A1034A45A8B88A2A /* libPods-SmileyFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1523F8A286F24744856F6767 /* libPods-SmileyFramework.a */; };
+		DBEA6A92C7CC4F2F863069C9 /* libPods-SmileyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85C39402A6C4D9F84E08813 /* libPods-SmileyTests.a */; };
 		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */; };
@@ -339,6 +345,7 @@
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		1523F8A286F24744856F6767 /* libPods-SmileyFramework.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmileyFramework.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsUbiquitousThemesController.h; sourceTree = "<group>"; };
 		1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsUbiquitousThemesController.m; sourceTree = "<group>"; };
 		1C03B51E19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AwfulAnnoyingSwift.h"; sourceTree = "<group>"; };
@@ -363,7 +370,7 @@
 		1C21E40B19D357CB003CDA82 /* Smileys.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smileys.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C21E40E19D357CB003CDA82 /* Framework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Framework-Info.plist"; sourceTree = "<group>"; };
 		1C21E40F19D357CB003CDA82 /* SmileyFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyFramework.h; sourceTree = "<group>"; };
-		1C21E41519D357CC003CDA82 /* SmileyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SmileyTests.xctest; path = SmileyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C21E41519D357CC003CDA82 /* SmileyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmileyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C21E41A19D357CC003CDA82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		1C21E46619D3964C003CDA82 /* SmileyKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmileyKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -506,6 +513,11 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
+		1C937FC219D4843700679552 /* showsmileys.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmileys.webarchive; sourceTree = "<group>"; };
+		1C937FC419D4845C00679552 /* ScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTests.swift; sourceTree = "<group>"; };
+		1C937FC619D4848F00679552 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1C937FC819D4857C00679552 /* SmileyScraper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyScraper.swift; sourceTree = "<group>"; };
+		1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Framework-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -675,6 +687,7 @@
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileyFramework.xcconfig"; path = "../Pods/Pods-SmileyFramework.xcconfig"; sourceTree = "<group>"; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
@@ -712,6 +725,7 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
+		A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileyTests.xcconfig"; path = "../Pods/Pods-SmileyTests.xcconfig"; sourceTree = "<group>"; };
 		CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScrapingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
 		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
@@ -719,6 +733,7 @@
 		F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnpoppingViewHandler.h; sourceTree = "<group>"; };
 		F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnpoppingViewHandler.m; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
+		F85C39402A6C4D9F84E08813 /* libPods-SmileyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmileyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF54849D34B84496B062B479 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -727,6 +742,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF101722A1034A45A8B88A2A /* libPods-SmileyFramework.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -735,6 +751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C21E46119D35D8E003CDA82 /* Smileys.framework in Frameworks */,
+				DBEA6A92C7CC4F2F863069C9 /* libPods-SmileyTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -803,6 +820,8 @@
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
+				82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */,
+				A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */,
 				FF54849D34B84496B062B479 /* Pods.xcconfig */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
 			);
@@ -902,6 +921,7 @@
 		1C21E40C19D357CB003CDA82 /* Smileys */ = {
 			isa = PBXGroup;
 			children = (
+				1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */,
 				1C21E40E19D357CB003CDA82 /* Framework-Info.plist */,
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
 				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
@@ -910,6 +930,7 @@
 				1C21E46A19D3964C003CDA82 /* SmileyKeyboardViewController.swift */,
 				1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */,
 				1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */,
+				1C937FC819D4857C00679552 /* SmileyScraper.swift */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -917,9 +938,12 @@
 		1C21E41819D357CC003CDA82 /* Smileys */ = {
 			isa = PBXGroup;
 			children = (
+				1C937FC119D4843700679552 /* Fixtures */,
 				1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */,
+				1C937FC619D4848F00679552 /* Helpers.swift */,
 				1C21E41A19D357CC003CDA82 /* Info.plist */,
 				1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */,
+				1C937FC419D4845C00679552 /* ScrapingTests.swift */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -1074,6 +1098,14 @@
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		1C937FC119D4843700679552 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				1C937FC219D4843700679552 /* showsmileys.webarchive */,
+			);
+			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
@@ -1422,8 +1454,8 @@
 			children = (
 				8CCD498115B497A700E5893B /* Resources */,
 				1C3857A115675AFE0078AF95 /* Source */,
-				1190F76913BE4ECB00B9D271 /* Vendor */,
 				1CBDB5CE16259C930004BDF4 /* Tests */,
+				1190F76913BE4ECB00B9D271 /* Vendor */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -1438,6 +1470,8 @@
 				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
 				5A0A70D650DA4CEE875C5173 /* libPods.a */,
 				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
+				1523F8A286F24744856F6767 /* libPods-SmileyFramework.a */,
+				F85C39402A6C4D9F84E08813 /* libPods-SmileyTests.a */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -1502,10 +1536,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C21E42C19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmileyFramework" */;
 			buildPhases = (
+				BAD31BE24C624CC083AA6C6C /* Check Pods Manifest.lock */,
 				1C21E40619D357CB003CDA82 /* Sources */,
 				1C21E40719D357CB003CDA82 /* Frameworks */,
 				1C21E40819D357CB003CDA82 /* Headers */,
 				1C21E40919D357CB003CDA82 /* Resources */,
+				9C39E6DA7A2C4E529E3FB120 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1520,10 +1556,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C21E42D19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmileyTests" */;
 			buildPhases = (
+				E23F636CA83A4D73910469ED /* Check Pods Manifest.lock */,
 				1C21E41119D357CC003CDA82 /* Sources */,
 				1C21E41219D357CC003CDA82 /* Frameworks */,
 				1C21E41319D357CC003CDA82 /* Resources */,
 				1C21E48919D3BFFD003CDA82 /* ShellScript */,
+				1761A276ADCA4B338543943E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1673,6 +1711,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C937FC319D4843700679552 /* showsmileys.webarchive in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1798,6 +1837,21 @@
 			shellScript = "\"${SRCROOT}/../Pods/Pods-ScrapingTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		1761A276ADCA4B338543943E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-SmileyTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		1C21E48919D3BFFD003CDA82 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1896,6 +1950,51 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 		};
+		9C39E6DA7A2C4E529E3FB120 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-SmileyFramework-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BAD31BE24C624CC083AA6C6C /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E23F636CA83A4D73910469ED /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1904,6 +2003,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C21E47C19D3AB0E003CDA82 /* Smileys.xcdatamodeld in Sources */,
+				1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */,
 				1C21E48619D3B44E003CDA82 /* SmileyMetadata.swift in Sources */,
 				1C21E48819D3B44F003CDA82 /* Smiley.swift in Sources */,
 			);
@@ -1915,6 +2015,8 @@
 			files = (
 				1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */,
 				1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */,
+				1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */,
+				1C937FC719D4848F00679552 /* Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2151,6 +2253,7 @@
 /* Begin XCBuildConfiguration section */
 		1C21E42419D357CC003CDA82 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2192,6 +2295,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = Smileys;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Framework-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2201,6 +2305,7 @@
 		};
 		1C21E42519D357CC003CDA82 /* App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2241,6 +2346,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Smileys;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Framework-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2250,6 +2356,7 @@
 		};
 		1C21E42619D357CC003CDA82 /* Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2290,6 +2397,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Smileys;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Framework-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2299,6 +2407,7 @@
 		};
 		1C21E42719D357CC003CDA82 /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2339,6 +2448,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Smileys;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Framework-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2348,6 +2458,7 @@
 		};
 		1C21E42819D357CC003CDA82 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2387,6 +2498,7 @@
 		};
 		1C21E42919D357CC003CDA82 /* App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2427,6 +2539,7 @@
 		};
 		1C21E42A19D357CC003CDA82 /* Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2467,6 +2580,7 @@
 		};
 		1C21E42B19D357CC003CDA82 /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

@@ -9,23 +9,14 @@ import XCTest
 class PersistenceTests: XCTestCase {
     
     var context: NSManagedObjectContext!
-    lazy var model: NSManagedObjectModel = {
-        let modelURL = NSBundle(forClass: Smiley.self).URLForResource("Smileys", withExtension: "momd")
-        return NSManagedObjectModel(contentsOfURL: modelURL!)
-    }()
     
     override func setUp() {
         super.setUp()
-        let storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
-        var error: NSError? = nil
-        let store = storeCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: &error)
-        assert(store != nil, "error adding in-memory store: \(error)")
-        context = NSManagedObjectContext()
-        context.persistentStoreCoordinator = storeCoordinator
+        context = inMemoryDataStack()
     }
     
     func testInsertingSmiley() {
-        let smiley = NSEntityDescription.insertNewObjectForEntityForName("Smiley", inManagedObjectContext: context) as Smiley
+        let smiley = Smiley(managedObjectContext: context)
         smiley.text = ":wotwot:"
         smiley.metadata.lastUseDate = NSDate()
         var error: NSError?
@@ -33,7 +24,7 @@ class PersistenceTests: XCTestCase {
     }
     
     func testRetrievingSmiley() {
-        let smiley = NSEntityDescription.insertNewObjectForEntityForName("Smiley", inManagedObjectContext: context) as Smiley
+        let smiley = Smiley(managedObjectContext: context)
         smiley.text = ":wotwot:"
         let date = NSDate()
         smiley.metadata.lastUseDate = date

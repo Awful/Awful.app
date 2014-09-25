@@ -19,6 +19,14 @@ target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', '0.5.6'
 end
 
+target :SmileyFramework, :exclusive => true do
+  pod 'HTMLReader', '0.5.6'
+end
+
+target :SmileyTests, :exclusive => true do
+  pod 'HTMLReader', '0.5.6'
+end
+
 # Custom text atop the "Acknowledgements" Settings screen.
 class ::Pod::Generator::Acknowledgements
   def header_text
