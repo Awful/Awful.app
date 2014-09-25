@@ -24,7 +24,7 @@
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
 		1C21E41019D357CB003CDA82 /* SmileyFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C21E40F19D357CB003CDA82 /* SmileyFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C21E41C19D357CC003CDA82 /* SmileyFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E41B19D357CC003CDA82 /* SmileyFrameworkTests.swift */; };
+		1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */; };
 		1C21E41F19D357CC003CDA82 /* Smileys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smileys.framework */; };
 		1C21E42119D357CC003CDA82 /* Smileys.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smileys.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1C21E46119D35D8E003CDA82 /* Smileys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smileys.framework */; };
@@ -34,7 +34,7 @@
 		1C21E47C19D3AB0E003CDA82 /* Smileys.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */; };
 		1C21E48619D3B44E003CDA82 /* SmileyMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */; };
 		1C21E48819D3B44F003CDA82 /* Smiley.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48719D3B44F003CDA82 /* Smiley.swift */; };
-		1C21E49119D3C224003CDA82 /* HappyTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */; };
+		1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
@@ -365,7 +365,7 @@
 		1C21E40F19D357CB003CDA82 /* SmileyFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmileyFramework.h; sourceTree = "<group>"; };
 		1C21E41519D357CC003CDA82 /* SmileyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SmileyTests.xctest; path = SmileyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C21E41A19D357CC003CDA82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C21E41B19D357CC003CDA82 /* SmileyFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileyFrameworkTests.swift; sourceTree = "<group>"; };
+		1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		1C21E46619D3964C003CDA82 /* SmileyKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmileyKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Keyboard-Info.plist"; sourceTree = "<group>"; };
 		1C21E46A19D3964C003CDA82 /* SmileyKeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileyKeyboardViewController.swift; sourceTree = "<group>"; };
@@ -905,8 +905,11 @@
 				1C21E40E19D357CB003CDA82 /* Framework-Info.plist */,
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
 				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
+				1C21E48719D3B44F003CDA82 /* Smiley.swift */,
 				1C21E40F19D357CB003CDA82 /* SmileyFramework.h */,
 				1C21E46A19D3964C003CDA82 /* SmileyKeyboardViewController.swift */,
+				1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */,
+				1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -916,7 +919,7 @@
 			children = (
 				1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */,
 				1C21E41A19D357CC003CDA82 /* Info.plist */,
-				1C21E41B19D357CC003CDA82 /* SmileyFrameworkTests.swift */,
+				1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -1910,7 +1913,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C21E41C19D357CC003CDA82 /* SmileyFrameworkTests.swift in Sources */,
+				1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */,
+				1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3055,6 +3059,7 @@
 				1C21E42719D357CC003CDA82 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1C21E42D19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmileyTests" */ = {
 			isa = XCConfigurationList;
@@ -3065,6 +3070,7 @@
 				1C21E42B19D357CC003CDA82 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1C21E47119D3964D003CDA82 /* Build configuration list for PBXNativeTarget "SmileyKeyboard" */ = {
 			isa = XCConfigurationList;
@@ -3075,6 +3081,7 @@
 				1C21E47519D3964D003CDA82 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */ = {
 			isa = XCConfigurationList;
@@ -3112,6 +3119,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1C21E47B19D3AB0E003CDA82 /* Smileys.xcdatamodel */,
+			);
+			currentVersion = 1C21E47B19D3AB0E003CDA82 /* Smileys.xcdatamodel */;
+			path = Smileys.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
