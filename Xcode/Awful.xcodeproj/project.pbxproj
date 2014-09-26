@@ -135,6 +135,7 @@
 		1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC819D4857C00679552 /* SmileyScraper.swift */; };
 		1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */; };
 		1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCF19D6059B00679552 /* UpdaterTests.swift */; };
+		1C937FD219D6289000679552 /* SmileyDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FD119D6289000679552 /* SmileyDownloader.swift */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
@@ -522,6 +523,7 @@
 		1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Framework-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyUpdater.swift; sourceTree = "<group>"; };
 		1C937FCF19D6059B00679552 /* UpdaterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdaterTests.swift; sourceTree = "<group>"; };
+		1C937FD119D6289000679552 /* SmileyDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyDownloader.swift; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -930,6 +932,7 @@
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
 				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
 				1C21E48719D3B44F003CDA82 /* Smiley.swift */,
+				1C937FD119D6289000679552 /* SmileyDownloader.swift */,
 				1C21E40F19D357CB003CDA82 /* SmileyFramework.h */,
 				1C21E46A19D3964C003CDA82 /* SmileyKeyboardViewController.swift */,
 				1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */,
@@ -2009,6 +2012,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C21E47C19D3AB0E003CDA82 /* Smileys.xcdatamodeld in Sources */,
+				1C937FD219D6289000679552 /* SmileyDownloader.swift in Sources */,
 				1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */,
 				1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */,
 				1C21E48619D3B44E003CDA82 /* SmileyMetadata.swift in Sources */,
