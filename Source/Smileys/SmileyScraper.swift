@@ -4,31 +4,40 @@
 
 import CoreData
 
-public func scrapeSmileys(#HTML: NSString, intoManagedObjectContext context: NSManagedObjectContext, error: NSErrorPointer) -> Bool {
-    let document = HTMLDocument(string: HTML)
-    // TODO upsert, not insert. And do it in batches maybe.
-    // TODO handle parsing errors
-    // TODO imageData
-    let container = document.firstNodeMatchingSelector(".smilie_list")
-    let headers = container.nodesMatchingSelector("h3") as [HTMLElement]
-    let lists = container.nodesMatchingSelector(".smilie_group") as [HTMLElement]
-    for (header, list) in Zip2(headers, lists) {
-        let sectionName = header.textContent
-        for item in list.nodesMatchingSelector("li") {
-            context.performBlock {
-                let smiley = Smiley(managedObjectContext: context)
-                smiley.text = item.firstNodeMatchingSelector(".text").textContent
-                let img = item.firstNodeMatchingSelector("img")
-                smiley.imageURL = img.objectForKeyedSubscript("src") as? NSString
-                smiley.section = sectionName
-                smiley.summary = img.objectForKeyedSubscript("title") as? NSString
-            }
-        }
+public class SmileyScraper: NSObject {
+    public let managedObjectContext: NSManagedObjectContext
+    
+    public required init(managedObjectContext context: NSManagedObjectContext) {
+        managedObjectContext = context
+        super.init()
     }
     
-    var ok = false
-    context.performBlockAndWait {
-        ok = context.save(error)
+    public func scrapeSmileys(#HTML: NSString, error: NSErrorPointer) -> Bool {
+        let document = HTMLDocument(string: HTML)
+        // TODO upsert, not insert. And do it in batches maybe.
+        // TODO handle parsing errors
+        let container = document.firstNodeMatchingSelector(".smilie_list")
+        let headers = container.nodesMatchingSelector("h3") as [HTMLElement]
+        let lists = container.nodesMatchingSelector(".smilie_group") as [HTMLElement]
+        for (header, list) in Zip2(headers, lists) {
+            let sectionName = header.textContent
+            for item in list.nodesMatchingSelector("li") {
+                managedObjectContext.performBlock {
+                    let smiley = Smiley(managedObjectContext: self.managedObjectContext)
+                    smiley.text = item.firstNodeMatchingSelector(".text").textContent
+                    let img = item.firstNodeMatchingSelector("img")
+                    smiley.imageURL = img.objectForKeyedSubscript("src") as? NSString
+                    smiley.section = sectionName
+                    smiley.summary = img.objectForKeyedSubscript("title") as? NSString
+                }
+            }
+        }
+        
+        var ok = false
+        managedObjectContext.performBlockAndWait {
+            ok = self.managedObjectContext.save(error)
+        }
+        return ok
     }
-    return ok
+    
 }

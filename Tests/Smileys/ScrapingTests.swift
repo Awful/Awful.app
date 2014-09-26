@@ -8,20 +8,17 @@ import XCTest
 
 class ScrapingTests: XCTestCase {
     
-    var context: NSManagedObjectContext!
-    lazy var fixture: WebArchive = {
-        let URL = NSBundle(forClass: ScrapingTests.self).URLForResource("showsmileys", withExtension: "webarchive")
-        return WebArchive(URL: URL!)
-    }()
+    let fixture = WebArchive.loadFromFixture()
+    var scraper: SmileyScraper!
 
     override func setUp() {
         super.setUp()
-        context = inMemoryDataStack()
+        scraper = SmileyScraper(managedObjectContext: inMemoryDataStack())
     }
     
     private func scrapeAndSave() {
         var error: NSError?
-        let ok = scrapeSmileys(HTML: fixture.mainFrameHTML, intoManagedObjectContext: context, &error)
+        let ok = scraper.scrapeSmileys(HTML: fixture.mainFrameHTML, error: &error)
         XCTAssert(ok, "scrape and save error \(error)")
     }
 
@@ -34,8 +31,8 @@ class ScrapingTests: XCTestCase {
         request.returnsDistinctResults = true // seemingly ignored for NSInMemoryStore
         var error: NSError?
         var resultDictionaries: NSArray! = nil
-        context.performBlockAndWait {
-            resultDictionaries = self.context.executeFetchRequest(request, error: &error) as NSArray!
+        scraper.managedObjectContext.performBlockAndWait {
+            resultDictionaries = self.scraper.managedObjectContext.executeFetchRequest(request, error: &error) as NSArray!
         }
         XCTAssert(resultDictionaries != nil, "fetching got \(error)")
         
@@ -50,8 +47,8 @@ class ScrapingTests: XCTestCase {
         request.predicate = NSPredicate(format: "text = %@", ":wotwot:")
         var error: NSError?
         var results: [Smiley]! = nil
-        context.performBlockAndWait {
-            results = self.context.executeFetchRequest(request, error: &error) as [Smiley]!
+        scraper.managedObjectContext.performBlockAndWait {
+            results = self.scraper.managedObjectContext.executeFetchRequest(request, error: &error) as [Smiley]!
         }
         XCTAssert(results != nil, "fetching got \(error)")
         XCTAssertEqual(results.count, 1)
@@ -63,23 +60,3 @@ class ScrapingTests: XCTestCase {
 
 }
 
-class WebArchive {
-    private let plist: NSDictionary
-    
-    init(URL: NSURL) {
-        let stream = NSInputStream(URL: URL)
-        stream.open()
-        var error: NSError?
-        let plist = NSPropertyListSerialization.propertyListWithStream(stream, options: 0, format: nil, error: &error) as NSDictionary!
-        assert(plist != nil, "error loading webarchive at \(URL): \(error)")
-        self.plist = plist
-    }
-    
-    var mainFrameHTML: String {
-        get {
-            let mainResource = plist["WebMainResource"] as NSDictionary
-            let data = mainResource["WebResourceData"] as NSData
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        }
-    }
-}

@@ -133,6 +133,8 @@
 		1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC419D4845C00679552 /* ScrapingTests.swift */; };
 		1C937FC719D4848F00679552 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC619D4848F00679552 /* Helpers.swift */; };
 		1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC819D4857C00679552 /* SmileyScraper.swift */; };
+		1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */; };
+		1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCF19D6059B00679552 /* UpdaterTests.swift */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
@@ -518,6 +520,8 @@
 		1C937FC619D4848F00679552 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		1C937FC819D4857C00679552 /* SmileyScraper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyScraper.swift; sourceTree = "<group>"; };
 		1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Framework-Bridging-Header.h"; sourceTree = "<group>"; };
+		1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyUpdater.swift; sourceTree = "<group>"; };
+		1C937FCF19D6059B00679552 /* UpdaterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdaterTests.swift; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -931,6 +935,7 @@
 				1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */,
 				1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */,
 				1C937FC819D4857C00679552 /* SmileyScraper.swift */,
+				1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -944,6 +949,7 @@
 				1C21E41A19D357CC003CDA82 /* Info.plist */,
 				1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */,
 				1C937FC419D4845C00679552 /* ScrapingTests.swift */,
+				1C937FCF19D6059B00679552 /* UpdaterTests.swift */,
 			);
 			path = Smileys;
 			sourceTree = "<group>";
@@ -2004,6 +2010,7 @@
 			files = (
 				1C21E47C19D3AB0E003CDA82 /* Smileys.xcdatamodeld in Sources */,
 				1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */,
+				1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */,
 				1C21E48619D3B44E003CDA82 /* SmileyMetadata.swift in Sources */,
 				1C21E48819D3B44F003CDA82 /* Smiley.swift in Sources */,
 			);
@@ -2014,6 +2021,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */,
+				1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */,
 				1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */,
 				1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */,
 				1C937FC719D4848F00679552 /* Helpers.swift in Sources */,

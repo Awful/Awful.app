@@ -8,6 +8,6 @@ import CoreData
 public class SmileyMetadata: NSManagedObject {
 
     @NSManaged public var lastUseDate: NSDate?
-    @NSManaged public internal(set) var smileyText: String
+    @NSManaged public internal(set) var smileyText: SmileyPrimaryKey
 
 }
