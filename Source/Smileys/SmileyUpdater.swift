@@ -107,7 +107,7 @@ private class URLSessionSmileyDownloader: SmileyDownloader {
 private class NewSmileyObserver {
     let managedObjectContext: NSManagedObjectContext
     let notificationBlock: ([SmileyPrimaryKey:NSURL]) -> Void
-    private let observer: AnyObject!
+    private let observer: AnyObject
     
     init(_ context: NSManagedObjectContext, notificationBlock block: ([SmileyPrimaryKey:NSURL]) -> Void) {
         managedObjectContext = context
