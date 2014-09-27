@@ -21,6 +21,7 @@ target :ScrapingTests, :exclusive => true do
 end
 
 target :SmileyFramework, :exclusive => true do
+  pod 'FLAnimatedImage', '1.0.1'
   pod 'HTMLReader', '0.5.6'
 end
 

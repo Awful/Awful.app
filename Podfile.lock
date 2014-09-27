@@ -21,6 +21,7 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.2)
+  - FLAnimatedImage (1.0.1)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
   - HTMLReader (0.5.6)
@@ -55,6 +56,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (= 2.4.1)
   - ARChromeActivity (= 1.0.2)
+  - FLAnimatedImage (= 1.0.1)
   - GRMustache (= 7.3.0)
   - HTMLReader (= 0.5.6)
   - ImgurAnonymousAPIClient (= 0.2)
@@ -68,6 +70,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   ARChromeActivity: 437b3e0c4cc43c19d7dd1af55bea98e008335151
+  FLAnimatedImage: a91333b191d57ecf7f86b85bf93145a7f63dafe5
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
   HTMLReader: 4b0f09b7319babb412a3eb809bc1235ad9d16e15
   ImgurAnonymousAPIClient: 3b485250b3ebc216dc42c5cb5315f75e655dfabf

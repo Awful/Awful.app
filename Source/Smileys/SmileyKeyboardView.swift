@@ -75,7 +75,15 @@ extension SmileyKeyboardView: UICollectionViewDataSource, UICollectionViewDelega
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as KeyCell
         if let data = delegate?.smileyKeyboard(self, imageDataForKeyAtIndexPath: indexPath) {
-            cell.imageView.image = UIImage(data: data)
+            
+            // GIFs start with the string "GIF", and nothing else starts with "G". Assume all GIFs are animated; FLAnimatedImage will deal with single-frame GIFs.
+            var firstByte: UInt8 = 0
+            data.getBytes(&firstByte, length: 1)
+            if firstByte == 0x47 {
+                cell.imageView.animatedImage = FLAnimatedImage(animatedGIFData: data)
+            } else {
+                cell.imageView.image = UIImage(data: data)
+            }
         }
         return cell
     }
@@ -88,10 +96,10 @@ extension SmileyKeyboardView: UICollectionViewDataSource, UICollectionViewDelega
 
 class KeyCell: UICollectionViewCell {
     
-    let imageView: UIImageView
+    let imageView: FLAnimatedImageView
     
     override init(frame: CGRect) {
-        imageView = UIImageView()
+        imageView = FLAnimatedImageView()
         super.init(frame: frame)
         
         imageView.setTranslatesAutoresizingMaskIntoConstraints(false)
