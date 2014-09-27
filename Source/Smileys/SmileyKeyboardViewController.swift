@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import CoreData
 import Smileys
 import UIKit
 
@@ -9,6 +10,8 @@ class SmileyKeyboardViewController: UIInputViewController {
 
     private var nextKeyboardButton: UIButton!
     private var keyboardView: SmileyKeyboardView!
+    private var dataStack: SmileyDataStack!
+    private var imageDatas: [NSData]!
 
     override func updateViewConstraints() {
         super.updateViewConstraints()
@@ -18,6 +21,16 @@ class SmileyKeyboardViewController: UIInputViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        dataStack = SmileyDataStack()
+        let fetchRequest = NSFetchRequest(entityName: "Smiley")
+        fetchRequest.resultType = .DictionaryResultType
+        fetchRequest.propertiesToFetch = ["imageData"]
+        fetchRequest.fetchLimit = 100
+        var error: NSError?
+        let results = dataStack.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) as [NSDictionary]!
+        assert(results != nil, "error fetching image data: \(error)")
+        imageDatas = results.map{ $0["imageData"] as NSData }
         
         keyboardView = SmileyKeyboardView(frame: CGRectZero)
         keyboardView.delegate = self
@@ -66,10 +79,10 @@ class SmileyKeyboardViewController: UIInputViewController {
 
 extension SmileyKeyboardViewController: SmileyKeyboardViewDelegate {
     func smileyKeyboard(keyboardView: SmileyKeyboardView, numberOfKeysInSection section: Int) -> Int {
-        return 0
+        return imageDatas.count
     }
     
-    func smileyKeyboard(keyboardView: SmileyKeyboardView, imageForKeyAtIndexPath indexPath: NSIndexPath) -> UIImage! {
-        return nil
+    func smileyKeyboard(keyboardView: SmileyKeyboardView, imageDataForKeyAtIndexPath indexPath: NSIndexPath) -> NSData {
+        return imageDatas[indexPath.item]
     }
 }

@@ -111,6 +111,7 @@
 		1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */; };
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C807CAD19D67F8A00C75514 /* Smileys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smileys.framework */; };
+		1C807CAF19D7296E00C75514 /* SmileyDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C807CAE19D7296E00C75514 /* SmileyDataStack.swift */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C89A79418AF4DA500D75854 /* EmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* EmptyViewController.m */; };
@@ -502,6 +503,7 @@
 		1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeDataSource.m; sourceTree = "<group>"; };
 		1C7D8956192E954B00003576 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C7D8957192E954B00003576 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
+		1C807CAE19D7296E00C75514 /* SmileyDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyDataStack.swift; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -986,6 +988,7 @@
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
 				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
 				1C21E48719D3B44F003CDA82 /* Smiley.swift */,
+				1C807CAE19D7296E00C75514 /* SmileyDataStack.swift */,
 				1C937FD119D6289000679552 /* SmileyDownloader.swift */,
 				1C21E40F19D357CB003CDA82 /* SmileyFramework.h */,
 				1C93801519D667B800679552 /* SmileyKeyboardView.swift */,
@@ -2086,6 +2089,7 @@
 				1C93801619D667B800679552 /* SmileyKeyboardView.swift in Sources */,
 				1C21E47C19D3AB0E003CDA82 /* Smileys.xcdatamodeld in Sources */,
 				1C937FD219D6289000679552 /* SmileyDownloader.swift in Sources */,
+				1C807CAF19D7296E00C75514 /* SmileyDataStack.swift in Sources */,
 				1C937FC919D4857C00679552 /* SmileyScraper.swift in Sources */,
 				1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */,
 				1C21E48619D3B44E003CDA82 /* SmileyMetadata.swift in Sources */,
