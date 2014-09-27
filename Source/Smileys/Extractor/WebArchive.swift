@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import Smileys
 
 class WebArchive {
     private let plist: NSDictionary
@@ -37,8 +38,7 @@ class WebArchive {
     }
 }
 
-// Would declare conformance to SmileyDownloader here but I don't think I can just yet. (Parts of SmileyFramework are directly added to the Extractor app target because we can't import SmileyFramework directly due to briding header goofiness. But SmileyTests links against the framework, as it should. So we can't put `import Smileys` in this file to pacify compiling SmileyTests, and we can't leave it out to pacify compiling the Extractor app. So we'll declare conformance separately in each target and dream of a better world.)
-class WebArchiveSmileyDownloader {
+class WebArchiveSmileyDownloader: SmileyDownloader {
     let archive: WebArchive
     
     init(_ archive: WebArchive) {

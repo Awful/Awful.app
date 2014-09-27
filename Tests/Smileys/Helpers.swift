@@ -24,6 +24,3 @@ extension WebArchive {
         return self(URL: URL!)
     }
 }
-
-// SmileyDownloader is declared in SmileyFramework but there's some bridging header issues importing it into the Extractor app, and WebArchiveSmileyDownloader is directly included in the Extractor app, so redundantly declare conformance over here.
-extension WebArchiveSmileyDownloader: SmileyDownloader {}

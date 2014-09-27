@@ -7,7 +7,8 @@ import UIKit
 
 class SmileyKeyboardViewController: UIInputViewController {
 
-    @IBOutlet var nextKeyboardButton: UIButton!
+    private var nextKeyboardButton: UIButton!
+    private var keyboardView: SmileyKeyboardView!
 
     override func updateViewConstraints() {
         super.updateViewConstraints()
@@ -17,6 +18,15 @@ class SmileyKeyboardViewController: UIInputViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        keyboardView = SmileyKeyboardView(frame: CGRectZero)
+        keyboardView.delegate = self
+        keyboardView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(keyboardView)
+        
+        let views = ["keyboard": keyboardView]
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[keyboard]|", options: nil, metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[keyboard]|", options: nil, metrics: nil, views: views))
     
         // Perform custom UI setup here
         self.nextKeyboardButton = UIButton.buttonWithType(.System) as UIButton
@@ -39,10 +49,6 @@ class SmileyKeyboardViewController: UIInputViewController {
         // Dispose of any resources that can be recreated
     }
 
-    override func textWillChange(textInput: UITextInput) {
-        // The app is about to change the document's contents. Perform any preparation here.
-    }
-
     override func textDidChange(textInput: UITextInput) {
         // The app has just changed the document's contents, the document context has been updated.
     
@@ -56,4 +62,14 @@ class SmileyKeyboardViewController: UIInputViewController {
         self.nextKeyboardButton.setTitleColor(textColor, forState: .Normal)
     }
 
+}
+
+extension SmileyKeyboardViewController: SmileyKeyboardViewDelegate {
+    func smileyKeyboard(keyboardView: SmileyKeyboardView, numberOfKeysInSection section: Int) -> Int {
+        return 0
+    }
+    
+    func smileyKeyboard(keyboardView: SmileyKeyboardView, imageForKeyAtIndexPath indexPath: NSIndexPath) -> UIImage! {
+        return nil
+    }
 }

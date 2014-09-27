@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.awfulapp.Awful.SmileyKeyboard</string>
+	<string>com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}.SmileyKeyboard</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

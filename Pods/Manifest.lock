@@ -79,4 +79,4 @@ SPEC CHECKSUMS:
   TUSafariActivity: afff9b1d2eacf7cbace752c5f2bf56db852714de
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac
 
-COCOAPODS: 0.33.1
+COCOAPODS: 0.34.1

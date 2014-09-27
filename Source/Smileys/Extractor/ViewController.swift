@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
+import Smileys
 import UIKit
 
 class ViewController: UIViewController {
@@ -19,7 +20,7 @@ class ViewController: UIViewController {
         }()
     
     private lazy var storeCoordinator: NSPersistentStoreCoordinator = {
-        let modelURL = NSBundle.mainBundle().URLForResource("Smileys", withExtension: "momd")
+        let modelURL = NSBundle(forClass: Smiley.self).URLForResource("Smileys", withExtension: "momd")
         let model = NSManagedObjectModel(contentsOfURL: modelURL!)
         return NSPersistentStoreCoordinator(managedObjectModel: model)
         }()
@@ -94,6 +95,3 @@ class ViewController: UIViewController {
 }
 
 private let KVOContext = UnsafeMutablePointer<Void>()
-
-// SmileyDownloader is declared in SmileyFramework but there's some bridging header issues importing it into the Extractor app, and WebArchiveSmileyDownloader is directly included in the Extractor app, so redundantly declare conformance here.
-extension WebArchiveSmileyDownloader: SmileyDownloader {}
