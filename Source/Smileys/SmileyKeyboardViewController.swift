@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
+import MobileCoreServices
 import Smileys
 import UIKit
 
@@ -84,5 +85,17 @@ extension SmileyKeyboardViewController: SmileyKeyboardViewDelegate {
     
     func smileyKeyboard(keyboardView: SmileyKeyboardView, imageDataForKeyAtIndexPath indexPath: NSIndexPath) -> NSData {
         return imageDatas[indexPath.item]
+    }
+    
+    func smileyKeyboard(keyboardView: SmileyKeyboardView, didTapKeyAtIndexPath indexPath: NSIndexPath) {
+        let data = imageDatas[indexPath.item]
+        // GIFs start with the string "GIF", and nothing else starts with "G".
+        var firstByte: UInt8 = 0
+        data.getBytes(&firstByte, length: 1)
+        if firstByte == 0x47 {
+            UIPasteboard.generalPasteboard().setData(data, forPasteboardType: kUTTypeGIF as NSString)
+        } else {
+            UIPasteboard.generalPasteboard().image = UIImage(data: data)
+        }
     }
 }
