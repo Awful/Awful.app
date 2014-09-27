@@ -33,7 +33,7 @@ class WebArchive {
     }
     
     func dataForSubresourceWithURL(URL: String) -> NSData? {
-        return subresourcesByURL[URL]!["WebResourceData"] as NSData?
+        return subresourcesByURL[URL]?["WebResourceData"] as NSData?
     }
 }
 
