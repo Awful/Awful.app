@@ -5,6 +5,7 @@
 import Foundation
 import CoreData
 
+@objc(SmileyMetadata)
 public class SmileyMetadata: NSManagedObject {
 
     @NSManaged public var lastUseDate: NSDate?

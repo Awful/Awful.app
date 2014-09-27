@@ -31,22 +31,28 @@ public class SmileyUpdater: NSObject {
         self.init(managedObjectContext: context, downloader: URLSessionSmileyDownloader())
     }
     
-    public func downloadMissingImageData() {
+    public func downloadMissingImageData() -> NSProgress {
+        let progress = NSProgress(totalUnitCount: -1)
         let request = NSFetchRequest(entityName: "Smiley")
         request.predicate = NSPredicate(format: "imageData = nil AND imageURL != nil")
         managedObjectContext.performBlock {
             var error: NSError?
             if let results = self.managedObjectContext.executeFetchRequest(request, error: &error) {
                 let keysToURLs = reduce(results as [Smiley], [SmileyPrimaryKey:NSURL](), insertKeyAndImageURL)
+                progress.totalUnitCount = Int64(keysToURLs.count)
+                progress.becomeCurrentWithPendingUnitCount(Int64(keysToURLs.count))
                 self.downloadImageDataForSmileys(keysToURLs)
+                progress.resignCurrent()
             } else {
                 NSLog("[%@ %@] error fetching smileys missing image data: %@", self, __FUNCTION__, error!)
             }
         }
+        return progress
     }
     
     private func downloadImageDataForSmileys(keysToURLs: [SmileyPrimaryKey:NSURL]) {
         for (text, URL) in keysToURLs {
+            let progress = NSProgress(totalUnitCount: 1)
             self.downloader.downloadImageDataFromURL(URL) { [unowned self] imageData, error in
                 if let error = error {
                     NSLog("[%@ %@] error downloading image for smiley %@: %@", self, __FUNCTION__, text, error)
@@ -55,7 +61,9 @@ public class SmileyUpdater: NSObject {
                         if let smiley = Smiley.smileyWithText(text, inContext: self.managedObjectContext) {
                             smiley.imageData = imageData
                             var error: NSError?
-                            if !self.managedObjectContext.save(&error) {
+                            if self.managedObjectContext.save(&error) {
+                                progress.completedUnitCount = 1
+                            } else {
                                 NSLog("[%@ %@] error saving context: %@", self, __FUNCTION__, error!)
                             }
                         } else {

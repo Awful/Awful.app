@@ -67,17 +67,3 @@ class UpdaterTests: XCTestCase {
     }
 
 }
-
-class WebArchiveSmileyDownloader: SmileyDownloader {
-    let archive: WebArchive
-    
-    init(_ archive: WebArchive) {
-        self.archive = archive
-    }
-    
-    func downloadImageDataFromURL(URL: NSURL, completionBlock: (imageData: NSData!, error: NSError!) -> Void) {
-        let imageData = archive.dataForSubresourceWithURL(URL.absoluteString!)
-        let error: NSError? = imageData == nil ? NSError(domain: "SmileyErrorDomain", code: 2, userInfo: nil) : nil
-        completionBlock(imageData: imageData, error: error)
-    }
-}

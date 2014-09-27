@@ -19,6 +19,10 @@ target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', '0.5.6'
 end
 
+target :SmileyExtractor, :exclusive => true do
+  pod 'HTMLReader', '0.5.6'
+end
+
 target :SmileyFramework, :exclusive => true do
   pod 'HTMLReader', '0.5.6'
 end

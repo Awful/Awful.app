@@ -18,41 +18,12 @@ func inMemoryDataStack() -> NSManagedObjectContext {
     return context
 }
 
-class WebArchive {
-    private let plist: NSDictionary
-    
-    required init(URL: NSURL) {
-        let stream = NSInputStream(URL: URL)
-        stream.open()
-        var error: NSError?
-        let plist = NSPropertyListSerialization.propertyListWithStream(stream, options: 0, format: nil, error: &error) as NSDictionary!
-        assert(plist != nil, "error loading webarchive at \(URL): \(error)")
-        self.plist = plist
-    }
-    
-    var mainFrameHTML: String {
-        get {
-            let mainResource = plist["WebMainResource"] as NSDictionary
-            let data = mainResource["WebResourceData"] as NSData
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        }
-    }
-    
-    func dataForSubresourceWithURL(URL: String) -> NSData? {
-        let subresources = plist["WebSubresources"] as [[String:AnyObject]]
-        for resource in subresources {
-            let thisURL = resource["WebResourceURL"] as NSString!
-            if thisURL == URL {
-                return resource["WebResourceData"] as NSData!
-            }
-        }
-        return nil
-    }
-}
-
 extension WebArchive {
     class func loadFromFixture() -> Self {
         let URL = NSBundle(forClass: ScrapingTests.self).URLForResource("showsmileys", withExtension: "webarchive")
         return self(URL: URL!)
     }
 }
+
+// SmileyDownloader is declared in SmileyFramework but there's some bridging header issues importing it into the Extractor app, and WebArchiveSmileyDownloader is directly included in the Extractor app, so redundantly declare conformance over here.
+extension WebArchiveSmileyDownloader: SmileyDownloader {}

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07750333CB7D4DE9923FFEE5 /* libPods-SmileyExtractor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F25002A13814F44B87B4D0D /* libPods-SmileyExtractor.a */; };
 		1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */; };
 		1190F7F313BE4EDA00B9D271 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1190F7F213BE4EDA00B9D271 /* main.m */; };
 		11FDA296151018600014FDCD /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* SettingsViewController.m */; };
@@ -136,6 +137,21 @@
 		1C937FCE19D5F6AD00679552 /* SmileyUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */; };
 		1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCF19D6059B00679552 /* UpdaterTests.swift */; };
 		1C937FD219D6289000679552 /* SmileyDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FD119D6289000679552 /* SmileyDownloader.swift */; };
+		1C937FDC19D62BFB00679552 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FDB19D62BFB00679552 /* AppDelegate.swift */; };
+		1C937FDE19D62BFB00679552 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FDD19D62BFB00679552 /* ViewController.swift */; };
+		1C937FE119D62BFB00679552 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FDF19D62BFB00679552 /* Main.storyboard */; };
+		1C937FE619D62BFB00679552 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FE419D62BFB00679552 /* LaunchScreen.xib */; };
+		1C937FFD19D62CD500679552 /* Smileys.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E47A19D3AB0E003CDA82 /* Smileys.xcdatamodeld */; };
+		1C937FFE19D62CE000679552 /* Smiley.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48719D3B44F003CDA82 /* Smiley.swift */; };
+		1C937FFF19D62D0E00679552 /* showsmileys.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FC219D4843700679552 /* showsmileys.webarchive */; };
+		1C93800619D6306100679552 /* WebArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C93800519D6306100679552 /* WebArchive.swift */; };
+		1C93800719D6306100679552 /* WebArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C93800519D6306100679552 /* WebArchive.swift */; };
+		1C93800819D630C400679552 /* SmileyScraper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC819D4857C00679552 /* SmileyScraper.swift */; };
+		1C93800919D6310D00679552 /* SmileyUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */; };
+		1C93800A19D6311E00679552 /* SmileyDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FD119D6289000679552 /* SmileyDownloader.swift */; };
+		1C93800B19D6387D00679552 /* SmileyMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */; };
+		1C93801119D6487100679552 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C93801019D6487100679552 /* libsqlite3.dylib */; };
+		1C93801319D64EC300679552 /* BundledSmileys.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C93801219D64EC300679552 /* BundledSmileys.sqlite */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
@@ -524,6 +540,16 @@
 		1C937FCD19D5F6AD00679552 /* SmileyUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyUpdater.swift; sourceTree = "<group>"; };
 		1C937FCF19D6059B00679552 /* UpdaterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdaterTests.swift; sourceTree = "<group>"; };
 		1C937FD119D6289000679552 /* SmileyDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyDownloader.swift; sourceTree = "<group>"; };
+		1C937FD719D62BFB00679552 /* SmileyExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmileyExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C937FDA19D62BFB00679552 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C937FDB19D62BFB00679552 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1C937FDD19D62BFB00679552 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1C937FE019D62BFB00679552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1C937FE519D62BFB00679552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		1C93800519D6306100679552 /* WebArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebArchive.swift; sourceTree = "<group>"; };
+		1C93800C19D638E000679552 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		1C93801019D6487100679552 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		1C93801219D64EC300679552 /* BundledSmileys.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = BundledSmileys.sqlite; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -692,7 +718,9 @@
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileyExtractor.xcconfig"; path = "../Pods/Pods-SmileyExtractor.xcconfig"; sourceTree = "<group>"; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F25002A13814F44B87B4D0D /* libPods-SmileyExtractor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmileyExtractor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmileyFramework.xcconfig"; path = "../Pods/Pods-SmileyFramework.xcconfig"; sourceTree = "<group>"; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
@@ -769,6 +797,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1C937FD419D62BFB00679552 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C93801119D6487100679552 /* libsqlite3.dylib in Frameworks */,
+				07750333CB7D4DE9923FFEE5 /* libPods-SmileyExtractor.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B816259C6C0004BDF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -825,10 +862,7 @@
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
-				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
-				82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */,
-				A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */,
-				FF54849D34B84496B062B479 /* Pods.xcconfig */,
+				1C93801419D64F5E00679552 /* Pods Config */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
 			);
 			name = Vendor;
@@ -843,6 +877,7 @@
 				1C21E40B19D357CB003CDA82 /* Smileys.framework */,
 				1C21E41519D357CC003CDA82 /* SmileyTests.xctest */,
 				1C21E46619D3964C003CDA82 /* SmileyKeyboard.appex */,
+				1C937FD719D62BFB00679552 /* SmileyExtractor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -927,6 +962,8 @@
 		1C21E40C19D357CB003CDA82 /* Smileys */ = {
 			isa = PBXGroup;
 			children = (
+				1C93801219D64EC300679552 /* BundledSmileys.sqlite */,
+				1C937FD819D62BFB00679552 /* Extractor */,
 				1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */,
 				1C21E40E19D357CB003CDA82 /* Framework-Info.plist */,
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
@@ -1115,6 +1152,32 @@
 				1C937FC219D4843700679552 /* showsmileys.webarchive */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		1C937FD819D62BFB00679552 /* Extractor */ = {
+			isa = PBXGroup;
+			children = (
+				1C937FDB19D62BFB00679552 /* AppDelegate.swift */,
+				1C93800C19D638E000679552 /* Bridging-Header.h */,
+				1C937FDA19D62BFB00679552 /* Info.plist */,
+				1C937FE419D62BFB00679552 /* LaunchScreen.xib */,
+				1C937FDF19D62BFB00679552 /* Main.storyboard */,
+				1C937FDD19D62BFB00679552 /* ViewController.swift */,
+				1C93800519D6306100679552 /* WebArchive.swift */,
+			);
+			path = Extractor;
+			sourceTree = "<group>";
+		};
+		1C93801419D64F5E00679552 /* Pods Config */ = {
+			isa = PBXGroup;
+			children = (
+				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
+				330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */,
+				82865A66875E4E44BE3AA839 /* Pods-SmileyFramework.xcconfig */,
+				A883921D5F6B4088B9AEFF2E /* Pods-SmileyTests.xcconfig */,
+				FF54849D34B84496B062B479 /* Pods.xcconfig */,
+			);
+			name = "Pods Config";
 			sourceTree = "<group>";
 		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
@@ -1474,6 +1537,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C93801019D6487100679552 /* libsqlite3.dylib */,
 				1C21E48C19D3C1A0003CDA82 /* UIKit.framework */,
 				1C21E48A19D3C19B003CDA82 /* CoreImage.framework */,
 				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
@@ -1481,6 +1545,7 @@
 				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
 				1523F8A286F24744856F6767 /* libPods-SmileyFramework.a */,
 				F85C39402A6C4D9F84E08813 /* libPods-SmileyTests.a */,
+				5F25002A13814F44B87B4D0D /* libPods-SmileyExtractor.a */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -1598,6 +1663,25 @@
 			productReference = 1C21E46619D3964C003CDA82 /* SmileyKeyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		1C937FD619D62BFB00679552 /* SmileyExtractor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C937FF319D62BFC00679552 /* Build configuration list for PBXNativeTarget "SmileyExtractor" */;
+			buildPhases = (
+				677EDA7D3B8743B7B7F91F26 /* Check Pods Manifest.lock */,
+				1C937FD319D62BFB00679552 /* Sources */,
+				1C937FD419D62BFB00679552 /* Frameworks */,
+				1C937FD519D62BFB00679552 /* Resources */,
+				57040120FE5145D79C2D147A /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmileyExtractor;
+			productName = "Smiley Extractor";
+			productReference = 1C937FD719D62BFB00679552 /* SmileyExtractor.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */;
@@ -1673,6 +1757,9 @@
 							};
 						};
 					};
+					1C937FD619D62BFB00679552 = {
+						CreatedOnToolsVersion = 6.0.1;
+					};
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 9RR6L9X39A;
 						SystemCapabilities = {
@@ -1701,6 +1788,7 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */,
+				1C937FD619D62BFB00679552 /* SmileyExtractor */,
 				1C21E40A19D357CB003CDA82 /* SmileyFramework */,
 				1C21E46519D3964C003CDA82 /* SmileyKeyboard */,
 				1C21E41419D357CC003CDA82 /* SmileyTests */,
@@ -1713,6 +1801,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C93801319D64EC300679552 /* BundledSmileys.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1728,6 +1817,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C937FD519D62BFB00679552 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C937FE119D62BFB00679552 /* Main.storyboard in Resources */,
+				1C937FFF19D62D0E00679552 /* showsmileys.webarchive in Resources */,
+				1C937FE619D62BFB00679552 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1945,6 +2044,36 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"${PODS_ROOT}\"\necho \"${SRCROOT}\"\ndiff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 		};
+		57040120FE5145D79C2D147A /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-SmileyExtractor-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		677EDA7D3B8743B7B7F91F26 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		92D192B30FE54C29B1BC2C16 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2029,6 +2158,7 @@
 				1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */,
 				1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */,
 				1C937FC719D4848F00679552 /* Helpers.swift in Sources */,
+				1C93800719D6306100679552 /* WebArchive.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2037,6 +2167,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C21E46B19D3964C003CDA82 /* SmileyKeyboardViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C937FD319D62BFB00679552 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C937FDE19D62BFB00679552 /* ViewController.swift in Sources */,
+				1C93800619D6306100679552 /* WebArchive.swift in Sources */,
+				1C93800919D6310D00679552 /* SmileyUpdater.swift in Sources */,
+				1C93800A19D6311E00679552 /* SmileyDownloader.swift in Sources */,
+				1C93800B19D6387D00679552 /* SmileyMetadata.swift in Sources */,
+				1C937FFD19D62CD500679552 /* Smileys.xcdatamodeld in Sources */,
+				1C937FFE19D62CE000679552 /* Smiley.swift in Sources */,
+				1C937FDC19D62BFB00679552 /* AppDelegate.swift in Sources */,
+				1C93800819D630C400679552 /* SmileyScraper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2261,6 +2407,25 @@
 			targetProxy = 1C21E46F19D3964C003CDA82 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		1C937FDF19D62BFB00679552 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C937FE019D62BFB00679552 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1C937FE419D62BFB00679552 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C937FE519D62BFB00679552 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1C21E42419D357CC003CDA82 /* Debug */ = {
@@ -2795,6 +2960,168 @@
 			};
 			name = Profile;
 		};
+		1C937FF419D62BFC00679552 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = ../Source/Smileys/Extractor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Extractor/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1C937FF519D62BFC00679552 /* App Store */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../Source/Smileys/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Extractor/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store";
+		};
+		1C937FF619D62BFC00679552 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../Source/Smileys/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Extractor/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		1C937FF719D62BFC00679552 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330F7B59BB004E22B96DBAEA /* Pods-SmileyExtractor.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../Source/Smileys/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smileys/Extractor/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		1C9A746718EDDD8D00093E33 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3205,6 +3532,17 @@
 				1C21E47319D3964D003CDA82 /* App Store */,
 				1C21E47419D3964D003CDA82 /* Beta */,
 				1C21E47519D3964D003CDA82 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C937FF319D62BFC00679552 /* Build configuration list for PBXNativeTarget "SmileyExtractor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C937FF419D62BFC00679552 /* Debug */,
+				1C937FF519D62BFC00679552 /* App Store */,
+				1C937FF619D62BFC00679552 /* Beta */,
+				1C937FF719D62BFC00679552 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

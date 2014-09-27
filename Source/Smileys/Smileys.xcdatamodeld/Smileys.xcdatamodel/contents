@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="13F34" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Smiley" representedClassName="Smileys.Smiley" syncable="YES">
+    <entity name="Smiley" representedClassName="Smiley" syncable="YES">
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="section" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="text" attributeType="String" syncable="YES"/>
+        <attribute name="text" attributeType="String" indexed="YES" syncable="YES"/>
         <fetchedProperty name="fetchedMetadata" optional="YES" syncable="YES">
             <fetchRequest name="fetchedPropertyFetchRequest" entity="SmileyMetadata" predicateString="smileyText = $FETCH_SOURCE.text"/>
         </fetchedProperty>
     </entity>
-    <entity name="SmileyMetadata" representedClassName="Smileys.SmileyMetadata" syncable="YES">
+    <entity name="SmileyMetadata" representedClassName="SmileyMetadata" syncable="YES">
         <attribute name="lastUseDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="smileyText" attributeType="String" indexed="YES" syncable="YES"/>
     </entity>
@@ -18,7 +18,7 @@
         <memberEntity name="Smiley"/>
     </configuration>
     <elements>
-        <element name="Smiley" positionX="-63" positionY="-18" width="128" height="146"/>
-        <element name="SmileyMetadata" positionX="-54" positionY="-9" width="128" height="28"/>
+        <element name="Smiley" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="SmileyMetadata" positionX="-54" positionY="-9" width="128" height="75"/>
     </elements>
 </model>

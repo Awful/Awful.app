@@ -7,6 +7,7 @@ import CoreData
 
 public typealias SmileyPrimaryKey = String
 
+@objc(Smiley)
 public class Smiley: NSManagedObject {
 
     @NSManaged public var imageData: NSData?
