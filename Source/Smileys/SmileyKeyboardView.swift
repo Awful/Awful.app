@@ -10,6 +10,10 @@ public class SmileyKeyboardView: UIView {
         didSet { collectionView.reloadData() }
     }
     
+    public let nextKeyboardButton: UIButton
+    public let sectionPicker: UISegmentedControl
+    public let deleteButton: UIButton
+    
     private let pageControl: UIPageControl
     private let collectionView: UICollectionView
     
@@ -17,8 +21,13 @@ public class SmileyKeyboardView: UIView {
         pageControl = UIPageControl()
         let layout = PaginatedHorizontalCollectionViewLayout()
         collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+        nextKeyboardButton = UIButton()
+        sectionPicker = UISegmentedControl()
+        deleteButton = UIButton()
         super.init(frame: frame)
         
+        pageControl.addTarget(self, action: "didTapPageControl:", forControlEvents: .ValueChanged)
+        pageControl.backgroundColor = UIColor(red:0.819, green:0.835, blue:0.858, alpha:1)
         pageControl.setTranslatesAutoresizingMaskIntoConstraints(false)
         addSubview(pageControl)
         
@@ -30,31 +39,49 @@ public class SmileyKeyboardView: UIView {
         collectionView.pagingEnabled = true
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
         collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        collectionView.addObserver(self, forKeyPath: "contentSize", options: .New, context: KVOContext)
         addSubview(collectionView)
+        
+        let imageURL = NSBundle(forClass: SmileyKeyboardView.self).URLForResource("next_keyboard@2x", withExtension: "png")
+        var image = UIImage(contentsOfFile: imageURL!.path!)
+        image = UIImage(CGImage: image.CGImage, scale: 2, orientation: image.imageOrientation)
+        image = image.imageWithRenderingMode(.AlwaysTemplate)
+        nextKeyboardButton.setImage(image, forState: .Normal)
+        nextKeyboardButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        nextKeyboardButton.setContentHuggingPriority(1000 /* UILayoutPriorityRequired */, forAxis: .Horizontal)
+        nextKeyboardButton.setContentCompressionResistancePriority(1000 /* UILayoutPriorityRequired */, forAxis: .Horizontal)
+        addSubview(nextKeyboardButton)
+        
+        sectionPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+        addSubview(sectionPicker)
+        
+        deleteButton.setTitle("⌫", forState: .Normal)
+        deleteButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        deleteButton.setContentHuggingPriority(1000 /* UILayoutPriorityRequired */, forAxis: .Horizontal)
+        deleteButton.setContentCompressionResistancePriority(1000 /* UILayoutPriorityRequired */, forAxis: .Horizontal)
+        addSubview(deleteButton)
         
         let views = [
             "pages": pageControl,
-            "keys": collectionView
+            "keys": collectionView,
+            "next": nextKeyboardButton,
+            "sections": sectionPicker,
+            "delete": deleteButton
         ]
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[pages(16)][keys]|", options: .AlignAllCenterX, metrics: nil, views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[pages(<=24)][keys][sections]|", options: .AlignAllCenterX, metrics: nil, views: views))
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[keys]|", options: nil, metrics: nil, views: views))
-        pageControl.setContentHuggingPriority(1000 /* UILayoutPriorityRequired */, forAxis: .Vertical)
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[next][sections][delete]|", options: .AlignAllTop, metrics: nil, views: views))
+        addConstraint(NSLayoutConstraint(item: nextKeyboardButton, attribute: .Bottom, relatedBy: .Equal, toItem: sectionPicker, attribute: .Bottom, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: deleteButton, attribute: .Bottom, relatedBy: .Equal, toItem: sectionPicker, attribute: .Bottom, multiplier: 1, constant: 0))
     }
     
-    deinit {
-        collectionView.removeObserver(self, forKeyPath: "contentSize", context: KVOContext)
+    @objc private func didTapPageControl(sender: UIPageControl) {
+        var rect = collectionView.bounds
+        rect.origin.x = rect.width * CGFloat(sender.currentPage)
+        collectionView.scrollRectToVisible(rect, animated: true)
     }
     
-    override public func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
-        if context == KVOContext {
-            let contentSize = (change[NSKeyValueChangeNewKey] as NSValue).CGSizeValue()
-            dispatch_async(dispatch_get_main_queue()) {
-                self.pageControl.numberOfPages = Int(ceil(contentSize.width / self.collectionView.bounds.width))
-            }
-        } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
+    public func reloadData() {
+        collectionView.reloadData()
     }
 
     required public init(coder: NSCoder) {
@@ -63,12 +90,10 @@ public class SmileyKeyboardView: UIView {
 
 }
 
-private let KVOContext = UnsafeMutablePointer<Void>()
-
 extension SmileyKeyboardView: UICollectionViewDataSource, PaginatedHorizontalLayoutDelegate {
     
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return delegate?.smileyKeyboard(self, numberOfKeysInSection: section) ?? 0
+        return delegate?.numberOfKeysInSmileyKeyboard(self) ?? 0
     }
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -103,8 +128,12 @@ extension SmileyKeyboardView: UICollectionViewDataSource, PaginatedHorizontalLay
     }
     
     public func scrollViewDidScroll(scrollView: UIScrollView) {
-        let layout = collectionView.collectionViewLayout as PaginatedHorizontalCollectionViewLayout
-        pageControl.currentPage = layout.currentPage
+        let pageWidth = scrollView.bounds.width
+        let pageFraction = scrollView.contentOffset.x % pageWidth / pageWidth
+        if pageFraction < 0.1 || pageFraction > 0.9 {
+            let layout = collectionView.collectionViewLayout as PaginatedHorizontalCollectionViewLayout
+            pageControl.currentPage = layout.currentPage
+        }
     }
     
 }
@@ -139,7 +168,7 @@ private let cellIdentifier: String = "KeyCell"
 
 @objc public protocol SmileyKeyboardViewDelegate {
     
-    func smileyKeyboard(keyboardView: SmileyKeyboardView, numberOfKeysInSection section: Int) -> Int
+    func numberOfKeysInSmileyKeyboard(keyboardView: SmileyKeyboardView) -> Int
     func smileyKeyboard(keyboardView: SmileyKeyboardView, imageDataForKeyAtIndexPath indexPath: NSIndexPath) -> NSData
     optional func smileyKeyboard(keyboardView: SmileyKeyboardView, didTapKeyAtIndexPath indexPath: NSIndexPath)
     

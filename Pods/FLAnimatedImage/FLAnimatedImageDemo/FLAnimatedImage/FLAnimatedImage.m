@@ -247,10 +247,10 @@ typedef NS_ENUM(NSUInteger, FLAnimatedImageFrameCacheSize) {
                     const NSTimeInterval kDelayTimeIntervalDefault = 0.1;
                     if (!delayTime) {
                         if (i == 0) {
-                            NSLog(@"Verbose: Falling back to default delay time for first frame %@ because none found in GIF properties %@", frameImage, frameProperties);
+//                            NSLog(@"Verbose: Falling back to default delay time for first frame %@ because none found in GIF properties %@", frameImage, frameProperties);
                             delayTime = @(kDelayTimeIntervalDefault);
                         } else {
-                            NSLog(@"Verbose: Falling back to preceding delay time for frame %zu %@ because none found in GIF properties %@", i, frameImage, frameProperties);
+//                            NSLog(@"Verbose: Falling back to preceding delay time for frame %zu %@ because none found in GIF properties %@", i, frameImage, frameProperties);
                             delayTime = delayTimesMutable[i - 1];
                         }
                     }

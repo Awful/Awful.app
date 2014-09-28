@@ -54,6 +54,7 @@
 		1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C35FB7D1832A96000B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C3B5FB019D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */; };
+		1C3B5FB219D7C77F00F1B7C4 /* next_keyboard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3B5FB119D7C77F00F1B7C4 /* next_keyboard@2x.png */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* MessageComposeViewController.m */; };
@@ -428,6 +429,7 @@
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
 		1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginatedHorizontalCollectionViewLayout.swift; sourceTree = "<group>"; };
+		1C3B5FB119D7C77F00F1B7C4 /* next_keyboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "next_keyboard@2x.png"; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C414F31181F79F400813EE2 /* MessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeViewController.h; sourceTree = "<group>"; };
 		1C414F32181F79F400813EE2 /* MessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeViewController.m; sourceTree = "<group>"; };
@@ -989,6 +991,7 @@
 				1C21E40E19D357CB003CDA82 /* Framework-Info.plist */,
 				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
 				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
+				1C3B5FB119D7C77F00F1B7C4 /* next_keyboard@2x.png */,
 				1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */,
 				1C21E48719D3B44F003CDA82 /* Smiley.swift */,
 				1C807CAE19D7296E00C75514 /* SmileyDataStack.swift */,
@@ -1810,6 +1813,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C3B5FB219D7C77F00F1B7C4 /* next_keyboard@2x.png in Resources */,
 				1C93801319D64EC300679552 /* BundledSmileys.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
