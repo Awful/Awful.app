@@ -392,7 +392,7 @@
 		1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Keyboard-Info.plist"; sourceTree = "<group>"; };
 		1C21E46A19D3964C003CDA82 /* SmileyKeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileyKeyboardViewController.swift; sourceTree = "<group>"; };
 		1C21E47819D396E1003CDA82 /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Keyboard.entitlements; sourceTree = "<group>"; };
-		1C21E47919D39703003CDA82 /* Awful.entitlements */ = {isa = PBXFileReference; lastKnownFileType = file; name = Awful.entitlements; path = ../Xcode/Awful.entitlements; sourceTree = "<group>"; };
+		1C21E47919D39703003CDA82 /* Awful.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Awful.entitlements; sourceTree = "<group>"; };
 		1C21E47B19D3AB0E003CDA82 /* Smileys.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smileys.xcdatamodel; sourceTree = "<group>"; };
 		1C21E48519D3B44E003CDA82 /* SmileyMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmileyMetadata.swift; sourceTree = "<group>"; };
 		1C21E48719D3B44F003CDA82 /* Smiley.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Smiley.swift; sourceTree = "<group>"; };
