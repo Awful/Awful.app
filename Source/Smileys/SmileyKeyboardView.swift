@@ -15,9 +15,7 @@ public class SmileyKeyboardView: UIView {
     
     override public init(frame: CGRect) {
         pageControl = UIPageControl()
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .Horizontal
-        layout.estimatedItemSize = CGSize(width: 50, height: 30)
+        let layout = PaginatedHorizontalCollectionViewLayout()
         collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         super.init(frame: frame)
         
@@ -30,6 +28,7 @@ public class SmileyKeyboardView: UIView {
         collectionView.backgroundColor = UIColor(red:0.819, green:0.835, blue:0.858, alpha:1)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.pagingEnabled = true
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
         collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
         collectionView.addObserver(self, forKeyPath: "contentSize", options: .New, context: KVOContext)
         addSubview(collectionView)
@@ -66,7 +65,7 @@ public class SmileyKeyboardView: UIView {
 
 private let KVOContext = UnsafeMutablePointer<Void>()
 
-extension SmileyKeyboardView: UICollectionViewDataSource, UICollectionViewDelegate {
+extension SmileyKeyboardView: UICollectionViewDataSource, PaginatedHorizontalLayoutDelegate {
     
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return delegate?.smileyKeyboard(self, numberOfKeysInSection: section) ?? 0
@@ -88,8 +87,24 @@ extension SmileyKeyboardView: UICollectionViewDataSource, UICollectionViewDelega
         return cell
     }
     
+    func collectionView(collectionView: UICollectionView, layout: PaginatedHorizontalCollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let data = delegate!.smileyKeyboard(self, imageDataForKeyAtIndexPath: indexPath)
+        let image = UIImage(data: data)
+        return image.size
+    }
+    
+    func collectionView(collectionView: UICollectionView, numberOfPagesDidChangeInLayout layout: PaginatedHorizontalCollectionViewLayout) {
+        pageControl.numberOfPages = layout.numberOfPages
+    }
+    
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         delegate?.smileyKeyboard?(self, didTapKeyAtIndexPath: indexPath)
+        collectionView.deselectItemAtIndexPath(indexPath, animated: false)
+    }
+    
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        let layout = collectionView.collectionViewLayout as PaginatedHorizontalCollectionViewLayout
+        pageControl.currentPage = layout.currentPage
     }
     
 }
