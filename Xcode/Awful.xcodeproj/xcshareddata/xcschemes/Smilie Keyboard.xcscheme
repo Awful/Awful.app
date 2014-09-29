@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
-   version = "1.7">
+   LastUpgradeVersion = "0600"
+   wasCreatedForAppExtension = "YES"
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,23 +15,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Awful Debug.app"
-               BlueprintName = "Awful"
+               BlueprintIdentifier = "1C21E46519D3964C003CDA82"
+               BuildableName = "SmilieKeyboard.appex"
+               BlueprintName = "SmilieKeyboard"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1C21E41419D357CC003CDA82"
-               BuildableName = "SmilieTests.xctest"
-               BlueprintName = "SmilieTests"
+               BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
+               BuildableName = "Awful Debug.app"
+               BlueprintName = "Awful"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +47,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1CBDB5BB16259C6C0004BDF4"
-               BuildableName = "ScrapingTests.xctest"
-               BlueprintName = "ScrapingTests"
+               BlueprintIdentifier = "1C21E41419D357CC003CDA82"
+               BuildableName = "SmilieTests.xctest"
+               BlueprintName = "SmilieTests"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -64,9 +65,10 @@
       </MacroExpansion>
    </TestAction>
    <LaunchAction
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
+      askForAppToLaunch = "Yes"
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
@@ -81,26 +83,16 @@
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-com.apple.CoreData.SQLDebug 1"
-            isEnabled = "NO">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
-         <AdditionalOption
-            key = "NSZombieEnabled"
-            value = "YES"
-            isEnabled = "YES">
-         </AdditionalOption>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate"
+      savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Profile"
-      debugDocumentVersioning = "YES">
+      buildConfiguration = "Debug"
+      debugDocumentVersioning = "YES"
+      askForAppToLaunch = "Yes">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
@@ -115,26 +107,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Beta"
+      buildConfiguration = "Debug"
       revealArchiveInOrganizer = "YES">
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "CONFIRM=$( osascript -e &quot;tell application \&quot;Xcode\&quot;&quot; \&#10;    -e &quot;set yesButton to \&quot;Upload\&quot;&quot; \&#10;    -e &quot;set upload_dialog to display dialog \&quot;Upload new beta to TestFlight?\&quot; buttons {\&quot;Cancel\&quot;, yesButton} default button yesButton with icon 1 with title \&quot;TestFlight Upload\&quot;&quot; \&#10;    -e &quot;end tell&quot; &gt;/dev/null 2&gt;&amp;1 )&#10;if [ $? -eq 0 ]; then&#10;    . &quot;$SRCROOT/testflight-upload.sh&quot;&#10;fi&#10;"
-               shellToInvoke = "/bin/bash">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-                     BuildableName = "Awful Debug.app"
-                     BlueprintName = "Awful"
-                     ReferencedContainer = "container:Awful.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
    </ArchiveAction>
 </Scheme>

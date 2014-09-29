@@ -18,13 +18,13 @@ void HighlightQuotesOfPostsByUserNamed(HTMLDocument *document, NSString *usernam
     }
 }
 
-static BOOL IsSmileyURL(NSURL*);
+static BOOL IsSmilieURL(NSURL*);
 
-void LinkifyNonSmileyImages(HTMLDocument *document)
+void LinkifyNonSmilieImages(HTMLDocument *document)
 {
     for (HTMLElement *img in [document nodesMatchingSelector:@"img"]) {
         NSURL *src = [NSURL URLWithString:img[@"src"]];
-        if (!IsSmileyURL(src)) {
+        if (!IsSmilieURL(src)) {
             HTMLElement *link = [[HTMLElement alloc] initWithTagName:@"span" attributes:@{ @"data-awful-linkified-image": @"" }];
             link.textContent = src.absoluteString;
             NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
@@ -77,7 +77,7 @@ void UseHTML5VimeoPlayer(HTMLDocument *document)
     }
 }
 
-static BOOL IsSmileyURL(NSURL *URL)
+static BOOL IsSmilieURL(NSURL *URL)
 {
     NSString *host = URL.host;
     if (host.length == 0) return NO;

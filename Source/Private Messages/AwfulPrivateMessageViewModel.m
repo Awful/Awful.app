@@ -49,7 +49,7 @@
     RemoveSpoilerStylingAndEvents(document);
     UseHTML5VimeoPlayer(document);
     if (![AwfulSettings sharedSettings].showImages) {
-        LinkifyNonSmileyImages(document);
+        LinkifyNonSmilieImages(document);
     }
     return [document firstNodeMatchingSelector:@"body"].innerHTML;
 }

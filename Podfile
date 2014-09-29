@@ -20,7 +20,7 @@ target :ScrapingTests, :exclusive => true do
   pod 'HTMLReader', '0.5.6'
 end
 
-target :SmileyFramework, :exclusive => true do
+target :SmilieFramework, :exclusive => true do
   pod 'FLAnimatedImage', '1.0.1'
   pod 'HTMLReader', '0.5.6'
 end

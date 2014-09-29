@@ -29,7 +29,7 @@
     UseHTML5VimeoPlayer(document);
     HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
     if (![AwfulSettings sharedSettings].showImages) {
-        LinkifyNonSmileyImages(document);
+        LinkifyNonSmilieImages(document);
     }
     if (self.post.ignored) {
         MarkRevealIgnoredPostLink(document);
