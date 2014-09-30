@@ -6,12 +6,12 @@ import UIKit
 
 class PaginatedHorizontalCollectionViewLayout: UICollectionViewLayout {
     
-    var delegate: PaginatedHorizontalLayoutDelegate {
-        get { return collectionView!.delegate as PaginatedHorizontalLayoutDelegate }
+    var delegate: PaginatedHorizontalLayoutDelegate? {
+        get { return collectionView!.delegate as? PaginatedHorizontalLayoutDelegate }
     }
     
     var numberOfPages: Int = 0 {
-        didSet { delegate.collectionView?(collectionView!, numberOfPagesDidChangeInLayout: self) }
+        didSet { delegate?.collectionView?(collectionView!, numberOfPagesDidChangeInLayout: self) }
     }
     
     var currentPage: Int { get {
@@ -38,7 +38,7 @@ class PaginatedHorizontalCollectionViewLayout: UICollectionViewLayout {
         var rowBottom: CGFloat = 0
         for i in 0 ..< collectionView!.dataSource!.collectionView(collectionView!, numberOfItemsInSection: 0) {
             let indexPath = NSIndexPath(forItem: i, inSection: 0)
-            let cellSize = delegate.collectionView(collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
+            let cellSize = delegate?.collectionView(collectionView!, layout: self, sizeForItemAtIndexPath: indexPath) ?? CGSizeMake(50, 30)
             
             if (offset.x + cellSize.width + contentInset.right) / pageSize.width > page {
                 offset.x = (page - 1) * pageSize.width + contentInset.left
@@ -64,9 +64,12 @@ class PaginatedHorizontalCollectionViewLayout: UICollectionViewLayout {
     }
     
     override func collectionViewContentSize() -> CGSize {
-        let lastFrame = itemAttributes.last!.frame
-        let bounds = collectionView!.bounds
-        return CGSize(width: CGRectGetMaxX(lastFrame) + (bounds.width - CGRectGetMaxX(lastFrame) % bounds.width), height: bounds.height)
+        if let lastFrame = itemAttributes.last?.frame {
+            let bounds = collectionView!.bounds
+            return CGSize(width: CGRectGetMaxX(lastFrame) + (bounds.width - CGRectGetMaxX(lastFrame) % bounds.width), height: bounds.height)
+        } else {
+            return CGSizeZero
+        }
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {

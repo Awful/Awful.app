@@ -9,42 +9,14 @@ import UIKit
 
 class SmilieKeyboardViewController: UIInputViewController {
 
-    private var keyboardView: SmilieKeyboardView!
-    private var dataStack: SmilieDataStack!
-    private var resultsController: NSFetchedResultsController!
-    private var currentSection: Int = 0 {
-        didSet(oldSection) {
-            if oldSection != currentSection {
-                keyboardView.reloadData()
-            }
-        }
-    }
+    lazy private var keyboardView: SmilieKeyboardView = {
+        let nibObjects = NSBundle(forClass: SmilieKeyboardView.self).loadNibNamed("KeyboardView", owner: nil, options: nil)
+        return nibObjects[0] as SmilieKeyboardView
+        }()
     
-    override func loadView() {
-        super.loadView()
-        
-        keyboardView = SmilieKeyboardView(frame: CGRectZero)
-        keyboardView.delegate = self
-        keyboardView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        view.addSubview(keyboardView)
-        
-        let views = ["keyboard": keyboardView]
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[keyboard]|", options: nil, metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[keyboard]|", options: nil, metrics: nil, views: views))
-        
-        keyboardView.nextKeyboardButton.addTarget(self, action: "advanceToNextInputMode", forControlEvents: .TouchUpInside)
-        keyboardView.sectionPicker.addTarget(self, action: "didTapSectionPicker:", forControlEvents: .ValueChanged)
-        keyboardView.deleteButton.addTarget(self, action: "deleteBackward", forControlEvents: .TouchUpInside)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let tintColor = UIColor.blackColor()
-        view.tintColor = tintColor
-        keyboardView.deleteButton.setTitleColor(tintColor, forState: .Normal)
-        
-        dataStack = SmilieDataStack()
+    lazy private var dataStack = SmilieDataStack()
+    
+    lazy private var resultsController: NSFetchedResultsController = { [unowned self] in
         let fetchRequest = NSFetchRequest(entityName: "Smilie")
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: "section", ascending: true),
@@ -52,38 +24,55 @@ class SmilieKeyboardViewController: UIInputViewController {
         ]
         fetchRequest.predicate = NSPredicate(format: "imageData != nil")
         fetchRequest.fetchBatchSize = 50
-        resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataStack.managedObjectContext, sectionNameKeyPath: "section", cacheName: nil)
+        let resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.dataStack.managedObjectContext, sectionNameKeyPath: "section", cacheName: nil)
         resultsController.delegate = self
+        return resultsController
+        }()
+    
+    
+    override func loadView() {
+        super.loadView()
+        
+        keyboardView.delegate = self
+        view.addSubview(keyboardView)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
         var error: NSError?
         let ok = resultsController.performFetch(&error)
         assert(ok, "error fetching smilies: \(error)")
-        reloadSectionInfo()
     }
     
-    @objc private func didTapSectionPicker(sender: UISegmentedControl) {
-        currentSection = sender.selectedSegmentIndex
-    }
-    
-    @objc private func deleteBackward() {
-        let keyInput = textDocumentProxy as UIKeyInput
-        keyInput.deleteBackward()
-    }
-
 }
 
 extension SmilieKeyboardViewController: SmilieKeyboardViewDelegate {
-    func numberOfKeysInSmilieKeyboard(keyboardView: SmilieKeyboardView) -> Int {
+    
+    func numberOfSectionsInSmilieKeyboard(keyboardView: SmilieKeyboardView) -> Int {
+        return resultsController.sections!.count
+    }
+    
+    func smilieKeyboard(keyboardView: SmilieKeyboardView, titleForSection section: Int) -> NSString {
         let sections = resultsController.sections as [NSFetchedResultsSectionInfo]
-        return sections[currentSection].numberOfObjects
+        let sectionInfo = sections[section]
+        let abbreviation = String(sectionInfo.name[sectionInfo.name.startIndex]) as NSString
+        abbreviation.accessibilityLabel = sectionInfo.name
+        return abbreviation
+    }
+    
+    func smilieKeyboard(keyboardView: SmilieKeyboardView, numberOfKeysInSection section: Int) -> Int {
+        let sections = resultsController.sections as [NSFetchedResultsSectionInfo]
+        return sections[section].numberOfObjects
     }
     
     func smilieKeyboard(keyboardView: SmilieKeyboardView, imageDataForKeyAtIndexPath indexPath: NSIndexPath) -> NSData {
-        let smilie = resultsController.objectAtIndexPath(NSIndexPath(forItem: indexPath.item, inSection: currentSection)) as Smilie
+        let smilie = resultsController.objectAtIndexPath(indexPath) as Smilie
         return smilie.imageData!
     }
     
     func smilieKeyboard(keyboardView: SmilieKeyboardView, didTapKeyAtIndexPath indexPath: NSIndexPath) {
-        let smilie = resultsController.objectAtIndexPath(NSIndexPath(forItem: indexPath.item, inSection: currentSection)) as Smilie
+        let smilie = resultsController.objectAtIndexPath(indexPath) as Smilie
         let data = smilie.imageData!
         // GIFs start with the string "GIF", and nothing else starts with "G".
         var firstByte: UInt8 = 0
@@ -94,21 +83,20 @@ extension SmilieKeyboardViewController: SmilieKeyboardViewDelegate {
             UIPasteboard.generalPasteboard().image = UIImage(data: data)
         }
     }
+    
+    func deleteBackwardForSmilieKeyboard(keyboardView: SmilieKeyboardView) {
+        let keyInput = textDocumentProxy as UIKeyInput
+        keyInput.deleteBackward()
+    }
+    
+    func advanceToNextKeyboardFromSmilieKeyboard(keyboardView: SmilieKeyboardView) {
+        advanceToNextInputMode()
+    }
+
 }
 
 extension SmilieKeyboardViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         keyboardView.reloadData()
-        reloadSectionInfo()
-    }
-    
-    private func reloadSectionInfo() {
-        keyboardView.sectionPicker.removeAllSegments()
-        for (i, section) in enumerate(resultsController.sections as [NSFetchedResultsSectionInfo]) {
-            let abbreviation = String(section.name[section.name.startIndex]) as NSString
-            abbreviation.accessibilityLabel = section.name
-            keyboardView.sectionPicker.insertSegmentWithTitle(abbreviation, atIndex: i, animated: false)
-        }
-        keyboardView.sectionPicker.selectedSegmentIndex = currentSection
     }
 }
