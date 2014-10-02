@@ -4,7 +4,7 @@ require 'pathname'
 REGEX = %r{\A
   // \s*
   (// .* \n)
-  // \s* (?:Awful|\S*Tests\S*) \s*
+  // .* (?:Awful|Smilies|Tests) .* \n
   (// \s*)
   // .* \n
   // .* (\d{4}) .* \n
@@ -15,7 +15,7 @@ BOILERPLATE = "Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/A
 
 ROOT = (Pathname.new(__FILE__).dirname + "../").realpath
 
-%w[Source Tests].each do |subpath|
+%w[Smilies Source Tests].each do |subpath|
   Dir.chdir(ROOT + subpath)
   `ag -il "copyright.*all rights reserved"`.split("\n").each do |path|
     before = File.read(path)
