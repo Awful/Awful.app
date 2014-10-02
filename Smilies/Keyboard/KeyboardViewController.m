@@ -62,39 +62,15 @@
         
         NSDictionary *views = @{@"needs": self.needsFullAccessView};
         [self.view addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0@750-[needs]-0@750-|"
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[needs]|"
                                                  options:0
                                                  metrics:nil
                                                    views:views]];
-        [self.view addConstraint:
-         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
-                                      attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.view
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:1
-                                       constant:0]];
-        [self.needsFullAccessView addConstraint:
-         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
-                                      attribute:NSLayoutAttributeWidth
-                                      relatedBy:NSLayoutRelationLessThanOrEqual
-                                         toItem:nil
-                                      attribute:NSLayoutAttributeNotAnAttribute
-                                     multiplier:1
-                                       constant:450]];
         [self.view addConstraints:
          [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[needs]|"
                                                  options:0
                                                  metrics:nil
                                                    views:views]];
-        [self.view addConstraint:
-         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
-                                      attribute:NSLayoutAttributeCenterY
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.view
-                                      attribute:NSLayoutAttributeCenterY
-                                     multiplier:1
-                                       constant:0]];
     }
 }
 

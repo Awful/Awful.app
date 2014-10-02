@@ -21,7 +21,7 @@
                             <string key="content">Awful's Smilie Keyboard requires Full Access to work.
 Please open the Settings app. Go to “General”, then “Keyboard”, then “Keyboards”.
 Tap “Smilie Keyboard”, then turn on “Allow Full Access”.
-Then you're all set.</string>
+Then you're all set!</string>
                             <attributes>
                                 <font key="NSFont" size="16" name="HelveticaNeue"/>
                                 <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" paragraphSpacing="5" lineHeightMultiple="1.2"/>
