@@ -8,3 +8,4 @@ FOUNDATION_EXPORT double SmiliesVersionNumber;
 FOUNDATION_EXPORT const unsigned char SmiliesVersionString[];
 
 #import <Smilies/Smilie.h>
+#import <Smilies/SmilieButton.h>

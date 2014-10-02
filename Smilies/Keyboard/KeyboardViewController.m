@@ -3,57 +3,109 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "KeyboardViewController.h"
+#import "NeedsFullAccessView.h"
+@import Smilies;
 
 @interface KeyboardViewController ()
-@property (nonatomic, strong) UIButton *nextKeyboardButton;
+
+@property (strong, nonatomic) UIButton *nextKeyboardButton;
+@property (strong, nonatomic) NeedsFullAccessView *needsFullAccessView;
+@property (readonly, assign, nonatomic) BOOL showingFullAccessView;
+
 @end
 
 @implementation KeyboardViewController
 
-- (void)updateViewConstraints {
-    [super updateViewConstraints];
-    
-    // Add custom view sizing constraints here
+- (NeedsFullAccessView *)needsFullAccessView
+{
+    if (!_needsFullAccessView) {
+        _needsFullAccessView = [[NSBundle bundleForClass:[KeyboardViewController class]] loadNibNamed:@"NeedsFullAccessView" owner:self options:nil].firstObject;
+    }
+    return _needsFullAccessView;
+}
+
+- (BOOL)showingFullAccessView
+{
+    // Direct ivar access to avoid triggering lazy-loading.
+    return [self isViewLoaded] && [_needsFullAccessView isDescendantOfView:self.view];
+}
+
+- (UIButton *)nextKeyboardButton
+{
+    if (!_nextKeyboardButton) {
+        _nextKeyboardButton = [SmilieNextKeyboardButton new];
+    }
+    return _nextKeyboardButton;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Perform custom UI setup here
-    self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    
-    [self.nextKeyboardButton setTitle:NSLocalizedString(@"Next Keyboard", @"Title for 'Next Keyboard' button") forState:UIControlStateNormal];
-    [self.nextKeyboardButton sizeToFit];
-    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.nextKeyboardButton];
-    
-    NSLayoutConstraint *nextKeyboardButtonLeftSideConstraint = [NSLayoutConstraint constraintWithItem:self.nextKeyboardButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
-    NSLayoutConstraint *nextKeyboardButtonBottomConstraint = [NSLayoutConstraint constraintWithItem:self.nextKeyboardButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-    [self.view addConstraints:@[nextKeyboardButtonLeftSideConstraint, nextKeyboardButtonBottomConstraint]];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated
-}
-
-- (void)textWillChange:(id<UITextInput>)textInput {
-    // The app is about to change the document's contents. Perform any preparation here.
-}
-
-- (void)textDidChange:(id<UITextInput>)textInput {
-    // The app has just changed the document's contents, the document context has been updated.
-    
-    UIColor *textColor = nil;
-    if (self.textDocumentProxy.keyboardAppearance == UIKeyboardAppearanceDark) {
-        textColor = [UIColor whiteColor];
+    if (HasFullAccess()) {
+        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:self.nextKeyboardButton];
+        [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
+        NSDictionary *views = @{@"nextKeyboard": self.nextKeyboardButton};
+        [self.view addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[nextKeyboard(40)]"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self.view addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[nextKeyboard(54)]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
     } else {
-        textColor = [UIColor blackColor];
+        self.needsFullAccessView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view insertSubview:self.needsFullAccessView belowSubview:self.nextKeyboardButton];
+        
+        NSDictionary *views = @{@"needs": self.needsFullAccessView};
+        [self.view addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0@750-[needs]-0@750-|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self.view addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.view
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+        [self.needsFullAccessView addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
+                                      attribute:NSLayoutAttributeWidth
+                                      relatedBy:NSLayoutRelationLessThanOrEqual
+                                         toItem:nil
+                                      attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1
+                                       constant:450]];
+        [self.view addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[needs]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self.view addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.needsFullAccessView
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.view
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
     }
-    [self.nextKeyboardButton setTitleColor:textColor forState:UIControlStateNormal];
+}
+
+static BOOL HasFullAccess(void) {
+    NSURL *groupContainer = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.com.awfulapp.SmilieKeyboard"];
+    return [[NSFileManager defaultManager] isReadableFileAtPath:groupContainer.path];
+}
+
+- (IBAction)advanceToNextInputMode
+{
+    [super advanceToNextInputMode];
 }
 
 @end

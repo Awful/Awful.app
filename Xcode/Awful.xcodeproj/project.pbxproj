@@ -77,6 +77,11 @@
 		1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* Smilie Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C66AA0419DD39AF001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
 		1C66AA0619DD39CB001B9A41 /* Smilies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
+		1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66AA1019DDF54A001B9A41 /* SmilieButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1119DDF54A001B9A41 /* SmilieButton.m */; };
+		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
+		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
 		1C6D2E9B182C6F8C00785766 /* ProfileScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */; };
 		1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
@@ -457,6 +462,12 @@
 		1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardViewController.m; sourceTree = "<group>"; };
 		1C66AA0719DD3CCD001B9A41 /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Keyboard.entitlements; sourceTree = "<group>"; };
 		1C66AA0819DD3D14001B9A41 /* Awful.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Awful.entitlements; sourceTree = "<group>"; };
+		1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NeedsFullAccessView.xib; sourceTree = "<group>"; };
+		1C66AA1019DDF54A001B9A41 /* SmilieButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieButton.h; sourceTree = "<group>"; };
+		1C66AA1119DDF54A001B9A41 /* SmilieButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieButton.m; sourceTree = "<group>"; };
+		1C66AA1419DDF6E6001B9A41 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
+		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6AA33318A1F8940094D1E3 /* Awful 2.0.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.3.xcdatamodel"; sourceTree = "<group>"; };
 		1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileScraper.m; sourceTree = "<group>"; };
@@ -1046,9 +1057,12 @@
 		1C66A9E419DD30ED001B9A41 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				1C66AA1419DDF6E6001B9A41 /* Images.xcassets */,
 				1C66A9C319DD304E001B9A41 /* Info.plist */,
 				1C66A9E619DD345D001B9A41 /* Smilie.h */,
 				1C66A9E719DD345D001B9A41 /* Smilie.m */,
+				1C66AA1019DDF54A001B9A41 /* SmilieButton.h */,
+				1C66AA1119DDF54A001B9A41 /* SmilieButton.m */,
 				1C66A9C419DD304E001B9A41 /* Smilies.h */,
 			);
 			path = Framework;
@@ -1057,10 +1071,13 @@
 		1C66AA0119DD3971001B9A41 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
+				1C66A9F219DD393A001B9A41 /* Info.plist */,
 				1C66AA0719DD3CCD001B9A41 /* Keyboard.entitlements */,
 				1C66A9F319DD393A001B9A41 /* KeyboardViewController.h */,
 				1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */,
-				1C66A9F219DD393A001B9A41 /* Info.plist */,
+				1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */,
+				1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */,
+				1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -1553,6 +1570,7 @@
 			files = (
 				1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */,
 				1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */,
+				1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1730,6 +1748,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1744,6 +1763,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2000,6 +2020,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2017,6 +2038,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */,
+				1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
