@@ -4,7 +4,7 @@ require 'pathname'
 REGEX = %r{\A
   // \s*
   (// .* \n)
-  // .* (?:Awful|Smilies|Tests) .* \n
+  // .* (?:Awful|Smilie|Tests) .* \n
   (// \s*)
   // .* \n
   // .* (\d{4}) .* \n
