@@ -108,6 +108,11 @@
 		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
 		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
 		1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */; };
+		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
+		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
+		1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010819DE89B000542293 /* SmilieCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */; };
 		1C7C60BF18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60BE18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m */; };
 		1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */; };
@@ -501,6 +506,11 @@
 		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
 		1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISplitViewController+AwfulConvenient.h"; sourceTree = "<group>"; };
 		1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UISplitViewController+AwfulConvenient.m"; sourceTree = "<group>"; };
+		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
+		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
+		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
+		1C7B010819DE89B000542293 /* SmilieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCell.h; sourceTree = "<group>"; };
+		1C7B010919DE89B000542293 /* SmilieCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCell.m; sourceTree = "<group>"; };
 		1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivateMessage.mustache; sourceTree = "<group>"; };
 		1C7C60BD18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPrivateMessageViewModel.h; sourceTree = "<group>"; };
 		1C7C60BE18FCA01E009BF4BB /* AwfulPrivateMessageViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPrivateMessageViewModel.m; sourceTree = "<group>"; };
@@ -1063,6 +1073,11 @@
 				1C66A9E719DD345D001B9A41 /* Smilie.m */,
 				1C66AA1019DDF54A001B9A41 /* SmilieButton.h */,
 				1C66AA1119DDF54A001B9A41 /* SmilieButton.m */,
+				1C7B010819DE89B000542293 /* SmilieCell.h */,
+				1C7B010919DE89B000542293 /* SmilieCell.m */,
+				1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */,
+				1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */,
+				1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */,
 				1C66A9C419DD304E001B9A41 /* Smilies.h */,
 			);
 			path = Framework;
@@ -1569,6 +1584,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */,
+				1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */,
+				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
 				1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */,
 				1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */,
 			);
@@ -1748,6 +1765,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */,
 				1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2020,7 +2038,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */,
 				1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */,
+				1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3212,6 +3232,7 @@
 				1C66AA0019DD393A001B9A41 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */ = {
 			isa = XCConfigurationList;

@@ -6,6 +6,8 @@
 
 @interface NeedsFullAccessView : UIView
 
++ (instancetype)newFromNib;
+
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 
 @end

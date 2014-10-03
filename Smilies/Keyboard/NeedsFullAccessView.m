@@ -6,4 +6,9 @@
 
 @implementation NeedsFullAccessView
 
++ (instancetype)newFromNib
+{
+    return [[NSBundle bundleForClass:[NeedsFullAccessView class]] loadNibNamed:@"NeedsFullAccessView" owner:self options:nil][0];
+}
+
 @end

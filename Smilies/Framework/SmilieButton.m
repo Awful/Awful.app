@@ -41,40 +41,60 @@
 
 @end
 
-@implementation SmilieNextKeyboardButton
-
-- (id)initWithCoder:(NSCoder *)coder
-{
-    if ((self = [super initWithCoder:coder])) {
-        CommonInit(self);
-    }
-    return self;
+#define ImplementFrameworkButton(_imageName) \
+- (id)initWithCoder:(NSCoder *)coder \
+{ \
+    if ((self = [super initWithCoder:coder])) { \
+        [self loadAndSetNormalImage]; \
+    } \
+    return self; \
+} \
+ \
+- (instancetype)initWithFrame:(CGRect)frame \
+{ \
+    if ((self = [super initWithFrame:frame])) { \
+        [self loadAndSetNormalImage]; \
+    } \
+    return self; \
+} \
+ \
+- (void)prepareForInterfaceBuilder \
+{ \
+    [super prepareForInterfaceBuilder]; \
+    [self loadAndSetNormalImage]; \
+} \
+ \
+- (void)loadAndSetNormalImage \
+{ \
+    [self setImage:FrameworkImageNamed(_imageName) forState:UIControlStateNormal]; \
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    if ((self = [super initWithFrame:frame])) {
-        CommonInit(self);
-    }
-    return self;
-}
-
-static void CommonInit(SmilieNextKeyboardButton *self)
-{
-    // This doesn't work when running in IB so we'll do it again in -prepareForInterfaceBuilder.
-    [self setImage:NextKeyboardImage() forState:UIControlStateNormal];
-}
-
-- (void)prepareForInterfaceBuilder
-{
-    [super prepareForInterfaceBuilder];
-    [self setImage:NextKeyboardImage() forState:UIControlStateNormal];
-}
-
-static UIImage * NextKeyboardImage(void)
+static UIImage * FrameworkImageNamed(NSString *imageName)
 {
     NSBundle *frameworkBundle = [NSBundle bundleForClass:[SmilieButton class]];
-    return [UIImage imageNamed:@"next_keyboard" inBundle:frameworkBundle compatibleWithTraitCollection:nil];
+    return [UIImage imageNamed:imageName inBundle:frameworkBundle compatibleWithTraitCollection:nil];
 }
+
+@implementation SmilieBacktoworkButton
+
+ImplementFrameworkButton(@"emot-backtowork")
+
+@end
+
+@implementation SmilieDeleteButton
+
+ImplementFrameworkButton(@"delete")
+
+@end
+
+@implementation SmilieNextKeyboardButton
+
+ImplementFrameworkButton(@"next_keyboard")
+
+@end
+
+@implementation SmilieRecentsButton
+
+ImplementFrameworkButton(@"recents")
 
 @end

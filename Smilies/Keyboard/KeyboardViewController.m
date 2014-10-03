@@ -6,82 +6,122 @@
 #import "NeedsFullAccessView.h"
 @import Smilies;
 
-@interface KeyboardViewController ()
+@interface KeyboardViewController () <SmilieKeyboardViewDelegate>
 
-@property (strong, nonatomic) UIButton *nextKeyboardButton;
+@property (strong, nonatomic) SmilieKeyboardView *keyboardView;
 @property (strong, nonatomic) NeedsFullAccessView *needsFullAccessView;
-@property (readonly, assign, nonatomic) BOOL showingFullAccessView;
+@property (strong, nonatomic) NSLayoutConstraint *heightConstraint;
+
+@property (assign, nonatomic) BOOL shouldInvalidateCollectionViewLayoutOnceInLandscape;
 
 @end
 
 @implementation KeyboardViewController
 
+- (SmilieKeyboardView *)keyboardView
+{
+    if (!_keyboardView) {
+        _keyboardView = [SmilieKeyboardView newFromNib];
+    }
+    return _keyboardView;
+}
+
 - (NeedsFullAccessView *)needsFullAccessView
 {
     if (!_needsFullAccessView) {
-        _needsFullAccessView = [[NSBundle bundleForClass:[KeyboardViewController class]] loadNibNamed:@"NeedsFullAccessView" owner:self options:nil].firstObject;
+        _needsFullAccessView = [NeedsFullAccessView newFromNib];
     }
     return _needsFullAccessView;
 }
 
-- (BOOL)showingFullAccessView
+- (NSLayoutConstraint *)heightConstraint
 {
-    // Direct ivar access to avoid triggering lazy-loading.
-    return [self isViewLoaded] && [_needsFullAccessView isDescendantOfView:self.view];
-}
-
-- (UIButton *)nextKeyboardButton
-{
-    if (!_nextKeyboardButton) {
-        _nextKeyboardButton = [SmilieNextKeyboardButton new];
+    if (!_heightConstraint) {
+        _heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:216];
     }
-    return _nextKeyboardButton;
+    return _heightConstraint;
 }
 
-- (void)viewDidLoad {
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    
+    // I found that something within UICollectionViewFlowLayout would crash if the keyboard first appears on a phone in portrait orientation then you rotate to landscape. The problem does not appear if the keyboard first appears in landscape.
+    // As a workaround pending further investigation, we can invalidate the collection view's layout the first time we rotate to landscape. No more crashes after that, even if we never manually invalidate the layout ever again.
+    if ([UIScreen mainScreen].traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
+        if (self.shouldInvalidateCollectionViewLayoutOnceInLandscape) {
+            UICollectionViewLayout *layout = [self.keyboardView valueForKeyPath:@"collectionView.collectionViewLayout"];
+            [layout invalidateLayout];
+            self.shouldInvalidateCollectionViewLayoutOnceInLandscape = NO;
+        }
+    }
+}
+
+- (void)updateViewConstraints
+{
+    [super updateViewConstraints];
+    if (CGRectGetHeight(self.view.bounds) == 0) return;
+    
+    [self.view addConstraint:self.heightConstraint];
+    self.shouldInvalidateCollectionViewLayoutOnceInLandscape = YES;
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
+    UIView *mainView;
+    
     if (HasFullAccess()) {
-        self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addSubview:self.nextKeyboardButton];
-        [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
-        NSDictionary *views = @{@"nextKeyboard": self.nextKeyboardButton};
-        [self.view addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[nextKeyboard(40)]"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
-        [self.view addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:[nextKeyboard(54)]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
+        self.keyboardView.delegate = self;
+        mainView = self.keyboardView;
     } else {
-        self.needsFullAccessView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view insertSubview:self.needsFullAccessView belowSubview:self.nextKeyboardButton];
-        
-        NSDictionary *views = @{@"needs": self.needsFullAccessView};
-        [self.view addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[needs]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
-        [self.view addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[needs]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
+        mainView = self.needsFullAccessView;
     }
+    
+    mainView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:mainView];
+    
+    NSDictionary *views = @{@"main": mainView};
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[main]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
+    [self.view addConstraints:
+     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[main]|"
+                                             options:0
+                                             metrics:nil
+                                               views:views]];
 }
 
-static BOOL HasFullAccess(void) {
+static BOOL HasFullAccess(void)
+{
     NSURL *groupContainer = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.com.awfulapp.SmilieKeyboard"];
     return [[NSFileManager defaultManager] isReadableFileAtPath:groupContainer.path];
 }
 
+// Redeclared as IBAction.
 - (IBAction)advanceToNextInputMode
 {
     [super advanceToNextInputMode];
+}
+
+#pragma mark - SmilieKeyboardViewDelegate
+
+- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+{
+    [self advanceToNextInputMode];
+}
+
+- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+{
+    [self.textDocumentProxy deleteBackward];
+}
+
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilie:(Smilie *)smilie
+{
+    [UIPasteboard generalPasteboard].image = smilie.image;
 }
 
 @end

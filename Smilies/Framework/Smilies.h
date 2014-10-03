@@ -9,3 +9,4 @@ FOUNDATION_EXPORT const unsigned char SmiliesVersionString[];
 
 #import <Smilies/Smilie.h>
 #import <Smilies/SmilieButton.h>
+#import <Smilies/SmilieKeyboardView.h>
