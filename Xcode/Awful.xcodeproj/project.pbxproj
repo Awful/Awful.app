@@ -23,6 +23,18 @@
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1D2FDC171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */; };
 		1C20562F1806700500A84C6D /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
+		1C21E41019D357CB003CDA82 /* SmilieFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C21E40F19D357CB003CDA82 /* SmilieFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */; };
+		1C21E41F19D357CC003CDA82 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smilies.framework */; };
+		1C21E42119D357CC003CDA82 /* Smilies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smilies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1C21E46119D35D8E003CDA82 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smilies.framework */; };
+		1C21E46B19D3964C003CDA82 /* SmilieKeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E46A19D3964C003CDA82 /* SmilieKeyboardViewController.swift */; };
+		1C21E46E19D3964C003CDA82 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C21E46619D3964C003CDA82 /* SmilieKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1C21E47719D3966B003CDA82 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smilies.framework */; };
+		1C21E47C19D3AB0E003CDA82 /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E47A19D3AB0E003CDA82 /* Smilies.xcdatamodeld */; };
+		1C21E48619D3B44E003CDA82 /* SmilieMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48519D3B44E003CDA82 /* SmilieMetadata.swift */; };
+		1C21E48819D3B44F003CDA82 /* Smilie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E48719D3B44F003CDA82 /* Smilie.swift */; };
+		1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
@@ -41,6 +53,7 @@
 		1C35FB7818329D3400B52724 /* FormScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7718329D3400B52724 /* FormScrapingTests.m */; };
 		1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C35FB7D1832A96000B52724 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
+		1C3B5FB019D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* MessageComposeViewController.m */; };
@@ -98,8 +111,12 @@
 		1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */; };
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
+		1C807CAD19D67F8A00C75514 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C21E40B19D357CB003CDA82 /* Smilies.framework */; };
+		1C807CAF19D7296E00C75514 /* SmilieDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C807CAE19D7296E00C75514 /* SmilieDataStack.swift */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
+		1C82F96019DA898100FDAE53 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C82F95F19DA898100FDAE53 /* Images.xcassets */; };
+		1C82F96219DA8BF800FDAE53 /* KeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82F96119DA8BF800FDAE53 /* KeyboardView.xib */; };
 		1C89A79418AF4DA500D75854 /* EmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* EmptyViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
@@ -117,6 +134,22 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
+		1C937FC319D4843700679552 /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FC219D4843700679552 /* showsmilies.webarchive */; };
+		1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC419D4845C00679552 /* ScrapingTests.swift */; };
+		1C937FC719D4848F00679552 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC619D4848F00679552 /* Helpers.swift */; };
+		1C937FC919D4857C00679552 /* SmilieScraper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FC819D4857C00679552 /* SmilieScraper.swift */; };
+		1C937FCE19D5F6AD00679552 /* SmilieUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCD19D5F6AD00679552 /* SmilieUpdater.swift */; };
+		1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FCF19D6059B00679552 /* UpdaterTests.swift */; };
+		1C937FD219D6289000679552 /* SmilieDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FD119D6289000679552 /* SmilieDownloader.swift */; };
+		1C937FDC19D62BFB00679552 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FDB19D62BFB00679552 /* AppDelegate.swift */; };
+		1C937FDE19D62BFB00679552 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C937FDD19D62BFB00679552 /* ViewController.swift */; };
+		1C937FE119D62BFB00679552 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FDF19D62BFB00679552 /* Main.storyboard */; };
+		1C937FE619D62BFB00679552 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FE419D62BFB00679552 /* LaunchScreen.xib */; };
+		1C937FFF19D62D0E00679552 /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C937FC219D4843700679552 /* showsmilies.webarchive */; };
+		1C93800619D6306100679552 /* WebArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C93800519D6306100679552 /* WebArchive.swift */; };
+		1C93800719D6306100679552 /* WebArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C93800519D6306100679552 /* WebArchive.swift */; };
+		1C93801319D64EC300679552 /* BundledSmilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C93801219D64EC300679552 /* BundledSmilies.sqlite */; };
+		1C93801619D667B800679552 /* SmilieKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C93801519D667B800679552 /* SmilieKeyboardView.swift */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0A1168298BF0043B194 /* BrowserViewController.m */; };
@@ -225,6 +258,7 @@
 		1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		1CFE985E18297400003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
+		22F018FF15E96A13FEC52A60 /* libPods-SmilieFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D94AA1A74BF28054D75F6D4C /* libPods-SmilieFramework.a */; };
 		4847E29519B547A69BB5BEA2 /* libPods-ScrapingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */; };
 		4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A0A70D650DA4CEE875C5173 /* libPods.a */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
@@ -264,7 +298,64 @@
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1C21E41D19D357CC003CDA82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C21E40A19D357CB003CDA82;
+			remoteInfo = SmilieFramework;
+		};
+		1C21E42219D357CC003CDA82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C21E40A19D357CB003CDA82;
+			remoteInfo = SmilieFramework;
+		};
+		1C21E46C19D3964C003CDA82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C21E46519D3964C003CDA82;
+			remoteInfo = "Smilie Keyboard";
+		};
+		1C21E46F19D3964C003CDA82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C21E46519D3964C003CDA82;
+			remoteInfo = "Smilie Keyboard";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1C21E42019D357CC003CDA82 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1C21E42119D357CC003CDA82 /* Smilies.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E47619D3964D003CDA82 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1C21E46E19D3964C003CDA82 /* SmilieKeyboard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0742F3DEBC726BA9032CE7E7 /* Pods-ScrapingTests.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.app store.xcconfig"; sourceTree = "<group>"; };
 		1190F71D13BE4EA900B9D271 /* AwfulAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAppDelegate.h; sourceTree = "<group>"; };
 		1190F71E13BE4EA900B9D271 /* AwfulAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAppDelegate.m; sourceTree = "<group>"; };
 		1190F7F113BE4EDA00B9D271 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = ../../Xcode/Prefix.pch; sourceTree = "<group>"; };
@@ -292,6 +383,23 @@
 		1C1D2FDB171A75CB00AC6387 /* AwfulSingleUserThreadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSingleUserThreadInfo.m; sourceTree = "<group>"; };
 		1C20562D1806700500A84C6D /* AwfulManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulManagedObject.h; sourceTree = "<group>"; };
 		1C20562E1806700500A84C6D /* AwfulManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulManagedObject.m; sourceTree = "<group>"; };
+		1C21E40B19D357CB003CDA82 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C21E40E19D357CB003CDA82 /* Framework-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Framework-Info.plist"; sourceTree = "<group>"; };
+		1C21E40F19D357CB003CDA82 /* SmilieFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SmilieFramework.h; sourceTree = "<group>"; };
+		1C21E41519D357CC003CDA82 /* SmilieTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmilieTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C21E41A19D357CC003CDA82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
+		1C21E46619D3964C003CDA82 /* SmilieKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmilieKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Keyboard-Info.plist"; sourceTree = "<group>"; };
+		1C21E46A19D3964C003CDA82 /* SmilieKeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieKeyboardViewController.swift; sourceTree = "<group>"; };
+		1C21E47819D396E1003CDA82 /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Keyboard.entitlements; sourceTree = "<group>"; };
+		1C21E47919D39703003CDA82 /* Awful.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Awful.entitlements; sourceTree = "<group>"; };
+		1C21E47B19D3AB0E003CDA82 /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
+		1C21E48519D3B44E003CDA82 /* SmilieMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieMetadata.swift; sourceTree = "<group>"; };
+		1C21E48719D3B44F003CDA82 /* Smilie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Smilie.swift; sourceTree = "<group>"; };
+		1C21E48A19D3C19B003CDA82 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		1C21E48C19D3C1A0003CDA82 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HappyTestRunner.swift; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C24B0D919B51CF3005C60A9 /* Awful 2.0.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.13.xcdatamodel"; sourceTree = "<group>"; };
 		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
@@ -320,6 +428,7 @@
 		1C35FB7718329D3400B52724 /* FormScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormScrapingTests.m; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
+		1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginatedHorizontalCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C414F31181F79F400813EE2 /* MessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeViewController.h; sourceTree = "<group>"; };
 		1C414F32181F79F400813EE2 /* MessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeViewController.m; sourceTree = "<group>"; };
@@ -397,9 +506,12 @@
 		1C7C7F0318A16E74008A1B2E /* AwfulForumTreeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTreeDataSource.m; sourceTree = "<group>"; };
 		1C7D8956192E954B00003576 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
 		1C7D8957192E954B00003576 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
+		1C807CAE19D7296E00C75514 /* SmilieDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieDataStack.swift; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
+		1C82F95F19DA898100FDAE53 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1C82F96119DA8BF800FDAE53 /* KeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KeyboardView.xib; sourceTree = "<group>"; };
 		1C89A79218AF4DA500D75854 /* EmptyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmptyViewController.h; sourceTree = "<group>"; };
 		1C89A79318AF4DA500D75854 /* EmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmptyViewController.m; sourceTree = "<group>"; };
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
@@ -421,6 +533,24 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
+		1C937FC219D4843700679552 /* showsmilies.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmilies.webarchive; sourceTree = "<group>"; };
+		1C937FC419D4845C00679552 /* ScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTests.swift; sourceTree = "<group>"; };
+		1C937FC619D4848F00679552 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1C937FC819D4857C00679552 /* SmilieScraper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieScraper.swift; sourceTree = "<group>"; };
+		1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Framework-Bridging-Header.h"; sourceTree = "<group>"; };
+		1C937FCD19D5F6AD00679552 /* SmilieUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieUpdater.swift; sourceTree = "<group>"; };
+		1C937FCF19D6059B00679552 /* UpdaterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdaterTests.swift; sourceTree = "<group>"; };
+		1C937FD119D6289000679552 /* SmilieDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieDownloader.swift; sourceTree = "<group>"; };
+		1C937FD719D62BFB00679552 /* SmilieExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmilieExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C937FDA19D62BFB00679552 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C937FDB19D62BFB00679552 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1C937FDD19D62BFB00679552 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1C937FE019D62BFB00679552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1C937FE519D62BFB00679552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		1C93800519D6306100679552 /* WebArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebArchive.swift; sourceTree = "<group>"; };
+		1C93801019D6487100679552 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		1C93801219D64EC300679552 /* BundledSmilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = BundledSmilies.sqlite; sourceTree = "<group>"; };
+		1C93801519D667B800679552 /* SmilieKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmilieKeyboardView.swift; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
@@ -493,7 +623,6 @@
 		1CBE1B0919CA050300510187 /* ImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
 		1CBE1B0C19CA17D400510187 /* ImagePreviewActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewActivity.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
-		1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.xcconfig"; path = "../Pods/Pods-ScrapingTests.xcconfig"; sourceTree = "<group>"; };
 		1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCategory.h; sourceTree = "<group>"; };
 		1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCategory.m; sourceTree = "<group>"; };
 		1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
@@ -589,7 +718,13 @@
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		355BCA109BDA7D0397F35039 /* Pods.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.app store.xcconfig"; path = "../Pods/Target Support Files/Pods/Pods.app store.xcconfig"; sourceTree = "<group>"; };
+		3A95645CB056A06691274CBE /* Pods-ScrapingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		46695A067628B422BD28AA20 /* Pods.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.profile.xcconfig; path = "../Pods/Target Support Files/Pods/Pods.profile.xcconfig"; sourceTree = "<group>"; };
+		4E9BA17EF7F877D50D1753F4 /* Pods-SmilieFramework.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieFramework.beta.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieFramework/Pods-SmilieFramework.beta.xcconfig"; sourceTree = "<group>"; };
 		5A0A70D650DA4CEE875C5173 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		70F5801281B497F59405E821 /* Pods-SmilieFramework.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieFramework.profile.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieFramework/Pods-SmilieFramework.profile.xcconfig"; sourceTree = "<group>"; };
+		77445667AD081496D914BFDF /* Pods.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.beta.xcconfig; path = "../Pods/Target Support Files/Pods/Pods.beta.xcconfig"; sourceTree = "<group>"; };
 		833FE47118AE777A0045BC1C /* Awful 2.0.4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.4.xcdatamodel"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
@@ -627,17 +762,54 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
+		A5E508A8F9C4E04EDA0CE481 /* Pods-SmilieFramework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieFramework.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieFramework/Pods-SmilieFramework.debug.xcconfig"; sourceTree = "<group>"; };
+		BDE54FCACD029EB00CA82E59 /* Pods-SmilieFramework.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieFramework.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieFramework/Pods-SmilieFramework.app store.xcconfig"; sourceTree = "<group>"; };
+		C1E9D1DFD1A1D2CB6082148F /* Pods-ScrapingTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.profile.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.profile.xcconfig"; sourceTree = "<group>"; };
+		C928C39F3ADA829558B25D3E /* Pods-ScrapingTests.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.beta.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.beta.xcconfig"; sourceTree = "<group>"; };
 		CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScrapingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D94AA1A74BF28054D75F6D4C /* libPods-SmilieFramework.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SmilieFramework.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
 		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnpoppingViewHandler.h; sourceTree = "<group>"; };
 		F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnpoppingViewHandler.m; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
-		FF54849D34B84496B062B479 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		FA1416DF29B2C2054D5A957D /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "../Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1C21E40719D357CB003CDA82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22F018FF15E96A13FEC52A60 /* libPods-SmilieFramework.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E41219D357CC003CDA82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C21E46119D35D8E003CDA82 /* Smilies.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E46319D3964C003CDA82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C21E47719D3966B003CDA82 /* Smilies.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C937FD419D62BFB00679552 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C807CAD19D67F8A00C75514 /* Smilies.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B816259C6C0004BDF4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -651,6 +823,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C41B8A116CD4C7600718F79 /* Crashlytics.framework in Frameworks */,
+				1C21E41F19D357CC003CDA82 /* Smilies.framework in Frameworks */,
 				4BC7DC7FF2C246A9A601240F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -658,6 +831,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06AE2D19249A60EA3954FEE0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FA1416DF29B2C2054D5A957D /* Pods.debug.xcconfig */,
+				355BCA109BDA7D0397F35039 /* Pods.app store.xcconfig */,
+				77445667AD081496D914BFDF /* Pods.beta.xcconfig */,
+				46695A067628B422BD28AA20 /* Pods.profile.xcconfig */,
+				3A95645CB056A06691274CBE /* Pods-ScrapingTests.debug.xcconfig */,
+				0742F3DEBC726BA9032CE7E7 /* Pods-ScrapingTests.app store.xcconfig */,
+				C928C39F3ADA829558B25D3E /* Pods-ScrapingTests.beta.xcconfig */,
+				C1E9D1DFD1A1D2CB6082148F /* Pods-ScrapingTests.profile.xcconfig */,
+				A5E508A8F9C4E04EDA0CE481 /* Pods-SmilieFramework.debug.xcconfig */,
+				BDE54FCACD029EB00CA82E59 /* Pods-SmilieFramework.app store.xcconfig */,
+				4E9BA17EF7F877D50D1753F4 /* Pods-SmilieFramework.beta.xcconfig */,
+				70F5801281B497F59405E821 /* Pods-SmilieFramework.profile.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		1190F71813BE4EA900B9D271 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -693,8 +885,6 @@
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
-				1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */,
-				FF54849D34B84496B062B479 /* Pods.xcconfig */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
 			);
 			name = Vendor;
@@ -706,6 +896,10 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* Awful Debug.app */,
 				1CBDB5BC16259C6C0004BDF4 /* ScrapingTests.xctest */,
+				1C21E40B19D357CB003CDA82 /* Smilies.framework */,
+				1C21E41519D357CC003CDA82 /* SmilieTests.xctest */,
+				1C21E46619D3964C003CDA82 /* SmilieKeyboard.appex */,
+				1C937FD719D62BFB00679552 /* SmilieExtractor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -787,6 +981,46 @@
 			path = URLs;
 			sourceTree = "<group>";
 		};
+		1C21E40C19D357CB003CDA82 /* Smilies */ = {
+			isa = PBXGroup;
+			children = (
+				1C93801219D64EC300679552 /* BundledSmilies.sqlite */,
+				1C937FD819D62BFB00679552 /* Extractor */,
+				1C937FCA19D4875500679552 /* Framework-Bridging-Header.h */,
+				1C21E40E19D357CB003CDA82 /* Framework-Info.plist */,
+				1C82F95F19DA898100FDAE53 /* Images.xcassets */,
+				1C21E46919D3964C003CDA82 /* Keyboard-Info.plist */,
+				1C21E47819D396E1003CDA82 /* Keyboard.entitlements */,
+				1C82F96119DA8BF800FDAE53 /* KeyboardView.xib */,
+				1C3B5FAF19D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift */,
+				1C21E48719D3B44F003CDA82 /* Smilie.swift */,
+				1C807CAE19D7296E00C75514 /* SmilieDataStack.swift */,
+				1C937FD119D6289000679552 /* SmilieDownloader.swift */,
+				1C21E40F19D357CB003CDA82 /* SmilieFramework.h */,
+				1C93801519D667B800679552 /* SmilieKeyboardView.swift */,
+				1C21E46A19D3964C003CDA82 /* SmilieKeyboardViewController.swift */,
+				1C21E48519D3B44E003CDA82 /* SmilieMetadata.swift */,
+				1C21E47A19D3AB0E003CDA82 /* Smilies.xcdatamodeld */,
+				1C937FC819D4857C00679552 /* SmilieScraper.swift */,
+				1C937FCD19D5F6AD00679552 /* SmilieUpdater.swift */,
+			);
+			path = Smilies;
+			sourceTree = "<group>";
+		};
+		1C21E41819D357CC003CDA82 /* Smilies */ = {
+			isa = PBXGroup;
+			children = (
+				1C937FC119D4843700679552 /* Fixtures */,
+				1C21E49019D3C224003CDA82 /* HappyTestRunner.swift */,
+				1C937FC619D4848F00679552 /* Helpers.swift */,
+				1C21E41A19D357CC003CDA82 /* Info.plist */,
+				1C21E41B19D357CC003CDA82 /* PersistenceTests.swift */,
+				1C937FC419D4845C00679552 /* ScrapingTests.swift */,
+				1C937FCF19D6059B00679552 /* UpdaterTests.swift */,
+			);
+			path = Smilies;
+			sourceTree = "<group>";
+		};
 		1C28B34A1729DC9700254EE7 /* In-App Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -852,6 +1086,7 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
+				1C21E40C19D357CB003CDA82 /* Smilies */,
 				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -938,6 +1173,27 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		1C937FC119D4843700679552 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				1C937FC219D4843700679552 /* showsmilies.webarchive */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		1C937FD819D62BFB00679552 /* Extractor */ = {
+			isa = PBXGroup;
+			children = (
+				1C937FDB19D62BFB00679552 /* AppDelegate.swift */,
+				1C937FDA19D62BFB00679552 /* Info.plist */,
+				1C937FE419D62BFB00679552 /* LaunchScreen.xib */,
+				1C937FDF19D62BFB00679552 /* Main.storyboard */,
+				1C937FDD19D62BFB00679552 /* ViewController.swift */,
+				1C93800519D6306100679552 /* WebArchive.swift */,
+			);
+			path = Extractor;
+			sourceTree = "<group>";
+		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
 			isa = PBXGroup;
 			children = (
@@ -999,6 +1255,7 @@
 			children = (
 				1CD82F3A194799E200B0C5BD /* Framework Categories */,
 				1CBDB5C116259C6C0004BDF4 /* Scraping */,
+				1C21E41819D357CC003CDA82 /* Smilies */,
 			);
 			name = Tests;
 			path = ../Tests;
@@ -1283,10 +1540,11 @@
 			children = (
 				8CCD498115B497A700E5893B /* Resources */,
 				1C3857A115675AFE0078AF95 /* Source */,
-				1190F76913BE4ECB00B9D271 /* Vendor */,
 				1CBDB5CE16259C930004BDF4 /* Tests */,
+				1190F76913BE4ECB00B9D271 /* Vendor */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				06AE2D19249A60EA3954FEE0 /* Pods */,
 			);
 			name = Awful;
 			sourceTree = "<group>";
@@ -1294,9 +1552,13 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C93801019D6487100679552 /* libsqlite3.dylib */,
+				1C21E48C19D3C1A0003CDA82 /* UIKit.framework */,
+				1C21E48A19D3C19B003CDA82 /* CoreImage.framework */,
 				1C41B8A016CD4C7600718F79 /* Crashlytics.framework */,
 				5A0A70D650DA4CEE875C5173 /* libPods.a */,
 				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
+				D94AA1A74BF28054D75F6D4C /* libPods-SmilieFramework.a */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -1314,6 +1576,7 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1C21E47919D39703003CDA82 /* Awful.entitlements */,
 				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				8CCD503B15B783FC00E5893B /* Images */,
@@ -1344,7 +1607,90 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		1C21E40819D357CB003CDA82 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C21E41019D357CB003CDA82 /* SmilieFramework.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		1C21E40A19D357CB003CDA82 /* SmilieFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C21E42C19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmilieFramework" */;
+			buildPhases = (
+				BAD31BE24C624CC083AA6C6C /* Check Pods Manifest.lock */,
+				1C21E40619D357CB003CDA82 /* Sources */,
+				1C21E40719D357CB003CDA82 /* Frameworks */,
+				1C21E40819D357CB003CDA82 /* Headers */,
+				1C21E40919D357CB003CDA82 /* Resources */,
+				9C39E6DA7A2C4E529E3FB120 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmilieFramework;
+			productName = SmilieFramework;
+			productReference = 1C21E40B19D357CB003CDA82 /* Smilies.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1C21E41419D357CC003CDA82 /* SmilieTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C21E42D19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmilieTests" */;
+			buildPhases = (
+				1C21E41119D357CC003CDA82 /* Sources */,
+				1C21E41219D357CC003CDA82 /* Frameworks */,
+				1C21E41319D357CC003CDA82 /* Resources */,
+				1C21E48919D3BFFD003CDA82 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmilieTests;
+			productName = SmilieTests;
+			productReference = 1C21E41519D357CC003CDA82 /* SmilieTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1C21E46519D3964C003CDA82 /* SmilieKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C21E47119D3964D003CDA82 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */;
+			buildPhases = (
+				1C21E46219D3964C003CDA82 /* Sources */,
+				1C21E46319D3964C003CDA82 /* Frameworks */,
+				1C21E46419D3964C003CDA82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmilieKeyboard;
+			productName = "Smilie Keyboard";
+			productReference = 1C21E46619D3964C003CDA82 /* SmilieKeyboard.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		1C937FD619D62BFB00679552 /* SmilieExtractor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C937FF319D62BFC00679552 /* Build configuration list for PBXNativeTarget "SmilieExtractor" */;
+			buildPhases = (
+				1C937FD319D62BFB00679552 /* Sources */,
+				1C937FD419D62BFB00679552 /* Frameworks */,
+				1C937FD519D62BFB00679552 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmilieExtractor;
+			productName = "Smilie Extractor";
+			productReference = 1C937FD719D62BFB00679552 /* SmilieExtractor.app */;
+			productType = "com.apple.product-type.application";
+		};
 		1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */;
@@ -1353,8 +1699,8 @@
 				1CBDB5B716259C6C0004BDF4 /* Sources */,
 				1CBDB5B816259C6C0004BDF4 /* Frameworks */,
 				1CBDB5B916259C6C0004BDF4 /* Resources */,
-				1CBDB5BA16259C6C0004BDF4 /* ShellScript */,
 				0FBCD79C5FF54453B37DC763 /* Copy Pods Resources */,
+				1CBDB5BA16259C6C0004BDF4 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1377,10 +1723,16 @@
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
 				1C41B89F16CD4C1D00718F79 /* Crashlytics */,
 				08C2CC9823F04B90ADC778E0 /* Copy Pods Resources */,
+				1C21E42019D357CC003CDA82 /* Embed Frameworks */,
+				1C21E47619D3964D003CDA82 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1C21E41E19D357CC003CDA82 /* PBXTargetDependency */,
+				1C21E42319D357CC003CDA82 /* PBXTargetDependency */,
+				1C21E46D19D3964C003CDA82 /* PBXTargetDependency */,
+				1C21E47019D3964C003CDA82 /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -1397,8 +1749,33 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
+					1C21E40A19D357CB003CDA82 = {
+						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9RR6L9X39A;
+					};
+					1C21E41419D357CC003CDA82 = {
+						CreatedOnToolsVersion = 6.0.1;
+						TestTargetID = 1D6058900D05DD3D006BFB54;
+					};
+					1C21E46519D3964C003CDA82 = {
+						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9RR6L9X39A;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					1C937FD619D62BFB00679552 = {
+						CreatedOnToolsVersion = 6.0.1;
+					};
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 9RR6L9X39A;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1412,6 +1789,7 @@
 				French,
 				German,
 				en,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			projectDirPath = "";
@@ -1419,11 +1797,50 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1CBDB5BB16259C6C0004BDF4 /* ScrapingTests */,
+				1C937FD619D62BFB00679552 /* SmilieExtractor */,
+				1C21E40A19D357CB003CDA82 /* SmilieFramework */,
+				1C21E46519D3964C003CDA82 /* SmilieKeyboard */,
+				1C21E41419D357CC003CDA82 /* SmilieTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1C21E40919D357CB003CDA82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C82F96019DA898100FDAE53 /* Images.xcassets in Resources */,
+				1C93801319D64EC300679552 /* BundledSmilies.sqlite in Resources */,
+				1C82F96219DA8BF800FDAE53 /* KeyboardView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E41319D357CC003CDA82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C937FC319D4843700679552 /* showsmilies.webarchive in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E46419D3964C003CDA82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C937FD519D62BFB00679552 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C937FE119D62BFB00679552 /* Main.storyboard in Resources */,
+				1C937FFF19D62D0E00679552 /* showsmilies.webarchive in Resources */,
+				1C937FE619D62BFB00679552 /* LaunchScreen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B916259C6C0004BDF4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1522,7 +1939,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 		};
 		0FBCD79C5FF54453B37DC763 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1536,8 +1953,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Pods-ScrapingTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1C21E48919D3BFFD003CDA82 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
 		1C41B89F16CD4C1D00718F79 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1624,9 +2054,86 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 		};
+		9C39E6DA7A2C4E529E3FB120 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SmilieFramework/Pods-SmilieFramework-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BAD31BE24C624CC083AA6C6C /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1C21E40619D357CB003CDA82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C93801619D667B800679552 /* SmilieKeyboardView.swift in Sources */,
+				1C21E47C19D3AB0E003CDA82 /* Smilies.xcdatamodeld in Sources */,
+				1C937FD219D6289000679552 /* SmilieDownloader.swift in Sources */,
+				1C807CAF19D7296E00C75514 /* SmilieDataStack.swift in Sources */,
+				1C937FC919D4857C00679552 /* SmilieScraper.swift in Sources */,
+				1C937FCE19D5F6AD00679552 /* SmilieUpdater.swift in Sources */,
+				1C21E48619D3B44E003CDA82 /* SmilieMetadata.swift in Sources */,
+				1C21E48819D3B44F003CDA82 /* Smilie.swift in Sources */,
+				1C3B5FB019D7716200F1B7C4 /* PaginatedHorizontalCollectionViewLayout.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E41119D357CC003CDA82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C21E49219D3CB3E003CDA82 /* HappyTestRunner.swift in Sources */,
+				1C937FD019D6059B00679552 /* UpdaterTests.swift in Sources */,
+				1C21E41C19D357CC003CDA82 /* PersistenceTests.swift in Sources */,
+				1C937FC519D4845C00679552 /* ScrapingTests.swift in Sources */,
+				1C937FC719D4848F00679552 /* Helpers.swift in Sources */,
+				1C93800719D6306100679552 /* WebArchive.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C21E46219D3964C003CDA82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C21E46B19D3964C003CDA82 /* SmilieKeyboardViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C937FD319D62BFB00679552 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C937FDE19D62BFB00679552 /* ViewController.swift in Sources */,
+				1C93800619D6306100679552 /* WebArchive.swift in Sources */,
+				1C937FDC19D62BFB00679552 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1CBDB5B716259C6C0004BDF4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1826,10 +2333,751 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1C21E41E19D357CC003CDA82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C21E40A19D357CB003CDA82 /* SmilieFramework */;
+			targetProxy = 1C21E41D19D357CC003CDA82 /* PBXContainerItemProxy */;
+		};
+		1C21E42319D357CC003CDA82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C21E40A19D357CB003CDA82 /* SmilieFramework */;
+			targetProxy = 1C21E42219D357CC003CDA82 /* PBXContainerItemProxy */;
+		};
+		1C21E46D19D3964C003CDA82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C21E46519D3964C003CDA82 /* SmilieKeyboard */;
+			targetProxy = 1C21E46C19D3964C003CDA82 /* PBXContainerItemProxy */;
+		};
+		1C21E47019D3964C003CDA82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C21E46519D3964C003CDA82 /* SmilieKeyboard */;
+			targetProxy = 1C21E46F19D3964C003CDA82 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		1C937FDF19D62BFB00679552 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C937FE019D62BFB00679552 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1C937FE419D62BFB00679552 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C937FE519D62BFB00679552 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		1C21E42419D357CC003CDA82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A5E508A8F9C4E04EDA0CE481 /* Pods-SmilieFramework.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "../Source/Smilies/Framework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = Smilies;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smilies/Framework-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1C21E42519D357CC003CDA82 /* App Store */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BDE54FCACD029EB00CA82E59 /* Pods-SmilieFramework.app store.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "../Source/Smilies/Framework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Smilies;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smilies/Framework-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "App Store";
+		};
+		1C21E42619D357CC003CDA82 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4E9BA17EF7F877D50D1753F4 /* Pods-SmilieFramework.beta.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "../Source/Smilies/Framework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Smilies;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smilies/Framework-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Beta;
+		};
+		1C21E42719D357CC003CDA82 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70F5801281B497F59405E821 /* Pods-SmilieFramework.profile.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "../Source/Smilies/Framework-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Smilies;
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Source/Smilies/Framework-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Profile;
+		};
+		1C21E42819D357CC003CDA82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1C21E42919D357CC003CDA82 /* App Store */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store";
+		};
+		1C21E42A19D357CC003CDA82 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		1C21E42B19D357CC003CDA82 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		1C21E47219D3964D003CDA82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Source/Smilies/Keyboard.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = "../Source/Smilies/Keyboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1C21E47319D3964D003CDA82 /* App Store */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Source/Smilies/Keyboard.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = "../Source/Smilies/Keyboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store";
+		};
+		1C21E47419D3964D003CDA82 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Source/Smilies/Keyboard.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = "../Source/Smilies/Keyboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		1C21E47519D3964D003CDA82 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Source/Smilies/Keyboard.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = "../Source/Smilies/Keyboard-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		1C937FF419D62BFC00679552 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Source/Smilies/Extractor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1C937FF519D62BFC00679552 /* App Store */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Source/Smilies/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "App Store";
+		};
+		1C937FF619D62BFC00679552 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Source/Smilies/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Beta;
+		};
+		1C937FF719D62BFC00679552 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/../Pods/Headers/Public\"";
+				INFOPLIST_FILE = ../Source/Smilies/Extractor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		1C9A746718EDDD8D00093E33 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AWFUL_BUNDLE_ID_SUFFIX = .beta;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -1841,7 +3089,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
@@ -1854,13 +3102,13 @@
 		};
 		1C9A746818EDDD8D00093E33 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 46695A067628B422BD28AA20 /* Pods.profile.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = " Beta";
-				AWFUL_BUNDLE_ID_SUFFIX = .beta;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
@@ -1889,7 +3137,7 @@
 		};
 		1C9A746B18EDDD8D00093E33 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
+			baseConfigurationReference = C1E9D1DFD1A1D2CB6082148F /* Pods-ScrapingTests.profile.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1922,7 +3170,7 @@
 		};
 		1CBDB5CC16259C6D0004BDF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
+			baseConfigurationReference = 3A95645CB056A06691274CBE /* Pods-ScrapingTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1962,7 +3210,7 @@
 		};
 		1CBDB5CD16259C6D0004BDF4 /* App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
+			baseConfigurationReference = 0742F3DEBC726BA9032CE7E7 /* Pods-ScrapingTests.app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1996,6 +3244,7 @@
 		1CE8FE4B1718E8CD006A3B84 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AWFUL_BUNDLE_ID_SUFFIX = .beta;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2007,7 +3256,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
@@ -2020,13 +3269,13 @@
 		};
 		1CE8FE4C1718E8CD006A3B84 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 77445667AD081496D914BFDF /* Pods.beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = " Beta";
-				AWFUL_BUNDLE_ID_SUFFIX = .beta;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
@@ -2055,7 +3304,7 @@
 		};
 		1CE8FE501718E8CD006A3B84 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CC0A44E1847650600A6F3FE /* Pods-ScrapingTests.xcconfig */;
+			baseConfigurationReference = C928C39F3ADA829558B25D3E /* Pods-ScrapingTests.beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2088,13 +3337,13 @@
 		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = FA1416DF29B2C2054D5A957D /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = " Debug";
-				AWFUL_BUNDLE_ID_SUFFIX = .debug;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
@@ -2119,11 +3368,12 @@
 		};
 		1D6058950D05DD3E006BFB54 /* App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FF54849D34B84496B062B479 /* Pods.xcconfig */;
+			baseConfigurationReference = 355BCA109BDA7D0397F35039 /* Pods.app store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
@@ -2152,6 +3402,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AWFUL_BUNDLE_ID_SUFFIX = .debug;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
@@ -2164,7 +3415,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
@@ -2190,7 +3441,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
@@ -2204,6 +3455,50 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1C21E42C19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmilieFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C21E42419D357CC003CDA82 /* Debug */,
+				1C21E42519D357CC003CDA82 /* App Store */,
+				1C21E42619D357CC003CDA82 /* Beta */,
+				1C21E42719D357CC003CDA82 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C21E42D19D357CC003CDA82 /* Build configuration list for PBXNativeTarget "SmilieTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C21E42819D357CC003CDA82 /* Debug */,
+				1C21E42919D357CC003CDA82 /* App Store */,
+				1C21E42A19D357CC003CDA82 /* Beta */,
+				1C21E42B19D357CC003CDA82 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C21E47119D3964D003CDA82 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C21E47219D3964D003CDA82 /* Debug */,
+				1C21E47319D3964D003CDA82 /* App Store */,
+				1C21E47419D3964D003CDA82 /* Beta */,
+				1C21E47519D3964D003CDA82 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C937FF319D62BFC00679552 /* Build configuration list for PBXNativeTarget "SmilieExtractor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C937FF419D62BFC00679552 /* Debug */,
+				1C937FF519D62BFC00679552 /* App Store */,
+				1C937FF619D62BFC00679552 /* Beta */,
+				1C937FF719D62BFC00679552 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		1CBDB5CB16259C6D0004BDF4 /* Build configuration list for PBXNativeTarget "ScrapingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2240,6 +3535,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		1C21E47A19D3AB0E003CDA82 /* Smilies.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1C21E47B19D3AB0E003CDA82 /* Smilies.xcdatamodel */,
+			);
+			currentVersion = 1C21E47B19D3AB0E003CDA82 /* Smilies.xcdatamodel */;
+			path = Smilies.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		1C5B99B8166FFA4F004C5D0E /* Awful.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

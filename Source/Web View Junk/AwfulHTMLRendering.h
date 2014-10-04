@@ -10,9 +10,9 @@
 extern void HighlightQuotesOfPostsByUserNamed(HTMLDocument *document, NSString *username);
 
 /**
- * Modifies document in-place by turning all non-smiley `<img src=>` elements into `<a data-awful='image'>src</a>` elements.
+ * Modifies document in-place by turning all non-smilie `<img src=>` elements into `<a data-awful='image'>src</a>` elements.
  */
-extern void LinkifyNonSmileyImages(HTMLDocument *document);
+extern void LinkifyNonSmilieImages(HTMLDocument *document);
 
 /**
  * Modifies document in-place by deleting all elements with the `editedby` class that have no text content.
