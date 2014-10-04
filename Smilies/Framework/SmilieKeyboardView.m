@@ -80,9 +80,9 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    SmilieCell *cell = (SmilieCell *)[collectionView cellForItemAtIndexPath:indexPath];
+//    SmilieCell *cell = (SmilieCell *)[collectionView cellForItemAtIndexPath:indexPath];
     Smilie *smilie = [Smilie new];
-    smilie.image = cell.imageView.image;
+//    smilie.image = cell.imageView.image;
     smilie.text = @":backtowork:";
     [self.delegate smilieKeyboard:self didTapSmilie:smilie];
     

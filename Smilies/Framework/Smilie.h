@@ -2,11 +2,18 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import UIKit;
+@import CoreGraphics;
+#import "SmilieManagedObject.h"
+@class SmilieMetadata;
 
-@interface Smilie : NSObject
+@interface Smilie : SmilieManagedObject
 
-@property (strong, nonatomic) NSString *text;
-@property (strong, nonatomic) UIImage *image;
+@property (copy, nonatomic) NSData *imageData;
+@property (assign, nonatomic) CGSize imageSize;
+@property (strong, nonatomic) NSString *imageURL;
+@property (copy, nonatomic) NSString *section;
+@property (copy, nonatomic) NSString *text;
+
+@property (readonly, strong, nonatomic) SmilieMetadata *metadata;
 
 @end
