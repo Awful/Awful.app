@@ -10,8 +10,10 @@
 
 @property (copy, nonatomic) NSData *imageData;
 @property (assign, nonatomic) CGSize imageSize;
-@property (strong, nonatomic) NSString *imageURL;
+@property (copy, nonatomic) NSString *imageURL;
+@property (copy, nonatomic) NSString *imageUTI;
 @property (copy, nonatomic) NSString *section;
+@property (copy, nonatomic) NSString *summary;
 @property (copy, nonatomic) NSString *text;
 
 @property (readonly, strong, nonatomic) SmilieMetadata *metadata;

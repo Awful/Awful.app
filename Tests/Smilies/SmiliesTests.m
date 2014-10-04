@@ -16,8 +16,7 @@
 - (NSManagedObjectContext *)managedObjectContext
 {
     if (!_managedObjectContext) {
-        NSURL *modelURL = [[NSBundle bundleForClass:[Smilie class]] URLForResource:@"Smilies" withExtension:@"momd"];
-        NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        NSManagedObjectModel *model = [SmilieDataStore managedObjectModel];
         NSPersistentStoreCoordinator *storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
         NSError *error;
         if (![storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error]) {
@@ -27,6 +26,12 @@
         _managedObjectContext.persistentStoreCoordinator = storeCoordinator;
     }
     return _managedObjectContext;
+}
+
+- (void)tearDown
+{
+    self.managedObjectContext = nil;
+    [super tearDown];
 }
 
 - (void)testMetadataCreation

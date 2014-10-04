@@ -20,7 +20,9 @@
 
 @dynamic imageData;
 @dynamic imageURL;
+@dynamic imageUTI;
 @dynamic section;
+@dynamic summary;
 @dynamic text;
 
 @dynamic fetchedMetadata;

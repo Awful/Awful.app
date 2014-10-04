@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A379a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Iv5-lj-5ug">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="f5I-TO-Fbb">
+            <objects>
+                <navigationController id="Iv5-lj-5ug" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="c4R-ad-kS7">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Myh-O6-VzO"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yvm-tP-lau" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-669" y="93"/>
+        </scene>
+        <!--Smilie Extractor-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController title="Smilie Extractor" id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" text="Tap “Extract” to begin." id="pW3-dd-GuE">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="12"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                    <navigationItem key="navigationItem" id="5qN-4q-FUq">
+                        <barButtonItem key="leftBarButtonItem" title="Extract" id="Lhw-lm-bQV">
+                            <connections>
+                                <action selector="didTapExtract:" destination="BYZ-38-t0r" id="l9G-gS-WRG"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Replace" id="jrf-t6-3v4">
+                            <connections>
+                                <action selector="didTapReplace:" destination="BYZ-38-t0r" id="imE-Uy-oPZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="replaceBarButtonItem" destination="jrf-t6-3v4" id="U81-QS-7sL"/>
+                        <outlet property="textView" destination="pW3-dd-GuE" id="BKc-nK-OnL"/>
+                        <outlet property="view" destination="pW3-dd-GuE" id="Ylk-4Q-yYd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="66" y="93"/>
+        </scene>
+    </scenes>
+</document>

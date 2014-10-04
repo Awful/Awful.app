@@ -5,7 +5,9 @@
         <attribute name="imageSize" optional="YES" transient="YES" syncable="YES"/>
         <attribute name="imageSizeString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageUTI" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="section" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="text" attributeType="String" minValueString="1" indexed="YES" syncable="YES"/>
         <fetchedProperty name="fetchedMetadata" optional="YES" syncable="YES">
             <fetchRequest name="fetchedPropertyFetchRequest" entity="SmilieMetadata" predicateString="smilieText = $FETCH_SOURCE.text"/>
@@ -21,7 +23,7 @@
         <memberEntity name="Smilie"/>
     </configuration>
     <elements>
-        <element name="Smilie" positionX="-63" positionY="-18" width="128" height="161"/>
+        <element name="Smilie" positionX="-63" positionY="-18" width="128" height="191"/>
         <element name="SmilieMetadata" positionX="-54" positionY="-9" width="128" height="103"/>
     </elements>
 </model>
