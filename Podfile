@@ -18,6 +18,7 @@ target :Awful do
 end
 
 target :Smilies do
+  pod 'FLAnimatedImage', '1.0.1'
   pod 'HTMLReader', '0.5.6'
 end
 

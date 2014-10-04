@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieKeyboardView.h"
+#import <FLAnimatedImage/FLAnimatedImage.h>
 #import "SmilieCell.h"
 #import "Smilie.h"
 
@@ -21,16 +22,16 @@
     return [[NSBundle bundleForClass:[SmilieKeyboardView class]] loadNibNamed:@"SmilieKeyboardView" owner:nil options:nil][0];
 }
 
+- (void)setDelegate:(id<SmilieKeyboardViewDelegate>)delegate
+{
+    _delegate = delegate;
+    [self.collectionView reloadData];
+}
+
 - (void)setCollectionView:(UICollectionView *)collectionView
 {
     _collectionView = collectionView;
     [collectionView registerClass:[SmilieCell class] forCellWithReuseIdentifier:CellIdentifier];
-}
-
-- (void)setFlowLayout:(UICollectionViewFlowLayout *)flowLayout
-{
-    _flowLayout = flowLayout;
-    flowLayout.estimatedItemSize = CGSizeMake(38, 25);
 }
 
 - (void)updateConstraints
@@ -39,6 +40,11 @@
         constraint.constant = 0.5;
     }
     [super updateConstraints];
+}
+
+- (void)reloadData
+{
+    [self.collectionView reloadData];
 }
 
 - (IBAction)didTapDelete
@@ -55,23 +61,48 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return 8;
+    return [self.delegate numberOfSectionsInSmilieKeyboard:self];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 100;
+    return [self.delegate smilieKeyboard:self numberOfSmiliesInSection:section];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SmilieCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    NSBundle *frameworkBundle = [NSBundle bundleForClass:[SmilieKeyboardView class]];
-    cell.imageView.image = [UIImage imageNamed:@"emot-backtowork" inBundle:frameworkBundle compatibleWithTraitCollection:nil];
+    id image = [self.delegate smilieKeyboard:self imageOfSmilieAtIndexPath:indexPath];
+    if ([image isKindOfClass:[FLAnimatedImage class]]) {
+        cell.imageView.animatedImage = image;
+    } else {
+        cell.imageView.image =image;
+    }
     
     if (!cell.selectedBackgroundView) cell.selectedBackgroundView = [UIView new];
     cell.selectedBackgroundView.backgroundColor = self.selectedBackgroundColor;
     return cell;
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    cell.contentView.backgroundColor = cell.selectedBackgroundView.backgroundColor;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    cell.contentView.backgroundColor = nil;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.delegate smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
 }
 
 static NSString * const CellIdentifier = @"SmilieCell";
@@ -80,12 +111,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    SmilieCell *cell = (SmilieCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    Smilie *smilie = [Smilie new];
-//    smilie.image = cell.imageView.image;
-    smilie.text = @":backtowork:";
-    [self.delegate smilieKeyboard:self didTapSmilie:smilie];
-    
+    [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
     [collectionView deselectItemAtIndexPath:indexPath animated:NO];
 }
 

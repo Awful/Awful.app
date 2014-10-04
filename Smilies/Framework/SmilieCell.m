@@ -6,34 +6,26 @@
 
 @interface SmilieCell ()
 
-@property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) FLAnimatedImageView *imageView;
 
 @end
 
 @implementation SmilieCell
 
-- (UIImageView *)imageView
+- (FLAnimatedImageView *)imageView
 {
     if (!_imageView) {
-        _imageView = [UIImageView new];
+        _imageView = [FLAnimatedImageView new];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         [_imageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
         [_imageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
         [_imageView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
         [_imageView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-        [self addSubview:_imageView];
+        [self.contentView addSubview:_imageView];
         
         NSDictionary *views = @{@"image": _imageView};
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[image]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
-        [self addConstraints:
-         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[image]|"
-                                                 options:0
-                                                 metrics:nil
-                                                   views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[image]|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[image]|" options:0 metrics:nil views:views]];
     }
     return _imageView;
 }
