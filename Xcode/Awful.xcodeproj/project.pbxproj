@@ -165,6 +165,8 @@
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
+		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
 		1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */; };
 		1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
 		1C9A746118EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */; };
@@ -194,7 +196,7 @@
 		1CB6011516D8376A00CBEE22 /* AwfulNewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* AwfulNewMessageChecker.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
 		1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* PostComposeViewController.m */; };
-		1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */; };
+		1CBC74B1181A4DC30076234E /* ComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* ComposeTextView.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
@@ -616,6 +618,8 @@
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
 		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
 		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
+		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
+		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C977C2719CD286200DD6459 /* CacheHeaderCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheHeaderCalculations.h; sourceTree = "<group>"; };
 		1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CacheHeaderCalculations.m; sourceTree = "<group>"; };
 		1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -664,8 +668,8 @@
 		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* PostComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostComposeViewController.h; sourceTree = "<group>"; };
 		1CBC74AD181A16040076234E /* PostComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostComposeViewController.m; sourceTree = "<group>"; };
-		1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeTextView.h; sourceTree = "<group>"; };
-		1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeTextView.m; sourceTree = "<group>"; };
+		1CBC74AF181A4DC30076234E /* ComposeTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextView.h; sourceTree = "<group>"; };
+		1CBC74B0181A4DC30076234E /* ComposeTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextView.m; sourceTree = "<group>"; };
 		1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+AwfulStringyURLs.h"; sourceTree = "<group>"; };
 		1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+AwfulStringyURLs.m"; sourceTree = "<group>"; };
 		1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulMinusFixURLProtocol.h; sourceTree = "<group>"; };
@@ -1176,6 +1180,8 @@
 				1C7B010919DE89B000542293 /* SmilieCell.m */,
 				1C3A146619DFC7130022C44C /* SmilieDataStore.h */,
 				1C3A146719DFC7130022C44C /* SmilieDataStore.m */,
+				1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */,
+				1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */,
 				1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */,
 				1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */,
 				1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */,
@@ -1582,12 +1588,12 @@
 			children = (
 				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
-				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
-				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
 				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
 				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */,
 				1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */,
+				1CBC74AF181A4DC30076234E /* ComposeTextView.h */,
+				1CBC74B0181A4DC30076234E /* ComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
 				1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */,
@@ -1696,6 +1702,7 @@
 				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
 				1C3A140219DFC1FC0022C44C /* SmilieManagedObject.h in Headers */,
 				1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */,
+				1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */,
 				1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */,
 				1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */,
 			);
@@ -2198,6 +2205,7 @@
 				1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */,
 				1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */,
 				1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */,
+				1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */,
 				1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */,
 				1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
@@ -2411,7 +2419,7 @@
 				1C7C7F0418A16E74008A1B2E /* AwfulForumTreeDataSource.m in Sources */,
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
-				1CBC74B1181A4DC30076234E /* AwfulComposeTextView.m in Sources */,
+				1CBC74B1181A4DC30076234E /* ComposeTextView.m in Sources */,
 				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,
 				1CA1EFFC1910424D00E85DB2 /* AwfulPostScraper.m in Sources */,
 				1C3447E1175D9991007377C5 /* AwfulPostViewModel.m in Sources */,
@@ -3050,7 +3058,6 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../Pods/Headers/Public/";
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -3090,7 +3097,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../Pods/Headers/Public/";
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -3132,7 +3138,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../Pods/Headers/Public/";
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -3174,7 +3179,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../Pods/Headers/Public/";
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";

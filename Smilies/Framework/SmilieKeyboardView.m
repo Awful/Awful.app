@@ -22,9 +22,9 @@
     return [[NSBundle bundleForClass:[SmilieKeyboardView class]] loadNibNamed:@"SmilieKeyboardView" owner:nil options:nil][0];
 }
 
-- (void)setDelegate:(id<SmilieKeyboardViewDelegate>)delegate
+- (void)setDataSource:(id<SmilieKeyboardDataSource>)dataSource
 {
-    _delegate = delegate;
+    _dataSource = dataSource;
     [self.collectionView reloadData];
 }
 
@@ -61,18 +61,18 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return [self.delegate numberOfSectionsInSmilieKeyboard:self];
+    return [self.dataSource numberOfSectionsInSmilieKeyboard:self];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [self.delegate smilieKeyboard:self numberOfSmiliesInSection:section];
+    return [self.dataSource smilieKeyboard:self numberOfSmiliesInSection:section];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SmilieCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    id image = [self.delegate smilieKeyboard:self imageOfSmilieAtIndexPath:indexPath];
+    id image = [self.dataSource smilieKeyboard:self imageOfSmilieAtIndexPath:indexPath];
     if ([image isKindOfClass:[FLAnimatedImage class]]) {
         cell.imageView.animatedImage = image;
     } else {
@@ -102,7 +102,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.delegate smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
+    return [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
 }
 
 static NSString * const CellIdentifier = @"SmilieCell";

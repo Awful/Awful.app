@@ -9,5 +9,6 @@
 #import <Smilies/Smilie.h>
 #import <Smilies/SmilieButton.h>
 #import <Smilies/SmilieDataStore.h>
+#import <Smilies/SmilieFetchedDataSource.h>
 #import <Smilies/SmilieKeyboardView.h>
 #import <Smilies/SmilieMetadata.h>

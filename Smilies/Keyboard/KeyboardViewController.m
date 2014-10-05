@@ -3,12 +3,10 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "KeyboardViewController.h"
-#import <FLAnimatedImage/FLAnimatedImage.h>
-@import MobileCoreServices;
 #import "NeedsFullAccessView.h"
 @import Smilies;
 
-@interface KeyboardViewController () <NSFetchedResultsControllerDelegate, SmilieKeyboardViewDelegate>
+@interface KeyboardViewController () <SmilieKeyboardDelegate>
 
 @property (strong, nonatomic) SmilieKeyboardView *keyboardView;
 @property (strong, nonatomic) NeedsFullAccessView *needsFullAccessView;
@@ -16,8 +14,7 @@
 
 @property (assign, nonatomic) BOOL shouldInvalidateCollectionViewLayoutOnceInLandscape;
 
-@property (strong, nonatomic) SmilieDataStore *dataStore;
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) SmilieFetchedDataSource *dataSource;
 
 @end
 
@@ -47,34 +44,12 @@
     return _heightConstraint;
 }
 
-- (SmilieDataStore *)dataStore
+- (SmilieFetchedDataSource *)dataSource
 {
-    if (!_dataStore) {
-        _dataStore = [SmilieDataStore new];
+    if (!_dataSource) {
+        _dataSource = [[SmilieFetchedDataSource alloc] initWithDataStore:[SmilieDataStore new]];
     }
-    return _dataStore;
-}
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (!_fetchedResultsController) {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"section" ascending:YES],
-                                         [NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
-        NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        context.parentContext = self.dataStore.managedObjectContext;
-        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                        managedObjectContext:context
-                                                                          sectionNameKeyPath:@"section"
-                                                                                   cacheName:nil];
-        _fetchedResultsController.delegate = self;
-        
-        NSError *error;
-        if (![_fetchedResultsController performFetch:&error]) {
-            NSLog(@"%s could not fetch smilies: %@", __PRETTY_FUNCTION__, error);
-        }
-    }
-    return _fetchedResultsController;
+    return _dataSource;
 }
 
 - (void)viewWillLayoutSubviews
@@ -108,6 +83,7 @@
     UIView *mainView;
     
     if (HasFullAccess()) {
+        self.keyboardView.dataSource = self.dataSource;
         self.keyboardView.delegate = self;
         mainView = self.keyboardView;
     } else {
@@ -142,40 +118,7 @@ static BOOL HasFullAccess(void)
     [super advanceToNextInputMode];
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.keyboardView reloadData];
-}
-
-#pragma mark - SmilieKeyboardViewDelegate
-
-- (NSInteger)numberOfSectionsInSmilieKeyboard:(SmilieKeyboardView *)keyboardView
-{
-    return self.fetchedResultsController.sections.count;
-}
-
-- (NSInteger)smilieKeyboard:(SmilieKeyboardView *)keyboardView numberOfSmiliesInSection:(NSInteger)section
-{
-    return [self.fetchedResultsController.sections[section] numberOfObjects];
-}
-
-- (CGSize)smilieKeyboard:(SmilieKeyboardView *)keyboardView sizeOfSmilieAtIndexPath:(NSIndexPath *)indexPath
-{
-    Smilie *smilie = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return smilie.imageSize;
-}
-
-- (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath
-{
-    Smilie *smilie = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if (UTTypeConformsTo((__bridge CFStringRef)smilie.imageUTI, kUTTypeGIF)) {
-        return [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];
-    } else {
-        return [UIImage imageWithData:smilie.imageData];
-    }
-}
+#pragma mark - SmilieKeyboardDelegate
 
 - (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
 {
@@ -189,7 +132,7 @@ static BOOL HasFullAccess(void)
 
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
-    Smilie *smilie = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
     [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
 }
 

@@ -11,6 +11,7 @@
 
 @interface KeyboardBar ()
 
+@property (strong, nonatomic) KeyboardButton *smilieButton;
 @property (copy, nonatomic) NSArray *middleButtons;
 @property (strong, nonatomic) UIView *middleButtonContainer;
 @property (strong, nonatomic) KeyboardButton *autocloseButton;
@@ -31,17 +32,19 @@
     if ((self = [super initWithFrame:frame inputViewStyle:UIInputViewStyleDefault])) {
         self.opaque = YES;
         
-        self.autocloseButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:self.autocloseButton];
+        self.smilieButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.smilieButton];
         
         self.middleButtonContainer = [UIView new];
         self.middleButtonContainer.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:self.middleButtonContainer];
-        
         for (UIView *button in self.middleButtons) {
             button.translatesAutoresizingMaskIntoConstraints = NO;
             [self.middleButtonContainer addSubview:button];
         }
+        
+        self.autocloseButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.autocloseButton];
         
         [self updateColors];
     }
@@ -65,6 +68,17 @@
 {
     _keyboardAppearance = keyboardAppearance;
     [self updateColors];
+}
+
+- (KeyboardButton *)smilieButton
+{
+    if (!_smilieButton) {
+        _smilieButton = [KeyboardButton new];
+        [_smilieButton setTitle:@":-)" forState:UIControlStateNormal];
+        _smilieButton.accessibilityLabel = @"Toggle smilie keyboard";
+        [_smilieButton addTarget:self action:@selector(didTapSmilieButton) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _smilieButton;
 }
 
 - (NSArray *)middleButtons
@@ -97,6 +111,11 @@
 - (void)textViewTextDidChange:(NSNotification *)notification
 {
     [self updateAutocloseButtonState];
+}
+
+- (void)didTapSmilieButton
+{
+    [self.delegate toggleSmilieKeyboardForKeyboardBar:self];
 }
 
 - (void)didTapAutocloseButton
@@ -142,6 +161,7 @@
         };
     }
     
+    setButtonColors(self.smilieButton);
     for (KeyboardButton *button in self.middleButtons) {
         setButtonColors(button);
     }
@@ -163,11 +183,18 @@
         CGFloat between = PhoneOrPad(6, 12);
         #undef PhoneOrPad
         
+        // All buttons' height, width, and centerY are keyed off of the autoclose button.
         [self addConstraints:
          [NSLayoutConstraint constraintsWithVisualFormat:@"H:[autoclose(width)]-2-|"
                                                  options:0
                                                  metrics:@{@"width": @(width)}
                                                    views:@{@"autoclose": self.autocloseButton}]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-2-[smilie(autoclose)]"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:@{@"smilie": self.smilieButton,
+                                                           @"autoclose": self.autocloseButton}]];
         [self.autocloseButton addConstraint:
          [NSLayoutConstraint constraintWithItem:self.autocloseButton
                                       attribute:NSLayoutAttributeHeight
@@ -177,10 +204,26 @@
                                      multiplier:0
                                        constant:height]];
         [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.smilieButton
+                                      attribute:NSLayoutAttributeHeight
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.autocloseButton
+                                      attribute:NSLayoutAttributeHeight
+                                     multiplier:1
+                                       constant:0]];
+        [self addConstraint:
          [NSLayoutConstraint constraintWithItem:self.autocloseButton
                                       attribute:NSLayoutAttributeCenterY
                                       relatedBy:NSLayoutRelationEqual
                                          toItem:self
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.smilieButton
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.autocloseButton
                                       attribute:NSLayoutAttributeCenterY
                                      multiplier:1
                                        constant:0]];

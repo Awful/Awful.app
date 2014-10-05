@@ -1,14 +1,15 @@
-//  AwfulComposeTextView.m
+//  ComposeTextView.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulComposeTextView.h"
+#import "ComposeTextView.h"
 #import "AwfulFrameworkCategories.h"
-#import "KeyboardBar.h"
 #import "AwfulTextAttachment.h"
+#import "KeyboardBar.h"
 #import <PSMenuItem/PSMenuItem.h>
+#import <Smilies/Smilies.h>
 
-@interface AwfulComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface ComposeTextView () <KeyboardBarDelegate, SmilieKeyboardDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) KeyboardBar *BBcodeBar;
 
@@ -17,9 +18,13 @@
 @property (readonly, copy, nonatomic) NSArray *insertImageSubmenuItems;
 @property (copy, nonatomic) NSArray *formattingSubmenuItems;
 
+@property (strong, nonatomic) SmilieKeyboardView *smilieKeyboard;
+@property (strong, nonatomic) SmilieFetchedDataSource *smilieDataSource;
+@property (assign, nonatomic) BOOL showingSmilieKeyboard;
+
 @end
 
-@implementation AwfulComposeTextView
+@implementation ComposeTextView
 {
     BOOL _showingSubmenu;
     id _menuDidHideObserver;
@@ -30,11 +35,44 @@
 {
     if (_BBcodeBar) return _BBcodeBar;
     _BBcodeBar = [KeyboardBar new];
+    _BBcodeBar.delegate = self;
     _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
                                   UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
     _BBcodeBar.textView = self;
     _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
     return _BBcodeBar;
+}
+
+- (SmilieKeyboardView *)smilieKeyboard
+{
+    if (!_smilieKeyboard) {
+        _smilieKeyboard = [SmilieKeyboardView newFromNib];
+        _smilieKeyboard.dataSource = self.smilieDataSource;
+        _smilieKeyboard.delegate = self;
+        _smilieKeyboard.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    }
+    return _smilieKeyboard;
+}
+
+- (SmilieFetchedDataSource *)smilieDataSource
+{
+    if (!_smilieDataSource) {
+        SmilieDataStore *dataStore = [SmilieDataStore new];
+        _smilieDataSource = [[SmilieFetchedDataSource alloc] initWithDataStore:dataStore];
+    }
+    return _smilieDataSource;
+}
+
+- (void)setShowingSmilieKeyboard:(BOOL)showingSmilieKeyboard
+{
+    _showingSmilieKeyboard = showingSmilieKeyboard;
+    if (showingSmilieKeyboard && !self.inputView) {
+        self.inputView = self.smilieKeyboard;
+        [self reloadInputViews];
+    } else if (!showingSmilieKeyboard && self.inputView) {
+        self.inputView = nil;
+        [self reloadInputViews];
+    }
 }
 
 #pragma mark - UIMenuController shenanigans
@@ -317,6 +355,31 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     if ([viewController isEqual:navigationController.viewControllers.firstObject]) {
         viewController.navigationItem.title = @"Insert Image";
     }
+}
+
+#pragma mark - KeyboardBarDelegate
+
+- (void)toggleSmilieKeyboardForKeyboardBar:(KeyboardBar *)keyboardBar
+{
+    self.showingSmilieKeyboard = !self.showingSmilieKeyboard;
+}
+
+#pragma mark - SmilieKeyboardDelegate
+
+- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+{
+    self.showingSmilieKeyboard = NO;
+}
+
+- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+{
+    [self deleteBackward];
+}
+
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath
+{
+    Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
+    [self insertText:smilie.text];
 }
 
 #pragma mark - UITextInputTraits

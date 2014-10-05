@@ -4,14 +4,16 @@
 
 @import UIKit;
 @class Smilie;
-@protocol SmilieKeyboardViewDelegate;
+@protocol SmilieKeyboardDataSource;
+@protocol SmilieKeyboardDelegate;
 
 IB_DESIGNABLE
 @interface SmilieKeyboardView : UIView
 
 + (instancetype)newFromNib;
 
-@property (weak, nonatomic) id <SmilieKeyboardViewDelegate> delegate;
+@property (weak, nonatomic) id <SmilieKeyboardDataSource> dataSource;
+@property (weak, nonatomic) id <SmilieKeyboardDelegate> delegate;
 
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
@@ -19,13 +21,17 @@ IB_DESIGNABLE
 
 @end
 
-@protocol SmilieKeyboardViewDelegate <NSObject>
+@protocol SmilieKeyboardDataSource <NSObject>
 
 - (NSInteger)numberOfSectionsInSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (NSInteger)smilieKeyboard:(SmilieKeyboardView *)keyboardView numberOfSmiliesInSection:(NSInteger)section;
 
 - (CGSize)smilieKeyboard:(SmilieKeyboardView *)keyboardView sizeOfSmilieAtIndexPath:(NSIndexPath *)indexPath;
 - (id /* UIImage or FLAnimatedImage */)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
+@protocol SmilieKeyboardDelegate <NSObject>
 
 - (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;

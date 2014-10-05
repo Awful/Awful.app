@@ -1,13 +1,13 @@
-//  AwfulComposeTextView.h
+//  ComposeTextView.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 /**
- * An AwfulComposeTextView is a text view suitable for composing replies, posts and private messages.
+ * A ComposeTextView is a text view suitable for composing replies, posts and private messages.
  */
-@interface AwfulComposeTextView : UITextView
+@interface ComposeTextView : UITextView
 
 @end
 

@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ComposeTextViewController.h"
-#import "AwfulComposeTextView.h"
+#import "ComposeTextView.h"
 #import "AwfulTextAttachment.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
@@ -67,7 +67,7 @@
 
 - (void)loadView
 {
-    UITextView *textView = [AwfulComposeTextView new];
+    UITextView *textView = [ComposeTextView new];
     textView.restorationIdentifier = @"AwfulComposeTextView";
     textView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	textView.delegate = self;
