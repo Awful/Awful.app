@@ -108,8 +108,7 @@
 
 static BOOL HasFullAccess(void)
 {
-    NSURL *groupContainer = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.com.awfulapp.SmilieKeyboard"];
-    return [[NSFileManager defaultManager] isReadableFileAtPath:groupContainer.path];
+    return [[NSFileManager defaultManager] isReadableFileAtPath:SmilieKeyboardSharedContainerURL().path];
 }
 
 // Redeclared as IBAction.
@@ -133,7 +132,11 @@ static BOOL HasFullAccess(void)
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
-    [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
+    if (SmilieKeyboardIsAwfulAppActive()) {
+        [self.textDocumentProxy insertText:smilie.text];
+    } else {
+        [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
+    }
 }
 
 @end

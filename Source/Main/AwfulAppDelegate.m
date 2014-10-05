@@ -22,6 +22,7 @@
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
+#import <Smilies/Smilies.h>
 #import "Awful-Swift.h"
 
 @interface AwfulAppDelegate ()
@@ -269,6 +270,8 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    SmilieKeyboardSetIsAwfulAppActive(NO);
+    
     NSError *error;
     BOOL ok = [_dataStack.managedObjectContext save:&error];
     if (!ok) {
@@ -278,6 +281,8 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    SmilieKeyboardSetIsAwfulAppActive(YES);
+    
     if (![AwfulForumsClient client].loggedIn) return;
     
     NSURL *URL = [UIPasteboard generalPasteboard].awful_URL;

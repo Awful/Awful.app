@@ -70,6 +70,8 @@
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
 		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
@@ -491,6 +493,8 @@
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieAppContainer.h; sourceTree = "<group>"; };
+		1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieAppContainer.m; sourceTree = "<group>"; };
 		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
 		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
 		1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsAvatarHeader.swift; sourceTree = "<group>"; };
@@ -1174,6 +1178,8 @@
 				1C66A9C319DD304E001B9A41 /* Info.plist */,
 				1C66A9E619DD345D001B9A41 /* Smilie.h */,
 				1C66A9E719DD345D001B9A41 /* Smilie.m */,
+				1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */,
+				1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */,
 				1C66AA1019DDF54A001B9A41 /* SmilieButton.h */,
 				1C66AA1119DDF54A001B9A41 /* SmilieButton.m */,
 				1C7B010819DE89B000542293 /* SmilieCell.h */,
@@ -1697,6 +1703,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */,
+				1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */,
 				1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */,
 				1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */,
 				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
@@ -2208,6 +2215,7 @@
 				1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */,
 				1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */,
 				1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */,
+				1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
 				1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */,
 				1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */,

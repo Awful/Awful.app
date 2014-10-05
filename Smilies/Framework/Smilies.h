@@ -7,6 +7,7 @@
 @import UIKit;
 
 #import <Smilies/Smilie.h>
+#import <Smilies/SmilieAppContainer.h>
 #import <Smilies/SmilieButton.h>
 #import <Smilies/SmilieDataStore.h>
 #import <Smilies/SmilieFetchedDataSource.h>
