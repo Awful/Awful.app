@@ -4,7 +4,6 @@
 
 @import UIKit;
 @class Smilie;
-
 @protocol SmilieKeyboardViewDelegate;
 
 IB_DESIGNABLE
