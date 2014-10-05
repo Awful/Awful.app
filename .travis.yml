@@ -7,7 +7,3 @@ script: xctool test
 notifications:
   email:
     - nolan@nolanw.ca
-
-branches:
-  except:
-    - master # until Xcode 6 shows up
