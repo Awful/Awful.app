@@ -4,13 +4,13 @@
 
 #import "AwfulComposeTextView.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulKeyboardBar.h"
+#import "KeyboardBar.h"
 #import "AwfulTextAttachment.h"
 #import <PSMenuItem/PSMenuItem.h>
 
 @interface AwfulComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
-@property (strong, nonatomic) AwfulKeyboardBar *BBcodeBar;
+@property (strong, nonatomic) KeyboardBar *BBcodeBar;
 
 @property (copy, nonatomic) NSArray *topLevelMenuItems;
 @property (copy, nonatomic) NSArray *URLSubmenuItems;
@@ -26,13 +26,12 @@
     UIPopoverController *_imagePickerPopover;
 }
 
-- (AwfulKeyboardBar *)BBcodeBar
+- (KeyboardBar *)BBcodeBar
 {
     if (_BBcodeBar) return _BBcodeBar;
-    _BBcodeBar = [AwfulKeyboardBar new];
+    _BBcodeBar = [KeyboardBar new];
     _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
                                   UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
-    _BBcodeBar.strings = @[ @"[", @"=", @":", @"/", @"]", @"[/..]" ];
     _BBcodeBar.textView = self;
     _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
     return _BBcodeBar;

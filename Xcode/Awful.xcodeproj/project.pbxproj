@@ -126,7 +126,7 @@
 		1C6FFEE1182AA5CB0014311C /* AwfulScrapingTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* AwfulScrapingTestCase.m */; };
 		1C6FFEE2182AA9550014311C /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
-		1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */; };
+		1C7487F116A88BAD0068B8A3 /* KeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */; };
 		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
 		1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -561,8 +561,8 @@
 		1C6FFEDF182AA5AA0014311C /* AwfulScrapingTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScrapingTestCase.m; sourceTree = "<group>"; };
 		1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagAndRatingView.h; sourceTree = "<group>"; };
 		1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagAndRatingView.m; sourceTree = "<group>"; };
-		1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulKeyboardBar.h; sourceTree = "<group>"; };
-		1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulKeyboardBar.m; sourceTree = "<group>"; };
+		1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardBar.h; sourceTree = "<group>"; };
+		1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardBar.m; sourceTree = "<group>"; };
 		1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HierarchySearch.h"; sourceTree = "<group>"; };
 		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
 		1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISplitViewController+AwfulConvenient.h"; sourceTree = "<group>"; };
@@ -1584,14 +1584,14 @@
 				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CBC74AF181A4DC30076234E /* AwfulComposeTextView.h */,
 				1CBC74B0181A4DC30076234E /* AwfulComposeTextView.m */,
-				1C7487EF16A88BAD0068B8A3 /* AwfulKeyboardBar.h */,
-				1C7487F016A88BAD0068B8A3 /* AwfulKeyboardBar.m */,
 				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
 				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */,
 				1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */,
 				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
+				1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */,
+				1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -2345,7 +2345,7 @@
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C6D3EEB168D7B1E00B91A65 /* AwfulUser.m in Sources */,
 				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
-				1C7487F116A88BAD0068B8A3 /* AwfulKeyboardBar.m in Sources */,
+				1C7487F116A88BAD0068B8A3 /* KeyboardBar.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
