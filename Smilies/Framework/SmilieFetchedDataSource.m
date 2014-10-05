@@ -33,10 +33,8 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
         fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"section" ascending:YES],
                                          [NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
-        NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        context.parentContext = self.dataStore.managedObjectContext;
         _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                        managedObjectContext:context
+                                                                        managedObjectContext:self.dataStore.managedObjectContext
                                                                           sectionNameKeyPath:@"section"
                                                                                    cacheName:nil];
         _fetchedResultsController.delegate = self;

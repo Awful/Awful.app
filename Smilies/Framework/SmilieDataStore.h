@@ -6,7 +6,7 @@
 
 @interface SmilieDataStore : NSObject
 
-// Private queue concurrency type.
+// Main queue concurrency type.
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 + (NSManagedObjectModel *)managedObjectModel;

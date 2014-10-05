@@ -35,21 +35,15 @@
 
 - (void)testBacktowork
 {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"fetch :backtowork:"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"text = %@", @":backtowork:"];
-    [self.managedObjectContext performBlock:^{
-        NSError *error;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        XCTAssert(results.count == 1, @"couldn't find :backtowork:, possible error: %@", error);
-        
-        Smilie *smilie = results[0];
-        XCTAssertEqualObjects(smilie.imageURL.lastPathComponent, @"emot-backtowork.gif");
-        XCTAssert(CGSizeEqualToSize(smilie.imageSize, CGSizeMake(38, 25)));
-        
-        [expectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:1 handler:nil];
+    NSError *error;
+    NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    XCTAssert(results.count == 1, @"couldn't find :backtowork:, possible error: %@", error);
+    
+    Smilie *smilie = results[0];
+    XCTAssertEqualObjects(smilie.imageURL.lastPathComponent, @"emot-backtowork.gif");
+    XCTAssert(CGSizeEqualToSize(smilie.imageSize, CGSizeMake(38, 25)));
 }
 
 @end

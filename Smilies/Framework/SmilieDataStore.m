@@ -19,7 +19,7 @@
         if (![storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:@"NoMetadata" URL:[[self class] bundledSmilieStoreURL] options:options error:&error]) {
             NSLog(@"%s error adding bundled store: %@", __PRETTY_FUNCTION__, error);
         }
-        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedObjectContext.persistentStoreCoordinator = storeCoordinator;
     }
     return _managedObjectContext;
