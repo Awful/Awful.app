@@ -82,7 +82,7 @@
     
     UIView *mainView;
     
-    if (HasFullAccess()) {
+    if (HasFullAccess() || SmilieKeyboardIsAwfulAppActive()) {
         self.keyboardView.dataSource = self.dataSource;
         self.keyboardView.delegate = self;
         mainView = self.keyboardView;
