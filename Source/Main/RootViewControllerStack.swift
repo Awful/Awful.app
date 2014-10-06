@@ -186,30 +186,46 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 
 extension RootViewControllerStack: UISplitViewControllerDelegate {
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+        kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
+        
+        let secondaryNavigationController = secondaryViewController as UINavigationController
+        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
+            detail.navigationItem.leftBarButtonItem = nil
+        }
         
         // We have no need for the empty view controller when collapsed.
         if secondaryViewController.awful_firstDescendantViewControllerOfClass(EmptyViewController.self) != nil {
             return true
         }
         
-        let secondaryNavigationController = secondaryViewController as UINavigationController
         let combinedStack = primaryNavigationController.viewControllers + secondaryNavigationController.viewControllers
         primaryNavigationController.viewControllers = combinedStack
+        
         return true
     }
     
     func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController!) -> UIViewController! {
+        kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
+        
         let viewControllers = primaryNavigationController.viewControllers as [UIViewController]
-        var secondaryViewControllers = Array(slice(viewControllers) { $0.prefersSecondaryViewController })
+        let (primaryStack, secondaryStack) = partition(viewControllers) { $0.prefersSecondaryViewController }
         let secondaryNavigationController = createEmptyDetailNavigationController()
-        if !secondaryViewControllers.isEmpty {
-            secondaryNavigationController.viewControllers = secondaryViewControllers
-            let primaryViewControllers = Array(viewControllers[0 ..< viewControllers.count - secondaryViewControllers.count])
-            primaryNavigationController.viewControllers = primaryViewControllers
+        primaryNavigationController.viewControllers = Array(primaryStack)
+        secondaryNavigationController.viewControllers = Array(secondaryStack.isEmpty ? [EmptyViewController()] : secondaryStack)
+        
+        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
+            detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
         }
         
         // TODO bring along the swipe-from-right-edge-to-unpop stack too
         return secondaryNavigationController
+    }
+    
+    // Split view controllers really don't like it outside of .Automatic on iPhone 6+. This largely works around a bug whereby the screen just turns grey after rotating from landscape to portrait with "Hide sidebar in landscape" enabled. rdar://18553183
+    private func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
+        let tempMode = splitViewController.preferredDisplayMode
+        splitViewController.preferredDisplayMode = .Automatic
+        splitViewController.preferredDisplayMode = tempMode
     }
     
     func splitViewController(splitViewController: UISplitViewController, showDetailViewController viewController: UIViewController!, sender: AnyObject!) -> Bool {
@@ -230,29 +246,19 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         
         return true
     }
-    
-    func splitViewController(splitViewController: UISplitViewController, willChangeToDisplayMode displayMode: UISplitViewControllerDisplayMode) {
-        if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
-            if displayMode == .AllVisible {
-                detail.navigationItem.leftBarButtonItem = nil
-            } else {
-                detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
-            }
-        }
-    }
 }
 
 private func navigationIdentifier(rootIdentifier: String?) -> String {
     return "\(rootIdentifier) navigation"
 }
 
-func slice<S:Sliceable>(s: S, test: (S.Generator.Element) -> Bool) -> S.SubSlice {
+func partition<S:Sliceable>(s: S, test: (S.Generator.Element) -> Bool) -> (S.SubSlice, S.SubSlice) {
     for i in s.startIndex ..< s.endIndex {
         if test(s[i]) {
-            return s[i ..< s.endIndex]
+            return (s[s.startIndex ..< i], s[i ..< s.endIndex])
         }
     }
-    return s[s.endIndex ..< s.endIndex]
+    return (s[s.startIndex ..< s.endIndex], s[s.endIndex ..< s.endIndex])
 }
 
 extension UIViewController {
