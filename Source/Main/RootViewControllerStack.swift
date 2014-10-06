@@ -116,7 +116,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 		if AwfulSettings.sharedSettings().darkTheme {
 			self.tabBarController.tabBar.barTintColor = UIColor.blackColor()
 		} else {
-			//
 			self.tabBarController.tabBar.barTintColor = nil
 		}
 		self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
@@ -124,10 +123,13 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 	
     private func configureSplitViewControllerDisplayMode() {
         if AwfulSettings.sharedSettings().hideSidebarInLandscape {
-            if splitViewController.displayMode == .PrimaryOverlay {
+            switch splitViewController.displayMode {
+            case .PrimaryOverlay, .AllVisible:
                 splitViewController.preferredDisplayMode = .PrimaryOverlay
-            } else {
+            case .PrimaryHidden:
                 splitViewController.preferredDisplayMode = .PrimaryHidden
+            default:
+                fatalError("unexpected display mode") /* can't interpolaote splitViewController.displayMode?? */
             }
         } else {
             splitViewController.preferredDisplayMode = .Automatic
@@ -157,12 +159,11 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     func didAppear() {
-        if let detailNavigationController = detailNavigationController {
+        if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
 
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
-                let detailViewController = detailNavigationController.viewControllers[0] as UIViewController
-                detailViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+                detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             }
         }
     }
@@ -178,9 +179,13 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         }
     }
     
-    // MARK: UISplitViewControllerDelegate
-    
-    func splitViewController(splitViewController: UISplitViewController!, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+    override init() {
+        fatalError("RootViewControllerStack needs a managed object context")
+    }
+}
+
+extension RootViewControllerStack: UISplitViewControllerDelegate {
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         
         // We have no need for the empty view controller when collapsed.
         if secondaryViewController.awful_firstDescendantViewControllerOfClass(EmptyViewController.self) != nil {
@@ -193,7 +198,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         return true
     }
     
-    func splitViewController(splitViewController: UISplitViewController!, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController!) -> UIViewController! {
+    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController!) -> UIViewController! {
         let viewControllers = primaryNavigationController.viewControllers as [UIViewController]
         var secondaryViewControllers = Array(slice(viewControllers) { $0.prefersSecondaryViewController })
         let secondaryNavigationController = createEmptyDetailNavigationController()
@@ -202,19 +207,19 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             let primaryViewControllers = Array(viewControllers[0 ..< viewControllers.count - secondaryViewControllers.count])
             primaryNavigationController.viewControllers = primaryViewControllers
         }
-
+        
         // TODO bring along the swipe-from-right-edge-to-unpop stack too
         return secondaryNavigationController
     }
-
-    func splitViewController(splitViewController: UISplitViewController!, showDetailViewController viewController: UIViewController!, sender: AnyObject!) -> Bool {
+    
+    func splitViewController(splitViewController: UISplitViewController, showDetailViewController viewController: UIViewController!, sender: AnyObject!) -> Bool {
         if splitViewController.collapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
             if splitViewController.displayMode != .AllVisible {
                 viewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             }
-
+            
             self.detailNavigationController!.setViewControllers([viewController], animated: false)
             
             // Laying out the split view now prevents it from getting caught up in the animation block that hides the primary view controller. Otherwise we get to see an ugly animated resizing of the new secondary view from a 0-rect up to full screen.
@@ -222,23 +227,18 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             
             splitViewController.awful_hidePrimaryViewController()
         }
-
+        
         return true
     }
-
-    func splitViewController(splitViewController: UISplitViewController!, willChangeToDisplayMode displayMode: UISplitViewControllerDisplayMode) {
-        let rootViewController = detailNavigationController!.viewControllers[0] as UIViewController
-        if displayMode == .AllVisible {
-            rootViewController.navigationItem.setLeftBarButtonItem(nil, animated: true)
-        } else {
-            rootViewController.navigationItem.setLeftBarButtonItem(splitViewController.displayModeButtonItem(), animated: true)
+    
+    func splitViewController(splitViewController: UISplitViewController, willChangeToDisplayMode displayMode: UISplitViewControllerDisplayMode) {
+        if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
+            if displayMode == .AllVisible {
+                detail.navigationItem.leftBarButtonItem = nil
+            } else {
+                detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+            }
         }
-    }
-    
-    // MARK: Initializer not meant to be called
-    
-    override init() {
-        fatalError("RootViewControllerStack needs a managed object context")
     }
 }
 
