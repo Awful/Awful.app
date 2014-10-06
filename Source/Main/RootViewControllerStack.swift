@@ -221,7 +221,7 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         return secondaryNavigationController
     }
     
-    // Split view controllers really don't like it outside of .Automatic on iPhone 6+. This largely works around a bug whereby the screen just turns grey after rotating from landscape to portrait with "Hide sidebar in landscape" enabled. rdar://18553183
+    // Split view controllers really don't like it outside of .Automatic on iPhone 6+. This largely works around a bug whereby the screen just turns grey after rotating from landscape to portrait with "Hide sidebar in landscape" enabled. rdar://problem/18553183
     private func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
         let tempMode = splitViewController.preferredDisplayMode
         splitViewController.preferredDisplayMode = .Automatic

@@ -8,7 +8,7 @@
 /**
  * An AwfulPostsView wraps a UIWebView, which reacts poorly to a contentInset, in a UIScrollView which has no such reaction.
  *
- * Specifically, when a UIWebView has a contentInset, elements' bounding rects seem to be adjusted but `document.elementFromPoint` doesn't consider this. Since it returns null if either argument is negative, some visible elements will never be returned. rdar://16925474
+ * Specifically, when a UIWebView has a contentInset, elements' bounding rects seem to be adjusted but `document.elementFromPoint` doesn't consider this. Since it returns null if either argument is negative, some visible elements will never be returned. rdar://problem/16925474
  *
  * We want to use a top contentInset for showing the top bar. Since that won't work, an AwfulPostsView will fake it for us.
  */

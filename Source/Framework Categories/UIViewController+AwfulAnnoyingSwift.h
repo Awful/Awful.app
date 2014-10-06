@@ -7,7 +7,7 @@
 @interface UIViewController (AwfulAnnoyingSwift)
 
 /**
- * Setting the `restorationClass` to `nil` from Swift causes a crash on a device when built with the Release configuration (iOS 8.0 GM). Call this method instead to avoid the crash. rdar://18315383
+ * Setting the `restorationClass` to `nil` from Swift causes a crash on a device when built with the Release configuration (iOS 8.0 GM). Call this method instead to avoid the crash. rdar://problem/18315383
  */
 - (void)awful_clearRestorationClass;
 
