@@ -43,7 +43,7 @@ class Selectotron : AwfulViewController {
         get {
             return picker.selectedRowInComponent(0) + 1
         } set {
-            picker.selectRow(selectedPage - 1, inComponent: 0, animated: false)
+            picker.selectRow(newValue - 1, inComponent: 0, animated: false)
             updateJumpButtonTitle()
         }
     }
@@ -51,23 +51,8 @@ class Selectotron : AwfulViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let page = postsViewController.page
-        switch page {
-        case AwfulThreadPage.Last.toRaw():
-            selectedPage = picker.numberOfRowsInComponent(0)
-        case AwfulThreadPage.NextUnread.toRaw(), AwfulThreadPage.None.toRaw():
-            break
-        default:
-            selectedPage = page
-        }
-        
         let preferredHeight = view.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
-    }
-    
-    private func updateJumpButtonTitle() {
-        let title = selectedPage == postsViewController.page ? "Reload" : "Jump"
-        jumpButton.setTitle(title, forState: .Normal)
     }
     
     override func themeDidChange() {
@@ -79,6 +64,25 @@ class Selectotron : AwfulViewController {
         popoverPresentationController?.backgroundColor = backgroundColor
         buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
         picker.reloadAllComponents()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let page = postsViewController.page
+        switch page {
+        case AwfulThreadPage.Last.toRaw():
+            selectedPage = picker.numberOfRowsInComponent(0)
+        case AwfulThreadPage.NextUnread.toRaw(), AwfulThreadPage.None.toRaw():
+            break
+        default:
+            selectedPage = page
+        }
+    }
+    
+    private func updateJumpButtonTitle() {
+        let title = selectedPage == postsViewController.page ? "Reload" : "Jump"
+        jumpButton.setTitle(title, forState: .Normal)
     }
     
     private override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
