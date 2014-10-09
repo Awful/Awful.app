@@ -185,6 +185,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 }
 
 extension RootViewControllerStack: UISplitViewControllerDelegate {
+    
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
@@ -199,7 +200,14 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         }
         
         let combinedStack = primaryNavigationController.viewControllers + secondaryNavigationController.viewControllers
+        secondaryNavigationController.viewControllers = nil
         primaryNavigationController.viewControllers = combinedStack
+        
+        // This ugliness fixes the resulting navigation controller's toolbar appearing empty despite having the correct items. (i.e. none of the items' views are in the toolbar's view hierarchy.) Presumably if some fix is discovered for the grey screen mentioned atop kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior, I think this will be fixed too. Or at least it's worth testing out.
+        let toolbar = primaryNavigationController.toolbar
+        let items = toolbar.items
+        toolbar.items = nil
+        toolbar.items = items
         
         return true
     }
