@@ -40,6 +40,7 @@
             // Clear out the image.
             super.image = nil;
             super.highlighted = NO;
+            [self invalidateIntrinsicContentSize];
         } else {
             // Stop animating before the animated image gets cleared out.
             [self stopAnimating];
@@ -183,6 +184,15 @@
 {
     if (!self.animatedImage) {
         [super setHighlighted:highlighted];
+    }
+}
+
+- (CGSize)intrinsicContentSize
+{
+    if (self.animatedImage) {
+        return self.image.size;
+    } else {
+        return [super intrinsicContentSize];
     }
 }
 

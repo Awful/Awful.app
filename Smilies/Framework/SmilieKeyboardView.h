@@ -15,6 +15,7 @@ IB_DESIGNABLE
 @property (weak, nonatomic) id <SmilieKeyboardDataSource> dataSource;
 @property (weak, nonatomic) id <SmilieKeyboardDelegate> delegate;
 
+@property (strong, nonatomic) IBInspectable UIColor *normalBackgroundColor;
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
 - (void)reloadData;

@@ -7,6 +7,7 @@
 IB_DESIGNABLE
 @interface SmilieButton : UIButton
 
+@property (strong, nonatomic) IBInspectable UIColor *selectedTintColor;
 @property (strong, nonatomic) IBInspectable UIColor *normalBackgroundColor;
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
@@ -17,7 +18,8 @@ IB_DESIGNABLE
    * You can't specify which bundle has the image you set in Interface Builder, so using Smilies.framework image assets from other bundles works in IB but fails at runtime.
    * This way properly loads the image as a template image when rendering in IB, so it's tinted properly.
  */
-@interface SmilieBacktoworkButton : SmilieButton @end
 @interface SmilieDeleteButton : SmilieButton @end
+@interface SmilieFavoriteButton : SmilieButton @end
+@interface SmilieGridButton : SmilieButton @end
 @interface SmilieNextKeyboardButton : SmilieButton @end
-@interface SmilieRecentsButton : SmilieButton @end
+@interface SmilieRecentButton : SmilieButton @end

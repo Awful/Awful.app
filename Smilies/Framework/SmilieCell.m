@@ -12,22 +12,77 @@
 
 @implementation SmilieCell
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if ((self = [super initWithFrame:frame])) {
+        self.contentView.clipsToBounds = YES;
+        self.contentView.layer.cornerRadius = 5;
+        self.layer.shadowOpacity = 1;
+        self.layer.shadowOffset = CGSizeMake(0, 1);
+        self.layer.shadowRadius = 0;
+        self.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+    }
+    return self;
+}
+
 - (FLAnimatedImageView *)imageView
 {
     if (!_imageView) {
         _imageView = [FLAnimatedImageView new];
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [_imageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-        [_imageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-        [_imageView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-        [_imageView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
         [self.contentView addSubview:_imageView];
         
-        NSDictionary *views = @{@"image": _imageView};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[image]|" options:0 metrics:nil views:views]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[image]|" options:0 metrics:nil views:views]];
+        [self.contentView addConstraint:
+         [NSLayoutConstraint constraintWithItem:_imageView
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.contentView
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+        [self.contentView addConstraint:
+         [NSLayoutConstraint constraintWithItem:_imageView
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.contentView
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
     }
     return _imageView;
+}
+
+- (void)setNormalBackgroundColor:(UIColor *)normalBackgroundColor
+{
+    _normalBackgroundColor = normalBackgroundColor;
+    [self updateBackgroundColor];
+}
+
+- (void)setSelectedBackgroundColor:(UIColor *)selectedBackgroundColor
+{
+    _selectedBackgroundColor = selectedBackgroundColor;
+    [self updateBackgroundColor];
+}
+
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    [self updateBackgroundColor];
+}
+
+- (void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    [self updateBackgroundColor];
+}
+
+- (void)updateBackgroundColor
+{
+    if (self.highlighted || self.selected) {
+        self.contentView.backgroundColor = self.selectedBackgroundColor;
+    } else {
+        self.contentView.backgroundColor = self.normalBackgroundColor;
+    }
 }
 
 @end

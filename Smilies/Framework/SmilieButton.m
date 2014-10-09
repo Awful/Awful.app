@@ -6,6 +6,21 @@
 
 @implementation SmilieButton
 
+- (void)setSelectedTintColor:(UIColor *)selectedTintColor
+{
+    _selectedTintColor = selectedTintColor;
+    [self updateTintColor];
+}
+
+- (void)updateTintColor
+{
+    if (self.selected || self.highlighted) {
+        self.tintColor = self.selectedTintColor;
+    } else {
+        self.tintColor = nil;
+    }
+}
+
 - (void)setNormalBackgroundColor:(UIColor *)normalBackgroundColor
 {
     _normalBackgroundColor = normalBackgroundColor;
@@ -18,25 +33,27 @@
     [self updateBackgroundColor];
 }
 
+- (void)updateBackgroundColor
+{
+    if (self.selected || self.highlighted) {
+        self.backgroundColor = self.selectedBackgroundColor;
+    } else {
+        self.backgroundColor = self.normalBackgroundColor;
+    }
+}
+
 - (void)setHighlighted:(BOOL)highlighted
 {
     [super setHighlighted:highlighted];
+    [self updateTintColor];
     [self updateBackgroundColor];
 }
 
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
+    [self updateTintColor];
     [self updateBackgroundColor];
-}
-
-- (void)updateBackgroundColor
-{
-    if (self.state & (UIControlStateSelected | UIControlStateHighlighted)) {
-        self.backgroundColor = self.selectedBackgroundColor;
-    } else {
-        self.backgroundColor = self.normalBackgroundColor;
-    }
 }
 
 @end
@@ -75,26 +92,32 @@ static UIImage * FrameworkImageNamed(NSString *imageName)
     return [UIImage imageNamed:imageName inBundle:frameworkBundle compatibleWithTraitCollection:nil];
 }
 
-@implementation SmilieBacktoworkButton
-
-ImplementFrameworkButton(@"emot-backtowork")
-
-@end
-
 @implementation SmilieDeleteButton
 
 ImplementFrameworkButton(@"delete")
 
 @end
 
-@implementation SmilieNextKeyboardButton
+@implementation SmilieFavoriteButton
 
-ImplementFrameworkButton(@"next_keyboard")
+ImplementFrameworkButton(@"favorite")
 
 @end
 
-@implementation SmilieRecentsButton
+@implementation SmilieGridButton
 
-ImplementFrameworkButton(@"recents")
+ImplementFrameworkButton(@"grid")
+
+@end
+
+@implementation SmilieNextKeyboardButton
+
+ImplementFrameworkButton(@"next-keyboard")
+
+@end
+
+@implementation SmilieRecentButton
+
+ImplementFrameworkButton(@"recent")
 
 @end

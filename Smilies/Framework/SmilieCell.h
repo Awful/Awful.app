@@ -9,4 +9,7 @@
 
 @property (readonly, strong, nonatomic) FLAnimatedImageView *imageView;
 
+@property (strong, nonatomic) UIColor *normalBackgroundColor;
+@property (strong, nonatomic) UIColor *selectedBackgroundColor;
+
 @end

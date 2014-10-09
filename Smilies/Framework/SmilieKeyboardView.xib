@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14A379a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14A386a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
@@ -10,95 +10,125 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ph3-Gp-eRH" userLabel="Delete Key" customClass="SmilieDeleteButton">
-                    <rect key="frame" x="0.0" y="0.0" width="38" height="40"/>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                            <color key="value" red="0.67450980392156867" green="0.69019607843137254" blue="0.70980392156862748" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                            <color key="value" red="0.96078431372549022" green="0.96470588235294119" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="didTapDelete" destination="iN0-l3-epB" eventType="touchUpInside" id="NSA-Dy-IG2"/>
-                    </connections>
-                </button>
-                <button contentMode="scaleAspectFit" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IgC-8N-JBR" userLabel="All Smilies" customClass="SmilieBacktoworkButton">
-                    <rect key="frame" x="0.0" y="40" width="38" height="45"/>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                            <color key="value" red="0.96078431369999995" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                            <color key="value" red="0.67843137249999996" green="0.69019607839999997" blue="0.71372549019999998" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </button>
-                <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mjd-xk-tC7" userLabel="Favorite Smilies" customClass="SmilieButton">
-                    <rect key="frame" x="0.0" y="86" width="38" height="44"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                    <state key="normal" title="❤️">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                            <color key="value" red="0.96078431369999995" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                            <color key="value" red="0.67843137254901964" green="0.69019607843137254" blue="0.71372549019607845" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </button>
-                <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CX9-Tm-1f0" userLabel="Recent Smilies" customClass="SmilieRecentsButton">
-                    <rect key="frame" x="0.0" y="131" width="38" height="45"/>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                            <color key="value" red="0.96078431369999995" green="0.96470588239999999" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                            <color key="value" red="0.67843137249999996" green="0.69019607839999997" blue="0.71372549019999998" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </button>
-                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEL-V5-xE7" userLabel="Next Keyboard Key" customClass="SmilieNextKeyboardButton">
-                    <rect key="frame" x="0.0" y="176" width="38" height="40"/>
+                <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ru-mE-svh" userLabel="Button Container">
+                    <rect key="frame" x="0.0" y="0.0" width="36" height="216"/>
+                    <subviews>
+                        <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ph3-Gp-eRH" userLabel="Delete Key" customClass="SmilieDeleteButton">
+                            <rect key="frame" x="0.0" y="0.0" width="36" height="43"/>
+                            <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
+                                    <color key="value" red="0.086274509803921567" green="0.43529411764705883" blue="0.63137254901960782" alpha="1" colorSpace="calibratedRGB"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="didTapDelete" destination="iN0-l3-epB" eventType="touchUpInside" id="NSA-Dy-IG2"/>
+                            </connections>
+                        </button>
+                        <button contentMode="scaleAspectFit" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IgC-8N-JBR" userLabel="All Smilies" customClass="SmilieGridButton">
+                            <rect key="frame" x="0.0" y="43" width="36" height="43"/>
+                            <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
+                                    <color key="value" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </button>
+                        <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mjd-xk-tC7" userLabel="Favorite Smilies" customClass="SmilieFavoriteButton">
+                            <rect key="frame" x="0.0" y="86" width="36" height="44"/>
+                            <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
+                                    <color key="value" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </button>
+                        <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CX9-Tm-1f0" userLabel="Recent Smilies" customClass="SmilieRecentButton">
+                            <rect key="frame" x="0.0" y="130" width="36" height="43"/>
+                            <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
+                                    <color key="value" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </button>
+                        <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEL-V5-xE7" userLabel="Next Keyboard Key" customClass="SmilieNextKeyboardButton">
+                            <rect key="frame" x="0.0" y="173" width="36" height="43"/>
+                            <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
+                                    <color key="value" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="didTapNextKeyboard" destination="iN0-l3-epB" eventType="touchUpInside" id="zxu-n2-4CZ"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="40" id="xht-05-Sjt"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="leading" id="3JD-sH-s0a"/>
+                        <constraint firstItem="nEL-V5-xE7" firstAttribute="top" secondItem="CX9-Tm-1f0" secondAttribute="bottom" id="3Ve-p9-0FK"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="height" secondItem="CX9-Tm-1f0" secondAttribute="height" id="D4K-c3-HR8"/>
+                        <constraint firstItem="IgC-8N-JBR" firstAttribute="trailing" secondItem="6ru-mE-svh" secondAttribute="trailing" id="E9F-cQ-rJN"/>
+                        <constraint firstItem="CX9-Tm-1f0" firstAttribute="top" secondItem="mjd-xk-tC7" secondAttribute="bottom" id="O1v-zF-lj2"/>
+                        <constraint firstItem="nEL-V5-xE7" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="leading" id="Pn7-94-Atm"/>
+                        <constraint firstItem="mjd-xk-tC7" firstAttribute="trailing" secondItem="6ru-mE-svh" secondAttribute="trailing" id="Q4g-dE-i4K"/>
+                        <constraint firstItem="CX9-Tm-1f0" firstAttribute="trailing" secondItem="6ru-mE-svh" secondAttribute="trailing" id="Qqq-L3-Con"/>
+                        <constraint firstItem="IgC-8N-JBR" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="leading" id="SNw-tQ-7hq"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="top" secondItem="6ru-mE-svh" secondAttribute="top" id="XWn-ml-Ell"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="height" secondItem="IgC-8N-JBR" secondAttribute="height" id="Y4R-JH-tHJ"/>
+                        <constraint firstAttribute="width" constant="36" id="crf-Ot-G2R"/>
+                        <constraint firstItem="nEL-V5-xE7" firstAttribute="bottom" secondItem="6ru-mE-svh" secondAttribute="bottom" id="f8f-sO-kN0"/>
+                        <constraint firstItem="mjd-xk-tC7" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="leading" id="hVZ-3C-9xz"/>
+                        <constraint firstItem="mjd-xk-tC7" firstAttribute="top" secondItem="IgC-8N-JBR" secondAttribute="bottom" id="it5-Xa-jXp"/>
+                        <constraint firstItem="IgC-8N-JBR" firstAttribute="top" secondItem="ph3-Gp-eRH" secondAttribute="bottom" id="r2F-0g-wlf"/>
+                        <constraint firstItem="CX9-Tm-1f0" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="leading" id="rEM-6i-4Kx"/>
+                        <constraint firstItem="mjd-xk-tC7" firstAttribute="height" secondItem="ph3-Gp-eRH" secondAttribute="height" id="s4d-1W-222"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="trailing" secondItem="6ru-mE-svh" secondAttribute="trailing" id="tws-0I-668"/>
+                        <constraint firstAttribute="centerY" secondItem="mjd-xk-tC7" secondAttribute="centerY" id="w5P-x8-nhS"/>
+                        <constraint firstItem="ph3-Gp-eRH" firstAttribute="height" secondItem="nEL-V5-xE7" secondAttribute="height" id="yUr-0p-YKc"/>
+                        <constraint firstItem="nEL-V5-xE7" firstAttribute="trailing" secondItem="6ru-mE-svh" secondAttribute="trailing" id="zVr-9x-SxB"/>
                     </constraints>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
-                            <color key="value" red="0.67450980392156867" green="0.68627450980392157" blue="0.70980392156862748" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                            <color key="value" red="0.96078431372549022" green="0.96470588235294119" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                    <variation key="heightClass=compact"/>
-                    <connections>
-                        <action selector="didTapNextKeyboard" destination="iN0-l3-epB" eventType="touchUpInside" id="zxu-n2-4CZ"/>
-                    </connections>
-                </button>
+                </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="iWV-Ro-qZd">
-                    <rect key="frame" x="39" y="0.0" width="281" height="216"/>
-                    <color key="backgroundColor" red="0.72941176470588232" green="0.74117647058823533" blue="0.76078431372549016" alpha="1" colorSpace="calibratedRGB"/>
-                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Jt7-Cp-Yyr">
+                    <rect key="frame" x="37" y="0.0" width="283" height="216"/>
+                    <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="Jt7-Cp-Yyr">
                         <size key="itemSize" width="50" height="50"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <inset key="sectionInset" minX="2" minY="2" maxX="2" maxY="0.0"/>
                     </collectionViewFlowLayout>
                     <connections>
                         <outlet property="dataSource" destination="iN0-l3-epB" id="s7G-9P-4es"/>
@@ -106,45 +136,31 @@
                     </connections>
                 </collectionView>
             </subviews>
-            <color key="backgroundColor" red="0.76470588235294112" green="0.78431372549019607" blue="0.80784313725490198" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="mjd-xk-tC7" firstAttribute="top" secondItem="IgC-8N-JBR" secondAttribute="bottom" constant="1" id="137-fp-G1U"/>
-                <constraint firstItem="IgC-8N-JBR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="1LX-Zn-Xt3"/>
-                <constraint firstAttribute="bottom" secondItem="nEL-V5-xE7" secondAttribute="bottom" id="4L4-V5-Bs8"/>
-                <constraint firstItem="nEL-V5-xE7" firstAttribute="top" secondItem="CX9-Tm-1f0" secondAttribute="bottom" id="ALs-aV-wnE"/>
-                <constraint firstItem="IgC-8N-JBR" firstAttribute="height" secondItem="mjd-xk-tC7" secondAttribute="height" id="CwY-o9-blZ"/>
-                <constraint firstItem="ph3-Gp-eRH" firstAttribute="height" secondItem="nEL-V5-xE7" secondAttribute="height" id="EgR-9G-93p"/>
-                <constraint firstItem="ph3-Gp-eRH" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="HNY-hS-ZFA"/>
-                <constraint firstItem="CX9-Tm-1f0" firstAttribute="height" secondItem="mjd-xk-tC7" secondAttribute="height" id="IFU-8p-m8o"/>
-                <constraint firstItem="nEL-V5-xE7" firstAttribute="width" secondItem="ph3-Gp-eRH" secondAttribute="width" id="IJm-Eg-hsD"/>
-                <constraint firstItem="mjd-xk-tC7" firstAttribute="width" secondItem="nEL-V5-xE7" secondAttribute="width" id="OP9-1E-cFt"/>
+                <constraint firstItem="6ru-mE-svh" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="F0d-wl-nF7"/>
+                <constraint firstItem="6ru-mE-svh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Fjf-wi-dT5"/>
                 <constraint firstAttribute="bottom" secondItem="iWV-Ro-qZd" secondAttribute="bottom" id="SCK-Wq-8LB"/>
-                <constraint firstItem="CX9-Tm-1f0" firstAttribute="top" secondItem="mjd-xk-tC7" secondAttribute="bottom" constant="1" id="ceA-YA-YDw"/>
                 <constraint firstAttribute="trailing" secondItem="iWV-Ro-qZd" secondAttribute="trailing" id="dHj-SS-xOb"/>
-                <constraint firstItem="IgC-8N-JBR" firstAttribute="top" secondItem="ph3-Gp-eRH" secondAttribute="bottom" id="lbD-k5-Iqv"/>
-                <constraint firstItem="nEL-V5-xE7" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="nbP-xw-iQs"/>
-                <constraint firstItem="ph3-Gp-eRH" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="oxi-17-t4c"/>
-                <constraint firstItem="mjd-xk-tC7" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="pbt-EP-0tM"/>
+                <constraint firstItem="iWV-Ro-qZd" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="trailing" constant="1" id="f2r-8w-5pH"/>
+                <constraint firstItem="6ru-mE-svh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fyq-uX-Dfl"/>
                 <constraint firstItem="iWV-Ro-qZd" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="su4-Zc-qkE"/>
-                <constraint firstItem="CX9-Tm-1f0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="v6S-cA-MQi"/>
-                <constraint firstItem="nEL-V5-xE7" firstAttribute="width" secondItem="CX9-Tm-1f0" secondAttribute="width" id="wIo-EJ-tDV"/>
-                <constraint firstItem="iWV-Ro-qZd" firstAttribute="leading" secondItem="nEL-V5-xE7" secondAttribute="trailing" constant="1" id="xnA-03-WAH"/>
-                <constraint firstItem="IgC-8N-JBR" firstAttribute="width" secondItem="nEL-V5-xE7" secondAttribute="width" id="zku-ga-sxF"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <userDefinedRuntimeAttributes>
                 <userDefinedRuntimeAttribute type="color" keyPath="selectedBackgroundColor">
-                    <color key="value" red="0.96078431372549022" green="0.96470588235294119" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="value" red="0.84370851516723633" green="0.86112260818481445" blue="0.87471717596054077" alpha="1" colorSpace="calibratedRGB"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="normalBackgroundColor">
+                    <color key="value" red="0.92549019607843142" green="0.94117647058823528" blue="0.95294117647058818" alpha="1" colorSpace="calibratedRGB"/>
                 </userDefinedRuntimeAttribute>
             </userDefinedRuntimeAttributes>
             <connections>
                 <outlet property="collectionView" destination="iWV-Ro-qZd" id="X1o-BJ-WHV"/>
                 <outlet property="flowLayout" destination="Jt7-Cp-Yyr" id="Lcs-o2-WIP"/>
-                <outletCollection property="hairlineConstraints" destination="137-fp-G1U" id="Zhe-nO-1i2"/>
-                <outletCollection property="hairlineConstraints" destination="ceA-YA-YDw" id="PqO-aU-9Jx"/>
-                <outletCollection property="hairlineConstraints" destination="xnA-03-WAH" id="0Hn-oa-ocS"/>
+                <outletCollection property="sectionButtons" destination="IgC-8N-JBR" id="Yyr-YH-fzU"/>
             </connections>
         </view>
     </objects>

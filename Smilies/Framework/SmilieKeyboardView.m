@@ -4,14 +4,16 @@
 
 #import "SmilieKeyboardView.h"
 #import <FLAnimatedImage/FLAnimatedImage.h>
-#import "SmilieCell.h"
 #import "Smilie.h"
+#import "SmilieCell.h"
 
 @interface SmilieKeyboardView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
-@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *hairlineConstraints;
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *sectionButtons;
+
+@property (assign, nonatomic) NSInteger selectedSection;
 
 @end
 
@@ -34,12 +36,18 @@
     [collectionView registerClass:[SmilieCell class] forCellWithReuseIdentifier:CellIdentifier];
 }
 
-- (void)updateConstraints
+- (void)setSelectedSection:(NSInteger)selectedSection
 {
-    for (NSLayoutConstraint *constraint in self.hairlineConstraints) {
-        constraint.constant = 0.5;
-    }
-    [super updateConstraints];
+    _selectedSection = selectedSection;
+    [self.sectionButtons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger i, BOOL *stop) {
+        button.selected = i == (NSUInteger)selectedSection;
+    }];
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    self.selectedSection = 0;
 }
 
 - (void)reloadData
@@ -79,30 +87,20 @@
         cell.imageView.image =image;
     }
     
-    if (!cell.selectedBackgroundView) cell.selectedBackgroundView = [UIView new];
-    cell.selectedBackgroundView.backgroundColor = self.selectedBackgroundColor;
+    cell.normalBackgroundColor = self.normalBackgroundColor;
+    cell.selectedBackgroundColor = self.selectedBackgroundColor;
     return cell;
-}
-
-#pragma mark - UICollectionViewDelegate
-
-- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    cell.contentView.backgroundColor = cell.selectedBackgroundView.backgroundColor;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    cell.contentView.backgroundColor = nil;
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
+    CGSize imageSize = [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
+    const CGFloat margin = 4;
+    const CGFloat minimumWidth = 50;
+    return CGSizeMake(MAX(imageSize.width + margin, minimumWidth),
+                      MAX(imageSize.height + margin, minimumWidth));
 }
 
 static NSString * const CellIdentifier = @"SmilieCell";
