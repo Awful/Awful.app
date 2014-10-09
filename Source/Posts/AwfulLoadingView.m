@@ -13,7 +13,6 @@
 @interface AwfulLoadingView ()
 
 @property (strong, nonatomic) AwfulTheme *theme;
-@property (strong, nonatomic) UILabel *messageLabel;
 
 - (void)retheme;
 
@@ -41,27 +40,6 @@
 	return loadingView;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    self.messageLabel = [UILabel new];
-    self.messageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    [self addSubview:self.messageLabel];
-    return self;
-}
-
-- (NSString *)message
-{
-    return self.messageLabel.text;
-}
-
-- (void)setMessage:(NSString *)message
-{
-    self.messageLabel.text = message;
-    [self setNeedsLayout];
-}
-
 - (void)retheme
 {
     // no-op
@@ -78,18 +56,38 @@
 
 @end
 
-@implementation AwfulDefaultLoadingView
-{
-    UIActivityIndicatorView *_spinner;
-}
+@interface AwfulDefaultLoadingView ()
 
-- (id)initWithFrame:(CGRect)frame
+@property (strong, nonatomic) UIActivityIndicatorView *spinner;
+
+@end
+
+@implementation AwfulDefaultLoadingView
+
+- (UIActivityIndicatorView *)spinner
 {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    _spinner = [UIActivityIndicatorView new];
-    [self addSubview:_spinner];
-    return self;
+    if (!_spinner) {
+        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        _spinner.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:_spinner];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:_spinner
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:_spinner
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
+    }
+    return _spinner;
 }
 
 - (void)retheme
@@ -99,61 +97,39 @@
 	UIColor *tint = self.theme[@"postsLoadingViewTintColor"];
 	
     self.backgroundColor = tint;
-    _spinner.backgroundColor = self.backgroundColor;
+    self.spinner.backgroundColor = self.backgroundColor;
     CGFloat whiteness = 1;
     BOOL ok = [tint getWhite:&whiteness alpha:nil];
     if (!ok) {
         [tint getRed:&whiteness green:nil blue:nil alpha:nil];
     }
-    if (whiteness < 0.1) {
-        _spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-        self.messageLabel.textColor = [UIColor colorWithWhite:0.95 alpha:1];
-        self.messageLabel.shadowColor = nil;
+    if (whiteness < 0.5) {
+        self.spinner.color = [UIColor whiteColor];
     } else {
-        _spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-        self.messageLabel.textColor = [UIColor blackColor];
+        self.spinner.color = [UIColor grayColor];
     }
-    self.messageLabel.backgroundColor = self.backgroundColor;
 }
-
-#pragma mark - UIView
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
     if (newSuperview) {
-        [_spinner startAnimating];
+        [self.spinner startAnimating];
     } else {
-        [_spinner stopAnimating];
+        [self.spinner stopAnimating];
     }
-}
-
-- (void)layoutSubviews
-{
-    [self.messageLabel sizeToFit];
-    const CGFloat spinnerWidth = 14;
-    const CGFloat margin = 8;
-    CGRect container = (CGRect){
-        .size.width = CGRectGetWidth(self.messageLabel.frame) + margin + spinnerWidth,
-        .size.height = MAX(spinnerWidth, CGRectGetHeight(self.messageLabel.frame)),
-    };
-    container.origin.x = (CGRectGetWidth(self.bounds) - CGRectGetWidth(container)) / 2;
-    container.origin.y = CGRectGetMidY(self.bounds) - CGRectGetHeight(container) / 2;
-    container = CGRectIntegral(container);
-    CGRect spinnerFrame, labelFrame;
-    CGRectDivide(container, &spinnerFrame, &labelFrame, spinnerWidth + margin, CGRectMinXEdge);
-    spinnerFrame.size.width -= margin;
-    _spinner.frame = spinnerFrame;
-    self.messageLabel.frame = labelFrame;
 }
 
 @end
 
+@interface AwfulYOSPOSLoadingView ()
+
+@property (strong, nonatomic) UILabel *ASCIISpinner;
+@property (strong, nonatomic) NSTimer *spinnerTimer;
+
+@end
+
 @implementation AwfulYOSPOSLoadingView
-{
-    UILabel *_ASCIISpinner;
-    NSTimer *_spinnerTimer;
-}
 
 - (void)dealloc
 {
@@ -162,41 +138,43 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.backgroundColor = [UIColor blackColor];
-    
-    _ASCIISpinner = [UILabel new];
-    _ASCIISpinner.font = [UIFont fontWithName:@"Menlo" size:15];
-    _ASCIISpinner.backgroundColor = self.backgroundColor;
-    [self advanceSpinner];
-    [self addSubview:_ASCIISpinner];
-    
-    self.messageLabel.backgroundColor = self.backgroundColor;
-    self.messageLabel.font = [UIFont fontWithName:@"Menlo" size:13];
+    if ((self = [super initWithFrame:frame])) {
+        self.backgroundColor = [UIColor blackColor];
+    }
     return self;
 }
 
-- (void)advanceSpinner
+- (UILabel *)ASCIISpinner
 {
-    NSString *state = _ASCIISpinner.text;
-    if ([state isEqualToString:@"/"]) {
-        _ASCIISpinner.text = @"-";
-    } else if ([state isEqualToString:@"-"]) {
-        _ASCIISpinner.text = @"\\";
-    } else if ([state isEqualToString:@"\\"]) {
+    if (!_ASCIISpinner) {
+        _ASCIISpinner = [UILabel new];
+        _ASCIISpinner.translatesAutoresizingMaskIntoConstraints = NO;
         _ASCIISpinner.text = @"|";
-    } else {
-        _ASCIISpinner.text = @"/";
+        _ASCIISpinner.font = [UIFont fontWithName:@"Menlo" size:15];
+        _ASCIISpinner.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:_ASCIISpinner];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[spinner]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:@{@"spinner": _ASCIISpinner}]];
+        [self addConstraint:
+         [NSLayoutConstraint constraintWithItem:_ASCIISpinner
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
     }
+    return _ASCIISpinner;
 }
 
 - (void)retheme
 {
-    self.messageLabel.textColor = self.theme[@"postsLoadingViewTintColor"];
-    _ASCIISpinner.textColor = self.theme[@"postsLoadingViewTintColor"];
+    self.ASCIISpinner.textColor = self.theme[@"postsLoadingViewTintColor"];
+    self.ASCIISpinner.backgroundColor = self.backgroundColor;
 }
-
-#pragma mark - UIView
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
@@ -210,11 +188,11 @@
 
 - (void)startAnimating
 {
-    _spinnerTimer = [NSTimer scheduledTimerWithTimeInterval:0.12
-                                                     target:self
-                                                   selector:@selector(spinnerTimerDidFire:)
-                                                   userInfo:nil
-                                                    repeats:YES];
+    self.spinnerTimer = [NSTimer scheduledTimerWithTimeInterval:0.12
+                                                         target:self
+                                                       selector:@selector(spinnerTimerDidFire:)
+                                                       userInfo:nil
+                                                        repeats:YES];
 }
 
 - (void)spinnerTimerDidFire:(NSTimer *)timer
@@ -222,58 +200,51 @@
     [self advanceSpinner];
 }
 
-- (void)stopAnimating
+- (void)advanceSpinner
 {
-    [_spinnerTimer invalidate];
-    _spinnerTimer = nil;
+    NSString *state = self.ASCIISpinner.text;
+    if ([state isEqualToString:@"/"]) {
+        self.ASCIISpinner.text = @"-";
+    } else if ([state isEqualToString:@"-"]) {
+        self.ASCIISpinner.text = @"\\";
+    } else if ([state isEqualToString:@"\\"]) {
+        self.ASCIISpinner.text = @"|";
+    } else {
+        self.ASCIISpinner.text = @"/";
+    }
 }
 
-- (void)layoutSubviews
+- (void)stopAnimating
 {
-    [_ASCIISpinner sizeToFit];
-    [self.messageLabel sizeToFit];
-    const CGFloat margin = 8;
-    CGRect container = (CGRect){
-        .size.width = (CGRectGetWidth(_ASCIISpinner.frame) + margin + CGRectGetWidth(self.messageLabel.frame)),
-        .size.height = CGRectGetHeight(_ASCIISpinner.frame),
-    };
-    container.origin.x = CGRectGetMidX(self.bounds) - CGRectGetWidth(container) / 2;
-    container.origin.y = CGRectGetMidY(self.bounds) - CGRectGetHeight(container) / 2;
-    container = CGRectIntegral(container);
-    CGRect spinnerFrame, labelFrame;
-    CGRectDivide(container, &spinnerFrame, &labelFrame, CGRectGetWidth(_ASCIISpinner.frame) + margin, CGRectMinXEdge);
-    spinnerFrame.size.width -= margin;
-    _ASCIISpinner.frame = spinnerFrame;
-    self.messageLabel.frame = labelFrame;
+    [self.spinnerTimer invalidate];
+    self.spinnerTimer = nil;
 }
 
 @end
 
+@interface AwfulMacinyosLoadingView ()
+
+@property (strong, nonatomic) UIImageView *finderImageView;
+
+@end
+
 @implementation AwfulMacinyosLoadingView
-{
-    UIImageView *_finderImageView;
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"macinyos-wallpaper"]];
-    
-    _finderImageView = [UIImageView new];
-    _finderImageView.image = [UIImage imageNamed:@"macinyos-loading"];
-    _finderImageView.contentMode = UIViewContentModeCenter;
-    _finderImageView.backgroundColor = [UIColor whiteColor];
-    _finderImageView.layer.borderColor = [UIColor blackColor].CGColor;
-    _finderImageView.layer.borderWidth = 1;
-    [self insertSubview:_finderImageView atIndex:0];
-    
-    self.messageLabel.font = [UIFont fontWithName:@"GeezaPro" size:15];
-    self.messageLabel.backgroundColor = _finderImageView.backgroundColor;
+    if ((self = [super initWithFrame:frame])) {
+        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"macinyos-wallpaper"]];
+        
+        _finderImageView = [UIImageView new];
+        _finderImageView.image = [UIImage imageNamed:@"macinyos-loading"];
+        _finderImageView.contentMode = UIViewContentModeCenter;
+        _finderImageView.backgroundColor = [UIColor whiteColor];
+        _finderImageView.layer.borderColor = [UIColor blackColor].CGColor;
+        _finderImageView.layer.borderWidth = 1;
+        [self insertSubview:_finderImageView atIndex:0];
+    }
     return self;
 }
-
-#pragma mark - UIView
 
 - (void)layoutSubviews
 {
@@ -281,79 +252,72 @@
     finderImageFrame.origin.x = CGRectGetMidX(self.bounds) - CGRectGetWidth(finderImageFrame) / 2;
     finderImageFrame.origin.y = CGRectGetMidY(self.bounds) - CGRectGetHeight(finderImageFrame) / 2;
     finderImageFrame = CGRectIntegral(finderImageFrame);
-    _finderImageView.frame = finderImageFrame;
-    CGFloat bottomMargin = (CGRectGetHeight(finderImageFrame) - _finderImageView.image.size.height) / 2;
-    [self.messageLabel sizeToFit];
-    self.messageLabel.center = CGPointMake(CGRectGetMidX(finderImageFrame), CGRectGetMaxY(finderImageFrame) - bottomMargin / 2);
+    self.finderImageView.frame = finderImageFrame;
 }
 
 @end
 
+@interface AwfulWinpos95LoadingView ()
+
+@property (strong, nonatomic) UIImageView *hourglassImageView;
+
+@end
+
 @implementation AwfulWinpos95LoadingView
-{
-    UIImageView *_hourglassImageView;
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    self.backgroundColor = [UIColor colorWithRed:0.067 green:0.502 blue:0.502 alpha:1];
-    
-    _hourglassImageView = [UIImageView new];
-    NSURL *gifURL = [[NSBundle mainBundle] URLForResource:@"hourglass" withExtension:@"gif"];
-    FVGifAnimation *gif = [[FVGifAnimation alloc] initWithURL:gifURL];
-    [gif setAnimationToImageView:_hourglassImageView];
-    [self addSubview:_hourglassImageView];
-    UIPanGestureRecognizer *pan = [UIPanGestureRecognizer new];
-    [pan addTarget:self action:@selector(didPan:)];
-    [self addGestureRecognizer:pan];
-    
-    self.messageLabel.font = [UIFont fontWithName:@"Arial-BoldMT" size:13];
-    self.messageLabel.backgroundColor = self.backgroundColor;
+    if ((self = [super initWithFrame:frame])) {
+        self.backgroundColor = [UIColor colorWithRed:0.067 green:0.502 blue:0.502 alpha:1];
+        
+        _hourglassImageView = [UIImageView new];
+        NSURL *gifURL = [[NSBundle mainBundle] URLForResource:@"hourglass" withExtension:@"gif"];
+        FVGifAnimation *gif = [[FVGifAnimation alloc] initWithURL:gifURL];
+        [gif setAnimationToImageView:_hourglassImageView];
+        [self addSubview:_hourglassImageView];
+        UIPanGestureRecognizer *pan = [UIPanGestureRecognizer new];
+        [pan addTarget:self action:@selector(didPan:)];
+        [self addGestureRecognizer:pan];
+    }
     return self;
 }
 
 - (void)didPan:(UIPanGestureRecognizer *)pan
 {
     if (pan.state == UIGestureRecognizerStateBegan) {
-        _hourglassImageView.center = [pan locationInView:self];
+        self.hourglassImageView.center = [pan locationInView:self];
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [pan translationInView:self];
-        _hourglassImageView.frame = CGRectOffset(_hourglassImageView.frame, translation.x, translation.y);
+        self.hourglassImageView.frame = CGRectOffset(self.hourglassImageView.frame, translation.x, translation.y);
         [pan setTranslation:CGPointZero inView:self];
     }
 }
-
-#pragma mark - UIView
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
     if (newSuperview) {
-        [_hourglassImageView startAnimating];
+        [self.hourglassImageView startAnimating];
     } else {
-        [_hourglassImageView stopAnimating];
+        [self.hourglassImageView stopAnimating];
     }
 }
 
 - (void)layoutSubviews
 {
-    [_hourglassImageView sizeToFit];
-    [self.messageLabel sizeToFit];
+    [self.hourglassImageView sizeToFit];
     const CGFloat margin = 8;
     CGRect container = (CGRect){
-        .size.width = (CGRectGetWidth(_hourglassImageView.frame) + margin + CGRectGetWidth(self.messageLabel.frame)),
-        .size.height = CGRectGetHeight(_hourglassImageView.frame),
+        .size.width = CGRectGetWidth(self.hourglassImageView.frame) + margin,
+        .size.height = CGRectGetHeight(self.hourglassImageView.frame),
     };
     container.origin.x = CGRectGetMidX(self.bounds) - CGRectGetWidth(container) / 2;
     container.origin.y = CGRectGetMidY(self.bounds) - CGRectGetHeight(container) / 2;
     container = CGRectIntegral(container);
     CGRect hourglassFrame, labelFrame;
-    CGRectDivide(container, &hourglassFrame, &labelFrame, CGRectGetWidth(_hourglassImageView.frame) + margin, CGRectMinXEdge);
+    CGRectDivide(container, &hourglassFrame, &labelFrame, CGRectGetWidth(self.hourglassImageView.frame) + margin, CGRectMinXEdge);
     hourglassFrame.size.width -= margin;
-    _hourglassImageView.frame = hourglassFrame;
-    self.messageLabel.frame = labelFrame;
+    self.hourglassImageView.frame = hourglassFrame;
 }
 
 @end

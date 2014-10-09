@@ -311,7 +311,6 @@
     
     if (self.privateMessage.innerHTML.length == 0) {
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
-        self.loadingView.message = @"Loading…";
         [self.view addSubview:self.loadingView];
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {

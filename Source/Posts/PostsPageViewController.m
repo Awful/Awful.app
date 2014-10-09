@@ -551,7 +551,7 @@
     self.title = [self.thread.title stringByCollapsingWhitespace];
     
     if (self.page == AwfulThreadPageLast || self.page == AwfulThreadPageNextUnread || self.posts.count == 0) {
-        [self setLoadingMessage:@"Loading…"];
+        [self showLoadingView];
     } else {
         [self clearLoadingMessage];
     }
@@ -581,12 +581,11 @@
     self.composeItem.enabled = !self.thread.closed;
 }
 
-- (void)setLoadingMessage:(NSString *)message
+- (void)showLoadingView
 {
     if (!self.loadingView) {
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
     }
-    self.loadingView.message = message;
     [self.view addSubview:self.loadingView];
 }
 

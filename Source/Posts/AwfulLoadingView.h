@@ -2,15 +2,16 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
-// A view that covers its superview with a "loading..." message and progress indicator.
+/**
+ * A view that covers its superview with an indeterminate progress indicator.
+ */
 @interface AwfulLoadingView : UIView
 
-// A convenience constructor for creating different loading view configurations.
+/**
+ * Conveniently create a loading view configured for a particular theme.
+ */
 + (instancetype)loadingViewForTheme:(AwfulTheme*)theme;
-
-// A message to display, like "Loading…".
-@property (copy, nonatomic) NSString *message;
 
 @end
