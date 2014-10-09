@@ -301,20 +301,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     }
     [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
     
-    NSMutableString *abbreviatedURL = [URL.awful_absoluteUnicodeString mutableCopy];
-    NSRange upToHost = [abbreviatedURL rangeOfString:@"://"];
-    if (upToHost.location == NSNotFound) {
-        upToHost = [abbreviatedURL rangeOfString:@":"];
-    }
-    if (upToHost.location != NSNotFound) {
-        upToHost.length += upToHost.location;
-        upToHost.location = 0;
-        [abbreviatedURL deleteCharactersInRange:upToHost];
-    }
-    if (abbreviatedURL.length > 60) {
-        [abbreviatedURL replaceCharactersInRange:NSMakeRange(55, abbreviatedURL.length - 55) withString:@"…"];
-    }
-    NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", abbreviatedURL];
+    NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", URL.awful_absoluteUnicodeString];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open in Awful" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Open" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
