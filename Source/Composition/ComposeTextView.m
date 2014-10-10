@@ -21,6 +21,7 @@
 @property (strong, nonatomic) SmilieKeyboardView *smilieKeyboard;
 @property (strong, nonatomic) SmilieFetchedDataSource *smilieDataSource;
 @property (assign, nonatomic) BOOL showingSmilieKeyboard;
+@property (copy, nonatomic) NSString *justInsertedSmilieText;
 
 @end
 
@@ -72,6 +73,9 @@
     } else if (!showingSmilieKeyboard && self.inputView) {
         self.inputView = nil;
         [self reloadInputViews];
+    }
+    if (!showingSmilieKeyboard) {
+        self.justInsertedSmilieText = nil;
     }
 }
 
@@ -373,6 +377,15 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 - (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
 {
+    if (self.selectedRange.length == 0 && self.justInsertedSmilieText) {
+        NSRange locationOfSmilie = [self.text rangeOfString:self.justInsertedSmilieText options:(NSBackwardsSearch | NSAnchoredSearch) range:NSMakeRange(0, self.selectedRange.location)];
+        if (locationOfSmilie.location != NSNotFound) {
+            do {
+                [self deleteBackward];
+            } while (![self.text hasSuffix:@":"]);
+        }
+    }
+    self.justInsertedSmilieText = nil;
     [self deleteBackward];
 }
 
@@ -380,6 +393,7 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 {
     Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
     [self insertText:smilie.text];
+    self.justInsertedSmilieText = smilie.text;
     [smilie.managedObjectContext performBlock:^{
         smilie.metadata.lastUsedDate = [NSDate date];
         NSError *error;
