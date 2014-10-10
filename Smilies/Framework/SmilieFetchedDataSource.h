@@ -4,6 +4,7 @@
 
 @import Foundation;
 #import <Smilies/SmilieKeyboardView.h>
+#import <Smilies/SmilieListType.h>
 @class Smilie;
 @class SmilieDataStore;
 

@@ -8,6 +8,7 @@
 @import MobileCoreServices;
 #import "Smilie.h"
 #import "SmilieDataStore.h"
+#import "SmilieMetadata.h"
 @import UIKit;
 
 @interface SmilieFetchedDataSource () <NSFetchedResultsControllerDelegate>
@@ -15,9 +16,15 @@
 @property (weak, nonatomic) UICollectionView *collectionView;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
+@property (strong, nonatomic) NSMutableArray *updateBlocks;
+
 @end
 
 @implementation SmilieFetchedDataSource
+
+@synthesize smilieList = _smilieList;
+
+@synthesize fetchedResultsController = _fetchedResultsController;
 
 - (instancetype)initWithDataStore:(SmilieDataStore *)dataStore
 {
@@ -27,35 +34,94 @@
     return self;
 }
 
+- (void)setSmilieList:(SmilieList)smilieList
+{
+    if (_smilieList != smilieList) {
+        _smilieList = smilieList;
+        self.fetchedResultsController = nil;
+        [self.collectionView reloadData];
+    }
+}
+
 - (NSFetchedResultsController *)fetchedResultsController
 {
     if (!_fetchedResultsController) {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"section" ascending:YES],
-                                         [NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
-        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                        managedObjectContext:self.dataStore.managedObjectContext
-                                                                          sectionNameKeyPath:@"section"
-                                                                                   cacheName:nil];
-        _fetchedResultsController.delegate = self;
-        
-        NSError *error;
-        if (![_fetchedResultsController performFetch:&error]) {
-            NSLog(@"%s could not fetch smilies: %@", __PRETTY_FUNCTION__, error);
+        NSFetchedResultsController *fetchedResultsController;
+        switch (self.smilieList) {
+            case SmilieListAll: {
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
+                fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"section" ascending:YES],
+                                                 [NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
+                fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                               managedObjectContext:self.dataStore.managedObjectContext
+                                                                                 sectionNameKeyPath:@"section"
+                                                                                          cacheName:nil];
+                break;
+            }
+                
+            case SmilieListRecent: {
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SmilieMetadata entityName]];
+                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"lastUsedDate != nil"];
+                fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastUsedDate" ascending:NO]];
+                fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                               managedObjectContext:self.dataStore.managedObjectContext
+                                                                                 sectionNameKeyPath:nil
+                                                                                          cacheName:nil];
+                break;
+            }
+                
+            case SmilieListFavorites: {
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SmilieMetadata entityName]];
+                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+                fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:YES]];
+                fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                               managedObjectContext:self.dataStore.managedObjectContext
+                                                                                 sectionNameKeyPath:nil
+                                                                                          cacheName:nil];
+                break;
+            }
         }
+        self.fetchedResultsController = fetchedResultsController;
     }
     return _fetchedResultsController;
 }
 
+- (void)setFetchedResultsController:(NSFetchedResultsController *)fetchedResultsController
+{
+    if (fetchedResultsController != _fetchedResultsController) {
+        _fetchedResultsController.delegate = nil;
+        self.updateBlocks = nil;
+    }
+    
+    _fetchedResultsController = fetchedResultsController;
+    fetchedResultsController.delegate = self;
+    
+    if (fetchedResultsController) {
+        NSError *error;
+        if (![fetchedResultsController performFetch:&error]) {
+            NSLog(@"%s could not fetch smilies: %@", __PRETTY_FUNCTION__, error);
+        }
+    }
+}
+
 - (Smilie *)smilieAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *entityName = self.fetchedResultsController.fetchRequest.entityName;
+    if ([entityName isEqualToString:[Smilie entityName]]) {
+        return [self.fetchedResultsController objectAtIndexPath:indexPath];
+    } else if ([entityName isEqualToString:[SmilieMetadata entityName]]) {
+        SmilieMetadata *metadata = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        return metadata.smilie;
+    } else {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"unexpected entity name" userInfo:nil];
+    }
 }
 
 #pragma mark - SmilieKeyboardDataSource
 
 - (NSInteger)numberOfSectionsInSmilieKeyboard:(SmilieKeyboardView *)keyboardView
 {
+    self.collectionView = keyboardView.collectionView;
     return self.fetchedResultsController.sections.count;
 }
 
@@ -66,13 +132,13 @@
 
 - (CGSize)smilieKeyboard:(SmilieKeyboardView *)keyboardView sizeOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
-    Smilie *smilie = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Smilie *smilie = [self smilieAtIndexPath:indexPath];
     return smilie.imageSize;
 }
 
 - (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
-    Smilie *smilie = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Smilie *smilie = [self smilieAtIndexPath:indexPath];
     if (UTTypeConformsTo((__bridge CFStringRef)smilie.imageUTI, kUTTypeGIF)) {
         return [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];
     } else {
@@ -82,9 +148,78 @@
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    switch (self.smilieList) {
+        case SmilieListAll:
+        case SmilieListFavorites:
+            self.updateBlocks = [NSMutableArray new];
+            break;
+            
+        case SmilieListRecent:
+            // Don't bother with the recent list, otherwise smilies will fly around.
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)changeType
+{
+    __weak UICollectionView *collectionView = self.collectionView;
+    if (changeType == NSFetchedResultsChangeInsert) {
+        [self.updateBlocks addObject:^{
+            [collectionView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+        }];
+    } else if (changeType == NSFetchedResultsChangeDelete) {
+        [self.updateBlocks addObject:^{
+            [collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+        }];
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)changeType newIndexPath:(NSIndexPath *)newIndexPath
+{
+    __weak UICollectionView *collectionView = self.collectionView;
+    switch (changeType) {
+        case NSFetchedResultsChangeDelete: {
+            [self.updateBlocks addObject:^{
+                [collectionView deleteItemsAtIndexPaths:@[indexPath]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeInsert: {
+            [self.updateBlocks addObject:^{
+                [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
+            }];
+            break;
+        }
+            
+        case NSFetchedResultsChangeMove: {
+            [self.updateBlocks addObject:^{
+                [collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+            }];
+            break;
+        }
+        
+        case NSFetchedResultsChangeUpdate: {
+            [self.updateBlocks addObject:^{
+                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }];
+            break;
+        }
+    }
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    [self.collectionView reloadData];
+    NSArray *updateBlocks = self.updateBlocks;
+    self.updateBlocks = nil;
+    [self.collectionView performBatchUpdates:^{
+        for (void (^block)(void) in updateBlocks) {
+            block();
+        }
+    } completion:nil];
+
 }
 
 @end

@@ -11,7 +11,7 @@ static NSUserDefaults * SharedDefaults(void)
     return [[NSUserDefaults alloc] initWithSuiteName:AppGroupIdentifier];
 }
 
-static NSString * const AwfulAppIsActiveKey = @"AwfulAppIsActive";
+static NSString * const AwfulAppIsActiveKey = @"SmilieAwfulAppIsActive";
 
 BOOL SmilieKeyboardIsAwfulAppActive(void)
 {
@@ -20,7 +20,38 @@ BOOL SmilieKeyboardIsAwfulAppActive(void)
 
 void SmilieKeyboardSetIsAwfulAppActive(BOOL isActive)
 {
-    [SharedDefaults() setBool:isActive forKey:@"AwfulAppIsActive"];
+    [SharedDefaults() setBool:isActive forKey:AwfulAppIsActiveKey];
+}
+
+static NSString * const SelectedSmilieListKey = @"SmilieSelectedSmilieList";
+
+SmilieList SmilieKeyboardSelectedSmilieList(void)
+{
+    return [SharedDefaults() integerForKey:SelectedSmilieListKey];
+}
+
+void SmilieKeyboardSetSelectedSmilieList(SmilieList smilieList)
+{
+    [SharedDefaults() setInteger:smilieList forKey:SelectedSmilieListKey];
+}
+
+static NSString * ScrollFractionKey(SmilieList smilieList)
+{
+    return [NSString stringWithFormat:@"SmilieScrollFraction%@", @(smilieList)];
+}
+
+extern float SmilieKeyboardScrollFractionForSmilieList(SmilieList smilieList);
+extern void SmilieKeyboardSetScrollFractionForSmilieList(SmilieList smilieList, float scrollFraction);
+
+
+float SmilieKeyboardScrollFractionForSmilieList(SmilieList smilieList)
+{
+    return [SharedDefaults() floatForKey:ScrollFractionKey(smilieList)];
+}
+
+void SmilieKeyboardSetScrollFractionForSmilieList(SmilieList smilieList, float scrollFraction)
+{
+    [SharedDefaults() setFloat:scrollFraction forKey:ScrollFractionKey(smilieList)];
 }
 
 NSURL * SmilieKeyboardSharedContainerURL(void)

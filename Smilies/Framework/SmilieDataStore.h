@@ -13,4 +13,6 @@
 
 + (NSURL *)bundledSmilieStoreURL;
 
++ (NSURL *)appContainerSmilieStoreURL;
+
 @end

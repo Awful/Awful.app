@@ -4,6 +4,7 @@
 
 @import UIKit;
 @class Smilie;
+#import <Smilies/SmilieListType.h>
 @protocol SmilieKeyboardDataSource;
 @protocol SmilieKeyboardDelegate;
 
@@ -15,6 +16,10 @@ IB_DESIGNABLE
 @property (weak, nonatomic) id <SmilieKeyboardDataSource> dataSource;
 @property (weak, nonatomic) id <SmilieKeyboardDelegate> delegate;
 
+@property (assign, nonatomic) SmilieList selectedSmilieList;
+
+@property (readonly, weak, nonatomic) UICollectionView *collectionView;
+
 @property (strong, nonatomic) IBInspectable UIColor *normalBackgroundColor;
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
@@ -23,6 +28,8 @@ IB_DESIGNABLE
 @end
 
 @protocol SmilieKeyboardDataSource <NSObject>
+
+@property (assign, nonatomic) SmilieList smilieList;
 
 - (NSInteger)numberOfSectionsInSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (NSInteger)smilieKeyboard:(SmilieKeyboardView *)keyboardView numberOfSmiliesInSection:(NSInteger)section;
@@ -36,6 +43,8 @@ IB_DESIGNABLE
 
 - (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
+
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath;
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

@@ -70,6 +70,8 @@
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		1C4F8ECF19E7B028002201E3 /* SmilieFavoriteToggler.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */; };
 		1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
@@ -105,6 +107,7 @@
 		1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1119DDF54A001B9A41 /* SmilieButton.m */; };
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
+		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C6D2E99182C5F6900785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
 		1C6D2E9B182C6F8C00785766 /* ProfileScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.m */; };
 		1C6D2E9C182C720B00785766 /* AwfulProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */; };
@@ -493,6 +496,8 @@
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFavoriteToggler.h; sourceTree = "<group>"; };
+		1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFavoriteToggler.m; sourceTree = "<group>"; };
 		1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieAppContainer.h; sourceTree = "<group>"; };
 		1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieAppContainer.m; sourceTree = "<group>"; };
 		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
@@ -540,6 +545,7 @@
 		1C66AA1419DDF6E6001B9A41 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
+		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
 		1C6AA33318A1F8940094D1E3 /* Awful 2.0.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 2.0.3.xcdatamodel"; sourceTree = "<group>"; };
 		1C6D2E97182C5F6900785766 /* AwfulProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* AwfulProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileScraper.m; sourceTree = "<group>"; };
@@ -1186,11 +1192,14 @@
 				1C7B010919DE89B000542293 /* SmilieCell.m */,
 				1C3A146619DFC7130022C44C /* SmilieDataStore.h */,
 				1C3A146719DFC7130022C44C /* SmilieDataStore.m */,
+				1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */,
+				1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */,
 				1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */,
 				1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */,
 				1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */,
 				1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */,
 				1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */,
+				1C66E34719E78B83007FC27C /* SmilieListType.h */,
 				1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */,
 				1C3A140119DFC1FC0022C44C /* SmilieManagedObject.m */,
 				1C3A13FA19DF78610022C44C /* SmilieMetadata.h */,
@@ -1706,7 +1715,9 @@
 				1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */,
 				1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */,
 				1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */,
+				1C4F8ECF19E7B028002201E3 /* SmilieFavoriteToggler.h in Headers */,
 				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
+				1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */,
 				1C3A140219DFC1FC0022C44C /* SmilieManagedObject.h in Headers */,
 				1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */,
 				1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */,
@@ -2217,6 +2228,7 @@
 				1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */,
 				1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
+				1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */,
 				1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */,
 				1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */,
 			);

@@ -137,6 +137,21 @@ static BOOL HasFullAccess(void)
     } else {
         [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
     }
+    [smilie.managedObjectContext performBlock:^{
+        smilie.metadata.lastUsedDate = [NSDate date];
+        NSError *error;
+        if (![smilie.managedObjectContext save:&error]) {
+            NSLog(@"%s error saving last used date for smilie: %@", __PRETTY_FUNCTION__, error);
+        }
+    }];
+}
+
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath
+{
+    Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
+    UICollectionViewCell *cell = [keyboardView.collectionView cellForItemAtIndexPath:indexPath];
+    SmilieFavoriteToggler *toggler = [[SmilieFavoriteToggler alloc] initWithSmilie:smilie pointingAtView:cell];
+    [self presentViewController:toggler animated:NO completion:nil];
 }
 
 @end

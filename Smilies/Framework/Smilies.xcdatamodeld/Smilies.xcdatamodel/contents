@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="14A379a" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="14A386a" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Smilie" representedClassName="Smilie" syncable="YES">
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageSize" optional="YES" transient="YES" syncable="YES"/>
@@ -18,12 +18,15 @@
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastUsedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="smilieText" attributeType="String" minValueString="1" indexed="YES" syncable="YES"/>
+        <fetchedProperty name="fetchedSmilies" optional="YES" syncable="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="Smilie" predicateString="text = $FETCH_SOURCE.smilieText"/>
+        </fetchedProperty>
     </entity>
     <configuration name="NoMetadata">
         <memberEntity name="Smilie"/>
     </configuration>
     <elements>
         <element name="Smilie" positionX="-63" positionY="-18" width="128" height="191"/>
-        <element name="SmilieMetadata" positionX="-54" positionY="-9" width="128" height="103"/>
+        <element name="SmilieMetadata" positionX="-54" positionY="-9" width="128" height="131"/>
     </elements>
 </model>

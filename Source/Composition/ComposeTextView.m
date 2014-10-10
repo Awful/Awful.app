@@ -380,6 +380,21 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 {
     Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
     [self insertText:smilie.text];
+    [smilie.managedObjectContext performBlock:^{
+        smilie.metadata.lastUsedDate = [NSDate date];
+        NSError *error;
+        if (![smilie.managedObjectContext save:&error]) {
+            NSLog(@"%s error saving after updating last used date: %@", __PRETTY_FUNCTION__, error);
+        }
+    }];
+}
+
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath
+{
+    Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
+    UICollectionViewCell *cell = [keyboardView.collectionView cellForItemAtIndexPath:indexPath];
+    SmilieFavoriteToggler *toggler = [[SmilieFavoriteToggler alloc] initWithSmilie:smilie pointingAtView:cell];
+    [self.awful_viewController presentViewController:toggler animated:NO completion:nil];
 }
 
 #pragma mark - UITextInputTraits

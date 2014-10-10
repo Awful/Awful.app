@@ -4,11 +4,24 @@
 
 #import "SmilieMetadata.h"
 
+@interface SmilieMetadata ()
+
+@property (copy, nonatomic) NSArray *fetchedSmilies;
+
+@end
+
 @implementation SmilieMetadata
 
-@dynamic smilieText;
 @dynamic favoriteIndex;
 @dynamic isFavorite;
 @dynamic lastUsedDate;
+@dynamic smilieText;
+
+@dynamic fetchedSmilies;
+
+- (Smilie *)smilie
+{
+    return self.fetchedSmilies[0];
+}
 
 @end

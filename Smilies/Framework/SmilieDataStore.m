@@ -4,6 +4,7 @@
 
 #import "SmilieDataStore.h"
 #import "Smilie.h"
+#import "SmilieAppContainer.h"
 
 @implementation SmilieDataStore
 
@@ -18,6 +19,9 @@
         NSError *error;
         if (![storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:@"NoMetadata" URL:[[self class] bundledSmilieStoreURL] options:options error:&error]) {
             NSLog(@"%s error adding bundled store: %@", __PRETTY_FUNCTION__, error);
+        }
+        if (![storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[[self class] appContainerSmilieStoreURL] options:nil error:&error]) {
+            NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
         }
         _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedObjectContext.persistentStoreCoordinator = storeCoordinator;
@@ -34,6 +38,16 @@
 + (NSURL *)bundledSmilieStoreURL
 {
     return [[NSBundle bundleForClass:[Smilie class]] URLForResource:@"Smilies" withExtension:@"sqlite"];
+}
+
++ (NSURL *)appContainerSmilieStoreURL
+{
+    NSURL *folder = [SmilieKeyboardSharedContainerURL() URLByAppendingPathComponent:@"Data Store"];
+    NSError *error;
+    if (![[NSFileManager defaultManager] createDirectoryAtURL:folder withIntermediateDirectories:YES attributes:nil error:&error]) {
+        NSLog(@"%s error creating containing folder: %@", __PRETTY_FUNCTION__, error);
+    }
+    return [folder URLByAppendingPathComponent:@"Smilies.sqlite"];
 }
 
 @end

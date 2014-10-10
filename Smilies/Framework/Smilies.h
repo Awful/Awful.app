@@ -10,6 +10,7 @@
 #import <Smilies/SmilieAppContainer.h>
 #import <Smilies/SmilieButton.h>
 #import <Smilies/SmilieDataStore.h>
+#import <SMilies/SmilieFavoriteToggler.h>
 #import <Smilies/SmilieFetchedDataSource.h>
 #import <Smilies/SmilieKeyboardView.h>
 #import <Smilies/SmilieMetadata.h>

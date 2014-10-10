@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14A386a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
@@ -45,6 +45,9 @@
                                     <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="didTapSmilieListButton:" destination="iN0-l3-epB" eventType="touchUpInside" id="DRD-BE-eLa"/>
+                            </connections>
                         </button>
                         <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mjd-xk-tC7" userLabel="Favorite Smilies" customClass="SmilieFavoriteButton">
                             <rect key="frame" x="0.0" y="86" width="36" height="44"/>
@@ -60,6 +63,9 @@
                                     <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="didTapSmilieListButton:" destination="iN0-l3-epB" eventType="touchUpInside" id="Lv7-0J-MOT"/>
+                            </connections>
                         </button>
                         <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CX9-Tm-1f0" userLabel="Recent Smilies" customClass="SmilieRecentButton">
                             <rect key="frame" x="0.0" y="130" width="36" height="43"/>
@@ -75,6 +81,9 @@
                                     <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="didTapSmilieListButton:" destination="iN0-l3-epB" eventType="touchUpInside" id="kTN-8D-q3R"/>
+                            </connections>
                         </button>
                         <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEL-V5-xE7" userLabel="Next Keyboard Key" customClass="SmilieNextKeyboardButton">
                             <rect key="frame" x="0.0" y="173" width="36" height="43"/>
@@ -124,6 +133,7 @@
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="iWV-Ro-qZd">
                     <rect key="frame" x="37" y="0.0" width="283" height="216"/>
                     <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
+                    <gestureRecognizers/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="Jt7-Cp-Yyr">
                         <size key="itemSize" width="50" height="50"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -133,18 +143,40 @@
                     <connections>
                         <outlet property="dataSource" destination="iN0-l3-epB" id="s7G-9P-4es"/>
                         <outlet property="delegate" destination="iN0-l3-epB" id="EI5-9A-ztf"/>
+                        <outletCollection property="gestureRecognizers" destination="rjM-i1-mXI" appends="YES" id="dr8-wG-7sP"/>
                     </connections>
                 </collectionView>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fB6-8X-iLR" userLabel="No Favorites Notice">
+                    <rect key="frame" x="37" y="0.0" width="283" height="216"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Long-press a smilie to add it here as a favorite." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H23-Zu-FLi">
+                            <rect key="frame" x="8" y="87" width="267" height="41"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="0.83137254900000002" green="0.84313725490000002" blue="0.85882352939999995" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="centerY" secondItem="H23-Zu-FLi" secondAttribute="centerY" constant="0.5" id="DtB-k5-0eM"/>
+                        <constraint firstItem="H23-Zu-FLi" firstAttribute="leading" secondItem="fB6-8X-iLR" secondAttribute="leading" constant="8" id="ao7-fw-sRZ"/>
+                        <constraint firstAttribute="trailing" secondItem="H23-Zu-FLi" secondAttribute="trailing" constant="8" id="qr7-TO-Qi4"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="fB6-8X-iLR" firstAttribute="top" secondItem="iWV-Ro-qZd" secondAttribute="top" id="3Gh-iT-Lqc"/>
                 <constraint firstItem="6ru-mE-svh" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="F0d-wl-nF7"/>
                 <constraint firstItem="6ru-mE-svh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Fjf-wi-dT5"/>
+                <constraint firstItem="fB6-8X-iLR" firstAttribute="trailing" secondItem="iWV-Ro-qZd" secondAttribute="trailing" id="Pbf-nl-kPf"/>
                 <constraint firstAttribute="bottom" secondItem="iWV-Ro-qZd" secondAttribute="bottom" id="SCK-Wq-8LB"/>
+                <constraint firstItem="fB6-8X-iLR" firstAttribute="bottom" secondItem="iWV-Ro-qZd" secondAttribute="bottom" id="T0U-qO-dRv"/>
                 <constraint firstAttribute="trailing" secondItem="iWV-Ro-qZd" secondAttribute="trailing" id="dHj-SS-xOb"/>
                 <constraint firstItem="iWV-Ro-qZd" firstAttribute="leading" secondItem="6ru-mE-svh" secondAttribute="trailing" constant="1" id="f2r-8w-5pH"/>
                 <constraint firstItem="6ru-mE-svh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fyq-uX-Dfl"/>
+                <constraint firstItem="fB6-8X-iLR" firstAttribute="leading" secondItem="iWV-Ro-qZd" secondAttribute="leading" id="npg-0O-uD0"/>
                 <constraint firstItem="iWV-Ro-qZd" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="su4-Zc-qkE"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -160,8 +192,16 @@
             <connections>
                 <outlet property="collectionView" destination="iWV-Ro-qZd" id="X1o-BJ-WHV"/>
                 <outlet property="flowLayout" destination="Jt7-Cp-Yyr" id="Lcs-o2-WIP"/>
-                <outletCollection property="sectionButtons" destination="IgC-8N-JBR" id="Yyr-YH-fzU"/>
+                <outlet property="noFavoritesNotice" destination="fB6-8X-iLR" id="Bsk-iC-bbq"/>
+                <outletCollection property="smilieListButtons" destination="IgC-8N-JBR" id="csH-Ej-isO"/>
+                <outletCollection property="smilieListButtons" destination="mjd-xk-tC7" id="CVI-OI-M4y"/>
+                <outletCollection property="smilieListButtons" destination="CX9-Tm-1f0" id="00g-z4-rlQ"/>
             </connections>
         </view>
+        <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="rjM-i1-mXI" userLabel="Long Press Collection View">
+            <connections>
+                <action selector="didLongPressCollectionView:" destination="iN0-l3-epB" id="8ZO-WK-KZ5"/>
+            </connections>
+        </pongPressGestureRecognizer>
     </objects>
 </document>
