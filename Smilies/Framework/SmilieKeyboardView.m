@@ -7,13 +7,15 @@
 #import "Smilie.h"
 #import "SmilieAppContainer.h"
 #import "SmilieCell.h"
+#import "SmilieCollectionViewFlowLayout.h"
 
-@interface SmilieKeyboardView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface SmilieKeyboardView () <SmilieCollectionViewFlowLayoutDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
+@property (weak, nonatomic) IBOutlet SmilieCollectionViewFlowLayout *flowLayout;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *smilieListButtons;
 @property (weak, nonatomic) IBOutlet UIView *noFavoritesNotice;
+@property (weak, nonatomic) IBOutlet UILongPressGestureRecognizer *toggleFavoriteLongPressGestureRecognizer;
 
 @property (assign, nonatomic) BOOL didScrollToStoredOffset;
 
@@ -56,6 +58,9 @@
     if (didChange) {
         self.didScrollToStoredOffset = NO;
     }
+    
+    self.flowLayout.dragReorderingEnabled = selectedSmilieList == SmilieListFavorites;
+    self.toggleFavoriteLongPressGestureRecognizer.enabled = selectedSmilieList != SmilieListFavorites;
 }
 
 - (void)awakeFromNib
@@ -134,6 +139,18 @@
 }
 
 static NSString * const CellIdentifier = @"SmilieCell";
+
+#pragma mark - SmilieCollectionViewFlowLayoutDataSource
+
+- (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)oldIndexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    [self.dataSource smilieKeyboard:self dragSmilieFromIndexPath:oldIndexPath toIndexPath:newIndexPath];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didFinishDraggingItemToIndexPath:(NSIndexPath *)indexPath
+{
+    [self.dataSource smilieKeyboard:self didFinishDraggingSmilieToIndexPath:indexPath];
+}
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 

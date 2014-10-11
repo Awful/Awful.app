@@ -134,7 +134,7 @@
                     <rect key="frame" x="37" y="0.0" width="283" height="216"/>
                     <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
                     <gestureRecognizers/>
-                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="Jt7-Cp-Yyr">
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="Jt7-Cp-Yyr" customClass="SmilieCollectionViewFlowLayout">
                         <size key="itemSize" width="50" height="50"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -193,12 +193,13 @@
                 <outlet property="collectionView" destination="iWV-Ro-qZd" id="X1o-BJ-WHV"/>
                 <outlet property="flowLayout" destination="Jt7-Cp-Yyr" id="Lcs-o2-WIP"/>
                 <outlet property="noFavoritesNotice" destination="fB6-8X-iLR" id="Bsk-iC-bbq"/>
+                <outlet property="toggleFavoriteLongPressGestureRecognizer" destination="rjM-i1-mXI" id="wxU-7m-wIM"/>
                 <outletCollection property="smilieListButtons" destination="IgC-8N-JBR" id="csH-Ej-isO"/>
                 <outletCollection property="smilieListButtons" destination="mjd-xk-tC7" id="CVI-OI-M4y"/>
                 <outletCollection property="smilieListButtons" destination="CX9-Tm-1f0" id="00g-z4-rlQ"/>
             </connections>
         </view>
-        <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="rjM-i1-mXI" userLabel="Long Press Collection View">
+        <pongPressGestureRecognizer enabled="NO" allowableMovement="10" minimumPressDuration="0.5" id="rjM-i1-mXI" userLabel="Long Press Collection View">
             <connections>
                 <action selector="didLongPressCollectionView:" destination="iN0-l3-epB" id="8ZO-WK-KZ5"/>
             </connections>

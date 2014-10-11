@@ -58,7 +58,27 @@
 - (void)didTapButton
 {
     [self dismissViewControllerAnimated:NO completion:nil];
-    self.smilie.metadata.isFavorite = !self.smilie.metadata.isFavorite;
+    SmilieMetadata *metadata = self.smilie.metadata;
+    BOOL willBeFavorite = !metadata.isFavorite;
+    if (willBeFavorite) {
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:metadata.entity.name];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+        NSError *error;
+        NSUInteger favoritesCount = [metadata.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+        NSAssert(favoritesCount != NSNotFound, @"failed to count favorites: %@", error);
+        metadata.favoriteIndex = favoritesCount;
+    } else {
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:metadata.entity.name];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES AND favoriteIndex > %@", @(metadata.favoriteIndex)];
+        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:YES]];
+        NSError *error;
+        NSArray *otherFavorites = [metadata.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        NSAssert(otherFavorites, @"failed to fetch favorites > %@: %@", @(metadata.favoriteIndex), error);
+        for (SmilieMetadata *otherMetadata in otherFavorites) {
+            otherMetadata.favoriteIndex--;
+        }
+    }
+    metadata.isFavorite = willBeFavorite;
     NSError *error;
     if (![self.smilie.managedObjectContext save:&error]) {
         NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);

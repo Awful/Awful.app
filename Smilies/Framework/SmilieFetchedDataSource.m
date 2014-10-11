@@ -17,6 +17,7 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property (strong, nonatomic) NSMutableArray *updateBlocks;
+@property (assign, nonatomic) BOOL ignoringUpdates;
 
 @end
 
@@ -136,6 +137,34 @@
     return smilie.imageSize;
 }
 
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView dragSmilieFromIndexPath:(NSIndexPath *)oldIndexPath toIndexPath:(NSIndexPath *)newIndexPath
+{
+    NSAssert(self.smilieList == SmilieListFavorites, @"only favorites can be moved");
+    
+    self.ignoringUpdates = YES; {
+        id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[0];
+        NSInteger delta = oldIndexPath.item < newIndexPath.item ? -1 : 1;
+        for (NSInteger i = MIN(oldIndexPath.item, newIndexPath.item), end = MAX(oldIndexPath.item, newIndexPath.item); i <= end; i++) {
+            SmilieMetadata *metadata = section.objects[i];
+            metadata.favoriteIndex += delta;
+        }
+        
+        SmilieMetadata *metadata = [self.fetchedResultsController objectAtIndexPath:oldIndexPath];
+        metadata.favoriteIndex = newIndexPath.item;
+        
+        [metadata.managedObjectContext processPendingChanges];
+    }
+    self.ignoringUpdates = NO;
+}
+
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didFinishDraggingSmilieToIndexPath:(NSIndexPath *)indexPath
+{
+    NSError *error;
+    if (![self.dataStore.managedObjectContext save:&error]) {
+        NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
+    }
+}
+
 - (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self smilieAtIndexPath:indexPath];
@@ -153,7 +182,9 @@
     switch (self.smilieList) {
         case SmilieListAll:
         case SmilieListFavorites:
-            self.updateBlocks = [NSMutableArray new];
+            if (!self.ignoringUpdates) {
+                self.updateBlocks = [NSMutableArray new];
+            }
             break;
             
         case SmilieListRecent:
@@ -214,11 +245,13 @@
 {
     NSArray *updateBlocks = self.updateBlocks;
     self.updateBlocks = nil;
-    [self.collectionView performBatchUpdates:^{
-        for (void (^block)(void) in updateBlocks) {
-            block();
-        }
-    } completion:nil];
+    if (updateBlocks.count > 0) {
+        [self.collectionView performBatchUpdates:^{
+            for (void (^block)(void) in updateBlocks) {
+                block();
+            }
+        } completion:nil];
+    }
 
 }
 

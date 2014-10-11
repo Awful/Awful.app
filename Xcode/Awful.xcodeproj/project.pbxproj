@@ -72,6 +72,8 @@
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C4F8ECF19E7B028002201E3 /* SmilieFavoriteToggler.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */; };
+		1C4F8ED319E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */; };
 		1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
@@ -498,6 +500,8 @@
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFavoriteToggler.h; sourceTree = "<group>"; };
 		1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFavoriteToggler.m; sourceTree = "<group>"; };
+		1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieAppContainer.h; sourceTree = "<group>"; };
 		1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieAppContainer.m; sourceTree = "<group>"; };
 		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
@@ -1190,6 +1194,8 @@
 				1C66AA1119DDF54A001B9A41 /* SmilieButton.m */,
 				1C7B010819DE89B000542293 /* SmilieCell.h */,
 				1C7B010919DE89B000542293 /* SmilieCell.m */,
+				1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */,
+				1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */,
 				1C3A146619DFC7130022C44C /* SmilieDataStore.h */,
 				1C3A146719DFC7130022C44C /* SmilieDataStore.m */,
 				1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */,
@@ -1711,6 +1717,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C4F8ED319E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h in Headers */,
 				1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */,
 				1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */,
 				1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */,
@@ -2230,6 +2237,7 @@
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
 				1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */,
 				1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */,
+				1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */,
 				1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
