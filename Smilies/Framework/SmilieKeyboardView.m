@@ -57,6 +57,7 @@
     
     if (didChange) {
         self.didScrollToStoredOffset = NO;
+        self.flowLayout.editing = NO;
     }
     
     self.flowLayout.dragReorderingEnabled = selectedSmilieList == SmilieListFavorites;
@@ -142,6 +143,11 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 #pragma mark - SmilieCollectionViewFlowLayoutDataSource
 
+- (void)collectionView:(UICollectionView *)collectionView deleteItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.dataSource smilieKeyboard:self deleteSmilieAtIndexPath:indexPath];
+}
+
 - (void)collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)oldIndexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
     [self.dataSource smilieKeyboard:self dragSmilieFromIndexPath:oldIndexPath toIndexPath:newIndexPath];
@@ -179,6 +185,8 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.flowLayout.editing) return;
+    
     [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
     [collectionView deselectItemAtIndexPath:indexPath animated:NO];
 }

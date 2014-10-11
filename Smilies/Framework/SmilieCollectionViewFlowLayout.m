@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieCollectionViewFlowLayout.h"
+#import "SmilieCell.h"
 
 @interface SmilieCollectionViewFlowLayout () <UIGestureRecognizerDelegate>
 
@@ -41,18 +42,37 @@
     _panGestureRecognizer.enabled = dragReorderingEnabled;
 }
 
+- (void)setEditing:(BOOL)editing
+{
+    if (editing != _editing) {
+        _editing = editing;
+        [self.collectionView.visibleCells setValue:@(editing) forKey:@"editing"];
+    }
+}
+
+- (void)adjustCellLayoutAttributes:(SmilieCollectionViewFlowLayoutAttributes *)attributes
+{
+    attributes.editing = self.editing;
+    if ([attributes.indexPath isEqual:self.draggedItemIndexPath]) {
+        attributes.hidden = YES;
+    }
+}
+
 #pragma mark - Dragging
 
-- (void)startDraggingCell:(UICollectionViewCell *)cell fromIndexPath:(NSIndexPath *)indexPath
+- (void)startDraggingCell:(SmilieCell *)cell fromIndexPath:(NSIndexPath *)indexPath
 {
     self.draggedItemIndexPath = indexPath;
     
     BOOL wasHighlighted = cell.highlighted;
+    BOOL wasEditing = cell.editing;
     cell.highlighted = YES;
+    cell.editing = NO;
     UIView *highlightedSnapshot = [cell snapshotViewAfterScreenUpdates:YES];
     cell.highlighted = NO;
     UIView *normalSnapshot = [cell snapshotViewAfterScreenUpdates:YES];
     cell.highlighted = wasHighlighted;
+    cell.editing = wasEditing;
     
     self.dragView = [[UIView alloc] initWithFrame:cell.frame];
     highlightedSnapshot.frame = (CGRect){.size = cell.frame.size};
@@ -114,15 +134,6 @@
             [dataSource collectionView:self.collectionView didFinishDraggingItemToIndexPath:indexPath];
         }
     }];
-}
-
-#pragma mark - Hide the cell being dragged
-
-- (void)adjustCellLayoutAttributes:(UICollectionViewLayoutAttributes *)attributes
-{
-    if ([attributes.indexPath isEqual:self.draggedItemIndexPath]) {
-        attributes.hidden = YES;
-    }
 }
 
 #pragma mark - Internals
@@ -196,18 +207,38 @@ static void * KVOContext = &KVOContext;
             CGPoint pressedPoint = [sender locationInView:self.collectionView];
             NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:pressedPoint];
             if (!indexPath) break;
-            UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-            if (cell) {
+            SmilieCell *cell = (SmilieCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            if (!cell) break;
+            
+            if ([cell isKindOfClass:[SmilieCell class]]) {
+                if (cell.editing) {
+                    UIView *removeControl = cell.removeControl;
+                    const UIEdgeInsets insets = (UIEdgeInsets){.top = -6, .bottom = -6, .left = -6, .right = -6};
+                    CGRect removeHitBounds = UIEdgeInsetsInsetRect(removeControl.bounds, insets);
+                    if (CGRectContainsPoint(removeHitBounds, [sender locationInView:removeControl])) {
+                        id<SmilieCollectionViewFlowLayoutDataSource> dataSource = (id<SmilieCollectionViewFlowLayoutDataSource>)self.collectionView.dataSource;
+                        if ([dataSource respondsToSelector:@selector(collectionView:deleteItemAtIndexPath:)]) {
+                            [dataSource collectionView:self.collectionView deleteItemAtIndexPath:indexPath];
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            if (self.editing) {
                 [self startDraggingCell:cell fromIndexPath:indexPath];
+            } else {
+                self.editing = YES;
             }
             break;
         }
             
         case UIGestureRecognizerStateCancelled:
-        case UIGestureRecognizerStateEnded: {
-            [self endDragging];
+        case UIGestureRecognizerStateEnded:
+            if (self.draggedItemIndexPath) {
+                [self endDragging];
+            }
             break;
-        }
             
         default: break;
     }
@@ -216,7 +247,6 @@ static void * KVOContext = &KVOContext;
 - (void)didPan:(UIPanGestureRecognizer *)sender
 {
     switch (sender.state) {
-        case UIGestureRecognizerStateBegan:
         case UIGestureRecognizerStateChanged: {
             CGPoint translation = [sender translationInView:self.collectionView];
             self.dragView.center = CGPointMake(self.initialDragViewCenter.x + translation.x, self.initialDragViewCenter.y + translation.y);
@@ -230,10 +260,15 @@ static void * KVOContext = &KVOContext;
 
 #pragma mark - UICollectionViewLayout
 
++ (Class)layoutAttributesClass
+{
+    return [SmilieCollectionViewFlowLayoutAttributes class];
+}
+
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
 {
     NSArray *layoutAttributes = [super layoutAttributesForElementsInRect:rect];
-    for (UICollectionViewLayoutAttributes *attributes in layoutAttributes) {
+    for (SmilieCollectionViewFlowLayoutAttributes *attributes in layoutAttributes) {
         if (attributes.representedElementCategory == UICollectionElementCategoryCell) {
             [self adjustCellLayoutAttributes:attributes];
         }
@@ -243,7 +278,7 @@ static void * KVOContext = &KVOContext;
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewLayoutAttributes *attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    SmilieCollectionViewFlowLayoutAttributes *attributes = (SmilieCollectionViewFlowLayoutAttributes *)[super layoutAttributesForItemAtIndexPath:indexPath];
     [self adjustCellLayoutAttributes:attributes];
     return attributes;
 }
@@ -254,9 +289,13 @@ static void * KVOContext = &KVOContext;
 {
     if ([gestureRecognizer isEqual:self.panGestureRecognizer]) {
         return self.draggedItemIndexPath != nil;
-    } else {
-        return YES;
     }
+    
+    if ([gestureRecognizer isEqual:self.longPressGestureRecognizer]) {
+        return self.draggedItemIndexPath == nil;
+    }
+    
+    return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
@@ -268,6 +307,38 @@ static void * KVOContext = &KVOContext;
     } else {
         return NO;
     }
+}
+
+@end
+
+@implementation SmilieCollectionViewFlowLayoutAttributes
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    SmilieCollectionViewFlowLayoutAttributes *attributes = [super copyWithZone:zone];
+    attributes->_editing = _editing;
+    return attributes;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (![object isKindOfClass:[SmilieCollectionViewFlowLayoutAttributes class]]) return NO;
+    
+    SmilieCollectionViewFlowLayoutAttributes *other = object;
+    if (![super isEqual:other]) {
+        return NO;
+    }
+    
+    if (_editing != other->_editing) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    return [super hash] + _editing;
 }
 
 @end

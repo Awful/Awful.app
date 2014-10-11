@@ -68,15 +68,7 @@
         NSAssert(favoritesCount != NSNotFound, @"failed to count favorites: %@", error);
         metadata.favoriteIndex = favoritesCount;
     } else {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:metadata.entity.name];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES AND favoriteIndex > %@", @(metadata.favoriteIndex)];
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:YES]];
-        NSError *error;
-        NSArray *otherFavorites = [metadata.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        NSAssert(otherFavorites, @"failed to fetch favorites > %@: %@", @(metadata.favoriteIndex), error);
-        for (SmilieMetadata *otherMetadata in otherFavorites) {
-            otherMetadata.favoriteIndex--;
-        }
+        [metadata removeFromFavoritesUpdatingSubsequentIndices];
     }
     metadata.isFavorite = willBeFavorite;
     NSError *error;

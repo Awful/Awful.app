@@ -24,4 +24,19 @@
     return self.fetchedSmilies[0];
 }
 
+- (void)removeFromFavoritesUpdatingSubsequentIndices
+{
+    self.isFavorite = NO;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entity.name];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES AND favoriteIndex > %@", @(self.favoriteIndex)];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:YES]];
+    NSError *error;
+    NSArray *otherFavorites = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSAssert(otherFavorites, @"failed to fetch favorites > %@: %@", @(self.favoriteIndex), error);
+    for (SmilieMetadata *otherMetadata in otherFavorites) {
+        otherMetadata.favoriteIndex--;
+    }
+}
+
 @end

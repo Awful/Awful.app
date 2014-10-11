@@ -34,6 +34,8 @@ IB_DESIGNABLE
 - (NSInteger)numberOfSectionsInSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (NSInteger)smilieKeyboard:(SmilieKeyboardView *)keyboardView numberOfSmiliesInSection:(NSInteger)section;
 
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView deleteSmilieAtIndexPath:(NSIndexPath *)indexPath;
+
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView dragSmilieFromIndexPath:(NSIndexPath *)oldIndexPath toIndexPath:(NSIndexPath *)newIndexPath;
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didFinishDraggingSmilieToIndexPath:(NSIndexPath *)indexPath;
 

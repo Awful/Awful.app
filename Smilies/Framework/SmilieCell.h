@@ -9,6 +9,9 @@
 
 @property (readonly, strong, nonatomic) FLAnimatedImageView *imageView;
 
+@property (assign, nonatomic) BOOL editing;
+@property (readonly, strong, nonatomic) UIImageView *removeControl;
+
 @property (strong, nonatomic) UIColor *normalBackgroundColor;
 @property (strong, nonatomic) UIColor *selectedBackgroundColor;
 

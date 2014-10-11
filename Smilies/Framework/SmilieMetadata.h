@@ -14,4 +14,7 @@
 @property (strong, nonatomic) NSDate *lastUsedDate;
 @property (copy, nonatomic) NSString *smilieText;
 
+// Does not save the context.
+- (void)removeFromFavoritesUpdatingSubsequentIndices;
+
 @end

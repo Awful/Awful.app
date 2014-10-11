@@ -137,6 +137,18 @@
     return smilie.imageSize;
 }
 
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView deleteSmilieAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSAssert(self.smilieList == SmilieListFavorites, @"only favorites can be deleted");
+    
+    SmilieMetadata *metadata = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [metadata removeFromFavoritesUpdatingSubsequentIndices];
+    NSError *error;
+    if (![metadata.managedObjectContext save:&error]) {
+        NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
+    }
+}
+
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView dragSmilieFromIndexPath:(NSIndexPath *)oldIndexPath toIndexPath:(NSIndexPath *)newIndexPath
 {
     NSAssert(self.smilieList == SmilieListFavorites, @"only favorites can be moved");
