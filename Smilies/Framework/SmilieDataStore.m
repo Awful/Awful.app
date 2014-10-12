@@ -75,3 +75,5 @@
 }
 
 @end
+
+NSString * const SmilieMetadataVersionKey = @"SmilieVersion";

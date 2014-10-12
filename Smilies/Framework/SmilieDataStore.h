@@ -16,3 +16,6 @@
 + (NSURL *)appContainerSmilieStoreURL;
 
 @end
+
+// NSPersistentStore metadata.
+extern NSString * const SmilieMetadataVersionKey;
