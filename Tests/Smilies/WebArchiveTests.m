@@ -2,8 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import XCTest;
-#import "SmilieWebArchive.h"
+#import "Helpers.h"
 
 @interface WebArchiveTests : XCTestCase
 
@@ -16,8 +15,7 @@
 - (SmilieWebArchive *)archive
 {
     if (!_archive) {
-        NSURL *archiveURL = [[NSBundle bundleForClass:[WebArchiveTests class]] URLForResource:@"showsmilies" withExtension:@"webarchive"];
-        _archive = [[SmilieWebArchive alloc] initWithURL:archiveURL];
+        _archive = FixtureWebArchive();
     }
     return _archive;
 }

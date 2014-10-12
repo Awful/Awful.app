@@ -2,8 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import Smilies;
-@import XCTest;
+#import "Helpers.h"
 
 @interface SmiliesTests : XCTestCase
 
@@ -13,19 +12,18 @@
 
 @implementation SmiliesTests
 
-- (NSManagedObjectContext *)managedObjectContext
+- (void)setUp
 {
-    if (!_managedObjectContext) {
-        NSManagedObjectModel *model = [SmilieDataStore managedObjectModel];
-        NSPersistentStoreCoordinator *storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-        NSError *error;
-        if (![storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error]) {
-            @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"could not start store coordinator" userInfo:nil];
-        }
-        _managedObjectContext = [NSManagedObjectContext new];
-        _managedObjectContext.persistentStoreCoordinator = storeCoordinator;
+    [super setUp];
+
+    NSManagedObjectModel *model = [SmilieDataStore managedObjectModel];
+    NSPersistentStoreCoordinator *storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSError *error;
+    if (![storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error]) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"could not start store coordinator" userInfo:nil];
     }
-    return _managedObjectContext;
+    self.managedObjectContext = [NSManagedObjectContext new];
+    self.managedObjectContext.persistentStoreCoordinator = storeCoordinator;
 }
 
 - (void)tearDown

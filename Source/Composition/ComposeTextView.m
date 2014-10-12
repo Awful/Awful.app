@@ -18,8 +18,7 @@
 @property (readonly, copy, nonatomic) NSArray *insertImageSubmenuItems;
 @property (copy, nonatomic) NSArray *formattingSubmenuItems;
 
-@property (strong, nonatomic) SmilieKeyboardView *smilieKeyboard;
-@property (strong, nonatomic) SmilieFetchedDataSource *smilieDataSource;
+@property (strong, nonatomic) SmilieKeyboard *smilieKeyboard;
 @property (assign, nonatomic) BOOL showingSmilieKeyboard;
 @property (copy, nonatomic) NSString *justInsertedSmilieText;
 
@@ -44,31 +43,21 @@
     return _BBcodeBar;
 }
 
-- (SmilieKeyboardView *)smilieKeyboard
+- (SmilieKeyboard *)smilieKeyboard
 {
     if (!_smilieKeyboard) {
-        _smilieKeyboard = [SmilieKeyboardView newFromNib];
-        _smilieKeyboard.dataSource = self.smilieDataSource;
+        _smilieKeyboard = [SmilieKeyboard new];
         _smilieKeyboard.delegate = self;
-        _smilieKeyboard.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _smilieKeyboard.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     return _smilieKeyboard;
-}
-
-- (SmilieFetchedDataSource *)smilieDataSource
-{
-    if (!_smilieDataSource) {
-        SmilieDataStore *dataStore = [SmilieDataStore new];
-        _smilieDataSource = [[SmilieFetchedDataSource alloc] initWithDataStore:dataStore];
-    }
-    return _smilieDataSource;
 }
 
 - (void)setShowingSmilieKeyboard:(BOOL)showingSmilieKeyboard
 {
     _showingSmilieKeyboard = showingSmilieKeyboard;
     if (showingSmilieKeyboard && !self.inputView) {
-        self.inputView = self.smilieKeyboard;
+        self.inputView = self.smilieKeyboard.view;
         [self reloadInputViews];
     } else if (!showingSmilieKeyboard && self.inputView) {
         self.inputView = nil;
@@ -370,12 +359,12 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 
 #pragma mark - SmilieKeyboardDelegate
 
-- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboard *)keyboard
 {
     self.showingSmilieKeyboard = NO;
 }
 
-- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboard *)keyboard
 {
     if (self.selectedRange.length == 0 && self.justInsertedSmilieText) {
         NSRange locationOfSmilie = [self.text rangeOfString:self.justInsertedSmilieText options:(NSBackwardsSearch | NSAnchoredSearch) range:NSMakeRange(0, self.selectedRange.location)];
@@ -389,9 +378,8 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     [self deleteBackward];
 }
 
-- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie
 {
-    Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
     [self insertText:smilie.text];
     self.justInsertedSmilieText = smilie.text;
     [smilie.managedObjectContext performBlock:^{
@@ -403,12 +391,9 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     }];
 }
 
-- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard presentFavoriteToggler:(SmilieFavoriteToggler *)toggler
 {
-    Smilie *smilie = [self.smilieDataSource smilieAtIndexPath:indexPath];
-    UICollectionViewCell *cell = [keyboardView.collectionView cellForItemAtIndexPath:indexPath];
-    SmilieFavoriteToggler *toggler = [[SmilieFavoriteToggler alloc] initWithSmilie:smilie pointingAtView:cell];
-    [self.awful_viewController presentViewController:toggler animated:NO completion:nil];
+    [self.awful_viewController presentViewController:toggler animated:YES completion:nil];
 }
 
 #pragma mark - UITextInputTraits

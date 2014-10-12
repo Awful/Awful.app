@@ -12,5 +12,6 @@
 #import <Smilies/SmilieDataStore.h>
 #import <SMilies/SmilieFavoriteToggler.h>
 #import <Smilies/SmilieFetchedDataSource.h>
+#import <Smilies/SmilieKeyboard.h>
 #import <Smilies/SmilieKeyboardView.h>
 #import <Smilies/SmilieMetadata.h>

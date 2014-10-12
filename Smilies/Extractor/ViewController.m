@@ -81,6 +81,9 @@
     }];
 }
 
+// Private function implemented in Smilies.framework.
+extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
+
 - (void)scrapeSmiliesCompletionHandler:(void (^)(void))completionHandler
 {
     [self.managedObjectContext performBlock:^{
@@ -108,27 +111,9 @@
                 smilie.section = header.textContent;
                 smilie.summary = img[@"title"];
                 
-                NSData *imageData = [self.archive dataForSubresourceWithURL:[NSURL URLWithString:smilie.imageURL]];
-                smilie.imageData = imageData;
+                smilie.imageData = [self.archive dataForSubresourceWithURL:[NSURL URLWithString:smilie.imageURL]];
                 
-                CGFloat width = 0, height = 0;
-                CGImageSourceRef imageSource = CGImageSourceCreateWithData((CFDataRef)imageData, nil);
-                smilie.imageUTI = (NSString *)CGImageSourceGetType(imageSource);
-                CFDictionaryRef imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil);
-                CFNumberRef boxedWidth = CFDictionaryGetValue(imageProperties, kCGImagePropertyPixelWidth);
-                if (boxedWidth) CFNumberGetValue(boxedWidth, kCFNumberCGFloatType, &width);
-                CFNumberRef boxedHeight = CFDictionaryGetValue(imageProperties, kCGImagePropertyPixelHeight);
-                if (boxedHeight) CFNumberGetValue(boxedHeight, kCFNumberCGFloatType, &height);
-                NSInteger orientation = 0;
-                CFNumberRef boxedOrientation = CFDictionaryGetValue(imageProperties, kCGImagePropertyOrientation);
-                if (boxedOrientation) CFNumberGetValue(boxedOrientation, kCFNumberNSIntegerType, &orientation);
-                if (orientation < 5) {
-                    smilie.imageSize = CGSizeMake(width, height);
-                } else {
-                    smilie.imageSize = CGSizeMake(height, width);
-                }
-                CFRelease(imageProperties);
-                CFRelease(imageSource);
+                UpdateSmilieImageDataDerivedAttributes(smilie);
             }
             
             if (i % 100 == 0) save();

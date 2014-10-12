@@ -9,13 +9,16 @@
 // Main queue concurrency type.
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *storeCoordinator;
+
+@property (readonly, strong, nonatomic) NSPersistentStore *bundledSmilieStore;
+
+@property (readonly, strong, nonatomic) NSPersistentStore *appContainerSmilieStore;
+
 + (NSManagedObjectModel *)managedObjectModel;
-
-+ (NSURL *)bundledSmilieStoreURL;
-
-+ (NSURL *)appContainerSmilieStoreURL;
 
 @end
 
 // NSPersistentStore metadata.
 extern NSString * const SmilieMetadataVersionKey;
+extern NSString * const SmilieLastSuccessfulScrapeDateKey;

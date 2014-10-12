@@ -8,24 +8,23 @@
 
 @interface KeyboardViewController () <SmilieKeyboardDelegate>
 
-@property (strong, nonatomic) SmilieKeyboardView *keyboardView;
+@property (strong, nonatomic) SmilieKeyboard *keyboard;
 @property (strong, nonatomic) NeedsFullAccessView *needsFullAccessView;
 @property (strong, nonatomic) NSLayoutConstraint *heightConstraint;
 
 @property (assign, nonatomic) BOOL shouldInvalidateCollectionViewLayoutOnceInLandscape;
 
-@property (strong, nonatomic) SmilieFetchedDataSource *dataSource;
-
 @end
 
 @implementation KeyboardViewController
 
-- (SmilieKeyboardView *)keyboardView
+- (SmilieKeyboard *)keyboard
 {
-    if (!_keyboardView) {
-        _keyboardView = [SmilieKeyboardView newFromNib];
+    if (!_keyboard) {
+        _keyboard = [SmilieKeyboard new];
+        _keyboard.delegate = self;
     }
-    return _keyboardView;
+    return _keyboard;
 }
 
 - (NeedsFullAccessView *)needsFullAccessView
@@ -44,14 +43,6 @@
     return _heightConstraint;
 }
 
-- (SmilieFetchedDataSource *)dataSource
-{
-    if (!_dataSource) {
-        _dataSource = [[SmilieFetchedDataSource alloc] initWithDataStore:[SmilieDataStore new]];
-    }
-    return _dataSource;
-}
-
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
@@ -60,7 +51,7 @@
     // As a workaround pending further investigation, we can invalidate the collection view's layout the first time we rotate to landscape. No more crashes after that, even if we never manually invalidate the layout ever again.
     if ([UIScreen mainScreen].traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
         if (self.shouldInvalidateCollectionViewLayoutOnceInLandscape) {
-            UICollectionViewLayout *layout = [self.keyboardView valueForKeyPath:@"collectionView.collectionViewLayout"];
+            UICollectionViewLayout *layout = [self.keyboard.view valueForKeyPath:@"collectionView.collectionViewLayout"];
             [layout invalidateLayout];
             self.shouldInvalidateCollectionViewLayoutOnceInLandscape = NO;
         }
@@ -83,9 +74,7 @@
     UIView *mainView;
     
     if (HasFullAccess() || SmilieKeyboardIsAwfulAppActive()) {
-        self.keyboardView.dataSource = self.dataSource;
-        self.keyboardView.delegate = self;
-        mainView = self.keyboardView;
+        mainView = self.keyboard.view;
     } else {
         mainView = self.needsFullAccessView;
     }
@@ -119,19 +108,18 @@ static BOOL HasFullAccess(void)
 
 #pragma mark - SmilieKeyboardDelegate
 
-- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboard *)keyboard
 {
     [self advanceToNextInputMode];
 }
 
-- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView
+- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboard *)keyboard
 {
     [self.textDocumentProxy deleteBackward];
 }
 
-- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapSmilieAtIndexPath:(NSIndexPath *)indexPath
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie
 {
-    Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
     if (SmilieKeyboardIsAwfulAppActive()) {
         [self.textDocumentProxy insertText:smilie.text];
     } else {
@@ -146,12 +134,9 @@ static BOOL HasFullAccess(void)
     }];
 }
 
-- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard presentFavoriteToggler:(SmilieFavoriteToggler *)toggler
 {
-    Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
-    UICollectionViewCell *cell = [keyboardView.collectionView cellForItemAtIndexPath:indexPath];
-    SmilieFavoriteToggler *toggler = [[SmilieFavoriteToggler alloc] initWithSmilie:smilie pointingAtView:cell];
-    [self presentViewController:toggler animated:NO completion:nil];
+    [self presentViewController:toggler animated:YES completion:nil];
 }
 
 @end

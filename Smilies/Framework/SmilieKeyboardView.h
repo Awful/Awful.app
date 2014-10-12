@@ -6,7 +6,7 @@
 @class Smilie;
 #import <Smilies/SmilieListType.h>
 @protocol SmilieKeyboardDataSource;
-@protocol SmilieKeyboardDelegate;
+@protocol SmilieKeyboardViewDelegate;
 
 IB_DESIGNABLE
 @interface SmilieKeyboardView : UIView
@@ -14,7 +14,7 @@ IB_DESIGNABLE
 + (instancetype)newFromNib;
 
 @property (weak, nonatomic) id <SmilieKeyboardDataSource> dataSource;
-@property (weak, nonatomic) id <SmilieKeyboardDelegate> delegate;
+@property (weak, nonatomic) id <SmilieKeyboardViewDelegate> delegate;
 
 @property (assign, nonatomic) SmilieList selectedSmilieList;
 
@@ -44,7 +44,7 @@ IB_DESIGNABLE
 
 @end
 
-@protocol SmilieKeyboardDelegate <NSObject>
+@protocol SmilieKeyboardViewDelegate <NSObject>
 
 - (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
 - (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboardView *)keyboardView;
