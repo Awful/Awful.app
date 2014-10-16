@@ -88,7 +88,8 @@
         _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                                        configuration:nil
                                                                                  URL:AppContainerSmilieStoreURL()
-                                                                             options:nil
+                                                                             options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                                                                       NSInferMappingModelAutomaticallyOption: @YES}
                                                                                error:&error];
         if (!_appContainerSmilieStore) {
             NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);

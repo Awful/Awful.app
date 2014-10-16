@@ -164,7 +164,7 @@ static BOOL SmilieTextsDifferBetweenStoresAtURLs(NSURL *storeOneURL, NSURL *stor
 {
     NSManagedObjectModel *model = [SmilieDataStore managedObjectModel];
     NSPersistentStoreCoordinator *storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    NSDictionary *options = @{NSReadOnlyPersistentStoreOption: @YES};
+    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES, NSSQLitePragmasOption: @{@"journal_mode": @"DELETE"}};
     NSError *error;
     NSPersistentStore *storeOne = [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:@"NoMetadata" URL:storeOneURL options:options error:&error];
     if (!storeOne) {
