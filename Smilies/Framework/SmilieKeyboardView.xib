@@ -163,13 +163,22 @@
                         <constraint firstAttribute="trailing" secondItem="H23-Zu-FLi" secondAttribute="trailing" constant="8" id="qr7-TO-Qi4"/>
                     </constraints>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Added to Favorites" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULe-12-xdl" userLabel="Flash Message">
+                    <rect key="frame" x="37" y="200" width="283" height="16"/>
+                    <color key="backgroundColor" red="0.83137254900000002" green="0.84313725490000002" blue="0.85882352939999995" alpha="0.70000000000000007" colorSpace="calibratedRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="0.83137254901960789" green="0.84313725490196079" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="fB6-8X-iLR" firstAttribute="top" secondItem="iWV-Ro-qZd" secondAttribute="top" id="3Gh-iT-Lqc"/>
+                <constraint firstItem="ULe-12-xdl" firstAttribute="leading" secondItem="iWV-Ro-qZd" secondAttribute="leading" id="86G-k7-CmL"/>
                 <constraint firstItem="6ru-mE-svh" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="F0d-wl-nF7"/>
                 <constraint firstItem="6ru-mE-svh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Fjf-wi-dT5"/>
+                <constraint firstItem="ULe-12-xdl" firstAttribute="trailing" secondItem="iWV-Ro-qZd" secondAttribute="trailing" id="Ijb-Qu-IB6"/>
                 <constraint firstItem="fB6-8X-iLR" firstAttribute="trailing" secondItem="iWV-Ro-qZd" secondAttribute="trailing" id="Pbf-nl-kPf"/>
                 <constraint firstAttribute="bottom" secondItem="iWV-Ro-qZd" secondAttribute="bottom" id="SCK-Wq-8LB"/>
                 <constraint firstItem="fB6-8X-iLR" firstAttribute="bottom" secondItem="iWV-Ro-qZd" secondAttribute="bottom" id="T0U-qO-dRv"/>
@@ -178,6 +187,7 @@
                 <constraint firstItem="6ru-mE-svh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fyq-uX-Dfl"/>
                 <constraint firstItem="fB6-8X-iLR" firstAttribute="leading" secondItem="iWV-Ro-qZd" secondAttribute="leading" id="npg-0O-uD0"/>
                 <constraint firstItem="iWV-Ro-qZd" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="su4-Zc-qkE"/>
+                <constraint firstItem="ULe-12-xdl" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="vLS-wS-stv"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -191,6 +201,7 @@
             </userDefinedRuntimeAttributes>
             <connections>
                 <outlet property="collectionView" destination="iWV-Ro-qZd" id="X1o-BJ-WHV"/>
+                <outlet property="flashMessageLabel" destination="ULe-12-xdl" id="z2H-PO-qWx"/>
                 <outlet property="flowLayout" destination="Jt7-Cp-Yyr" id="Lcs-o2-WIP"/>
                 <outlet property="noFavoritesNotice" destination="fB6-8X-iLR" id="Bsk-iC-bbq"/>
                 <outlet property="toggleFavoriteLongPressGestureRecognizer" destination="rjM-i1-mXI" id="wxU-7m-wIM"/>
@@ -199,7 +210,7 @@
                 <outletCollection property="smilieListButtons" destination="CX9-Tm-1f0" id="00g-z4-rlQ"/>
             </connections>
         </view>
-        <pongPressGestureRecognizer enabled="NO" allowableMovement="10" minimumPressDuration="0.5" id="rjM-i1-mXI" userLabel="Long Press Collection View">
+        <pongPressGestureRecognizer enabled="NO" allowableMovement="10" minimumPressDuration="1" id="rjM-i1-mXI" userLabel="Long Press Collection View">
             <connections>
                 <action selector="didLongPressCollectionView:" destination="iN0-l3-epB" id="8ZO-WK-KZ5"/>
             </connections>

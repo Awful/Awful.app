@@ -23,6 +23,8 @@ IB_DESIGNABLE
 @property (strong, nonatomic) IBInspectable UIColor *normalBackgroundColor;
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
+- (void)flashMessage:(NSString *)message;
+
 - (void)reloadData;
 
 @end

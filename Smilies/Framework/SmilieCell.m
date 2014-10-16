@@ -31,6 +31,11 @@
 {
     _editing = editing;
     self.removeControl.hidden = !editing;
+    if (editing) {
+        [self startWobbling];
+    } else {
+        [self stopWobbling];
+    }
 }
 
 - (UIImageView *)removeControl
@@ -122,10 +127,32 @@
     }
 }
 
+- (void)startWobbling
+{
+    if (![self.layer animationForKey:@"wobble"]) {
+        self.layer.anchorPoint = CGPointMake(0.5, 0.5);
+        
+        CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+        animation.duration = 0.2;
+        CGFloat degrees = 1 + arc4random_uniform(500) / 500.0 + 0.5;
+        
+        // Randomize the start direction. It looks weird when all the cells rotate the same way.
+        degrees *= arc4random_uniform(1) ? -1 : 1;
+        
+        animation.values = @[@0, @(degrees * M_PI / 180), @0, @(-degrees * M_PI / 180), @0];
+        animation.repeatCount = HUGE_VALF;
+        [self.layer addAnimation:animation forKey:@"wobble"];
+    }
+}
+
+- (void)stopWobbling
+{
+    [self.layer removeAnimationForKey:@"wobble"];
+}
+
 - (void)applyLayoutAttributes:(SmilieCollectionViewFlowLayoutAttributes *)attributes
 {
     [super applyLayoutAttributes:attributes];
-    self.hidden = attributes.hidden;
     if ([attributes isKindOfClass:[SmilieCollectionViewFlowLayoutAttributes class]]) {
         self.editing = attributes.editing;
     }

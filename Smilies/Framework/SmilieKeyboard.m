@@ -3,10 +3,11 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieKeyboard.h"
+#import "Smilie.h"
 #import "SmilieDataStore.h"
-#import "SmilieFavoriteToggler.h"
 #import "SmilieFetchedDataSource.h"
 #import "SmilieKeyboardView.h"
+#import "SmilieMetadata.h"
 #import "SmilieOperation.h"
 
 @interface SmilieKeyboard () <SmilieKeyboardViewDelegate>
@@ -109,9 +110,14 @@
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self.dataSource smilieAtIndexPath:indexPath];
-    UICollectionViewCell *cell = [self.view.collectionView cellForItemAtIndexPath:indexPath];
-    SmilieFavoriteToggler *toggler = [[SmilieFavoriteToggler alloc] initWithSmilie:smilie pointingAtView:cell];
-    [self.delegate smilieKeyboard:self presentFavoriteToggler:toggler];
+    if (!smilie.metadata.isFavorite) {
+        [smilie.metadata addToFavorites];
+        [keyboardView flashMessage:@"Added to Favorites"];
+        NSError *error;
+        if (![smilie.managedObjectContext save:&error]) {
+            NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
+        }
+    }
 }
 
 @end

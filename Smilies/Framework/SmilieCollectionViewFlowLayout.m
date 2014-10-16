@@ -64,27 +64,32 @@
 {
     self.draggedItemIndexPath = indexPath;
     
-    BOOL wasHighlighted = cell.highlighted;
     BOOL wasEditing = cell.editing;
+    BOOL wasHighlighted = cell.highlighted;
+    CGFloat oldShadowOpacity = cell.layer.shadowOpacity;
+    
     cell.highlighted = YES;
+    cell.layer.shadowOpacity = 0;
     cell.editing = NO;
     UIView *highlightedSnapshot = [cell snapshotViewAfterScreenUpdates:YES];
     cell.highlighted = NO;
     UIView *normalSnapshot = [cell snapshotViewAfterScreenUpdates:YES];
-    cell.highlighted = wasHighlighted;
-    cell.editing = wasEditing;
     
-    self.dragView = [[UIView alloc] initWithFrame:cell.frame];
-    highlightedSnapshot.frame = (CGRect){.size = cell.frame.size};
+    cell.editing = wasEditing;
+    cell.highlighted = wasHighlighted;
+    cell.layer.shadowOpacity = oldShadowOpacity;
+    
+    self.dragView = [[UIView alloc] initWithFrame:cell.bounds];
+    self.dragView.layer.shadowOpacity = 0.5;
+    self.dragView.layer.shadowOffset = CGSizeZero;
     [self.dragView addSubview:highlightedSnapshot];
     normalSnapshot.frame = highlightedSnapshot.frame;
     [self.dragView addSubview:normalSnapshot];
-    self.initialDragViewCenter = self.dragView.center;
+    self.dragView.center = self.initialDragViewCenter = cell.center;
     [self.collectionView addSubview:self.dragView];
     
     normalSnapshot.alpha = 0;
-    [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        self.dragView.transform = CGAffineTransformMakeScale(1.1, 1.1);
+    [UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         highlightedSnapshot.alpha = 0;
         normalSnapshot.alpha = 1;
     } completion:^(BOOL completed) {
@@ -120,9 +125,8 @@
     self.initialDragViewCenter = CGPointZero;
     
     UICollectionViewLayoutAttributes *attributes = [self layoutAttributesForItemAtIndexPath:indexPath];
-    [UIView animateWithDuration:0.3 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+    [UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         self.dragView.center = attributes.center;
-        self.dragView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [self.dragView removeFromSuperview];
         self.dragView = nil;
@@ -186,6 +190,7 @@ static void * KVOContext = &KVOContext;
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress:)];
         _longPressGestureRecognizer.delegate = self;
         _longPressGestureRecognizer.enabled = self.dragReorderingEnabled;
+        _longPressGestureRecognizer.minimumPressDuration = 0.8;
     }
     return _longPressGestureRecognizer;
 }
@@ -225,11 +230,9 @@ static void * KVOContext = &KVOContext;
                 }
             }
             
-            if (self.editing) {
-                [self startDraggingCell:cell fromIndexPath:indexPath];
-            } else {
-                self.editing = YES;
-            }
+            self.editing = YES;
+            
+            [self startDraggingCell:cell fromIndexPath:indexPath];
             break;
         }
             

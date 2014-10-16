@@ -16,6 +16,9 @@
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *smilieListButtons;
 @property (weak, nonatomic) IBOutlet UIView *noFavoritesNotice;
 @property (weak, nonatomic) IBOutlet UILongPressGestureRecognizer *toggleFavoriteLongPressGestureRecognizer;
+@property (weak, nonatomic) IBOutlet UILabel *flashMessageLabel;
+
+@property (strong, nonatomic) NSTimer *flashTimer;
 
 @property (assign, nonatomic) BOOL didScrollToStoredOffset;
 
@@ -70,6 +73,28 @@
     self.selectedSmilieList = SmilieKeyboardSelectedSmilieList();
 }
 
+- (void)flashMessage:(NSString *)message
+{
+    self.flashMessageLabel.text = message;
+    
+    [self.flashTimer invalidate];
+    [UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        self.flashMessageLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        if (finished) {
+            self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(flashTimerDidFire:) userInfo:nil repeats:NO];
+        }
+    }];
+}
+
+- (void)flashTimerDidFire:(NSTimer *)timer
+{
+    self.flashTimer = nil;
+    [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        self.flashMessageLabel.alpha = 0;
+    } completion:nil];
+}
+
 - (void)reloadData
 {
     [self.collectionView reloadData];
@@ -84,9 +109,13 @@
 {
     SmilieList smilieList = (SmilieList)[self.smilieListButtons indexOfObject:button];
     if (self.selectedSmilieList == smilieList) {
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-                                    atScrollPosition:UICollectionViewScrollPositionTop
-                                            animated:YES];
+        if (self.flowLayout.editing) {
+            self.flowLayout.editing = NO;
+        } else {
+            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+                                        atScrollPosition:UICollectionViewScrollPositionTop
+                                                animated:YES];
+        }
     } else {
         self.selectedSmilieList = smilieList;
     }
@@ -181,6 +210,11 @@ static NSString * const CellIdentifier = @"SmilieCell";
             self.didScrollToStoredOffset = YES;
         }
     }
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return !self.flowLayout.editing;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath

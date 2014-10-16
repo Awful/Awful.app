@@ -24,6 +24,17 @@
     return self.fetchedSmilies[0];
 }
 
+- (void)addToFavorites
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entity.name];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
+    NSError *error;
+    NSUInteger favoritesCount = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    NSAssert(favoritesCount != NSNotFound, @"failed to count favorites: %@", error);
+    self.favoriteIndex = favoritesCount;
+    self.isFavorite = YES;
+}
+
 - (void)removeFromFavoritesUpdatingSubsequentIndices
 {
     self.isFavorite = NO;

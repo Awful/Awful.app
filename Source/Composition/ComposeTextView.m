@@ -391,11 +391,6 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     }];
 }
 
-- (void)smilieKeyboard:(SmilieKeyboard *)keyboard presentFavoriteToggler:(SmilieFavoriteToggler *)toggler
-{
-    [self.awful_viewController presentViewController:toggler animated:YES completion:nil];
-}
-
 #pragma mark - UITextInputTraits
 
 - (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance

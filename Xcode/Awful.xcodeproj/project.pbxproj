@@ -73,8 +73,6 @@
 		1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */; };
 		1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C4EFEAB19ED59E900CD423E /* SmilieKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */; };
-		1C4F8ECF19E7B028002201E3 /* SmilieFavoriteToggler.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */; };
 		1C4F8ED319E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */; };
 		1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -509,8 +507,6 @@
 		1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadTests.m; sourceTree = "<group>"; };
 		1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboard.h; sourceTree = "<group>"; };
 		1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboard.m; sourceTree = "<group>"; };
-		1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFavoriteToggler.h; sourceTree = "<group>"; };
-		1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFavoriteToggler.m; sourceTree = "<group>"; };
 		1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieAppContainer.h; sourceTree = "<group>"; };
@@ -1220,8 +1216,6 @@
 				1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */,
 				1C3A146619DFC7130022C44C /* SmilieDataStore.h */,
 				1C3A146719DFC7130022C44C /* SmilieDataStore.m */,
-				1C4F8ECD19E7B028002201E3 /* SmilieFavoriteToggler.h */,
-				1C4F8ECE19E7B028002201E3 /* SmilieFavoriteToggler.m */,
 				1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */,
 				1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */,
 				1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */,
@@ -1749,7 +1743,6 @@
 				1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */,
 				1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */,
 				1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */,
-				1C4F8ECF19E7B028002201E3 /* SmilieFavoriteToggler.h in Headers */,
 				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
 				1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */,
 				1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */,
@@ -2265,7 +2258,6 @@
 				1C4EFEAB19ED59E900CD423E /* SmilieKeyboard.m in Sources */,
 				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
 				1C588D4019EA7FDD004C7809 /* SmilieOperation.m in Sources */,
-				1C4F8ED019E7B028002201E3 /* SmilieFavoriteToggler.m in Sources */,
 				1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */,
 				1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */,
 				1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */,

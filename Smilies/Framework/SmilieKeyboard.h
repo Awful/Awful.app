@@ -24,6 +24,5 @@
 - (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboard *)keyboard;
 - (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboard *)keyboard;
 - (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie;
-- (void)smilieKeyboard:(SmilieKeyboard *)keyboard presentFavoriteToggler:(SmilieFavoriteToggler *)toggler;
 
 @end

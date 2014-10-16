@@ -124,6 +124,7 @@ static BOOL HasFullAccess(void)
         [self.textDocumentProxy insertText:smilie.text];
     } else {
         [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
+        [keyboard.view flashMessage:[NSString stringWithFormat:@"Copied %@", smilie.text]];
     }
     [smilie.managedObjectContext performBlock:^{
         smilie.metadata.lastUsedDate = [NSDate date];
@@ -132,11 +133,6 @@ static BOOL HasFullAccess(void)
             NSLog(@"%s error saving last used date for smilie: %@", __PRETTY_FUNCTION__, error);
         }
     }];
-}
-
-- (void)smilieKeyboard:(SmilieKeyboard *)keyboard presentFavoriteToggler:(SmilieFavoriteToggler *)toggler
-{
-    [self presentViewController:toggler animated:YES completion:nil];
 }
 
 @end

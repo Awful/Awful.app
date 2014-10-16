@@ -15,6 +15,9 @@
 @property (copy, nonatomic) NSString *smilieText;
 
 // Does not save the context.
+- (void)addToFavorites;
+
+// Does not save the context.
 - (void)removeFromFavoritesUpdatingSubsequentIndices;
 
 @end
