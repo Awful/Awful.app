@@ -4,11 +4,22 @@
 
 @import UIKit;
 
+/**
+ A SmilieButton can change its background color and its tint color depending on its state.
+ */
 IB_DESIGNABLE
 @interface SmilieButton : UIButton
 
+/**
+ * The tint color to use when the button is highlighted or selected.
+ */
 @property (strong, nonatomic) IBInspectable UIColor *selectedTintColor;
+
 @property (strong, nonatomic) IBInspectable UIColor *normalBackgroundColor;
+
+/**
+ * The background color to use when the button is highlighted or selected.
+ */
 @property (strong, nonatomic) IBInspectable UIColor *selectedBackgroundColor;
 
 @end

@@ -5,6 +5,9 @@
 @import Foundation;
 #import <Smilies/SmilieListType.h>
 
+/*
+ This user default is part of an attempt to make the keyboard extension useful when it's active within Awful.
+ */
 extern BOOL SmilieKeyboardIsAwfulAppActive(void);
 extern void SmilieKeyboardSetIsAwfulAppActive(BOOL isActive);
 

@@ -8,6 +8,9 @@
 @class Smilie;
 @class SmilieDataStore;
 
+/**
+ A keyboard data source backed by a SmilieDataStore.
+ */
 @interface SmilieFetchedDataSource : NSObject <SmilieKeyboardDataSource>
 
 - (instancetype)initWithDataStore:(SmilieDataStore *)dataStore;

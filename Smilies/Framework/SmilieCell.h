@@ -9,6 +9,9 @@
 
 @property (readonly, strong, nonatomic) FLAnimatedImageView *imageView;
 
+/**
+ When editing, a SmilieCell will wiggle and display a remove control over its top left corner.
+ */
 @property (assign, nonatomic) BOOL editing;
 @property (readonly, strong, nonatomic) UIImageView *removeControl;
 
