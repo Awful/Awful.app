@@ -10,9 +10,6 @@
 
 @property (strong, nonatomic) SmilieKeyboard *keyboard;
 @property (strong, nonatomic) NeedsFullAccessView *needsFullAccessView;
-@property (strong, nonatomic) NSLayoutConstraint *heightConstraint;
-
-@property (assign, nonatomic) BOOL shouldInvalidateCollectionViewLayoutOnceInLandscape;
 
 @end
 
@@ -33,38 +30,6 @@
         _needsFullAccessView = [NeedsFullAccessView newFromNib];
     }
     return _needsFullAccessView;
-}
-
-- (NSLayoutConstraint *)heightConstraint
-{
-    if (!_heightConstraint) {
-        _heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:216];
-    }
-    return _heightConstraint;
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-    
-    // I found that something within UICollectionViewFlowLayout would crash if the keyboard first appears on a phone in portrait orientation then you rotate to landscape. The problem does not appear if the keyboard first appears in landscape.
-    // As a workaround pending further investigation, we can invalidate the collection view's layout the first time we rotate to landscape. No more crashes after that, even if we never manually invalidate the layout ever again.
-    if ([UIScreen mainScreen].traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
-        if (self.shouldInvalidateCollectionViewLayoutOnceInLandscape) {
-            UICollectionViewLayout *layout = [self.keyboard.view valueForKeyPath:@"collectionView.collectionViewLayout"];
-            [layout invalidateLayout];
-            self.shouldInvalidateCollectionViewLayoutOnceInLandscape = NO;
-        }
-    }
-}
-
-- (void)updateViewConstraints
-{
-    [super updateViewConstraints];
-    if (CGRectGetHeight(self.view.bounds) == 0) return;
-    
-    [self.view addConstraint:self.heightConstraint];
-    self.shouldInvalidateCollectionViewLayoutOnceInLandscape = YES;
 }
 
 - (void)viewDidLoad
