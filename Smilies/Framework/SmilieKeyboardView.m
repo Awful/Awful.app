@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIView *noFavoritesNotice;
 @property (weak, nonatomic) IBOutlet UILongPressGestureRecognizer *toggleFavoriteLongPressGestureRecognizer;
 @property (weak, nonatomic) IBOutlet UILabel *flashMessageLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *sideButtonsWidthConstraint;
 
 @property (strong, nonatomic) NSTimer *flashTimer;
 
@@ -71,6 +72,11 @@
 {
     [super awakeFromNib];
     self.selectedSmilieList = SmilieKeyboardSelectedSmilieList();
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        self.sideButtonsWidthConstraint.constant = 50;
+        self.flowLayout.sectionInset = UIEdgeInsetsMake(4, 5, 4, 5);
+    }
 }
 
 - (void)flashMessage:(NSString *)message
@@ -193,7 +199,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
 {
     CGSize imageSize = [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
     const CGFloat margin = 4;
-    const CGFloat minimumWidth = 50;
+    CGFloat minimumWidth = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad ? 60 : 50;
     return CGSizeMake(MAX(imageSize.width + margin, minimumWidth),
                       MAX(imageSize.height + margin, minimumWidth));
 }
