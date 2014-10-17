@@ -61,6 +61,7 @@
         [self reloadInputViews];
     } else if (!showingSmilieKeyboard && self.inputView) {
         self.inputView = nil;
+        self.smilieKeyboard = nil;
         [self reloadInputViews];
     }
     if (!showingSmilieKeyboard) {
