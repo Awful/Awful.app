@@ -22,6 +22,12 @@
 
 @end
 
+@protocol SmilieCollectionViewDelegateFlowLayout <UICollectionViewDelegateFlowLayout>
+
+- (void)collectionView:(UICollectionView *)collectionView didStartEditingItemAtIndexPath:(NSIndexPath *)indexPath;
+
+@end
+
 @interface SmilieCollectionViewFlowLayoutAttributes : UICollectionViewLayoutAttributes
 
 @property (assign, nonatomic) BOOL editing;

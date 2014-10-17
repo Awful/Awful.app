@@ -23,6 +23,8 @@
         self.layer.shadowOffset = CGSizeMake(0, 1);
         self.layer.shadowRadius = 0;
         self.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+        
+        self.accessibilityTraits |= UIAccessibilityTraitKeyboardKey;
     }
     return self;
 }
@@ -36,6 +38,16 @@
     } else {
         [self stopWobbling];
     }
+}
+
+- (BOOL)isAccessibilityElement
+{
+    return YES;
+}
+
+- (NSString *)accessibilityHint
+{
+    return self.editing ? @"Double-tap to remove" : super.accessibilityHint;
 }
 
 - (UIImageView *)removeControl

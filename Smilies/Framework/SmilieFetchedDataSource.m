@@ -181,11 +181,14 @@
 - (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self smilieAtIndexPath:indexPath];
+    id image;
     if (UTTypeConformsTo((__bridge CFStringRef)smilie.imageUTI, kUTTypeGIF)) {
-        return [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];
+        image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];
     } else {
-        return [UIImage imageWithData:smilie.imageData];
+        image = [UIImage imageWithData:smilie.imageData];
     }
+    [image setAccessibilityLabel:smilie.text];
+    return image;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

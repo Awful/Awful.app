@@ -230,7 +230,13 @@ static void * KVOContext = &KVOContext;
                 }
             }
             
-            self.editing = YES;
+            if (!self.editing) {
+                self.editing = YES;
+                id delegate = self.collectionView.dataSource;
+                if ([delegate respondsToSelector:@selector(collectionView:didStartEditingItemAtIndexPath:)]) {
+                    [delegate collectionView:self.collectionView didStartEditingItemAtIndexPath:indexPath];
+                }
+            }
             
             [self startDraggingCell:cell fromIndexPath:indexPath];
             break;

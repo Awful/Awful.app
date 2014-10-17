@@ -15,6 +15,9 @@
                     <subviews>
                         <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ph3-Gp-eRH" userLabel="Delete Key" customClass="SmilieDeleteButton">
                             <rect key="frame" x="0.0" y="0.0" width="36" height="43"/>
+                            <accessibility key="accessibilityConfiguration" label="Delete">
+                                <accessibilityTraits key="traits" none="YES" keyboardKey="YES"/>
+                            </accessibility>
                             <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -33,6 +36,7 @@
                         </button>
                         <button contentMode="scaleAspectFit" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IgC-8N-JBR" userLabel="All Smilies" customClass="SmilieGridButton">
                             <rect key="frame" x="0.0" y="43" width="36" height="43"/>
+                            <accessibility key="accessibilityConfiguration" label="All smilies"/>
                             <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -51,6 +55,7 @@
                         </button>
                         <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mjd-xk-tC7" userLabel="Favorite Smilies" customClass="SmilieFavoriteButton">
                             <rect key="frame" x="0.0" y="86" width="36" height="44"/>
+                            <accessibility key="accessibilityConfiguration" label="Favorites"/>
                             <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -69,6 +74,7 @@
                         </button>
                         <button contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CX9-Tm-1f0" userLabel="Recent Smilies" customClass="SmilieRecentButton">
                             <rect key="frame" x="0.0" y="130" width="36" height="43"/>
+                            <accessibility key="accessibilityConfiguration" label="Recent smilies"/>
                             <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -87,6 +93,9 @@
                         </button>
                         <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEL-V5-xE7" userLabel="Next Keyboard Key" customClass="SmilieNextKeyboardButton">
                             <rect key="frame" x="0.0" y="173" width="36" height="43"/>
+                            <accessibility key="accessibilityConfiguration" label="Next keyboard">
+                                <accessibilityTraits key="traits" none="YES" keyboardKey="YES"/>
+                            </accessibility>
                             <color key="tintColor" red="0.086274509799999996" green="0.43529411759999997" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -200,7 +209,9 @@
                 </userDefinedRuntimeAttribute>
             </userDefinedRuntimeAttributes>
             <connections>
+                <outlet property="buttonContainer" destination="6ru-mE-svh" id="T4S-Ni-3wp"/>
                 <outlet property="collectionView" destination="iWV-Ro-qZd" id="X1o-BJ-WHV"/>
+                <outlet property="favoriteButton" destination="mjd-xk-tC7" id="a2k-JC-JuB"/>
                 <outlet property="flashMessageLabel" destination="ULe-12-xdl" id="z2H-PO-qWx"/>
                 <outlet property="flowLayout" destination="Jt7-Cp-Yyr" id="Lcs-o2-WIP"/>
                 <outlet property="noFavoritesNotice" destination="fB6-8X-iLR" id="Bsk-iC-bbq"/>

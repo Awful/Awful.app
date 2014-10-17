@@ -9,11 +9,13 @@
 #import "SmilieCell.h"
 #import "SmilieCollectionViewFlowLayout.h"
 
-@interface SmilieKeyboardView () <SmilieCollectionViewFlowLayoutDataSource, UICollectionViewDelegateFlowLayout>
+@interface SmilieKeyboardView () <SmilieCollectionViewFlowLayoutDataSource, SmilieCollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet SmilieCollectionViewFlowLayout *flowLayout;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *smilieListButtons;
+@property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
+@property (weak, nonatomic) IBOutlet UIView *buttonContainer;
 @property (weak, nonatomic) IBOutlet UIView *noFavoritesNotice;
 @property (weak, nonatomic) IBOutlet UILongPressGestureRecognizer *toggleFavoriteLongPressGestureRecognizer;
 @property (weak, nonatomic) IBOutlet UILabel *flashMessageLabel;
@@ -72,6 +74,7 @@
 {
     [super awakeFromNib];
     self.selectedSmilieList = SmilieKeyboardSelectedSmilieList();
+    self.buttonContainer.shouldGroupAccessibilityChildren = YES;
     
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         self.sideButtonsWidthConstraint.constant = 50;
@@ -82,6 +85,7 @@
 - (void)flashMessage:(NSString *)message
 {
     self.flashMessageLabel.text = message;
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, message);
     
     [self.flashTimer invalidate];
     [UIView animateWithDuration:0.2 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
@@ -125,6 +129,7 @@
     } else {
         self.selectedSmilieList = smilieList;
     }
+    self.favoriteButton.accessibilityLabel = @"Favorites";
 }
 
 - (IBAction)didTapNextKeyboard
@@ -166,7 +171,18 @@
     if ([image isKindOfClass:[FLAnimatedImage class]]) {
         cell.imageView.animatedImage = image;
     } else {
-        cell.imageView.image =image;
+        cell.imageView.image = image;
+    }
+    
+    cell.accessibilityLabel = [image accessibilityLabel];
+    if (self.selectedSmilieList == SmilieListFavorites) {
+        if (self.flowLayout.editing) {
+            cell.accessibilityHint = nil;
+        } else {
+            cell.accessibilityHint = @"Double-tap and hold to edit favorites";
+        }
+    } else {
+        cell.accessibilityHint = @"Double-tap and hold to add to favorites";
     }
     
     cell.normalBackgroundColor = self.normalBackgroundColor;
@@ -191,6 +207,15 @@ static NSString * const CellIdentifier = @"SmilieCell";
 - (void)collectionView:(UICollectionView *)collectionView didFinishDraggingItemToIndexPath:(NSIndexPath *)indexPath
 {
     [self.dataSource smilieKeyboard:self didFinishDraggingSmilieToIndexPath:indexPath];
+}
+
+#pragma mark - SmilieCollectionViewDelegateFlowLayout
+
+- (void)collectionView:(UICollectionView *)collectionView didStartEditingItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.favoriteButton.accessibilityLabel = @"End editing";
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, [NSString stringWithFormat:@"Moving %@", cell.accessibilityLabel]);
 }
 
 #pragma mark - UICollectionViewDelegateFlowLayout
@@ -220,15 +245,23 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return !self.flowLayout.editing;
+    if (self.flowLayout.editing) {
+        return UIAccessibilityIsVoiceOverRunning();
+    } else {
+        return YES;
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.flowLayout.editing) return;
-    
-    [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
-    [collectionView deselectItemAtIndexPath:indexPath animated:NO];
+    if (self.flowLayout.editing) {
+        if (UIAccessibilityIsVoiceOverRunning()) {
+            [self.dataSource smilieKeyboard:self deleteSmilieAtIndexPath:indexPath];
+        }
+    } else {
+        [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
+        [collectionView deselectItemAtIndexPath:indexPath animated:NO];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate
