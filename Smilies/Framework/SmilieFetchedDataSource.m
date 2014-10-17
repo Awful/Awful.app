@@ -65,6 +65,7 @@
                 NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SmilieMetadata entityName]];
                 fetchRequest.predicate = [NSPredicate predicateWithFormat:@"lastUsedDate != nil"];
                 fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"lastUsedDate" ascending:NO]];
+                fetchRequest.fetchLimit = 40;
                 fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                managedObjectContext:self.dataStore.managedObjectContext
                                                                                  sectionNameKeyPath:nil
