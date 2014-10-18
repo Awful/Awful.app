@@ -12,7 +12,7 @@
  An array of smilie keys, with toggles to choose from three different lists: all smilies, favorite smilies, or recently-inserted smilies.
  */
 IB_DESIGNABLE
-@interface SmilieKeyboardView : UIView
+@interface SmilieKeyboardView : UIView <UIInputViewAudioFeedback>
 
 /**
  Loads the keyboard view from its nib. This is probably how you want to initialize a SmilieKeyboardView.

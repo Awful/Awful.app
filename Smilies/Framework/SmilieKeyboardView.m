@@ -113,6 +113,7 @@
 - (IBAction)didTapDelete
 {
     [self.delegate deleteBackwardForSmilieKeyboard:self];
+    [[UIDevice currentDevice] playInputClick];
 }
 
 - (IBAction)didTapSmilieListButton:(UIButton *)button
@@ -130,11 +131,13 @@
         self.selectedSmilieList = smilieList;
     }
     self.favoriteButton.accessibilityLabel = @"Favorites";
+    [[UIDevice currentDevice] playInputClick];
 }
 
 - (IBAction)didTapNextKeyboard
 {
     [self.delegate advanceToNextInputModeForSmilieKeyboard:self];
+    [[UIDevice currentDevice] playInputClick];
 }
 
 - (IBAction)didLongPressCollectionView:(UILongPressGestureRecognizer *)sender
@@ -260,6 +263,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
         }
     } else {
         [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
+        [[UIDevice currentDevice] playInputClick];
         [collectionView deselectItemAtIndexPath:indexPath animated:NO];
     }
 }
@@ -276,6 +280,13 @@ static NSString * const CellIdentifier = @"SmilieCell";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, scrollView.contentOffset.y / scrollView.contentSize.height);
+}
+
+#pragma mark - UIInputViewAudioFeedback
+
+- (BOOL)enableInputClicksWhenVisible
+{
+    return YES;
 }
 
 @end
