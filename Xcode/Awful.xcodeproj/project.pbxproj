@@ -109,7 +109,6 @@
 		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
 		1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* Smilie Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C66AA0419DD39AF001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
-		1C66AA0619DD39CB001B9A41 /* Smilies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
 		1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66AA1019DDF54A001B9A41 /* SmilieButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1119DDF54A001B9A41 /* SmilieButton.m */; };
@@ -399,17 +398,6 @@
 				1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66AA0519DD39B3001B9A41 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1C66AA0619DD39CB001B9A41 /* Smilies.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1781,9 +1769,9 @@
 			buildConfigurationList = 1C66A9D819DD304F001B9A41 /* Build configuration list for PBXNativeTarget "Smilies" */;
 			buildPhases = (
 				58FC1CD8E73DDDA14A520B6B /* Check Pods Manifest.lock */,
+				1C66A9BD19DD304D001B9A41 /* Headers */,
 				1C66A9BB19DD304D001B9A41 /* Sources */,
 				1C66A9BC19DD304D001B9A41 /* Frameworks */,
-				1C66A9BD19DD304D001B9A41 /* Headers */,
 				1C66A9BE19DD304D001B9A41 /* Resources */,
 				A23C194590335D8E6BCAC3AB /* Copy Pods Resources */,
 			);
@@ -1821,7 +1809,6 @@
 				1C66A9EB19DD3939001B9A41 /* Sources */,
 				1C66A9EC19DD3939001B9A41 /* Frameworks */,
 				1C66A9ED19DD3939001B9A41 /* Resources */,
-				1C66AA0519DD39B3001B9A41 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3133,6 +3120,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -3172,6 +3160,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
@@ -3213,6 +3202,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
@@ -3254,6 +3244,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
