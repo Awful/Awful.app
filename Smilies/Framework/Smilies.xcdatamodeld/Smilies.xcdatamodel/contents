@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="14A386a" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="14A388a" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Smilie" representedClassName="Smilie" syncable="YES">
         <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="imageSize" optional="YES" transient="YES" syncable="YES"/>
         <attribute name="imageSizeString" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" indexed="YES" versionHashModifier="3.1-beta6-addindex" syncable="YES"/>
         <attribute name="imageUTI" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="section" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
@@ -26,7 +26,7 @@
         <memberEntity name="Smilie"/>
     </configuration>
     <elements>
-        <element name="Smilie" positionX="-63" positionY="-18" width="128" height="191"/>
+        <element name="Smilie" positionX="-63" positionY="-18" width="128" height="194"/>
         <element name="SmilieMetadata" positionX="-54" positionY="-9" width="128" height="131"/>
     </elements>
 </model>

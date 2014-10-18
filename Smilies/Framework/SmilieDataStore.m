@@ -27,31 +27,6 @@
         
         _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedObjectContext.persistentStoreCoordinator = self.storeCoordinator;
-        
-        #if DEBUG || AWFUL_BETA
-        {{
-            // Awful 3.1 beta 3 allowed one to add a favorite smilie but did not order the favorites. This little fix detects that scenario and sets an arbitrary but persistent ordering.
-            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[SmilieMetadata entityName]];
-            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES AND favoriteIndex = 0"];
-            NSError *error;
-            NSUInteger unorderedFavoritesCount = [_managedObjectContext countForFetchRequest:fetchRequest error:&error];
-            NSAssert(unorderedFavoritesCount != NSNotFound, @"error fetching unordered favorite count: %@", error);
-            if (unorderedFavoritesCount > 1) {
-                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isFavorite = YES"];
-                fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:YES]];
-                NSArray *allFavorites = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
-                NSAssert(allFavorites, @"error fetching all favorites: %@", error);
-                [allFavorites enumerateObjectsUsingBlock:^(SmilieMetadata *metadata, NSUInteger i, BOOL *stop) {
-                    metadata.favoriteIndex = i;
-                }];
-                if (![_managedObjectContext save:&error]) {
-                    NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
-                }
-            }
-        }}
-        #else
-            #error Remove this beta code before submitting to the App Store!
-        #endif
     }
     return _managedObjectContext;
 }

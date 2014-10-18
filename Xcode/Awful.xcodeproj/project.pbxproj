@@ -429,7 +429,7 @@
 		1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AwfulAnnoyingSwift.m"; sourceTree = "<group>"; };
 		1C090FB8163A40C1003FD0A3 /* AwfulPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPost.h; sourceTree = "<group>"; };
 		1C090FB9163A40C1003FD0A3 /* AwfulPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPost.m; sourceTree = "<group>"; };
-		1C09419F19F07D8D0098393F /* 3.1-Beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "3.1-Beta6.xcdatamodel"; sourceTree = "<group>"; };
+		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPunishmentCell.h; sourceTree = "<group>"; };
@@ -473,7 +473,6 @@
 		1C35FB7718329D3400B52724 /* FormScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormScrapingTests.m; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
-		1C3A13F819DF76400022C44C /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
 		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
@@ -3726,10 +3725,9 @@
 		1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				1C09419F19F07D8D0098393F /* 3.1-Beta6.xcdatamodel */,
-				1C3A13F819DF76400022C44C /* Smilies.xcdatamodel */,
+				1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */,
 			);
-			currentVersion = 1C09419F19F07D8D0098393F /* 3.1-Beta6.xcdatamodel */;
+			currentVersion = 1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */;
 			path = Smilies.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
