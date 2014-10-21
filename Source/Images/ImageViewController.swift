@@ -16,7 +16,7 @@ class ImageViewController: AwfulViewController {
     
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var imageView: FLAnimatedImageView!
     @IBOutlet private var swipeGestureRecognizer: UISwipeGestureRecognizer!
     @IBOutlet private var overlaidViews: [UIView]!
     @IBOutlet private weak var actionButton: UIButton!
@@ -50,6 +50,12 @@ class ImageViewController: AwfulViewController {
         visible = false
     }
     
+    private enum DecodedImage {
+        case Animated(FLAnimatedImage)
+        case Static(UIImage)
+        case Error
+    }
+    
     private func fetchImage() {
         let request = NSMutableURLRequest(URL: URL)
         request.addValue("image/*", forHTTPHeaderField: "Accept")
@@ -61,10 +67,9 @@ class ImageViewController: AwfulViewController {
                     }
                     self.presentViewController(alert, animated: true, completion: nil)
                 } else {
-                    self.configureWithImageData(data)
-                    self.actionButton.hidden = false
-                    if self.visible {
-                        self.flashOverlaidViews()
+                    self.decodeImage(data) { image in
+                        self.imageData = data
+                        self.configureWithImage(image)
                     }
                 }
                 self.downloadTask = nil
@@ -73,28 +78,48 @@ class ImageViewController: AwfulViewController {
         downloadTask.resume()
     }
     
-    private func configureWithImageData(data: NSData) {
-        activityIndicator.stopAnimating()
-        imageData = data
-        let animation = FVGifAnimation(data: data)
-        if animation.canAnimate() {
-            animation.setAnimationToImageView(imageView)
-            imageView.startAnimating()
-        } else {
-            imageView.image = UIImage(data: data)
+    private func decodeImage(data: NSData, completionBlock: (DecodedImage) -> Void) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            var image: DecodedImage
+            if let animatedImage = FLAnimatedImage(animatedGIFData: data) {
+                image = .Animated(animatedImage)
+            } else if let staticImage = UIImage(data: data) {
+                image = .Static(staticImage)
+            } else {
+                image = .Error
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                completionBlock(image)
+            }
         }
-        imageView.backgroundColor = UIColor.whiteColor()
+    }
+    
+    private func configureWithImage(image: DecodedImage) {
+        activityIndicator.stopAnimating()
+        self.actionButton.hidden = false
         
-        if let image = imageView.image ?? imageView.animationImages?[0] as UIImage? {
-            let minimumZoom = CGSize(width: scrollView.bounds.width / image.size.width, height: scrollView.bounds.height / image.size.height)
-            scrollView.minimumZoomScale = min(minimumZoom.width, minimumZoom.height, 1)
-            scrollView.zoomScale = scrollView.minimumZoomScale
-            scrollView.maximumZoomScale = 25 * scrollView.minimumZoomScale
-        } else {
+        switch image {
+        case .Animated(let animatedImage):
+            imageView.animatedImage = animatedImage
+        case .Static(let image):
+            imageView.image = image
+        case .Error:
             let alert = UIAlertController(title: "Missing or Invalid Image", message: "Could not find valid image data.") { action in
                 self.dismiss()
             }
             presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        imageView.backgroundColor = UIColor.whiteColor()
+        if let imageSize = imageView.image?.size {
+            let minimumZoom = CGSize(width: scrollView.bounds.width / imageSize.width, height: scrollView.bounds.height / imageSize.height)
+            scrollView.minimumZoomScale = min(minimumZoom.width, minimumZoom.height, 1)
+            scrollView.zoomScale = scrollView.minimumZoomScale
+            scrollView.maximumZoomScale = 25 * scrollView.minimumZoomScale
+        }
+        
+        if self.visible {
+            flashOverlaidViews()
         }
     }
     
