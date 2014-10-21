@@ -6,6 +6,7 @@ import UIKit
 
 /// Downloads an image and shows it in a zoomable scroll view for inspection and further action.
 class ImageViewController: AwfulViewController {
+    
     let URL: NSURL!
     var doneAction: (() -> Void)?
     private var downloadTask: NSURLSessionTask!
@@ -17,10 +18,10 @@ class ImageViewController: AwfulViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var imageView: FLAnimatedImageView!
-    @IBOutlet private var swipeGestureRecognizer: UISwipeGestureRecognizer!
     @IBOutlet private var overlaidViews: [UIView]!
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var statusBarBackgroundViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var panToDismissGestureRecognizer: UIPanGestureRecognizer!
 
     init(URL: NSURL) {
         self.URL = URL
@@ -33,7 +34,6 @@ class ImageViewController: AwfulViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        scrollView.panGestureRecognizer.requireGestureRecognizerToFail(swipeGestureRecognizer)
         fetchImage()
     }
     
@@ -158,8 +158,30 @@ class ImageViewController: AwfulViewController {
         dismiss()
     }
     
-    @IBAction func didSwipeDown(sender: UISwipeGestureRecognizer) {
-        dismiss()
+    private var panStart: NSTimeInterval!
+    
+    @IBAction func didPanToDismiss(sender: UIPanGestureRecognizer) {
+        switch sender.state {
+        case .Began:
+            panStart = NSProcessInfo.processInfo().systemUptime
+        case .Changed:
+            let velocity = sender.velocityInView(view)
+            if velocity.y < 0 || abs(velocity.x) > abs(velocity.y) {
+                sender.enabled = false
+                sender.enabled = true
+            }
+        case .Ended:
+            let translation = sender.translationInView(view)
+            if abs(translation.x) < 30 {
+                if translation.y > 60 {
+                    if NSProcessInfo.processInfo().systemUptime - panStart < 0.5 {
+                        dismiss()
+                    }
+                }
+            }
+        default:
+            break;
+        }
     }
     
     private func setShowingOverlaidViews(showing: Bool, animated: Bool) {
@@ -206,6 +228,16 @@ class ImageViewController: AwfulViewController {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
+    }
+}
+
+extension ImageViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == panToDismissGestureRecognizer {
+            return true
+        }
+        fatalError("unexpected gesture recognizer")
     }
 }
 

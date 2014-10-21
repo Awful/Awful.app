@@ -9,9 +9,9 @@
                 <outlet property="actionButton" destination="1rR-c0-50m" id="6Yj-zG-QCB"/>
                 <outlet property="activityIndicator" destination="IJO-hy-jmY" id="ngd-Vo-Qfu"/>
                 <outlet property="imageView" destination="l6V-lC-TXd" id="KE4-5k-v2Q"/>
+                <outlet property="panToDismissGestureRecognizer" destination="6MC-Po-de8" id="juE-9E-ros"/>
                 <outlet property="scrollView" destination="ZLh-kG-l6m" id="tZs-7X-gYN"/>
                 <outlet property="statusBarBackgroundViewHeightConstraint" destination="oaK-Qa-JlQ" id="0o7-7T-UjP"/>
-                <outlet property="swipeGestureRecognizer" destination="w93-BF-zAY" id="uIJ-FG-UpT"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outletCollection property="overlaidViews" destination="5rZ-lk-hWQ" collectionClass="NSMutableArray" id="iIB-1I-Gc3"/>
                 <outletCollection property="overlaidViews" destination="1rR-c0-50m" collectionClass="NSMutableArray" id="DCy-UM-8xx"/>
@@ -106,8 +106,8 @@
                 <constraint firstItem="ZLh-kG-l6m" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="rXK-ap-Kk7"/>
             </constraints>
             <connections>
-                <outletCollection property="gestureRecognizers" destination="w93-BF-zAY" appends="YES" id="Siy-5S-xww"/>
                 <outletCollection property="gestureRecognizers" destination="eQi-oZ-TBD" appends="YES" id="viY-NT-RgM"/>
+                <outletCollection property="gestureRecognizers" destination="6MC-Po-de8" appends="YES" id="IwH-8y-qJd"/>
             </connections>
         </view>
         <tapGestureRecognizer id="eQi-oZ-TBD">
@@ -115,11 +115,11 @@
                 <action selector="didTapImage:" destination="-1" id="YdM-RZ-VTa"/>
             </connections>
         </tapGestureRecognizer>
-        <swipeGestureRecognizer direction="down" id="w93-BF-zAY">
+        <panGestureRecognizer minimumNumberOfTouches="1" id="6MC-Po-de8" userLabel="Swipe to Dismiss Gesture Recognizer">
             <connections>
-                <action selector="didSwipeDown:" destination="-1" id="ksH-Ez-MuY"/>
+                <action selector="didPanToDismiss:" destination="-1" id="dZy-7V-LEZ"/>
             </connections>
-        </swipeGestureRecognizer>
+        </panGestureRecognizer>
     </objects>
     <resources>
         <image name="action" width="19" height="26"/>
