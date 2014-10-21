@@ -29,7 +29,7 @@ class ProfileViewController: AwfulViewController {
         for filename in ["zepto.min.js", "common.js", "profile.js"] {
             let URL = NSBundle.mainBundle().URLForResource(filename, withExtension: nil)
             var error: NSError?
-            let source = NSString.stringWithContentsOfURL(URL!, encoding: NSUTF8StringEncoding, error: &error)
+            let source = NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding, error: &error) as NSString!
             if source == nil {
                 NSException(name: NSInternalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
             }
@@ -111,8 +111,9 @@ extension ProfileViewController: WKScriptMessageHandler {
             sendPrivateMessage()
         case "showHomepageActions":
             let body = message.body as [String:String]
-            let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL())
-            showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]))
+            if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL()) {
+                showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]))
+            }
         default:
             println("\(self) received unknown message from webview: \(message.name)")
         }
@@ -164,7 +165,7 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
         on = false
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == KVOContext_wheremynamespacesat {
             if let loading = change[NSKeyValueChangeNewKey] as? NSNumber {
                 on = loading.boolValue

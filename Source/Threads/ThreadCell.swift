@@ -112,7 +112,7 @@ class ThreadCell: DynamicTypeTableViewCell {
 }
 
 @IBDesignable
-private class TopCapAlignmentLabel: UILabel {
+class TopCapAlignmentLabel: UILabel {
     override func alignmentRectInsets() -> UIEdgeInsets {
         var insets = super.alignmentRectInsets()
         insets.top = ceil(font.ascender - font.capHeight)

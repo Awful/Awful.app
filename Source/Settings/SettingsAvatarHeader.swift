@@ -38,7 +38,7 @@ class SettingsAvatarHeader: UIView {
         avatarImageView.removeObserver(self, forKeyPath: "animationImages", context: KVOContext)
     }
     
-    override func observeValueForKeyPath(keyPath: String!, ofObject object: AnyObject!, change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == KVOContext {
             if hasAvatar {
                 addSubview(avatarImageView)

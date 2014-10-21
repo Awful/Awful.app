@@ -31,7 +31,7 @@ class Selectotron : AwfulViewController {
     }
     
     @IBAction func lastPostButtonTapped() {
-        dismissAndLoadPage(AwfulThreadPage.Last.toRaw())
+        dismissAndLoadPage(AwfulThreadPage.Last.rawValue)
     }
     
     private func dismissAndLoadPage(page: Int) {
@@ -71,9 +71,9 @@ class Selectotron : AwfulViewController {
         
         let page = postsViewController.page
         switch page {
-        case AwfulThreadPage.Last.toRaw():
+        case AwfulThreadPage.Last.rawValue:
             selectedPage = picker.numberOfRowsInComponent(0)
-        case AwfulThreadPage.NextUnread.toRaw(), AwfulThreadPage.None.toRaw():
+        case AwfulThreadPage.NextUnread.rawValue, AwfulThreadPage.None.rawValue:
             break
         default:
             selectedPage = page

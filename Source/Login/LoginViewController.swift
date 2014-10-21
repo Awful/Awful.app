@@ -116,7 +116,7 @@ class LoginViewController: AwfulViewController {
     }
     
     @IBAction func didTapForgetPassword() {
-        let URL = NSURL(string: "http://forums.somethingawful.com/account.php?action=lostpw")
+        let URL = NSURL(string: "http://forums.somethingawful.com/account.php?action=lostpw")!
         UIApplication.sharedApplication().openURL(URL)
     }
 }
@@ -148,9 +148,8 @@ extension LoginViewController {
         let userInfo = notification.userInfo as [NSObject:NSObject]
         let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as NSNumber
         let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as NSNumber
-        let options = UIViewAnimationOptions.fromRaw(UInt(curve.unsignedIntegerValue) << 16)!
-        UIView.animateWithDuration(duration, delay: 0, options: options, animations: {
-            
+        let options = UIViewAnimationOptions(UInt(curve.unsignedIntegerValue) << 16)
+        UIView.animateWithDuration(duration.doubleValue, delay: 0, options: options, animations: {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
             let windowKeyboardFrame = self.view.window!.convertRect(keyboardFrame, fromWindow: nil)
             let localKeyboardFrame = self.view.convertRect(windowKeyboardFrame, fromView: nil)

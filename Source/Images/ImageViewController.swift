@@ -184,7 +184,7 @@ class ImageViewController: AwfulViewController {
     }
 }
 
-private class ContentCenteringScrollView: UIScrollView {
+class ContentCenteringScrollView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if let contentView = delegate?.viewForZoomingInScrollView?(self) {
