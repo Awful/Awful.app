@@ -20,7 +20,8 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
 #import <Crashlytics/Crashlytics.h>
-#import <GRMustache.h>
+#import <GRMustache/GRMustache.h>
+#import "Handoff.h"
 #import "MessageComposeViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostComposeViewController.h"
@@ -150,6 +151,8 @@
     
     [self updateUserInterface];
     
+    [self configureUserActivityIfPossible];
+    
     if (!updateCache) {
         [self clearLoadingMessage];
         return;
@@ -193,6 +196,8 @@
         }
         
         if (error) return;
+        
+        [self configureUserActivityIfPossible];
         
         if (self.hiddenPosts == 0 && firstUnreadPost != NSNotFound) {
             self.hiddenPosts = firstUnreadPost;
@@ -1008,6 +1013,44 @@
         __typeof__(self) self = weakSelf;
         [self loadNextPageOrRefresh];
     } position:SVPullToRefreshPositionBottom];
+    
+    [self configureUserActivityIfPossible];
+}
+
+- (void)configureUserActivityIfPossible
+{
+    if (self.page >= 1) {
+        self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeBrowsingPosts];
+        self.userActivity.needsSave = YES;
+    } else {
+        self.userActivity = nil;
+    }
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity
+{
+    activity.title = self.thread.title;
+    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoThreadIDKey: self.thread.threadID,
+                                                 HandoffInfoPageKey: @(self.page)}];
+    if (self.author) {
+        [activity addUserInfoEntriesFromDictionary:@{HandoffInfoFilteredThreadUserIDKey: self.author.userID}];
+    }
+    
+    NSMutableString *relativeString = [NSMutableString new];
+    [relativeString appendFormat:@"/showthread.php?threadid=%@&perpage=40", self.thread.threadID];
+    if (self.page > 1) {
+        [relativeString appendFormat:@"&pagenumber=%@", @(self.page)];
+    }
+    if (self.author) {
+        [relativeString appendFormat:@"&userid=%@", self.author.userID];
+    }
+    activity.webpageURL = [NSURL URLWithString:relativeString relativeToURL:[AwfulForumsClient client].baseURL];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.userActivity = nil;
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate

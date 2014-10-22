@@ -16,6 +16,7 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
+#import "Handoff.h"
 #import "MessageComposeViewController.h"
 #import "RapSheetViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
@@ -319,6 +320,7 @@
             [self renderMessage];
             [self.loadingView removeFromSuperview];
             self.loadingView = nil;
+            self.userActivity.needsSave = YES;
         }];
     } else {
         [self renderMessage];
@@ -335,6 +337,28 @@
     self.view.backgroundColor = theme[@"backgroundColor"];
     self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     self.loadingView.tintColor = theme[@"backgroundColor"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeReadingMessage];
+    self.userActivity.needsSave = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.userActivity = nil;
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity
+{
+    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoMessageIDKey: self.privateMessage.messageID}];
+    NSString *subject = self.privateMessage.subject;
+    activity.title = subject.length > 0 ? subject : @"Private Message";
+    activity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"/private.php?action=show&privatemessageid=%@", self.privateMessage.messageID]
+                                 relativeToURL:[AwfulForumsClient client].baseURL];
 }
 
 #pragma mark - UIWebViewDelegate

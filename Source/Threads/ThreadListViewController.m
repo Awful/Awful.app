@@ -12,6 +12,7 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
+#import "Handoff.h"
 #import "PostsPageViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
@@ -166,6 +167,8 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
     self.tableView.showsInfiniteScrolling = fetchedResultsController.fetchedObjects.count > 0;
     [self refreshIfNecessary];
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeListingThreads];
+    self.userActivity.needsSave = YES;
 }
 
 - (void)refreshIfNecessary
@@ -209,6 +212,20 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
         [self.tableView.infiniteScrollingView stopAnimating];
         self.title = self.forum.name;
     }];
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity
+{
+    activity.title = self.forum.name;
+    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoForumIDKey: self.forum.forumID}];
+    activity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"/forumdisplay.php?forumid=%@", self.forum.forumID]
+                                 relativeToURL:[AwfulForumsClient client].baseURL];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.userActivity = nil;
 }
 
 #pragma mark - AwfulThreadTableViewController

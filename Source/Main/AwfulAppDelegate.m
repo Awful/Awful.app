@@ -22,6 +22,7 @@
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
+#import "Handoff.h"
 #import <Smilies/Smilies.h>
 #import "Awful-Swift.h"
 
@@ -370,5 +371,15 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
     }
     return [self openAwfulURL:URL];
 }
+
+#pragma mark Handoff
+
+- (void)application:(UIApplication *)application didUpdateUserActivity:(NSUserActivity *)userActivity
+{
+    // Bit of future-proofing.
+    [userActivity addUserInfoEntriesFromDictionary:@{HandoffInfoVersionKey: @(HandoffVersion)}];
+}
+
+static const NSInteger HandoffVersion = 1;
 
 @end

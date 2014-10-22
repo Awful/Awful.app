@@ -7,6 +7,7 @@
 #import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
+#import "Handoff.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
 
@@ -84,6 +85,8 @@
 {
     [super viewDidAppear:animated];
     [self refreshIfNecessary];
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeListingThreads];
+    self.userActivity.needsSave = YES;
 }
 
 - (void)refreshIfNecessary
@@ -116,6 +119,19 @@
         [self.tableView.infiniteScrollingView stopAnimating];
         self.tableView.showsInfiniteScrolling = threads.count >= 40;
     }];
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity
+{
+    activity.title = @"Bookmarked Threads";
+    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoBookmarksKey: @YES}];
+    activity.webpageURL = [NSURL URLWithString:@"/bookmarkthreads.php" relativeToURL:[AwfulForumsClient client].baseURL];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.userActivity = nil;
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
