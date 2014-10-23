@@ -5,6 +5,7 @@
 import UIKit
 
 class ThreadCell: DynamicTypeTableViewCell {
+    
     @IBOutlet weak var tagImageView: UIImageView!
     @IBOutlet weak var secondaryTagImageView: UIImageView!
     
@@ -20,7 +21,6 @@ class ThreadCell: DynamicTypeTableViewCell {
     @IBOutlet weak var stickyImageView: UIImageView!
     
     @IBOutlet weak var separator: UIView!
-    @IBOutlet private weak var separatorHeightConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,9 +31,6 @@ class ThreadCell: DynamicTypeTableViewCell {
         
         // Can't do this in IB.
         contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
-        
-        // Can't do this in IB.
-        separatorHeightConstraint.constant = 0.5
         
         // Can't do this in IB.
         addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
@@ -52,8 +49,6 @@ class ThreadCell: DynamicTypeTableViewCell {
             return suggestedPointSize
         }
     }
-    
-    
     
     // MARK: Hide and show tag and/or rating
     
@@ -113,6 +108,7 @@ class ThreadCell: DynamicTypeTableViewCell {
 
 @IBDesignable
 class TopCapAlignmentLabel: UILabel {
+    
     override func alignmentRectInsets() -> UIEdgeInsets {
         var insets = super.alignmentRectInsets()
         insets.top = ceil(font.ascender - font.capHeight)
@@ -124,6 +120,7 @@ import AVFoundation
 
 @IBDesignable
 class PageIcon: UIView {
+    
     @IBInspectable var borderColor: UIColor = UIColor.darkGrayColor() {
         didSet { setNeedsDisplay() }
     }

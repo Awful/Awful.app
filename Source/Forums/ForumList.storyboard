@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -42,12 +42,9 @@
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                         </button>
-                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQi-Ih-I5Z" userLabel="Cell Separator">
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="fQi-Ih-I5Z" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
                                             <rect key="frame" x="40" y="43" width="560" height="1"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="1" id="cWh-q9-BVu"/>
-                                            </constraints>
                                         </view>
                                     </subviews>
                                     <constraints>
@@ -70,7 +67,6 @@
                                     <outlet property="nameLabel" destination="H4b-1h-lY0" id="rCt-ri-KkT"/>
                                     <outlet property="nameSpaceConstraint" destination="YTM-ar-8Hd" id="DcI-Mg-p9m"/>
                                     <outlet property="separator" destination="fQi-Ih-I5Z" id="nno-ZH-CVb"/>
-                                    <outlet property="separatorHeightConstraint" destination="cWh-q9-BVu" id="5ME-Ke-Dr9"/>
                                     <outletCollection property="dynamicTypeLabels" destination="H4b-1h-lY0" collectionClass="NSMutableArray" id="CMq-3W-Hj2"/>
                                 </connections>
                             </tableViewCell>
@@ -92,12 +88,9 @@
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Svp-W1-S0b" userLabel="Cell Separator">
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Svp-W1-S0b" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
                                             <rect key="frame" x="40" y="43" width="560" height="1"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="1" id="qUY-yn-Fmb"/>
-                                            </constraints>
                                         </view>
                                     </subviews>
                                     <constraints>
@@ -115,7 +108,6 @@
                                 <connections>
                                     <outlet property="nameLabel" destination="1Cc-Eh-5gQ" id="r1a-M4-giS"/>
                                     <outlet property="separator" destination="Svp-W1-S0b" id="LWk-s6-Mm6"/>
-                                    <outlet property="separatorHeightConstraint" destination="qUY-yn-Fmb" id="ODp-sY-mdM"/>
                                     <outletCollection property="dynamicTypeLabels" destination="1Cc-Eh-5gQ" collectionClass="NSMutableArray" id="Zek-pM-40z"/>
                                 </connections>
                             </tableViewCell>

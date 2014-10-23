@@ -96,12 +96,9 @@
                             <constraint firstAttribute="width" constant="1" id="mKJ-Ae-jGS"/>
                         </constraints>
                     </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator">
+                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
                         <rect key="frame" x="61" y="73" width="259" height="1"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="1" id="Uhf-EX-ezB"/>
-                        </constraints>
                     </view>
                 </subviews>
                 <constraints>
@@ -146,7 +143,6 @@
                 <outlet property="ratingImageView" destination="xoz-qp-irW" id="27e-kb-frT"/>
                 <outlet property="secondaryTagImageView" destination="xaO-nS-1bC" id="kla-qE-5eA"/>
                 <outlet property="separator" destination="gev-Wv-hue" id="VYw-7Q-3rD"/>
-                <outlet property="separatorHeightConstraint" destination="Uhf-EX-ezB" id="PL7-Jx-y3n"/>
                 <outlet property="stickyImageView" destination="zuV-Ky-jz8" id="kWa-a6-CPM"/>
                 <outlet property="tagAndRatingContainerView" destination="960-Hr-2KP" id="e1v-5v-R7j"/>
                 <outlet property="tagImageView" destination="L5k-2S-cEh" id="sAO-hR-6fM"/>
