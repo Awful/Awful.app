@@ -166,6 +166,9 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             }
         }
+
+        // I can't seem to get the iPhone 6+ to open in landscape to a primary overlay display mode. This makes that happen.
+        kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
     }
     
     private var primaryNavigationController: UINavigationController {
