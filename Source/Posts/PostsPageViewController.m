@@ -19,7 +19,6 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
-#import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import "Handoff.h"
 #import "MessageComposeViewController.h"
@@ -919,7 +918,6 @@
                     self.replyViewController.delegate = self;
                     self.replyViewController.restorationIdentifier = @"Reply composition";
                 }
-                CLSLog(@"%s %@ is about to present %@ within the possibly-not-yet-created %@", __PRETTY_FUNCTION__, self, self.replyViewController, self.replyViewController.navigationController);
                 [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
             }];
         }]];

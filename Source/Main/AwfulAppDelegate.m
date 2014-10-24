@@ -6,7 +6,6 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AVFoundation/AVFoundation.h>
 #import "AwfulAvatarLoader.h"
-#import "AwfulCrashlytics.h"
 #import "AwfulDataStack.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -20,7 +19,6 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
-#import <Crashlytics/Crashlytics.h>
 #import <GRMustache/GRMustache.h>
 #import "Handoff.h"
 #import <Smilies/Smilies.h>
@@ -63,23 +61,6 @@ static id _instance;
     return _dataStack.managedObjectContext;
 }
 
-#define CRASHLYTICS_ENABLED defined(CRASHLYTICS_API_KEY) && !DEBUG
-
-static inline void StartCrashlytics(void)
-{
-#if CRASHLYTICS_ENABLED
-    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
-    SetCrashlyticsUsername();
-#endif
-}
-
-static inline void SetCrashlyticsUsername(void)
-{
-#if CRASHLYTICS_ENABLED && AWFUL_BETA
-    [Crashlytics setUserName:[AwfulSettings sharedSettings].username];
-#endif
-}
-
 - (RootViewControllerStack *)rootViewControllerStack
 {
     if (!_rootViewControllerStack) {
@@ -116,9 +97,7 @@ static inline void SetCrashlyticsUsername(void)
 - (void)settingsDidChange:(NSNotification *)note
 {
     NSString *setting = note.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([setting isEqualToString:AwfulSettingsKeys.username]) {
-        SetCrashlyticsUsername();
-    } else if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
+    if ([setting isEqualToString:AwfulSettingsKeys.darkTheme] || [setting hasPrefix:@"theme"]) {
         // When the user initiates a theme change, transition from one theme to the other with a full-screen screenshot fading into the reconfigured interface.
         UIView *snapshot = [self.window snapshotViewAfterScreenUpdates:NO];
         [self.window addSubview:snapshot];
@@ -206,12 +185,10 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    StartCrashlytics();
     _instance = self;
+    
     [[AwfulSettings sharedSettings] registerDefaults];
     [[AwfulSettings sharedSettings] migrateOldSettings];
-    
-    SetCrashlyticsUsername();
     
     [GRMustache preventNSUndefinedKeyExceptionAttack];
     

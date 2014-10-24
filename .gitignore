@@ -1,13 +1,4 @@
 # OS X and Xcode junk
 .DS_Store
 xcuserdata
-
-# Secret/generated stuff
-api_keys
-Source/Main/AwfulCrashlytics.h
-Tests/CSS Tweaker/LessFilesPath.h
-
-# Temporary stuff
-Scripts/*.png
-
 Awful.xcworkspace/xcshareddata/Awful.xccheckout
