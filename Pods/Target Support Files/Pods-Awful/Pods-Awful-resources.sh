@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+mkdir -p "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+
 RESOURCES_TO_COPY=${PODS_ROOT}/resources-to-copy-${TARGETNAME}.txt
 > "$RESOURCES_TO_COPY"
 
@@ -44,31 +46,11 @@ install_resource()
           install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity.png"
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@2x.png"
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@2x~ipad.png"
+                    install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@3x.png"
+                    install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@3x~ipad.png"
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity~ipad.png"
-                    install_resource "TUSafariActivity/TUSafariActivity/Safari.png"
-                    install_resource "TUSafariActivity/TUSafariActivity/Safari@2x.png"
-                    install_resource "TUSafariActivity/TUSafariActivity/Safari@2x~ipad.png"
-                    install_resource "TUSafariActivity/TUSafariActivity/Safari~ipad.png"
-                    install_resource "TUSafariActivity/TUSafariActivity/cs.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/de.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/en.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/es.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/eu.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/fi.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/fr.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/it.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/ja.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/ko.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/nl.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/no.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/pl.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/pt.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/ru.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/sk.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/sv.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/vi.lproj"
-                    install_resource "TUSafariActivity/TUSafariActivity/zh_CN.lproj"
                     install_resource "WebViewJavascriptBridge/WebViewJavascriptBridge/WebViewJavascriptBridge.js.txt"
+                    install_resource "${BUILT_PRODUCTS_DIR}/TUSafariActivity.bundle"
           
 rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from="$RESOURCES_TO_COPY" / "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 if [[ "${ACTION}" == "install" ]]; then
@@ -76,7 +58,7 @@ if [[ "${ACTION}" == "install" ]]; then
 fi
 rm -f "$RESOURCES_TO_COPY"
 
-if [[ -n "${WRAPPER_EXTENSION}" ]] && [ `xcrun --find actool` ] && [ `find . -name '*.xcassets' | wc -l` -ne 0 ]
+if [[ -n "${WRAPPER_EXTENSION}" ]] && [ "`xcrun --find actool`" ] && [ `find . -name '*.xcassets' | wc -l` -ne 0 ]
 then
   case "${TARGETED_DEVICE_FAMILY}" in
     1,2)

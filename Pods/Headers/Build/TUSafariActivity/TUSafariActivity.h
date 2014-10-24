@@ -1,1 +1,1 @@
-../../../TUSafariActivity/TUSafariActivity/TUSafariActivity.h
+../../../TUSafariActivity/Pod/Classes/TUSafariActivity.h

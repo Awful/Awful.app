@@ -29,6 +29,7 @@
 
 #import "TUSafariActivity.h"
 
+
 @implementation TUSafariActivity
 {
 	NSURL *_URL;
@@ -41,12 +42,16 @@
 
 - (NSString *)activityTitle
 {
-	return NSLocalizedStringFromTable(@"Open in Safari", @"TUSafariActivity", nil);
+    NSURL *resourcesURL = [[NSBundle mainBundle] URLForResource:@"TUSafariActivity" withExtension:@"bundle"];
+    NSBundle *bundle = [NSBundle bundleWithURL:resourcesURL];
+    NSString *defaultString = [bundle localizedStringForKey:@"Open in Safari" value:@"Open in Safari" table:@"TUSafariActivity"];
+    
+    return [[NSBundle mainBundle] localizedStringForKey:@"Open in Safari" value:defaultString table:nil];
 }
 
 - (UIImage *)activityImage
 {
-	return [UIImage imageNamed:@"Safari"];
+	return [UIImage imageNamed:@"TUSafariActivity.bundle/safari"];
 }
 
 - (BOOL)canPerformWithActivityItems:(NSArray *)activityItems

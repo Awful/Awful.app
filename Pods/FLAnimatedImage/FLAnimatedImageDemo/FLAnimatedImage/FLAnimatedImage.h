@@ -7,9 +7,19 @@
 //
 
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+// Allow user classes conveniently just importing one header.
+#import "FLAnimatedImageView.h"
 
 @protocol FLAnimatedImageDebugDelegate;
+
+
+// Logging
+// If set to 0, disables integration with CocoaLumberjack Logger (only matters if CocoaLumberjack is installed).
+#define FLLumberjackIntegrationEnabled 1
+// If set to 1, enables NSLog logging (only matters #if DEBUG -- never for release builds).
+#define FLDebugLoggingEnabled 0
 
 
 //
@@ -70,4 +80,55 @@
 - (CGFloat)debug_animatedImagePredrawingSlowdownFactor:(FLAnimatedImage *)animatedImage;
 
 @end
+#endif
+
+
+#if COCOAPODS_VERSION_MAJOR_CocoaLumberjack == 2
+#endif
+// Try to detect and import CocoaLumberjack in all scenarious (library versions, way of including it, CocoaPods versions, etc.).
+#if FLLumberjackIntegrationEnabled
+    #if defined(__has_include)
+        #if __has_include("<CocoaLumberjack/CocoaLumberjack.h>")
+            #import <CocoaLumberjack/CocoaLumberjack.h>
+        #elif __has_include("CocoaLumberjack.h")
+            #import "CocoaLumberjack.h"
+        #elif __has_include("<CocoaLumberjack/DDLog.h>")
+            #import <CocoaLumberjack/DDLog.h>
+        #elif __has_include("DDLog.h")
+            #import "DDLog.h"
+        #endif
+    #elif defined(COCOAPODS_POD_AVAILABLE_CocoaLumberjack) || defined(__POD_CocoaLumberjack)
+        #if COCOAPODS_VERSION_MAJOR_CocoaLumberjack == 2
+            #import <CocoaLumberjack/CocoaLumberjack.h>
+        #else
+            #import <CocoaLumberjack/DDLog.h>
+        #endif
+    #endif
+
+    #if defined(DDLogError) && defined(DDLogWarn) && defined(DDLogInfo) && defined(DDLogDebug) && defined(DDLogVerbose)
+        #define FLLumberjackAvailable
+    #endif
+#endif
+
+#if FLLumberjackIntegrationEnabled && defined(FLLumberjackAvailable)
+    // Global log level for the whole library, not per-file.
+    extern const int ddLogLevel;
+    #define FLLogError(...)   DDLogError(__VA_ARGS__)
+    #define FLLogWarn(...)    DDLogWarn(__VA_ARGS__)
+    #define FLLogInfo(...)    DDLogInfo(__VA_ARGS__)
+    #define FLLogDebug(...)   DDLogDebug(__VA_ARGS__)
+    #define FLLogVerbose(...) DDLogVerbose(__VA_ARGS__)
+#else
+    #if FLDebugLoggingEnabled && DEBUG
+        // CocoaLumberjack is disabled or not available, but we want to fallback to regular logging (debug builds only).
+        #define FLLog(...) NSLog(__VA_ARGS__)
+    #else
+        // No logging at all.
+        #define FLLog(...) ((void)0)
+    #endif
+    #define FLLogError(...)   FLLog(__VA_ARGS__)
+    #define FLLogWarn(...)    FLLog(__VA_ARGS__)
+    #define FLLogInfo(...)    FLLog(__VA_ARGS__)
+    #define FLLogDebug(...)   FLLog(__VA_ARGS__)
+    #define FLLogVerbose(...) FLLog(__VA_ARGS__)
 #endif

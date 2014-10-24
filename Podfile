@@ -6,24 +6,24 @@ inhibit_all_warnings!
 
 target :Awful do
   pod 'AFNetworking', '2.4.1'
-  pod 'ARChromeActivity', '1.0.2'
+  pod 'ARChromeActivity', '1.0.3'
   pod 'GRMustache', '7.3.0'
   pod 'ImgurAnonymousAPIClient', '0.2'
   pod 'JLRoutes', '1.5.1'
   pod 'MRProgress/Overlay', '0.7.0'
   pod 'PSMenuItem', '0.0.1'
   pod 'SVPullToRefresh', :head
-  pod 'TUSafariActivity', '1.0.0'
+  pod 'TUSafariActivity', '1.0.2'
   pod 'WebViewJavascriptBridge', '4.1.4'
 end
 
 target :Smilies do
-  pod 'FLAnimatedImage', '1.0.1'
-  pod 'HTMLReader', '0.5.6'
+  pod 'FLAnimatedImage', '1.0.2'
+  pod 'HTMLReader', '0.5.7'
 end
 
 target :ScrapingTests do
-  pod 'HTMLReader', '0.5.6'
+  pod 'HTMLReader', '0.5.7'
 end
 
 # Custom text atop the "Acknowledgements" Settings screen.

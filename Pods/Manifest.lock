@@ -20,11 +20,11 @@ PODS:
   - AFNetworking/UIKit (2.4.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ARChromeActivity (1.0.2)
-  - FLAnimatedImage (1.0.1)
+  - ARChromeActivity (1.0.3)
+  - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.5.6)
+  - HTMLReader (0.5.7)
   - ImgurAnonymousAPIClient (0.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
@@ -50,36 +50,36 @@ PODS:
     - MRProgress/Helper
   - PSMenuItem (0.0.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
-  - TUSafariActivity (1.0.0)
+  - TUSafariActivity (1.0.2)
   - WebViewJavascriptBridge (4.1.4)
 
 DEPENDENCIES:
   - AFNetworking (= 2.4.1)
-  - ARChromeActivity (= 1.0.2)
-  - FLAnimatedImage (= 1.0.1)
+  - ARChromeActivity (= 1.0.3)
+  - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
-  - HTMLReader (= 0.5.6)
+  - HTMLReader (= 0.5.7)
   - ImgurAnonymousAPIClient (= 0.2)
   - JLRoutes (= 1.5.1)
   - MRProgress/Overlay (= 0.7.0)
   - PSMenuItem (= 0.0.1)
   - SVPullToRefresh (HEAD)
-  - TUSafariActivity (= 1.0.0)
+  - TUSafariActivity (= 1.0.2)
   - WebViewJavascriptBridge (= 4.1.4)
 
 SPEC CHECKSUMS:
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
-  ARChromeActivity: 437b3e0c4cc43c19d7dd1af55bea98e008335151
-  FLAnimatedImage: a91333b191d57ecf7f86b85bf93145a7f63dafe5
+  ARChromeActivity: 2e2c2b135e6d278164e2dfe355d904e0c5c7500e
+  FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
-  HTMLReader: 4b0f09b7319babb412a3eb809bc1235ad9d16e15
+  HTMLReader: b0ec38f7ce46670333a8aa6b90d516511caf7d34
   ImgurAnonymousAPIClient: 3b485250b3ebc216dc42c5cb5315f75e655dfabf
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   MRProgress: 5abb19ba97ad22c321c37f3d299e32391109b1d6
   PSMenuItem: 0b715b3c76482cdc4656a54d6d601205b49306e3
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
-  TUSafariActivity: afff9b1d2eacf7cbace752c5f2bf56db852714de
+  TUSafariActivity: 63c6b0584d1f0a731e955c0e4d9c89cde63bedc2
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac
 
-COCOAPODS: 0.34.1
+COCOAPODS: 0.34.4
