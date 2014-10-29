@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14A389" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Smilie" representedClassName="Smilie" syncable="YES">
+        <attribute name="imageData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="imageSize" optional="YES" transient="YES" syncable="YES"/>
+        <attribute name="imageSizeString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="imageUTI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="potentiallyObjectionable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="section" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="text" attributeType="String" minValueString="1" indexed="YES" syncable="YES"/>
+        <fetchedProperty name="fetchedMetadata" optional="YES" syncable="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="SmilieMetadata" predicateString="smilieText = $FETCH_SOURCE.text"/>
+        </fetchedProperty>
+    </entity>
+    <entity name="SmilieMetadata" representedClassName="SmilieMetadata" syncable="YES">
+        <attribute name="favoriteIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastUsedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="smilieText" attributeType="String" minValueString="1" indexed="YES" syncable="YES"/>
+        <fetchedProperty name="fetchedSmilies" optional="YES" syncable="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="Smilie" predicateString="text = $FETCH_SOURCE.smilieText"/>
+        </fetchedProperty>
+    </entity>
+    <configuration name="NoMetadata">
+        <memberEntity name="Smilie"/>
+    </configuration>
+    <elements>
+        <element name="Smilie" positionX="-63" positionY="-18" width="128" height="209"/>
+        <element name="SmilieMetadata" positionX="-54" positionY="-9" width="128" height="131"/>
+    </elements>
+</model>

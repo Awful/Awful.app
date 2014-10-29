@@ -663,6 +663,7 @@
 		1CA1F04319109C0100E85DB2 /* UIWebView+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1CA1F04419109C0100E85DB2 /* UIWebView+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1CA1F0461910AEBA00E85DB2 /* zepto.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = zepto.min.js; path = zepto/zepto.min.js; sourceTree = "<group>"; };
+		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagLoader.h; sourceTree = "<group>"; };
 		1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagLoader.m; sourceTree = "<group>"; };
 		1CB060771936C7B4005263EA /* AwfulPostPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostPreviewViewController.h; sourceTree = "<group>"; };
@@ -3119,9 +3120,10 @@
 		1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */,
 				1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */,
 			);
-			currentVersion = 1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */;
+			currentVersion = 1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */;
 			path = Smilies.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
