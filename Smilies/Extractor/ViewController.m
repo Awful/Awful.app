@@ -139,69 +139,23 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
     NSURL *destinationURL = [frameworkURL URLByAppendingPathComponent:@"Smilies.sqlite"];
     
     NSMutableDictionary *newMetadata;
-    if (SmilieTextsDifferBetweenStoresAtURLs(self.storeURL, destinationURL)) {
-        NSError *error;
-        NSDictionary *oldMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
-        NSAssert(oldMetadata, @"error loading metadata from %@: %@", destinationURL, error);
-        NSInteger oldVersion = [oldMetadata[SmilieMetadataVersionKey] integerValue];
-        
-        newMetadata = [oldMetadata mutableCopy];
-        newMetadata[SmilieMetadataVersionKey] = @(oldVersion + 1);
-    }
+    NSError *error;
+    NSDictionary *oldMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
+    NSAssert(oldMetadata, @"error loading metadata from %@: %@", destinationURL, error);
+    NSInteger oldVersion = [oldMetadata[SmilieMetadataVersionKey] integerValue];
+    
+    newMetadata = [oldMetadata mutableCopy];
+    newMetadata[SmilieMetadataVersionKey] = @(oldVersion + 1);
     
     [[NSFileManager defaultManager] removeItemAtURL:destinationURL error:nil];
-    NSError *error;
     if (![[NSFileManager defaultManager] copyItemAtURL:self.storeURL toURL:destinationURL error:&error]) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"replacing existing sqlite file failed" userInfo:nil];
     }
     
-    if (newMetadata) {
-        BOOL ok = [NSPersistentStoreCoordinator setMetadata:newMetadata forPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
-        NSAssert(ok, @"error writing metadata %@ for store at %@: %@", newMetadata, destinationURL, error);
-    }
+    BOOL ok = [NSPersistentStoreCoordinator setMetadata:newMetadata forPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
+    NSAssert(ok, @"error writing metadata %@ for store at %@: %@", newMetadata, destinationURL, error);
     
     [self.textView replaceRange:[self.textView textRangeFromPosition:self.textView.endOfDocument toPosition:self.textView.endOfDocument] withText:[NSString stringWithFormat:@"\n\n%@", destinationURL.path]];
-}
-
-static BOOL SmilieTextsDifferBetweenStoresAtURLs(NSURL *storeOneURL, NSURL *storeTwoURL)
-{
-    NSManagedObjectModel *model = [SmilieDataStore managedObjectModel];
-    NSPersistentStoreCoordinator *storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES, NSSQLitePragmasOption: @{@"journal_mode": @"DELETE"}};
-    NSError *error;
-    NSPersistentStore *storeOne = [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:@"NoMetadata" URL:storeOneURL options:options error:&error];
-    if (!storeOne) {
-        NSLog(@"%s error opening store at %@: %@", __PRETTY_FUNCTION__, storeOneURL, error);
-        return NO;
-    }
-    NSPersistentStore *storeTwo = [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:@"NoMetadata" URL:storeTwoURL options:options error:&error];
-    if (!storeTwo) {
-        NSLog(@"%s error opening store at %@: %@", __PRETTY_FUNCTION__, storeTwoURL, error);
-        return NO;
-    }
-    NSManagedObjectContext *context = [NSManagedObjectContext new];
-    context.persistentStoreCoordinator = storeCoordinator;
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
-    fetchRequest.resultType = NSDictionaryResultType;
-    fetchRequest.propertiesToFetch = @[@"text"];
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
-    
-    fetchRequest.affectedStores = @[storeOne];
-    NSArray *storeOneTexts = [context executeFetchRequest:fetchRequest error:&error];
-    if (!storeOneTexts) {
-        NSLog(@"%s error fetching texts from store at %@: %@", __PRETTY_FUNCTION__, storeOneURL, error);
-        return NO;
-    }
-    
-    fetchRequest.affectedStores = @[storeTwo];
-    NSArray *storeTwoTexts = [context executeFetchRequest:fetchRequest error:&error];
-    if (!storeTwoTexts) {
-        NSLog(@"%s error fetching texts from store at %@: %@", __PRETTY_FUNCTION__, storeTwoURL, error);
-        return NO;
-    }
-    
-    return ![storeOneTexts isEqual:storeTwoTexts];
 }
 
 @end
