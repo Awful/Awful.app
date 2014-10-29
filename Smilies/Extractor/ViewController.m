@@ -92,6 +92,8 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
         NSArray *headers = [container nodesMatchingSelector:@"h3"];
         NSArray *lists = [container nodesMatchingSelector:@".smilie_group"];
         NSAssert(headers.count == lists.count, @"expecting equal numbers of section headers and sections");
+        NSURL *objectionURL = [[NSBundle bundleForClass:[ViewController class]] URLForResource:@"PotentiallyObjectionableTexts" withExtension:@"plist"];
+        NSSet *objectionTexts = [NSSet setWithArray:[NSArray arrayWithContentsOfURL:objectionURL]];
         
         void (^save)() = ^{
             NSError *error;
@@ -108,6 +110,7 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
                 smilie.text = [item firstNodeMatchingSelector:@".text"].textContent;
                 HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
                 smilie.imageURL = img[@"src"];
+                smilie.potentiallyObjectionable = [objectionTexts containsObject:smilie.text];
                 smilie.section = header.textContent;
                 smilie.summary = img[@"title"];
                 

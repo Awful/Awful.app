@@ -12,6 +12,7 @@
 @property (assign, nonatomic) CGSize imageSize;
 @property (copy, nonatomic) NSString *imageURL;
 @property (copy, nonatomic) NSString *imageUTI;
+@property (assign, nonatomic) BOOL potentiallyObjectionable;
 @property (copy, nonatomic) NSString *section;
 @property (copy, nonatomic) NSString *summary;
 @property (copy, nonatomic) NSString *text;

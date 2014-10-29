@@ -21,6 +21,7 @@
 @dynamic imageData;
 @dynamic imageURL;
 @dynamic imageUTI;
+@dynamic potentiallyObjectionable;
 @dynamic section;
 @dynamic summary;
 @dynamic text;
