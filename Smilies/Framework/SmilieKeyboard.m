@@ -21,6 +21,12 @@
 
 @end
 
+@interface SmilieWeakProxy : NSProxy
+
+- (instancetype)initWithTarget:(id)target;
+
+@end
+
 @implementation SmilieKeyboard
 
 - (void)dealloc
@@ -57,7 +63,7 @@
     [self.view reloadData];
     
     // Wait a few seconds after launch before scraping. There's no point kicking off some network requests when someone's quickly tapping through their keyboards.
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(startScrapingTasks:) userInfo:nil repeats:NO];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:[[SmilieWeakProxy alloc] initWithTarget:self] selector:@selector(startScrapingTasks:) userInfo:nil repeats:NO];
 }
 
 - (void)startScrapingTasks:(NSTimer *)timer
@@ -123,6 +129,72 @@
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapNumberOrDecimal:(NSString *)numberOrDecimal
 {
     [self.delegate smilieKeyboard:self insertNumberOrDecimal:numberOrDecimal];
+}
+
+@end
+
+// https://github.com/mikeash/MAZeroingWeakRef/blob/master/Source/MAZeroingWeakProxy.m
+@implementation SmilieWeakProxy
+{
+    __weak id _target;
+    Class _targetClass;
+}
+
+- (instancetype)initWithTarget:(id)target
+{
+    _target = target;
+    _targetClass = [target class];
+    return self;
+}
+
+- (id)forwardingTargetForSelector:(SEL)selector
+{
+    return _target;
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
+{
+    return [_targetClass instanceMethodSignatureForSelector:selector];
+}
+
+- (void)forwardInvocation:(NSInvocation *)invocation
+{
+    NSUInteger returnLength = invocation.methodSignature.methodReturnLength;
+    if (returnLength > 0) {
+        char buffer[returnLength];
+        bzero(buffer, sizeof(buffer));
+        [invocation setReturnValue:buffer];
+    }
+}
+
+- (BOOL)respondsToSelector:(SEL)selector
+{
+    id target = _target;
+    if (target) {
+        return [target respondsToSelector:selector];
+    } else {
+        return [_targetClass instancesRespondToSelector:selector];
+    }
+}
+
+- (BOOL)conformsToProtocol:(Protocol *)protocol
+{
+    id target = _target;
+    if (target) {
+        return [target conformsToProtocol:protocol];
+    } else {
+        return [_targetClass conformsToProtocol:protocol];
+    }
+}
+
+- (NSUInteger)hash
+{
+    return [_target hash];
+}
+
+- (BOOL)isEqual:(id)object
+{
+    return [_target isEqual:object];
 }
 
 @end
