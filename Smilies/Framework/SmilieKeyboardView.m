@@ -155,7 +155,8 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return [self.dataSource numberOfSectionsInSmilieKeyboard:self] + 1 /* +1 for silly number/decimal section at the end */;
+    NSInteger extra = self.selectedSmilieList == SmilieListAll ? 1 : 0; // +1 for silly number/decimal section at the end
+    return [self.dataSource numberOfSectionsInSmilieKeyboard:self] + extra;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
