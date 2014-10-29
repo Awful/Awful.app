@@ -160,7 +160,7 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
         NSAssert(ok, @"error writing metadata %@ for store at %@: %@", newMetadata, destinationURL, error);
     }
     
-    [self.textView insertText:[NSString stringWithFormat:@"\n\n%@", destinationURL.path]];
+    [self.textView replaceRange:[self.textView textRangeFromPosition:self.textView.endOfDocument toPosition:self.textView.endOfDocument] withText:[NSString stringWithFormat:@"\n\n%@", destinationURL.path]];
 }
 
 static BOOL SmilieTextsDifferBetweenStoresAtURLs(NSURL *storeOneURL, NSURL *storeTwoURL)
