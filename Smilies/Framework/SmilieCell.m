@@ -9,6 +9,7 @@
 
 @property (strong, nonatomic) UIImageView *removeControl;
 @property (strong, nonatomic) FLAnimatedImageView *imageView;
+@property (strong, nonatomic) UILabel *textLabel;
 
 @end
 
@@ -104,6 +105,56 @@
                                        constant:0]];
     }
     return _imageView;
+}
+
+- (UILabel *)textLabel
+{
+    if (!_textLabel) {
+        _textLabel = [UILabel new];
+        _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:_textLabel];
+        
+        _textLabel.font = [[self class] textLabelFont];
+        _textLabel.textAlignment = NSTextAlignmentCenter;
+        
+        UIEdgeInsets insets = [[self class] textLabelInsets];
+        [self.contentView addConstraint:
+         [NSLayoutConstraint constraintWithItem:_textLabel
+                                      attribute:NSLayoutAttributeLeading
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.contentView
+                                      attribute:NSLayoutAttributeLeading
+                                     multiplier:1
+                                       constant:insets.left]];
+        [self.contentView addConstraint:
+         [NSLayoutConstraint constraintWithItem:self.contentView
+                                      attribute:NSLayoutAttributeTrailing
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:_textLabel
+                                      attribute:NSLayoutAttributeTrailing
+                                     multiplier:1
+                                       constant:insets.right]];
+        [_textLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        [self.contentView addConstraint:
+         [NSLayoutConstraint constraintWithItem:_textLabel
+                                      attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.contentView
+                                      attribute:NSLayoutAttributeCenterY
+                                     multiplier:1
+                                       constant:0]];
+    }
+    return _textLabel;
+}
+
++ (UIFont *)textLabelFont
+{
+    return [UIFont systemFontOfSize:12];
+}
+
++ (UIEdgeInsets)textLabelInsets
+{
+    return (UIEdgeInsets){.left = 3, .right = 3};
 }
 
 - (void)setNormalBackgroundColor:(UIColor *)normalBackgroundColor

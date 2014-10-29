@@ -83,9 +83,9 @@ IB_DESIGNABLE
 - (CGSize)smilieKeyboard:(SmilieKeyboardView *)keyboardView sizeOfSmilieAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
- Returns either a UIImage or an FLAnimatedImage representing the smilie.
+ Returns either a UIImage or an FLAnimatedImage representing the smilie, or an NSString representing the smilie's text.
  */
-- (id /* UIImage or FLAnimatedImage */)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath;
+- (id /* UIImage or FLAnimatedImage or NSString */)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOrTextOfSmilieAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 

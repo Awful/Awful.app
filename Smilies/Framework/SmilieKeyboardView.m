@@ -170,14 +170,22 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SmilieCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    id image = [self.dataSource smilieKeyboard:self imageOfSmilieAtIndexPath:indexPath];
-    if ([image isKindOfClass:[FLAnimatedImage class]]) {
-        cell.imageView.animatedImage = image;
+    id imageOrText = [self.dataSource smilieKeyboard:self imageOrTextOfSmilieAtIndexPath:indexPath];
+    if ([imageOrText isKindOfClass:[FLAnimatedImage class]]) {
+        cell.imageView.animatedImage = imageOrText;
+        cell.textLabel.text = nil;
+        cell.accessibilityLabel = [imageOrText accessibilityLabel];
+    } else if ([imageOrText isKindOfClass:[UIImage class]]) {
+        cell.imageView.image = imageOrText;
+        cell.textLabel.text = nil;
+        cell.accessibilityLabel = [imageOrText accessibilityLabel];
     } else {
-        cell.imageView.image = image;
+        cell.imageView.image = nil;
+        cell.imageView.animatedImage = nil;
+        cell.textLabel.text = imageOrText;
+        cell.accessibilityLabel = imageOrText;
     }
     
-    cell.accessibilityLabel = [image accessibilityLabel];
     if (self.selectedSmilieList == SmilieListFavorites) {
         if (self.flowLayout.editing) {
             cell.accessibilityHint = nil;

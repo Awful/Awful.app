@@ -7,6 +7,7 @@
 #import <FLAnimatedImage/FLAnimatedImage.h>
 @import MobileCoreServices;
 #import "Smilie.h"
+#import "SmilieCell.h"
 #import "SmilieDataStore.h"
 #import "SmilieMetadata.h"
 @import UIKit;
@@ -136,7 +137,15 @@
 - (CGSize)smilieKeyboard:(SmilieKeyboardView *)keyboardView sizeOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self smilieAtIndexPath:indexPath];
-    return smilie.imageSize;
+    if (smilie.potentiallyObjectionable) {
+        CGSize size = [smilie.text sizeWithAttributes:@{NSFontAttributeName: [SmilieCell textLabelFont]}];
+        UIEdgeInsets insets = [SmilieCell textLabelInsets];
+        size.width = ceil(size.width) + insets.left + insets.right;
+        size.height = ceil(size.height);
+        return size;
+    } else {
+        return smilie.imageSize;
+    }
 }
 
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView deleteSmilieAtIndexPath:(NSIndexPath *)indexPath
@@ -179,9 +188,13 @@
     }
 }
 
-- (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOfSmilieAtIndexPath:(NSIndexPath *)indexPath
+- (id)smilieKeyboard:(SmilieKeyboardView *)keyboardView imageOrTextOfSmilieAtIndexPath:(NSIndexPath *)indexPath
 {
     Smilie *smilie = [self smilieAtIndexPath:indexPath];
+    if (smilie.potentiallyObjectionable) {
+        return smilie.text;
+    }
+    
     id image;
     if (UTTypeConformsTo((__bridge CFStringRef)smilie.imageUTI, kUTTypeGIF)) {
         image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:smilie.imageData];

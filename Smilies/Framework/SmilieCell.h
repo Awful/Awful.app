@@ -7,7 +7,12 @@
 
 @interface SmilieCell : UICollectionViewCell
 
+// Set one and clear the other.
 @property (readonly, strong, nonatomic) FLAnimatedImageView *imageView;
+@property (readonly, strong, nonatomic) UILabel *textLabel;
+
++ (UIFont *)textLabelFont;
++ (UIEdgeInsets)textLabelInsets;
 
 /**
  When editing, a SmilieCell will wiggle and display a remove control over its top left corner.
