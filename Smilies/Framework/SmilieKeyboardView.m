@@ -155,11 +155,16 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return [self.dataSource numberOfSectionsInSmilieKeyboard:self];
+    return [self.dataSource numberOfSectionsInSmilieKeyboard:self] + 1 /* +1 for silly number/decimal section at the end */;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    if (self.selectedSmilieList == SmilieListAll && section == [self.dataSource numberOfSectionsInSmilieKeyboard:self]) {
+        // Silly number/decimal section.
+        return [NumbersAndDecimals() count];
+    }
+    
     NSInteger numberOfSmilies = [self.dataSource smilieKeyboard:self numberOfSmiliesInSection:section];
     if (self.selectedSmilieList == SmilieListFavorites) {
         self.noFavoritesNotice.hidden = numberOfSmilies != 0;
@@ -167,9 +172,27 @@
     return numberOfSmilies;
 }
 
+static NSArray * NumbersAndDecimals(void)
+{
+    return @[@"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @".", @","];
+}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SmilieCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    cell.normalBackgroundColor = self.normalBackgroundColor;
+    cell.selectedBackgroundColor = self.selectedBackgroundColor;
+    
+    if (self.selectedSmilieList == SmilieListAll && indexPath.section == collectionView.numberOfSections - 1) {
+        // Silly number/decimal section.
+        cell.imageView.animatedImage = nil;
+        cell.imageView.image = nil;
+        cell.textLabel.text = NumbersAndDecimals()[indexPath.item];
+        cell.accessibilityLabel = cell.textLabel.text;
+        cell.accessibilityHint = nil;
+        return cell;
+    }
+    
     id imageOrText = [self.dataSource smilieKeyboard:self imageOrTextOfSmilieAtIndexPath:indexPath];
     if ([imageOrText isKindOfClass:[FLAnimatedImage class]]) {
         cell.imageView.animatedImage = imageOrText;
@@ -196,8 +219,6 @@
         cell.accessibilityHint = @"Double-tap and hold to add to favorites";
     }
     
-    cell.normalBackgroundColor = self.normalBackgroundColor;
-    cell.selectedBackgroundColor = self.selectedBackgroundColor;
     return cell;
 }
 
@@ -233,9 +254,15 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGFloat minimumWidth = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad ? 60 : 50;
+    
+    if (self.selectedSmilieList == SmilieListAll && indexPath.section == collectionView.numberOfSections - 1) {
+        // Silly number/decimal section.
+        return CGSizeMake(minimumWidth, minimumWidth);
+    }
+    
     CGSize imageSize = [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
     const CGFloat margin = 4;
-    CGFloat minimumWidth = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad ? 60 : 50;
     return CGSizeMake(MAX(imageSize.width + margin, minimumWidth),
                       MAX(imageSize.height + margin, minimumWidth));
 }
@@ -270,7 +297,12 @@ static NSString * const CellIdentifier = @"SmilieCell";
             [self.dataSource smilieKeyboard:self deleteSmilieAtIndexPath:indexPath];
         }
     } else {
-        [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
+        if (self.selectedSmilieList == SmilieListAll && indexPath.section == collectionView.numberOfSections - 1) {
+            // Silly number/decimal section.
+            [self.delegate smilieKeyboard:self didTapNumberOrDecimal:NumbersAndDecimals()[indexPath.item]];
+        } else {
+            [self.delegate smilieKeyboard:self didTapSmilieAtIndexPath:indexPath];
+        }
         [[UIDevice currentDevice] playInputClick];
         [collectionView deselectItemAtIndexPath:indexPath animated:NO];
     }

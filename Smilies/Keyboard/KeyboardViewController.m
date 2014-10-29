@@ -100,4 +100,9 @@ static BOOL HasFullAccess(void)
     }];
 }
 
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard insertNumberOrDecimal:(NSString *)numberOrDecimal
+{
+    [self.textDocumentProxy insertText:numberOrDecimal];
+}
+
 @end

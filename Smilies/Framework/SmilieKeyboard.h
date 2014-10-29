@@ -41,4 +41,9 @@
  */
 - (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie;
 
+/**
+ Sent when a key in the silly number or decimal section is tapped. Please simply insert it into the first responder.
+ */
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard insertNumberOrDecimal:(NSString *)numberOrDecimal;
+
 @end

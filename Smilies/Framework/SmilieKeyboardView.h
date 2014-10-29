@@ -111,4 +111,9 @@ IB_DESIGNABLE
  */
 - (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didLongPressSmilieAtIndexPath:(NSIndexPath *)indexPath;
 
+/**
+ Sent when a key in the silly numbers and decimal section is tapped.
+ */
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapNumberOrDecimal:(NSString *)numberOrDecimal;
+
 @end

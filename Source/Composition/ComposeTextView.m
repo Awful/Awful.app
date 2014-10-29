@@ -392,6 +392,11 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
     }];
 }
 
+- (void)smilieKeyboard:(SmilieKeyboard *)keyboard insertNumberOrDecimal:(NSString *)numberOrDecimal
+{
+    [self insertText:numberOrDecimal];
+}
+
 #pragma mark - UITextInputTraits
 
 - (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance

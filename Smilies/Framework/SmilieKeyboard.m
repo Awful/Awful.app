@@ -120,4 +120,9 @@
     }
 }
 
+- (void)smilieKeyboard:(SmilieKeyboardView *)keyboardView didTapNumberOrDecimal:(NSString *)numberOrDecimal
+{
+    [self.delegate smilieKeyboard:self insertNumberOrDecimal:numberOrDecimal];
+}
+
 @end
