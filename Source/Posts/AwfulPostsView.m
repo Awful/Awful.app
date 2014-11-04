@@ -57,7 +57,20 @@ typedef enum : NSInteger {
     topBarFrame.size.width = CGRectGetWidth(self.bounds);
     self.topBar.frame = topBarFrame;
     
-    self.webView.frame = CGRectMake(0, CGRectGetMaxY(topBarFrame), CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
+    /*
+     This silliness combats an annoying interplay on iOS 8 between UISplitViewController and UIWebView. On a 2x Retina iPad in landscape with the sidebar always visible, the width is distributed like so:
+     
+                 separator(0.5)
+     |--sidebar(350)--|------------posts(673.5)------------|
+     
+     Unfortunately, UIWebView doesn't particularly like a fractional portion to its width, and it will round up its content size to 674 in this example. And now that the content is wider than the viewport, we get horizontal scrolling.
+     
+     (And if you ask UISplitViewController to set a maximumPrimaryColumnWidth of, say, 349.5 to take the separator into account, it will simply round down to 349.)
+     */
+    CGFloat width = CGRectGetWidth(self.bounds);
+    CGFloat integral = floor(width);
+    CGFloat fractional = width - integral;
+    self.webView.frame = CGRectMake(fractional, CGRectGetMaxY(topBarFrame), integral, CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
 }
 
 - (void)updateForVoiceOverAnimated:(BOOL)animated
