@@ -253,7 +253,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewFlowLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat minimumWidth = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad ? 60 : 50;
     
@@ -264,8 +264,17 @@ static NSString * const CellIdentifier = @"SmilieCell";
     
     CGSize imageSize = [self.dataSource smilieKeyboard:self sizeOfSmilieAtIndexPath:indexPath];
     const CGFloat margin = 4;
-    return CGSizeMake(MAX(imageSize.width + margin, minimumWidth),
-                      MAX(imageSize.height + margin, minimumWidth));
+    CGSize targetSize = CGSizeMake(imageSize.width + margin, imageSize.height + margin);
+    
+    // For aesthetics, ensure each key width is a multiple of the minimumWidth (while also considering interitem spacing).
+    CGFloat interitemSpacing = collectionViewLayout.minimumInteritemSpacing;
+    CGFloat (^sizer)() = ^(NSUInteger multiple) { return minimumWidth * multiple + interitemSpacing * (multiple - 1); };
+    NSUInteger multiple = 1;
+    while (targetSize.width > sizer(multiple)) {
+        multiple++;
+    }
+    
+    return CGSizeMake(sizer(multiple), MAX(targetSize.height, minimumWidth));
 }
 
 #pragma mark - UICollectionViewDelegate
