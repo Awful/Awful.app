@@ -18,6 +18,8 @@
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
 		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
 		1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */; };
+		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
+		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
@@ -429,6 +431,8 @@
 		1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
 		1C09BFE81A09B9C2007C11F5 /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
 		1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
+		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
+		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulResourceURLProtocol.h; sourceTree = "<group>"; };
 		1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulResourceURLProtocol.m; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
@@ -1063,6 +1067,8 @@
 				1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */,
 				1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */,
 				1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */,
+				1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */,
+				1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */,
 				1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */,
 				1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */,
 			);
@@ -2373,6 +2379,7 @@
 				1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */,
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,
 				1C5B99BC166FFA4F004C5D0E /* Awful.xcdatamodeld in Sources */,
+				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
 				1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */,
 				1CFE98441827F082003DBBC2 /* AwfulThreadListScraper.m in Sources */,
@@ -2402,6 +2409,7 @@
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
 				1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */,
 				1CB060791936C7B4005263EA /* AwfulPostPreviewViewController.m in Sources */,
+				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CB6010116D8266700CBEE22 /* AwfulPrivateMessage.m in Sources */,
 				1CB6010B16D826F000CBEE22 /* MessageListViewController.m in Sources */,
