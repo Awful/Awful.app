@@ -21,6 +21,7 @@
 #import "MessageComposeViewController.h"
 #import "MessageListViewController.h"
 #import "MessageViewController.h"
+#import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"

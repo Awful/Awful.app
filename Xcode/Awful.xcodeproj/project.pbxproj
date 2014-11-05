@@ -16,6 +16,8 @@
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
+		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
+		1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */; };
 		1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
@@ -424,6 +426,9 @@
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPunishmentCell.h; sourceTree = "<group>"; };
 		1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPunishmentCell.m; sourceTree = "<group>"; };
+		1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
+		1C09BFE81A09B9C2007C11F5 /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
+		1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
 		1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulResourceURLProtocol.h; sourceTree = "<group>"; };
 		1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulResourceURLProtocol.m; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
@@ -940,6 +945,7 @@
 		1190F76913BE4ECB00B9D271 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				1C09BFE51A09B9A5007C11F5 /* 1Password */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
@@ -1019,6 +1025,16 @@
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 			);
 			path = Tables;
+			sourceTree = "<group>";
+		};
+		1C09BFE51A09B9A5007C11F5 /* 1Password */ = {
+			isa = PBXGroup;
+			children = (
+				1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */,
+				1C09BFE81A09B9C2007C11F5 /* OnePasswordExtension.h */,
+				1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */,
+			);
+			path = 1Password;
 			sourceTree = "<group>";
 		};
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
@@ -2044,6 +2060,7 @@
 				1CBE1B0B19CA050300510187 /* ImageViewController.xib in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
+				1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
@@ -2310,6 +2327,7 @@
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
+				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,

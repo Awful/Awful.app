@@ -14,6 +14,9 @@ class LoginViewController: AwfulViewController {
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var onePasswordButton: UIButton!
+    @IBOutlet var onePasswordUnavailableConstraints: [NSLayoutConstraint]!
+    
     private enum State {
         case AwaitingUsername
         case AwaitingPassword
@@ -65,6 +68,11 @@ class LoginViewController: AwfulViewController {
         // Can't set this in the storyboard for some reason.
         nextBarButtonItem.enabled = false
         
+        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+            onePasswordButton.removeFromSuperview()
+            view.addConstraints(onePasswordUnavailableConstraints)
+        }
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
@@ -94,6 +102,22 @@ class LoginViewController: AwfulViewController {
             state = .AwaitingUsername
         } else {
             state = .CanAttemptLogin
+        }
+    }
+    
+    @IBAction func didTapOnePassword(sender: AnyObject) {
+        view.endEditing(true)
+        
+        OnePasswordExtension.sharedExtension().findLoginForURLString("http://forums.somethingawful.com", forViewController: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
+            if loginInfo == nil {
+                if error.code != AppExtensionErrorCodeCancelledByUser {
+                    NSLog("[%@ %@] 1Password extension failed: %@", reflect(self).summary, __FUNCTION__, error)
+                }
+                return
+            }
+            self?.usernameTextField.text = loginInfo[AppExtensionUsernameKey] as NSString
+            self?.passwordTextField.text = loginInfo[AppExtensionPasswordKey] as NSString
+            self?.state = .CanAttemptLogin
         }
     }
     
