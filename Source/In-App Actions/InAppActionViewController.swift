@@ -46,6 +46,10 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         self.init(nibName: "InAppActionSheet", bundle: nil)
     }
     
+    required init(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
+    }
+    
     override var title: String! {
         didSet {
             if isViewLoaded() {
@@ -57,13 +61,11 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     
     override func loadView() {
         super.loadView()
-        
         collectionView.registerClass(AwfulIconActionCell.self, forCellWithReuseIdentifier: cellIdentifier)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         headerLabel.text = title
         titleDidChange()
         recalculatePreferredContentSize()
@@ -111,10 +113,12 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         // TODO: Feels like this should be doable without code, thanks to iOS 8's runtime calculating of preferredMaxLayoutWidth, but I couldn't figure out how to get the headerLabel to go past line one.
         headerLabel.preferredMaxLayoutWidth = headerLabel.bounds.width
         view.layoutIfNeeded()
+        
         recalculatePreferredContentSize()
     }
-    
-    // MARK: UICollectionViewDataSource
+}
+
+extension InAppActionViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
@@ -133,20 +137,20 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         return cell
     }
     
-    // MARK: UICollectionViewDelegate
-    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
         let item = items[indexPath.item]
         dismissViewControllerAnimated(true, completion: item.action)
     }
     
-    // MARK: UIAdaptivePresentationControllerDelegate
+}
+
+private let cellIdentifier = "Cell"
+
+extension InAppActionViewController: UIPopoverPresentationControllerDelegate {
     
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
         return .None
     }
-    
-    // MARK: UIPopoverPresentationControllerDelegate
     
     func prepareForPopoverPresentation(popover: UIPopoverPresentationController!) {
         if let block = popoverPositioningBlock {
@@ -158,17 +162,10 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         }
     }
     
-    func popoverPresentationController(popoverPresentationController: UIPopoverPresentationController!, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
+    func popoverPresentationController(popover: UIPopoverPresentationController!, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
         if let block = popoverPositioningBlock {
             block(sourceRect: rect, sourceView: view)
         }
     }
     
-    // MARK: Initializer not intended to be called
-    
-    required init(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
-    }
 }
-
-private let cellIdentifier = "Cell"
