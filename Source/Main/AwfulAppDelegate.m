@@ -328,7 +328,7 @@ typedef NS_ENUM(NSInteger, AwfulInterfaceVersion)
     AwfulInterfaceVersion2,
     
     /**
-     * Interface for Awful 3, the version that runs on iOS 8. The primary view controller is a UITabBarController, which is hosted in a custom split view controller on iPad.
+     * Interface for Awful 3, the version that runs on iOS 8. The primary view controller is a UISplitViewController on both iPhone and iPad.
      */
     AwfulInterfaceVersion3,
 };
