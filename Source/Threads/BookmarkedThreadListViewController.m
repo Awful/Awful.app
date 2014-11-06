@@ -18,6 +18,9 @@
 @end
 
 @implementation BookmarkedThreadListViewController
+{
+    NSUndoManager *_undoManager;
+}
 
 - (void)dealloc
 {
@@ -87,6 +90,7 @@
     [self refreshIfNecessary];
     self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeListingThreads];
     self.userActivity.needsSave = YES;
+    [self becomeFirstResponder];
 }
 
 - (void)refreshIfNecessary
@@ -128,10 +132,57 @@
     activity.webpageURL = [NSURL URLWithString:@"/bookmarkthreads.php" relativeToURL:[AwfulForumsClient client].baseURL];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self resignFirstResponder];
+    [self.undoManager removeAllActions];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     self.userActivity = nil;
+}
+
+#pragma mark Undo
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (NSUndoManager *)undoManager
+{
+    if (!_undoManager) {
+        _undoManager = [NSUndoManager new];
+        _undoManager.levelsOfUndo = 1;
+    }
+    return _undoManager;
+}
+
+- (void)setThread:(AwfulThread *)thread isBookmarked:(BOOL)isBookmarked
+{
+    [[self.undoManager prepareWithInvocationTarget:self] setThread:thread isBookmarked:!isBookmarked];
+    NSIndexPath *indexPath = [self.threadDataSource.fetchedResultsController indexPathForObject:thread];
+    [self.undoManager setActionName:[self tableView:self.tableView titleForDeleteConfirmationButtonForRowAtIndexPath:indexPath]];
+    
+    // Optimistically delete locally, then roll back if the remote deletion fails.
+    thread.bookmarked = NO;
+    NSError *error;
+    if (![thread.managedObjectContext save:&error]) {
+        NSLog(@"%s error saving managed object context setting local isBookmarked: %@", __PRETTY_FUNCTION__, error);
+    }
+    [[AwfulForumsClient client] setThread:thread isBookmarked:isBookmarked andThen:^(NSError *error) {
+        if (error) {
+            thread.bookmarked = !isBookmarked;
+            NSError *error;
+            if (![thread.managedObjectContext save:&error]) {
+                NSLog(@"%s error saving managed object context reverting local isBookmarked: %@", __PRETTY_FUNCTION__, error);
+            }
+            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
+        }
+    }];
 }
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
@@ -143,16 +194,7 @@
 
 - (void)deleteObject:(AwfulThread *)thread
 {
-    [[AwfulForumsClient client] setThread:thread isBookmarked:NO andThen:^(NSError *error) {
-        if (error) {
-            [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
-        } else {
-            thread.bookmarked = NO;
-            if (![thread.managedObjectContext save:&error]) {
-                NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
-            }
-        }
-    }];
+    [self setThread:thread isBookmarked:NO];
 }
 
 #pragma mark - UITableViewDelegate
