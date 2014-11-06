@@ -106,7 +106,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Int(postsViewController.thread.numberOfPages)
+        return Int(postsViewController.numberOfPages)
     }
     
     func pickerView(pickerView: UIPickerView!, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString! {
