@@ -5,6 +5,7 @@
 #import "Handoff.h"
 
 NSString * const HandoffInfoVersionKey = @"version";
+NSString * const HandoffInfoPageKey = @"page";
 
 NSString * const HandoffActivityTypeBrowsingPosts = @"com.awfulapp.Awful.activity.browsing-posts";
 NSString * const HandoffInfoThreadIDKey = @"threadID";
@@ -17,5 +18,3 @@ NSString * const HandoffInfoBookmarksKey = @"bookmarks";
 
 NSString * const HandoffActivityTypeReadingMessage = @"com.awfulapp.Awful.activity.reading-message";
 NSString * const HandoffInfoMessageIDKey = @"messageID";
-
-NSString * const HandoffInfoPageKey = @"page";
