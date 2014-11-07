@@ -30,7 +30,6 @@
 @dynamic userID;
 @dynamic username;
 @dynamic yahooName;
-@dynamic editedPosts;
 @dynamic posts;
 @dynamic receivedPrivateMessages;
 @dynamic sentPrivateMessages;

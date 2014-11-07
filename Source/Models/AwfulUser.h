@@ -120,11 +120,6 @@
 @property (copy, nonatomic) NSString *yahooName;
 
 /**
- * A set of AwfulPost objects representing posts the user has edited.
- */
-@property (copy, nonatomic) NSSet *editedPosts;
-
-/**
  * A set of AwfulPost objects representing posts the user has written.
  */
 @property (copy, nonatomic) NSSet *posts;

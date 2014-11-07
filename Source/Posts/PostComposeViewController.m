@@ -25,7 +25,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithPost:(AwfulPost *)post originalText:(NSString *)originalText
+- (instancetype)initWithPost:(Post *)post originalText:(NSString *)originalText
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _post = post;
@@ -35,7 +35,7 @@
     return self;
 }
 
-- (id)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText
+- (instancetype)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _thread = thread;
@@ -45,7 +45,7 @@
     return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.restorationClass = self.class;
@@ -185,7 +185,7 @@
             }
         }];
     } else if (self.thread) {
-        [[AwfulForumsClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, AwfulPost *post) {
+        [[AwfulForumsClient client] replyToThread:self.thread withBBcode:composition andThen:^(NSError *error, Post *post) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 completionHandler(NO);
@@ -251,7 +251,7 @@
     NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
     PostComposeViewController *replyViewController;
     if (postID) {
-        AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+        Post *post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:originalText];
     } else if (threadID) {

@@ -7,11 +7,11 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
-#import "AwfulPostViewModel.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTextAttachment.h"
 #import <GRMustache/GRMustache.h>
+#import "PostViewModel.h"
 #import "Awful-Swift.h"
 
 @interface AwfulPostPreviewViewController () <UIWebViewDelegate>
@@ -25,17 +25,17 @@
 @property (strong, nonatomic) AwfulSelfHostingAttachmentInterpolator *imageInterpolator;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (strong, nonatomic) AwfulPost *fakePost;
+@property (strong, nonatomic) Post *fakePost;
 
 @end
 
 @implementation AwfulPostPreviewViewController
 {
     BOOL _webViewDidLoadOnce;
-    AwfulPost *_fakePost;
+    Post *_fakePost;
 }
 
-- (id)initWithPost:(AwfulPost *)post BBcode:(NSAttributedString *)BBcode
+- (id)initWithPost:(Post *)post BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [self initWithBBcode:BBcode])) {
         _editingPost = post;
@@ -121,7 +121,7 @@
         if (error) {
             [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else if (self) {
-            self.fakePost = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
+            self.fakePost = [Post insertInManagedObjectContext:self.managedObjectContext];
             AwfulUser *loggedInUser = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
                                                                  username:[AwfulSettings sharedSettings].username
                                                    inManagedObjectContext:self.managedObjectContext];
@@ -141,8 +141,6 @@
                         }
                     }
                 }
-                
-                self.fakePost.editor = loggedInUser;
             } else {
                 self.fakePost.postDate = [NSDate date];
                 self.fakePost.author = loggedInUser;
@@ -168,7 +166,7 @@
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
 	context[@"version"] = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
-    context[@"post"] = [[AwfulPostViewModel alloc] initWithPost:self.fakePost];
+    context[@"post"] = [[PostViewModel alloc] initWithPost:self.fakePost];
     int fontScalePercentage = [AwfulSettings sharedSettings].fontScale;
     if (fontScalePercentage != 100) {
         context[@"fontScalePercentage"] = @(fontScalePercentage);

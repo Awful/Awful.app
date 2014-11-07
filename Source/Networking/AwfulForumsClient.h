@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import "AwfulForm.h"
 #import "AwfulModels.h"
+@class Post;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -115,7 +116,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
+- (NSOperation *)markThreadReadUpToPost:(Post *)post
                                 andThen:(void (^)(NSError *error))callback;
 
 /**
@@ -180,7 +181,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)readIgnoredPost:(AwfulPost *)post andThen:(void (^)(NSError *error))callback;
+- (NSOperation *)readIgnoredPost:(Post *)post andThen:(void (^)(NSError *error))callback;
 
 /**
  * @param callback A block to call after sending the reply, which takes as parameters: an NSError object on failure, or nil on success; and the newly-created AwfulPost object on success, or nil on failure.
@@ -189,7 +190,7 @@
  */
 - (NSOperation *)replyToThread:(AwfulThread *)thread
                     withBBcode:(NSString *)text
-                       andThen:(void (^)(NSError *error, AwfulPost *post))callback;
+                       andThen:(void (^)(NSError *error, Post *post))callback;
 
 /**
  * @param callback A block to call after rendering the preview, which returns nothing and takes as parameters: an NSError object on failure, or nil on success; and the rendered post's HTML on success or nil on failure.
@@ -205,7 +206,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
+- (NSOperation *)findBBcodeContentsWithPost:(Post *)post
                                     andThen:(void (^)(NSError *error, NSString *text))callback;
 
 /**
@@ -213,7 +214,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
+- (NSOperation *)quoteBBcodeContentsWithPost:(Post *)post
                                      andThen:(void (^)(NSError *error, NSString *quotedText))callback;
 
 /**
@@ -221,7 +222,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)editPost:(AwfulPost *)post
+- (NSOperation *)editPost:(Post *)post
                 setBBcode:(NSString *)text
                   andThen:(void (^)(NSError *error))callback;
 
@@ -230,7 +231,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)previewEditToPost:(AwfulPost *)post
+- (NSOperation *)previewEditToPost:(Post *)post
                         withBBcode:(NSString *)BBcode
                            andThen:(void (^)(NSError *error, NSString *postHTML))callback;
 
@@ -241,7 +242,7 @@
  * @return An enqueued network operation.
  */
 - (NSOperation *)locatePostWithID:(NSString *)postID
-                          andThen:(void (^)(NSError *error, AwfulPost *post, AwfulThreadPage page))callback;
+                          andThen:(void (^)(NSError *error, Post *post, AwfulThreadPage page))callback;
 
 #pragma mark - People
 

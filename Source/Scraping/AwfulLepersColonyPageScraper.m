@@ -7,6 +7,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulFrameworkCategories.h"
 #import "HTMLNode+CachedSelector.h"
+#import "Awful-Swift.h"
 
 @interface AwfulLepersColonyPageScraper ()
 
@@ -108,9 +109,9 @@
         
         [infoDictionaries addObject:info];
     }
-    NSMutableDictionary *posts = [[AwfulPost dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                             keyedByAttributeNamed:@"postID"
-                                                           matchingPredicateFormat:@"postID IN %@", postIDs] mutableCopy];
+    NSMutableDictionary *posts = [[Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                        keyedByAttributeNamed:@"postID"
+                                                      matchingPredicateFormat:@"postID IN %@", postIDs] mutableCopy];
     NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                  keyedByAttributeNamed:@"userID"
                                                                matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
@@ -125,9 +126,9 @@
         {{
             NSString *postID = info[@"postID"];
             if (postID) {
-                AwfulPost *post = posts[postID];
+                Post *post = posts[postID];
                 if (!post) {
-                    post = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
+                    post = [Post insertInManagedObjectContext:self.managedObjectContext];
                     post.postID = postID;
                     posts[postID] = post;
                 }

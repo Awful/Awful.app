@@ -4,6 +4,7 @@
 
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
+@class Post;
 
 /**
  * An AwfulPostPreviewViewController previews a post (new or edited).
@@ -13,14 +14,14 @@
 /**
  * Preview editing a post. One of two designated initializers.
  */
-- (id)initWithPost:(AwfulPost *)post BBcode:(NSAttributedString *)BBcode;
+- (id)initWithPost:(Post *)post BBcode:(NSAttributedString *)BBcode;
 
 /**
  * Preview a new post. One of two designated initializers.
  */
 - (id)initWithThread:(AwfulThread *)thread BBcode:(NSAttributedString *)BBcode;
 
-@property (readonly, strong, nonatomic) AwfulPost *editingPost;
+@property (readonly, strong, nonatomic) Post *editingPost;
 
 @property (readonly, strong, nonatomic) AwfulThread *thread;
 
@@ -38,7 +39,7 @@
 - (id)initWithBBcode:(NSAttributedString *)BBcode;
 - (void)fetchPreviewIfNecessary;
 - (void)renderPreview;
-@property (readonly, strong, nonatomic) AwfulPost *fakePost;
+@property (readonly, strong, nonatomic) Post *fakePost;
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
 @end

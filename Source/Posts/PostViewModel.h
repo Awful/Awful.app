@@ -1,21 +1,22 @@
-//  AwfulPostViewModel.h
+//  PostViewModel.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
 #import "AwfulModels.h"
+@class Post;
 
 /**
- * An AwfulPostViewModel helps to render AwfulPost instances.
+ * A PostViewModel helps to render Post instances.
  */
-@interface AwfulPostViewModel : NSObject
+@interface PostViewModel : NSObject
 
 /**
  * Designated initializer.
  */
-- (id)initWithPost:(AwfulPost *)post;
+- (instancetype)initWithPost:(Post *)post;
 
-@property (readonly, strong, nonatomic) AwfulPost *post;
+@property (readonly, strong, nonatomic) Post *post;
 
 /**
  * An HTML representation of the post's contents, altered according to the current settings.

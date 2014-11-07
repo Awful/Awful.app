@@ -4,6 +4,7 @@
 
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
+@class Post;
 
 /**
  * A PostsPageViewController shows a list of posts in a thread.
@@ -56,6 +57,6 @@
 /**
  * Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
  */
-- (void)scrollPostToVisible:(AwfulPost *)post;
+- (void)scrollPostToVisible:(Post *)post;
 
 @end

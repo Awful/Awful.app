@@ -10,7 +10,6 @@
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulImageURLProtocol.h"
 #import "AwfulLepersColonyPageScraper.h"
-#import "AwfulModels.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulPrivateMessageFolderScraper.h"
@@ -23,6 +22,7 @@
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenient.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulForumsClient
 {
@@ -380,7 +380,7 @@
     }];
 }
 
-- (NSOperation *)markThreadReadUpToPost:(AwfulPost *)post
+- (NSOperation *)markThreadReadUpToPost:(Post *)post
                                 andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager GET:@"showthread.php"
@@ -627,7 +627,7 @@
     return operation;
 }
 
-- (NSOperation *)readIgnoredPost:(AwfulPost *)post andThen:(void (^)(NSError *error))callback
+- (NSOperation *)readIgnoredPost:(Post *)post andThen:(void (^)(NSError *error))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     return [_HTTPManager GET:@"showthread.php"
@@ -654,7 +654,7 @@
 
 - (NSOperation *)replyToThread:(AwfulThread *)thread
                     withBBcode:(NSString *)text
-                       andThen:(void (^)(NSError *error, AwfulPost *post))callback
+                       andThen:(void (^)(NSError *error, Post *post))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
@@ -690,14 +690,14 @@
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
              {
-                 AwfulPost *post;
+                 Post *post;
                  HTMLElement *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
                                       [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                      NSString *postID = URL.queryDictionary[@"postid"];
                      if (postID.length > 0) {
-                         post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:mainManagedObjectContext];
+                         post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:mainManagedObjectContext];
                      }
                  }
                  if (callback) callback(nil, post);
@@ -737,7 +737,7 @@
     }];
 }
 
-- (NSOperation *)findBBcodeContentsWithPost:(AwfulPost *)post
+- (NSOperation *)findBBcodeContentsWithPost:(Post *)post
                                     andThen:(void (^)(NSError *error, NSString *text))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
@@ -773,7 +773,7 @@
     }];
 }
 
-- (NSOperation *)quoteBBcodeContentsWithPost:(AwfulPost *)post
+- (NSOperation *)quoteBBcodeContentsWithPost:(Post *)post
                                      andThen:(void (^)(NSError *error, NSString *quotedText))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
@@ -809,7 +809,7 @@
     }];
 }
 
-- (NSOperation *)editPost:(AwfulPost *)post
+- (NSOperation *)editPost:(Post *)post
                 setBBcode:(NSString *)text
                   andThen:(void (^)(NSError *error))callback
 {
@@ -858,7 +858,7 @@
     }];
 }
 
-- (NSOperation *)previewEditToPost:(AwfulPost *)post
+- (NSOperation *)previewEditToPost:(Post *)post
                         withBBcode:(NSString *)BBcode
                            andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
@@ -896,7 +896,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 }
 
 - (NSOperation *)locatePostWithID:(NSString *)postID
-                          andThen:(void (^)(NSError *error, AwfulPost *post, AwfulThreadPage page))callback
+                          andThen:(void (^)(NSError *error, Post *post, AwfulThreadPage page))callback
 {
     // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that
     // redirect, then parse out the info we need.
@@ -932,7 +932,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         NSDictionary *query = [request.URL queryDictionary];
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             [managedObjectContext performBlock:^{
-                AwfulPost *post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+                Post *post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
                 post.thread = [AwfulThread firstOrNewThreadWithThreadID:query[@"threadid"] inManagedObjectContext:managedObjectContext];
                 NSError *error;
                 BOOL ok = [managedObjectContext save:&error];
@@ -940,7 +940,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                     NSManagedObjectID *objectID = post.objectID;
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         if (ok) {
-                            AwfulPost *post = [mainManagedObjectContext awful_objectWithID:objectID];
+                            Post *post = [mainManagedObjectContext awful_objectWithID:objectID];
                             callback(nil, post, [query[@"pagenumber"] integerValue]);
                         } else {
                             NSString *message = @"The post's thread could not be parsed";

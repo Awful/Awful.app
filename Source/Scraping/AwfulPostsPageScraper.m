@@ -11,6 +11,7 @@
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
+#import "Awful-Swift.h"
 
 @interface AwfulPostsPageScraper ()
 
@@ -129,9 +130,9 @@
             [usernames addObject:authorScraper.username];
         }
     }
-    NSDictionary *fetchedPosts = [AwfulPost dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                            keyedByAttributeNamed:@"postID"
-                                                          matchingPredicateFormat:@"postID IN %@", postIDs];
+    NSDictionary *fetchedPosts = [Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                       keyedByAttributeNamed:@"postID"
+                                                     matchingPredicateFormat:@"postID IN %@", postIDs];
     NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                  keyedByAttributeNamed:@"userID"
                                                                matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
@@ -140,12 +141,12 @@
                                                                  matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
     
     NSMutableArray *posts = [NSMutableArray new];
-    __block AwfulPost *firstUnseenPost;
+    __block Post *firstUnseenPost;
     [postTables enumerateObjectsUsingBlock:^(HTMLElement *table, NSUInteger i, BOOL *stop) {
         NSString *postID = postIDs[i];
-        AwfulPost *post = fetchedPosts[postID];
+        Post *post = fetchedPosts[postID];
         if (!post) {
-            post = [AwfulPost insertInManagedObjectContext:self.managedObjectContext];
+            post = [Post insertInManagedObjectContext:self.managedObjectContext];
             post.postID = postID;
         }
         [posts addObject:post];
@@ -160,7 +161,7 @@
             }
             if (index > 0) {
                 if (singleUserFilterEnabled) {
-                    post.singleUserIndex = index;
+                    post.filteredThreadIndex = index;
                 } else {
                     post.threadIndex = index;
                 }
@@ -237,7 +238,7 @@
         self.thread.seenPosts = firstUnseenPost.threadIndex - 1;
     }
     
-    AwfulPost *lastPost = posts.lastObject;
+    Post *lastPost = posts.lastObject;
     if (numberOfPages > 0 && currentPage == numberOfPages && !singleUserFilterEnabled) {
         self.thread.lastPostDate = lastPost.postDate;
         self.thread.lastPostAuthorName = lastPost.author.username;

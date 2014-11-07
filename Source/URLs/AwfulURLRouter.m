@@ -63,8 +63,8 @@
     [_routes addRoute:@"/posts/:postID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         NSString *postID = parameters[@"postID"];
-        AwfulPost *post = [AwfulPost fetchArbitraryInManagedObjectContext:self.managedObjectContext
-                                                  matchingPredicateFormat:@"postID = %@", postID];
+        Post *post = [Post fetchArbitraryInManagedObjectContext:self.managedObjectContext
+                                        matchingPredicateFormat:@"postID = %@", postID];
         if (post && post.page > 0) {
             PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
@@ -78,7 +78,7 @@
                                                                           animated:YES];
         overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, AwfulPost *post, AwfulThreadPage page) {
+        [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, Post *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 overlay.titleLabelText = @"Post Not Found";

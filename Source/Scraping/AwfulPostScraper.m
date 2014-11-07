@@ -6,10 +6,11 @@
 #import "AwfulAuthorScraper.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
+#import "Awful-Swift.h"
 
 @interface AwfulPostScraper ()
 
-@property (strong, nonatomic) AwfulPost *post;
+@property (strong, nonatomic) Post *post;
 
 @end
 
@@ -35,7 +36,7 @@
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Post parsing failed; could not find post ID" }];
             return;
         }
-        self.post = [AwfulPost firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
+        self.post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
     }}
     
     {{

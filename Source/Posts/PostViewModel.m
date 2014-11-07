@@ -1,15 +1,15 @@
-//  AwfulPostViewModel.m
+//  PostViewModel.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPostViewModel.h"
+#import "PostViewModel.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulSettings.h"
 #import "Awful-Swift.h"
 
-@implementation AwfulPostViewModel
+@implementation PostViewModel
 
-- (id)initWithPost:(AwfulPost *)post
+- (instancetype)initWithPost:(Post *)post
 {
     self = [super init];
     if (!self) return nil;

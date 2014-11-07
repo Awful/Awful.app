@@ -14,7 +14,6 @@
 #import "AwfulNavigationController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
-#import "AwfulPostViewModel.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
@@ -24,6 +23,7 @@
 #import "MessageComposeViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostComposeViewController.h"
+#import "PostViewModel.h"
 #import "RapSheetViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "ThreadListViewController.h"
@@ -182,7 +182,7 @@
         
         if (posts.count > 0) {
             self.posts = posts;
-            AwfulPost *anyPost = posts.lastObject;
+            Post *anyPost = posts.lastObject;
             if (self.author) {
                 self.page = anyPost.singleUserPage;
             } else {
@@ -210,7 +210,7 @@
         
         [self updateUserInterface];
         
-        AwfulPost *lastPost = self.posts.lastObject;
+        Post *lastPost = self.posts.lastObject;
         if (self.thread.seenPosts < lastPost.threadIndex) {
             self.thread.seenPosts = lastPost.threadIndex;
         }
@@ -219,7 +219,7 @@
     }];
 }
 
-- (void)scrollPostToVisible:(AwfulPost*)topPost
+- (void)scrollPostToVisible:(Post *)topPost
 {
     NSUInteger i = [self.posts indexOfObject:topPost];
     if (self.loadingView || !_webViewDidLoadOnce || i == NSNotFound) {
@@ -254,8 +254,8 @@
         range.length = self.posts.count - self.hiddenPosts;
     }
     if (self.posts.count >= NSMaxRange(range)) {
-        for (AwfulPost *post in [self.posts subarrayWithRange:range]) {
-            [postViewModels addObject:[[AwfulPostViewModel alloc] initWithPost:post]];
+        for (Post *post in [self.posts subarrayWithRange:range]) {
+            [postViewModels addObject:[[PostViewModel alloc] initWithPost:post]];
         }
     }
     context[@"posts"] = postViewModels;
@@ -524,12 +524,12 @@
         return;
     }
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[AwfulPost entityName]];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Post entityName]];
     NSInteger lowIndex = (self.page - 1) * 40 + 1;
     NSInteger highIndex = self.page * 40;
     NSString *indexKey;
     if (self.author) {
-        indexKey = @"singleUserIndex";
+        indexKey = @"filteredThreadIndex";
     } else {
         indexKey = @"threadIndex";
     }
@@ -738,8 +738,8 @@
 
 - (NSString *)renderedPostAtIndex:(NSInteger)index
 {
-    AwfulPost *post = self.posts[index];
-    AwfulPostViewModel *viewModel = [[AwfulPostViewModel alloc] initWithPost:post];
+    Post *post = self.posts[index];
+    PostViewModel *viewModel = [[PostViewModel alloc] initWithPost:post];
     NSError *error;
     NSString *HTML = [GRMustacheTemplate renderObject:viewModel fromResource:@"Post" bundle:nil error:&error];
     if (!HTML) {
@@ -750,7 +750,7 @@
 
 - (void)readIgnoredPostAtIndex:(NSUInteger)index
 {
-    AwfulPost *post = self.posts[index];
+    Post *post = self.posts[index];
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] readIgnoredPost:post andThen:^(NSError *error) {
         __typeof__(self) self = weakSelf;
@@ -773,7 +773,7 @@
 
 - (void)didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
 {
-    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
+    Post *post = self.posts[postIndex + self.hiddenPosts];
     AwfulUser *user = post.author;
     InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
@@ -824,7 +824,7 @@
 {
     NSAssert(postIndex + self.hiddenPosts < self.posts.count, @"post %lu beyond range (hiding %ld posts)", (unsigned long)postIndex, (long)self.hiddenPosts);
     
-    AwfulPost *post = self.posts[postIndex + self.hiddenPosts];
+    Post *post = self.posts[postIndex + self.hiddenPosts];
     NSString *possessiveUsername = [NSString stringWithFormat:@"%@'s", post.author.username];
     if ([post.author.username isEqualToString:[AwfulSettings sharedSettings].username]) {
         possessiveUsername = @"Your";
@@ -1063,7 +1063,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                 if (self.replyViewController.thread) {
                     [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
                 } else {
-                    AwfulPost *post = self.replyViewController.post;
+                    Post *post = self.replyViewController.post;
                     if (self.author) {
                         [self loadPage:post.singleUserPage updatingCache:YES];
                     } else {

@@ -4,6 +4,7 @@
 
 #import "ComposeTextViewController.h"
 #import "AwfulModels.h"
+@class Post;
 
 /**
  * A PostComposeViewController shows a text view for composing or editing a reply to a thread.
@@ -16,9 +17,9 @@
  * @param post         The post to edit.
  * @param originalText The original BBcode text of the post.
  */
-- (id)initWithPost:(AwfulPost *)post originalText:(NSString *)originalText;
+- (instancetype)initWithPost:(Post *)post originalText:(NSString *)originalText;
 
-@property (readonly, strong, nonatomic) AwfulPost *post;
+@property (readonly, strong, nonatomic) Post *post;
 
 @property (readonly, copy, nonatomic) NSString *originalText;
 
@@ -28,7 +29,7 @@
  * @param thread     The thread to reply to.
  * @param quotedText The text of any quoted posts. Can be nil.
  */
-- (id)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText;
+- (instancetype)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText;
 
 @property (readonly, strong, nonatomic) AwfulThread *thread;
 
@@ -37,6 +38,6 @@
 /**
  * Returns the post created after submission, or nil if it could not be located.
  */
-@property (readonly, strong, nonatomic) AwfulPost *reply;
+@property (readonly, strong, nonatomic) Post *reply;
 
 @end
