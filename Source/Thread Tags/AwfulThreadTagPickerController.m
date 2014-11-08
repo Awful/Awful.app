@@ -202,17 +202,20 @@
         AwfulThreadTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
         NSInteger item = indexPath.item;
         NSString *imageName = self.imageNames[item];
-        cell.tagImageName = [imageName stringByDeletingPathExtension];
         UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
         cell.image = image;
         
-        if (!image) {
+        if (image) {
+            cell.tagImageName = nil;
+        } else {
+            cell.tagImageName = [imageName stringByDeletingPathExtension];
             self.threadTagObservers[@(item)] = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
                 
                 // Make sure the cell still refers to the same tag before changing its image.
                 NSIndexPath *currentIndexPath = [collectionView indexPathForCell:cell];
                 if (currentIndexPath && currentIndexPath.item == item) {
                     cell.image = image;
+                    cell.tagImageName = nil;
                 }
                 [self.threadTagObservers removeObjectForKey:@(item)];
             }];
