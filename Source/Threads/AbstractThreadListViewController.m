@@ -9,7 +9,6 @@
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
-#import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "PostsPageViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>

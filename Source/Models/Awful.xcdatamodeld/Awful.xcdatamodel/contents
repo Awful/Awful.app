@@ -16,9 +16,9 @@
         <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulThreadTag" inverseName="secondaryForums" inverseEntity="AwfulThreadTag" syncable="YES"/>
+        <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="secondaryForums" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
-        <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulThreadTag" inverseName="forums" inverseEntity="AwfulThreadTag" syncable="YES"/>
+        <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="forums" inverseEntity="ThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulSingleUserThreadInfo" representedClassName="AwfulSingleUserThreadInfo" syncable="YES">
         <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -46,19 +46,9 @@
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Post" inverseName="thread" inverseEntity="Post" syncable="YES"/>
-        <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="secondaryThreads" inverseEntity="AwfulThreadTag" syncable="YES"/>
+        <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="secondaryThreads" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
-        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="threads" inverseEntity="AwfulThreadTag" syncable="YES"/>
-    </entity>
-    <entity name="AwfulThreadTag" representedClassName="AwfulThreadTag" syncable="YES">
-        <attribute name="explanation" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="threadTagID" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="threadTag" inverseEntity="PrivateMessage" syncable="YES"/>
-        <relationship name="secondaryForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="secondaryThreadTags" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="secondaryThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
-        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="threads" inverseEntity="ThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
@@ -111,15 +101,24 @@
         <attribute name="sentDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="subject" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="from" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="sentPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThreadTag" inverseName="messages" inverseEntity="AwfulThreadTag" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="messages" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="to" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="receivedPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
+    </entity>
+    <entity name="ThreadTag" representedClassName="ThreadTag" syncable="YES">
+        <attribute name="imageName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="threadTagID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="threadTag" inverseEntity="PrivateMessage" syncable="YES"/>
+        <relationship name="secondaryForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="secondaryThreadTags" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="secondaryThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
         <element name="AwfulForum" positionX="0" positionY="0" width="128" height="225"/>
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
         <element name="AwfulThread" positionX="0" positionY="0" width="128" height="390"/>
-        <element name="AwfulThreadTag" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
         <element name="AwfulUser" positionX="0" positionY="0" width="128" height="450"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
         <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="208"/>

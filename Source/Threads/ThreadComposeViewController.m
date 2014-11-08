@@ -8,7 +8,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulNewThreadFieldView.h"
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "UINavigationItem+TwoLineTitle.h"
@@ -20,8 +19,8 @@
 
 @property (strong, nonatomic) AwfulNewThreadFieldView *fieldView;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
-@property (strong, nonatomic) AwfulThreadTag *threadTag;
-@property (strong, nonatomic) AwfulThreadTag *secondaryThreadTag;
+@property (strong, nonatomic) ThreadTag *threadTag;
+@property (strong, nonatomic) ThreadTag *secondaryThreadTag;
 
 @property (copy, nonatomic) void (^onAppearBlock)(void);
 
@@ -54,13 +53,13 @@ static NSString * const DefaultTitle = @"New Thread";
     self.navigationItem.titleLabel.text = title;
 }
 
-- (void)setThreadTag:(AwfulThreadTag *)threadTag
+- (void)setThreadTag:(ThreadTag *)threadTag
 {
     _threadTag = threadTag;
     [self updateThreadTagButtonImage];
 }
 
-- (void)setSecondaryThreadTag:(AwfulThreadTag *)secondaryThreadTag
+- (void)setSecondaryThreadTag:(ThreadTag *)secondaryThreadTag
 {
     _secondaryThreadTag = secondaryThreadTag;
     [self updateThreadTagButtonImage];
@@ -163,7 +162,7 @@ static NSString * const DefaultTitle = @"New Thread";
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
-        AwfulThreadTag *tag = self.secondaryThreadTag;
+        ThreadTag *tag = self.secondaryThreadTag;
         image = [AwfulThreadTagLoader imageNamed:tag.imageName];
     } else {
         image = nil;
@@ -266,7 +265,7 @@ static NSString * const DefaultTitle = @"New Thread";
     if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyThreadTagImageName]) {
         self.threadTag = nil;
     } else {
-        [self.availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+        [self.availableThreadTags enumerateObjectsUsingBlock:^(ThreadTag *threadTag, NSUInteger i, BOOL *stop) {
             if ([threadTag.imageName isEqualToString:imageName]) {
                 self.threadTag = threadTag;
                 *stop = YES;
@@ -281,7 +280,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectSecondaryImageName:(NSString *)secondaryImageName
 {
-    [self.availableSecondaryThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
+    [self.availableSecondaryThreadTags enumerateObjectsUsingBlock:^(ThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
         if ([secondaryThreadTag.imageName isEqualToString:secondaryImageName]) {
             self.secondaryThreadTag = secondaryThreadTag;
             *stop = YES;
@@ -323,15 +322,15 @@ static NSString * const DefaultTitle = @"New Thread";
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
     NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
     if (threadTagImageName) {
-        self.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
-                                                                  imageName:threadTagImageName
-                                                     inManagedObjectContext:self.forum.managedObjectContext];
+        self.threadTag = [ThreadTag firstOrNewThreadTagWithID:nil
+                                                    imageName:threadTagImageName
+                                       inManagedObjectContext:self.forum.managedObjectContext];
     }
     NSString *secondaryThreadTagImageName = [coder decodeObjectForKey:SecondaryThreadTagImageNameKey];
     if (secondaryThreadTagImageName) {
-        self.secondaryThreadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
-                                                                           imageName:secondaryThreadTagImageName
-                                                              inManagedObjectContext:self.forum.managedObjectContext];
+        self.secondaryThreadTag = [ThreadTag firstOrNewThreadTagWithID:nil
+                                                             imageName:secondaryThreadTagImageName
+                                                inManagedObjectContext:self.forum.managedObjectContext];
     }
     
     [super decodeRestorableStateWithCoder:coder];

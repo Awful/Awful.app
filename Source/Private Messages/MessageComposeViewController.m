@@ -7,7 +7,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewPrivateMessageFieldView.h"
-#import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
@@ -16,7 +15,7 @@
 
 @property (strong, nonatomic) AwfulNewPrivateMessageFieldView *fieldView;
 
-@property (strong, nonatomic) AwfulThreadTag *threadTag;
+@property (strong, nonatomic) ThreadTag *threadTag;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 
 @property (assign, nonatomic) BOOL updatingThreadTags;
@@ -62,7 +61,7 @@
     return self;
 }
 
-- (void)setThreadTag:(AwfulThreadTag *)threadTag
+- (void)setThreadTag:(ThreadTag *)threadTag
 {
     _threadTag = threadTag;
     [self updateThreadTagButtonImage];
@@ -247,7 +246,7 @@
     if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyPrivateMessageImageName]) {
         self.threadTag = nil;
     } else {
-        [self.availableThreadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+        [self.availableThreadTags enumerateObjectsUsingBlock:^(ThreadTag *threadTag, NSUInteger i, BOOL *stop) {
             if ([threadTag.imageName isEqualToString:imageName]) {
                 self.threadTag = threadTag;
                 *stop = YES;
@@ -313,9 +312,9 @@
         NSManagedObjectContext *managedObjectContext = (self.recipient.managedObjectContext ?:
                                                         self.regardingMessage.managedObjectContext ?:
                                                         self.forwardingMessage.managedObjectContext);
-        self.threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:nil
-                                                                  imageName:threadTagImageName
-                                                     inManagedObjectContext:managedObjectContext];
+        self.threadTag = [ThreadTag firstOrNewThreadTagWithID:nil
+                                                    imageName:threadTagImageName
+                                       inManagedObjectContext:managedObjectContext];
     }
     
     [super decodeRestorableStateWithCoder:coder];

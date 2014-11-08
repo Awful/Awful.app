@@ -16,7 +16,7 @@ class PrivateMessage: AwfulManagedObject {
     @NSManaged var subject: String?
     
     @NSManaged var from: AwfulUser? /* via sentPrivateMessages */
-    @NSManaged var threadTag: AwfulThreadTag?
+    @NSManaged var threadTag: ThreadTag?
     @NSManaged var to: AwfulUser? /* via receivedPrivateMessages */
     
     override func awakeFromInsert() {

@@ -7,6 +7,7 @@
 #import "AwfulModels.h"
 @class Post;
 @class PrivateMessage;
+@class ThreadTag;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -82,7 +83,7 @@
  * @return An enqueued network operation.
  */
 - (NSOperation *)listThreadsInForum:(AwfulForum *)forum
-                      withThreadTag:(AwfulThreadTag *)threadTag
+                      withThreadTag:(ThreadTag *)threadTag
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback;
 
@@ -149,8 +150,8 @@
  */
 - (NSOperation *)postThreadInForum:(AwfulForum *)forum
                        withSubject:(NSString *)subject
-                         threadTag:(AwfulThreadTag *)threadTag
-                      secondaryTag:(AwfulThreadTag *)secondaryTag
+                         threadTag:(ThreadTag *)threadTag
+                      secondaryTag:(ThreadTag *)secondaryTag
                             BBcode:(NSString *)text
                            andThen:(void (^)(NSError *error, AwfulThread *thread))callback;
 
@@ -334,7 +335,7 @@
  */
 - (NSOperation *)sendPrivateMessageTo:(NSString *)username
                           withSubject:(NSString *)subject
-                            threadTag:(AwfulThreadTag *)threadTag
+                            threadTag:(ThreadTag *)threadTag
                                BBcode:(NSString *)text
                      asReplyToMessage:(PrivateMessage *)regardingMessage
                  forwardedFromMessage:(PrivateMessage *)forwardedMessage

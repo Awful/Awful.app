@@ -9,6 +9,7 @@
 #import "AwfulScanner.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
+#import "Awful-Swift.h"
 
 @interface AwfulThreadListScraper ()
 
@@ -69,9 +70,9 @@
             NSString *threadTagID = URL.queryDictionary[@"posticon"];
             HTMLElement *image = [link awful_firstNodeMatchingCachedSelector:@"img"];
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
-            AwfulThreadTag *threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
-                                                                              threadTagURL:imageURL
-                                                                    inManagedObjectContext:self.managedObjectContext];
+            ThreadTag *threadTag = [ThreadTag firstOrNewThreadTagWithID:threadTagID
+                                                           threadTagURL:imageURL
+                                                 inManagedObjectContext:self.managedObjectContext];
             [threadTags addObject:threadTag];
         }
         self.forum.threadTags = threadTags;
@@ -168,12 +169,12 @@
     NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                    keyedByAttributeNamed:@"username"
                                                                  matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
-    NSMutableDictionary *tagsByID = [[AwfulThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                     keyedByAttributeNamed:@"threadTagID"
-                                                                   matchingPredicateFormat:@"threadTagID IN %@", threadTagIDs] mutableCopy];
-    NSMutableDictionary *tagsByImageName = [[AwfulThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                            keyedByAttributeNamed:@"imageName"
-                                                                          matchingPredicateFormat:@"imageName IN %@", threadTagImageNames] mutableCopy];
+    NSMutableDictionary *tagsByID = [[ThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                keyedByAttributeNamed:@"threadTagID"
+                                                              matchingPredicateFormat:@"threadTagID IN %@", threadTagIDs] mutableCopy];
+    NSMutableDictionary *tagsByImageName = [[ThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                                       keyedByAttributeNamed:@"imageName"
+                                                                     matchingPredicateFormat:@"imageName IN %@", threadTagImageNames] mutableCopy];
     
     NSMutableArray *threads = [NSMutableArray new];
     __block int32_t stickyIndex = -(int32_t)threadLinks.count;
@@ -247,14 +248,14 @@
         NSString *threadTagID = threadInfo[@"threadTagID"];
         NSString *threadTagImageName = threadInfo[@"threadTagImageName"];
         if (threadTagID || threadTagImageName) {
-            AwfulThreadTag *threadTag;
+            ThreadTag *threadTag;
             if (threadTagID) {
                 threadTag = tagsByID[threadTagID];
             } else if (threadTagImageName) {
                 threadTag = tagsByImageName[threadTagImageName];
             }
             if (!threadTag) {
-                threadTag = [AwfulThreadTag insertInManagedObjectContext:self.managedObjectContext];
+                threadTag = [ThreadTag insertInManagedObjectContext:self.managedObjectContext];
                 if (threadTagID) {
                     threadTag.threadTagID = threadTagID;
                 }
@@ -274,14 +275,14 @@
         NSString *secondaryThreadTagID = threadInfo[@"secondaryThreadTagID"];
         NSString *secondaryThreadTagImageName = threadInfo[@"secondaryThreadTagImageName"];
         if (secondaryThreadTagID || secondaryThreadTagImageName) {
-            AwfulThreadTag *secondaryThreadTag;
+            ThreadTag *secondaryThreadTag;
             if (secondaryThreadTagID) {
                 secondaryThreadTag = tagsByID[secondaryThreadTagID];
             } else if (threadTagImageName) {
                 secondaryThreadTag = tagsByImageName[secondaryThreadTagImageName];
             }
             if (!secondaryThreadTag) {
-                secondaryThreadTag = [AwfulThreadTag insertInManagedObjectContext:self.managedObjectContext];
+                secondaryThreadTag = [ThreadTag insertInManagedObjectContext:self.managedObjectContext];
                 if (secondaryThreadTagID) {
                     secondaryThreadTag.threadTagID = secondaryThreadTagID;
                 }

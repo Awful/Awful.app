@@ -21,7 +21,7 @@
 
 @property (strong, nonatomic) UIBarButtonItem *newThreadButtonItem;
 @property (strong, nonatomic) UIButton *filterButton;
-@property (strong, nonatomic) AwfulThreadTag *filterThreadTag;
+@property (strong, nonatomic) ThreadTag *filterThreadTag;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 
 @end
@@ -270,7 +270,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     if ([imageName isEqualToString:AwfulThreadTagLoaderNoFilterImageName]) {
         self.filterThreadTag = nil;
     } else {
-        [self.forum.threadTags enumerateObjectsUsingBlock:^(AwfulThreadTag *threadTag, NSUInteger i, BOOL *stop) {
+        [self.forum.threadTags enumerateObjectsUsingBlock:^(ThreadTag *threadTag, NSUInteger i, BOOL *stop) {
             if ([threadTag.imageName isEqualToString:imageName]) {
                 self.filterThreadTag = threadTag;
                 *stop = YES;
@@ -316,8 +316,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     _newThreadViewController.delegate = self;
     NSString *filterThreadTagID = [coder decodeObjectForKey:FilterThreadTagIDKey];
     if (filterThreadTagID) {
-        self.filterThreadTag = [AwfulThreadTag fetchArbitraryInManagedObjectContext:self.forum.managedObjectContext
-                                                            matchingPredicateFormat:@"threadTagID = %@", filterThreadTagID];
+        self.filterThreadTag = [ThreadTag fetchArbitraryInManagedObjectContext:self.forum.managedObjectContext
+                                                       matchingPredicateFormat:@"threadTagID = %@", filterThreadTagID];
         [self updateFilterButtonText];
     }
 }

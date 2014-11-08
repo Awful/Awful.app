@@ -27,8 +27,8 @@
 
 - (instancetype)initWithForum:(AwfulForum *)forum
                       subject:(NSString *)subject
-                    threadTag:(AwfulThreadTag *)threadTag
-           secondaryThreadTag:(AwfulThreadTag *)secondaryThreadTag
+                    threadTag:(ThreadTag *)threadTag
+           secondaryThreadTag:(ThreadTag *)secondaryThreadTag
                        BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [super initWithBBcode:BBcode])) {

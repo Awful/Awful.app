@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulModels.h"
+@class ThreadTag;
 
 typedef NS_ENUM(int16_t, AwfulStarCategory) {
     AwfulStarCategoryOrange = 0,
@@ -69,7 +70,7 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 /**
  * The secondary thread tag, e.g. "Ask" or "Selling".
  */
-@property (strong, nonatomic) AwfulThreadTag *secondaryThreadTag;
+@property (strong, nonatomic) ThreadTag *secondaryThreadTag;
 
 /**
  * The number of posts that the currently logged-in user has seen in the thread, including the OP.
@@ -94,7 +95,7 @@ typedef NS_ENUM(int16_t, AwfulStarCategory) {
 /**
  * The thread's tag.
  */
-@property (strong, nonatomic) AwfulThreadTag *threadTag;
+@property (strong, nonatomic) ThreadTag *threadTag;
 
 /**
  * The presumably unique ID of the thread.

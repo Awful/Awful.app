@@ -11,7 +11,6 @@
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadTag.h"
 #import "AwfulThreadTagLoader.h"
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"

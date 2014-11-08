@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForm.h"
+#import "Awful-Swift.h"
 
 @interface AwfulForm ()
 
@@ -178,9 +179,9 @@
         }
     }
     [existingIDs addObjectsFromArray:[_secondaryThreadTagDictionaries valueForKey:@"threadTagID"]];
-    NSDictionary *existingThreadTags = [AwfulThreadTag dictionaryOfAllInManagedObjectContext:managedObjectContext
-                                                                       keyedByAttributeNamed:@"threadTagID"
-                                                                     matchingPredicateFormat:@"threadTagID IN %@", existingIDs];
+    NSDictionary *existingThreadTags = [ThreadTag dictionaryOfAllInManagedObjectContext:managedObjectContext
+                                                                  keyedByAttributeNamed:@"threadTagID"
+                                                                matchingPredicateFormat:@"threadTagID IN %@", existingIDs];
     
     NSMutableArray *threadTags = [NSMutableArray new];
     for (HTMLElement *div in _threadTagElements) {
@@ -189,28 +190,27 @@
         HTMLElement *image = [div firstNodeMatchingSelector:@"img"];
         NSURL *URL = [NSURL URLWithString:image[@"src"]];
         if (threadTagID.length == 0 || !URL) continue;
-        AwfulThreadTag *threadTag = existingThreadTags[threadTagID];
+        ThreadTag *threadTag = existingThreadTags[threadTagID];
         if (threadTag) {
             [threadTag setURL:URL];
         } else {
-            threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:threadTagID
-                                                              threadTagURL:URL
-                                                    inManagedObjectContext:managedObjectContext];
+            threadTag = [ThreadTag firstOrNewThreadTagWithID:threadTagID
+                                                threadTagURL:URL
+                                      inManagedObjectContext:managedObjectContext];
         }
-        threadTag.explanation = image[@"alt"];
         [threadTags addObject:threadTag];
     }
     self.threadTags = threadTags;
     
     NSMutableArray *secondaryThreadTags = [NSMutableArray new];
     for (NSDictionary *info in _secondaryThreadTagDictionaries) {
-        AwfulThreadTag *threadTag = existingThreadTags[info[@"threadTagID"]];
+        ThreadTag *threadTag = existingThreadTags[info[@"threadTagID"]];
         if (threadTag) {
             [threadTag setURL:info[@"imageURL"]];
         } else {
-            threadTag = [AwfulThreadTag firstOrNewThreadTagWithThreadTagID:info[@"threadTagID"]
-                                                              threadTagURL:info[@"imageURL"]
-                                                    inManagedObjectContext:managedObjectContext];
+            threadTag = [ThreadTag firstOrNewThreadTagWithID:info[@"threadTagID"]
+                                                threadTagURL:info[@"imageURL"]
+                                      inManagedObjectContext:managedObjectContext];
         }
         [secondaryThreadTags addObject:threadTag];
     }
