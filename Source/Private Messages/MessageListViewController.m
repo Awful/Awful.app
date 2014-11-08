@@ -263,7 +263,7 @@ static NSString * const MessageCellIdentifier = @"Message";
     cell.subjectLabel.text = pm.subject;
     
     NSMutableString *accessibilityLabel = [NSMutableString new];
-    [accessibilityLabel appendString:cell.senderLabel.text];
+    [accessibilityLabel appendString:cell.senderLabel.text ?: @""];
     [accessibilityLabel appendFormat:@". %@", cell.subjectLabel.text];
     [accessibilityLabel appendFormat:@". %@", cell.dateLabel.text];
     cell.accessibilityLabel = accessibilityLabel;

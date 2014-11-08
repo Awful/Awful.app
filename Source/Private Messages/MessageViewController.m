@@ -415,8 +415,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    PrivateMessage *privateMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                  matchingPredicateFormat:@"messageID = %@", messageID];
+    PrivateMessage *privateMessage = [PrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:managedObjectContext];
     MessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;
