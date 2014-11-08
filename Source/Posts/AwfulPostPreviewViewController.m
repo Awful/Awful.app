@@ -35,7 +35,7 @@
     Post *_fakePost;
 }
 
-- (id)initWithPost:(Post *)post BBcode:(NSAttributedString *)BBcode
+- (instancetype)initWithPost:(Post *)post BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [self initWithBBcode:BBcode])) {
         _editingPost = post;
@@ -44,7 +44,7 @@
     return self;
 }
 
-- (id)initWithThread:(AwfulThread *)thread BBcode:(NSAttributedString *)BBcode
+- (instancetype)initWithThread:(Thread *)thread BBcode:(NSAttributedString *)BBcode
 {
     if ((self = [self initWithBBcode:BBcode])) {
         _thread = thread;
@@ -94,7 +94,7 @@
 
 - (AwfulTheme *)theme
 {
-    AwfulThread *thread = self.thread ?: self.editingPost.thread;
+    Thread *thread = self.thread ?: self.editingPost.thread;
     return [AwfulTheme currentThemeForForum:thread.forum];
 }
 

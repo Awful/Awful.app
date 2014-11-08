@@ -74,40 +74,38 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author
+- (instancetype)initWithThread:(Thread *)thread author:(AwfulUser *)author
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    _thread = thread;
-    _author = author;
-    self.restorationClass = self.class;
-    
-    self.navigationItem.rightBarButtonItem = self.composeItem;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    
-    self.hidesBottomBarWhenPushed = YES;
-    
-    const CGFloat spacerWidth = 12;
-    self.toolbarItems = @[ self.settingsItem,
-                           [UIBarButtonItem awful_flexibleSpace],
-                           self.backItem,
-                           [UIBarButtonItem awful_fixedSpace:spacerWidth],
-                           self.currentPageItem,
-                           [UIBarButtonItem awful_fixedSpace:spacerWidth],
-                           self.forwardItem,
-                           [UIBarButtonItem awful_flexibleSpace],
-                           self.actionsItem ];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _thread = thread;
+        _author = author;
+        self.restorationClass = self.class;
+        
+        self.navigationItem.rightBarButtonItem = self.composeItem;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        
+        self.hidesBottomBarWhenPushed = YES;
+        
+        const CGFloat spacerWidth = 12;
+        self.toolbarItems = @[ self.settingsItem,
+                               [UIBarButtonItem awful_flexibleSpace],
+                               self.backItem,
+                               [UIBarButtonItem awful_fixedSpace:spacerWidth],
+                               self.currentPageItem,
+                               [UIBarButtonItem awful_fixedSpace:spacerWidth],
+                               self.forwardItem,
+                               [UIBarButtonItem awful_flexibleSpace],
+                               self.actionsItem ];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
+    }
     return self;
 }
 
-- (id)initWithThread:(AwfulThread *)thread
+- (instancetype)initWithThread:(Thread *)thread
 {
     return [self initWithThread:thread author:nil];
 }
@@ -1139,7 +1137,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
+    Thread *thread = [Thread firstOrNewThreadWithID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
     NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
     AwfulUser *author;
     if (authorUserID.length > 0) {

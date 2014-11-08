@@ -5,6 +5,7 @@
 #import "ComposeTextViewController.h"
 #import "AwfulModels.h"
 @class Post;
+@class Thread;
 
 /**
  * A PostComposeViewController shows a text view for composing or editing a reply to a thread.
@@ -29,9 +30,9 @@
  * @param thread     The thread to reply to.
  * @param quotedText The text of any quoted posts. Can be nil.
  */
-- (instancetype)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText;
+- (instancetype)initWithThread:(Thread *)thread quotedText:(NSString *)quotedText;
 
-@property (readonly, strong, nonatomic) AwfulThread *thread;
+@property (readonly, strong, nonatomic) Thread *thread;
 
 @property (readonly, copy, nonatomic) NSString *quotedText;
 

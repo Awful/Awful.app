@@ -62,7 +62,7 @@
 
 - (void)configureFetchedResultsController
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[AwfulThread entityName]];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[Thread entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
     NSMutableArray *sortDescriptors = [NSMutableArray new];
     if ([AwfulSettings sharedSettings].bookmarksSortedByUnread) {
@@ -161,7 +161,7 @@
     return _undoManager;
 }
 
-- (void)setThread:(AwfulThread *)thread isBookmarked:(BOOL)isBookmarked
+- (void)setThread:(Thread *)thread isBookmarked:(BOOL)isBookmarked
 {
     [[self.undoManager prepareWithInvocationTarget:self] setThread:thread isBookmarked:!isBookmarked];
     NSIndexPath *indexPath = [self.threadDataSource.fetchedResultsController indexPathForObject:thread];
@@ -192,7 +192,7 @@
     return YES;
 }
 
-- (void)deleteObject:(AwfulThread *)thread
+- (void)deleteObject:(Thread *)thread
 {
     [self setThread:thread isBookmarked:NO];
 }

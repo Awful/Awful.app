@@ -4,6 +4,7 @@
 
 #import "ComposeTextViewController.h"
 #import "AwfulModels.h"
+@class Thread;
 
 /**
  * A ThreadComposeViewController is for writing the OP of a new thread.
@@ -22,6 +23,6 @@
 /**
  * Returns the newly-posted thread.
  */
-@property (readonly, strong, nonatomic) AwfulThread *thread;
+@property (readonly, strong, nonatomic) Thread *thread;
 
 @end

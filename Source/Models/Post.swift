@@ -35,7 +35,7 @@ class Post: AwfulManagedObject {
     @NSManaged var author: AwfulUser?
     
     /// Where the post is located.
-    @NSManaged var thread: AwfulThread?
+    @NSManaged var thread: Thread?
     
     override func awakeFromInsert() {
         super.awakeFromInsert()

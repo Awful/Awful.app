@@ -15,7 +15,7 @@
 
 @interface ThreadComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
-@property (strong, nonatomic) AwfulThread *thread;
+@property (strong, nonatomic) Thread *thread;
 
 @property (strong, nonatomic) AwfulNewThreadFieldView *fieldView;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
@@ -243,7 +243,7 @@ static NSString * const DefaultTitle = @"New Thread";
                                         threadTag:self.threadTag
                                      secondaryTag:self.secondaryThreadTag
                                            BBcode:composition
-                                          andThen:^(NSError *error, AwfulThread *thread)
+                                          andThen:^(NSError *error, Thread *thread)
     {
         __typeof__(self) self = weakSelf;
         if (error) {

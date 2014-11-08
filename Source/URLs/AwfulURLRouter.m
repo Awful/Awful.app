@@ -88,9 +88,7 @@
                 });
             } else {
                 [overlay dismiss:YES completion:^{
-                    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:post.thread.threadID
-                                                             inManagedObjectContext:self.managedObjectContext];
-                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
+                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
                     [postsViewController loadPage:page updatingCache:YES];
                     [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
@@ -209,8 +207,7 @@
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
 {
     NSString *threadID = parameters[@"threadID"];
-    AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID
-                                             inManagedObjectContext:self.managedObjectContext];
+    Thread *thread = [Thread firstOrNewThreadWithID:threadID inManagedObjectContext:self.managedObjectContext];
     PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {

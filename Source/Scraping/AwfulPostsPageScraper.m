@@ -8,6 +8,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
 #import "AwfulScanner.h"
+#import "AwfulStarCategory.h"
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
@@ -15,7 +16,7 @@
 
 @interface AwfulPostsPageScraper ()
 
-@property (strong, nonatomic) AwfulThread *thread;
+@property (strong, nonatomic) Thread *thread;
 
 @property (copy, nonatomic) NSArray *posts;
 
@@ -31,7 +32,7 @@
     if (self.error) return;
     
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
-    self.thread = [AwfulThread firstOrNewThreadWithThreadID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
+    self.thread = [Thread firstOrNewThreadWithID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
     AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
     self.thread.forum = forum;
     

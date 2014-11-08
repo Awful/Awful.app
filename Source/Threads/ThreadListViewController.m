@@ -88,7 +88,7 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
 - (NSFetchedResultsController *)createFetchedResultsController
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:AwfulThread.entityName];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:Thread.entityName];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@", self.forum];
     if (self.filterThreadTag) {
         NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"threadTag == %@", self.filterThreadTag];
@@ -237,7 +237,7 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
-- (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
+- (void)configureCell:(ThreadCell *)cell withObject:(Thread *)thread
 {
     [super configureCell:cell withObject:thread];
     cell.stickyImageView.hidden = !thread.sticky;
@@ -251,7 +251,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     [self dismissViewControllerAnimated:YES completion:^{
         if (success) {
-            AwfulThread *thread = newThreadViewController.thread;
+            Thread *thread = newThreadViewController.thread;
             PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
             postsViewController.restorationIdentifier = @"AwfulPostsViewController";
             [postsViewController loadPage:1 updatingCache:YES];

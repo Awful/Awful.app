@@ -8,7 +8,6 @@
 #import "AwfulUser.h"
 #import "AwfulCategory.h"
 #import "AwfulForum.h"
-#import "AwfulThread.h"
 #import "AwfulSingleUserThreadInfo.h"
 #import "AwfulThreadPage.h"
 #import "AwfulBan.h"

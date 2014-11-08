@@ -35,7 +35,7 @@
     return self;
 }
 
-- (instancetype)initWithThread:(AwfulThread *)thread quotedText:(NSString *)quotedText
+- (instancetype)initWithThread:(Thread *)thread quotedText:(NSString *)quotedText
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _thread = thread;
@@ -255,7 +255,7 @@
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:originalText];
     } else if (threadID) {
-        AwfulThread *thread = [AwfulThread firstOrNewThreadWithThreadID:threadID inManagedObjectContext:managedObjectContext];
+        Thread *thread = [Thread firstOrNewThreadWithID:threadID inManagedObjectContext:managedObjectContext];
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {

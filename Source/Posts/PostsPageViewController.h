@@ -5,6 +5,7 @@
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulModels.h"
 @class Post;
+@class Thread;
 
 /**
  * A PostsPageViewController shows a list of posts in a thread.
@@ -12,19 +13,17 @@
 @interface PostsPageViewController : AwfulViewController
 
 /**
- * Designated initializer.
- *
  * @param thread The thread whose posts are shown.
  * @param author An optional author used to filter the shown posts. May be nil, in which case all posts are shown.
  */
-- (id)initWithThread:(AwfulThread *)thread author:(AwfulUser *)author;
+- (instancetype)initWithThread:(Thread *)thread author:(AwfulUser *)author NS_DESIGNATED_INITIALIZER;
 
 /**
  * Calls -initWithThread:author: with a nil author.
  */
-- (id)initWithThread:(AwfulThread *)thread;
+- (instancetype)initWithThread:(Thread *)thread;
 
-@property (readonly, strong, nonatomic) AwfulThread *thread;
+@property (readonly, strong, nonatomic) Thread *thread;
 
 /**
  * An optional user whose posts are the only ones shown. If nil, all posts are shown.

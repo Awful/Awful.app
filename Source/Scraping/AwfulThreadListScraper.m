@@ -7,6 +7,7 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
 #import "AwfulScanner.h"
+#import "AwfulStarCategory.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
@@ -160,9 +161,9 @@
         
         [threadDictionaries addObject:threadInfo];
     }
-    NSDictionary *fetchedThreads = [AwfulThread dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                keyedByAttributeNamed:@"threadID"
-                                                              matchingPredicateFormat:@"threadID IN %@", threadIDs];
+    NSDictionary *fetchedThreads = [Thread dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                           keyedByAttributeNamed:@"threadID"
+                                                         matchingPredicateFormat:@"threadID IN %@", threadIDs];
     NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                  keyedByAttributeNamed:@"userID"
                                                                matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
@@ -185,9 +186,9 @@
             return;
         }
         NSString *threadID = threadInfo[@"threadID"];
-        AwfulThread *thread = fetchedThreads[threadID];
+        Thread *thread = fetchedThreads[threadID];
         if (!thread) {
-            thread = [AwfulThread insertInManagedObjectContext:self.managedObjectContext];
+            thread = [Thread insertInManagedObjectContext:self.managedObjectContext];
             thread.threadID = threadID;
         }
         [threads addObject:thread];
@@ -318,16 +319,16 @@
         if (ratingImage) {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:ratingImage[@"title"]];
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
-            NSInteger numberOfVotes;
-            BOOL ok = [scanner scanInteger:&numberOfVotes];
+            int numberOfVotes;
+            BOOL ok = [scanner scanInt:&numberOfVotes];
             if (ok) {
                 thread.numberOfVotes = numberOfVotes;
             }
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
-            NSDecimal average;
-            ok = [scanner scanDecimal:&average];
+            float average;
+            ok = [scanner scanFloat:&average];
             if (ok) {
-                thread.rating = [NSDecimalNumber decimalNumberWithDecimal:average];
+                thread.rating = average;
             }
         }
         

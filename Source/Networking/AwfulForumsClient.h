@@ -7,6 +7,7 @@
 #import "AwfulModels.h"
 @class Post;
 @class PrivateMessage;
+@class Thread;
 @class ThreadTag;
 
 /**
@@ -100,7 +101,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)setThread:(AwfulThread *)thread
+- (NSOperation *)setThread:(Thread *)thread
               isBookmarked:(BOOL)isBookmarked
                    andThen:(void (^)(NSError *error))callback;
 
@@ -109,7 +110,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)rateThread:(AwfulThread *)thread
+- (NSOperation *)rateThread:(Thread *)thread
                            :(NSInteger)rating
                     andThen:(void (^)(NSError *error))callback;
 
@@ -126,7 +127,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)markThreadUnread:(AwfulThread *)thread
+- (NSOperation *)markThreadUnread:(Thread *)thread
                           andThen:(void (^)(NSError *error))callback;
 
 // List post icons usable for a new thread in a forum.
@@ -153,7 +154,7 @@
                          threadTag:(ThreadTag *)threadTag
                       secondaryTag:(ThreadTag *)secondaryTag
                             BBcode:(NSString *)text
-                           andThen:(void (^)(NSError *error, AwfulThread *thread))callback;
+                           andThen:(void (^)(NSError *error, Thread *thread))callback;
 
 /**
  * @param callback A block to call after rendering the preview, which returns nothing and takes as parameters: an NSError object on failure or nil on success; and the rendered post's HTML on success or nil on failure.
@@ -172,7 +173,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)listPostsInThread:(AwfulThread *)thread
+- (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(AwfulUser *)author
                             onPage:(AwfulThreadPage)page
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
@@ -190,7 +191,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)replyToThread:(AwfulThread *)thread
+- (NSOperation *)replyToThread:(Thread *)thread
                     withBBcode:(NSString *)text
                        andThen:(void (^)(NSError *error, Post *post))callback;
 
@@ -199,7 +200,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)previewReplyToThread:(AwfulThread *)thread
+- (NSOperation *)previewReplyToThread:(Thread *)thread
                            withBBcode:(NSString *)BBcode
                               andThen:(void (^)(NSError *error, NSString *postHTML))callback;
 

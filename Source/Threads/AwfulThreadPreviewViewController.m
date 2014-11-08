@@ -73,7 +73,7 @@
             [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else if (self) {
             self.networkOperation = nil;
-            AwfulThread *fakeThread = [AwfulThread insertInManagedObjectContext:self.managedObjectContext];
+            Thread *fakeThread = [Thread insertInManagedObjectContext:self.managedObjectContext];
             fakeThread.author = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
                                                            username:[AwfulSettings sharedSettings].username
                                              inManagedObjectContext:self.managedObjectContext];

@@ -17,38 +17,13 @@
         <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="AwfulForum" inverseName="parentForum" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="children" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="secondaryForums" inverseEntity="ThreadTag" syncable="YES"/>
-        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="forum" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="forum" inverseEntity="Thread" syncable="YES"/>
         <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="forums" inverseEntity="ThreadTag" syncable="YES"/>
     </entity>
     <entity name="AwfulSingleUserThreadInfo" representedClassName="AwfulSingleUserThreadInfo" syncable="YES">
         <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="singleUserThreadInfos" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="singleUserThreadInfos" inverseEntity="AwfulThread" syncable="YES"/>
-    </entity>
-    <entity name="AwfulThread" representedClassName="AwfulThread" syncable="YES">
-        <attribute name="anyUnreadPosts" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
-        <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="bookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="closed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
-        <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="numberOfVotes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="rating" attributeType="Decimal" defaultValueString="0" syncable="YES"/>
-        <attribute name="seenPosts" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="starCategory" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="sticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="threadID" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="totalReplies" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Post" inverseName="thread" inverseEntity="Post" syncable="YES"/>
-        <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="secondaryThreads" inverseEntity="ThreadTag" syncable="YES"/>
-        <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
-        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="threads" inverseEntity="ThreadTag" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Thread" inverseName="singleUserThreadInfos" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <entity name="AwfulUser" representedClassName="AwfulUser" syncable="YES">
         <attribute name="aboutMe" optional="YES" attributeType="String" syncable="YES"/>
@@ -77,7 +52,7 @@
         <relationship name="receivedPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="to" inverseEntity="PrivateMessage" syncable="YES"/>
         <relationship name="sentPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="from" inverseEntity="PrivateMessage" syncable="YES"/>
         <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulSingleUserThreadInfo" inverseName="author" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
-        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="author" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="author" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <entity name="Post" representedClassName="Post" syncable="YES">
         <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -89,7 +64,7 @@
         <attribute name="postID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="threadIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="posts" inverseEntity="AwfulUser" syncable="YES"/>
-        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="posts" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Thread" inverseName="posts" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <entity name="PrivateMessage" representedClassName="PrivateMessage" syncable="YES">
         <attribute name="forwarded" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -104,23 +79,49 @@
         <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="messages" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="to" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="receivedPrivateMessages" inverseEntity="AwfulUser" syncable="YES"/>
     </entity>
+    <entity name="Thread" representedClassName="Thread" syncable="YES">
+        <attribute name="anyUnreadPosts" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="bookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="closed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="lastModifiedDate" attributeType="Date" syncable="YES"/>
+        <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="numberOfVotes" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="rating" attributeType="Float" defaultValueString="-1" syncable="YES"/>
+        <attribute name="seenPosts" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="starCategory" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="sticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="stickyIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="threadID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalReplies" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulUser" inverseName="threads" inverseEntity="AwfulUser" syncable="YES"/>
+        <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
+        <relationship name="posts" toMany="YES" deletionRule="Cascade" destinationEntity="Post" inverseName="thread" inverseEntity="Post" syncable="YES"/>
+        <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="secondaryThreads" inverseEntity="ThreadTag" syncable="YES"/>
+        <relationship name="singleUserThreadInfos" toMany="YES" deletionRule="Cascade" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
+        <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="threads" inverseEntity="ThreadTag" syncable="YES"/>
+    </entity>
     <entity name="ThreadTag" representedClassName="ThreadTag" syncable="YES">
         <attribute name="imageName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="threadTagID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threadTags" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="threadTag" inverseEntity="PrivateMessage" syncable="YES"/>
         <relationship name="secondaryForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="secondaryThreadTags" inverseEntity="AwfulForum" syncable="YES"/>
-        <relationship name="secondaryThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="secondaryThreadTag" inverseEntity="AwfulThread" syncable="YES"/>
-        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AwfulThread" inverseName="threadTag" inverseEntity="AwfulThread" syncable="YES"/>
+        <relationship name="secondaryThreads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="secondaryThreadTag" inverseEntity="Thread" syncable="YES"/>
+        <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="threadTag" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
         <element name="AwfulForum" positionX="0" positionY="0" width="128" height="225"/>
         <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="AwfulThread" positionX="0" positionY="0" width="128" height="390"/>
-        <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
         <element name="AwfulUser" positionX="0" positionY="0" width="128" height="450"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
-        <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="208"/>
+        <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="Thread" positionX="0" positionY="0" width="128" height="403"/>
+        <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
     </elements>
 </model>

@@ -8,6 +8,7 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulSettings.h"
+#import "AwfulStarCategory.h"
 #import "AwfulTheme.h"
 #import "AwfulThreadTagLoader.h"
 #import "PostsPageViewController.h"
@@ -92,7 +93,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 
 #pragma mark - AwfulFetchedResultsControllerDataSource
 
-- (void)configureCell:(ThreadCell *)cell withObject:(AwfulThread *)thread
+- (void)configureCell:(ThreadCell *)cell withObject:(Thread *)thread
 {
     // TODO Swift weirdness here, declaring -setLongPressTarget:action:'s second parameter as type `Selector` prevented it from appearing in Awful-Swift.h.
     [cell setLongPressTarget:self action:@"showThreadActions:"];
@@ -114,7 +115,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
                     // Make sure the cell represents the same thread it did when we started waiting for a new thread tag.
                     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
                     if (indexPath) {
-                        AwfulThread *currentThread = [self.threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+                        Thread *currentThread = [self.threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
                         if ([currentThread.threadID isEqualToString:threadID]) {
                             cell.tagImageView.image = image;
                         }
@@ -137,7 +138,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 		if ([AwfulForumTweaks tweaksForForumId:thread.forum.forumID].showRatings) {
             cell.showsRating = NO;
 		} else {
-			NSInteger rating = lroundf(thread.rating.floatValue);
+			NSInteger rating = lroundf(thread.rating);
 			if (rating <= 0) {
                 cell.showsRating = NO;
 			} else {
@@ -212,11 +213,11 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 - (void)showThreadActions:(ThreadCell *)cell
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    AwfulThread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    Thread *thread = [_threadDataSource.fetchedResultsController objectAtIndexPath:indexPath];
     [self showThreadActionsForThread:thread];
 }
 
-- (void)showThreadActionsForThread:(AwfulThread *)thread
+- (void)showThreadActionsForThread:(Thread *)thread
 {
     InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
@@ -316,7 +317,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSFetchedResultsController *fetchedResultsController = self.threadDataSource.fetchedResultsController;
-    AwfulThread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
+    Thread *thread = [fetchedResultsController objectAtIndexPath:indexPath];
     PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
     postsViewController.restorationIdentifier = @"Posts";
     
