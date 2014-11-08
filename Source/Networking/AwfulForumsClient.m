@@ -12,8 +12,6 @@
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
-#import "AwfulPrivateMessageFolderScraper.h"
-#import "AwfulPrivateMessageScraper.h"
 #import "AwfulProfileScraper.h"
 #import "AwfulScanner.h"
 #import "AwfulSettings.h"
@@ -22,6 +20,8 @@
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSManagedObjectContext+AwfulConvenient.h"
+#import "PrivateMessageFolderScraper.h"
+#import "PrivateMessageScraper.h"
 #import "Awful-Swift.h"
 
 @implementation AwfulForumsClient
@@ -1125,8 +1125,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulPrivateMessageFolderScraper *scraper = [AwfulPrivateMessageFolderScraper scrapeNode:document
-                                                                            intoManagedObjectContext:managedObjectContext];
+            PrivateMessageFolderScraper *scraper = [PrivateMessageFolderScraper scrapeNode:document
+                                                                  intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
             if (scraper.messages) {
                 [managedObjectContext save:&error];
@@ -1144,7 +1144,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     }];
 }
 
-- (NSOperation *)deletePrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)deletePrivateMessage:(PrivateMessage *)message
                               andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"private.php"
@@ -1159,7 +1159,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     }];
 }
 
-- (NSOperation *)readPrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)readPrivateMessage:(PrivateMessage *)message
                             andThen:(void (^)(NSError *error))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
@@ -1169,7 +1169,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulPrivateMessageScraper *scraper = [AwfulPrivateMessageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            PrivateMessageScraper *scraper = [PrivateMessageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
             if (scraper.privateMessage) {
                 [managedObjectContext save:&error];
@@ -1185,7 +1185,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     }];
 }
 
-- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(PrivateMessage *)message
                                              andThen:(void (^)(NSError *error, NSString *BBcode))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
@@ -1269,8 +1269,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                           withSubject:(NSString *)subject
                             threadTag:(AwfulThreadTag *)threadTag
                                BBcode:(NSString *)text
-                     asReplyToMessage:(AwfulPrivateMessage *)regardingMessage
-                 forwardedFromMessage:(AwfulPrivateMessage *)forwardedMessage
+                     asReplyToMessage:(PrivateMessage *)regardingMessage
+                 forwardedFromMessage:(PrivateMessage *)forwardedMessage
                               andThen:(void (^)(NSError *error))callback
 {
     NSMutableDictionary *parameters = [@{ @"touser": username,

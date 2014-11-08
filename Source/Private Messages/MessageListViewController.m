@@ -140,7 +140,7 @@
     
     _dataSource = [[AwfulFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView reuseIdentifier:MessageCellIdentifier];
     _dataSource.delegate = self;
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:AwfulPrivateMessage.entityName];
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:PrivateMessage.entityName];
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"sentDate" ascending:NO] ];
     _dataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                                managedObjectContext:self.managedObjectContext
@@ -216,7 +216,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 
 #pragma mark - AwfulFetchedResultsControllerDataSourceDelegate
 
-- (void)configureCell:(MessageCell *)cell withObject:(AwfulPrivateMessage *)pm
+- (void)configureCell:(MessageCell *)cell withObject:(PrivateMessage *)pm
 {
     if ([AwfulSettings sharedSettings].showThreadTags) {
         cell.showsTag = YES;
@@ -234,7 +234,7 @@ static NSString * const MessageCellIdentifier = @"Message";
                     // Make sure the cell represents the same message as when we started.
                     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
                     if (indexPath) {
-                        AwfulPrivateMessage *currentMessage = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+                        PrivateMessage *currentMessage = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
                         if ([currentMessage.messageID isEqualToString:messageID]) {
                             cell.imageView.image = image;
                         }
@@ -294,12 +294,12 @@ static NSString * const MessageCellIdentifier = @"Message";
     return [formatter stringFromDate:date];
 }
 
-- (BOOL)canDeleteObject:(AwfulPrivateMessage *)object atIndexPath:(NSIndexPath *)indexPath
+- (BOOL)canDeleteObject:(PrivateMessage *)object atIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
 }
 
-- (void)deleteObject:(AwfulPrivateMessage *)pm
+- (void)deleteObject:(PrivateMessage *)pm
 {
     __weak __typeof__(self) weakSelf = self;
     [[AwfulForumsClient client] deletePrivateMessage:pm andThen:^(NSError *error) {
@@ -328,7 +328,7 @@ static NSString * const MessageCellIdentifier = @"Message";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulPrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    PrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
     if (!pm.seen) {
         [self decrementBadgeValue];
     }

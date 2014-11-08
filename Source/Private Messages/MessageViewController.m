@@ -10,7 +10,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
 #import "AwfulModels.h"
-#import "AwfulPrivateMessageViewModel.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
@@ -18,6 +17,7 @@
 #import <GRMustache/GRMustache.h>
 #import "Handoff.h"
 #import "MessageComposeViewController.h"
+#import "PrivateMessageViewModel.h"
 #import "RapSheetViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
 #import <WebViewJavascriptBridge.h>
@@ -25,7 +25,7 @@
 
 @interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
-@property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
+@property (strong, nonatomic) PrivateMessage *privateMessage;
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
@@ -50,28 +50,26 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
+- (instancetype)initWithPrivateMessage:(PrivateMessage *)privateMessage
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    _privateMessage = privateMessage;
-    self.title = privateMessage.subject;
-    self.navigationItem.rightBarButtonItem = self.replyButtonItem;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.hidesBottomBarWhenPushed = YES;
-    self.restorationClass = self.class;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _privateMessage = privateMessage;
+        self.title = privateMessage.subject;
+        self.navigationItem.rightBarButtonItem = self.replyButtonItem;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.hidesBottomBarWhenPushed = YES;
+        self.restorationClass = self.class;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingsDidChange:)
+                                                     name:AwfulSettingsDidChangeNotification
+                                                   object:nil];
+    }
     return self;
 }
 
 - (void)renderMessage
 {
-    AwfulPrivateMessageViewModel *viewModel = [[AwfulPrivateMessageViewModel alloc] initWithPrivateMessage:self.privateMessage];
+    PrivateMessageViewModel *viewModel = [[PrivateMessageViewModel alloc] initWithPrivateMessage:self.privateMessage];
     viewModel.stylesheet = self.theme[@"postsViewCSS"];
     NSError *error;
     NSString *HTML = [GRMustacheTemplate renderObject:viewModel fromResource:@"PrivateMessage" bundle:nil error:&error];
@@ -95,7 +93,7 @@
 
 - (void)didTapReplyButtonItem:(UIBarButtonItem *)buttonItem
 {
-    AwfulPrivateMessage *privateMessage = self.privateMessage;
+    PrivateMessage *privateMessage = self.privateMessage;
     UIAlertController *actionSheet = [UIAlertController actionSheet];
     __weak __typeof__(self) weakSelf = self;
     
@@ -418,8 +416,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    AwfulPrivateMessage *privateMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                            matchingPredicateFormat:@"messageID = %@", messageID];
+    PrivateMessage *privateMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
+                                                                  matchingPredicateFormat:@"messageID = %@", messageID];
     MessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;

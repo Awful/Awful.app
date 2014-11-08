@@ -10,7 +10,6 @@
 #import "AwfulForum.h"
 #import "AwfulThreadTag.h"
 #import "AwfulThread.h"
-#import "AwfulPrivateMessage.h"
 #import "AwfulSingleUserThreadInfo.h"
 #import "AwfulThreadPage.h"
 #import "AwfulBan.h"

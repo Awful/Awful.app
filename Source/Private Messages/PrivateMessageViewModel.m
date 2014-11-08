@@ -1,22 +1,20 @@
-//  AwfulPrivateMessageViewModel.m
+//  PrivateMessageViewModel.m
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPrivateMessageViewModel.h"
+#import "PrivateMessageViewModel.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulJavaScript.h"
 #import "AwfulSettings.h"
 #import "Awful-Swift.h"
 
-@implementation AwfulPrivateMessageViewModel
+@implementation PrivateMessageViewModel
 
-- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage
+- (instancetype)initWithPrivateMessage:(PrivateMessage *)privateMessage
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _privateMessage = privateMessage;
-    
+    if ((self = [super init])) {
+        _privateMessage = privateMessage;
+    }
     return self;
 }
 

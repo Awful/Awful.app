@@ -1,8 +1,8 @@
-//  AwfulPrivateMessageScraper.m
+//  PrivateMessageScraper.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPrivateMessageScraper.h"
+#import "PrivateMessageScraper.h"
 #import "AwfulAuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
@@ -10,14 +10,15 @@
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
+#import "Awful-Swift.h"
 
-@interface AwfulPrivateMessageScraper ()
+@interface PrivateMessageScraper ()
 
-@property (strong, nonatomic) AwfulPrivateMessage *privateMessage;
+@property (strong, nonatomic) PrivateMessage *privateMessage;
 
 @end
 
-@implementation AwfulPrivateMessageScraper
+@implementation PrivateMessageScraper
 
 - (void)scrape
 {
@@ -34,7 +35,7 @@
         return;
     }
     
-    AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:self.managedObjectContext];
+    PrivateMessage *message = [PrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:self.managedObjectContext];
     
     HTMLElement *breadcrumbs = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
     HTMLTextNode *subjectText = breadcrumbs.children.lastObject;

@@ -1,20 +1,21 @@
-//  AwfulPrivateMessageFolderScraper.m
+//  PrivateMessageFolderScraper.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPrivateMessageFolderScraper.h"
+#import "PrivateMessageFolderScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
+#import "Awful-Swift.h"
 
-@interface AwfulPrivateMessageFolderScraper ()
+@interface PrivateMessageFolderScraper ()
 
 @property (copy, nonatomic) NSArray *messages;
 
 @end
 
-@implementation AwfulPrivateMessageFolderScraper
+@implementation PrivateMessageFolderScraper
 
 - (void)scrape
 {
@@ -35,8 +36,8 @@
             continue;
         }
         
-        AwfulPrivateMessage *message = [AwfulPrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
-                                                                           inManagedObjectContext:self.managedObjectContext];
+        PrivateMessage *message = [PrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
+                                                                 inManagedObjectContext:self.managedObjectContext];
         message.subject = titleLink.textContent;
         
         {{

@@ -1,21 +1,19 @@
-//  AwfulPrivateMessageViewModel.h
+//  PrivateMessageViewModel.h
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 #import "AwfulModels.h"
+@class PrivateMessage;
 
 /**
  * An AwfulPrivateMessageViewModel helps render a private message in an AwfulPostsView.
  */
-@interface AwfulPrivateMessageViewModel : NSObject
+@interface PrivateMessageViewModel : NSObject
 
-/**
- * Designated initializer.
- */
-- (id)initWithPrivateMessage:(AwfulPrivateMessage *)privateMessage;
+- (instancetype)initWithPrivateMessage:(PrivateMessage *)privateMessage NS_DESIGNATED_INITIALIZER;
 
-@property (readonly, strong, nonatomic) AwfulPrivateMessage *privateMessage;
+@property (readonly, strong, nonatomic) PrivateMessage *privateMessage;
 
 /**
  * The CSS for the message.

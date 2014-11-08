@@ -4,6 +4,7 @@
 
 #import "ComposeTextViewController.h"
 #import "AwfulModels.h"
+@class PrivateMessage;
 
 /**
  * A MessageComposeViewController is for writing private messages.
@@ -13,7 +14,7 @@
 /**
  * Returns an initialized AwfulNewPrivateMessageViewController. This is one of three designated initializers.
  */
-- (id)initWithRecipient:(AwfulUser *)recipient;
+- (instancetype)initWithRecipient:(AwfulUser *)recipient;
 
 @property (readonly, strong, nonatomic) AwfulUser *recipient;
 
@@ -23,9 +24,9 @@
  * @param regardingMessage The message to reply to.
  * @param initialContents  The initial BBcode contents of the message.
  */
-- (id)initWithRegardingMessage:(AwfulPrivateMessage *)regardingMessage initialContents:(NSString *)initialContents;
+- (instancetype)initWithRegardingMessage:(PrivateMessage *)regardingMessage initialContents:(NSString *)initialContents;
 
-@property (readonly, strong, nonatomic) AwfulPrivateMessage *regardingMessage;
+@property (readonly, strong, nonatomic) PrivateMessage *regardingMessage;
 
 /**
  * Returns an AwfulNewPrivateMessageViewController initialized as a forward. This is one of three designated initializers.
@@ -33,9 +34,9 @@
  * @param forwardingMessage The message to forward.
  * @param initialContents   The initial BBcode contents of the message.
  */
-- (id)initWithForwardingMessage:(AwfulPrivateMessage *)forwardingMessage initialContents:(NSString *)initialContents;
+- (instancetype)initWithForwardingMessage:(PrivateMessage *)forwardingMessage initialContents:(NSString *)initialContents;
 
-@property (readonly, strong, nonatomic) AwfulPrivateMessage *forwardingMessage;
+@property (readonly, strong, nonatomic) PrivateMessage *forwardingMessage;
 
 @property (readonly, copy, nonatomic) NSString *initialContents;
 

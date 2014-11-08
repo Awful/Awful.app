@@ -26,7 +26,7 @@
 
 @implementation MessageComposeViewController
 
-- (id)initWithRecipient:(AwfulUser *)recipient
+- (instancetype)initWithRecipient:(AwfulUser *)recipient
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _recipient = recipient;
@@ -34,7 +34,7 @@
     return self;
 }
 
-- (id)initWithRegardingMessage:(AwfulPrivateMessage *)regardingMessage initialContents:(NSString *)initialContents
+- (instancetype)initWithRegardingMessage:(PrivateMessage *)regardingMessage initialContents:(NSString *)initialContents
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _regardingMessage = regardingMessage;
@@ -43,7 +43,7 @@
     return self;
 }
 
-- (id)initWithForwardingMessage:(AwfulPrivateMessage *)forwardingMessage initialContents:(NSString *)initialContents
+- (instancetype)initWithForwardingMessage:(PrivateMessage *)forwardingMessage initialContents:(NSString *)initialContents
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _forwardingMessage = forwardingMessage;
@@ -52,7 +52,7 @@
     return self;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.title = @"Private Message";
@@ -274,13 +274,13 @@
                                             inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:recipient];
     } else if (regardingMessageID) {
-        AwfulPrivateMessage *regardingMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                                  matchingPredicateFormat:@"messageID = %@", regardingMessageID];
+        PrivateMessage *regardingMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
+                                                                        matchingPredicateFormat:@"messageID = %@", regardingMessageID];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:regardingMessage
                                                                                                  initialContents:initialContents];
     } else if (forwardingMessageID) {
-        AwfulPrivateMessage *forwardingMessage = [AwfulPrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                                   matchingPredicateFormat:@"messageID = %@", forwardingMessageID];
+        PrivateMessage *forwardingMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
+                                                                         matchingPredicateFormat:@"messageID = %@", forwardingMessageID];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:forwardingMessage
                                                                                                   initialContents:initialContents];
     } else {

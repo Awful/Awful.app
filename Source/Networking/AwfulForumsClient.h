@@ -6,6 +6,7 @@
 #import "AwfulForm.h"
 #import "AwfulModels.h"
 @class Post;
+@class PrivateMessage;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -296,7 +297,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)deletePrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)deletePrivateMessage:(PrivateMessage *)message
                               andThen:(void (^)(NSError *error))callback;
 
 /**
@@ -304,7 +305,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)readPrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)readPrivateMessage:(PrivateMessage *)message
                             andThen:(void (^)(NSError *error))callback;
 
 /**
@@ -312,7 +313,7 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(AwfulPrivateMessage *)message
+- (NSOperation *)quoteBBcodeContentsOfPrivateMessage:(PrivateMessage *)message
                                              andThen:(void (^)(NSError *error, NSString *BBcode))callback;
 
 /**
@@ -335,8 +336,8 @@
                           withSubject:(NSString *)subject
                             threadTag:(AwfulThreadTag *)threadTag
                                BBcode:(NSString *)text
-                     asReplyToMessage:(AwfulPrivateMessage *)regardingMessage
-                 forwardedFromMessage:(AwfulPrivateMessage *)forwardedMessage
+                     asReplyToMessage:(PrivateMessage *)regardingMessage
+                 forwardedFromMessage:(PrivateMessage *)forwardedMessage
                               andThen:(void (^)(NSError *error))callback;
 
 @end
