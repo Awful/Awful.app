@@ -32,7 +32,7 @@ class User: AwfulManagedObject {
     @NSManaged var posts: NSMutableSet /* Post */
     @NSManaged var receivedPrivateMessages: NSMutableSet /* PrivateMessage via to */
     @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
-    @NSManaged var singleUserThreadInfos: NSMutableSet /* SingleUserThreadInfo */
+    @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threads: NSMutableSet /* Thread */
     
     override func awakeFromInsert() {

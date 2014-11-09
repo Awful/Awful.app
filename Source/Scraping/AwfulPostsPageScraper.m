@@ -246,7 +246,7 @@
     }
     
     if (singleUserFilterEnabled) {
-        [self.thread setNumberOfPages:numberOfPages forSingleUser:lastPost.author];
+        [self.thread setFilteredNumberOfPages:numberOfPages forAuthor:lastPost.author];
     } else {
         self.thread.numberOfPages = numberOfPages;
     }

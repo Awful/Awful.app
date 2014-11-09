@@ -20,11 +20,6 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="forum" inverseEntity="Thread" syncable="YES"/>
         <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="forums" inverseEntity="ThreadTag" syncable="YES"/>
     </entity>
-    <entity name="AwfulSingleUserThreadInfo" representedClassName="AwfulSingleUserThreadInfo" syncable="YES">
-        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="singleUserThreadInfos" inverseEntity="User" syncable="YES"/>
-        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Thread" inverseName="singleUserThreadInfos" inverseEntity="Thread" syncable="YES"/>
-    </entity>
     <entity name="Post" representedClassName="Post" syncable="YES">
         <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="filteredThreadIndex" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -73,8 +68,19 @@
         <relationship name="forum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulForum" inverseName="threads" inverseEntity="AwfulForum" syncable="YES"/>
         <relationship name="posts" toMany="YES" deletionRule="Cascade" destinationEntity="Post" inverseName="thread" inverseEntity="Post" syncable="YES"/>
         <relationship name="secondaryThreadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="secondaryThreads" inverseEntity="ThreadTag" syncable="YES"/>
-        <relationship name="singleUserThreadInfos" toMany="YES" deletionRule="Cascade" destinationEntity="AwfulSingleUserThreadInfo" inverseName="thread" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
+        <relationship name="threadFilters" toMany="YES" deletionRule="Cascade" destinationEntity="ThreadFilter" inverseName="thread" inverseEntity="ThreadFilter" syncable="YES"/>
         <relationship name="threadTag" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ThreadTag" inverseName="threads" inverseEntity="ThreadTag" syncable="YES"/>
+    </entity>
+    <entity name="ThreadFilter" representedClassName="ThreadFilter" syncable="YES">
+        <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="threadFilters" inverseEntity="User" syncable="YES"/>
+        <relationship name="thread" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Thread" inverseName="threadFilters" inverseEntity="Thread" syncable="YES"/>
+        <compoundIndexes>
+            <compoundIndex>
+                <index value="author"/>
+                <index value="thread"/>
+            </compoundIndex>
+        </compoundIndexes>
     </entity>
     <entity name="ThreadTag" representedClassName="ThreadTag" syncable="YES">
         <attribute name="imageName" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -111,17 +117,17 @@
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Post" inverseName="author" inverseEntity="Post" syncable="YES"/>
         <relationship name="receivedPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="to" inverseEntity="PrivateMessage" syncable="YES"/>
         <relationship name="sentPrivateMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PrivateMessage" inverseName="from" inverseEntity="PrivateMessage" syncable="YES"/>
-        <relationship name="singleUserThreadInfos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AwfulSingleUserThreadInfo" inverseName="author" inverseEntity="AwfulSingleUserThreadInfo" syncable="YES"/>
+        <relationship name="threadFilters" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ThreadFilter" inverseName="author" inverseEntity="ThreadFilter" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="author" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <elements>
         <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
         <element name="AwfulForum" positionX="0" positionY="0" width="128" height="225"/>
-        <element name="AwfulSingleUserThreadInfo" positionX="0" positionY="0" width="128" height="90"/>
+        <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
         <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
-        <element name="Thread" positionX="0" positionY="0" width="128" height="403"/>
+        <element name="Thread" positionX="0" positionY="0" width="128" height="405"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
-        <element name="User" positionX="0" positionY="0" width="128" height="450"/>
+        <element name="User" positionX="0" positionY="0" width="128" height="448"/>
     </elements>
 </model>

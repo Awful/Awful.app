@@ -29,7 +29,7 @@ class Thread: AwfulManagedObject {
     @NSManaged var forum: AwfulForum?
     @NSManaged var posts: NSMutableSet /* Post */
     @NSManaged var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
-    @NSManaged var singleUserThreadInfos: NSMutableSet /* AwfulSingleUserInfo */
+    @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threadTag: ThreadTag? /* via threads */
     
     override func awakeFromInsert() {
@@ -86,19 +86,24 @@ extension Thread {
 }
 
 extension Thread {
-    func numberOfPagesForSingleUser(user: User) -> Int32 {
-        let info = AwfulSingleUserThreadInfo.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: NSPredicate(format: "thread = %@ AND author = %@", self, user))
-        return info.numberOfPages
+    func filteredNumberOfPagesForAuthor(author: User) -> Int32 {
+        let predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
+        if let filter = ThreadFilter.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: predicate) {
+            return filter.numberOfPages
+        } else {
+            return 0
+        }
     }
     
-    func setNumberOfPages(numberOfPages: Int32, forSingleUser user: User) {
-        var info = AwfulSingleUserThreadInfo.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: NSPredicate(format: "thread = %@ AND author = %@", self, user))
-        if info == nil {
-            info = AwfulSingleUserThreadInfo.insertInManagedObjectContext(managedObjectContext!)
-            info.thread = self
-            info.author = user
+    func setFilteredNumberOfPages(numberOfPages: Int32, forAuthor author: User) {
+        let predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
+        var filter = ThreadFilter.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: predicate)
+        if filter == nil {
+            filter = ThreadFilter.insertInManagedObjectContext(managedObjectContext!)
+            filter.thread = self
+            filter.author = author
         }
-        info.numberOfPages = numberOfPages
+        filter.numberOfPages = numberOfPages
     }
 }
 
@@ -112,4 +117,13 @@ extension Thread {
             return thread
         }
     }
+}
+
+@objc(ThreadFilter)
+class ThreadFilter: AwfulManagedObject {
+    
+    @NSManaged var numberOfPages: Int32
+    
+    @NSManaged var author: User
+    @NSManaged var thread: Thread
 }

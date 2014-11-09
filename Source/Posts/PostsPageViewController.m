@@ -113,7 +113,7 @@
 - (NSInteger)numberOfPages
 {
     if (self.author) {
-        return [self.thread numberOfPagesForSingleUser:self.author];
+        return [self.thread filteredNumberOfPagesForAuthor:self.author];
     } else {
         return self.thread.numberOfPages;
     }
@@ -126,7 +126,7 @@
     
     // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
     if (page == AwfulThreadPageLast && self.author) {
-        page = [self.thread numberOfPagesForSingleUser:self.author] ?: 1;
+        page = [self.thread filteredNumberOfPagesForAuthor:self.author] ?: 1;
     }
     
     BOOL reloadingSamePage = page == self.page;
