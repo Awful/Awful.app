@@ -11,7 +11,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
 #import "AwfulMinusFixURLProtocol.h"
-#import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulResourceURLProtocol.h"

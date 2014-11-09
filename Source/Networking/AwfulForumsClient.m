@@ -237,7 +237,7 @@
 
 #pragma mark - Forums
 
-- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *categories))callback
+- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback
 {
     // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
@@ -249,14 +249,14 @@
         [managedObjectContext performBlock:^{
             AwfulForumHierarchyScraper *scraper = [AwfulForumHierarchyScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.categories) {
+            if (scraper.forums) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSArray *objectIDs = [scraper.categories valueForKey:@"objectID"];
+                NSArray *objectIDs = [scraper.forums valueForKey:@"objectID"];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    NSArray *categories = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
-                    callback(error, categories);
+                    NSArray *forums = [mainManagedObjectContext awful_objectsWithIDs:objectIDs];
+                    callback(error, forums);
                 }];
             }
         }];

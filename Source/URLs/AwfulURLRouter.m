@@ -4,7 +4,6 @@
 
 #import "AwfulURLRouter.h"
 #import "AwfulForumsClient.h"
-#import "AwfulModels.h"
 #import "BookmarkedThreadListViewController.h"
 #import "EmptyViewController.h"
 #import "ForumListViewController.h"

@@ -14,14 +14,12 @@
     return scraper;
 }
 
-- (id)initWithNode:(HTMLNode *)node managedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (instancetype)initWithNode:(HTMLNode *)node managedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _node = node;
-    _managedObjectContext = managedObjectContext;
-    
+    if ((self = [super init])) {
+        _node = node;
+        _managedObjectContext = managedObjectContext;
+    }
     return self;
 }
 

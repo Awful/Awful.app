@@ -4,7 +4,6 @@
 
 #import "UIViewController+AwfulTheme.h"
 #import "AwfulFetchedResultsControllerDataSource.h"
-#import "AwfulModels.h"
 
 /**
  * An AbstractThreadListViewController shows a list of threads.

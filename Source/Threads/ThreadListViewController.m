@@ -6,8 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
-#import "ThreadComposeViewController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadTagLoader.h"
@@ -15,6 +13,7 @@
 #import "Handoff.h"
 #import "PostsPageViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "ThreadComposeViewController.h"
 #import "Awful-Swift.h"
 
 @interface ThreadListViewController () <AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>

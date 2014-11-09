@@ -4,9 +4,9 @@
 
 #import "RapSheetViewController.h"
 #import "AwfulAppDelegate.h"
+#import "AwfulBan.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
 #import "AwfulPunishmentCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"

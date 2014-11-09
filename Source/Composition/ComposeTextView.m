@@ -6,6 +6,7 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulTextAttachment.h"
 #import "KeyboardBar.h"
+@import MobileCoreServices;
 #import <PSMenuItem/PSMenuItem.h>
 #import <Smilies/Smilies.h>
 

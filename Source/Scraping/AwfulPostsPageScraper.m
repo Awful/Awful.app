@@ -6,7 +6,6 @@
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
-#import "AwfulModels.h"
 #import "AwfulScanner.h"
 #import "AwfulStarCategory.h"
 #import "HTMLNode+CachedSelector.h"
@@ -53,11 +52,11 @@
     HTMLElement *threadLink = hierarchyLinks.lastObject;
     self.thread.title = threadLink.textContent;
     if (hierarchyLinks.count > 1) {
-        HTMLElement *categoryLink = hierarchyLinks.firstObject;
-        NSURL *URL = [NSURL URLWithString:categoryLink[@"href"]];
-        NSString *categoryID = URL.queryDictionary[@"forumid"];
-        AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
-        category.name = categoryLink.textContent;
+        HTMLElement *groupLink = hierarchyLinks.firstObject;
+        NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
+        NSString *groupID = URL.queryDictionary[@"forumid"];
+        ForumGroup *group = [ForumGroup firstOrNewForumGroupWithID:groupID inManagedObjectContext:self.managedObjectContext];
+        group.name = groupLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
@@ -65,7 +64,7 @@
             NSString *subforumID = URL.queryDictionary[@"forumid"];
             Forum *subforum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
             subforum.name = subforumLink.textContent;
-            subforum.category = category;
+            subforum.group = group;
             currentForum.parentForum = subforum;
             currentForum = subforum;
         }

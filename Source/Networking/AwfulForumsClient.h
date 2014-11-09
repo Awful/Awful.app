@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AwfulForm.h"
-#import "AwfulModels.h"
+#import "AwfulThreadPage.h"
 @class Forum;
 @class Post;
 @class PrivateMessage;
@@ -71,11 +71,11 @@
 #pragma mark - Forums
 
 /**
- * @param callback A block to call after finding the forum hierarchy which takes as parameters: an NSError object on failure or nil on success; and an array of AwfulCategory objects on success or nil on failure.
+ * @param callback A block to call after finding the forum hierarchy which takes as parameters: an NSError object on failure or nil on success; and an array of Forum objects on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *categories))callback;
+- (NSOperation *)taxonomizeForumsAndThen:(void (^)(NSError *error, NSArray *forums))callback;
 
 #pragma mark - Threads
 

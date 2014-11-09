@@ -49,14 +49,14 @@
 {
     self.updatesTableView = NO;
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"AwfulForum"];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"category != nil"];
-    fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"category.index" ascending:YES],
-                                      [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES] ];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Forum entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"group != nil"];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"group.index" ascending:YES],
+                                     [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]];
     
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                     managedObjectContext:managedObjectContext
-                                                                      sectionNameKeyPath:@"category.index"
+                                                                      sectionNameKeyPath:@"group.name"
                                                                                cacheName:nil];
 }
 
@@ -152,8 +152,7 @@
 - (NSString *)categoryNameAtIndex:(NSInteger)index
 {
     id <NSFetchedResultsSectionInfo> section = _fetchedResultsController.sections[index - self.sectionOffset];
-    Forum *forum = section.objects.firstObject;
-    return forum.category.name;
+    return section.name;
 }
 
 - (NSArray *)visibleForumsInSectionAtIndex:(NSInteger)sectionIndex

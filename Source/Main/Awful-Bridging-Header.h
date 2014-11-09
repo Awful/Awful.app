@@ -7,7 +7,7 @@
 #import "AwfulForumsClient.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
-#import "AwfulModels.h"
+#import "AwfulManagedObject.h"
 #import "AwfulNavigationController.h"
 #import "AwfulProfileViewModel.h"
 #import "AwfulSettings.h"

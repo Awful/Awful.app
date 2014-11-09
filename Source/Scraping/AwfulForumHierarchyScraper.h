@@ -5,10 +5,10 @@
 #import "AwfulScraper.h"
 
 /**
- * An AwfulForumHierarchyScraper builds up a hierarchy of AwfulCategory and AwfulForum instances from a drop-down menu.
+ * An AwfulForumHierarchyScraper builds up a hierarchy of Forum instances from a drop-down menu.
  */
 @interface AwfulForumHierarchyScraper : AwfulScraper
 
-@property (readonly, copy, nonatomic) NSArray *categories;
+@property (readonly, copy, nonatomic) NSArray *forums;
 
 @end

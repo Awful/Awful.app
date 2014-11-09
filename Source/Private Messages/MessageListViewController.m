@@ -6,7 +6,6 @@
 #import "AwfulFetchedResultsControllerDataSource.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
 #import "AwfulNewMessageChecker.h"
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulRefreshMinder.h"

@@ -3,13 +3,12 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ForumListViewController.h"
+#import <AFNetworking/AFNetworking.h>
 #import "AwfulForumsClient.h"
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import <AFNetworking/AFNetworking.h>
 #import "ThreadListViewController.h"
 #import "Awful-Swift.h"
 

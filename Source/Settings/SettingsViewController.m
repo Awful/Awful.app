@@ -7,7 +7,6 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "SettingsBinding.h"

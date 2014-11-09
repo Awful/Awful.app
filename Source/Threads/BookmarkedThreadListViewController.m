@@ -4,7 +4,6 @@
 
 #import "BookmarkedThreadListViewController.h"
 #import "AwfulForumsClient.h"
-#import "AwfulModels.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "Handoff.h"

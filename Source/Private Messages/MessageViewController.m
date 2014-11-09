@@ -9,7 +9,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
-#import "AwfulModels.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B17" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="AwfulCategory" representedClassName="AwfulCategory" syncable="YES">
-        <attribute name="categoryID" attributeType="String" syncable="YES"/>
-        <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
-        <attribute name="name" attributeType="String" syncable="YES"/>
-        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Forum" inverseName="category" inverseEntity="Forum" syncable="YES"/>
-    </entity>
     <entity name="Forum" representedClassName="Forum" syncable="YES">
         <attribute name="canPost" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="forumID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -13,12 +7,18 @@
         <attribute name="lastFilteredRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="category" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AwfulCategory" inverseName="forums" inverseEntity="AwfulCategory" syncable="YES"/>
         <relationship name="childForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Forum" inverseName="parentForum" inverseEntity="Forum" syncable="YES"/>
+        <relationship name="group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ForumGroup" inverseName="forums" inverseEntity="ForumGroup" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Forum" inverseName="childForums" inverseEntity="Forum" syncable="YES"/>
         <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="secondaryForums" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="forum" inverseEntity="Thread" syncable="YES"/>
         <relationship name="threadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="forums" inverseEntity="ThreadTag" syncable="YES"/>
+    </entity>
+    <entity name="ForumGroup" representedClassName="ForumGroup" syncable="YES">
+        <attribute name="groupID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Forum" inverseName="group" inverseEntity="Forum" syncable="YES"/>
     </entity>
     <entity name="Post" representedClassName="Post" syncable="YES">
         <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -121,13 +121,13 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="author" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AwfulCategory" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="Forum" positionX="0" positionY="0" width="128" height="225"/>
+        <element name="Forum" positionX="0" positionY="0" width="128" height="28"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
         <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
         <element name="Thread" positionX="0" positionY="0" width="128" height="405"/>
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
         <element name="User" positionX="0" positionY="0" width="128" height="448"/>
+        <element name="ForumGroup" positionX="27" positionY="171" width="128" height="103"/>
     </elements>
 </model>

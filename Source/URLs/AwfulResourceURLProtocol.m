@@ -4,6 +4,7 @@
 
 #import "AwfulResourceURLProtocol.h"
 #import "AwfulFrameworkCategories.h"
+@import MobileCoreServices;
 
 @implementation AwfulResourceURLProtocol
 

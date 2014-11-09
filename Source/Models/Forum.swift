@@ -12,8 +12,8 @@ class Forum: AwfulManagedObject {
     @NSManaged var lastRefresh: NSDate?
     @NSManaged var name: String?
     
-    @NSManaged var category: AwfulCategory?
     @NSManaged var childForums: NSMutableSet /* Forum via parentForum */
+    @NSManaged var group: ForumGroup?
     @NSManaged var parentForum: Forum /* via childForums */
     @NSManaged var secondaryThreadTags: NSMutableOrderedSet /* ThreadTag via secondaryForums */
     @NSManaged var threads: NSMutableSet /* Thread */
@@ -28,6 +28,28 @@ extension Forum {
             let forum = insertInManagedObjectContext(context)
             forum.forumID = forumID
             return forum
+        }
+    }
+}
+
+@objc(ForumGroup)
+class ForumGroup: AwfulManagedObject {
+
+    @NSManaged var groupID: String
+    @NSManaged var index: Int32
+    @NSManaged var name: String?
+    
+    @NSManaged var forums: NSMutableSet /* Forum */
+}
+
+extension ForumGroup {
+    class func firstOrNewForumGroupWithID(groupID: String, inManagedObjectContext context: NSManagedObjectContext) -> ForumGroup {
+        if let group = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "groupID = %@", groupID)) {
+            return group
+        } else {
+            let group = insertInManagedObjectContext(context)
+            group.groupID = groupID
+            return group
         }
     }
 }

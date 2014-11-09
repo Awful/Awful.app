@@ -3,7 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
-#import "AwfulModels.h"
 @class Post;
 @class User;
 
@@ -12,10 +11,7 @@
  */
 @interface PostViewModel : NSObject
 
-/**
- * Designated initializer.
- */
-- (instancetype)initWithPost:(Post *)post;
+- (instancetype)initWithPost:(Post *)post NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, strong, nonatomic) Post *post;
 

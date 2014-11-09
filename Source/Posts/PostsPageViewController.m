@@ -10,7 +10,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
-#import "AwfulModels.h"
 #import "AwfulNavigationController.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"

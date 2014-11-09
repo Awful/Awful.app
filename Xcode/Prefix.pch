@@ -2,13 +2,4 @@
 //
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import AssetsLibrary;
-@import CoreData;
-@import Foundation;
-@import MobileCoreServices;
-@import QuartzCore;
-#import <tgmath.h>
-@import UIKit;
-
 #import "AwfulFrameworkCategories.h"
-#import "AwfulModels.h"
