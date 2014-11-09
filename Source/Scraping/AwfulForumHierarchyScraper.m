@@ -5,6 +5,7 @@
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulScanner.h"
 #import "HTMLNode+CachedSelector.h"
+#import "Awful-Swift.h"
 
 @interface AwfulForumHierarchyScraper ()
 
@@ -72,9 +73,9 @@
     NSDictionary *fetchedCategories = [AwfulCategory dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                      keyedByAttributeNamed:@"categoryID"
                                                                    matchingPredicateFormat:@"categoryID IN %@", categoryIDs];
-    NSDictionary *fetchedForums = [AwfulForum dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                              keyedByAttributeNamed:@"forumID"
-                                                            matchingPredicateFormat:@"forumID IN %@", forumIDs];
+    NSDictionary *fetchedForums = [Forum dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                         keyedByAttributeNamed:@"forumID"
+                                                       matchingPredicateFormat:@"forumID IN %@", forumIDs];
     
     NSMutableArray *categories = [NSMutableArray new];
     NSMutableArray *forumStack = [NSMutableArray new];
@@ -95,9 +96,9 @@
         } else {
             NSUInteger numberOfForumsToRemove = forumStack.count - depth + 1;
             [forumStack removeObjectsInRange:NSMakeRange(forumStack.count - numberOfForumsToRemove, numberOfForumsToRemove)];
-            AwfulForum *forum = fetchedForums[itemID];
+            Forum *forum = fetchedForums[itemID];
             if (!forum) {
-                forum = [AwfulForum insertInManagedObjectContext:self.managedObjectContext];
+                forum = [Forum insertInManagedObjectContext:self.managedObjectContext];
                 forum.forumID = itemID;
             }
             forum.name = itemName;

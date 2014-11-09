@@ -33,7 +33,7 @@
     
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     self.thread = [Thread firstOrNewThreadWithID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
-    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
+    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
     self.thread.forum = forum;
     
     if (!self.thread.threadID && [body awful_firstNodeMatchingCachedSelector:@"div.standard div.inner a[href*=archives.php]"]) {
@@ -59,11 +59,11 @@
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
         category.name = categoryLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
-        AwfulForum *currentForum;
+        Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
-            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
+            Forum *subforum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
             subforum.name = subforumLink.textContent;
             subforum.category = category;
             currentForum.parentForum = subforum;

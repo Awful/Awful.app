@@ -3,7 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AbstractThreadListViewController.h"
-#import "AwfulModels.h"
+@class Forum;
 
 /**
  * A ThreadListViewController displays a list of threads in a forum.
@@ -13,13 +13,13 @@
 /**
  * Returns an initialized AwfulForumThreadTableViewController. This is the designated initializer.
  *
- * @param forum An AwfulForum whose threads are shown.
+ * @param forum An Forum whose threads are shown.
  */
-- (id)initWithForum:(AwfulForum *)forum;
+- (instancetype)initWithForum:(Forum *)forum;
 
 /**
  * The forum whose threads are shown.
  */
-@property (readonly, strong, nonatomic) AwfulForum *forum;
+@property (readonly, strong, nonatomic) Forum *forum;
 
 @end

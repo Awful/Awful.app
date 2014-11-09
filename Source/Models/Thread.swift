@@ -26,7 +26,7 @@ class Thread: AwfulManagedObject {
     @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     
     @NSManaged var author: User?
-    @NSManaged var forum: AwfulForum?
+    @NSManaged var forum: Forum?
     @NSManaged var posts: NSMutableSet /* Post */
     @NSManaged var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */

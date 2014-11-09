@@ -14,7 +14,7 @@
 
 @interface AwfulThreadListScraper ()
 
-@property (strong, nonatomic) AwfulForum *forum;
+@property (strong, nonatomic) Forum *forum;
 
 @property (copy, nonatomic) NSArray *threads;
 
@@ -29,7 +29,7 @@
     
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     if (body[@"data-forum"]) {
-        self.forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
+        self.forum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
         self.forum.canPost = !![body firstNodeMatchingSelector:@"ul.postbuttons a[href*='newthread']"];
     }
     
@@ -49,11 +49,11 @@
         AwfulCategory *category = [AwfulCategory firstOrNewCategoryWithCategoryID:categoryID inManagedObjectContext:self.managedObjectContext];
         category.name = categoryLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
-        AwfulForum *currentForum;
+        Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             NSString *subforumID = URL.queryDictionary[@"forumid"];
-            AwfulForum *subforum = [AwfulForum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
+            Forum *subforum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
             subforum.name = subforumLink.textContent;
             subforum.category = category;
             currentForum.parentForum = subforum;

@@ -4,7 +4,7 @@
 
 #import "AwfulForumTreeDataSource.h"
 #import "AwfulSettings.h"
-#import <objc/runtime.h>
+#import "Awful-Swift.h"
 
 @interface AwfulForumTreeDataSource () <NSFetchedResultsControllerDelegate>
 
@@ -30,15 +30,13 @@
     self.tableView.dataSource = nil;
 }
 
-- (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _tableView = tableView;
-    tableView.dataSource = self;
-    _reuseIdentifier = [reuseIdentifier copy];
-    
+    if ((self = [super init])) {
+        _tableView = tableView;
+        tableView.dataSource = self;
+        _reuseIdentifier = [reuseIdentifier copy];
+    }
     return self;
 }
 
@@ -87,12 +85,12 @@
     self.tableView.dataSource = self;
 }
 
-- (BOOL)forumChildrenExpanded:(AwfulForum *)forum
+- (BOOL)forumChildrenExpanded:(Forum *)forum
 {
     return [[AwfulSettings sharedSettings] childrenExpandedForForumWithID:forum.forumID];
 }
 
-- (void)setForum:(AwfulForum *)forum childrenExpanded:(BOOL)childrenExpanded
+- (void)setForum:(Forum *)forum childrenExpanded:(BOOL)childrenExpanded
 {
     NSInteger sectionIndex = [_fetchedResultsController indexPathForObject:forum].section;
     NSArray * (^changedIndexPaths)(NSArray *, NSArray *) = ^(NSArray *larger, NSArray *smaller) {
@@ -125,7 +123,7 @@
     }
 }
 
-- (void)reloadRowWithForum:(AwfulForum *)forum
+- (void)reloadRowWithForum:(Forum *)forum
 {
     NSInteger sectionIndex = [_fetchedResultsController indexPathForObject:forum].section;
     NSArray *forums = [self visibleForumsInSectionAtIndex:sectionIndex];
@@ -136,13 +134,13 @@
     }
 }
 
-- (AwfulForum *)forumAtIndexPath:(NSIndexPath *)indexPath
+- (Forum *)forumAtIndexPath:(NSIndexPath *)indexPath
 {
     NSArray *forums = [self visibleForumsInSectionAtIndex:indexPath.section - self.sectionOffset];
     return forums[indexPath.row];
 }
 
-- (NSIndexPath *)indexPathForForum:(AwfulForum *)forum
+- (NSIndexPath *)indexPathForForum:(Forum *)forum
 {
     NSInteger sectionIndex = [_fetchedResultsController indexPathForObject:forum].section;
     NSArray *forums = [self visibleForumsInSectionAtIndex:sectionIndex];
@@ -154,14 +152,14 @@
 - (NSString *)categoryNameAtIndex:(NSInteger)index
 {
     id <NSFetchedResultsSectionInfo> section = _fetchedResultsController.sections[index - self.sectionOffset];
-    AwfulForum *forum = section.objects.firstObject;
+    Forum *forum = section.objects.firstObject;
     return forum.category.name;
 }
 
 - (NSArray *)visibleForumsInSectionAtIndex:(NSInteger)sectionIndex
 {
     NSArray *forums = [_fetchedResultsController.sections[sectionIndex] objects];
-    NSIndexSet *visibleForumIndexes = [forums indexesOfObjectsPassingTest:^(AwfulForum *forum, NSUInteger i, BOOL *stop) {
+    NSIndexSet *visibleForumIndexes = [forums indexesOfObjectsPassingTest:^(Forum *forum, NSUInteger i, BOOL *stop) {
         for (;;) {
             forum = forum.parentForum;
             if (!forum) return YES;
@@ -205,7 +203,7 @@
         return [self.topDataSource tableView:tableView cellForRowAtIndexPath:indexPath];
     }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.reuseIdentifier forIndexPath:indexPath];
-    AwfulForum *forum = [self visibleForumsInSectionAtIndex:indexPath.section - self.sectionOffset][indexPath.row];
+    Forum *forum = [self visibleForumsInSectionAtIndex:indexPath.section - self.sectionOffset][indexPath.row];
     [self.delegate configureCell:cell withForum:forum];
     return cell;
 }

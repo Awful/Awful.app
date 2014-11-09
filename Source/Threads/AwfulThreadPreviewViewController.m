@@ -25,7 +25,7 @@
 
 @implementation AwfulThreadPreviewViewController
 
-- (instancetype)initWithForum:(AwfulForum *)forum
+- (instancetype)initWithForum:(Forum *)forum
                       subject:(NSString *)subject
                     threadTag:(ThreadTag *)threadTag
            secondaryThreadTag:(ThreadTag *)secondaryThreadTag

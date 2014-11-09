@@ -2,8 +2,9 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 #import "AwfulModels.h"
+@class Forum;
 
 /**
  * An AwfulTheme stores colors, fonts, and other easily-customizable design parameters.
@@ -18,12 +19,9 @@
 /**
  * Returns an initialized AwfulTheme for a given forum, falling back on the currentTheme if no more custom theme is found.
  */
-+ (instancetype)currentThemeForForum:(AwfulForum *)forum;
++ (instancetype)currentThemeForForum:(Forum *)forum;
 
-/**
- * Returns an initialized AwfulTheme. This is the designated initializer.
- */
-- (id)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary;
+- (instancetype)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
 /**
  * The source dictionary for this theme. Conventions are:

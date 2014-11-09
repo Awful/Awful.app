@@ -6,6 +6,7 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulTheme
 
@@ -19,7 +20,7 @@
 	}
 }
 
-+ (instancetype)currentThemeForForum:(AwfulForum *)forum
++ (instancetype)currentThemeForForum:(Forum *)forum
 {
     if (!forum) {
         return self.currentTheme;
@@ -33,11 +34,12 @@
 }
 
 
-- (id)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary
+- (instancetype)initWithName:(NSString *)name dictionary:(NSDictionary *)dictionary
 {
-    if (!(self = [super init])) return nil;
-    _name = [name copy];
-    _dictionary = [dictionary copy];
+    if ((self = [super init])) {
+        _name = [name copy];
+        _dictionary = [dictionary copy];
+    }
     return self;
 }
 

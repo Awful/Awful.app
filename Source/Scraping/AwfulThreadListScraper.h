@@ -9,7 +9,7 @@
  */
 @interface AwfulThreadListScraper : AwfulScraper
 
-@property (readonly, strong, nonatomic) AwfulForum *forum;
+@property (readonly, strong, nonatomic) Forum *forum;
 
 @property (readonly, copy, nonatomic) NSArray *threads;
 

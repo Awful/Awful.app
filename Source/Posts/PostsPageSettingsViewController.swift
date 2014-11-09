@@ -8,7 +8,7 @@ import UIKit
 A PostsPageSettingsViewController is a modal view controller for changing settings specific to a posts page. By default it presents in a popover on all devices.
 */
 class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentationControllerDelegate {
-    let forum: AwfulForum
+    let forum: Forum
     
     var themes: [AwfulTheme] {
         return AwfulThemeLoader.sharedLoader().themesForForumWithID(forum.forumID) as [AwfulTheme]
@@ -27,7 +27,7 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
     }
     private var _selectedTheme: AwfulTheme?
     
-    init(forum: AwfulForum) {
+    init(forum: Forum) {
         self.forum = forum
         super.init(nibName: "PostsPageSettings", bundle: nil)
         modalPresentationStyle = .Popover

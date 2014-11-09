@@ -31,7 +31,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if ((self = [[UIStoryboard storyboardWithName:@"ForumList" bundle:nil] instantiateInitialViewController])) {
         _managedObjectContext = managedObjectContext;
@@ -54,9 +54,9 @@
     if (forumIDs.count == 0) {
         return @[];
     }
-    NSArray *favoriteForums = [AwfulForum fetchAllInManagedObjectContext:self.managedObjectContext
-                                                 matchingPredicateFormat:@"forumID IN %@", forumIDs];
-    return [favoriteForums sortedArrayUsingComparator:^(AwfulForum *a, AwfulForum *b) {
+    NSArray *favoriteForums = [Forum fetchAllInManagedObjectContext:self.managedObjectContext
+                                            matchingPredicateFormat:@"forumID IN %@", forumIDs];
+    return [favoriteForums sortedArrayUsingComparator:^(Forum *a, Forum *b) {
         return [@([forumIDs indexOfObject:a.forumID]) compare:@([forumIDs indexOfObject:b.forumID])];
     }];
 }
@@ -102,7 +102,7 @@ static NSString * const HeaderIdentifier = @"Header";
 - (void)toggleFavorite:(UIButton *)button
 {
     // Figure out which forum is represented by the tapped button's cell.
-    AwfulForum *forum;
+    Forum *forum;
     UIView *cell = button.superview;
     while (cell && ![cell isKindOfClass:[UITableViewCell class]]) {
         cell = cell.superview;
@@ -157,7 +157,7 @@ static NSString * const HeaderIdentifier = @"Header";
     }
     if (!cell) return;
     NSIndexPath *indexPath = [self.tableView indexPathForCell:(UITableViewCell *)cell];
-    AwfulForum *forum = [_treeDataSource forumAtIndexPath:indexPath];
+    Forum *forum = [_treeDataSource forumAtIndexPath:indexPath];
     [_treeDataSource setForum:forum childrenExpanded:button.selected];
 }
 
@@ -178,7 +178,7 @@ static NSString * const HeaderIdentifier = @"Header";
     if (![AwfulForumsClient client].loggedIn) return;
     
     if ([[AwfulRefreshMinder minder] shouldRefreshForumList] || self.tableView.numberOfSections < 2 ||
-        [AwfulForum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
+        [Forum anyInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"index = -1"]) {
         if ([AwfulForumsClient client].reachable) {
             [self refresh];
         } else {
@@ -226,7 +226,7 @@ static NSString * const HeaderIdentifier = @"Header";
     _treeDataSource.updatesTableView = NO;
 }
 
-- (void)showForum:(AwfulForum *)forum animated:(BOOL)animated
+- (void)showForum:(Forum *)forum animated:(BOOL)animated
 {
     ThreadListViewController *threadList = [[ThreadListViewController alloc] initWithForum:forum];
     threadList.restorationClass = threadList.class;
@@ -269,7 +269,7 @@ static void UpdateDisclosureButtonAccessibilityLabel(UIButton *button) {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ForumCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Favorite" forIndexPath:indexPath];
-    AwfulForum *forum = self.favoriteForums[indexPath.row];
+    Forum *forum = self.favoriteForums[indexPath.row];
     cell.nameLabel.text = forum.name;
     ThemeCell(self.theme, cell);
     return cell;
@@ -287,7 +287,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)favoriteIndexPath
 {
-    AwfulForum *forum = self.favoriteForums[favoriteIndexPath.row];
+    Forum *forum = self.favoriteForums[favoriteIndexPath.row];
     
     // Let's delete the favorite row and update the forum's proper row in one fell swoop. To do so, we need the forum's index path before any potential deletion of the favorites section (in model or in view).
     NSIndexPath *forumIndexPath = [_treeDataSource indexPathForForum:forum];
@@ -355,7 +355,7 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulForum *forum;
+    Forum *forum;
     if (self.favoriteForums.count > 0 && indexPath.section == 0) {
         forum = self.favoriteForums[indexPath.row];
     } else {
@@ -377,9 +377,9 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
 
 #pragma mark - AwfulForumTreeDataSourceDelegate
 
-- (void)configureCell:(ForumListCell *)cell withForum:(AwfulForum *)forum
+- (void)configureCell:(ForumListCell *)cell withForum:(Forum *)forum
 {
-    BOOL hasSubforums = forum.children.count > 0;
+    BOOL hasSubforums = forum.childForums.count > 0;
     cell.disclosureButton.hidden = !hasSubforums;
     if (hasSubforums) {
         [cell.disclosureButton addTarget:self action:@selector(toggleExpanded:) forControlEvents:UIControlEventTouchUpInside];
@@ -395,12 +395,12 @@ static void ThemeCell(AwfulTheme *theme, ForumCell *cell)
     
     NSMutableString *accessibilityLabel = [cell.nameLabel.text mutableCopy];
     if (hasSubforums) {
-        [accessibilityLabel appendFormat:@". %lu subforum%@", (unsigned long)forum.children.count, forum.children.count == 1 ? @"" : @"s"];
+        [accessibilityLabel appendFormat:@". %lu subforum%@", (unsigned long)forum.childForums.count, forum.childForums.count == 1 ? @"" : @"s"];
     }
     cell.accessibilityLabel = accessibilityLabel;
     
     NSInteger subforumLevel = 0;
-    AwfulForum *currentForum = forum.parentForum;
+    Forum *currentForum = forum.parentForum;
     while (currentForum) {
         subforumLevel++;
         currentForum = currentForum.parentForum;

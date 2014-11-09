@@ -292,7 +292,7 @@
 
 - (AwfulTheme *)theme
 {
-    AwfulForum *forum = self.thread.forum;
+    Forum *forum = self.thread.forum;
     return forum.forumID.length > 0 ? [AwfulTheme currentThemeForForum:self.thread.forum] : [AwfulTheme currentTheme];
 }
 

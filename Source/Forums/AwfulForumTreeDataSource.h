@@ -4,6 +4,7 @@
 
 @import UIKit;
 @protocol AwfulForumTreeDataSourceDelegate;
+@class Forum;
 
 /**
  * An AwfulForumTreeDataSource represents the category/forum/subforum hierarchy to a table view.
@@ -11,12 +12,10 @@
 @interface AwfulForumTreeDataSource : NSObject <UITableViewDataSource>
 
 /**
- * Designated initializer for AwfulForumTreeDataSource.
- *
  * @param tableView       The table view provided with data.
  * @param reuseIdentifier A cell reuse identifier for dequeueing cells from the table view.
  */
-- (id)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithTableView:(UITableView *)tableView reuseIdentifier:(NSString *)reuseIdentifier NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, weak, nonatomic) UITableView *tableView;
 
@@ -40,18 +39,18 @@
 /**
  * Returns YES if the forum's children are expanded, otherwise NO.
  */
-- (BOOL)forumChildrenExpanded:(AwfulForum *)forum;
+- (BOOL)forumChildrenExpanded:(Forum *)forum;
 
 /**
  * Expands or collapses a forum's children.
  */
-- (void)setForum:(AwfulForum *)forum childrenExpanded:(BOOL)childrenExpanded;
+- (void)setForum:(Forum *)forum childrenExpanded:(BOOL)childrenExpanded;
 
-- (void)reloadRowWithForum:(AwfulForum *)forum;
+- (void)reloadRowWithForum:(Forum *)forum;
 
-- (AwfulForum *)forumAtIndexPath:(NSIndexPath *)indexPath;
+- (Forum *)forumAtIndexPath:(NSIndexPath *)indexPath;
 
-- (NSIndexPath *)indexPathForForum:(AwfulForum *)forum;
+- (NSIndexPath *)indexPathForForum:(Forum *)forum;
 
 - (NSString *)categoryNameAtIndex:(NSInteger)index;
 
@@ -66,6 +65,6 @@
  *
  * @param cell A UITableViewCell (or subclass), typed as `id` so explicit casting is unnecessary.
  */
-- (void)configureCell:(id)cell withForum:(AwfulForum *)forum;
+- (void)configureCell:(id)cell withForum:(Forum *)forum;
 
 @end

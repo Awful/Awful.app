@@ -33,17 +33,15 @@
     BOOL _justLoaded;
 }
 
-- (id)initWithForum:(AwfulForum *)forum
+- (instancetype)initWithForum:(Forum *)forum
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    _forum = forum;
-    self.title = _forum.name;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    self.newThreadButtonItem.enabled = forum.lastRefresh && forum.canPost;
-    self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
-    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _forum = forum;
+        self.title = _forum.name;
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+        self.newThreadButtonItem.enabled = forum.lastRefresh && forum.canPost;
+        self.navigationItem.rightBarButtonItem = self.newThreadButtonItem;
+    }
     return self;
 }
 
@@ -290,7 +288,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
+    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     ThreadListViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;

@@ -7,13 +7,13 @@
 
 @interface AwfulThreadPreviewViewController : AwfulPostPreviewViewController
 
-- (instancetype)initWithForum:(AwfulForum *)forum
+- (instancetype)initWithForum:(Forum *)forum
                       subject:(NSString *)subject
                     threadTag:(ThreadTag *)threadTag
            secondaryThreadTag:(ThreadTag *)secondaryThreadTag
                        BBcode:(NSAttributedString *)BBcode NS_DESIGNATED_INITIALIZER;
 
-@property (readonly, strong, nonatomic) AwfulForum *forum;
+@property (readonly, strong, nonatomic) Forum *forum;
 @property (readonly, copy, nonatomic) NSString *subject;
 @property (readonly, strong, nonatomic) ThreadTag *threadTag;
 @property (readonly, strong, nonatomic) ThreadTag *secondaryThreadTag;

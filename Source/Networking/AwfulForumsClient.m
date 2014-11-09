@@ -267,7 +267,7 @@
 
 #pragma mark - Threads
 
-- (NSOperation *)listThreadsInForum:(AwfulForum *)forum
+- (NSOperation *)listThreadsInForum:(Forum *)forum
                       withThreadTag:(ThreadTag *)threadTag
                              onPage:(NSInteger)page
                             andThen:(void (^)(NSError *error, NSArray *threads))callback
@@ -442,7 +442,7 @@
     }];
 }
 
-- (NSOperation *)postThreadInForum:(AwfulForum *)forum
+- (NSOperation *)postThreadInForum:(Forum *)forum
                        withSubject:(NSString *)subject
                          threadTag:(ThreadTag *)threadTag
                       secondaryTag:(ThreadTag *)secondaryTag
@@ -512,7 +512,7 @@
     }];
 }
 
-- (NSOperation *)previewOriginalPostForThreadInForum:(AwfulForum *)forum
+- (NSOperation *)previewOriginalPostForThreadInForum:(Forum *)forum
                                           withBBcode:(NSString *)BBcode
                                              andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {

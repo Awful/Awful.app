@@ -101,7 +101,6 @@
 		1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */; };
 		1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
-		1C6474C71569989800C72657 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
 		1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
@@ -254,6 +253,7 @@
 		1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */; };
 		1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */; };
+		1CE55A6E1A0F77B800E474A6 /* Forum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6D1A0F77B800E474A6 /* Forum.swift */; };
 		1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */; };
 		1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE68BDB16F7C62B003D56C9 /* ONHost.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1CE694A8182FEF8D00B24928 /* AwfulBan.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694A7182FEF8D00B24928 /* AwfulBan.m */; };
@@ -274,7 +274,6 @@
 		1CFE984B182936AD003DBBC2 /* AwfulDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF6FBF17FCAA4E00F44174 /* AwfulDataStack.m */; };
 		1CFE984D1829376F003DBBC2 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
 		1CFE984E18293786003DBBC2 /* AwfulCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */; };
-		1CFE984F18293786003DBBC2 /* AwfulForum.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6474AC1569989800C72657 /* AwfulForum.m */; };
 		1CFE985018293786003DBBC2 /* AwfulManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C20562E1806700500A84C6D /* AwfulManagedObject.m */; };
 		1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1CFE985D18297255003DBBC2 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
@@ -525,8 +524,6 @@
 		1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewTopBar.h; sourceTree = "<group>"; };
 		1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewTopBar.m; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
-		1C6474AB1569989800C72657 /* AwfulForum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForum.h; sourceTree = "<group>"; };
-		1C6474AC1569989800C72657 /* AwfulForum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForum.m; sourceTree = "<group>"; };
 		1C6474AD1569989800C72657 /* AwfulModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulModels.h; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C66A9C319DD304E001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -757,6 +754,7 @@
 		1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+TwoLineTitle.m"; sourceTree = "<group>"; };
 		1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
 		1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationEnclosure.m"; sourceTree = "<group>"; };
+		1CE55A6D1A0F77B800E474A6 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
 		1CE68BD716F7C18E003D56C9 /* NSURL+Punycode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Punycode.h"; sourceTree = "<group>"; };
 		1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Punycode.m"; sourceTree = "<group>"; };
 		1CE68BDA16F7C62B003D56C9 /* ONHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ONHost.h; sourceTree = "<group>"; };
@@ -1405,13 +1403,12 @@
 				1CE694A7182FEF8D00B24928 /* AwfulBan.m */,
 				1CC38BB1160D8C5800C35A11 /* AwfulCategory.h */,
 				1CC38BB2160D8C5800C35A11 /* AwfulCategory.m */,
-				1C6474AB1569989800C72657 /* AwfulForum.h */,
-				1C6474AC1569989800C72657 /* AwfulForum.m */,
 				1C20562D1806700500A84C6D /* AwfulManagedObject.h */,
 				1C20562E1806700500A84C6D /* AwfulManagedObject.m */,
 				1C6474AD1569989800C72657 /* AwfulModels.h */,
 				1CA1E5151A0E2DB00076F0B5 /* AwfulStarCategory.h */,
 				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
+				1CE55A6D1A0F77B800E474A6 /* Forum.swift */,
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
 				1C442FCE1A0E27E2001BD898 /* Thread.swift */,
@@ -2278,7 +2275,6 @@
 				1CE694AD182FF6B600B24928 /* LepersColonyPageScrapingTests.m in Sources */,
 				1C6D2E9C182C720B00785766 /* ProfileScraper.m in Sources */,
 				1C410D3B169257F100E4A14E /* NSURL+QueryDictionary.m in Sources */,
-				1CFE984F18293786003DBBC2 /* AwfulForum.m in Sources */,
 				1C9FDE5C16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1C7C7EB0189BE0FF008A1B2E /* HTMLNode+CachedSelector.m in Sources */,
 				1CE694AF182FF87F00B24928 /* AwfulBan.m in Sources */,
@@ -2306,7 +2302,6 @@
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
-				1C6474C71569989800C72657 /* AwfulForum.m in Sources */,
 				1CC38BB3160D8C5900C35A11 /* AwfulCategory.m in Sources */,
 				1CC7801C1612D8AF002AF958 /* ForumListViewController.m in Sources */,
 				1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */,
@@ -2436,6 +2431,7 @@
 				1CA1EFFC1910424D00E85DB2 /* AwfulPostScraper.m in Sources */,
 				1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
+				1CE55A6E1A0F77B800E474A6 /* Forum.swift in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
 				1CDF6FC017FCAA4E00F44174 /* AwfulDataStack.m in Sources */,
 				836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */,

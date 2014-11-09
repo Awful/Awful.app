@@ -32,7 +32,7 @@
 
 @implementation ThreadComposeViewController
 
-- (id)initWithForum:(AwfulForum *)forum
+- (instancetype)initWithForum:(Forum *)forum
 {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         _forum = forum;
@@ -298,7 +298,7 @@ static NSString * const DefaultTitle = @"New Thread";
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    AwfulForum *forum = [AwfulForum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
+    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
     ThreadComposeViewController *newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;

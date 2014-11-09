@@ -40,7 +40,7 @@
     [_routes addRoute:@"/forums/:forumID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         NSString *forumID = parameters[@"forumID"];
-        AwfulForum *forum = [AwfulForum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = %@", forumID];
+        Forum *forum = [Forum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = %@", forumID];
         if (forum) {
             return [self jumpToForum:forum];
         } else {
@@ -176,7 +176,7 @@
     [self.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (BOOL)jumpToForum:(AwfulForum *)forum
+- (BOOL)jumpToForum:(Forum *)forum
 {
     ThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadListViewController class]];
     if ([threadList.forum isEqual:forum]) {

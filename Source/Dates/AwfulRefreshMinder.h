@@ -2,7 +2,8 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@class Forum;
 
 /**
  * An AwfulRefreshMinder remembers when various actions were last performed.
@@ -14,10 +15,7 @@
  */
 + (instancetype)minder;
 
-/**
- * Designated initializer.
- */
-- (id)initWithUserDefaults:(NSUserDefaults *)userDefaults;
+- (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults NS_DESIGNATED_INITIALIZER;
 
 /**
  * The backing store for the recorded refresh dates.
@@ -37,15 +35,15 @@
 
 - (void)didFinishRefreshingBookmarks;
 
-- (BOOL)shouldRefreshForum:(AwfulForum *)forum;
+- (BOOL)shouldRefreshForum:(Forum *)forum;
 
-- (void)didFinishRefreshingForum:(AwfulForum *)forum;
+- (void)didFinishRefreshingForum:(Forum *)forum;
 
-- (BOOL)shouldRefreshFilteredForum:(AwfulForum *)forum;
+- (BOOL)shouldRefreshFilteredForum:(Forum *)forum;
 
-- (void)didFinishRefreshingFilteredForum:(AwfulForum *)forum;
+- (void)didFinishRefreshingFilteredForum:(Forum *)forum;
 
-- (void)forgetForum:(AwfulForum *)forum;
+- (void)forgetForum:(Forum *)forum;
 
 - (BOOL)shouldRefreshForumList;
 

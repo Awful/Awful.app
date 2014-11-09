@@ -124,7 +124,7 @@
     return [AwfulTheme currentThemeForForum:self.forum];
 }
 
-- (AwfulForum *)forum
+- (Forum *)forum
 {
     if (self.post) {
         return self.post.thread.forum;

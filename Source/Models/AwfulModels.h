@@ -6,6 +6,5 @@
 
 // With some clever ordering here, we can import AwfulModels.h anywhere.
 #import "AwfulCategory.h"
-#import "AwfulForum.h"
 #import "AwfulThreadPage.h"
 #import "AwfulBan.h"

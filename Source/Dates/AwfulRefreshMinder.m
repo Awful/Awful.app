@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulRefreshMinder.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulRefreshMinder
 
@@ -16,39 +17,37 @@
     return instance;
 }
 
-- (id)initWithUserDefaults:(NSUserDefaults *)userDefaults
+- (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _userDefaults = userDefaults;
-    
+    if ((self = [super init])) {
+        _userDefaults = userDefaults;
+    }
     return self;
 }
 
-- (BOOL)shouldRefreshForum:(AwfulForum *)forum
+- (BOOL)shouldRefreshForum:(Forum *)forum
 {
     NSDate *lastRefresh = forum.lastRefresh;
     return !lastRefresh || [[NSDate date] timeIntervalSinceDate:lastRefresh] > 60 * 15;
 }
 
-- (void)didFinishRefreshingForum:(AwfulForum *)forum
+- (void)didFinishRefreshingForum:(Forum *)forum
 {
     forum.lastRefresh = [NSDate date];
 }
 
-- (BOOL)shouldRefreshFilteredForum:(AwfulForum *)forum
+- (BOOL)shouldRefreshFilteredForum:(Forum *)forum
 {
     NSDate *lastRefresh = forum.lastFilteredRefresh;
     return !lastRefresh || [[NSDate date] timeIntervalSinceDate:lastRefresh] > 60 * 15;
 }
 
-- (void)didFinishRefreshingFilteredForum:(AwfulForum *)forum
+- (void)didFinishRefreshingFilteredForum:(Forum *)forum
 {
     forum.lastFilteredRefresh = [NSDate date];
 }
 
-- (void)forgetForum:(AwfulForum *)forum
+- (void)forgetForum:(Forum *)forum
 {
     forum.lastRefresh = nil;
     forum.lastFilteredRefresh = nil;
