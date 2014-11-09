@@ -74,7 +74,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (instancetype)initWithThread:(Thread *)thread author:(AwfulUser *)author
+- (instancetype)initWithThread:(Thread *)thread author:(User *)author
 {
     if ((self = [super initWithNibName:nil bundle:nil])) {
         _thread = thread;
@@ -772,7 +772,7 @@
 - (void)didTapUserHeaderWithRect:(CGRect)rect forPostAtIndex:(NSUInteger)postIndex
 {
     Post *post = self.posts[postIndex + self.hiddenPosts];
-    AwfulUser *user = post.author;
+    User *user = post.author;
     InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
     
@@ -1139,9 +1139,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     Thread *thread = [Thread firstOrNewThreadWithID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
     NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
-    AwfulUser *author;
+    User *author;
     if (authorUserID.length > 0) {
-        author = [AwfulUser firstOrNewUserWithUserID:authorUserID username:nil inManagedObjectContext:managedObjectContext];
+        author = [User firstOrNewUserWithID:authorUserID username:nil inManagedObjectContext:managedObjectContext];
     }
     PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;

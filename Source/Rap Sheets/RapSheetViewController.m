@@ -21,7 +21,7 @@
 
 @implementation RapSheetViewController
 
-- (id)initWithUser:(AwfulUser *)user
+- (instancetype)initWithUser:(User *)user
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _user = user;
@@ -40,7 +40,7 @@
     return self;
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (instancetype)initWithStyle:(UITableViewStyle)style
 {
     return [self initWithUser:nil];
 }

@@ -8,19 +8,17 @@
 
 @interface AwfulProfileViewModel ()
 
-@property (nonatomic) AwfulUser *user;
+@property (nonatomic) User *user;
 
 @end
 
 @implementation AwfulProfileViewModel
 
-- (id)initWithUser:(AwfulUser *)user
+- (instancetype)initWithUser:(User *)user
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _user = user;
-    
+    if ((self = [super init])) {
+        _user = user;
+    }
     return self;
 }
 

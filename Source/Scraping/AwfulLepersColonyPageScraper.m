@@ -112,12 +112,12 @@
     NSMutableDictionary *posts = [[Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                         keyedByAttributeNamed:@"postID"
                                                       matchingPredicateFormat:@"postID IN %@", postIDs] mutableCopy];
-    NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                 keyedByAttributeNamed:@"userID"
-                                                               matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
-    NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                   keyedByAttributeNamed:@"username"
-                                                                 matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    NSMutableDictionary *usersByID = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                            keyedByAttributeNamed:@"userID"
+                                                          matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
+    NSMutableDictionary *usersByName = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                              keyedByAttributeNamed:@"username"
+                                                            matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
     
     [rows enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {
         AwfulBan *ban = [AwfulBan new];
@@ -140,14 +140,14 @@
             NSString *userID = info[@"userID"];
             NSString *username = info[@"username"];
             if (userID || username) {
-                AwfulUser *user;
+                User *user;
                 if (userID) {
                     user = usersByID[userID];
                 } else {
                     user = usersByName[username];
                 }
                 if (!user) {
-                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                    user = [User insertInManagedObjectContext:self.managedObjectContext];
                 }
                 if (userID) {
                     user.userID = userID;
@@ -180,14 +180,14 @@
             NSString *userID = info[@"requesterUserID"];
             NSString *username = info[@"requesterUsername"];
             if (userID || username) {
-                AwfulUser *user;
+                User *user;
                 if (userID) {
                     user = usersByID[userID];
                 } else {
                     user = usersByName[username];
                 }
                 if (!user) {
-                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                    user = [User insertInManagedObjectContext:self.managedObjectContext];
                 }
                 if (userID) {
                     user.userID = userID;
@@ -205,14 +205,14 @@
             NSString *userID = info[@"approverUserID"];
             NSString *username = info[@"approverUsername"];
             if (userID || username) {
-                AwfulUser *user;
+                User *user;
                 if (userID) {
                     user = usersByID[userID];
                 } else {
                     user = usersByName[username];
                 }
                 if (!user) {
-                    user = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+                    user = [User insertInManagedObjectContext:self.managedObjectContext];
                 }
                 if (userID) {
                     user.userID = userID;

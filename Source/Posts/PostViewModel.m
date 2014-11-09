@@ -63,7 +63,7 @@ static void MarkRevealIgnoredPostLink(HTMLDocument *document)
 
 - (NSString *)roles
 {
-    AwfulUser *author = self.post.author;
+    User *author = self.post.author;
     NSMutableString *roles = [author.authorClasses mutableCopy];
     if ([author isEqual:self.post.thread.author]) {
         [roles appendString:@" op"];

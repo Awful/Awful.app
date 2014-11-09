@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PrivateMessageScraper.h"
-#import "AwfulAuthorScraper.h"
+#import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
@@ -63,8 +63,8 @@
         message.innerHTML = postBodyCell.innerHTML;
     }
     
-    AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
-    AwfulUser *from = authorScraper.author;
+    AuthorScraper *authorScraper = [AuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
+    User *from = authorScraper.author;
     if (from) {
         message.from = from;
     }

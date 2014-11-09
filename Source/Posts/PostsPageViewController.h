@@ -6,6 +6,7 @@
 #import "AwfulModels.h"
 @class Post;
 @class Thread;
+@class User;
 
 /**
  * A PostsPageViewController shows a list of posts in a thread.
@@ -16,7 +17,7 @@
  * @param thread The thread whose posts are shown.
  * @param author An optional author used to filter the shown posts. May be nil, in which case all posts are shown.
  */
-- (instancetype)initWithThread:(Thread *)thread author:(AwfulUser *)author NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithThread:(Thread *)thread author:(User *)author NS_DESIGNATED_INITIALIZER;
 
 /**
  * Calls -initWithThread:author: with a nil author.
@@ -28,7 +29,7 @@
 /**
  * An optional user whose posts are the only ones shown. If nil, all posts are shown.
  */
-@property (readonly, strong, nonatomic) AwfulUser *author;
+@property (readonly, strong, nonatomic) User *author;
 
 /**
  * The currently-visible (or currently-loading) page of posts. Values of AwfulThreadPage are allowed here too (but it's typed NSInteger for Swift compatibility).

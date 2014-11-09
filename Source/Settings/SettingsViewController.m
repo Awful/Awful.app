@@ -16,7 +16,7 @@
 @interface SettingsViewController ()
 
 @property (strong, nonatomic) NSArray *sections;
-@property (readonly, strong, nonatomic) AwfulUser *loggedInUser;
+@property (readonly, strong, nonatomic) User *loggedInUser;
 
 @end
 
@@ -82,7 +82,7 @@
 {
     if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
         __weak UITableView *tableView = self.tableView;
-        [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, AwfulUser *user) {
+        [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, User *user) {
             if (error) {
                 NSLog(@"failed refreshing user info: %@", error);
             } else {
@@ -106,11 +106,11 @@
     [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
 }
 
-- (AwfulUser *)loggedInUser
+- (User *)loggedInUser
 {
-    return [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
-                                      username:[AwfulSettings sharedSettings].username
-                        inManagedObjectContext:self.managedObjectContext];
+    return [User firstOrNewUserWithID:[AwfulSettings sharedSettings].userID
+                             username:[AwfulSettings sharedSettings].username
+               inManagedObjectContext:self.managedObjectContext];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate

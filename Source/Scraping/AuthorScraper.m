@@ -1,14 +1,15 @@
-//  AwfulAuthorScraper.m
+//  AuthorScraper.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulAuthorScraper.h"
+#import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
+#import "Awful-Swift.h"
 
-@interface AwfulAuthorScraper ()
+@interface AuthorScraper ()
 
 @property (copy, nonatomic) NSString *userID;
 
@@ -18,7 +19,7 @@
 
 @end
 
-@implementation AwfulAuthorScraper
+@implementation AuthorScraper
 
 @synthesize author = _author;
 
@@ -49,7 +50,6 @@
     if (authorTerm[@"class"]) {
         otherAttributes[@"administrator"] = @([authorTerm hasClass:@"role-admin"]);
         otherAttributes[@"moderator"] = @([authorTerm hasClass:@"role-mod"]);
-        otherAttributes[@"idiotKing"] = @([authorTerm hasClass:@"role-ik"]);
 		otherAttributes[@"authorClasses"] = authorTerm[@"class"];
     }
     HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
@@ -66,14 +66,14 @@
     self.otherAttributes = otherAttributes;
 }
 
-- (AwfulUser *)author
+- (User *)author
 {
     if (_author || self.error) return _author;
-    self.author = [AwfulUser firstOrNewUserWithUserID:self.userID username:self.username inManagedObjectContext:self.managedObjectContext];
+    self.author = [User firstOrNewUserWithID:self.userID username:self.username inManagedObjectContext:self.managedObjectContext];
     return _author;
 }
 
-- (void)setAuthor:(AwfulUser *)author
+- (void)setAuthor:(User *)author
 {
     _author = author;
     [author setValuesForKeysWithDictionary:_otherAttributes];

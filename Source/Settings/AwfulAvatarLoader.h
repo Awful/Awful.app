@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import UIKit;
+@class User;
 
 /**
  * An AwfulAvatarLoader fetches and caches avatar images.
@@ -29,7 +30,7 @@
  *
  * (Why doesn't this method simply return a UIImage, you ask? So it can handle animated GIFs.)
  */
-- (BOOL)applyCachedAvatarImageForUser:(AwfulUser *)user toImageView:(UIImageView *)imageView;
+- (BOOL)applyCachedAvatarImageForUser:(User *)user toImageView:(UIImageView *)imageView;
 
 /**
  * Finds and caches a user's current avatar image.
@@ -38,7 +39,7 @@
  *
  * (Why doesn't the completion block simply receive a UIImage, you ask? So it can handle animated GIFs.)
  */
-- (void)applyAvatarImageForUser:(AwfulUser *)user
+- (void)applyAvatarImageForUser:(User *)user
                 completionBlock:(void (^)(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error))completionBlock;
 
 /**

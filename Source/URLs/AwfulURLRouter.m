@@ -116,16 +116,16 @@
     
     [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
-        void (^success)(AwfulUser *) = ^(AwfulUser *user) {
+        void (^success)() = ^(User *user) {
             ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
-        AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
+        User *user = [User fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
         if (user) {
             success(user);
             return YES;
         }
-        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, AwfulUser *user) {
+        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, User *user) {
             if (user) {
                 success(user);
             } else if (error) {
@@ -148,17 +148,17 @@
 	[_routes addRoute:@"/banlist/:userID" handler:^BOOL(NSDictionary *parameters) {
 		__typeof__(self) self = weakSelf;
 		
-		void (^success)(AwfulUser *) = ^(AwfulUser *user) {
+		void (^success)() = ^(User *user) {
 			RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
 			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		};
-		AwfulUser *user = [AwfulUser fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
+		User *user = [User fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
 		if (user) {
 			success(user);
 			return YES;
 		}
 		
-		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, AwfulUser *user) {
+		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, User *user) {
 			if (user) {
 				success(user);
 			} else if (error) {
@@ -211,7 +211,7 @@
     PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
-        AwfulUser *user = [AwfulUser firstOrNewUserWithUserID:userID username:nil inManagedObjectContext:self.managedObjectContext];
+        User *user = [User firstOrNewUserWithID:userID username:nil inManagedObjectContext:self.managedObjectContext];
         postsViewController = [[PostsPageViewController alloc] initWithThread:thread author:user];
     } else {
         postsViewController = [[PostsPageViewController alloc] initWithThread:thread];

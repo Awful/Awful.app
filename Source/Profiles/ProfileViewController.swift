@@ -7,11 +7,11 @@ import WebKit
 
 /// A ProfileViewController shows detailed information about a particular user.
 class ProfileViewController: AwfulViewController {
-    let user: AwfulUser
+    let user: User
     private var webView: WKWebView { get { return view as WKWebView } }
     private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
-    init(user: AwfulUser) {
+    init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
         
@@ -76,7 +76,7 @@ class ProfileViewController: AwfulViewController {
         
         AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, user) in
             if let error = error {
-                NSLog("[%@ %@] error fetching user profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username, user.userID, error)
+                NSLog("[%@ %@] error fetching user profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
             } else {
                 self.renderUser()
             }
@@ -88,7 +88,7 @@ class ProfileViewController: AwfulViewController {
         var error: NSError?
         let HTML = GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil, error: &error)
         if let error = error {
-            NSLog("[%@ %@] error rendering profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username, user.userID, error)
+            NSLog("[%@ %@] error rendering profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
         }
         webView.loadHTMLString(HTML, baseURL: baseURL())
     }

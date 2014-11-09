@@ -1,29 +1,30 @@
-//  AwfulProfileScraper.m
+//  ProfileScraper.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulProfileScraper.h"
-#import "AwfulAuthorScraper.h"
+#import "ProfileScraper.h"
+#import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
+#import "Awful-Swift.h"
 
-@interface AwfulProfileScraper ()
+@interface ProfileScraper ()
 
-@property (strong, nonatomic) AwfulUser *user;
+@property (strong, nonatomic) User *user;
 
 @end
 
-@implementation AwfulProfileScraper
+@implementation ProfileScraper
 
 - (void)scrape
 {
     [super scrape];
     if (self.error) return;
     
-    AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
+    AuthorScraper *authorScraper = [AuthorScraper scrapeNode:self.node intoManagedObjectContext:self.managedObjectContext];
     if (!authorScraper.author) {
         NSString *message = @"Failed parsing user profile; could not find either username or user ID";
         self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
@@ -123,7 +124,7 @@
     if (lastPostText.length > 0) {
         NSDate *lastPostDate = [[AwfulCompoundDateParser postDateParser] dateFromString:lastPostText];
         if (lastPostDate) {
-            self.user.lastPost = lastPostDate;
+            self.user.lastPostDate = lastPostDate;
         }
     }
     

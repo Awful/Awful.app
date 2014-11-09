@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
-#import "AwfulModels.h"
+@class User;
 
 /**
  * An RapSheetViewController displays a list of probations and bans.
@@ -15,11 +15,11 @@
  *
  * @param user The user whose bans and probations are shown, or nil to show all users.
  */
-- (instancetype)initWithUser:(AwfulUser *)user;
+- (instancetype)initWithUser:(User *)user;
 
 /**
  * The user whose bans and probations are shown. Can be nil, in which case all users' bans and probations are shown.
  */
-@property (readonly, strong, nonatomic) AwfulUser *user;
+@property (readonly, strong, nonatomic) User *user;
 
 @end

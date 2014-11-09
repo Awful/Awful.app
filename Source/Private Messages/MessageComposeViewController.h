@@ -5,6 +5,7 @@
 #import "ComposeTextViewController.h"
 #import "AwfulModels.h"
 @class PrivateMessage;
+@class User;
 
 /**
  * A MessageComposeViewController is for writing private messages.
@@ -14,9 +15,9 @@
 /**
  * Returns an initialized AwfulNewPrivateMessageViewController. This is one of three designated initializers.
  */
-- (instancetype)initWithRecipient:(AwfulUser *)recipient;
+- (instancetype)initWithRecipient:(User *)recipient;
 
-@property (readonly, strong, nonatomic) AwfulUser *recipient;
+@property (readonly, strong, nonatomic) User *recipient;
 
 /**
  * Returns an AwfulNewPrivateMessageViewController initialized as a reply. This is one of three designated initializers.

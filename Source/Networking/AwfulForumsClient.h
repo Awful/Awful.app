@@ -9,6 +9,7 @@
 @class PrivateMessage;
 @class Thread;
 @class ThreadTag;
+@class User;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -58,13 +59,13 @@
 #pragma mark - Sessions
 
 /**
- * @param callback A block to call after logging in, which takes as parameters: an NSError object on failure, or nil on success; and an AwfulUser object on success or nil on failure.
+ * @param callback A block to call after logging in, which takes as parameters: an NSError object on failure, or nil on success; and a User object on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)logInWithUsername:(NSString *)username
                           password:(NSString *)password
-                           andThen:(void (^)(NSError *error, AwfulUser *user))callback;
+                           andThen:(void (^)(NSError *error, User *user))callback;
 
 #pragma mark - Forums
 
@@ -168,13 +169,13 @@
 #pragma mark - Posts
 
 /**
- * @param author   An AwfulUser object whose posts are the only ones listed. If nil, posts from all authors are listed.
+ * @param author   A User object whose posts are the only ones listed. If nil, posts from all authors are listed.
  * @param callback A block to call after listing posts, which takes as parameters: an NSError object on failure, or nil on success; an array of AwfulPost objects on success, or nil on failure; the index of the first unread post in the posts array on success; and the banner ad HTML on success.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)listPostsInThread:(Thread *)thread
-                         writtenBy:(AwfulUser *)author
+                         writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
@@ -250,22 +251,22 @@
 #pragma mark - People
 
 /**
- * @param callback A block to call after learning user info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object for the logged-in user on success, or nil on failure.
+ * @param callback A block to call after learning user info, which takes as parameters: an NSError object on failure or nil on success; and a User object for the logged-in user on success, or nil on failure.
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback;
+- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, User *user))callback;
 
 /**
- * @param userID   The user's ID. Specified directly in case no such user exists, which would make for a useless AwfulUser object.
+ * @param userID   The user's ID. Specified directly in case no such user exists, which would make for a useless User object.
  * @param username The user's username. If userID is not given, username must be given.
- * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and an AwfulUser object on success or nil on failure.
+ * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and a User object on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)profileUserWithID:(NSString *)userID
                           username:(NSString *)username
-                           andThen:(void (^)(NSError *error, AwfulUser *user))callback;
+                           andThen:(void (^)(NSError *error, User *user))callback;
 
 #pragma mark - Punishments
 
@@ -275,7 +276,7 @@
  * @return An enqueued network operation.
  */
 - (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(AwfulUser *)user
+                        forUser:(User *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 #pragma mark - Private Messages
@@ -326,7 +327,7 @@
 - (NSOperation *)listAvailablePrivateMessageThreadTagsAndThen:(void (^)(NSError *error, NSArray *threadTags))callback;
 
 /**
- * @param username         Requiring an AwfulUser is unhelpful as the username is typed in and may not actually exist.
+ * @param username         Requiring a User is unhelpful as the username is typed in and may not actually exist.
  * @param threadTag        Can be nil.
  * @param regardingMessage Can be nil. Should be nil if forwardedMessage is non-nil.
  * @param forwardedMessage Can be nil. Should be nil if regardingMessage is non-nil.

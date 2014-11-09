@@ -3,11 +3,11 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import Foundation;
-#import "AwfulModels.h"
 @class PrivateMessage;
+@class User;
 
 /**
- * An AwfulPrivateMessageViewModel helps render a private message in an AwfulPostsView.
+ * A PrivateMessageViewModel helps render a private message in an AwfulPostsView.
  */
 @interface PrivateMessageViewModel : NSObject
 
@@ -62,7 +62,7 @@
 
 #pragma mark Keys forwarded to the message
 
-@property (readonly, nonatomic) AwfulUser *from;
+@property (readonly, nonatomic) User *from;
 @property (readonly, nonatomic) NSString *messageID;
 @property (readonly, nonatomic) BOOL seen;
 @property (readonly, nonatomic) NSDate *sentDate;

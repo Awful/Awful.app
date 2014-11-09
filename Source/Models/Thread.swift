@@ -25,11 +25,11 @@ class Thread: AwfulManagedObject {
     @NSManaged var title: String?
     @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     
-    @NSManaged var author: AwfulUser?
+    @NSManaged var author: User?
     @NSManaged var forum: AwfulForum?
     @NSManaged var posts: NSMutableSet /* Post */
     @NSManaged var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
-    @NSManaged var singleUserThreadInfos: NSMutableSet /* AwfulSingleUserInfos */
+    @NSManaged var singleUserThreadInfos: NSMutableSet /* AwfulSingleUserInfo */
     @NSManaged var threadTag: ThreadTag? /* via threads */
     
     override func awakeFromInsert() {
@@ -86,12 +86,12 @@ extension Thread {
 }
 
 extension Thread {
-    func numberOfPagesForSingleUser(user: AwfulUser) -> Int32 {
+    func numberOfPagesForSingleUser(user: User) -> Int32 {
         let info = AwfulSingleUserThreadInfo.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: NSPredicate(format: "thread = %@ AND author = %@", self, user))
         return info.numberOfPages
     }
     
-    func setNumberOfPages(numberOfPages: Int32, forSingleUser user: AwfulUser) {
+    func setNumberOfPages(numberOfPages: Int32, forSingleUser user: User) {
         var info = AwfulSingleUserThreadInfo.fetchArbitraryInManagedObjectContext(managedObjectContext!, matchingPredicate: NSPredicate(format: "thread = %@ AND author = %@", self, user))
         if info == nil {
             info = AwfulSingleUserThreadInfo.insertInManagedObjectContext(managedObjectContext!)

@@ -12,7 +12,6 @@
 #import "AwfulLepersColonyPageScraper.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
-#import "AwfulProfileScraper.h"
 #import "AwfulScanner.h"
 #import "AwfulSettings.h"
 #import "AwfulThreadListScraper.h"
@@ -21,6 +20,7 @@
 #import "NSManagedObjectContext+AwfulConvenient.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
+#import "ProfileScraper.h"
 #import "Awful-Swift.h"
 
 @implementation AwfulForumsClient
@@ -198,7 +198,7 @@
 
 - (NSOperation *)logInWithUsername:(NSString *)username
                           password:(NSString *)password
-                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
+                           andThen:(void (^)(NSError *error, User *user))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
@@ -210,7 +210,7 @@
                       success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
             if (scraper.user) {
                 [managedObjectContext save:&error];
@@ -218,7 +218,7 @@
             if (callback) {
                 NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
+                    User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
                 }];
             }
@@ -542,7 +542,7 @@
 #pragma mark - Posts
 
 - (NSOperation *)listPostsInThread:(Thread *)thread
-                         writtenBy:(AwfulUser *)author
+                         writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback
 {
@@ -974,7 +974,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 #pragma mark - People
 
-- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, AwfulUser *user))callback
+- (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, User *user))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
@@ -983,9 +983,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            AwfulUser *user = scraper.user;
+            User *user = scraper.user;
             if (user) {
                 [managedObjectContext save:&error];
                 [AwfulSettings sharedSettings].userID = user.userID;
@@ -995,7 +995,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
             if (callback) {
                 NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
+                    User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
                 }];
             }
@@ -1007,7 +1007,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 - (NSOperation *)profileUserWithID:(NSString *)userID
                           username:(NSString *)username
-                           andThen:(void (^)(NSError *error, AwfulUser *user))callback
+                           andThen:(void (^)(NSError *error, User *user))callback
 {
     NSParameterAssert(userID.length > 0 || username.length > 0);
     
@@ -1026,7 +1026,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
-            AwfulProfileScraper *scraper = [AwfulProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+            ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
             if (scraper.user) {
                 [managedObjectContext save:&error];
@@ -1034,7 +1034,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
             if (callback) {
                 NSManagedObjectID *objectID = scraper.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    AwfulUser *user = [mainManagedObjectContext awful_objectWithID:objectID];
+                    User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
                 }];
             }
@@ -1047,10 +1047,10 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 #pragma mark - Punishments
 
 - (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(AwfulUser *)user
+                        forUser:(User *)user
                         andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
-    NSOperation * (^doIt)(AwfulUser *) = ^(AwfulUser *user) {
+    NSOperation * (^doIt)() = ^(User *user) {
         NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
         if (user.userID.length > 0) {
             parameters[@"userid"] = user.userID;
@@ -1078,7 +1078,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     };
     
     if (user.userID.length == 0 && user.username.length > 0) {
-        return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, AwfulUser *user) {
+        return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, User *user) {
             if (error) {
                 if (callback) callback(error, nil);
             } else {

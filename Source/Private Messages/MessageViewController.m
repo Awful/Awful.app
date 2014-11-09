@@ -136,7 +136,7 @@
 {
 	InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
-    AwfulUser *user = self.privateMessage.from;
+    User *user = self.privateMessage.from;
     
 	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
         ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];

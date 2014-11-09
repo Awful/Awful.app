@@ -164,12 +164,12 @@
     NSDictionary *fetchedThreads = [Thread dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                            keyedByAttributeNamed:@"threadID"
                                                          matchingPredicateFormat:@"threadID IN %@", threadIDs];
-    NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                 keyedByAttributeNamed:@"userID"
-                                                               matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
-    NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                   keyedByAttributeNamed:@"username"
-                                                                 matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    NSMutableDictionary *usersByID = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                            keyedByAttributeNamed:@"userID"
+                                                          matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
+    NSMutableDictionary *usersByName = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                              keyedByAttributeNamed:@"username"
+                                                            matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
     NSMutableDictionary *tagsByID = [[ThreadTag dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                                 keyedByAttributeNamed:@"threadTagID"
                                                               matchingPredicateFormat:@"threadTagID IN %@", threadTagIDs] mutableCopy];
@@ -212,9 +212,9 @@
         
         NSString *authorUserID = threadInfo[@"authorUserID"];
         NSString *authorUsername = threadInfo[@"authorUsername"];
-        AwfulUser *author = usersByID[authorUserID] ?: usersByName[authorUsername];
+        User *author = usersByID[authorUserID] ?: usersByName[authorUsername];
         if (!author && (authorUserID || authorUsername)) {
-            author = [AwfulUser insertInManagedObjectContext:self.managedObjectContext];
+            author = [User insertInManagedObjectContext:self.managedObjectContext];
         }
         if (authorUserID) {
             author.userID = authorUserID;

@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsPageScraper.h"
-#import "AwfulAuthorScraper.h"
+#import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulModels.h"
@@ -122,7 +122,7 @@
         }
         [postIDs addObject:postID];
         
-        AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
+        AuthorScraper *authorScraper = [AuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
         [authorScrapers addObject:authorScraper];
         if (authorScraper.userID) {
             [userIDs addObject:authorScraper.userID];
@@ -134,12 +134,12 @@
     NSDictionary *fetchedPosts = [Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
                                                        keyedByAttributeNamed:@"postID"
                                                      matchingPredicateFormat:@"postID IN %@", postIDs];
-    NSMutableDictionary *usersByID = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                 keyedByAttributeNamed:@"userID"
-                                                               matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
-    NSMutableDictionary *usersByName = [[AwfulUser dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                                   keyedByAttributeNamed:@"username"
-                                                                 matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    NSMutableDictionary *usersByID = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                            keyedByAttributeNamed:@"userID"
+                                                          matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
+    NSMutableDictionary *usersByName = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
+                                                              keyedByAttributeNamed:@"username"
+                                                            matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
     
     NSMutableArray *posts = [NSMutableArray new];
     __block Post *firstUnseenPost;
@@ -183,8 +183,8 @@
         }}
         
         {{
-            AwfulAuthorScraper *authorScraper = authorScrapers[i];
-            AwfulUser *author;
+            AuthorScraper *authorScraper = authorScrapers[i];
+            User *author;
             if (authorScraper.userID) {
                 author = usersByID[authorScraper.userID];
             } else if (authorScraper.username) {

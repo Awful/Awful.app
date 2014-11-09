@@ -2,8 +2,9 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulModels.h"
+@import Foundation;
 @class Post;
+@class User;
 
 typedef NS_ENUM(NSInteger, AwfulPunishment) {
     AwfulPunishmentUnknown = 0,
@@ -20,7 +21,7 @@ typedef NS_ENUM(NSInteger, AwfulPunishment) {
  */
 @interface AwfulBan : NSObject
 
-@property (strong, nonatomic) AwfulUser *user;
+@property (strong, nonatomic) User *user;
 
 @property (strong, nonatomic) Post *post;
 
@@ -30,8 +31,8 @@ typedef NS_ENUM(NSInteger, AwfulPunishment) {
 
 @property (strong, nonatomic) NSDate *date;
 
-@property (strong, nonatomic) AwfulUser *requester;
+@property (strong, nonatomic) User *requester;
 
-@property (strong, nonatomic) AwfulUser *approver;
+@property (strong, nonatomic) User *approver;
 
 @end

@@ -7,6 +7,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "CacheHeaderCalculations.h"
 #import "FVGifAnimation.h"
+#import "Awful-Swift.h"
 
 @interface AwfulAvatarLoader ()
 
@@ -44,13 +45,13 @@
     }
 }
 
-- (BOOL)applyCachedAvatarImageForUser:(AwfulUser *)user toImageView:(UIImageView *)imageView
+- (BOOL)applyCachedAvatarImageForUser:(User *)user toImageView:(UIImageView *)imageView
 {
     NSURL *imageURL = [self imageURLForUser:user];
     return ApplyImageAtURLToImageView(imageURL, imageView);
 }
 
-- (void)applyAvatarImageForUser:(AwfulUser *)user
+- (void)applyAvatarImageForUser:(User *)user
                 completionBlock:(void (^)(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error))completionBlock
 {
     NSURL *avatarURL = user.avatarURL;
@@ -127,14 +128,14 @@ static BOOL ApplyImageAtURLToImageView(NSURL *imageURL, UIImageView *imageView)
     }
 }
 
-- (NSURL *)imageURLForUser:(AwfulUser *)user
+- (NSURL *)imageURLForUser:(User *)user
 {
     NSParameterAssert(user.userID.length > 0);
     
     return [[self.cacheFolder URLByAppendingPathComponent:user.userID] URLByAppendingPathExtension:@"image"];
 }
 
-- (NSURL *)cachedResponseURLForUser:(AwfulUser *)user
+- (NSURL *)cachedResponseURLForUser:(User *)user
 {
     NSParameterAssert(user.userID.length > 0);
     

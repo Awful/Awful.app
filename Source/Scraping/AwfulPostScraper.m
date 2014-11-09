@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostScraper.h"
-#import "AwfulAuthorScraper.h"
+#import "AuthorScraper.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "Awful-Swift.h"
@@ -40,7 +40,7 @@
     }}
     
     {{
-        AwfulAuthorScraper *authorScraper = [AwfulAuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
+        AuthorScraper *authorScraper = [AuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
         self.post.author = authorScraper.author;
     }}
     

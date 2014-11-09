@@ -62,7 +62,7 @@
             HTMLElement *fromCell = [row awful_firstNodeMatchingCachedSelector:@"td.sender"];
             NSString *fromUsername = fromCell.textContent;
             if (fromUsername.length > 0) {
-                message.from = [AwfulUser firstOrNewUserWithUserID:nil username:fromUsername inManagedObjectContext:self.managedObjectContext];
+                message.from = [User firstOrNewUserWithID:nil username:fromUsername inManagedObjectContext:self.managedObjectContext];
             }
         }}
         

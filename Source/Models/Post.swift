@@ -32,7 +32,7 @@ class Post: AwfulManagedObject {
     @NSManaged var threadIndex: Int32
     
     /// Who wrote the post.
-    @NSManaged var author: AwfulUser?
+    @NSManaged var author: User?
     
     /// Where the post is located.
     @NSManaged var thread: Thread?

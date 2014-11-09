@@ -3,19 +3,16 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import <Foundation/Foundation.h>
-#import "AwfulModels.h"
+@class User;
 
 /**
  * An AwfulProfileViewModel helps render a user's profile.
  */
 @interface AwfulProfileViewModel : NSObject
 
-/**
- * Designated initializer.
- */
-- (id)initWithUser:(AwfulUser *)user;
+- (instancetype)initWithUser:(User *)user NS_DESIGNATED_INITIALIZER;
 
-@property (readonly, strong, nonatomic) AwfulUser *user;
+@property (readonly, strong, nonatomic) User *user;
 
 /**
  * CSS for displaying a profile.

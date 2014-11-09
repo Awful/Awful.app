@@ -25,7 +25,7 @@
 
 @implementation MessageComposeViewController
 
-- (instancetype)initWithRecipient:(AwfulUser *)recipient
+- (instancetype)initWithRecipient:(User *)recipient
 {
     if ((self = [self initWithNibName:nil bundle:nil])) {
         _recipient = recipient;
@@ -268,9 +268,9 @@
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     MessageComposeViewController *newPrivateMessageViewController;
     if (recipientUserID) {
-        AwfulUser *recipient = [AwfulUser firstOrNewUserWithUserID:recipientUserID
-                                                          username:nil
-                                            inManagedObjectContext:managedObjectContext];
+        User *recipient = [User firstOrNewUserWithID:recipientUserID
+                                            username:nil
+                              inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:recipient];
     } else if (regardingMessageID) {
         PrivateMessage *regardingMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext

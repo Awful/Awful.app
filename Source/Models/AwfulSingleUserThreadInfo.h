@@ -4,6 +4,7 @@
 
 #import "AwfulModels.h"
 @class Thread;
+@class User;
 
 /**
  * An AwfulSingleUserThreadInfo object tracks the number of pages of posts a single author has written in a single thread, if each page has 40 posts.
@@ -18,7 +19,7 @@
 /**
  * The author.
  */
-@property (strong, nonatomic) AwfulUser *author;
+@property (strong, nonatomic) User *author;
 
 /**
  * The thread.

@@ -1,13 +1,14 @@
-//  AwfulAuthorScraper.h
+//  AuthorScraper.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulScraper.h"
+@class User;
 
 /**
- * An AwfulAuthorScraper scrapes an AwfulUser from information near a post or profile.
+ * An AuthorScraper scrapes an User from information near a post or profile.
  */
-@interface AwfulAuthorScraper : AwfulScraper
+@interface AuthorScraper : AwfulScraper
 
 @property (readonly, copy, nonatomic) NSString *userID;
 
@@ -16,8 +17,8 @@
 @property (readonly, copy, nonatomic) NSDictionary *otherAttributes;
 
 /**
- * Gets a lazily-fetched or -created AwfulUser for the scraped userID and/or username. Sets
+ * Gets a lazily-fetched or -created User for the scraped userID and/or username.
  */
-@property (strong, nonatomic) AwfulUser *author;
+@property (strong, nonatomic) User *author;
 
 @end

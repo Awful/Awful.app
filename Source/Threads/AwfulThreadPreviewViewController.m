@@ -74,9 +74,9 @@
         } else if (self) {
             self.networkOperation = nil;
             Thread *fakeThread = [Thread insertInManagedObjectContext:self.managedObjectContext];
-            fakeThread.author = [AwfulUser firstOrNewUserWithUserID:[AwfulSettings sharedSettings].userID
-                                                           username:[AwfulSettings sharedSettings].username
-                                             inManagedObjectContext:self.managedObjectContext];
+            fakeThread.author = [User firstOrNewUserWithID:[AwfulSettings sharedSettings].userID
+                                                  username:[AwfulSettings sharedSettings].username
+                                    inManagedObjectContext:self.managedObjectContext];
             self.fakePost = [Post insertInManagedObjectContext:self.managedObjectContext];
             self.fakePost.thread = fakeThread;
             self.fakePost.author = fakeThread.author;

@@ -256,7 +256,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
             }
         }];
     }]];
-    AwfulUser *author = thread.author;
+    User *author = thread.author;
     if (author.userID.length > 0 || author.username > 0) {
         AwfulIconActionItem *profileItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
             ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:thread.author];

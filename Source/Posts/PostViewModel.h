@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import "AwfulModels.h"
 @class Post;
+@class User;
 
 /**
  * A PostViewModel helps to render Post instances.
@@ -55,7 +56,7 @@
 
 #pragma mark Keys forwarded to the post itself
 
-@property (readonly, nonatomic) AwfulUser *author;
+@property (readonly, nonatomic) User *author;
 @property (readonly, nonatomic) BOOL beenSeen;
 @property (readonly, nonatomic) NSDate *postDate;
 @property (readonly, nonatomic) NSString *postID;
