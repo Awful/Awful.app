@@ -2,7 +2,7 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 @interface AwfulSettings : NSObject
 
@@ -15,7 +15,7 @@
 
 - (void)migrateOldSettings;
 
-@property (readonly, strong) NSArray *sections;
+@property (readonly, copy, nonatomic) NSArray *sections;
 
 - (NSDictionary *)infoForSettingWithKey:(NSString *)key;
 
@@ -46,10 +46,6 @@
 @property (copy, nonatomic) NSString *customBaseURL;
 
 @property (assign, nonatomic) BOOL hideSidebarInLandscape;
-
-- (BOOL)childrenExpandedForForumWithID:(NSString *)forumID;
-
-- (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID;
 
 - (NSString *)themeNameForForumID:(NSString *)forumID;
 

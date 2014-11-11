@@ -18,6 +18,7 @@ class Forum: AwfulManagedObject {
     @NSManaged var secondaryThreadTags: NSMutableOrderedSet /* ThreadTag via secondaryForums */
     @NSManaged var threads: NSMutableSet /* Thread */
     @NSManaged var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
+    @NSManaged private(set) var metadata: ForumMetadata
 }
 
 extension Forum {
@@ -29,6 +30,12 @@ extension Forum {
             forum.forumID = forumID
             return forum
         }
+    }
+    
+    override class func insertInManagedObjectContext(context: NSManagedObjectContext) -> Forum {
+        let forum = super.insertInManagedObjectContext(context) as Forum
+        forum.metadata = ForumMetadata.insertInManagedObjectContext(context)
+        return forum
     }
 }
 
@@ -52,4 +59,15 @@ extension ForumGroup {
             return group
         }
     }
+}
+
+@objc(ForumMetadata)
+class ForumMetadata: AwfulManagedObject {
+    
+    @NSManaged var favorite: Bool
+    @NSManaged var favoriteIndex: Int32
+    @NSManaged var showsChildrenInForumList: Bool
+    @NSManaged var visibleInForumList: Bool
+    
+    @NSManaged private(set) var forum: Forum
 }

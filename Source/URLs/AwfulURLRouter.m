@@ -6,7 +6,6 @@
 #import "AwfulForumsClient.h"
 #import "BookmarkedThreadListViewController.h"
 #import "EmptyViewController.h"
-#import "ForumListViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import "MessageListViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
@@ -184,7 +183,7 @@
     } else {
         ForumListViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumListViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
-        [forumsList showForum:forum animated:NO];
+        [forumsList openForum:forum animated:NO];
         return [self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
     }
 }

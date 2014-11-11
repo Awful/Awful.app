@@ -17,6 +17,11 @@
     return instance;
 }
 
++ (instancetype)sharedMinder
+{
+    return [self minder];
+}
+
 - (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults
 {
     if ((self = [super init])) {

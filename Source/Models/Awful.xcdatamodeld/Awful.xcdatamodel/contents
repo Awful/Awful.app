@@ -9,6 +9,7 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="childForums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Forum" inverseName="parentForum" inverseEntity="Forum" syncable="YES"/>
         <relationship name="group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ForumGroup" inverseName="forums" inverseEntity="ForumGroup" syncable="YES"/>
+        <relationship name="metadata" maxCount="1" deletionRule="Cascade" destinationEntity="ForumMetadata" inverseName="forum" inverseEntity="ForumMetadata" syncable="YES"/>
         <relationship name="parentForum" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Forum" inverseName="childForums" inverseEntity="Forum" syncable="YES"/>
         <relationship name="secondaryThreadTags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ThreadTag" inverseName="secondaryForums" inverseEntity="ThreadTag" syncable="YES"/>
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="forum" inverseEntity="Thread" syncable="YES"/>
@@ -19,6 +20,13 @@
         <attribute name="index" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="forums" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Forum" inverseName="group" inverseEntity="Forum" syncable="YES"/>
+    </entity>
+    <entity name="ForumMetadata" representedClassName="ForumMetadata" syncable="YES">
+        <attribute name="favorite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="favoriteIndex" attributeType="Integer 32" defaultValueString="-1" syncable="YES"/>
+        <attribute name="showsChildrenInForumList" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="visibleInForumList" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="forum" maxCount="1" deletionRule="Nullify" destinationEntity="Forum" inverseName="metadata" inverseEntity="Forum" syncable="YES"/>
     </entity>
     <entity name="Post" representedClassName="Post" syncable="YES">
         <attribute name="editable" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -121,13 +129,14 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="author" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Forum" positionX="0" positionY="0" width="128" height="28"/>
+        <element name="Forum" positionX="0" positionY="0" width="128" height="240"/>
+        <element name="ForumGroup" positionX="27" positionY="171" width="128" height="103"/>
+        <element name="ForumMetadata" positionX="45" positionY="180" width="128" height="120"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
         <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
         <element name="Thread" positionX="0" positionY="0" width="128" height="405"/>
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
         <element name="User" positionX="0" positionY="0" width="128" height="448"/>
-        <element name="ForumGroup" positionX="27" positionY="171" width="128" height="103"/>
     </elements>
 </model>

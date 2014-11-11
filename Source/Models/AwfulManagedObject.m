@@ -39,8 +39,14 @@
 + (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                     matchingPredicateFormat:(NSString *)format, ...
 {
+    NSPredicate *predicate = NSPredicateWithFormatAndArguments(format);
+    return [self fetchAllInManagedObjectContext:managedObjectContext matchingPredicate:predicate];
+}
+
++ (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext matchingPredicate:(NSPredicate *)predicate
+{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    fetchRequest.predicate = NSPredicateWithFormatAndArguments(format);
+    fetchRequest.predicate = predicate;
     NSError *error;
     NSArray *objects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     if (!objects) {

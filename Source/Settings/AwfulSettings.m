@@ -4,12 +4,6 @@
 
 #import "AwfulSettings.h"
 
-@interface AwfulSettings ()
-
-@property (strong) NSArray *sections;
-
-@end
-
 @implementation AwfulSettings
 
 + (AwfulSettings *)sharedSettings
@@ -24,12 +18,10 @@
 
 - (id)initWithResource:(NSString *)basename
 {
-    self = [super init];
-    if (self)
-    {
-        NSURL *url = [[NSBundle mainBundle] URLForResource:basename withExtension:@"plist"];
-        NSDictionary *plist = [NSDictionary dictionaryWithContentsOfURL:url];
-        self.sections = [plist objectForKey:@"Sections"];
+    if ((self = [super init])) {
+        NSURL *resourceURL = [[NSBundle mainBundle] URLForResource:basename withExtension:@"plist"];
+        NSDictionary *plist = [NSDictionary dictionaryWithContentsOfURL:resourceURL];
+        _sections = plist[@"Sections"];
     }
     return self;
 }
@@ -209,21 +201,6 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 }
 
 BOOL_PROPERTY(hideSidebarInLandscape, setHideSidebarInLandscape)
-
-- (BOOL)childrenExpandedForForumWithID:(NSString *)forumID
-{
-	return [self[ExpandedSettingsKeyForForumID(forumID)] boolValue];
-}
-
-- (void)setChildrenExpanded:(BOOL)shouldHide forForumWithID:(NSString *)forumID
-{
-	self[ExpandedSettingsKeyForForumID(forumID)] = @(shouldHide);
-}
-
-static inline NSString * ExpandedSettingsKeyForForumID(NSString *forumID)
-{
-    return [@"forum-expanded-" stringByAppendingString:forumID];
-}
 
 - (NSString *)themeNameForForumID:(NSString *)forumID
 {

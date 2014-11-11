@@ -31,6 +31,11 @@
                     matchingPredicateFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(2, 3);
 
 /**
+ * Returns all objects of the class's entity that match a predicate.
+ */
++ (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext matchingPredicate:(NSPredicate *)predicate;
+
+/**
  * Returns a dictionary of matching objects of the class's entity.
  *
  * @param managedObjectContext The context from which to fetch the objects.

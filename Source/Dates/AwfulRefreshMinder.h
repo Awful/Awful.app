@@ -15,6 +15,9 @@
  */
 + (instancetype)minder;
 
+/// Swift-able accessor for the singleton instance.
++ (instancetype)sharedMinder;
+
 - (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults NS_DESIGNATED_INITIALIZER;
 
 /**

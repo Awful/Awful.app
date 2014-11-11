@@ -101,6 +101,7 @@
             if (!forum) {
                 forum = [Forum insertInManagedObjectContext:self.managedObjectContext];
                 forum.forumID = itemID;
+                forum.metadata.visibleInForumList = depth == 1;
             }
             forum.name = itemName;
             forum.group = group;
