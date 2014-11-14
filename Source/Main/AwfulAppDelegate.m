@@ -6,7 +6,6 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <AVFoundation/AVFoundation.h>
 #import "AwfulAvatarLoader.h"
-#import "AwfulDataStack.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
@@ -28,7 +27,7 @@
 @property (strong, nonatomic) RootViewControllerStack *rootViewControllerStack;
 @property (strong, nonatomic) LoginViewController *loginViewController;
 
-@property (strong, nonatomic) AwfulDataStack *dataStack;
+@property (strong, nonatomic) DataStore *dataStore;
 @property (strong, nonatomic) AwfulURLRouter *URLRouter;
 
 @end
@@ -57,15 +56,15 @@ static id _instance;
 
 - (NSManagedObjectContext *)managedObjectContext
 {
-    return _dataStack.managedObjectContext;
+    return self.dataStore.mainManagedObjectContext;
 }
 
 - (RootViewControllerStack *)rootViewControllerStack
 {
     if (!_rootViewControllerStack) {
-        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:_dataStack.managedObjectContext];
+        _rootViewControllerStack = [[RootViewControllerStack alloc] initWithManagedObjectContext:self.managedObjectContext];
         _URLRouter = [[AwfulURLRouter alloc] initWithRootViewController:_rootViewControllerStack.rootViewController
-                                                   managedObjectContext:_dataStack.managedObjectContext];
+                                                   managedObjectContext:self.managedObjectContext];
     }
     return _rootViewControllerStack;
 }
@@ -174,8 +173,41 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
         __typeof__(self) self = weakSelf;
         self.rootViewControllerStack = nil;
         self.URLRouter = nil;
-        [self.dataStack deleteStoreAndResetStack];
+        [self.dataStore deleteStoreAndReset];
     }];
+}
+
+static void RemoveOldDataStores(void)
+{
+    // Obsolete data stores should be cleaned up so we're not wasting space.
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSMutableArray *pendingDeletions = [NSMutableArray new];
+    
+    // The Documents directory is pre-Awful 3.0. It was unsuitable because it was not user-managed data.
+    // The Caches directory was used through Awful 3.1. It was unsuitable once user data was stored in addition to cached presentation data.
+    // Both stores were under the same filename.
+    NSArray *directories = @[fileManager.documentDirectory, fileManager.cachesDirectory];
+    NSString *oldStoreFilename = @"AwfulData.sqlite";
+    
+    for (NSURL *directory in directories) {
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtURL:directory includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsSubdirectoryDescendants errorHandler:^BOOL(NSURL *URL, NSError *error) {
+            NSLog(@"%s error enumerating URL %@: %@", __PRETTY_FUNCTION__, URL, error);
+            return YES;
+        }];
+        for (NSURL *URL in enumerator) {
+            // Check for prefix, not equality, as there could be associated files (SQLite indexes or logs) that should also disappear.
+            if ([URL.lastPathComponent hasPrefix:oldStoreFilename]) {
+                [pendingDeletions addObject:URL];
+            }
+        }
+    }
+    
+    for (NSURL *URL in pendingDeletions) {
+        NSError *error;
+        if (![fileManager removeItemAtURL:URL error:&error]) {
+            NSLog(@"%s error deleting file at %@: %@", __PRETTY_FUNCTION__, URL, error);
+        }
+    }
 }
 
 #pragma mark - UIApplicationDelegate
@@ -191,15 +223,16 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     
     [GRMustache preventNSUndefinedKeyExceptionAttack];
     
-    NSURL *oldStoreURL = [[[NSFileManager defaultManager] documentDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    NSURL *storeURL = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"AwfulData.sqlite"];
-    if (!MoveDataStore(oldStoreURL, storeURL)) {
-        DeleteDataStoreAtURL(oldStoreURL);
-    }
+    NSURL *storeURL = [[[NSFileManager defaultManager] applicationSupportDirectory] URLByAppendingPathComponent:@"CachedForumData"
+                                                                                                    isDirectory:YES];
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
-    _dataStack = [[AwfulDataStack alloc] initWithStoreURL:storeURL modelURL:modelURL];
+    _dataStore = [[DataStore alloc] initWithStoreDirectoryURL:storeURL modelURL:modelURL];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        RemoveOldDataStores();
+    });
     
-    [AwfulForumsClient client].managedObjectContext = _dataStack.managedObjectContext;
+    [AwfulForumsClient client].managedObjectContext = self.managedObjectContext;
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
@@ -245,15 +278,9 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     return YES;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+- (void)applicationWillResignActive:(UIApplication *)application
 {
     SmilieKeyboardSetIsAwfulAppActive(NO);
-    
-    NSError *error;
-    BOOL ok = [_dataStack.managedObjectContext save:&error];
-    if (!ok) {
-        NSLog(@"%s error saving main managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

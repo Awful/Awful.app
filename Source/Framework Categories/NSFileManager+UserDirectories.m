@@ -6,6 +6,13 @@
 
 @implementation NSFileManager (UserDirectories)
 
+- (NSURL *)applicationSupportDirectory
+{
+    NSURL *appSupport = [self URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask].lastObject;
+    NSString *bundleID = [NSBundle mainBundle].bundleIdentifier;
+    return [appSupport URLByAppendingPathComponent:bundleID isDirectory:YES];
+}
+
 - (NSURL *)cachesDirectory
 {
     return [[self URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];

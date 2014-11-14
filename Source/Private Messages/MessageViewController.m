@@ -5,7 +5,6 @@
 #import "MessageViewController.h"
 #import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
-#import "AwfulDataStack.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
