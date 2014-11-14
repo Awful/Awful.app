@@ -11,6 +11,7 @@ class DataStore: NSObject {
     let mainManagedObjectContext: NSManagedObjectContext
     
     private let storeCoordinator: NSPersistentStoreCoordinator
+    private let lastModifiedObserver: LastModifiedContextObserver
     
     /**
     :param: storeDirectoryURL A directory to save the store. Created if it doesn't already exist. The directory will be excluded from backups to iCloud or iTunes.
@@ -21,6 +22,7 @@ class DataStore: NSObject {
         let model = NSManagedObjectModel(contentsOfURL: modelURL)!
         storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
         mainManagedObjectContext.persistentStoreCoordinator = storeCoordinator
+        lastModifiedObserver = LastModifiedContextObserver(managedObjectContext: mainManagedObjectContext)
         super.init()
         
         loadPersistentStore()
@@ -92,6 +94,32 @@ class DataStore: NSObject {
         loadPersistentStore()
         
         NSNotificationCenter.defaultCenter().postNotificationName(DataStoreDidResetNotification, object: self)
+    }
+}
+
+/// A LastModifiedContextObserver updates the lastModifiedDate attribute (for any objects that have one) whenever its context is saved.
+class LastModifiedContextObserver: NSObject {
+    let managedObjectContext: NSManagedObjectContext
+    let relevantEntities: [NSEntityDescription]
+    init(managedObjectContext context: NSManagedObjectContext) {
+        managedObjectContext = context
+        let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
+        relevantEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
+        super.init()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contextWillSave:", name: NSManagedObjectContextWillSaveNotification, object: context)
+    }
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    @objc private func contextWillSave(notification: NSNotification) {
+        let context = notification.object as NSManagedObjectContext
+        let lastModifiedDate = NSDate()
+        let insertedOrUpdated = context.insertedObjects.setByAddingObjectsFromSet(context.updatedObjects)
+        context.performBlockAndWait {
+            let relevantObjects = filter(insertedOrUpdated) { contains(self.relevantEntities, ($0 as NSManagedObject).entity) }
+            (relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
+        }
     }
 }
 

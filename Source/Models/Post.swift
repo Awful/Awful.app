@@ -20,7 +20,6 @@ class Post: AwfulManagedObject {
     
     /// The last time the cached post data changed.
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged private var primitiveLastModifiedDate: NSDate?
     
     /// When the post appeared.
     @NSManaged var postDate: NSDate?
@@ -36,11 +35,6 @@ class Post: AwfulManagedObject {
     
     /// Where the post is located.
     @NSManaged var thread: Thread?
-    
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        primitiveLastModifiedDate = NSDate()
-    }
 }
 
 extension Post {

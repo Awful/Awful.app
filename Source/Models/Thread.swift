@@ -11,7 +11,6 @@ class Thread: AwfulManagedObject {
     @NSManaged var closed: Bool
     @NSManaged var hideFromList: Bool
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged private var primitiveLastModifiedDate: NSDate?
     @NSManaged var lastPostAuthorName: String?
     @NSManaged var lastPostDate: NSDate?
     @NSManaged var numberOfPages: Int32
@@ -31,11 +30,6 @@ class Thread: AwfulManagedObject {
     @NSManaged var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threadTag: ThreadTag? /* via threads */
-    
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        primitiveLastModifiedDate = NSDate()
-    }
 }
 
 extension Thread {

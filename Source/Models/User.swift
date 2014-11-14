@@ -34,11 +34,6 @@ class User: AwfulManagedObject {
     @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threads: NSMutableSet /* Thread */
-    
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        primitiveLastModifiedDate = NSDate()
-    }
 }
 
 extension User {

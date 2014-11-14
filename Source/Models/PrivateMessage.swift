@@ -8,7 +8,6 @@ class PrivateMessage: AwfulManagedObject {
     @NSManaged var forwarded: Bool
     @NSManaged var innerHTML: String?
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged private var primitiveLastModifiedDate: NSDate?
     @NSManaged var messageID: String
     @NSManaged var replied: Bool
     @NSManaged var seen: Bool
@@ -18,11 +17,6 @@ class PrivateMessage: AwfulManagedObject {
     @NSManaged var from: User? /* via sentPrivateMessages */
     @NSManaged var threadTag: ThreadTag?
     @NSManaged var to: User? /* via receivedPrivateMessages */
-    
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        primitiveLastModifiedDate = NSDate()
-    }
 }
 
 extension PrivateMessage {

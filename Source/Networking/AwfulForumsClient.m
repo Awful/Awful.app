@@ -27,6 +27,7 @@
 {
     AwfulHTTPRequestOperationManager *_HTTPManager;
     NSManagedObjectContext *_backgroundManagedObjectContext;
+    LastModifiedContextObserver *_lastModifiedObserver;
 }
 
 - (void)dealloc
@@ -83,6 +84,7 @@
                                                         name:NSManagedObjectContextDidSaveNotification
                                                       object:_backgroundManagedObjectContext];
         _backgroundManagedObjectContext = nil;
+        _lastModifiedObserver = nil;
     }
     
     _managedObjectContext = managedObjectContext;
@@ -99,6 +101,7 @@
                                                  selector:@selector(backgroundManagedObjectContextDidSave:)
                                                      name:NSManagedObjectContextDidSaveNotification
                                                    object:_backgroundManagedObjectContext];
+        _lastModifiedObserver = [[LastModifiedContextObserver alloc] initWithManagedObjectContext:_backgroundManagedObjectContext];
     }
 }
 
