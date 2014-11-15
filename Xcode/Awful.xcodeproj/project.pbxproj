@@ -14,6 +14,7 @@
 		1C03B52019C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */; };
 		1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C991A14E0EC00F81EA2 /* ForumDataSource.swift */; };
 		1C051C9C1A15EB7200F81EA2 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9B1A15EB7200F81EA2 /* DataStore.swift */; };
+		1C051C9E1A16EDCF00F81EA2 /* CachePruner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -414,6 +415,7 @@
 		1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AwfulAnnoyingSwift.m"; sourceTree = "<group>"; };
 		1C051C991A14E0EC00F81EA2 /* ForumDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumDataSource.swift; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
@@ -1401,6 +1403,7 @@
 				1C20562E1806700500A84C6D /* AwfulManagedObject.m */,
 				1CA1E5151A0E2DB00076F0B5 /* AwfulStarCategory.h */,
 				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
+				1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */,
 				1C051C9B1A15EB7200F81EA2 /* DataStore.swift */,
 				1CE55A6D1A0F77B800E474A6 /* Forum.swift */,
 				1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.h */,
@@ -2287,6 +2290,7 @@
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
 				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
+				1C051C9E1A16EDCF00F81EA2 /* CachePruner.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,

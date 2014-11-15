@@ -26,18 +26,39 @@ class DataStore: NSObject {
         super.init()
         
         loadPersistentStore()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        let noteCenter = NSNotificationCenter.defaultCenter()
+        noteCenter.addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        noteCenter.addObserver(self, selector: "applicationDidBecomeActive:", name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    @objc private func didEnterBackground(notification: NSNotification) {
+    @objc private func applicationDidEnterBackground(notification: NSNotification) {
+        invalidatePruneTimer()
+        
         var error: NSError?
         if !mainManagedObjectContext.save(&error) {
             fatalError("error saving main managed object context: \(error!)")
         }
+    }
+    
+    @objc private func applicationDidBecomeActive(notification: NSNotification) {
+        invalidatePruneTimer()
+        // Since pruning could potentially take a noticeable amount of time, and there's no real rush, let's schedule it for a little bit after becoming active.
+        pruneTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: "pruneTimerDidFire:", userInfo: nil, repeats: false)
+    }
+    
+    private var pruneTimer: NSTimer?
+    private func invalidatePruneTimer() {
+        pruneTimer?.invalidate()
+        pruneTimer = nil
+    }
+    
+    @objc private func pruneTimerDidFire(timer: NSTimer) {
+        pruneTimer = nil
+        prune()
     }
     
     private var persistentStore: NSPersistentStore?
@@ -71,6 +92,17 @@ class DataStore: NSObject {
             }
             fatalError("could not load persistent store at \(storeURL): \(error!)")
         }
+    }
+    
+    private var operationQueue: NSOperationQueue = {
+        let queue = NSOperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+    
+    func prune() {
+        let pruner = CachePruner(managedObjectContext: mainManagedObjectContext)
+        operationQueue.addOperation(pruner)
     }
     
     func deleteStoreAndReset() {
