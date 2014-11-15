@@ -15,6 +15,7 @@
 		1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C991A14E0EC00F81EA2 /* ForumDataSource.swift */; };
 		1C051C9C1A15EB7200F81EA2 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9B1A15EB7200F81EA2 /* DataStore.swift */; };
 		1C051C9E1A16EDCF00F81EA2 /* CachePruner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */; };
+		1C051CA01A16F8D700F81EA2 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9F1A16F8D700F81EA2 /* Profile.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -39,7 +40,7 @@
 		1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447DC175D2D5E007377C5 /* Settings.bundle */; };
 		1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E0175D9991007377C5 /* PostViewModel.m */; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
-		1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */; };
+		1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
 		1C35FB7818329D3400B52724 /* FormScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7718329D3400B52724 /* FormScrapingTests.m */; };
@@ -416,6 +417,7 @@
 		1C051C991A14E0EC00F81EA2 /* ForumDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumDataSource.swift; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
+		1C051C9F1A16F8D700F81EA2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
@@ -454,8 +456,8 @@
 		1C3447DF175D9991007377C5 /* PostViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostViewModel.h; sourceTree = "<group>"; };
 		1C3447E0175D9991007377C5 /* PostViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostViewModel.m; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
-		1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulProfileViewModel.h; sourceTree = "<group>"; };
-		1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulProfileViewModel.m; sourceTree = "<group>"; };
+		1C3447E5175DAAAD007377C5 /* ProfileViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewModel.h; sourceTree = "<group>"; };
+		1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewModel.m; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C3447EA175E5D78007377C5 /* AwfulLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulLoadingView.h; sourceTree = "<group>"; };
 		1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulLoadingView.m; sourceTree = "<group>"; };
@@ -1249,12 +1251,12 @@
 		1C6ED634169103FE0015CDD5 /* Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				1C3447E5175DAAAD007377C5 /* AwfulProfileViewModel.h */,
-				1C3447E6175DAAAD007377C5 /* AwfulProfileViewModel.m */,
 				1C8E10431914AA730010007B /* profile.css */,
 				1C8E104B1916F85F0010007B /* profile.js */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
+				1C3447E5175DAAAD007377C5 /* ProfileViewModel.h */,
+				1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */,
 			);
 			path = Profiles;
 			sourceTree = "<group>";
@@ -1410,6 +1412,7 @@
 				1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m */,
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
+				1C051C9F1A16F8D700F81EA2 /* Profile.swift */,
 				1C442FCE1A0E27E2001BD898 /* Thread.swift */,
 				1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */,
 				1CA1E5161A0F53130076F0B5 /* User.swift */,
@@ -2348,6 +2351,7 @@
 				1CE55A7A1A1072D900E474A6 /* ForumListViewController.swift in Sources */,
 				1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m in Sources */,
 				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
+				1C051CA01A16F8D700F81EA2 /* Profile.swift in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,
 				1C96D0A2168298BF0043B194 /* BrowserViewController.m in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
@@ -2429,7 +2433,7 @@
 				1C442FCF1A0E27E2001BD898 /* Thread.swift in Sources */,
 				1CA1EFFC1910424D00E85DB2 /* AwfulPostScraper.m in Sources */,
 				1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */,
-				1C3447E7175DAAAD007377C5 /* AwfulProfileViewModel.m in Sources */,
+				1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */,
 				1CE55A6E1A0F77B800E474A6 /* Forum.swift in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
 				836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */,

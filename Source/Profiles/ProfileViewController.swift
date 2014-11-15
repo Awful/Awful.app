@@ -7,6 +7,7 @@ import WebKit
 
 /// A ProfileViewController shows detailed information about a particular user.
 class ProfileViewController: AwfulViewController {
+    
     let user: User
     private var webView: WKWebView { get { return view as WKWebView } }
     private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
@@ -19,6 +20,10 @@ class ProfileViewController: AwfulViewController {
         modalPresentationStyle = .FormSheet
         hidesBottomBarWhenPushed = true
         navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
     }
     
     override func loadView() {
@@ -43,8 +48,7 @@ class ProfileViewController: AwfulViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        renderUser()
+        renderProfile()
     }
     
     override func themeDidChange() {
@@ -74,29 +78,23 @@ class ProfileViewController: AwfulViewController {
         
         webView.scrollView.flashScrollIndicators()
         
-        AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, user) in
+        AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, profile) in
             if let error = error {
-                NSLog("[%@ %@] error fetching user profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
+                NSLog("[%@ %@] error fetching user profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, profile.user.username ?? "?", profile.user.userID ?? "?", error)
             } else {
-                self.renderUser()
+                self.renderProfile()
             }
         }
     }
     
-    private func renderUser() {
-        let viewModel = AwfulProfileViewModel(user: user)
+    private func renderProfile() {
+        let viewModel = ProfileViewModel(profile: user.profile)
         var error: NSError?
         let HTML = GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil, error: &error)
         if let error = error {
             NSLog("[%@ %@] error rendering profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
         }
         webView.loadHTMLString(HTML, baseURL: baseURL())
-    }
-    
-    // MARK: Initializers not to be called
-    
-    required init(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
     }
 }
 

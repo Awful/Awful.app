@@ -13,7 +13,7 @@
 
 @interface ProfileScraper ()
 
-@property (strong, nonatomic) User *user;
+@property (strong, nonatomic) Profile *profile;
 
 @end
 
@@ -30,7 +30,11 @@
         self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
         return;
     }
-    self.user = authorScraper.author;
+    self.profile = authorScraper.author.profile;
+    if (!self.profile) {
+        self.profile = [Profile insertInManagedObjectContext:self.managedObjectContext];
+        self.profile.user = authorScraper.author;
+    }
     
     HTMLElement *infoParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {
@@ -40,25 +44,25 @@
         NSString *gender;
         BOOL ok = [scanner scanCharactersFromSet:[NSCharacterSet letterCharacterSet] intoString:&gender];
         if (ok) {
-            self.user.gender = gender;
+            self.profile.gender = gender;
         }
     }
     
     HTMLElement *aboutParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:nth-of-type(2)"];
     if (aboutParagraph) {
-        self.user.aboutMe = aboutParagraph.innerHTML;
+        self.profile.aboutMe = aboutParagraph.innerHTML;
     }
     
     HTMLElement *messageLink = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.pm + dd a"];
-    self.user.canReceivePrivateMessages = !!messageLink;
+    self.profile.user.canReceivePrivateMessages = !!messageLink;
     
     HTMLElement *ICQDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.icq + dd"];
     if (ICQDefinition) {
         NSString *ICQText = [ICQDefinition.children.firstObject textContent];
         if (ICQDefinition.numberOfChildren == 1 && [ICQDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
-            self.user.icqName = ICQText;
+            self.profile.icqName = ICQText;
         } else {
-            self.user.icqName = nil;
+            self.profile.icqName = nil;
         }
     }
     
@@ -66,9 +70,9 @@
     if (AIMDefinition) {
         NSString *AIMText = [AIMDefinition.children.firstObject textContent];
         if (AIMDefinition.numberOfChildren == 1 && [AIMDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
-            self.user.aimName = AIMText;
+            self.profile.aimName = AIMText;
         } else {
-            self.user.aimName = nil;
+            self.profile.aimName = nil;
         }
     }
     
@@ -76,9 +80,9 @@
     if (yahooDefinition) {
         NSString *yahooText = [yahooDefinition.children.firstObject textContent];
         if (yahooDefinition.numberOfChildren == 1 && [yahooDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
-            self.user.yahooName = yahooText;
+            self.profile.yahooName = yahooText;
         } else {
-            self.user.yahooName = nil;
+            self.profile.yahooName = nil;
         }
     }
     
@@ -86,15 +90,15 @@
     if (homepageDefinition) {
         NSString *homepageText = [homepageDefinition.children.firstObject textContent];
         if (homepageText.length > 0) {
-            self.user.homepageURL = [NSURL URLWithString:homepageText];
+            self.profile.homepageURL = [NSURL URLWithString:homepageText];
         } else {
-            self.user.homepageURL = nil;
+            self.profile.homepageURL = nil;
         }
     }
     
     HTMLElement *userPictureImage = [self.node awful_firstNodeMatchingCachedSelector:@"div.userpic img"];
     if (userPictureImage) {
-        self.user.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"]];
+        self.profile.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"]];
     }
     
     HTMLElement *additionalList = [self.node awful_firstNodeMatchingCachedSelector:@"dl.additional"];
@@ -105,7 +109,7 @@
         AwfulScanner *scanner = [AwfulScanner scannerWithString:postCountText];
         BOOL ok = [scanner scanInteger:&postCount];
         if (ok) {
-            self.user.postCount = (int32_t)postCount;
+            self.profile.postCount = (int32_t)postCount;
         }
     }
     
@@ -115,7 +119,7 @@
         AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText];
         BOOL ok = [scanner scanFloat:nil];
         if (ok) {
-            self.user.postRate = [scanner.string substringToIndex:scanner.scanLocation];
+            self.profile.postRate = [scanner.string substringToIndex:scanner.scanLocation];
         }
     }
     
@@ -124,7 +128,7 @@
     if (lastPostText.length > 0) {
         NSDate *lastPostDate = [[AwfulCompoundDateParser postDateParser] dateFromString:lastPostText];
         if (lastPostDate) {
-            self.user.lastPostDate = lastPostDate;
+            self.profile.lastPostDate = lastPostDate;
         }
     }
     
@@ -138,11 +142,11 @@
         HTMLTextNode *definitionText = definition.children.firstObject;
         if (![definitionText isKindOfClass:[HTMLTextNode class]]) continue;
         if ([termText.data hasPrefix:@"Location"]) {
-            self.user.location = definitionText.data;
+            self.profile.location = definitionText.data;
         } else if ([termText.data hasPrefix:@"Interests"]) {
-            self.user.interests = definitionText.data;
+            self.profile.interests = definitionText.data;
         } else if ([termText.data hasPrefix:@"Occupation"]) {
-            self.user.occupation = definitionText.data;
+            self.profile.occupation = definitionText.data;
         }
     }
 }

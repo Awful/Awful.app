@@ -215,11 +215,11 @@
         [managedObjectContext performBlock:^{
             ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.user) {
+            if (scraper.profile) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSManagedObjectID *objectID = scraper.user.objectID;
+                NSManagedObjectID *objectID = scraper.profile.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -988,7 +988,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         [managedObjectContext performBlock:^{
             ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            User *user = scraper.user;
+            User *user = scraper.profile.user;
             if (user) {
                 [managedObjectContext save:&error];
                 [AwfulSettings sharedSettings].userID = user.userID;
@@ -996,7 +996,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 [AwfulSettings sharedSettings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }
             if (callback) {
-                NSManagedObjectID *objectID = scraper.user.objectID;
+                NSManagedObjectID *objectID = scraper.profile.user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -1010,7 +1010,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 - (NSOperation *)profileUserWithID:(NSString *)userID
                           username:(NSString *)username
-                           andThen:(void (^)(NSError *error, User *user))callback
+                           andThen:(void (^)(NSError *error, Profile *profile))callback
 {
     NSParameterAssert(userID.length > 0 || username.length > 0);
     
@@ -1031,14 +1031,14 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         [managedObjectContext performBlock:^{
             ProfileScraper *scraper = [ProfileScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
-            if (scraper.user) {
+            if (scraper.profile) {
                 [managedObjectContext save:&error];
             }
             if (callback) {
-                NSManagedObjectID *objectID = scraper.user.objectID;
+                NSManagedObjectID *objectID = scraper.profile.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    User *user = [mainManagedObjectContext awful_objectWithID:objectID];
-                    callback(error, user);
+                    Profile *profile = [mainManagedObjectContext awful_objectWithID:objectID];
+                    callback(error, profile);
                 }];
             }
         }];
@@ -1081,7 +1081,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     };
     
     if (user.userID.length == 0 && user.username.length > 0) {
-        return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, User *user) {
+        return [self profileUserWithID:nil username:user.username andThen:^(NSError *error, Profile *profile) {
             if (error) {
                 if (callback) callback(error, nil);
             } else {

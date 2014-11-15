@@ -1,23 +1,23 @@
-//  AwfulProfileViewModel.m
+//  ProfileViewModel.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulProfileViewModel.h"
+#import "ProfileViewModel.h"
 #import "AwfulSettings.h"
 #import "Awful-Swift.h"
 
-@interface AwfulProfileViewModel ()
+@interface ProfileViewModel ()
 
-@property (nonatomic) User *user;
+@property (nonatomic) Profile *profile;
 
 @end
 
-@implementation AwfulProfileViewModel
+@implementation ProfileViewModel
 
-- (instancetype)initWithUser:(User *)user
+- (instancetype)initWithProfile:(Profile *)profile
 {
     if ((self = [super init])) {
-        _user = user;
+        _profile = profile;
     }
     return self;
 }
@@ -56,7 +56,7 @@
 - (BOOL)anyContactInfo
 {
     if (self.privateMessagesWork) return YES;
-    NSDictionary *contactInfo = [self.user dictionaryWithValuesForKeys:@[ @"aimName", @"icqName", @"yahooName", @"homepageURL" ]];
+    NSDictionary *contactInfo = [self.profile dictionaryWithValuesForKeys:@[ @"aimName", @"icqName", @"yahooName", @"homepageURL" ]];
     for (id value in contactInfo.allValues) {
         if ([value respondsToSelector:@selector(length)] && [value length] > 0) return YES;
         if ([value respondsToSelector:@selector(absoluteString)] && [value absoluteString].length > 0) return YES;
@@ -66,23 +66,38 @@
 
 - (BOOL)privateMessagesWork
 {
-    return self.user.canReceivePrivateMessages && [AwfulSettings sharedSettings].canSendPrivateMessages;
+    return self.profile.user.canReceivePrivateMessages && [AwfulSettings sharedSettings].canSendPrivateMessages;
 }
 
 - (NSString *)customTitleHTML
 {
-    NSString *HTML = self.user.customTitleHTML;
+    NSString *HTML = self.profile.user.customTitleHTML;
     return [HTML isEqualToString:@"<br/>"] ? nil : HTML;
 }
 
 - (NSString *)gender
 {
-    return self.user.gender ?: @"porpoise";
+    return self.profile.gender ?: @"porpoise";
+}
+
+- (NSURL *)avatarURL
+{
+    return self.profile.user.avatarURL;
+}
+
+- (NSDate *)regdate
+{
+    return self.profile.user.regdate;
+}
+
+- (NSString *)username
+{
+    return self.profile.user.username;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key
 {
-    return [self.user valueForKey:key];
+    return [self.profile valueForKey:key];
 }
 
 @dynamic aboutMe;

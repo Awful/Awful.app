@@ -123,9 +123,9 @@
             success(user);
             return YES;
         }
-        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, User *user) {
-            if (user) {
-                success(user);
+        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, Profile *profile) {
+            if (profile) {
+                success(profile.user);
             } else if (error) {
                 [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
             }
@@ -156,9 +156,9 @@
 			return YES;
 		}
 		
-		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, User *user) {
-			if (user) {
-				success(user);
+		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, Profile *profile) {
+			if (profile) {
+				success(profile.user);
 			} else if (error) {
                 [self.rootViewController presentViewController:[UIAlertController alertWithTitle:@"Could Not Find User" error:error] animated:YES completion:nil];
 			}

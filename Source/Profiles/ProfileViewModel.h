@@ -1,18 +1,18 @@
-//  AwfulProfileViewModel.h
+//  ProfileViewModel.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
-@class User;
+@import Foundation;
+@class Profile;
 
 /**
- * An AwfulProfileViewModel helps render a user's profile.
+ * A ProfileViewModel helps render a user's profile.
  */
-@interface AwfulProfileViewModel : NSObject
+@interface ProfileViewModel : NSObject
 
-- (instancetype)initWithUser:(User *)user NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithProfile:(Profile *)profile NS_DESIGNATED_INITIALIZER;
 
-@property (readonly, strong, nonatomic) User *user;
+@property (readonly, strong, nonatomic) Profile *profile;
 
 /**
  * CSS for displaying a profile.
@@ -66,9 +66,14 @@
 
 #pragma mark Keys forwarded to the user
 
+@property (readonly, nonatomic) NSURL *avatarURL;
+@property (readonly, nonatomic) NSDate *regdate;
+@property (readonly, nonatomic) NSString *username;
+
+#pragma mark Keys forwarded to the profile
+
 @property (readonly, nonatomic) NSString *aboutMe;
 @property (readonly, nonatomic) NSString *aimName;
-@property (readonly, nonatomic) NSURL *avatarURL;
 @property (readonly, nonatomic) NSURL *homepageURL;
 @property (readonly, nonatomic) NSString *icqName;
 @property (readonly, nonatomic) NSString *interests;
@@ -78,8 +83,6 @@
 @property (readonly, nonatomic) int32_t postCount;
 @property (readonly, nonatomic) NSString *postRate;
 @property (readonly, nonatomic) NSURL *profilePictureURL;
-@property (readonly, nonatomic) NSDate *regdate;
-@property (readonly, nonatomic) NSString *username;
 @property (readonly, nonatomic) NSString *yahooName;
 
 @end

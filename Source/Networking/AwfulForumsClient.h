@@ -8,6 +8,7 @@
 @class Forum;
 @class Post;
 @class PrivateMessage;
+@class Profile;
 @class Thread;
 @class ThreadTag;
 @class User;
@@ -261,13 +262,13 @@
 /**
  * @param userID   The user's ID. Specified directly in case no such user exists, which would make for a useless User object.
  * @param username The user's username. If userID is not given, username must be given.
- * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and a User object on success or nil on failure.
+ * @param callback A block to call after learning of the user's info, which takes as parameters: an NSError object on failure or nil on success; and a Profile object on success or nil on failure.
  *
  * @return An enqueued network operation.
  */
 - (NSOperation *)profileUserWithID:(NSString *)userID
                           username:(NSString *)username
-                           andThen:(void (^)(NSError *error, User *user))callback;
+                           andThen:(void (^)(NSError *error, Profile *profile))callback;
 
 #pragma mark - Punishments
 

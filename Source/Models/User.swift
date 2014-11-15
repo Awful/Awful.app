@@ -5,31 +5,18 @@
 @objc(User)
 class User: AwfulManagedObject {
 
-    @NSManaged var aboutMe: String?
     @NSManaged var administrator: Bool
-    @NSManaged var aimName: String?
     @NSManaged var authorClasses: String?
     @NSManaged var canReceivePrivateMessages: Bool
     @NSManaged var customTitleHTML: String?
-    @NSManaged var gender: String?
-    @NSManaged var homepageURL: NSURL?
-    @NSManaged var icqName: String?
-    @NSManaged var interests: String?
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged var primitiveLastModifiedDate: NSDate?
-    @NSManaged var lastPostDate: NSDate?
-    @NSManaged var location: String?
     @NSManaged var moderator: Bool
-    @NSManaged var occupation: String?
-    @NSManaged var postCount: Int32
-    @NSManaged var postRate: String?
-    @NSManaged var profilePictureURL: NSURL?
     @NSManaged var regdate: NSDate?
     @NSManaged var userID: String?
     @NSManaged var username: String?
-    @NSManaged var yahooName: String?
     
     @NSManaged var posts: NSMutableSet /* Post */
+    @NSManaged var profile: Profile?
     @NSManaged var receivedPrivateMessages: NSMutableSet /* PrivateMessage via to */
     @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
