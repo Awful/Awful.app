@@ -22,7 +22,7 @@ extension ThreadTag {
 }
 
 private func imageNameFromURL(URL: NSURL) -> String {
-    return URL.lastPathComponent.stringByDeletingPathExtension
+    return URL.lastPathComponent!.stringByDeletingPathExtension
 }
 
 extension ThreadTag {
