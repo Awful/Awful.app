@@ -453,6 +453,7 @@
                            andThen:(void (^)(NSError *error, Thread *thread))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = _managedObjectContext;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
                                 @"forumid": forum.forumID }
@@ -500,8 +501,9 @@
                  NSString *threadID = URL.queryDictionary[@"threadid"];
                  NSError *error;
                  Thread *thread;
-                 if (threadID) {
-                     thread = [Thread firstOrNewThreadWithID:threadID inManagedObjectContext:managedObjectContext];
+                 if (threadID.length > 0) {
+                     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
+                     thread = [Thread objectWithKey:threadKey inManagedObjectContext:mainManagedObjectContext];
                  } else {
                      error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
                  }
@@ -699,7 +701,8 @@
                  if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                      NSString *postID = URL.queryDictionary[@"postid"];
                      if (postID.length > 0) {
-                         post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:mainManagedObjectContext];
+                         PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
+                         post = [Post objectWithKey:postKey inManagedObjectContext:mainManagedObjectContext];
                      }
                  }
                  if (callback) callback(nil, post);
@@ -934,8 +937,10 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         NSDictionary *query = [request.URL queryDictionary];
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             [managedObjectContext performBlock:^{
-                Post *post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
-                post.thread = [Thread firstOrNewThreadWithID:query[@"threadid"] inManagedObjectContext:managedObjectContext];
+                PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
+                Post *post = [Post objectWithKey:postKey inManagedObjectContext:managedObjectContext];
+                ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:query[@"threadid"]];
+                post.thread = [Thread objectWithKey:threadKey inManagedObjectContext:managedObjectContext];
                 NSError *error;
                 BOOL ok = [managedObjectContext save:&error];
                 if (callback) {

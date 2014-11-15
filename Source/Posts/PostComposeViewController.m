@@ -246,16 +246,29 @@
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    NSString *postID = [coder decodeObjectForKey:PostIDKey];
-    NSString *threadID = [coder decodeObjectForKey:ThreadIDKey];
+    // AwfulObjectKey was introduced in Awful 3.2.
+    PostKey *postKey = [coder decodeObjectForKey:PostKeyKey];
+    if (!postKey) {
+        NSString *postID = [coder decodeObjectForKey:obsolete_PostIDKey];
+        if (postID) {
+            postKey = [[PostKey alloc] initWithPostID:postID];
+        }
+    }
+    ThreadKey *threadKey = [coder decodeObjectForKey:ThreadKeyKey];
+    if (!threadKey) {
+        NSString *threadID = [coder decodeObjectForKey:obsolete_ThreadIDKey];
+        if (threadID) {
+            threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
+        }
+    }
     PostComposeViewController *replyViewController;
-    if (postID) {
-        Post *post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:managedObjectContext];
+    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    if (postKey) {
+        Post *post = [Post objectWithKey:postKey inManagedObjectContext:managedObjectContext];
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:originalText];
-    } else if (threadID) {
-        Thread *thread = [Thread firstOrNewThreadWithID:threadID inManagedObjectContext:managedObjectContext];
+    } else if (threadKey) {
+        Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:managedObjectContext];
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {
@@ -274,17 +287,19 @@
 {
     [super encodeRestorableStateWithCoder:coder];
     if (self.thread) {
-        [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
+        [coder encodeObject:self.thread.objectKey forKey:ThreadKeyKey];
         [coder encodeObject:self.quotedText forKey:QuotedTextKey];
     } else if (self.post) {
-        [coder encodeObject:self.post.postID forKey:PostIDKey];
+        [coder encodeObject:self.post.objectKey forKey:PostKeyKey];
         [coder encodeObject:self.originalText forKey:OriginalTextKey];
     }
 }
 
-static NSString * const PostIDKey = @"AwfulPostID";
+static NSString * const PostKeyKey = @"PostKey";
+static NSString * const obsolete_PostIDKey = @"AwfulPostID";
 static NSString * const OriginalTextKey = @"AwfulOriginalText";
-static NSString * const ThreadIDKey = @"AwfulThreadID";
+static NSString * const ThreadKeyKey = @"ThreadKey";
+static NSString * const obsolete_ThreadIDKey = @"AwfulThreadID";
 static NSString * const QuotedTextKey = @"AwfulQuotedText";
 
 @end

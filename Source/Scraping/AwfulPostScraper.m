@@ -36,7 +36,8 @@
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Post parsing failed; could not find post ID" }];
             return;
         }
-        self.post = [Post firstOrNewPostWithPostID:postID inManagedObjectContext:self.managedObjectContext];
+        PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
+        self.post = [Post objectWithKey:postKey inManagedObjectContext:self.managedObjectContext];
     }}
     
     {{

@@ -1135,12 +1135,24 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
+    // AwfulObjectKey was introduced in Awful 3.2.
+    ThreadKey *threadKey = [coder decodeObjectForKey:ThreadKeyKey];
+    if (!threadKey) {
+        NSString *threadID = [coder decodeObjectForKey:obsolete_ThreadIDKey];
+        threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
+    }
+    UserKey *userKey = [coder decodeObjectForKey:AuthorUserKeyKey];
+    if (!userKey) {
+        NSString *userID = [coder decodeObjectForKey:obsolete_AuthorUserIDKey];
+        if (userID) {
+            userKey = [[UserKey alloc] initWithUserID:userID username:nil];
+        }
+    }
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    Thread *thread = [Thread firstOrNewThreadWithID:[coder decodeObjectForKey:ThreadIDKey] inManagedObjectContext:managedObjectContext];
-    NSString *authorUserID = [coder decodeObjectForKey:AuthorUserIDKey];
+    Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:managedObjectContext];
     User *author;
-    if (authorUserID.length > 0) {
-        author = [User firstOrNewUserWithID:authorUserID username:nil inManagedObjectContext:managedObjectContext];
+    if (userKey) {
+        author = [User objectForKey:userKey inManagedObjectContext:managedObjectContext];
     }
     PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
@@ -1154,9 +1166,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.thread.threadID forKey:ThreadIDKey];
+    [coder encodeObject:self.thread.objectKey forKey:ThreadKeyKey];
     [coder encodeInteger:self.page forKey:PageKey];
-    [coder encodeObject:self.author.userID forKey:AuthorUserIDKey];
+    [coder encodeObject:self.author.objectID forKey:AuthorUserKeyKey];
     [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
     [coder encodeObject:self.replyViewController forKey:ReplyViewControllerKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
@@ -1187,9 +1199,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     _restoringState = NO;
 }
 
-static NSString * const ThreadIDKey = @"AwfulThreadID";
+static NSString * const ThreadKeyKey = @"ThreadKey";
+static NSString * const obsolete_ThreadIDKey = @"AwfulThreadID";
 static NSString * const PageKey = @"AwfulCurrentPage";
-static NSString * const AuthorUserIDKey = @"AwfulAuthorUserID";
+static NSString * const AuthorUserKeyKey = @"AuthorUserKey";
+static NSString * const obsolete_AuthorUserIDKey = @"AwfulAuthorUserID";
 static NSString * const HiddenPostsKey = @"AwfulHiddenPosts";
 static NSString * const ReplyViewControllerKey = @"AwfulReplyViewController";
 static NSString * const MessageViewControllerKey = @"AwfulMessageViewController";

@@ -107,9 +107,9 @@
 
 - (User *)loggedInUser
 {
-    return [User firstOrNewUserWithID:[AwfulSettings sharedSettings].userID
-                             username:[AwfulSettings sharedSettings].username
-               inManagedObjectContext:self.managedObjectContext];
+    AwfulSettings *settings = [AwfulSettings sharedSettings];
+    UserKey *userKey = [[UserKey alloc] initWithUserID:settings.userID username:settings.username];
+    return [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
 }
 
 #pragma mark - UITableViewDataSource and UITableViewDelegate

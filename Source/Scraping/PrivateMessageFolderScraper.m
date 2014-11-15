@@ -36,8 +36,8 @@
             continue;
         }
         
-        PrivateMessage *message = [PrivateMessage firstOrNewPrivateMessageWithMessageID:messageID
-                                                                 inManagedObjectContext:self.managedObjectContext];
+        PrivateMessageKey *messageKey = [[PrivateMessageKey alloc] initWithMessageID:messageID];
+        PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
         message.subject = titleLink.textContent;
         
         {{
@@ -52,7 +52,8 @@
             HTMLElement *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
             NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
             if (URL) {
-                message.threadTag = [ThreadTag firstOrNewThreadTagWithID:nil threadTagURL:URL inManagedObjectContext:self.managedObjectContext];
+                ThreadTagKey *tagKey = [[ThreadTagKey alloc] initWithImageURL:URL threadTagID:nil];
+                message.threadTag = [ThreadTag objectForKey:tagKey inManagedObjectContext:self.managedObjectContext];
             } else {
                 message.threadTag = nil;
             }
@@ -62,7 +63,8 @@
             HTMLElement *fromCell = [row awful_firstNodeMatchingCachedSelector:@"td.sender"];
             NSString *fromUsername = fromCell.textContent;
             if (fromUsername.length > 0) {
-                message.from = [User firstOrNewUserWithID:nil username:fromUsername inManagedObjectContext:self.managedObjectContext];
+                UserKey *userKey = [[UserKey alloc] initWithUserID:nil username:fromUsername];
+                message.from = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
             }
         }}
         

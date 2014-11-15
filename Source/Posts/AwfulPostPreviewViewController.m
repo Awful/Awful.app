@@ -121,10 +121,11 @@
         if (error) {
             [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else if (self) {
-            self.fakePost = [Post insertInManagedObjectContext:self.managedObjectContext];
-            User *loggedInUser = [User firstOrNewUserWithID:[AwfulSettings sharedSettings].userID
-                                                   username:[AwfulSettings sharedSettings].username
-                                     inManagedObjectContext:self.managedObjectContext];
+            PostKey *postKey = [[PostKey alloc] initWithPostID:@"fake"];
+            self.fakePost = [Post objectWithKey:postKey inManagedObjectContext:self.managedObjectContext];
+            AwfulSettings *settings = [AwfulSettings sharedSettings];
+            UserKey *userKey = [[UserKey alloc] initWithUserID:settings.userID username:settings.username];
+            User *loggedInUser = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
             if (self.editingPost) {
                 
                 // Create a copy of the post we're editing. We'll later change the properties we care about previewing.

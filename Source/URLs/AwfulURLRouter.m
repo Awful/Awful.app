@@ -204,12 +204,13 @@
 
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
 {
-    NSString *threadID = parameters[@"threadID"];
-    Thread *thread = [Thread firstOrNewThreadWithID:threadID inManagedObjectContext:self.managedObjectContext];
+    ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:parameters[@"threadID"]];
+    Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
     PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {
-        User *user = [User firstOrNewUserWithID:userID username:nil inManagedObjectContext:self.managedObjectContext];
+        UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:nil];
+        User *user = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
         postsViewController = [[PostsPageViewController alloc] initWithThread:thread author:user];
     } else {
         postsViewController = [[PostsPageViewController alloc] initWithThread:thread];

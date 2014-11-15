@@ -69,7 +69,8 @@
 - (User *)author
 {
     if (_author || self.error) return _author;
-    self.author = [User firstOrNewUserWithID:self.userID username:self.username inManagedObjectContext:self.managedObjectContext];
+    UserKey *userKey = [[UserKey alloc] initWithUserID:self.userID username:self.username];
+    self.author = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
     return _author;
 }
 

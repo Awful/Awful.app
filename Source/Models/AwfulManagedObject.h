@@ -2,7 +2,8 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <CoreData/CoreData.h>
+@import CoreData;
+@class AwfulObjectKey;
 
 /**
  * An AwfulManagedObject is marginally more convenient than an NSManagedObject.
@@ -20,11 +21,6 @@
 + (instancetype)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 /**
- * Returns all objects of the class's entity.
- */
-+ (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
-
-/**
  * Returns all objects of the class's entity that match a predicate.
  */
 + (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -36,21 +32,11 @@
 + (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext matchingPredicate:(NSPredicate *)predicate;
 
 /**
- * Returns a dictionary of matching objects of the class's entity.
- *
- * @param managedObjectContext The context from which to fetch the objects.
- * @param attributeName        The name of an attribute whose values will be the keys in the returned dictionary.
- * @param format               A format suitable for +[NSPredicate predicateWithFormat:].
+ Returns an array of objects of the class's entity matching the objectKeys.
+ 
+ New objects are inserted as necessary, and only a single fetch is executed by the managedObjectContext. The returned array is sorted in the same order as objectKeys. Duplicate (or effectively duplicate) items in objectKeys is no problem and are maintained in the returned array.
  */
-+ (NSDictionary *)dictionaryOfAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-                                  keyedByAttributeNamed:(NSString *)attributeName
-                                matchingPredicateFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(3, 4);
-
-/**
- * Returns YES if there are any objects of the class's entity that match a predicate.
- */
-+ (BOOL)anyInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-          matchingPredicateFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(2, 3);
++ (NSArray *)objectsForKeys:(NSArray *)objectKeys inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 /**
  * Returns an arbitrary object of the class's entity that matches a predicate.
@@ -62,13 +48,5 @@
  * Returns an arbitrary object of the class's entity that matches a predicate.
  */
 + (instancetype)fetchArbitraryInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext matchingPredicate:(NSPredicate *)predicate;
-
-/**
- * Deletes all objects of the class's entity that match a predicate.
- *
- * @return YES if deletion succeeded, otherwise NO.
- */
-+ (BOOL)deleteAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-                matchingPredicateFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(2, 3);
 
 @end

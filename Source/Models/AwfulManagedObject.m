@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulManagedObject.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulManagedObject
 
@@ -15,17 +16,6 @@
 {
     return [NSEntityDescription insertNewObjectForEntityForName:self.entityName
                                          inManagedObjectContext:managedObjectContext];
-}
-
-+ (NSArray *)fetchAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-{
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    NSError *error;
-    NSArray *objects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (!objects) {
-        NSLog(@"%s error fetching all %@ objects: %@", __PRETTY_FUNCTION__, self.entityName, error);
-    }
-    return objects;
 }
 
 #define NSPredicateWithFormatAndArguments(format) ({ \
@@ -55,34 +45,36 @@
     return objects;
 }
 
-+ (NSDictionary *)dictionaryOfAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-                                  keyedByAttributeNamed:(NSString *)attributeName
-                                matchingPredicateFormat:(NSString *)format, ...
++ (NSArray *)objectsForKeys:(NSArray *)objectKeys inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
+    NSParameterAssert(objectKeys.count > 1);
     NSParameterAssert(managedObjectContext);
-    NSParameterAssert(attributeName.length > 0);
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    fetchRequest.predicate = NSPredicateWithFormatAndArguments(format);
+    NSMutableArray *subpredicates = [NSMutableArray new];
+    NSDictionary *aggregateValues = [[objectKeys.firstObject class] valuesForKeysInObjectKeys:objectKeys];
+    [aggregateValues enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSArray *values, BOOL *stop) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"%K IN %@", key, values]];
+    }];
+    fetchRequest.predicate = [NSCompoundPredicate orPredicateWithSubpredicates:subpredicates];
     NSError *error;
-    NSArray *objects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (!objects) {
-        NSLog(@"%s error fetching %@ objects: %@", __PRETTY_FUNCTION__, self.entityName, error);
+    NSArray *existing = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (!existing) {
+        @throw [NSException exceptionWithName:NSGenericException reason:@"fetch did fail" userInfo:@{NSUnderlyingErrorKey: error}];
     }
-    return [NSDictionary dictionaryWithObjects:objects forKeys:[objects valueForKey:attributeName]];
-}
-
-+ (BOOL)anyInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-          matchingPredicateFormat:(NSString *)format, ...
-{
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    fetchRequest.predicate = NSPredicateWithFormatAndArguments(format);
-    NSError *error;
-    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
-    if (count == NSNotFound) {
-        NSLog(@"%s error counting %@ objects: %@", __PRETTY_FUNCTION__, self.entityName, error);
+    NSMutableDictionary *existingByKey = [NSMutableDictionary dictionaryWithObjects:existing forKeys:[existing valueForKey:@"objectKey"]];
+    
+    NSMutableArray *objects = [NSMutableArray new];
+    for (AwfulObjectKey *key in objectKeys) {
+        AwfulManagedObject *object = existingByKey[key];
+        if (!object) {
+            object = [self insertInManagedObjectContext:managedObjectContext];
+            [object applyObjectKey:key];
+            existingByKey[key] = object;
+        }
+        [objects addObject:object];
     }
-    return count != 0;
+    return objects;
 }
 
 + (instancetype)fetchArbitraryInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -103,23 +95,6 @@
         NSLog(@"%s error fetching arbitrary %@ object: %@", __PRETTY_FUNCTION__, self.entityName, error);
     }
     return objects.firstObject;
-}
-
-+ (BOOL)deleteAllInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
-                matchingPredicateFormat:(NSString *)format, ...
-{
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
-    fetchRequest.predicate = NSPredicateWithFormatAndArguments(format);
-    NSError *error;
-    NSArray *objects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (!objects) {
-        NSLog(@"%s error deleting %@ objects: %@", __PRETTY_FUNCTION__, self.entityName, error);
-        return NO;
-    }
-    for (AwfulManagedObject *object in objects) {
-        [managedObjectContext deleteObject:object];
-    }
-    return YES;
 }
 
 @end

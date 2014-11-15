@@ -21,13 +21,58 @@ class Forum: AwfulManagedObject {
     @NSManaged private(set) var metadata: ForumMetadata
 }
 
+class ForumKey: AwfulObjectKey {
+    let forumID: String
+    init(forumID: String) {
+        assert(!forumID.isEmpty)
+        self.forumID = forumID
+        super.init(entityName: Forum.entityName())
+    }
+    required init(coder: NSCoder) {
+        forumID = coder.decodeObjectForKey(forumIDKey) as String
+        super.init(coder: coder)
+    }
+    override func encodeWithCoder(coder: NSCoder) {
+        super.encodeWithCoder(coder)
+        coder.encodeObject(forumID, forKey: forumIDKey)
+    }
+    override func isEqual(object: AnyObject?) -> Bool {
+        if !super.isEqual(object) { return false }
+        if let other = object as? ForumKey {
+            return other.forumID == forumID
+        } else {
+            return false
+        }
+    }
+    override var hash: Int {
+        get { return super.hash ^ forumID.hash }
+    }
+    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
+        let objectKeys = objectKeys as [ForumKey]
+        return ["forumID": objectKeys.map{$0.forumID}]
+    }
+}
+
+private let forumIDKey = "forumID"
+
 extension Forum {
-    class func fetchOrInsertForumInManagedObjectContext(context: NSManagedObjectContext, withID forumID: String) -> Forum {
-        if let forum = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "forumID = %@", forumID)) {
+    override var objectKey: ForumKey {
+        get {
+            return ForumKey(forumID: forumID)
+        }
+    }
+    
+    override func applyObjectKey(objectKey: AwfulObjectKey) {
+        let objectKey = objectKey as ForumKey
+        forumID = objectKey.forumID
+    }
+    
+    class func objectWithKey(objectKey: ForumKey, inManagedObjectContext context: NSManagedObjectContext) -> Forum {
+        if let forum = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "forumID = %@", objectKey.forumID)) {
             return forum
         } else {
             let forum = insertInManagedObjectContext(context)
-            forum.forumID = forumID
+            forum.applyObjectKey(objectKey)
             return forum
         }
     }
@@ -49,17 +94,59 @@ class ForumGroup: AwfulManagedObject {
     @NSManaged var forums: NSMutableSet /* Forum */
 }
 
+class ForumGroupKey: AwfulObjectKey {
+    let groupID: String
+    init(groupID: String) {
+        self.groupID = groupID
+        super.init(entityName: ForumGroup.entityName())
+    }
+    required init(coder: NSCoder) {
+        groupID = coder.decodeObjectForKey(groupIDKey) as String
+        super.init(coder: coder)
+    }
+    override func encodeWithCoder(coder: NSCoder) {
+        super.encodeWithCoder(coder)
+        coder.encodeObject(groupID, forKey: groupIDKey)
+    }
+    override func isEqual(object: AnyObject?) -> Bool {
+        if !super.isEqual(object) { return false }
+        if let other = object as? ForumGroupKey {
+            return other.groupID == groupID
+        } else {
+            return false
+        }
+    }
+    override var hash: Int {
+        get { return super.hash ^ groupID.hash }
+    }
+    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
+        let objectKeys = objectKeys as [ForumGroupKey]
+        return ["groupID": objectKeys.map{$0.groupID}]
+    }
+}
+
 extension ForumGroup {
-    class func firstOrNewForumGroupWithID(groupID: String, inManagedObjectContext context: NSManagedObjectContext) -> ForumGroup {
-        if let group = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "groupID = %@", groupID)) {
+    override var objectKey: ForumGroupKey {
+        get { return ForumGroupKey(groupID: groupID) }
+    }
+    
+    override func applyObjectKey(objectKey: AwfulObjectKey) {
+        let objectKey = objectKey as ForumGroupKey
+        groupID = objectKey.groupID
+    }
+    
+    class func objectForKey(groupKey: ForumGroupKey, inManagedObjectContext context: NSManagedObjectContext) -> ForumGroup {
+        if let group = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "groupID = %@", groupKey.groupID)) {
             return group
         } else {
             let group = insertInManagedObjectContext(context)
-            group.groupID = groupID
+            group.applyObjectKey(groupKey)
             return group
         }
     }
 }
+
+private let groupIDKey = "groupID"
 
 @objc(ForumMetadata)
 class ForumMetadata: AwfulManagedObject {

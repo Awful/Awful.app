@@ -31,8 +31,10 @@
     if (self.error) return;
     
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
-    self.thread = [Thread firstOrNewThreadWithID:body[@"data-thread"] inManagedObjectContext:self.managedObjectContext];
-    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:body[@"data-forum"]];
+    ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:body[@"data-thread"]];
+    self.thread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
+    ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
+    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:self.managedObjectContext];
     self.thread.forum = forum;
     
     if (!self.thread.threadID && [body awful_firstNodeMatchingCachedSelector:@"div.standard div.inner a[href*=archives.php]"]) {
@@ -54,15 +56,15 @@
     if (hierarchyLinks.count > 1) {
         HTMLElement *groupLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
-        NSString *groupID = URL.queryDictionary[@"forumid"];
-        ForumGroup *group = [ForumGroup firstOrNewForumGroupWithID:groupID inManagedObjectContext:self.managedObjectContext];
+        ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:URL.queryDictionary[@"forumid"]];
+        ForumGroup *group = [ForumGroup objectForKey:groupKey inManagedObjectContext:self.managedObjectContext];
         group.name = groupLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
-            NSString *subforumID = URL.queryDictionary[@"forumid"];
-            Forum *subforum = [Forum fetchOrInsertForumInManagedObjectContext:self.managedObjectContext withID:subforumID];
+            ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.queryDictionary[@"forumid"]];
+            Forum *subforum = [Forum objectWithKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
             currentForum.parentForum = subforum;
@@ -106,9 +108,7 @@
     self.advertisementHTML = [[self.node awful_firstNodeMatchingCachedSelector:@"#ad_banner_user a"] serializedFragment];
     
     NSArray *postTables = [self.node awful_nodesMatchingCachedSelector:@"table.post"];
-    NSMutableArray *postIDs = [NSMutableArray new];
-    NSMutableArray *userIDs = [NSMutableArray new];
-    NSMutableArray *usernames = [NSMutableArray new];
+    NSMutableArray *postKeys = [NSMutableArray new];
     NSMutableArray *authorScrapers = [NSMutableArray new];
     for (HTMLElement *table in postTables) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:table[@"id"]];
@@ -119,38 +119,25 @@
             self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];
             return;
         }
-        [postIDs addObject:postID];
+        [postKeys addObject:[[PostKey alloc] initWithPostID:postID]];
         
         AuthorScraper *authorScraper = [AuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
         [authorScrapers addObject:authorScraper];
-        if (authorScraper.userID) {
-            [userIDs addObject:authorScraper.userID];
-        }
-        if (authorScraper.username) {
-            [usernames addObject:authorScraper.username];
+    }
+    NSArray *posts = [Post objectsForKeys:postKeys inManagedObjectContext:self.managedObjectContext];
+    
+    NSMutableArray *userKeys = [NSMutableArray new];
+    for (AuthorScraper *authorScraper in authorScrapers) {
+        if (!authorScraper.error) {
+            [userKeys addObject:[[UserKey alloc] initWithUserID:authorScraper.userID username:authorScraper.username]];
         }
     }
-    NSDictionary *fetchedPosts = [Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                       keyedByAttributeNamed:@"postID"
-                                                     matchingPredicateFormat:@"postID IN %@", postIDs];
-    NSMutableDictionary *usersByID = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                            keyedByAttributeNamed:@"userID"
-                                                          matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
-    NSMutableDictionary *usersByName = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                              keyedByAttributeNamed:@"username"
-                                                            matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
+    NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     
-    NSMutableArray *posts = [NSMutableArray new];
     __block Post *firstUnseenPost;
     [postTables enumerateObjectsUsingBlock:^(HTMLElement *table, NSUInteger i, BOOL *stop) {
-        NSString *postID = postIDs[i];
-        Post *post = fetchedPosts[postID];
-        if (!post) {
-            post = [Post insertInManagedObjectContext:self.managedObjectContext];
-            post.postID = postID;
-        }
-        [posts addObject:post];
-        
+        Post *post = posts[i];
         post.thread = self.thread;
         
         {{
@@ -182,30 +169,18 @@
         }}
         
         {{
+            UserKey *authorKey;
             AuthorScraper *authorScraper = authorScrapers[i];
-            User *author;
-            if (authorScraper.userID) {
-                author = usersByID[authorScraper.userID];
-            } else if (authorScraper.username) {
-                author = usersByName[authorScraper.username];
+            if (!authorScraper.error) {
+                authorKey = [[UserKey alloc] initWithUserID:authorScraper.userID username:authorScraper.username];
             }
-            if (author) {
-                authorScraper.author = author;
-            } else {
-                author = authorScraper.author;
-            }
-            if (author) {
+            if (authorKey) {
+                User *author = usersByKey[authorKey];
                 post.author = author;
-                if ([table awful_firstNodeMatchingCachedSelector:@"dt.author.op"]) {
-                    self.thread.author = post.author;
-                }
                 HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href*='private.php']"];
-                post.author.canReceivePrivateMessages = !!privateMessageLink;
-                if (author.userID) {
-                    usersByID[author.userID] = author;
-                }
-                if (author.username) {
-                    usersByName[author.username] = author;
+                author.canReceivePrivateMessages = !!privateMessageLink;
+                if ([table awful_firstNodeMatchingCachedSelector:@"dt.author.op"]) {
+                    self.thread.author = author;
                 }
             }
         }}

@@ -24,8 +24,8 @@
     NSMutableArray *_requiredInputElements;
     NSArray *_textareaElements;
     NSMutableArray *_optionalInputElements;
-    NSArray *_threadTagElements;
-    NSMutableArray *_secondaryThreadTagDictionaries;
+    NSMutableArray *_threadTagKeys;
+    NSMutableArray *_secondaryThreadTagKeys;
 }
 
 - (id)initWithElement:(HTMLElement *)element
@@ -137,13 +137,24 @@
     }}
     
     {{
-        _threadTagElements = [self.element nodesMatchingSelector:@"div.posticon"];
-        HTMLElement *anyThreadTagElement = _threadTagElements.firstObject;
+        _threadTagKeys = [NSMutableArray new];
+        NSArray *tagElements = [self.element nodesMatchingSelector:@"div.posticon"];
+        for (HTMLElement *div in tagElements) {
+            HTMLElement *input = [div firstNodeMatchingSelector:@"input"];
+            NSString *threadTagID = input[@"value"];
+            HTMLElement *image = [div firstNodeMatchingSelector:@"img"];
+            NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
+            if (threadTagID.length > 0 && imageURL) {
+                [_threadTagKeys addObject:[[ThreadTagKey alloc] initWithImageURL:imageURL threadTagID:threadTagID]];
+            }
+        }
+        
+        HTMLElement *anyThreadTagElement = tagElements.firstObject;
         self.selectedThreadTagKey = [anyThreadTagElement firstNodeMatchingSelector:@"input"][@"name"];
     }}
     
     {{
-        _secondaryThreadTagDictionaries = [NSMutableArray new];
+        _secondaryThreadTagKeys = [NSMutableArray new];
         NSArray *inputs = [self.element nodesMatchingSelector:@"input[type='radio']:not([name='iconid'])"];
         NSArray *images = [self.element nodesMatchingSelector:@"input[type='radio']:not([name='iconid']) + img"];
         if (inputs.count == images.count) {
@@ -151,9 +162,8 @@
                 NSString *threadTagID = input[@"value"];
                 HTMLElement *image = images[i];
                 NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
-                if (threadTagID && imageURL) {
-                    [_secondaryThreadTagDictionaries addObject:@{ @"threadTagID": threadTagID,
-                                                                  @"imageURL": imageURL }];
+                if (threadTagID.length > 0 && imageURL) {
+                    [_secondaryThreadTagKeys addObject:[[ThreadTagKey alloc] initWithImageURL:imageURL threadTagID:threadTagID]];
                 }
             }];
             HTMLElement *input = inputs.firstObject;
@@ -170,51 +180,12 @@
     
     [self scrapeIfNecessary];
     
-    NSMutableArray *existingIDs = [NSMutableArray new];
-    for (HTMLElement *div in _threadTagElements) {
-        HTMLElement *input = [div firstNodeMatchingSelector:@"input"];
-        NSString *threadTagID = input[@"value"];
-        if (threadTagID.length > 0) {
-            [existingIDs addObject:threadTagID];
-        }
+    if (_threadTagKeys.count > 0) {
+        self.threadTags = [ThreadTag objectsForKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
     }
-    [existingIDs addObjectsFromArray:[_secondaryThreadTagDictionaries valueForKey:@"threadTagID"]];
-    NSDictionary *existingThreadTags = [ThreadTag dictionaryOfAllInManagedObjectContext:managedObjectContext
-                                                                  keyedByAttributeNamed:@"threadTagID"
-                                                                matchingPredicateFormat:@"threadTagID IN %@", existingIDs];
-    
-    NSMutableArray *threadTags = [NSMutableArray new];
-    for (HTMLElement *div in _threadTagElements) {
-        HTMLElement *input = [div firstNodeMatchingSelector:@"input"];
-        NSString *threadTagID = input[@"value"];
-        HTMLElement *image = [div firstNodeMatchingSelector:@"img"];
-        NSURL *URL = [NSURL URLWithString:image[@"src"]];
-        if (threadTagID.length == 0 || !URL) continue;
-        ThreadTag *threadTag = existingThreadTags[threadTagID];
-        if (threadTag) {
-            [threadTag setURL:URL];
-        } else {
-            threadTag = [ThreadTag firstOrNewThreadTagWithID:threadTagID
-                                                threadTagURL:URL
-                                      inManagedObjectContext:managedObjectContext];
-        }
-        [threadTags addObject:threadTag];
+    if (_secondaryThreadTagKeys.count > 0) {
+        self.secondaryThreadTags = [ThreadTag objectsForKeys:_secondaryThreadTags inManagedObjectContext:managedObjectContext];
     }
-    self.threadTags = threadTags;
-    
-    NSMutableArray *secondaryThreadTags = [NSMutableArray new];
-    for (NSDictionary *info in _secondaryThreadTagDictionaries) {
-        ThreadTag *threadTag = existingThreadTags[info[@"threadTagID"]];
-        if (threadTag) {
-            [threadTag setURL:info[@"imageURL"]];
-        } else {
-            threadTag = [ThreadTag firstOrNewThreadTagWithID:info[@"threadTagID"]
-                                                threadTagURL:info[@"imageURL"]
-                                      inManagedObjectContext:managedObjectContext];
-        }
-        [secondaryThreadTags addObject:threadTag];
-    }
-    self.secondaryThreadTags = secondaryThreadTags;
 }
 
 @end

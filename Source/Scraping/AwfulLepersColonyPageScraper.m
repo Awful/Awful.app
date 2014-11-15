@@ -35,9 +35,8 @@
     
     // Find all the post IDs and user IDs/names so we can fetch the ones we know about. Then we'll come back around and update/insert as needed.
     NSMutableArray *infoDictionaries = [NSMutableArray new];
-    NSMutableArray *postIDs = [NSMutableArray new];
-    NSMutableArray *userIDs = [NSMutableArray new];
-    NSMutableArray *usernames = [NSMutableArray new];
+    NSMutableArray *postKeys = [NSMutableArray new];
+    NSMutableArray *userKeys = [NSMutableArray new];
     for (HTMLElement *row in rows) {
         NSMutableDictionary *info = [NSMutableDictionary new];
         HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
@@ -47,8 +46,9 @@
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
             if (postID.length > 0) {
-                info[@"postID"] = postID;
-                [postIDs addObject:postID];
+                PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
+                info[@"postKey"] = postKey;
+                [postKeys addObject:postKey];
             }
         }}
         
@@ -67,14 +67,11 @@
             HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
-            if (userID.length > 0) {
-                [userIDs addObject:userID];
-                info[@"userID"] = userID;
-            }
             NSString *username = userLink.textContent;
-            if (username.length > 0) {
-                [usernames addObject:username];
-                info[@"username"] = username;
+            if (userID.length > 0 || username.length > 0) {
+                UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
+                info[@"userKey"] = userKey;
+                [userKeys addObject:userKey];
             }
         }}
         
@@ -82,14 +79,11 @@
             HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
-            if (userID.length > 0) {
-                [userIDs addObject:userID];
-                info[@"requesterUserID"] = userID;
-            }
             NSString *username = requesterLink.textContent;
-            if (username.length > 0) {
-                [usernames addObject:username];
-                info[@"requesterUsername"] = username;
+            if (userID.length > 0 || username.length > 0) {
+                UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
+                info[@"requesterUserKey"] = userKey;
+                [userKeys addObject:userKey];
             }
         }}
         
@@ -97,68 +91,36 @@
             HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
-            if (userID.length > 0) {
-                [userIDs addObject:userID];
-                info[@"approverUserID"] = userID;
-            }
             NSString *username = approverLink.textContent;
-            if (username.length > 0) {
-                [usernames addObject:username];
-                info[@"approverUsername"] = username;
+            if (userID.length > 0 || username.length > 0) {
+                UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
+                info[@"approverUserKey"] = userKey;
+                [userKeys addObject:userKey];
             }
         }}
         
         [infoDictionaries addObject:info];
     }
-    NSMutableDictionary *posts = [[Post dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                        keyedByAttributeNamed:@"postID"
-                                                      matchingPredicateFormat:@"postID IN %@", postIDs] mutableCopy];
-    NSMutableDictionary *usersByID = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                            keyedByAttributeNamed:@"userID"
-                                                          matchingPredicateFormat:@"userID IN %@", userIDs] mutableCopy];
-    NSMutableDictionary *usersByName = [[User dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                              keyedByAttributeNamed:@"username"
-                                                            matchingPredicateFormat:@"userID = nil AND username IN %@", usernames] mutableCopy];
+    NSArray *posts = [Post objectsForKeys:postKeys inManagedObjectContext:self.managedObjectContext];
+    NSDictionary *postsByKey = [NSDictionary dictionaryWithObjects:posts forKeys:[posts valueForKey:@"objectKey"]];
+    NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
+    NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     
     [rows enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {
         AwfulBan *ban = [AwfulBan new];
         NSDictionary *info = infoDictionaries[i];
         
         {{
-            NSString *postID = info[@"postID"];
-            if (postID) {
-                Post *post = posts[postID];
-                if (!post) {
-                    post = [Post insertInManagedObjectContext:self.managedObjectContext];
-                    post.postID = postID;
-                    posts[postID] = post;
-                }
-                ban.post = post;
+            PostKey *postKey = info[@"postKey"];
+            if (postKey) {
+                ban.post = postsByKey[postKey];
             }
         }}
         
         {{
-            NSString *userID = info[@"userID"];
-            NSString *username = info[@"username"];
-            if (userID || username) {
-                User *user;
-                if (userID) {
-                    user = usersByID[userID];
-                } else {
-                    user = usersByName[username];
-                }
-                if (!user) {
-                    user = [User insertInManagedObjectContext:self.managedObjectContext];
-                }
-                if (userID) {
-                    user.userID = userID;
-                    usersByID[userID] = user;
-                }
-                if (username) {
-                    user.username = username;
-                    usersByName[username] = user;
-                }
-                ban.user = user;
+            UserKey *userKey = info[@"userKey"];
+            if (userKey) {
+                ban.user = usersByKey[userKey];
             }
         }}
         
@@ -178,52 +140,16 @@
         }}
         
         {{
-            NSString *userID = info[@"requesterUserID"];
-            NSString *username = info[@"requesterUsername"];
-            if (userID || username) {
-                User *user;
-                if (userID) {
-                    user = usersByID[userID];
-                } else {
-                    user = usersByName[username];
-                }
-                if (!user) {
-                    user = [User insertInManagedObjectContext:self.managedObjectContext];
-                }
-                if (userID) {
-                    user.userID = userID;
-                    usersByID[userID] = user;
-                }
-                if (username) {
-                    user.username = username;
-                    usersByName[username] = user;
-                }
-                ban.requester = user;
+            UserKey *requesterKey = info[@"requesterUserKey"];
+            if (requesterKey) {
+                ban.requester = usersByKey[requesterKey];
             }
         }}
         
         {{
-            NSString *userID = info[@"approverUserID"];
-            NSString *username = info[@"approverUsername"];
-            if (userID || username) {
-                User *user;
-                if (userID) {
-                    user = usersByID[userID];
-                } else {
-                    user = usersByName[username];
-                }
-                if (!user) {
-                    user = [User insertInManagedObjectContext:self.managedObjectContext];
-                }
-                if (userID) {
-                    user.userID = userID;
-                    usersByID[userID] = user;
-                }
-                if (username) {
-                    user.username = username;
-                    usersByName[username] = user;
-                }
-                ban.approver = user;
+            UserKey *approverKey = info[@"requesterUserKey"];
+            if (approverKey) {
+                ban.approver = usersByKey[approverKey];
             }
         }}
         

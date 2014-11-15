@@ -67,16 +67,56 @@ private func pageForIndex(index: Int32) -> Int {
     }
 }
 
-extension Post {
-    /// Upserts a Post. Does not save the context if a new Post is inserted.
-    class func firstOrNewPostWithPostID(postID: String, inManagedObjectContext context: NSManagedObjectContext) -> Post {
+class PostKey: AwfulObjectKey {
+    let postID: String
+    init(postID: String) {
         assert(!postID.isEmpty)
-        let post = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "postID = %@", postID))
-        if let post = post {
+        self.postID = postID
+        super.init(entityName: Post.entityName())
+    }
+    required init(coder: NSCoder) {
+        postID = coder.decodeObjectForKey(postIDKey) as String
+        super.init(coder: coder)
+    }
+    override func encodeWithCoder(coder: NSCoder) {
+        super.encodeWithCoder(coder)
+        coder.encodeObject(postID, forKey: postIDKey)
+    }
+    override func isEqual(object: AnyObject?) -> Bool {
+        if !super.isEqual(object) { return false }
+        if let other = object as? PostKey {
+            return other.postID == postID
+        } else {
+            return false
+        }
+    }
+    override var hash: Int {
+        get { return super.hash ^ postID.hash }
+    }
+    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
+        let objectKeys = objectKeys as [PostKey]
+        return ["postID": objectKeys.map{$0.postID}]
+    }
+}
+
+private let postIDKey = "postID"
+
+extension Post {
+    override var objectKey: PostKey {
+        get { return PostKey(postID: postID) }
+    }
+    
+    override func applyObjectKey(objectKey: AwfulObjectKey) {
+        let objectKey = objectKey as PostKey
+        postID = objectKey.postID
+    }
+    
+    class func objectWithKey(postKey: PostKey, inManagedObjectContext context: NSManagedObjectContext) -> Post {
+        if let post = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "postID = %@", postKey.postID)) {
             return post
         } else {
             let post = insertInManagedObjectContext(context)
-            post.postID = postID
+            post.applyObjectKey(postKey)
             return post
         }
     }

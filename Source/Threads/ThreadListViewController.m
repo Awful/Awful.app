@@ -287,21 +287,23 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
+    ForumKey *forumKey = [coder decodeObjectForKey:ForumKeyKey];
+    if (!forumKey) {
+        // AwfulObjectKey was introduced in Awful 3.2.
+        NSString *forumID = [coder decodeObjectForKey:obsolete_ForumIDKey];
+        forumKey = [[ForumKey alloc] initWithForumID:forumID];
+    }
+    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:managedObjectContext];
     ThreadListViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;
-    NSError *error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
     return threadTableViewController;
 }
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
+    [coder encodeObject:self.forum.objectKey forKey:ForumKeyKey];
     [coder encodeObject:_newThreadViewController forKey:NewThreadViewControllerKey];
     [coder encodeObject:self.filterThreadTag.threadTagID forKey:FilterThreadTagIDKey];
 }
@@ -319,7 +321,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }
 }
 
-static NSString * const ForumIDKey = @"AwfulForumID";
+static NSString * const obsolete_ForumIDKey = @"AwfulForumID";
+static NSString * const ForumKeyKey = @"ForumKey";
 static NSString * const NewThreadViewControllerKey = @"AwfulNewThreadViewController";
 static NSString * const FilterThreadTagIDKey = @"AwfulFilterThreadTagID";
 

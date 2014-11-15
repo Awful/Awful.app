@@ -31,7 +31,6 @@ class Thread: AwfulManagedObject {
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threadTag: ThreadTag? /* via threads */
 }
-
 extension Thread {
     var beenSeen: Bool {
         get { return seenPosts > 0 }
@@ -101,13 +100,56 @@ extension Thread {
     }
 }
 
+class ThreadKey: AwfulObjectKey {
+    let threadID: String
+    init(threadID: String) {
+        assert(!threadID.isEmpty)
+        self.threadID = threadID
+        super.init(entityName: Thread.entityName())
+    }
+    required init(coder: NSCoder) {
+        threadID = coder.decodeObjectForKey(threadIDKey) as String
+        super.init(coder: coder)
+    }
+    override func encodeWithCoder(coder: NSCoder) {
+        super.encodeWithCoder(coder)
+        coder.encodeObject(threadID, forKey: threadIDKey)
+    }
+    override func isEqual(object: AnyObject?) -> Bool {
+        if !super.isEqual(object) { return false }
+        if let other = object as? ThreadKey {
+            return other.threadID == threadID
+        } else {
+            return false
+        }
+    }
+    override var hash: Int {
+        get { return super.hash ^ threadID.hash }
+    }
+    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
+        let objectKeys = objectKeys as [ThreadKey]
+        return ["threadID": objectKeys.map{$0.threadID}]
+    }
+}
+
+private let threadIDKey = "threadID"
+
 extension Thread {
-    class func firstOrNewThreadWithID(threadID: String, inManagedObjectContext context: NSManagedObjectContext) -> Thread {
-        if let thread = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "threadID = %@", threadID)) {
+    override var objectKey: ThreadKey {
+        get { return ThreadKey(threadID: threadID) }
+    }
+    
+    override func applyObjectKey(objectKey: AwfulObjectKey) {
+        let objectKey = objectKey as ThreadKey
+        threadID = objectKey.threadID
+    }
+    
+    class func objectWithKey(threadKey: ThreadKey, inManagedObjectContext context: NSManagedObjectContext) -> Thread {
+        if let thread = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "threadID = %@", threadKey.threadID)) {
             return thread
         } else {
             let thread = insertInManagedObjectContext(context)
-            thread.threadID = threadID
+            thread.applyObjectKey(threadKey)
             return thread
         }
     }

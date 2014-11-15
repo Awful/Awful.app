@@ -297,48 +297,61 @@ static NSString * const DefaultTitle = @"New Thread";
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    Forum *forum = [Forum fetchOrInsertForumInManagedObjectContext:managedObjectContext withID:[coder decodeObjectForKey:ForumIDKey]];
+    ForumKey *forumKey = [coder decodeObjectForKey:ForumKeyKey];
+    if (!forumKey) {
+        // AwfulObjectKey was introduced in Awful 3.2.
+        NSString *forumID = [coder decodeObjectForKey:obsolete_ForumIDKey];
+        forumKey = [[ForumKey alloc] initWithForumID:forumID];
+    }
+    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext];
     ThreadComposeViewController *newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;
-    NSError *error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
     return newThreadViewController;
 }
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.forum.forumID forKey:ForumIDKey];
+    [coder encodeObject:self.forum.objectKey forKey:ForumKeyKey];
     [coder encodeObject:self.fieldView.subjectField.textField.text forKey:SubjectKey];
-    [coder encodeObject:self.threadTag.imageName forKey:ThreadTagImageNameKey];
-    [coder encodeObject:self.secondaryThreadTag.imageName forKey:SecondaryThreadTagImageNameKey];
+    [coder encodeObject:self.threadTag.objectKey forKey:ThreadTagKeyKey];
+    [coder encodeObject:self.secondaryThreadTag.objectKey forKey:SecondaryThreadTagKeyKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
-    NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
-    if (threadTagImageName) {
-        self.threadTag = [ThreadTag firstOrNewThreadTagWithID:nil
-                                                    imageName:threadTagImageName
-                                       inManagedObjectContext:self.forum.managedObjectContext];
+    // AwfulObjectKey was introduced in Awful 3.2.
+    ThreadTagKey *tagKey = [coder decodeObjectForKey:ThreadTagKeyKey];
+    if (!tagKey) {
+        NSString *threadTagImageName = [coder decodeObjectForKey:obsolete_ThreadTagImageNameKey];
+        if (threadTagImageName) {
+            tagKey = [[ThreadTagKey alloc] initWithImageName:threadTagImageName threadTagID:nil];
+        }
     }
-    NSString *secondaryThreadTagImageName = [coder decodeObjectForKey:SecondaryThreadTagImageNameKey];
-    if (secondaryThreadTagImageName) {
-        self.secondaryThreadTag = [ThreadTag firstOrNewThreadTagWithID:nil
-                                                             imageName:secondaryThreadTagImageName
-                                                inManagedObjectContext:self.forum.managedObjectContext];
+    if (tagKey) {
+        self.threadTag = [ThreadTag objectForKey:tagKey inManagedObjectContext:self.forum.managedObjectContext];
+    }
+    ThreadTagKey *secondaryTagKey = [coder decodeObjectForKey:SecondaryThreadTagKeyKey];
+    if (!secondaryTagKey) {
+        NSString *secondaryTagImageName = [coder decodeObjectForKey:obsolete_SecondaryThreadTagImageNameKey];
+        if (secondaryTagImageName) {
+            secondaryTagKey = [[ThreadTagKey alloc] initWithImageName:secondaryTagImageName threadTagID:nil];
+        }
+    }
+    if (secondaryTagKey) {
+        self.secondaryThreadTag = [ThreadTag objectForKey:secondaryTagKey inManagedObjectContext:self.forum.managedObjectContext];
     }
     
     [super decodeRestorableStateWithCoder:coder];
 }
 
-static NSString * const ForumIDKey = @"AwfulForumID";
+static NSString * const ForumKeyKey = @"ForumKey";
+static NSString * const obsolete_ForumIDKey = @"AwfulForumID";
 static NSString * const SubjectKey = @"AwfulSubject";
-static NSString * const ThreadTagImageNameKey = @"AwfulThreadTagImageName";
-static NSString * const SecondaryThreadTagImageNameKey = @"AwfulSecondaryThreadTagImageName";
+static NSString * const ThreadTagKeyKey = @"ThreadTagKey";
+static NSString * const obsolete_ThreadTagImageNameKey = @"AwfulThreadTagImageName";
+static NSString * const SecondaryThreadTagKeyKey = @"SecondaryThreadTagKey";
+static NSString * const obsolete_SecondaryThreadTagImageNameKey = @"AwfulSecondaryThreadTagImageName";
 
 @end

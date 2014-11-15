@@ -261,27 +261,42 @@
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    NSString *recipientUserID = [coder decodeObjectForKey:RecipientUserIDKey];
-    NSString *regardingMessageID = [coder decodeObjectForKey:RegardingMessageIDKey];
-    NSString *forwardingMessageID = [coder decodeObjectForKey:ForwardingMessageIDKey];
+    // AwfulObjectKey was introduced in Awful 3.2.
+    UserKey *recipientKey = [coder decodeObjectForKey:RecipientUserKeyKey];
+    if (!recipientKey) {
+        NSString *recipientUserID = [coder decodeObjectForKey:obsolete_RecipientUserIDKey];
+        if (recipientUserID) {
+            recipientKey = [[UserKey alloc] initWithUserID:recipientUserID username:nil];
+        }
+    }
+    PrivateMessageKey *regardingKey = [coder decodeObjectForKey:RegardingMessageKeyKey];
+    if (!regardingKey) {
+        NSString *regardingMessageID = [coder decodeObjectForKey:obsolete_RegardingMessageIDKey];
+        if (regardingMessageID) {
+            regardingKey = [[PrivateMessageKey alloc] initWithMessageID:regardingMessageID];
+        }
+    }
+    PrivateMessageKey *forwardingKey = [coder decodeObjectForKey:ForwardingMessageKeyKey];
+    if (!forwardingKey) {
+        NSString *forwardingMessageID = [coder decodeObjectForKey:obsolete_ForwardingMessageIDKey];
+        if (forwardingMessageID) {
+            forwardingKey = [[PrivateMessageKey alloc] initWithMessageID:forwardingMessageID];
+        }
+    }
     NSString *initialContents = [coder decodeObjectForKey:InitialContentsKey];
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     MessageComposeViewController *newPrivateMessageViewController;
-    if (recipientUserID) {
-        User *recipient = [User firstOrNewUserWithID:recipientUserID
-                                            username:nil
-                              inManagedObjectContext:managedObjectContext];
+    if (recipientKey) {
+        User *recipient = [User objectForKey:recipientKey inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:recipient];
-    } else if (regardingMessageID) {
-        PrivateMessage *regardingMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                        matchingPredicateFormat:@"messageID = %@", regardingMessageID];
+    } else if (regardingKey) {
+        PrivateMessage *regardingMessage = [PrivateMessage objectForKey:regardingKey inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRegardingMessage:regardingMessage
-                                                                                                 initialContents:initialContents];
-    } else if (forwardingMessageID) {
-        PrivateMessage *forwardingMessage = [PrivateMessage fetchArbitraryInManagedObjectContext:managedObjectContext
-                                                                         matchingPredicateFormat:@"messageID = %@", forwardingMessageID];
+                                                                                         initialContents:initialContents];
+    } else if (forwardingKey) {
+        PrivateMessage *forwardingMessage = [PrivateMessage objectForKey:forwardingKey inManagedObjectContext:managedObjectContext];
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithForwardingMessage:forwardingMessage
-                                                                                                  initialContents:initialContents];
+                                                                                          initialContents:initialContents];
     } else {
         newPrivateMessageViewController = [[MessageComposeViewController alloc] initWithRecipient:nil];
     }
@@ -296,36 +311,45 @@
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.recipient.userID forKey:RecipientUserIDKey];
-    [coder encodeObject:self.regardingMessage.messageID forKey:RegardingMessageIDKey];
-    [coder encodeObject:self.forwardingMessage forKey:ForwardingMessageIDKey];
+    [coder encodeObject:self.recipient.objectKey forKey:RecipientUserKeyKey];
+    [coder encodeObject:self.regardingMessage.objectKey forKey:RegardingMessageKeyKey];
+    [coder encodeObject:self.forwardingMessage.objectKey forKey:ForwardingMessageKeyKey];
     [coder encodeObject:self.initialContents forKey:InitialContentsKey];
-    [coder encodeObject:self.threadTag.imageName forKey:ThreadTagImageNameKey];
+    [coder encodeObject:self.threadTag.objectKey forKey:ThreadTagKeyKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     self.fieldView.toField.textField.text = [coder decodeObjectForKey:ToKey];
     self.fieldView.subjectField.textField.text = [coder decodeObjectForKey:SubjectKey];
-    NSString *threadTagImageName = [coder decodeObjectForKey:ThreadTagImageNameKey];
-    if (threadTagImageName) {
+    // AwfulObjectKey was introduced in Awful 3.2.
+    ThreadTagKey *tagKey = [coder decodeObjectForKey:ThreadTagKeyKey];
+    if (!tagKey) {
+        NSString *threadTagImageName = [coder decodeObjectForKey:obsolete_ThreadTagImageNameKey];
+        if (threadTagImageName) {
+            tagKey = [[ThreadTagKey alloc] initWithImageName:threadTagImageName threadTagID:nil];
+        }
+    }
+    if (tagKey) {
         NSManagedObjectContext *managedObjectContext = (self.recipient.managedObjectContext ?:
                                                         self.regardingMessage.managedObjectContext ?:
                                                         self.forwardingMessage.managedObjectContext);
-        self.threadTag = [ThreadTag firstOrNewThreadTagWithID:nil
-                                                    imageName:threadTagImageName
-                                       inManagedObjectContext:managedObjectContext];
+        self.threadTag = [ThreadTag objectForKey:tagKey inManagedObjectContext:managedObjectContext];
     }
     
     [super decodeRestorableStateWithCoder:coder];
 }
 
-static NSString * const RecipientUserIDKey = @"AwfulRecipientUserID";
-static NSString * const RegardingMessageIDKey = @"AwfulRegardingMessageID";
-static NSString * const ForwardingMessageIDKey = @"AwfulForwardingMessageID";
+static NSString * const RecipientUserKeyKey = @"RecipientUserKey";
+static NSString * const obsolete_RecipientUserIDKey = @"AwfulRecipientUserID";
+static NSString * const RegardingMessageKeyKey = @"RegardingMessageKey";
+static NSString * const obsolete_RegardingMessageIDKey = @"AwfulRegardingMessageID";
+static NSString * const ForwardingMessageKeyKey = @"ForwardingMessageKey";
+static NSString * const obsolete_ForwardingMessageIDKey = @"AwfulForwardingMessageID";
 static NSString * const InitialContentsKey = @"AwfulInitialContents";
 static NSString * const ToKey = @"AwfulTo";
 static NSString * const SubjectKey = @"AwfulSubject";
-static NSString * const ThreadTagImageNameKey = @"AwfulThreadTagImageName";
+static NSString * const ThreadTagKeyKey = @"ThreadTagKey";
+static NSString * const obsolete_ThreadTagImageNameKey = @"AwfulThreadTagImageName";
 
 @end

@@ -412,9 +412,13 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 + (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
+    PrivateMessageKey *messageKey = [coder decodeObjectForKey:MessageKeyKey];
+    if (!messageKey) {
+        NSString *messageID = [coder decodeObjectForKey:obsolete_MessageIDKey];
+        messageKey = [[PrivateMessageKey alloc] initWithMessageID:messageID];
+    }
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    NSString *messageID = [coder decodeObjectForKey:MessageIDKey];
-    PrivateMessage *privateMessage = [PrivateMessage firstOrNewPrivateMessageWithMessageID:messageID inManagedObjectContext:managedObjectContext];
+    PrivateMessage *privateMessage = [PrivateMessage objectForKey:messageKey inManagedObjectContext:managedObjectContext];
     MessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
     NSError *error;
@@ -427,7 +431,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
     [super encodeRestorableStateWithCoder:coder];
-    [coder encodeObject:self.privateMessage.messageID forKey:MessageIDKey];
+    [coder encodeObject:self.privateMessage.objectKey forKey:MessageKeyKey];
     [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
     [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrollFractionKey];
 }
@@ -440,7 +444,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     _fractionalContentOffsetOnLoad = [coder decodeFloatForKey:ScrollFractionKey];
 }
 
-static NSString * const MessageIDKey = @"AwfulMessageID";
+static NSString * const MessageKeyKey = @"MessageKey";
+static NSString * const obsolete_MessageIDKey = @"AwfulMessageID";
 static NSString * const ComposeViewControllerKey = @"AwfulComposeViewController";
 static NSString * const ScrollFractionKey = @"AwfulScrollFraction";
 

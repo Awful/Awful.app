@@ -41,8 +41,8 @@
     
     // We'll do one pass to find all the item IDs that we need, then do a couple batch fetches for the stuff we already know about. Then we'll do another pass to update or insert the model objects.
     NSMutableArray *infoDictionaries = [NSMutableArray new];
-    NSMutableArray *groupIDs = [NSMutableArray new];
-    NSMutableArray *forumIDs = [NSMutableArray new];
+    NSMutableArray *groupKeys = [NSMutableArray new];
+    NSMutableArray *forumKeys = [NSMutableArray new];
     NSArray *options = [self.node awful_nodesMatchingCachedSelector:@"select[name='forumid'] option"];
     for (HTMLElement *option in options) {
         NSString *itemID = option[@"value"];
@@ -57,9 +57,9 @@
         }
         info[@"depth"] = @(depth);
         if (depth == 0) {
-            [groupIDs addObject:itemID];
+            [groupKeys addObject:[[ForumGroupKey alloc] initWithGroupID:itemID]];
         } else {
-            [forumIDs addObject:itemID];
+            [forumKeys addObject:[[ForumKey alloc] initWithForumID:itemID]];
         }
         
         [scanner scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:nil];
@@ -70,45 +70,29 @@
         
         [infoDictionaries addObject:info];
     }
-    NSDictionary *fetchedGroups = [ForumGroup dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                              keyedByAttributeNamed:@"groupID"
-                                                            matchingPredicateFormat:@"groupID IN %@", groupIDs];
-    NSDictionary *fetchedForums = [Forum dictionaryOfAllInManagedObjectContext:self.managedObjectContext
-                                                         keyedByAttributeNamed:@"forumID"
-                                                       matchingPredicateFormat:@"forumID IN %@", forumIDs];
-    
-    NSMutableArray *forums = [NSMutableArray new];
+    NSArray *groups = [ForumGroup objectsForKeys:groupKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *forums = [Forum objectsForKeys:forumKeys inManagedObjectContext:self.managedObjectContext];
     NSMutableArray *forumStack = [NSMutableArray new];
-    int32_t forumIndex = 0;
     int32_t groupIndex = 0;
+    int32_t forumIndex = 0;
     ForumGroup *group;
     for (NSDictionary *info in infoDictionaries) {
-        NSString *itemID = info[@"itemID"];
         NSString *itemName = info[@"itemName"];
         NSUInteger depth = [info[@"depth"] unsignedIntegerValue];
         if (depth == 0) {
-            group = fetchedGroups[itemID];
-            if (!group) {
-                group = [ForumGroup insertInManagedObjectContext:self.managedObjectContext];
-                group.groupID = itemID;
-            }
+            group = groups[groupIndex];
             group.name = itemName;
             group.index = groupIndex++;
         } else {
             NSUInteger numberOfForumsToRemove = forumStack.count - depth + 1;
             [forumStack removeObjectsInRange:NSMakeRange(forumStack.count - numberOfForumsToRemove, numberOfForumsToRemove)];
-            Forum *forum = fetchedForums[itemID];
-            if (!forum) {
-                forum = [Forum insertInManagedObjectContext:self.managedObjectContext];
-                forum.forumID = itemID;
-                forum.metadata.visibleInForumList = depth == 1;
-            }
+            Forum *forum = forums[forumIndex];
+            forum.metadata.visibleInForumList = depth == 1;
             forum.name = itemName;
             forum.group = group;
             forum.parentForum = forumStack.lastObject;
             forum.index = forumIndex++;
             [forumStack addObject:forum];
-            [forums addObject:forum];
         }
     }
     self.forums = forums;
