@@ -3,13 +3,13 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostPreviewViewController.h"
-#import "ComposeTextView.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTextAttachment.h"
+#import "ComposeTextView.h"
 #import <GRMustache/GRMustache.h>
 #import "PostViewModel.h"
 #import "Awful-Swift.h"

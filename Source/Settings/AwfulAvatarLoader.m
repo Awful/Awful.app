@@ -3,8 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulAvatarLoader.h"
-#import "AwfulFrameworkCategories.h"
 #import <AFNetworking/AFNetworking.h>
+#import "AwfulFrameworkCategories.h"
 #import "CacheHeaderCalculations.h"
 #import "FVGifAnimation.h"
 #import "Awful-Swift.h"
@@ -28,7 +28,7 @@
     return instance;
 }
 
-- (id)initWithCacheFolder:(NSURL *)cacheFolder
+- (instancetype)initWithCacheFolder:(NSURL *)cacheFolder
 {
     if ((self = [super init])) {
         _cacheFolder = cacheFolder;

@@ -13,17 +13,17 @@
 /**
  * Designated initializer.
  */
-- (id)initWithManager:(AFNetworkActivityIndicatorManager *)manager nextDelegate:(id <UIWebViewDelegate>)nextDelegate;
+- (instancetype)initWithManager:(AFNetworkActivityIndicatorManager *)manager nextDelegate:(id<UIWebViewDelegate>)nextDelegate NS_DESIGNATED_INITIALIZER;
 
 /**
  * Calls -initWithManager:nextDelegate: with the shared AFNetworkActivityIndicatorManager.
  */
-- (id)initWithNextDelegate:(id<UIWebViewDelegate>)nextDelegate;
+- (instancetype)initWithNextDelegate:(id<UIWebViewDelegate>)nextDelegate;
 
 /**
  * Calls -initWithNextDelegate: with a nil delegate.
  */
-- (id)init;
+- (instancetype)init;
 
 /**
  * An AFNetworkActivityIndicatorManager to keep apprised.

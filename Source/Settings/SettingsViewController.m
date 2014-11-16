@@ -21,7 +21,7 @@
 
 @implementation SettingsViewController
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         _managedObjectContext = managedObjectContext;

@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulScraper.h"
+@class Forum;
 
 /**
  * An AwfulThreadListScraper scrapes a list of AwfulThread objects from a forum or a page of bookmarks.

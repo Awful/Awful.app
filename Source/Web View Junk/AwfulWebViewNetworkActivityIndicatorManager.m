@@ -17,18 +17,16 @@
     self.webViewActiveRequestCount = 0;
 }
 
-- (id)initWithManager:(AFNetworkActivityIndicatorManager *)manager nextDelegate:(id <UIWebViewDelegate>)nextDelegate
+- (instancetype)initWithManager:(AFNetworkActivityIndicatorManager *)manager nextDelegate:(id <UIWebViewDelegate>)nextDelegate
 {
-    self = [super init];
-    if (!self) return nil;
-    
-    _nextDelegate = nextDelegate;
-    _manager = manager;
-    
+    if ((self = [super init])) {
+        _nextDelegate = nextDelegate;
+        _manager = manager;
+    }
     return self;
 }
 
-- (id)initWithNextDelegate:(id<UIWebViewDelegate>)nextDelegate
+- (instancetype)initWithNextDelegate:(id<UIWebViewDelegate>)nextDelegate
 {
     return [self initWithManager:[AFNetworkActivityIndicatorManager sharedManager] nextDelegate:nextDelegate];
 }

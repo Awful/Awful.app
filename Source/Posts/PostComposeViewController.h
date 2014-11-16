@@ -3,8 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ComposeTextViewController.h"
-@class Post;
-@class Thread;
+@class Post, Thread;
 
 /**
  * A PostComposeViewController shows a text view for composing or editing a reply to a thread.

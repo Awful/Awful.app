@@ -3,8 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
-@class Post;
-@class Thread;
+@class Post, Thread;
 
 /**
  * An AwfulPostPreviewViewController previews a post (new or edited).
@@ -36,7 +35,7 @@
 
 @interface AwfulPostPreviewViewController (SubclassingHooks)
 
-- (id)initWithBBcode:(NSAttributedString *)BBcode;
+- (instancetype)initWithBBcode:(NSAttributedString *)BBcode;
 - (void)fetchPreviewIfNecessary;
 - (void)renderPreview;
 @property (readonly, strong, nonatomic) Post *fakePost;

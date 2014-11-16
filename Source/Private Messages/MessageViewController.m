@@ -18,7 +18,7 @@
 #import "PrivateMessageViewModel.h"
 #import "RapSheetViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
-#import <WebViewJavascriptBridge.h>
+#import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
 @interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>

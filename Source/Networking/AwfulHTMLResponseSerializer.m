@@ -4,13 +4,15 @@
 
 #import "AwfulHTMLResponseSerializer.h"
 #import "AwfulErrorDomain.h"
+#import <HTMLReader/HTMLReader.h>
 
 @implementation AwfulHTMLResponseSerializer
 
 - (id)init
 {
-    if (!(self = [super init])) return nil;
-    self.acceptableContentTypes = [NSSet setWithObjects:@"text/html", @"application/xhtml+xml", nil];
+    if ((self = [super init])) {
+        self.acceptableContentTypes = [NSSet setWithObjects:@"text/html", @"application/xhtml+xml", nil];
+    }
     return self;
 }
 

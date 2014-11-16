@@ -8,7 +8,7 @@
 #import "KeyboardBar.h"
 @import MobileCoreServices;
 #import <PSMenuItem/PSMenuItem.h>
-#import <Smilies/Smilies.h>
+@import Smilies;
 
 @interface ComposeTextView () <KeyboardBarDelegate, SmilieKeyboardDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 

@@ -10,11 +10,9 @@
 @interface BookmarkedThreadListViewController : AbstractThreadListViewController
 
 /**
- * Returns an initialized AwfulBookmarkedThreadTableViewController. This is the designated initializer.
- *
  * @param managedObjectContext The managed object context from which to fetch bookmarked threads.
  */
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
 
 /**
  * The managed object context sourcing the bookmarked threads.

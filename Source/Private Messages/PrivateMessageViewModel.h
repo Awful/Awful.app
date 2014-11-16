@@ -3,8 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import Foundation;
-@class PrivateMessage;
-@class User;
+@class PrivateMessage, User;
 
 /**
  * A PrivateMessageViewModel helps render a private message in an AwfulPostsView.

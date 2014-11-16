@@ -6,19 +6,20 @@
 
 @implementation AwfulNavigationBar
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    
-    // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
-    self.translucent = NO;
-    
-    // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
-    self.barStyle = UIBarStyleBlack;
-    
-    UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
-    [longPress addTarget:self action:@selector(longPress:)];
-    [self addGestureRecognizer:longPress];
+    if ((self = [super initWithFrame:frame])) {
+        
+        // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
+        self.translucent = NO;
+        
+        // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
+        self.barStyle = UIBarStyleBlack;
+        
+        UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
+        [longPress addTarget:self action:@selector(longPress:)];
+        [self addGestureRecognizer:longPress];
+    }
     return self;
 }
 

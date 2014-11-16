@@ -10,11 +10,9 @@
 @interface MessageListViewController : AwfulTableViewController
 
 /**
- * Returns an initialized AwfulPrivateMessageTableViewController. This is the designated initializer.
- *
  * @param managedObjectContext A managed object context from which to load the private messages.
  */
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
 
 /**
  * The managed object context prividing the private messages.

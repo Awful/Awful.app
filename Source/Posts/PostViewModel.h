@@ -2,9 +2,8 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
-@class Post;
-@class User;
+@import Foundation;
+@class Post, User;
 
 /**
  * A PostViewModel helps to render Post instances.

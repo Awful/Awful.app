@@ -2,16 +2,11 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import CoreData;
+@import Foundation;
 #import "AwfulForm.h"
 #import "AwfulThreadPage.h"
-@class Forum;
-@class Post;
-@class PrivateMessage;
-@class Profile;
-@class Thread;
-@class ThreadTag;
-@class User;
+@class Forum, Post, PrivateMessage, Profile, Thread, ThreadTag, User;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.

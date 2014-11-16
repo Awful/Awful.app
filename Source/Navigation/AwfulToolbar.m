@@ -6,10 +6,11 @@
 
 @implementation AwfulToolbar
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.tintColor = [UIColor colorWithRed:0.078 green:0.514 blue:0.694 alpha:1];
+    if ((self = [super initWithFrame:frame])) {
+        self.tintColor = [UIColor colorWithRed:0.078 green:0.514 blue:0.694 alpha:1];
+    }
     return self;
 }
 

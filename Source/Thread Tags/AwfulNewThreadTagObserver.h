@@ -2,17 +2,14 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import Foundation;
+@import UIKit;
 
 /**
  * An AwfulNewThreadTagObserver waits for a particular new thread tag to be downloaded.
  */
 @interface AwfulNewThreadTagObserver : NSObject
 
-/**
- * Designated initializer.
- */
-- (instancetype)initWithImageName:(NSString *)imageName downloadedBlock:(void (^)(UIImage *image))downloadedBlock;
+- (instancetype)initWithImageName:(NSString *)imageName downloadedBlock:(void (^)(UIImage *image))downloadedBlock NS_DESIGNATED_INITIALIZER;
 
 /**
  * The image being sought after.

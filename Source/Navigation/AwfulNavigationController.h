@@ -5,7 +5,6 @@
 @import UIKit;
 #import "AwfulNavigationBar.h"
 #import "AwfulToolbar.h"
-#import "AwfulUnpoppingViewHandler.h"
 
 /**
  * An AwfulNavigationController adds theming support; hosts an AwfulNavigationBar and AwfulToolbar; shows and hides the toolbar depending on whether the view controller has toolbar items; and, on iPhone, allows swiping from the *right* screen edge to unpop a view controller.

@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 /**
  * An AwfulURLRouter translates URLs with the scheme "awful" into an appropriate shown screen.
@@ -10,13 +10,11 @@
 @interface AwfulURLRouter : NSObject
 
 /**
- * Returns an initialized AwfulURLRouter. This is the designated initializer.
- *
  * @param rootViewController The application's root view controller.
  * @param managedObjectContext The managed object context we use to find forums, threads, and posts.
  */
-- (id)initWithRootViewController:(UIViewController *)rootViewController
-            managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+- (instancetype)initWithRootViewController:(UIViewController *)rootViewController
+                      managedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
 
 /**
  * The root view controller used to find or show screens.

@@ -11,53 +11,54 @@
 
 @synthesize enabled = _enabled;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    _threadTagButton = [AwfulThreadTagButton new];
-    _threadTagButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_threadTagButton];
-    
-    _subjectField = [AwfulComposeField new];
-    _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_subjectField];
-    
-    _separator = [UIView new];
-    _separator.translatesAutoresizingMaskIntoConstraints = NO;
-    _separator.backgroundColor = [UIColor lightGrayColor];
-    [self addSubview:_separator];
-    
-    NSDictionary *views = @{ @"tag": _threadTagButton,
-                             @"subject": _subjectField,
-                             @"separator": _separator };
-    [_threadTagButton addConstraint:
-     [NSLayoutConstraint constraintWithItem:_threadTagButton
-                                  attribute:NSLayoutAttributeWidth
-                                  relatedBy:NSLayoutRelationEqual
-                                     toItem:_threadTagButton
-                                  attribute:NSLayoutAttributeHeight
-                                 multiplier:1
-                                   constant:0]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag][subject]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[subject][separator(1)]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[separator]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
+    if ((self = [super initWithFrame:frame])) {
+        _threadTagButton = [AwfulThreadTagButton new];
+        _threadTagButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:_threadTagButton];
+        
+        _subjectField = [AwfulComposeField new];
+        _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:_subjectField];
+        
+        _separator = [UIView new];
+        _separator.translatesAutoresizingMaskIntoConstraints = NO;
+        _separator.backgroundColor = [UIColor lightGrayColor];
+        [self addSubview:_separator];
+        
+        NSDictionary *views = @{ @"tag": _threadTagButton,
+                                 @"subject": _subjectField,
+                                 @"separator": _separator };
+        [_threadTagButton addConstraint:
+         [NSLayoutConstraint constraintWithItem:_threadTagButton
+                                      attribute:NSLayoutAttributeWidth
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:_threadTagButton
+                                      attribute:NSLayoutAttributeHeight
+                                     multiplier:1
+                                       constant:0]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag][subject]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[subject][separator(1)]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[separator]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+    }
     return self;
 }
 

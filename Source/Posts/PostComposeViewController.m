@@ -57,7 +57,7 @@
 
 - (void)updateTweaks
 {
-	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumId:self.forum.forumID];
+	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumID:self.forum.forumID];
 	self.textView.autocapitalizationType = tweaks.autocapitalizationType;
     self.textView.autocorrectionType = tweaks.autocorrectionType;
     self.textView.spellCheckingType = tweaks.spellCheckingType;

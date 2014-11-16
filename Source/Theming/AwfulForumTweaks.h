@@ -2,11 +2,11 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import UIKit;
 
 @interface AwfulForumTweaks : NSObject
 
-+ (AwfulForumTweaks*)tweaksForForumId:(NSString*)forumId;
++ (instancetype)tweaksForForumID:(NSString *)forumID;
 
 /**
  * Returns a custom post button title

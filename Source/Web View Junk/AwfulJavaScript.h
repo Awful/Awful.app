@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 /**
  * Returns concatenated JavaScript files from the main bundle, or nil if an error occurs.

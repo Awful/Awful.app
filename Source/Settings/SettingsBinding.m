@@ -4,7 +4,7 @@
 
 #import "SettingsBinding.h"
 #import "AwfulSettings.h"
-#import <objc/runtime.h>
+@import ObjectiveC.runtime;
 
 @interface SettingsBinding : NSObject
 

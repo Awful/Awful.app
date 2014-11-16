@@ -13,24 +13,25 @@
 
 @implementation AwfulThreadTagView
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    self.tagImageView = [UIImageView new];
-    self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.tagImageView];
-    
-    NSDictionary *views = @{ @"tag": self.tagImageView };
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
-    [self addConstraints:
-     [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]|"
-                                             options:0
-                                             metrics:nil
-                                               views:views]];
+    if ((self = [super initWithFrame:frame])) {
+        self.tagImageView = [UIImageView new];
+        self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.tagImageView];
+        
+        NSDictionary *views = @{ @"tag": self.tagImageView };
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[tag]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+        [self addConstraints:
+         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tag]|"
+                                                 options:0
+                                                 metrics:nil
+                                                   views:views]];
+    }
     return self;
 }
 

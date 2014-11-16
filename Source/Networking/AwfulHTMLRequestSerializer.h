@@ -2,7 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AFURLRequestSerialization.h"
+#import <AFNetworking/AFNetworking.h>
 
 /**
  * An AwfulHTMLRequestSerializer ensures parameter values are within its string encoding by turning any outside characters into decimal HTML entities.

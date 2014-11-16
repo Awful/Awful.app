@@ -3,8 +3,8 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AbstractThreadListViewController.h"
-#import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
+#import "AwfulForumTweaks.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulSettings.h"
@@ -135,7 +135,7 @@ static NSString * const ThreadCellIdentifier = @"Thread";
             cell.secondaryTagImageView.hidden = YES;
 		}
 		
-		if ([AwfulForumTweaks tweaksForForumId:thread.forum.forumID].showRatings) {
+		if ([AwfulForumTweaks tweaksForForumID:thread.forum.forumID].showRatings) {
             cell.showsRating = NO;
 		} else {
 			NSInteger rating = lroundf(thread.rating);

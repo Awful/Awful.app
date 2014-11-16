@@ -4,7 +4,7 @@
 
 #import "AwfulAppDelegate.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
-#import <AVFoundation/AVFoundation.h>
+@import AVFoundation;
 #import "AwfulAvatarLoader.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -19,7 +19,7 @@
 #import "AwfulWaffleimagesURLProtocol.h"
 #import <GRMustache/GRMustache.h>
 #import "Handoff.h"
-#import <Smilies/Smilies.h>
+@import Smilies;
 #import "Awful-Swift.h"
 
 @interface AwfulAppDelegate ()

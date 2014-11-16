@@ -26,16 +26,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (!self) return nil;
-    
-    _managedObjectContext = managedObjectContext;
-    self.title = @"Bookmarks";
-    self.tabBarItem.image = [UIImage imageNamed:@"bookmarks"];
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
-    
+    if ((self = [super initWithNibName:nil bundle:nil])) {
+        _managedObjectContext = managedObjectContext;
+        self.title = @"Bookmarks";
+        self.tabBarItem.image = [UIImage imageNamed:@"bookmarks"];
+        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
+    }
     return self;
 }
 

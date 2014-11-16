@@ -36,23 +36,19 @@
     return instance;
 }
 
-- (id)init
+- (instancetype)init
 {
-    if (!(self = [super init])) return nil;
-    NSURL *themesURL = [[NSBundle mainBundle] URLForResource:@"ForumTweaks" withExtension:@"plist"];
-    _tweaks = [NSDictionary dictionaryWithContentsOfURL:themesURL];
+    if ((self = [super init])) {
+        NSURL *themesURL = [[NSBundle mainBundle] URLForResource:@"ForumTweaks" withExtension:@"plist"];
+        _tweaks = [NSDictionary dictionaryWithContentsOfURL:themesURL];
+    }
     return self;
 }
 
 - (AwfulForumTweaks *)tweaksForForumWithID:(NSString *)forumID
 {
 	NSDictionary *tweaks = _tweaks[forumID];
-	
-	if (!tweaks) {
-		
-	}
-	
-    return [[AwfulForumTweaks alloc] initWithDictionary:tweaks];
+	return [[AwfulForumTweaks alloc] initWithDictionary:tweaks];
 }
 
 @end
@@ -69,17 +65,17 @@
 	return defaultTweaks;
 }
 
-+ (AwfulForumTweaks*)tweaksForForumId:(NSString*)forumId
++ (AwfulForumTweaks*)tweaksForForumID:(NSString*)forumID
 {
-	return [AwfulForumTweaksLoader.sharedLoader tweaksForForumWithID:forumId];
+	return [AwfulForumTweaksLoader.sharedLoader tweaksForForumWithID:forumID];
 }
 
 + (id)objectForKeyedSubscript:(NSString *)key
 {
-	return [self tweaksForForumId:key];
+	return [self tweaksForForumID:key];
 }
 
--(instancetype)initWithDictionary:(NSDictionary *)dictionary
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
 	if (!(self = [super init])) return nil;
 	

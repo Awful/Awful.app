@@ -3,9 +3,7 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
-@class Post;
-@class Thread;
-@class User;
+@class Post, Thread, User;
 
 /**
  * A PostsPageViewController shows a list of posts in a thread.

@@ -7,7 +7,7 @@
 
 @implementation AwfulThemeLoader
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init])) {
         NSURL *themesURL = [[NSBundle mainBundle] URLForResource:@"Themes" withExtension:@"plist"];

@@ -6,7 +6,7 @@
 
 @implementation AwfulPostsViewTopBar
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     frame.size.height = 40;
     if ((self = [super initWithFrame:frame])) {

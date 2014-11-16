@@ -8,23 +8,21 @@
 
 @implementation AwfulHTTPRequestOperationManager
 
-- (id)initWithBaseURL:(NSURL *)URL
+- (instancetype)initWithBaseURL:(NSURL *)URL
 {
-    self = [super initWithBaseURL:URL];
-    if (!self) return nil;
-    
-    self.requestSerializer = [AwfulHTMLRequestSerializer new];
-    self.requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    
-    AwfulHTMLResponseSerializer *HTMLResponseSerializer = [AwfulHTMLResponseSerializer new];
-    HTMLResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-    HTMLResponseSerializer.fallbackEncoding = NSISOLatin1StringEncoding;
-    NSArray *responseSerializers = @[ [AFJSONResponseSerializer new],
-                                      HTMLResponseSerializer ];
-    self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:responseSerializers];
-    
-    [self.reachabilityManager startMonitoring];
-    
+    if ((self = [super initWithBaseURL:URL])) {
+        self.requestSerializer = [AwfulHTMLRequestSerializer new];
+        self.requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+        
+        AwfulHTMLResponseSerializer *HTMLResponseSerializer = [AwfulHTMLResponseSerializer new];
+        HTMLResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
+        HTMLResponseSerializer.fallbackEncoding = NSISOLatin1StringEncoding;
+        NSArray *responseSerializers = @[ [AFJSONResponseSerializer new],
+                                          HTMLResponseSerializer ];
+        self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:responseSerializers];
+        
+        [self.reachabilityManager startMonitoring];
+    }
     return self;
 }
 

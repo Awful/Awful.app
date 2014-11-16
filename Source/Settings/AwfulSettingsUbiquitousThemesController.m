@@ -22,12 +22,12 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithStyle:UITableViewStyleGrouped];
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.title = @"Forum-Specific Themes";

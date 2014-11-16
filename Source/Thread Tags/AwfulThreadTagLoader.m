@@ -3,8 +3,8 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTagLoader.h"
-#import "AwfulFrameworkCategories.h"
 #import <AFNetworking/AFNetworking.h>
+#import "AwfulFrameworkCategories.h"
 
 @interface AwfulThreadTagLoader ()
 

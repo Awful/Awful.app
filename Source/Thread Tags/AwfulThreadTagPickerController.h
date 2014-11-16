@@ -10,10 +10,7 @@
  */
 @interface AwfulThreadTagPickerController : AwfulCollectionViewController
 
-/**
- * Designated initializer.
- */
-- (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames;
+- (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames NS_DESIGNATED_INITIALIZER;
 
 /**
  * An array of NSString instances representing the imageNames of the thread tags to choose from.

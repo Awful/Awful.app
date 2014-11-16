@@ -15,10 +15,7 @@
  */
 + (instancetype)loader;
 
-/**
- * Designated initializer.
- */
-- (id)initWithCacheFolder:(NSURL *)cacheFolder;
+- (instancetype)initWithCacheFolder:(NSURL *)cacheFolder NS_DESIGNATED_INITIALIZER;
 
 /**
  * Where to save images and cache information.

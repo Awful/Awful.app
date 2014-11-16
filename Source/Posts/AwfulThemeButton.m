@@ -6,15 +6,13 @@
 
 @implementation AwfulThemeButton
 
-- (id)initWithThemeColor:(UIColor *)themeColor
+- (instancetype)initWithThemeColor:(UIColor *)themeColor
 {
-    self = [super initWithFrame:CGRectZero];
-    if (!self) return nil;
-    
-    _themeColor = themeColor;
-    self.accessibilityLabel = themeColor.accessibilityLabel;
-    self.opaque = NO;
-    
+    if ((self = [super initWithFrame:CGRectZero])) {
+        _themeColor = themeColor;
+        self.accessibilityLabel = themeColor.accessibilityLabel;
+        self.opaque = NO;
+    }
     return self;
 }
 

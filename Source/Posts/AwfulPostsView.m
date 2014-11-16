@@ -31,7 +31,7 @@ typedef enum : NSInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame])) {
         _webView = [UIWebView awful_nativeFeelingWebView];

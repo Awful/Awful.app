@@ -13,12 +13,9 @@
 
 @end
 
-
 @implementation AwfulSettingsAlternateServerController
 
-#pragma mark - UIViewController
-
-- (id)initWithStyle:(UITableViewStyle)style
+- (instancetype)initWithStyle:(UITableViewStyle)style
 {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         self.title = @"Alternate Server";

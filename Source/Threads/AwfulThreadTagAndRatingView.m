@@ -11,22 +11,20 @@
     UIImageView *_ratingImageView;
 }
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-    
-    _threadTagImageView = [UIImageView new];
-    _threadTagImageView.contentMode = UIViewContentModeCenter;
-    [self addSubview:_threadTagImageView];
-    
-    _secondaryThreadTagImageView = [UIImageView new];
-    [_threadTagImageView addSubview:_secondaryThreadTagImageView];
-    
-    _ratingImageView = [UIImageView new];
-    _ratingImageView.contentMode = UIViewContentModeCenter;
-    [self addSubview:_ratingImageView];
-    
+    if ((self = [super initWithFrame:frame])) {
+        _threadTagImageView = [UIImageView new];
+        _threadTagImageView.contentMode = UIViewContentModeCenter;
+        [self addSubview:_threadTagImageView];
+        
+        _secondaryThreadTagImageView = [UIImageView new];
+        [_threadTagImageView addSubview:_secondaryThreadTagImageView];
+        
+        _ratingImageView = [UIImageView new];
+        _ratingImageView.contentMode = UIViewContentModeCenter;
+        [self addSubview:_ratingImageView];
+    }
     return self;
 }
 
