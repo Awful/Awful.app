@@ -4,42 +4,42 @@
 
 /// A single reply to a thread.
 @objc(Post)
-class Post: AwfulManagedObject {
+public class Post: AwfulManagedObject {
 
     /// Whether the logged-in user can edit the post.
-    @NSManaged var editable: Bool
+    @NSManaged public var editable: Bool
     
     /// Where the post is located when filtering its thread by the post's author.
     @NSManaged var filteredThreadIndex: Int32
     
     /// Whether the post's author is ignored.
-    @NSManaged var ignored: Bool
+    @NSManaged public var ignored: Bool
     
     /// The HTML body of the post.
-    @NSManaged var innerHTML: String?
+    @NSManaged public var innerHTML: String?
     
     /// The last time the cached post data changed.
     @NSManaged var lastModifiedDate: NSDate
     
     /// When the post appeared.
-    @NSManaged var postDate: NSDate?
+    @NSManaged public var postDate: NSDate?
     
     /// An ID assigned by the Forums that presumably uniquely identifies it.
-    @NSManaged var postID: String
+    @NSManaged public var postID: String
     
     /// Where the post is located in its thread.
-    @NSManaged var threadIndex: Int32
+    @NSManaged public var threadIndex: Int32
     
     /// Who wrote the post.
-    @NSManaged var author: User?
+    @NSManaged public var author: User?
     
     /// Where the post is located.
-    @NSManaged var thread: Thread?
+    @NSManaged public var thread: Thread?
 }
 
 extension Post {
     /// Whether the user has seen the post.
-    var beenSeen: Bool {
+    public var beenSeen: Bool {
         get {
             if let thread = thread {
                 return threadIndex > 0 && threadIndex <= thread.seenPosts
@@ -49,7 +49,7 @@ extension Post {
     }
     
     /// Which 40-post page the post is located on.
-    var page: Int {
+    public var page: Int {
         get { return pageForIndex(threadIndex) }
     }
     

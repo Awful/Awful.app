@@ -8,7 +8,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "AwfulStarCategory.h"
-#import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
@@ -30,26 +29,26 @@
     [super scrape];
     if (self.error) return;
     
-    HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
+    HTMLElement *body = [self.node firstNodeMatchingSelector:@"body"];
     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:body[@"data-thread"]];
     self.thread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
     ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
     Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:self.managedObjectContext];
     self.thread.forum = forum;
     
-    if (!self.thread.threadID && [body awful_firstNodeMatchingCachedSelector:@"div.standard div.inner a[href*=archives.php]"]) {
+    if (!self.thread.threadID && [body firstNodeMatchingSelector:@"div.standard div.inner a[href*=archives.php]"]) {
         self.error = [NSError errorWithDomain:AwfulErrorDomain
                                          code:AwfulErrorCodes.archivesRequired
                                      userInfo:@{ NSLocalizedDescriptionKey: @"Viewing this content requires the archives upgrade." }];
         return;
     }
     
-    HTMLElement *breadcrumbsDiv = [body awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
+    HTMLElement *breadcrumbsDiv = [body firstNodeMatchingSelector:@"div.breadcrumbs"];
     
     // Last hierarchy link is the thread.
     // First hierarchy link is the category.
     // Intervening hierarchy links are forums/subforums.
-    NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'id=']"];
+    NSArray *hierarchyLinks = [breadcrumbsDiv nodesMatchingSelector:@"a[href *= 'id=']"];
     
     HTMLElement *threadLink = hierarchyLinks.lastObject;
     self.thread.title = threadLink.textContent;
@@ -72,21 +71,21 @@
         }
     }
     
-    HTMLElement *closedImage = [body awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
+    HTMLElement *closedImage = [body firstNodeMatchingSelector:@"ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']"];
     self.thread.closed = !!closedImage;
     
-    BOOL singleUserFilterEnabled = !![self.node awful_firstNodeMatchingCachedSelector:@"table.post a.user_jump[title *= 'Remove']"];
+    BOOL singleUserFilterEnabled = !![self.node firstNodeMatchingSelector:@"table.post a.user_jump[title *= 'Remove']"];
     
-    HTMLElement *pagesDiv = [body awful_firstNodeMatchingCachedSelector:@"div.pages"];
-    HTMLElement *pagesSelect = [pagesDiv awful_firstNodeMatchingCachedSelector:@"select"];
+    HTMLElement *pagesDiv = [body firstNodeMatchingSelector:@"div.pages"];
+    HTMLElement *pagesSelect = [pagesDiv firstNodeMatchingSelector:@"select"];
     int32_t numberOfPages = 0;
     int32_t currentPage = 0;
     if (pagesDiv) {
         if (pagesSelect) {
-            HTMLElement *lastOption = [pagesSelect awful_nodesMatchingCachedSelector:@"option"].lastObject;
+            HTMLElement *lastOption = [pagesSelect nodesMatchingSelector:@"option"].lastObject;
             NSString *pageValue = lastOption[@"value"];
             numberOfPages = (int32_t)pageValue.integerValue;
-            HTMLElement *selectedOption = [pagesSelect awful_firstNodeMatchingCachedSelector:@"option[selected]"];
+            HTMLElement *selectedOption = [pagesSelect firstNodeMatchingSelector:@"option[selected]"];
             NSString *selectedPageValue = selectedOption[@"value"];
             currentPage = (int32_t)selectedPageValue.integerValue;
         } else {
@@ -95,7 +94,7 @@
         }
     }
     
-    HTMLElement *bookmarkButton = [body awful_firstNodeMatchingCachedSelector:@"div.threadbar img.thread_bookmark"];
+    HTMLElement *bookmarkButton = [body firstNodeMatchingSelector:@"div.threadbar img.thread_bookmark"];
     if (bookmarkButton) {
         NSArray *bookmarkClasses = [bookmarkButton[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([bookmarkClasses containsObject:@"unbookmark"] && self.thread.starCategory == AwfulStarCategoryNone) {
@@ -105,9 +104,9 @@
         }
     }
     
-    self.advertisementHTML = [[self.node awful_firstNodeMatchingCachedSelector:@"#ad_banner_user a"] serializedFragment];
+    self.advertisementHTML = [[self.node firstNodeMatchingSelector:@"#ad_banner_user a"] serializedFragment];
     
-    NSArray *postTables = [self.node awful_nodesMatchingCachedSelector:@"table.post"];
+    NSArray *postTables = [self.node nodesMatchingSelector:@"table.post"];
     NSMutableArray *postKeys = [NSMutableArray new];
     NSMutableArray *authorScrapers = [NSMutableArray new];
     for (HTMLElement *table in postTables) {
@@ -160,7 +159,7 @@
         }}
         
         {{
-            HTMLElement *postDateCell = [table awful_firstNodeMatchingCachedSelector:@"td.postdate"];
+            HTMLElement *postDateCell = [table firstNodeMatchingSelector:@"td.postdate"];
             if (postDateCell) {
                 HTMLTextNode *postDateText = postDateCell.children.lastObject;
                 NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -177,29 +176,30 @@
             if (authorKey) {
                 User *author = usersByKey[authorKey];
                 post.author = author;
-                HTMLElement *privateMessageLink = [table awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href*='private.php']"];
+                authorScraper.author = author;
+                HTMLElement *privateMessageLink = [table firstNodeMatchingSelector:@"ul.profilelinks a[href*='private.php']"];
                 author.canReceivePrivateMessages = !!privateMessageLink;
-                if ([table awful_firstNodeMatchingCachedSelector:@"dt.author.op"]) {
+                if ([table firstNodeMatchingSelector:@"dt.author.op"]) {
                     self.thread.author = author;
                 }
             }
         }}
         
         {{
-            HTMLElement *editButton = [table awful_firstNodeMatchingCachedSelector:@"ul.postbuttons a[href*='editpost.php']"];
+            HTMLElement *editButton = [table firstNodeMatchingSelector:@"ul.postbuttons a[href*='editpost.php']"];
             post.editable = !!editButton;
         }}
         
         {{
-            HTMLElement *seenRow = [table awful_firstNodeMatchingCachedSelector:@"tr.seen1"] ?: [table awful_firstNodeMatchingCachedSelector:@"tr.seen2"];
+            HTMLElement *seenRow = [table firstNodeMatchingSelector:@"tr.seen1"] ?: [table firstNodeMatchingSelector:@"tr.seen2"];
             if (!seenRow && !firstUnseenPost) {
                 firstUnseenPost = post;
             }
         }}
         
         {{
-            HTMLElement *postBodyElement = ([table awful_firstNodeMatchingCachedSelector:@"div.complete_shit"] ?:
-                                            [table awful_firstNodeMatchingCachedSelector:@"td.postbody"]);
+            HTMLElement *postBodyElement = ([table firstNodeMatchingSelector:@"div.complete_shit"] ?:
+                                            [table firstNodeMatchingSelector:@"td.postbody"]);
             if (postBodyElement) {
                 if (post.innerHTML.length == 0 || !post.ignored) {
                     post.innerHTML = postBodyElement.innerHTML;

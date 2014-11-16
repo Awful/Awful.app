@@ -3,10 +3,10 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(ThreadTag)
-class ThreadTag: AwfulManagedObject {
+public class ThreadTag: AwfulManagedObject {
 
-    @NSManaged var imageName: String?
-    @NSManaged var threadTagID: String?
+    @NSManaged public var imageName: String?
+    @NSManaged public var threadTagID: String?
     
     @NSManaged var forums: NSMutableSet /* AwfulForum via threadTags */
     @NSManaged var messages: NSMutableSet /* PrivateMessage */

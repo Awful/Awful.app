@@ -3,19 +3,19 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(PrivateMessage)
-class PrivateMessage: AwfulManagedObject {
+public class PrivateMessage: AwfulManagedObject {
 
-    @NSManaged var forwarded: Bool
-    @NSManaged var innerHTML: String?
+    @NSManaged public var forwarded: Bool
+    @NSManaged public var innerHTML: String?
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged var messageID: String
-    @NSManaged var replied: Bool
-    @NSManaged var seen: Bool
-    @NSManaged var sentDate: NSDate?
-    @NSManaged var subject: String?
+    @NSManaged public var messageID: String
+    @NSManaged public var replied: Bool
+    @NSManaged public var seen: Bool
+    @NSManaged public var sentDate: NSDate?
+    @NSManaged public var subject: String?
     
-    @NSManaged var from: User? /* via sentPrivateMessages */
-    @NSManaged var threadTag: ThreadTag?
+    @NSManaged public var from: User? /* via sentPrivateMessages */
+    @NSManaged public var threadTag: ThreadTag?
     @NSManaged var to: User? /* via receivedPrivateMessages */
 }
 

@@ -5,7 +5,6 @@
 #import "PrivateMessageFolderScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
-#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
 
@@ -23,9 +22,9 @@
     if (self.error) return;
     
     NSMutableArray *messages = [NSMutableArray new];
-    NSArray *rows = [self.node awful_nodesMatchingCachedSelector:@"table.standard tbody tr"];
+    NSArray *rows = [self.node nodesMatchingSelector:@"table.standard tbody tr"];
     for (HTMLElement *row in rows) {
-        HTMLElement *titleLink = [row awful_firstNodeMatchingCachedSelector:@"td.title a"];
+        HTMLElement *titleLink = [row firstNodeMatchingSelector:@"td.title a"];
         NSString *messageID; {
             NSURL *URL = [NSURL URLWithString:titleLink[@"href"]];
             messageID = URL.queryDictionary[@"privatemessageid"];
@@ -41,7 +40,7 @@
         message.subject = titleLink.textContent;
         
         {{
-            HTMLElement *seenImage = [row awful_firstNodeMatchingCachedSelector:@"td.status img"];
+            HTMLElement *seenImage = [row firstNodeMatchingSelector:@"td.status img"];
             NSString *src = seenImage[@"src"];
             message.seen = [src rangeOfString:@"newpm"].location == NSNotFound;
             message.replied = [src rangeOfString:@"replied"].location != NSNotFound;
@@ -49,7 +48,7 @@
         }}
         
         {{
-            HTMLElement *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
+            HTMLElement *threadTagImage = [row firstNodeMatchingSelector:@"td.icon img"];
             NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
             if (URL) {
                 ThreadTagKey *tagKey = [[ThreadTagKey alloc] initWithImageURL:URL threadTagID:nil];
@@ -60,7 +59,7 @@
         }}
         
         {{
-            HTMLElement *fromCell = [row awful_firstNodeMatchingCachedSelector:@"td.sender"];
+            HTMLElement *fromCell = [row firstNodeMatchingSelector:@"td.sender"];
             NSString *fromUsername = fromCell.textContent;
             if (fromUsername.length > 0) {
                 UserKey *userKey = [[UserKey alloc] initWithUserID:nil username:fromUsername];
@@ -69,7 +68,7 @@
         }}
         
         {{
-            HTMLElement *sentDateCell = [row awful_firstNodeMatchingCachedSelector:@"td.date"];
+            HTMLElement *sentDateCell = [row firstNodeMatchingSelector:@"td.date"];
             NSDate *sentDate = [SentDateParser() dateFromString:sentDateCell.innerHTML];
             if (sentDate) {
                 message.sentDate = sentDate;

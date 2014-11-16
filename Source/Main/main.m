@@ -7,6 +7,7 @@
 
 int main(int argc, char *argv[]) {
     @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AwfulAppDelegate class]));
+        NSString *appDelegateClassName = NSClassFromString(@"XCTestCase") ? @"TestAppDelegate" : NSStringFromClass([AwfulAppDelegate class]);
+        return UIApplicationMain(argc, argv, nil, appDelegateClassName);
     }
 }

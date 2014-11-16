@@ -184,7 +184,7 @@
         self.threadTags = [ThreadTag objectsForKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
     }
     if (_secondaryThreadTagKeys.count > 0) {
-        self.secondaryThreadTags = [ThreadTag objectsForKeys:_secondaryThreadTags inManagedObjectContext:managedObjectContext];
+        self.secondaryThreadTags = [ThreadTag objectsForKeys:_secondaryThreadTagKeys inManagedObjectContext:managedObjectContext];
     }
 }
 

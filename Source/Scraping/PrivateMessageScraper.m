@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
@@ -26,7 +25,7 @@
     if (self.error) return;
     
     NSString *messageID;
-    HTMLElement *replyLink = [self.node awful_firstNodeMatchingCachedSelector:@"div.buttons a"];
+    HTMLElement *replyLink = [self.node firstNodeMatchingSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];
     messageID = replyLinkURL.queryDictionary[@"privatemessageid"];
     if (messageID.length == 0) {
@@ -38,14 +37,14 @@
     PrivateMessageKey *messageKey = [[PrivateMessageKey alloc] initWithMessageID:messageID];
     PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
     
-    HTMLElement *breadcrumbs = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs b"];
+    HTMLElement *breadcrumbs = [self.node firstNodeMatchingSelector:@"div.breadcrumbs b"];
     HTMLTextNode *subjectText = breadcrumbs.children.lastObject;
     if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
         message.subject = subjectText.data;
     }
     
-    HTMLElement *postDateCell = [self.node awful_firstNodeMatchingCachedSelector:@"td.postdate"];
-    HTMLElement *iconImage = [postDateCell awful_firstNodeMatchingCachedSelector:@"img"];
+    HTMLElement *postDateCell = [self.node firstNodeMatchingSelector:@"td.postdate"];
+    HTMLElement *iconImage = [postDateCell firstNodeMatchingSelector:@"img"];
     if (iconImage) {
         NSString *src = iconImage[@"src"];
         message.seen = [src rangeOfString:@"newpm"].location == NSNotFound;
@@ -59,7 +58,7 @@
         message.sentDate = sentDate;
     }
     
-    HTMLElement *postBodyCell = [self.node awful_firstNodeMatchingCachedSelector:@"td.postbody"];
+    HTMLElement *postBodyCell = [self.node firstNodeMatchingSelector:@"td.postbody"];
     if (postBodyCell) {
         message.innerHTML = postBodyCell.innerHTML;
     }

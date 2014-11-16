@@ -22,10 +22,6 @@ target :Smilies do
   pod 'HTMLReader', '0.5.7'
 end
 
-target :ScrapingTests do
-  pod 'HTMLReader', '0.5.7'
-end
-
 # Custom text atop the "Acknowledgements" Settings screen.
 class ::Pod::Generator::Acknowledgements
   def header_text

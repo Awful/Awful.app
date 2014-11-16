@@ -3,21 +3,21 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(Forum)
-class Forum: AwfulManagedObject {
+public class Forum: AwfulManagedObject {
 
-    @NSManaged var canPost: Bool
-    @NSManaged var forumID: String
+    @NSManaged public var canPost: Bool
+    @NSManaged public var forumID: String
     @NSManaged var index: Int32
     @NSManaged var lastFilteredRefresh: NSDate?
     @NSManaged var lastRefresh: NSDate?
-    @NSManaged var name: String?
+    @NSManaged public var name: String?
     
-    @NSManaged var childForums: NSMutableSet /* Forum via parentForum */
-    @NSManaged var group: ForumGroup?
-    @NSManaged var parentForum: Forum /* via childForums */
+    @NSManaged public var childForums: NSMutableSet /* Forum via parentForum */
+    @NSManaged public var group: ForumGroup?
+    @NSManaged public var parentForum: Forum? /* via childForums */
     @NSManaged var secondaryThreadTags: NSMutableOrderedSet /* ThreadTag via secondaryForums */
     @NSManaged var threads: NSMutableSet /* Thread */
-    @NSManaged var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
+    @NSManaged public var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
     @NSManaged private(set) var metadata: ForumMetadata
 }
 
@@ -77,7 +77,7 @@ extension Forum {
         }
     }
     
-    override class func insertInManagedObjectContext(context: NSManagedObjectContext) -> Forum {
+    override public class func insertInManagedObjectContext(context: NSManagedObjectContext) -> Forum {
         let forum = super.insertInManagedObjectContext(context) as Forum
         forum.metadata = ForumMetadata.insertInManagedObjectContext(context)
         return forum
@@ -85,13 +85,13 @@ extension Forum {
 }
 
 @objc(ForumGroup)
-class ForumGroup: AwfulManagedObject {
+public class ForumGroup: AwfulManagedObject {
 
-    @NSManaged var groupID: String
+    @NSManaged public var groupID: String
     @NSManaged var index: Int32
-    @NSManaged var name: String?
+    @NSManaged public var name: String?
     
-    @NSManaged var forums: NSMutableSet /* Forum */
+    @NSManaged public var forums: NSMutableSet /* Forum */
 }
 
 class ForumGroupKey: AwfulObjectKey {

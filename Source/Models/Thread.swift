@@ -3,40 +3,40 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(Thread)
-class Thread: AwfulManagedObject {
+public class Thread: AwfulManagedObject {
 
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged var bookmarked: Bool
-    @NSManaged var closed: Bool
+    @NSManaged public var closed: Bool
     @NSManaged var hideFromList: Bool
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged var lastPostAuthorName: String?
-    @NSManaged var lastPostDate: NSDate?
+    @NSManaged public var lastPostAuthorName: String?
+    @NSManaged public var lastPostDate: NSDate?
     @NSManaged var numberOfPages: Int32
-    @NSManaged var numberOfVotes: Int32
-    @NSManaged var rating: Float32
+    @NSManaged public var numberOfVotes: Int32
+    @NSManaged public var rating: Float32
     @NSManaged private var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
-    @NSManaged var starCategory: Int16
-    @NSManaged var sticky: Bool
-    @NSManaged var stickyIndex: Int32
-    @NSManaged var threadID: String
-    @NSManaged var title: String?
+    @NSManaged public var starCategory: Int16
+    @NSManaged public var sticky: Bool
+    @NSManaged public var stickyIndex: Int32
+    @NSManaged public var threadID: String
+    @NSManaged public var title: String?
     @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     
-    @NSManaged var author: User?
-    @NSManaged var forum: Forum?
+    @NSManaged public var author: User?
+    @NSManaged public var forum: Forum?
     @NSManaged var posts: NSMutableSet /* Post */
-    @NSManaged var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
+    @NSManaged public var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
-    @NSManaged var threadTag: ThreadTag? /* via threads */
+    @NSManaged public var threadTag: ThreadTag? /* via threads */
 }
 extension Thread {
     var beenSeen: Bool {
         get { return seenPosts > 0 }
     }
     
-    var seenPosts: Int32 {
+    public var seenPosts: Int32 {
         get {
             willAccessValueForKey("seenPosts")
             let seenPosts = primitiveSeenPosts.intValue
@@ -55,7 +55,7 @@ extension Thread {
         }
     }
     
-    var totalReplies: Int32 {
+    public var totalReplies: Int32 {
         get {
             willAccessValueForKey("totalReplies")
             let totalReplies = primitiveTotalReplies.intValue

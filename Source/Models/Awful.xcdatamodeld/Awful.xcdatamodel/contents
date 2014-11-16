@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B23" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B23" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Forum" representedClassName="Forum" syncable="YES">
         <attribute name="canPost" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="forumID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -81,7 +81,7 @@
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="numberOfPages" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfVotes" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="rating" attributeType="Float" defaultValueString="-1" syncable="YES"/>
+        <attribute name="rating" attributeType="Float" defaultValueString="0" syncable="YES"/>
         <attribute name="seenPosts" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="starCategory" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="sticky" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>

@@ -5,7 +5,6 @@
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
-#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
 
@@ -29,15 +28,15 @@
     if (self.error) return;
     
     // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
-    HTMLElement *profileLink = [self.node awful_firstNodeMatchingCachedSelector:@"ul.profilelinks a[href *= 'userid']"];
+    HTMLElement *profileLink = [self.node firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'userid']"];
     if (profileLink) {
         NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
         self.userID = URL.queryDictionary[@"userid"];
     } else {
-        HTMLElement *userIDInput = [self.node awful_firstNodeMatchingCachedSelector:@"input[name = 'userid']"];
+        HTMLElement *userIDInput = [self.node firstNodeMatchingSelector:@"input[name = 'userid']"];
         self.userID = userIDInput[@"value"];
     }
-    HTMLElement *authorTerm = [self.node awful_firstNodeMatchingCachedSelector:@"dt.author"];
+    HTMLElement *authorTerm = [self.node firstNodeMatchingSelector:@"dt.author"];
     self.username = authorTerm.textContent;
     
     if (self.userID.length == 0 && self.username.length == 0) {
@@ -52,12 +51,12 @@
         otherAttributes[@"moderator"] = @([authorTerm hasClass:@"role-mod"]);
 		otherAttributes[@"authorClasses"] = authorTerm[@"class"];
     }
-    HTMLElement *regdateDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dd.registered"];
+    HTMLElement *regdateDefinition = [self.node firstNodeMatchingSelector:@"dd.registered"];
     NSDate *regdate = [RegdateParser() dateFromString:regdateDefinition.innerHTML];
     if (regdate) {
         otherAttributes[@"regdate"] = regdate;
     }
-    HTMLElement *customTitleDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.userinfo dd.title"];
+    HTMLElement *customTitleDefinition = [self.node firstNodeMatchingSelector:@"dl.userinfo dd.title"];
     if (customTitleDefinition) {
         HTMLElement *superfluousLineBreak = [customTitleDefinition firstNodeMatchingSelector:@"br.pb"];
         [superfluousLineBreak.parentNode.mutableChildren removeObject:superfluousLineBreak];

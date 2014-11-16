@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulFrameworkCategories.h"
-#import "HTMLNode+CachedSelector.h"
 #import "Awful-Swift.h"
 
 @interface AwfulLepersColonyPageScraper ()
@@ -24,7 +23,7 @@
     if (self.error) return;
     
     NSMutableArray *bans = [NSMutableArray new];
-    NSMutableArray *rows = [[self.node awful_nodesMatchingCachedSelector:@"table.standard tr"] mutableCopy];
+    NSMutableArray *rows = [[self.node nodesMatchingSelector:@"table.standard tr"] mutableCopy];
     if (rows.count == 0) {
         self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"Could not find table rows" }];
         return;
@@ -39,10 +38,10 @@
     NSMutableArray *userKeys = [NSMutableArray new];
     for (HTMLElement *row in rows) {
         NSMutableDictionary *info = [NSMutableDictionary new];
-        HTMLElement *typeCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(1)"];
+        HTMLElement *typeCell = [row firstNodeMatchingSelector:@"td:nth-of-type(1)"];
         
         {{
-            HTMLElement *typeLink = [typeCell awful_firstNodeMatchingCachedSelector:@"a"];
+            HTMLElement *typeLink = [typeCell firstNodeMatchingSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
             NSString *postID = URL.queryDictionary[@"postid"];
             if (postID.length > 0) {
@@ -64,7 +63,7 @@
         }}
         
         {{
-            HTMLElement *userLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(3) a"];
+            HTMLElement *userLink = [row firstNodeMatchingSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = userLink.textContent;
@@ -76,7 +75,7 @@
         }}
         
         {{
-            HTMLElement *requesterLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(5) a"];
+            HTMLElement *requesterLink = [row firstNodeMatchingSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = requesterLink.textContent;
@@ -88,7 +87,7 @@
         }}
         
         {{
-            HTMLElement *approverLink = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(6) a"];
+            HTMLElement *approverLink = [row firstNodeMatchingSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
             NSString *userID = URL.queryDictionary[@"userid"];
             NSString *username = approverLink.textContent;
@@ -127,7 +126,7 @@
         ban.punishment = [info[@"punishment"] integerValue];
         
         {{
-            HTMLElement *dateCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(2)"];
+            HTMLElement *dateCell = [row firstNodeMatchingSelector:@"td:nth-of-type(2)"];
             NSDate *date = [BanDateParser() dateFromString:dateCell.innerHTML];
             if (date) {
                 ban.date = date;
@@ -135,7 +134,7 @@
         }}
         
         {{
-            HTMLElement *reasonCell = [row awful_firstNodeMatchingCachedSelector:@"td:nth-of-type(4)"];
+            HTMLElement *reasonCell = [row firstNodeMatchingSelector:@"td:nth-of-type(4)"];
             ban.reasonHTML = reasonCell.textContent;
         }}
         

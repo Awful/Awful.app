@@ -4,7 +4,6 @@
 
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulScanner.h"
-#import "HTMLNode+CachedSelector.h"
 #import "Awful-Swift.h"
 
 @interface AwfulForumHierarchyScraper ()
@@ -43,7 +42,7 @@
     NSMutableArray *infoDictionaries = [NSMutableArray new];
     NSMutableArray *groupKeys = [NSMutableArray new];
     NSMutableArray *forumKeys = [NSMutableArray new];
-    NSArray *options = [self.node awful_nodesMatchingCachedSelector:@"select[name='forumid'] option"];
+    NSArray *options = [self.node nodesMatchingSelector:@"select[name='forumid'] option"];
     for (HTMLElement *option in options) {
         NSString *itemID = option[@"value"];
         if (itemID.integerValue <= 0) continue;

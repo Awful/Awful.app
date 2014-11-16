@@ -3,17 +3,17 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(User)
-class User: AwfulManagedObject {
+public class User: AwfulManagedObject {
 
-    @NSManaged var administrator: Bool
+    @NSManaged public var administrator: Bool
     @NSManaged var authorClasses: String?
-    @NSManaged var canReceivePrivateMessages: Bool
-    @NSManaged var customTitleHTML: String?
+    @NSManaged public var canReceivePrivateMessages: Bool
+    @NSManaged public var customTitleHTML: String?
     @NSManaged var lastModifiedDate: NSDate
-    @NSManaged var moderator: Bool
-    @NSManaged var regdate: NSDate?
-    @NSManaged var userID: String?
-    @NSManaged var username: String?
+    @NSManaged public var moderator: Bool
+    @NSManaged public var regdate: NSDate?
+    @NSManaged public var userID: String?
+    @NSManaged public var username: String?
     
     @NSManaged var posts: NSMutableSet /* Post */
     @NSManaged var profile: Profile?
