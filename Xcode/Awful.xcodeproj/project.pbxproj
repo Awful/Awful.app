@@ -260,6 +260,7 @@
 		1CF0E9D81A19D1AA0067511E /* ProfileScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */; };
 		1CF0E9D91A19D1B40067511E /* ThreadListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */; };
 		1CF0E9DA1A19E7180067511E /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
+		1CF0E9DD1A19F21F0067511E /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */; };
@@ -768,6 +769,8 @@
 		1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableTests.swift; sourceTree = "<group>"; };
 		1CF0E9CD1A191D930067511E /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAppDelegate.m; sourceTree = "<group>"; };
 		1CF0E9CF1A191EF10067511E /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CrashlyticsAPIKey.h; path = ../CrashlyticsAPIKey.h; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF3A465180C768100EC2450 /* AwfulURLRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulURLRouter.h; sourceTree = "<group>"; };
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
@@ -883,8 +886,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
+				1CF0E9DD1A19F21F0067511E /* Crashlytics.framework in Frameworks */,
 				673FAE1D0081DA15654CD40E /* libPods-Awful.a in Frameworks */,
+				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -926,6 +930,8 @@
 			children = (
 				1C09BFE51A09B9A5007C11F5 /* 1Password */,
 				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
+				1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */,
+				1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
@@ -1839,6 +1845,7 @@
 				08C2CC9823F04B90ADC778E0 /* Copy Pods Resources */,
 				1C66A9DD19DD304F001B9A41 /* Embed Frameworks */,
 				1C66A9F819DD393A001B9A41 /* Embed App Extensions */,
+				1CF0E9DB1A19F1D90067511E /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -2089,6 +2096,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
 			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../Source\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Profiles/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
+		};
+		1CF0E9DB1A19F1D90067511E /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Crashlytics;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "[ \"$CONFIGURATION\" == \"App Store\" ] || exit 0\nfile=\"${PROJECT_DIR}/crashlytics.sh\"\n[ -f \"$file\" ] && . \"$file\"\n";
 		};
 		58FC1CD8E73DDDA14A520B6B /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

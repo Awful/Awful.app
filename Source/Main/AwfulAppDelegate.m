@@ -17,6 +17,10 @@
 #import "AwfulThemeLoader.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
+#if __has_include("CrashlyticsAPIKey.h")
+    #import <Crashlytics/Crashlytics.h>
+    #import "CrashlyticsAPIKey.h"
+#endif
 #import <GRMustache/GRMustache.h>
 #import "Handoff.h"
 @import Smilies;
@@ -218,10 +222,13 @@ static void RemoveOldDataStores(void)
 {
     _instance = self;
     
+    #ifdef CRASHLYTICS_API_KEY
+        [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
+    #endif
+    [GRMustache preventNSUndefinedKeyExceptionAttack];
+    
     [[AwfulSettings sharedSettings] registerDefaults];
     [[AwfulSettings sharedSettings] migrateOldSettings];
-    
-    [GRMustache preventNSUndefinedKeyExceptionAttack];
     
     NSURL *storeURL = [[[NSFileManager defaultManager] applicationSupportDirectory] URLByAppendingPathComponent:@"CachedForumData"
                                                                                                     isDirectory:YES];

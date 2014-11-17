@@ -120,6 +120,18 @@ The posts view uses [zepto.js][]. Awful uses the *Touch* module which is not par
 
 [zepto.js]: http://zeptojs.com/
 
+Crash Logs
+----------
+
+Awful uses Crashlytics to assemble crash logs. Configuration requires four steps beyond the typical Crashlytics setup:
+
+1. Create a file called `CrashlyticsAPIKey.h` in the root of the repository.
+2. In that file, put a line like `#define CRASHLYTICS_API_KEY @"abbacadabbaabbacadabbaabbacadabbaabbacad"`, where the key comes from the line Crashlytics setup gives you to paste in your app delegate.
+3. Create a file called `crashlytics.sh` in the `Xcode` directory and mark it executable.
+4. When the Crashlystics setup gives you a line to put into a new Run Script build phase, instead put it in the file you just made.
+
+Without doing the above, Crashlytics is rendered inert in your builds.
+
 License
 -------
 
