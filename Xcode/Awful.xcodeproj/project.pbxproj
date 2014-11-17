@@ -832,7 +832,6 @@
 		B11C3044C58C2DB95297DE03 /* Pods-Smilies.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.app store.xcconfig"; sourceTree = "<group>"; };
 		B573FAB3ADBD3D7B8006E7CB /* Pods-ScrapingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B6749907CE55B1A5D6A69D99 /* Pods-Awful.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.beta.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.beta.xcconfig"; sourceTree = "<group>"; };
-		CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScrapingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
 		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
@@ -1645,7 +1644,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CF1D425D92114D4683D364AC /* libPods-ScrapingTests.a */,
 				4362220BF887E9F57F3C932E /* libPods-Awful.a */,
 				50ABE7443544E57456E44F96 /* libPods-Smilies.a */,
 			);
