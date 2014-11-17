@@ -19,7 +19,7 @@ end
 
 target :Smilies do
   pod 'FLAnimatedImage', '1.0.2'
-  pod 'HTMLReader', '0.5.7'
+  pod 'HTMLReader', '0.5.8'
 end
 
 # Custom text atop the "Acknowledgements" Settings screen.
