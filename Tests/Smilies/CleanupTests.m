@@ -29,8 +29,9 @@
     Smilie *backtowork = [Smilie newInManagedObjectContext:self.dataStore.managedObjectContext];
     backtowork.text = @":backtowork:";
     NSError *error;
-    BOOL ok = [backtowork.managedObjectContext save:&error];
-    NSAssert(ok, @"error saving: %@", error);
+    if (![backtowork.managedObjectContext save:&error]) {
+        NSAssert(NO, @"error saving: %@", error);
+    }
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"text = %@", backtowork.text];

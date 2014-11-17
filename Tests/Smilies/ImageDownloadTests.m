@@ -37,8 +37,9 @@
     realColbert.text = @"!colbert!";
     realColbert.imageURL = @"http://i.somethingawful.com/forumsystem/emoticons/emot-crossarms.gif";
     NSError *error;
-    BOOL ok = [forwardToWork.managedObjectContext save:nil];
-    NSAssert(ok, @"error saving new smilies: %@", error);
+    if (![forwardToWork.managedObjectContext save:nil]) {
+        NSAssert(NO, @"error saving new smilies: %@", error);
+    }
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"imageData = nil"];
