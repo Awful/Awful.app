@@ -13,7 +13,7 @@ public class Thread: AwfulManagedObject {
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
     @NSManaged public var lastPostDate: NSDate?
-    @NSManaged var numberOfPages: Int32
+    @NSManaged private var primitiveNumberOfPages: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     @NSManaged public var numberOfVotes: Int32
     @NSManaged public var rating: Float32
     @NSManaged private var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
@@ -34,6 +34,27 @@ public class Thread: AwfulManagedObject {
 extension Thread {
     var beenSeen: Bool {
         get { return seenPosts > 0 }
+    }
+    
+    public var numberOfPages: Int32 {
+        get {
+            willAccessValueForKey("numberOfPages")
+            let numberOfPages = primitiveNumberOfPages.intValue
+            didAccessValueForKey("numberOfPages")
+            return numberOfPages
+        }
+        set {
+            willChangeValueForKey("numberOfPages")
+            primitiveNumberOfPages = NSNumber(int: newValue)
+            didChangeValueForKey("numberOfPages")
+            
+            let minimumTotalReplies: Int32 = 1 + (newValue - 1) * 40
+            if minimumTotalReplies > totalReplies {
+                willChangeValueForKey("totalReplies")
+                primitiveTotalReplies = NSNumber(int: minimumTotalReplies)
+                didChangeValueForKey("totalReplies")
+            }
+        }
     }
     
     public var seenPosts: Int32 {
@@ -68,7 +89,11 @@ extension Thread {
             didChangeValueForKey("totalReplies")
             
             let minimumNumberOfPages = 1 + newValue / 40
-            numberOfPages = max(numberOfPages, minimumNumberOfPages)
+            if minimumNumberOfPages > numberOfPages {
+                willChangeValueForKey("numberOfPages")
+                primitiveNumberOfPages = NSNumber(int: minimumNumberOfPages)
+                didChangeValueForKey("numberOfPages")
+            }
             anyUnreadPosts = unreadPosts > 0
         }
     }

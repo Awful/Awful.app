@@ -61,6 +61,9 @@ class PostsPageScrapingTests: ScrapingTestCase {
         let lastPost = posts.last!
         XCTAssertEqual(lastPost.postID, "407769816")
         XCTAssertTrue(lastPost.threadIndex == 200)
+        
+        XCTAssertTrue(canpoliThread.numberOfPages == 151)
+        XCTAssertTrue(canpoliThread.totalReplies > 6000, "number of replies should reflect number of pages")
     }
     
     func testWeirdSizeTags() {
