@@ -206,7 +206,6 @@
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC45267180B7C1A00F5F043 /* AbstractThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45266180B7C1A00F5F043 /* AbstractThreadListViewController.m */; };
 		1CC4526A180B7D3900F5F043 /* BookmarkedThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */; };
-		1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
 		1CC780501612DA8E002AF958 /* ThreadListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7804D1612DA8E002AF958 /* ThreadListViewController.m */; };
@@ -694,8 +693,6 @@
 		1CC45266180B7C1A00F5F043 /* AbstractThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractThreadListViewController.m; sourceTree = "<group>"; };
 		1CC45268180B7D3900F5F043 /* BookmarkedThreadListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkedThreadListViewController.h; sourceTree = "<group>"; };
 		1CC45269180B7D3900F5F043 /* BookmarkedThreadListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookmarkedThreadListViewController.m; sourceTree = "<group>"; };
-		1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+AwfulConvenient.h"; sourceTree = "<group>"; };
-		1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+AwfulConvenient.m"; sourceTree = "<group>"; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
 		1CC780271612D9DE002AF958 /* PostsPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsPageViewController.h; sourceTree = "<group>"; };
@@ -1407,8 +1404,6 @@
 				1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */,
 				1C051C9B1A15EB7200F81EA2 /* DataStore.swift */,
 				1CE55A6D1A0F77B800E474A6 /* Forum.swift */,
-				1CC6691518D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.h */,
-				1CC6691618D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m */,
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
 				1C051C9F1A16F8D700F81EA2 /* Profile.swift */,
@@ -2299,7 +2294,6 @@
 				1C1ADC3518E625BF00E865BF /* AwfulScraper.m in Sources */,
 				1CFE985918296CD7003DBBC2 /* AwfulPostsPageScraper.m in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumListViewController.swift in Sources */,
-				1CC6691718D5B96D00BDF7B8 /* NSManagedObjectContext+AwfulConvenient.m in Sources */,
 				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
 				1C051CA01A16F8D700F81EA2 /* Profile.swift in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,

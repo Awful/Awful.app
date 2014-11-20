@@ -17,11 +17,20 @@
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
 #import "LepersColonyPageScraper.h"
-#import "NSManagedObjectContext+AwfulConvenient.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
 #import "ProfileScraper.h"
 #import "Awful-Swift.h"
+
+@interface NSManagedObjectContext (AwfulConvenient)
+
+/// -objectWithID: except nil-safe and returns `id` for easy casting.
+- (id)awful_objectWithID:(NSManagedObjectID *)objectID;
+
+/// -objectWithID: for each item in the array.
+- (NSArray *)awful_objectsWithIDs:(NSArray *)objectIDs;
+
+@end
 
 @implementation AwfulForumsClient
 {
@@ -1297,6 +1306,26 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
     }];
+}
+
+@end
+
+@implementation NSManagedObjectContext (AwfulConvenient)
+
+- (id)awful_objectWithID:(NSManagedObjectID *)objectID
+{
+    if (!objectID) return nil;
+    return (id)[self objectWithID:objectID];
+}
+
+- (NSArray *)awful_objectsWithIDs:(NSArray *)objectIDs
+{
+    NSMutableArray *objects = [NSMutableArray new];
+    for (NSManagedObjectID *objectID in objectIDs) {
+        NSManagedObject *object = [self objectWithID:objectID];
+        [objects addObject:object];
+    }
+    return objects;
 }
 
 @end
