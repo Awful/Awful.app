@@ -272,9 +272,9 @@
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(User *)user
-                        andThen:(void (^)(NSError *error, NSArray *bans))callback;
+- (NSOperation *)listPunishmentsOnPage:(NSInteger)page
+                               forUser:(User *)user
+                               andThen:(void (^)(NSError *error, NSArray *bans))callback;
 
 #pragma mark - Private Messages
 

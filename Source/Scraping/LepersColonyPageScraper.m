@@ -1,28 +1,27 @@
-//  AwfulLepersColonyPageScraper.m
+//  LepersColonyPageScraper.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulLepersColonyPageScraper.h"
-#import "AwfulBan.h"
+#import "LepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulFrameworkCategories.h"
 #import "Awful-Swift.h"
 
-@interface AwfulLepersColonyPageScraper ()
+@interface LepersColonyPageScraper ()
 
-@property (copy, nonatomic) NSArray *bans;
+@property (copy, nonatomic) NSArray *punishments;
 
 @end
 
-@implementation AwfulLepersColonyPageScraper
+@implementation LepersColonyPageScraper
 
 - (void)scrape
 {
     [super scrape];
     if (self.error) return;
     
-    NSMutableArray *bans = [NSMutableArray new];
+    NSMutableArray *punishments = [NSMutableArray new];
     NSMutableArray *rows = [[self.node nodesMatchingSelector:@"table.standard tr"] mutableCopy];
     if (rows.count == 0) {
         self.error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"Could not find table rows" }];
@@ -54,11 +53,11 @@
         {{
             NSString *typeText = typeCell.textContent;
             if ([typeText rangeOfString:@"PROBATION"].location != NSNotFound) {
-                info[@"punishment"] = @(AwfulPunishmentProbation);
+                info[@"punishment"] = @(PunishmentSentenceProbation);
             } else if ([typeText rangeOfString:@"PERMABAN"].location != NSNotFound) {
-                info[@"punishment"] = @(AwfulPunishmentPermaban);
+                info[@"punishment"] = @(PunishmentSentencePermaban);
             } else if ([typeText rangeOfString:@"BAN"].location != NSNotFound) {
-                info[@"punishment"] = @(AwfulPunishmentBan);
+                info[@"punishment"] = @(PunishmentSentenceBan);
             }
         }}
         
@@ -106,58 +105,57 @@
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     
     [rows enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {
-        AwfulBan *ban = [AwfulBan new];
         NSDictionary *info = infoDictionaries[i];
-        
+        Punishment *punishment;
+        {{
+            HTMLElement *dateCell = [row firstNodeMatchingSelector:@"td:nth-of-type(2)"];
+            NSDate *date = [DateParser() dateFromString:dateCell.textContent];
+            PunishmentSentence sentence = [info[@"punishment"] integerValue];
+            User *subject;
+            UserKey *userKey = info[@"userKey"];
+            if (userKey) {
+                subject = usersByKey[userKey];
+            }
+            
+            if (date && subject) {
+                punishment = [[Punishment alloc] initWithDate:date sentence:sentence subject:subject];
+            } else {
+                return;
+            }
+        }}
+
         {{
             PostKey *postKey = info[@"postKey"];
             if (postKey) {
-                ban.post = postsByKey[postKey];
-            }
-        }}
-        
-        {{
-            UserKey *userKey = info[@"userKey"];
-            if (userKey) {
-                ban.user = usersByKey[userKey];
-            }
-        }}
-        
-        ban.punishment = [info[@"punishment"] integerValue];
-        
-        {{
-            HTMLElement *dateCell = [row firstNodeMatchingSelector:@"td:nth-of-type(2)"];
-            NSDate *date = [BanDateParser() dateFromString:dateCell.innerHTML];
-            if (date) {
-                ban.date = date;
+                punishment.post = postsByKey[postKey];
             }
         }}
         
         {{
             HTMLElement *reasonCell = [row firstNodeMatchingSelector:@"td:nth-of-type(4)"];
-            ban.reasonHTML = reasonCell.textContent;
+            punishment.reasonHTML = reasonCell.textContent;
         }}
         
         {{
             UserKey *requesterKey = info[@"requesterUserKey"];
             if (requesterKey) {
-                ban.requester = usersByKey[requesterKey];
+                punishment.requester = usersByKey[requesterKey];
             }
         }}
         
         {{
             UserKey *approverKey = info[@"requesterUserKey"];
             if (approverKey) {
-                ban.approver = usersByKey[approverKey];
+                punishment.approver = usersByKey[approverKey];
             }
         }}
         
-        [bans addObject:ban];
+        [punishments addObject:punishment];
     }];
-    self.bans = bans;
+    self.punishments = punishments;
 }
 
-static AwfulCompoundDateParser * BanDateParser(void)
+static AwfulCompoundDateParser * DateParser(void)
 {
     static AwfulCompoundDateParser *parser;
     static dispatch_once_t onceToken;

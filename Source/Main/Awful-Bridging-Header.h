@@ -24,6 +24,7 @@
 #import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
 #import "ProfileViewModel.h"
+#import "PunishmentSentence.h"
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadListViewController.h"

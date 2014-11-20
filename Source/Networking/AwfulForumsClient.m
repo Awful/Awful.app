@@ -9,7 +9,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulImageURLProtocol.h"
-#import "AwfulLepersColonyPageScraper.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulScanner.h"
@@ -17,6 +16,7 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "HTMLNode+CachedSelector.h"
+#import "LepersColonyPageScraper.h"
 #import "NSManagedObjectContext+AwfulConvenient.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
@@ -1054,30 +1054,28 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
 
 #pragma mark - Punishments
 
-- (NSOperation *)listBansOnPage:(NSInteger)page
-                        forUser:(User *)user
-                        andThen:(void (^)(NSError *error, NSArray *bans))callback
+- (NSOperation *)listPunishmentsOnPage:(NSInteger)page
+                               forUser:(User *)user
+                               andThen:(void (^)(NSError *error, NSArray *bans))callback
 {
     NSOperation * (^doIt)() = ^(User *user) {
         NSMutableDictionary *parameters = [@{ @"pagenumber": @(page) } mutableCopy];
         if (user.userID.length > 0) {
             parameters[@"userid"] = user.userID;
         }
-        NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+        NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
         return [_HTTPManager GET:@"banlist.php"
                       parameters:parameters
                          success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
         {
-             [managedObjectContext performBlock:^{
-                 AwfulLepersColonyPageScraper *scraper = [AwfulLepersColonyPageScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
+             [mainManagedObjectContext performBlock:^{
+                 LepersColonyPageScraper *scraper = [LepersColonyPageScraper scrapeNode:document intoManagedObjectContext:mainManagedObjectContext];
                  NSError *error = scraper.error;
-                 if (scraper.bans) {
-                     [managedObjectContext save:&error];
+                 if (scraper.punishments) {
+                     [mainManagedObjectContext save:&error];
                  }
                  if (callback) {
-                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                         callback(error, scraper.bans);
-                     }];
+                     callback(error, scraper.punishments);
                  }
              }];
          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

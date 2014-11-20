@@ -4,7 +4,6 @@
 
 #import "RapSheetViewController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulBan.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulPunishmentCell.h"
@@ -15,7 +14,7 @@
 
 @property (strong, nonatomic) UIBarButtonItem *doneItem;
 @property (assign, nonatomic) NSInteger mostRecentlyLoadedPage;
-@property (strong, nonatomic) NSMutableOrderedSet *bans;
+@property (strong, nonatomic) NSMutableOrderedSet *punishments;
 
 @end
 
@@ -25,7 +24,7 @@
 {
     if ((self = [super initWithStyle:UITableViewStylePlain])) {
         _user = user;
-        _bans = [NSMutableOrderedSet new];
+        _punishments = [NSMutableOrderedSet new];
         if (user) {
             self.title = @"Rap Sheet";
             self.hidesBottomBarWhenPushed = YES;
@@ -88,7 +87,7 @@
 
 - (void)refreshIfNecessary
 {
-    if (self.bans.count == 0) {
+    if (self.punishments.count == 0) {
         [self refresh];
     }
 }
@@ -102,7 +101,7 @@
 - (void)loadPage:(NSUInteger)page
 {
     __weak __typeof__(self) weakSelf = self;
-    [[AwfulForumsClient client] listBansOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *bans) {
+    [[AwfulForumsClient client] listPunishmentsOnPage:page forUser:self.user andThen:^(NSError *error, NSArray *punishments) {
         __typeof__(self) self = weakSelf;
         if (error) {
             [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
@@ -110,19 +109,19 @@
         }
         self.mostRecentlyLoadedPage = page;
         if (page == 1) {
-            [self.bans removeAllObjects];
-            [self.bans addObjectsFromArray:bans];
+            [self.punishments removeAllObjects];
+            [self.punishments addObjectsFromArray:punishments];
             [self.tableView reloadData];
-            if (self.bans.count == 0) {
+            if (self.punishments.count == 0) {
                 [self showNothingToSeeView];
             } else {
                 [self setUpInfiniteScroll];
             }
         } else {
-            NSUInteger oldCount = self.bans.count;
-            [self.bans addObjectsFromArray:bans];
+            NSUInteger oldCount = self.punishments.count;
+            [self.punishments addObjectsFromArray:punishments];
             NSMutableArray *indexPaths = [NSMutableArray new];
-            for (NSUInteger i = oldCount; i < self.bans.count; i++) {
+            for (NSUInteger i = oldCount; i < self.punishments.count; i++) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
             }
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -156,36 +155,44 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.bans.count;
+    return self.punishments.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     AwfulPunishmentCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    AwfulBan *ban = self.bans[indexPath.row];
+    Punishment *punishment = self.punishments[indexPath.row];
     
     {{
-        if (ban.punishment == AwfulPunishmentProbation) {
-            cell.imageView.image = [UIImage imageNamed:@"title-probation"];
-        } else if (ban.punishment == AwfulPunishmentPermaban) {
-            cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
-        } else {
-            cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
+        switch (punishment.sentence) {
+            case PunishmentSentenceProbation:
+                cell.imageView.image = [UIImage imageNamed:@"title-probation"];
+                break;
+            case PunishmentSentencePermaban:
+                cell.imageView.image = [UIImage imageNamed:@"title-permabanned.gif"];
+                break;
+            case PunishmentSentenceBan:
+            case PunishmentSentenceAutoban:
+                cell.imageView.image = [UIImage imageNamed:@"title-banned.gif"];
+                break;
+            case PunishmentSentenceUnknown:
+                cell.imageView.image = nil;
+                break;
         }
-        cell.textLabel.text = ban.user.username;
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ by %@", [self.banDateFormatter stringFromDate:ban.date], ban.requester.username];
-        cell.reasonLabel.text = ban.reasonHTML;
+        cell.textLabel.text = punishment.subject.username;
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ by %@", [self.banDateFormatter stringFromDate:punishment.date], punishment.requester.username];
+        cell.reasonLabel.text = punishment.reasonHTML;
     }}
     
     {{
-        NSString *banDescription = @"banned";
-        if (ban.punishment == AwfulPunishmentProbation) {
-            banDescription = @"probated";
-        } else if (ban.punishment == AwfulPunishmentPermaban) {
-            banDescription = @"permabanned";
+        NSString *description = @"banned";
+        if (punishment.sentence == PunishmentSentenceProbation) {
+            description = @"probated";
+        } else if (punishment.sentence == PunishmentSentencePermaban) {
+            description = @"permabanned";
         }
-        NSString *readableBanDate = [self.banDateFormatter stringFromDate:ban.date];
-        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”", ban.user.username, banDescription, ban.requester.username, readableBanDate, ban.reasonHTML];
+        NSString *readableDate = [self.banDateFormatter stringFromDate:punishment.date];
+        cell.accessibilityLabel = [NSString stringWithFormat:@"%@ was %@ by %@ on %@: “%@”", punishment.subject.username, description, punishment.requester.username, readableDate, punishment.reasonHTML];
     }}
     
     {{
@@ -221,15 +228,15 @@ static NSString * const CellIdentifier = @"Infraction Cell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulBan *ban = self.bans[indexPath.row];
-    return [AwfulPunishmentCell rowHeightWithBanReason:ban.reasonHTML width:CGRectGetWidth(tableView.bounds)];
+    Punishment *punishment = self.punishments[indexPath.row];
+    return [AwfulPunishmentCell rowHeightWithBanReason:punishment.reasonHTML width:CGRectGetWidth(tableView.bounds)];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulBan *ban = self.bans[indexPath.row];
-    if (!ban.post) return;
-    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", ban.post.postID]];
+    Punishment *punishment = self.punishments[indexPath.row];
+    if (punishment.post.postID.length == 0) return;
+    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://posts/%@", punishment.post.postID]];
     [[AwfulAppDelegate instance] openAwfulURL:URL];
     if (self.presentingViewController) {
         [self dismissViewControllerAnimated:YES completion:nil];
