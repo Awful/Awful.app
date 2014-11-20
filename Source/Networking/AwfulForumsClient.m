@@ -302,9 +302,9 @@
                     for (Thread *thread in scraper.threads) {
                         [threadsToHide removeObject:thread];
                     }
-                    [threadsToHide setValue:@YES forKey:@"hideFromList"];
+                    [threadsToHide setValue:@YES forKey:@"hideFromThreadList"];
                 }
-                [scraper.threads setValue:@NO forKey:@"hideFromList"];
+                [scraper.threads setValue:@NO forKey:@"hideFromThreadList"];
                 [managedObjectContext save:&error];
             }
 
@@ -336,13 +336,12 @@
             AwfulThreadListScraper *scraper = [AwfulThreadListScraper scrapeNode:document intoManagedObjectContext:managedObjectContext];
             NSError *error = scraper.error;
             if (scraper.threads && !error) {
-                if (page == 1) {
-                    NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
-                    NSArray *threadsToForget = [Thread fetchAllInManagedObjectContext:managedObjectContext
-                                                              matchingPredicateFormat:@"bookmarked = YES && NOT(threadID IN %@)", threadIDsToIgnore];
-                    [threadsToForget setValue:@NO forKey:@"bookmarked"];
-                }
                 [scraper.threads setValue:@YES forKey:@"bookmarked"];
+                NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
+                NSArray *threadsToForget = [Thread fetchAllInManagedObjectContext:managedObjectContext
+                                                          matchingPredicateFormat:@"bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", (long)page, threadIDsToIgnore];
+                [threadsToForget setValue:@0 forKey:@"bookmarkListPage"];
+                [scraper.threads setValue:@(page) forKey:@"bookmarkListPage"];
                 [managedObjectContext save:&error];
             }
             

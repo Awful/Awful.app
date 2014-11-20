@@ -147,6 +147,10 @@
         [threadDictionaries addObject:threadInfo];
     }
     
+    if (threadKeys.count == 0) {
+        return;
+    }
+    
     NSArray *threads = [Thread objectsForKeys:threadKeys inManagedObjectContext:self.managedObjectContext];
     NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];

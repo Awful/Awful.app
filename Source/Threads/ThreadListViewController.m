@@ -86,7 +86,7 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
 - (NSFetchedResultsController *)createFetchedResultsController
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:Thread.entityName];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"hideFromList == NO AND forum == %@", self.forum];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"hideFromThreadList == NO AND forum == %@", self.forum];
     if (self.filterThreadTag) {
         NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"threadTag == %@", self.filterThreadTag];
         fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[ fetchRequest.predicate, filterPredicate ]];

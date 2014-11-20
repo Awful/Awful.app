@@ -8,8 +8,9 @@ public class Thread: AwfulManagedObject {
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged var bookmarked: Bool
+    @NSManaged var bookmarkListPage: Bool
     @NSManaged public var closed: Bool
-    @NSManaged var hideFromList: Bool
+    @NSManaged var hideFromThreadList: Bool
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
     @NSManaged public var lastPostDate: NSDate?

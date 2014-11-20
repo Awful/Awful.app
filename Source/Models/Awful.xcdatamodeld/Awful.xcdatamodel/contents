@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B23" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Forum" representedClassName="Forum" syncable="YES">
         <attribute name="canPost" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="forumID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -74,8 +74,9 @@
         <attribute name="anyUnreadPosts" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="bookmarked" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="bookmarkListPage" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="closed" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="hideFromList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="hideFromThreadList" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="lastModifiedDate" attributeType="Date" syncable="YES"/>
         <attribute name="lastPostAuthorName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastPostDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -140,7 +141,7 @@
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
         <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
         <element name="Profile" positionX="27" positionY="153" width="128" height="270"/>
-        <element name="Thread" positionX="0" positionY="0" width="128" height="405"/>
+        <element name="Thread" positionX="0" positionY="0" width="128" height="420"/>
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
         <element name="User" positionX="0" positionY="0" width="128" height="268"/>

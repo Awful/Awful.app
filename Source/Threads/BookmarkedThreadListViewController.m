@@ -60,7 +60,7 @@
 - (void)configureFetchedResultsController
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[Thread entityName]];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES"];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES AND bookmarkListPage > 0"];
     NSMutableArray *sortDescriptors = [NSMutableArray new];
     if ([AwfulSettings sharedSettings].bookmarksSortedByUnread) {
         [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
