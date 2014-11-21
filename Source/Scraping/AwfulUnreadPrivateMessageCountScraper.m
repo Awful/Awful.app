@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulUnreadPrivateMessageCountScraper.h"
-#import "HTMLNode+CachedSelector.h"
 
 @interface AwfulUnreadPrivateMessageCountScraper ()
 
@@ -18,7 +17,7 @@
     [super scrape];
     if (self.error) return;
     
-    self.unreadPrivateMessageCount = [self.node awful_nodesMatchingCachedSelector:@"table.standard img[src*='newpm']"].count;
+    self.unreadPrivateMessageCount = [self.node nodesMatchingSelector:@"table.standard img[src*='newpm']"].count;
 }
 
 @end

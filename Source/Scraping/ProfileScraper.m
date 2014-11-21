@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import "HTMLNode+CachedSelector.h"
 #import <HTMLReader/HTMLTextNode.h>
 #import "Awful-Swift.h"
 
@@ -36,7 +35,7 @@
         self.profile.user = authorScraper.author;
     }
     
-    HTMLElement *infoParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:first-of-type"];
+    HTMLElement *infoParagraph = [self.node firstNodeMatchingSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:infoParagraph.innerHTML];
         [scanner scanUpToString:@"claims to be a " intoString:nil];
@@ -48,15 +47,15 @@
         }
     }
     
-    HTMLElement *aboutParagraph = [self.node awful_firstNodeMatchingCachedSelector:@"td.info p:nth-of-type(2)"];
+    HTMLElement *aboutParagraph = [self.node firstNodeMatchingSelector:@"td.info p:nth-of-type(2)"];
     if (aboutParagraph) {
         self.profile.aboutMe = aboutParagraph.innerHTML;
     }
     
-    HTMLElement *messageLink = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.pm + dd a"];
+    HTMLElement *messageLink = [self.node firstNodeMatchingSelector:@"dl.contacts dt.pm + dd a"];
     self.profile.user.canReceivePrivateMessages = !!messageLink;
     
-    HTMLElement *ICQDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.icq + dd"];
+    HTMLElement *ICQDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.icq + dd"];
     if (ICQDefinition) {
         NSString *ICQText = [ICQDefinition.children.firstObject textContent];
         if (ICQDefinition.numberOfChildren == 1 && [ICQDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
@@ -66,7 +65,7 @@
         }
     }
     
-    HTMLElement *AIMDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.aim + dd"];
+    HTMLElement *AIMDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.aim + dd"];
     if (AIMDefinition) {
         NSString *AIMText = [AIMDefinition.children.firstObject textContent];
         if (AIMDefinition.numberOfChildren == 1 && [AIMDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
@@ -76,7 +75,7 @@
         }
     }
     
-    HTMLElement *yahooDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.yahoo + dd"];
+    HTMLElement *yahooDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.yahoo + dd"];
     if (yahooDefinition) {
         NSString *yahooText = [yahooDefinition.children.firstObject textContent];
         if (yahooDefinition.numberOfChildren == 1 && [yahooDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
@@ -86,7 +85,7 @@
         }
     }
     
-    HTMLElement *homepageDefinition = [self.node awful_firstNodeMatchingCachedSelector:@"dl.contacts dt.homepage + dd"];
+    HTMLElement *homepageDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.homepage + dd"];
     if (homepageDefinition) {
         NSString *homepageText = [homepageDefinition.children.firstObject textContent];
         if (homepageText.length > 0) {
@@ -96,13 +95,13 @@
         }
     }
     
-    HTMLElement *userPictureImage = [self.node awful_firstNodeMatchingCachedSelector:@"div.userpic img"];
+    HTMLElement *userPictureImage = [self.node firstNodeMatchingSelector:@"div.userpic img"];
     if (userPictureImage) {
         self.profile.profilePictureURL = [NSURL URLWithString:userPictureImage[@"src"]];
     }
     
-    HTMLElement *additionalList = [self.node awful_firstNodeMatchingCachedSelector:@"dl.additional"];
-    HTMLElement *postCountDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(2)"];
+    HTMLElement *additionalList = [self.node firstNodeMatchingSelector:@"dl.additional"];
+    HTMLElement *postCountDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(2)"];
     NSString *postCountText = [postCountDefinition.children.firstObject textContent];
     if (postCountText.length > 0) {
         NSInteger postCount;
@@ -113,7 +112,7 @@
         }
     }
     
-    HTMLElement *postRateDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(3)"];
+    HTMLElement *postRateDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(3)"];
     NSString *postRateText = [postRateDefinition.children.firstObject textContent];
     if (postRateText.length > 0) {
         AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText];
@@ -123,7 +122,7 @@
         }
     }
     
-    HTMLElement *lastPostDefinition = [additionalList awful_firstNodeMatchingCachedSelector:@"dd:nth-of-type(4)"];
+    HTMLElement *lastPostDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(4)"];
     NSString *lastPostText = [lastPostDefinition.children.firstObject textContent];
     if (lastPostText.length > 0) {
         NSDate *lastPostDate = [[AwfulCompoundDateParser postDateParser] dateFromString:lastPostText];

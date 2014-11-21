@@ -7,7 +7,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "AwfulStarCategory.h"
-#import "HTMLNode+CachedSelector.h"
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
 
@@ -26,17 +25,17 @@
     [super scrape];
     if (self.error) return;
     
-    HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
+    HTMLElement *body = [self.node firstNodeMatchingSelector:@"body"];
     if (body[@"data-forum"]) {
         ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
         self.forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
         self.forum.canPost = !![body firstNodeMatchingSelector:@"ul.postbuttons a[href*='newthread']"];
     }
     
-    HTMLElement *breadcrumbsDiv = [self.node awful_firstNodeMatchingCachedSelector:@"div.breadcrumbs"];
+    HTMLElement *breadcrumbsDiv = [self.node firstNodeMatchingSelector:@"div.breadcrumbs"];
     
     // The first hierarchy link (if any) is the category. The rest are forums/subforums.
-    NSArray *hierarchyLinks = [breadcrumbsDiv awful_nodesMatchingCachedSelector:@"a[href *= 'forumdisplay.php']"];
+    NSArray *hierarchyLinks = [breadcrumbsDiv nodesMatchingSelector:@"a[href *= 'forumdisplay.php']"];
 
     HTMLElement *forumLink = hierarchyLinks.lastObject;
     if (forumLink) {
@@ -64,13 +63,13 @@
     
     // TODO parse number of pages so we know whether to enable pull-for-more. (Is this foolproof if someone's set to not 40 posts per page? Dunno if forumdisplay.php handles perpage=40.)
     
-    HTMLElement *threadTagsDiv = [self.node awful_firstNodeMatchingCachedSelector:@"div.thread_tags"];
+    HTMLElement *threadTagsDiv = [self.node firstNodeMatchingSelector:@"div.thread_tags"];
     if (threadTagsDiv) {
         NSMutableArray *threadTagKeys = [NSMutableArray new];
-        for (HTMLElement *link in [threadTagsDiv awful_nodesMatchingCachedSelector:@"a[href*='posticon']"]) {
+        for (HTMLElement *link in [threadTagsDiv nodesMatchingSelector:@"a[href*='posticon']"]) {
             NSURL *URL = [NSURL URLWithString:link[@"href"]];
             NSString *threadTagID = URL.queryDictionary[@"posticon"];
-            HTMLElement *image = [link awful_firstNodeMatchingCachedSelector:@"img"];
+            HTMLElement *image = [link firstNodeMatchingSelector:@"img"];
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
             [threadTagKeys addObject:[[ThreadTagKey alloc] initWithImageURL:imageURL threadTagID:threadTagID]];
         }
@@ -79,7 +78,7 @@
     }
     
     // Two passes over each row in the table. First, find thread, tag, and user info so we can fetch everything we already know about in a couple big batches. Later we'll update or insert everything else.
-    NSArray *threadLinks = [self.node awful_nodesMatchingCachedSelector:@"tr.thread"];
+    NSArray *threadLinks = [self.node nodesMatchingSelector:@"tr.thread"];
     NSMutableArray *threadKeys = [NSMutableArray new];
     NSMutableArray *userKeys = [NSMutableArray new];
     NSMutableArray *threadTagKeys = [NSMutableArray new];
@@ -107,7 +106,7 @@
             return;
         }
         
-        HTMLElement *authorProfileLink = [row awful_firstNodeMatchingCachedSelector:@"td.author a"];
+        HTMLElement *authorProfileLink = [row firstNodeMatchingSelector:@"td.author a"];
         if (authorProfileLink) {
             NSURL *profileURL = [NSURL URLWithString:authorProfileLink[@"href"]];
             NSString *authorUserID = profileURL.queryDictionary[@"userid"];
@@ -119,9 +118,9 @@
             }
         }
         
-        HTMLElement *threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon img"];
+        HTMLElement *threadTagImage = [row firstNodeMatchingSelector:@"td.icon img"];
         if (!threadTagImage) {
-            threadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img[src*='/rate/reviews']"];
+            threadTagImage = [row firstNodeMatchingSelector:@"td.rating img[src*='/rate/reviews']"];
         }
         if (threadTagImage) {
             NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
@@ -133,7 +132,7 @@
             }
         }
         
-        HTMLElement *secondaryThreadTagImage = [row awful_firstNodeMatchingCachedSelector:@"td.icon2 img"];
+        HTMLElement *secondaryThreadTagImage = [row firstNodeMatchingSelector:@"td.icon2 img"];
         if (secondaryThreadTagImage) {
             NSURL *URL = [NSURL URLWithString:secondaryThreadTagImage[@"src"]];
             NSString *threadTagID = URL.fragment;
@@ -166,7 +165,7 @@
         }
         Thread *thread = threads[threadIndex++];
         
-        HTMLElement *stickyCell = [row awful_firstNodeMatchingCachedSelector:@"td.title_sticky"];
+        HTMLElement *stickyCell = [row firstNodeMatchingSelector:@"td.title_sticky"];
         thread.sticky = !!stickyCell;
         if (self.forum) {
             thread.forum = self.forum;
@@ -178,7 +177,7 @@
             }
         }
         
-        HTMLElement *titleLink = [row awful_firstNodeMatchingCachedSelector:@"a.thread_title"];
+        HTMLElement *titleLink = [row firstNodeMatchingSelector:@"a.thread_title"];
         if (titleLink) {
             thread.title = titleLink.textContent;
         }
@@ -193,7 +192,7 @@
         NSArray *rowClasses = [row[@"class"] componentsSeparatedByCharactersInSet:whitespace];
         thread.closed = [rowClasses containsObject:@"closed"];
         
-        HTMLElement *bookmarkStarCell = [row awful_firstNodeMatchingCachedSelector:@"td.star"];
+        HTMLElement *bookmarkStarCell = [row firstNodeMatchingSelector:@"td.star"];
         if (bookmarkStarCell) {
             NSArray *starClasses = [bookmarkStarCell[@"class"] componentsSeparatedByCharactersInSet:whitespace];
             if ([starClasses containsObject:@"bm0"]) {
@@ -216,22 +215,22 @@
             thread.secondaryThreadTag = threadTagsByKey[secondaryThreadTagKey];
         }
         
-        HTMLElement *repliesCell = [row awful_firstNodeMatchingCachedSelector:@"td.replies"];
+        HTMLElement *repliesCell = [row firstNodeMatchingSelector:@"td.replies"];
         if (repliesCell) {
-            HTMLElement *repliesLink = [repliesCell awful_firstNodeMatchingCachedSelector:@"a"];
+            HTMLElement *repliesLink = [repliesCell firstNodeMatchingSelector:@"a"];
             thread.totalReplies = (int32_t)(repliesLink ?: repliesCell).innerHTML.integerValue;
         }
         
-        HTMLElement *unreadLink = [row awful_firstNodeMatchingCachedSelector:@"a.count b"];
+        HTMLElement *unreadLink = [row firstNodeMatchingSelector:@"a.count b"];
         if (unreadLink) {
             thread.seenPosts = (int32_t)(thread.totalReplies + 1 - unreadLink.innerHTML.integerValue);
-        } else if ([row awful_firstNodeMatchingCachedSelector:@"a.x"]) {
+        } else if ([row firstNodeMatchingSelector:@"a.x"]) {
             thread.seenPosts = thread.totalReplies + 1;
         } else {
             thread.seenPosts = 0;
         }
         
-        HTMLElement *ratingImage = [row awful_firstNodeMatchingCachedSelector:@"td.rating img"];
+        HTMLElement *ratingImage = [row firstNodeMatchingSelector:@"td.rating img"];
         if (ratingImage) {
             AwfulScanner *scanner = [AwfulScanner scannerWithString:ratingImage[@"title"]];
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
@@ -248,7 +247,7 @@
             }
         }
         
-        HTMLElement *lastPostDateDiv = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost div.date"];
+        HTMLElement *lastPostDateDiv = [row firstNodeMatchingSelector:@"td.lastpost div.date"];
         if (lastPostDateDiv) {
             NSDate *lastPostDate = [LastPostDateParser() dateFromString:lastPostDateDiv.innerHTML];
             if (lastPostDate) {
@@ -256,7 +255,7 @@
             }
         }
         
-        HTMLElement *lastPostAuthorLink = [row awful_firstNodeMatchingCachedSelector:@"td.lastpost a.author"];
+        HTMLElement *lastPostAuthorLink = [row firstNodeMatchingSelector:@"td.lastpost a.author"];
         if (lastPostAuthorLink) {
             thread.lastPostAuthorName = lastPostAuthorLink.textContent;
         }

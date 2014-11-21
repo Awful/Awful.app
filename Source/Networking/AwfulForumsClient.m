@@ -15,7 +15,6 @@
 #import "AwfulSettings.h"
 #import "AwfulThreadListScraper.h"
 #import "AwfulUnreadPrivateMessageCountScraper.h"
-#import "HTMLNode+CachedSelector.h"
 #import "LepersColonyPageScraper.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
@@ -509,7 +508,7 @@
                     parameters:parameters
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
              {
-                 HTMLElement *link = [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'showthread']"];
+                 HTMLElement *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  NSString *threadID = URL.queryDictionary[@"threadid"];
                  NSError *error;
@@ -708,8 +707,8 @@
                        success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
              {
                  Post *post;
-                 HTMLElement *link = ([document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=post']"] ?:
-                                      [document awful_firstNodeMatchingCachedSelector:@"a[href *= 'goto=lastpost']"]);
+                 HTMLElement *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
+                                      [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
                      NSString *postID = URL.queryDictionary[@"postid"];

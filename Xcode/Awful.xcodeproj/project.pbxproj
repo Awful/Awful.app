@@ -268,7 +268,6 @@
 		1D07BB6ECA7B62EE688F30AB /* libPods-Smilies.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ABE7443544E57456E44F96 /* libPods-Smilies.a */; };
 		673FAE1D0081DA15654CD40E /* libPods-Awful.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362220BF887E9F57F3C932E /* libPods-Awful.a */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
-		836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -787,8 +786,6 @@
 		73771701DB76018A180A0092 /* Pods-ScrapingTests.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScrapingTests.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-ScrapingTests/Pods-ScrapingTests.app store.xcconfig"; sourceTree = "<group>"; };
 		7F808380CDED09B0AA159709 /* Pods-Smilies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.debug.xcconfig"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
-		836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HTMLNode+CachedSelector.h"; sourceTree = "<group>"; };
-		836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HTMLNode+CachedSelector.m"; sourceTree = "<group>"; };
 		837D67ED1861C25000464055 /* ForumTweaks.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumTweaks.plist; sourceTree = "<group>"; };
 		837D67EF1861C3D700464055 /* AwfulForumTweaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumTweaks.h; sourceTree = "<group>"; };
 		837D67F01861C3D700464055 /* AwfulForumTweaks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumTweaks.m; sourceTree = "<group>"; };
@@ -1437,8 +1434,6 @@
 				1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */,
 				1C977C2719CD286200DD6459 /* CacheHeaderCalculations.h */,
 				1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */,
-				836593C9188F251300AB0206 /* HTMLNode+CachedSelector.h */,
-				836593CA188F251300AB0206 /* HTMLNode+CachedSelector.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -2374,7 +2369,6 @@
 				1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */,
 				1CE55A6E1A0F77B800E474A6 /* Forum.swift in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
-				836593CB188F251300AB0206 /* HTMLNode+CachedSelector.m in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
