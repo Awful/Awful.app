@@ -6,7 +6,6 @@ import XCTest
 import Awful
 
 class LepersColonyPageScrapingTests: ScrapingTestCase {
-    
     override class func scraperClass() -> AnyClass {
         return LepersColonyPageScraper.self
     }
@@ -15,8 +14,8 @@ class LepersColonyPageScrapingTests: ScrapingTestCase {
         let scraper = scrapeFixtureNamed("banlist") as LepersColonyPageScraper
         let punishments = scraper.punishments as [Punishment]
         XCTAssertTrue(punishments.count == 50)
-        XCTAssertTrue(User.numberOfObjectsInManagedObjectContext(managedObjectContext) == 71)
-        XCTAssertTrue(Post.numberOfObjectsInManagedObjectContext(managedObjectContext) == 46)
+        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 71)
+        XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
         
         let first = punishments[0]
         XCTAssertEqual(first.sentence, PunishmentSentence.Probation)

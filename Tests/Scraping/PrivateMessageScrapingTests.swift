@@ -6,7 +6,6 @@ import XCTest
 import Awful
 
 class PrivateMessageScrapingTests: ScrapingTestCase {
-    
     override class func scraperClass() -> AnyClass {
         return PrivateMessageScraper.self
     }
@@ -14,8 +13,8 @@ class PrivateMessageScrapingTests: ScrapingTestCase {
     func testSingleMessage() {
         let scraper = scrapeFixtureNamed("private-one") as PrivateMessageScraper
         let message = scraper.privateMessage
-        XCTAssertTrue(PrivateMessage.numberOfObjectsInManagedObjectContext(managedObjectContext) == 1)
-        XCTAssertTrue(User.numberOfObjectsInManagedObjectContext(managedObjectContext) == 1)
+        XCTAssertTrue(fetchAll(PrivateMessage.self, inContext: managedObjectContext).count == 1)
+        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         
         XCTAssertEqual(message.messageID, "4601162")
         XCTAssertEqual(message.subject!, "Awful app")

@@ -122,7 +122,7 @@
             [self presentViewController:[UIAlertController alertWithNetworkError:error] animated:YES completion:nil];
         } else if (self) {
             PostKey *postKey = [[PostKey alloc] initWithPostID:@"fake"];
-            self.fakePost = [Post objectWithKey:postKey inManagedObjectContext:self.managedObjectContext];
+            self.fakePost = [Post objectForKey:postKey inManagedObjectContext:self.managedObjectContext];
             AwfulSettings *settings = [AwfulSettings sharedSettings];
             UserKey *userKey = [[UserKey alloc] initWithUserID:settings.userID username:settings.username];
             User *loggedInUser = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];

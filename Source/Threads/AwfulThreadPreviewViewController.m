@@ -74,11 +74,12 @@
         } else if (self) {
             self.networkOperation = nil;
             ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:@"fake"];
-            Thread *fakeThread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
+            Thread *fakeThread = [Thread objectForKey:threadKey inManagedObjectContext:self.managedObjectContext];
             AwfulSettings *settings = [AwfulSettings sharedSettings];
             UserKey *userKey = [[UserKey alloc] initWithUserID:settings.userID username:settings.username];
             fakeThread.author = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
-            self.fakePost = [Post insertInManagedObjectContext:self.managedObjectContext];
+            PostKey *postKey = [[PostKey alloc] initWithPostID:@"sofake"];
+            self.fakePost = [Post objectForKey:postKey inManagedObjectContext:self.managedObjectContext];
             self.fakePost.thread = fakeThread;
             self.fakePost.author = fakeThread.author;
             self.fakePost.innerHTML = postHTML;

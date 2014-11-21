@@ -293,7 +293,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         NSString *forumID = [coder decodeObjectForKey:obsolete_ForumIDKey];
         forumKey = [[ForumKey alloc] initWithForumID:forumID];
     }
-    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:managedObjectContext];
+    Forum *forum = [Forum objectForKey:forumKey inManagedObjectContext:managedObjectContext];
     ThreadListViewController *threadTableViewController = [[self alloc] initWithForum:forum];
     threadTableViewController.restorationIdentifier = identifierComponents.lastObject;
     threadTableViewController.restorationClass = self;

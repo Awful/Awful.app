@@ -8,7 +8,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
-#import "AwfulManagedObject.h"
 #import "AwfulNavigationController.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"

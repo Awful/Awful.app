@@ -303,7 +303,7 @@ static NSString * const DefaultTitle = @"New Thread";
         NSString *forumID = [coder decodeObjectForKey:obsolete_ForumIDKey];
         forumKey = [[ForumKey alloc] initWithForumID:forumID];
     }
-    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext];
+    Forum *forum = [Forum objectForKey:forumKey inManagedObjectContext:[AwfulAppDelegate instance].managedObjectContext];
     ThreadComposeViewController *newThreadViewController = [[ThreadComposeViewController alloc] initWithForum:forum];
     newThreadViewController.restorationIdentifier = identifierComponents.lastObject;
     return newThreadViewController;

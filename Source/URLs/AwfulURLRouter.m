@@ -37,8 +37,8 @@
     
     [_routes addRoute:@"/forums/:forumID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
-        NSString *forumID = parameters[@"forumID"];
-        Forum *forum = [Forum fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"forumID = %@", forumID];
+        ForumKey *key = [[ForumKey alloc] initWithForumID:parameters[@"forumID"]];
+        Forum *forum = [Forum existingObjectForKey:key inManagedObjectContext:self.managedObjectContext];
         if (forum) {
             return [self jumpToForum:forum];
         } else {
@@ -60,9 +60,8 @@
     
     [_routes addRoute:@"/posts/:postID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
-        NSString *postID = parameters[@"postID"];
-        Post *post = [Post fetchArbitraryInManagedObjectContext:self.managedObjectContext
-                                        matchingPredicateFormat:@"postID = %@", postID];
+        PostKey *key = [[PostKey alloc] initWithPostID:parameters[@"postID"]];
+        Post *post = [Post existingObjectForKey:key inManagedObjectContext:self.managedObjectContext];
         if (post && post.page > 0) {
             PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
@@ -76,7 +75,7 @@
                                                                           animated:YES];
         overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] locatePostWithID:postID andThen:^(NSError *error, Post *post, AwfulThreadPage page) {
+        [[AwfulForumsClient client] locatePostWithID:key.postID andThen:^(NSError *error, Post *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 overlay.titleLabelText = @"Post Not Found";
@@ -104,26 +103,27 @@
         return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
     }];
     
-    [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
+    [_routes addRoute:@"/bookmarks" handler:^(NSDictionary *parameters) {
         return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
     }];
     
-    [_routes addRoute:@"/settings" handler:^BOOL(NSDictionary *parameters) {
+    [_routes addRoute:@"/settings" handler:^(NSDictionary *parameters) {
         return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[SettingsViewController class]];
     }];
     
-    [_routes addRoute:@"/users/:userID" handler:^BOOL(NSDictionary *parameters) {
+    [_routes addRoute:@"/users/:userID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         void (^success)() = ^(User *user) {
             ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
             [self.rootViewController presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
         };
-        User *user = [User fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
+        UserKey *key = [[UserKey alloc] initWithUserID:parameters[@"userID"] username:nil];
+        User *user = [User existingObjectForKey:key inManagedObjectContext:self.managedObjectContext];
         if (user) {
             success(user);
             return YES;
         }
-        [[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, Profile *profile) {
+        [[AwfulForumsClient client] profileUserWithID:key.userID username:nil andThen:^(NSError *error, Profile *profile) {
             if (profile) {
                 success(profile.user);
             } else if (error) {
@@ -150,13 +150,14 @@
 			RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
 			[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
 		};
-		User *user = [User fetchArbitraryInManagedObjectContext:self.managedObjectContext matchingPredicateFormat:@"userID = %@", parameters[@"userID"]];
+        UserKey *key = [[UserKey alloc] initWithUserID:parameters[@"userID"] username:nil];
+        User *user = [User existingObjectForKey:key inManagedObjectContext:self.managedObjectContext];
 		if (user) {
 			success(user);
 			return YES;
 		}
 		
-		[[AwfulForumsClient client] profileUserWithID:parameters[@"userID"] username:nil andThen:^(NSError *error, Profile *profile) {
+		[[AwfulForumsClient client] profileUserWithID:key.userID username:nil andThen:^(NSError *error, Profile *profile) {
 			if (profile) {
 				success(profile.user);
 			} else if (error) {
@@ -204,8 +205,9 @@
 
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
 {
+    // TODO don't unilaterally create a thread based on the ID. If we don't already know of it, try to fetch it.
     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:parameters[@"threadID"]];
-    Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
+    Thread *thread = [Thread objectForKey:threadKey inManagedObjectContext:self.managedObjectContext];
     PostsPageViewController *postsViewController;
     NSString *userID = parameters[@"userid"];
     if (userID.length > 0) {

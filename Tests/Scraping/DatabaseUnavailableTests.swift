@@ -5,31 +5,30 @@
 import XCTest
 import Awful
 
-private let fixture = loadFixtureNamed("database-unavailable")
+private let fixture = fixtureNamed("database-unavailable")
 
 class DatabaseUnavailableTests: ScrapingTestCase {
-    
     func testForumHierarchy() {
         let scraper = AwfulForumHierarchyScraper.scrapeNode(fixture, intoManagedObjectContext:managedObjectContext)
         XCTAssertNotNil(scraper.error);
-        XCTAssertTrue(Forum.numberOfObjectsInManagedObjectContext(managedObjectContext) == 0)
+        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testPostsPage() {
         let scraper = AwfulPostsPageScraper.scrapeNode(fixture, intoManagedObjectContext:managedObjectContext)
         XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(Post.numberOfObjectsInManagedObjectContext(managedObjectContext) == 0)
+        XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testProfile() {
         let scraper = ProfileScraper.scrapeNode(fixture, intoManagedObjectContext:managedObjectContext)
         XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(User.numberOfObjectsInManagedObjectContext(managedObjectContext) == 0)
+        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testThreadList() {
         let scraper = AwfulThreadListScraper.scrapeNode(fixture, intoManagedObjectContext:managedObjectContext)
         XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(Thread.numberOfObjectsInManagedObjectContext(managedObjectContext) == 0)
+        XCTAssertTrue(fetchAll(Thread.self, inContext: managedObjectContext).isEmpty)
     }
 }

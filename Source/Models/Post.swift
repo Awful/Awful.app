@@ -5,7 +5,6 @@
 /// A single reply to a thread.
 @objc(Post)
 public class Post: AwfulManagedObject {
-
     /// Whether the logged-in user can edit the post.
     @NSManaged public var editable: Bool
     
@@ -40,22 +39,20 @@ public class Post: AwfulManagedObject {
 extension Post {
     /// Whether the user has seen the post.
     public var beenSeen: Bool {
-        get {
-            if let thread = thread {
-                return threadIndex > 0 && threadIndex <= thread.seenPosts
-            }
-            return false
+        if let thread = thread {
+            return threadIndex > 0 && threadIndex <= thread.seenPosts
         }
+        return false
     }
     
     /// Which 40-post page the post is located on.
     public var page: Int {
-        get { return pageForIndex(threadIndex) }
+        return pageForIndex(threadIndex)
     }
     
     /// Which 40-post page the post is located on in a thread filtered by the post's author.
     var singleUserPage: Int {
-        get { return pageForIndex(filteredThreadIndex) }
+        return pageForIndex(filteredThreadIndex)
     }
 }
 
@@ -67,57 +64,28 @@ private func pageForIndex(index: Int32) -> Int {
     }
 }
 
-class PostKey: AwfulObjectKey {
+final class PostKey: AwfulObjectKey {
     let postID: String
+    
     init(postID: String) {
         assert(!postID.isEmpty)
         self.postID = postID
         super.init(entityName: Post.entityName())
     }
+    
     required init(coder: NSCoder) {
         postID = coder.decodeObjectForKey(postIDKey) as String
         super.init(coder: coder)
     }
-    override func encodeWithCoder(coder: NSCoder) {
-        super.encodeWithCoder(coder)
-        coder.encodeObject(postID, forKey: postIDKey)
-    }
-    override func isEqual(object: AnyObject?) -> Bool {
-        if !super.isEqual(object) { return false }
-        if let other = object as? PostKey {
-            return other.postID == postID
-        } else {
-            return false
-        }
-    }
-    override var hash: Int {
-        get { return super.hash ^ postID.hash }
-    }
-    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
-        let objectKeys = objectKeys as [PostKey]
-        return ["postID": objectKeys.map{$0.postID}]
+    
+    override var keys: [String] {
+        return [postIDKey]
     }
 }
-
 private let postIDKey = "postID"
 
 extension Post {
     override var objectKey: PostKey {
-        get { return PostKey(postID: postID) }
-    }
-    
-    override func applyObjectKey(objectKey: AwfulObjectKey) {
-        let objectKey = objectKey as PostKey
-        postID = objectKey.postID
-    }
-    
-    class func objectWithKey(postKey: PostKey, inManagedObjectContext context: NSManagedObjectContext) -> Post {
-        if let post = fetchArbitraryInManagedObjectContext(context, matchingPredicate: NSPredicate(format: "postID = %@", postKey.postID)) {
-            return post
-        } else {
-            let post = insertInManagedObjectContext(context)
-            post.applyObjectKey(postKey)
-            return post
-        }
+        return PostKey(postID: postID)
     }
 }

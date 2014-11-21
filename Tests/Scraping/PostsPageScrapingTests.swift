@@ -6,7 +6,6 @@ import XCTest
 import Awful
 
 class PostsPageScrapingTests: ScrapingTestCase {
-    
     override class func scraperClass() -> AnyClass {
         return AwfulPostsPageScraper.self
     }
@@ -15,15 +14,15 @@ class PostsPageScrapingTests: ScrapingTestCase {
         let scraper = scrapeFixtureNamed("showthread") as AwfulPostsPageScraper
         let posts = scraper.posts as [Post]
         XCTAssertTrue(posts.count == 40)
-        let allThreads = Thread.fetchAllInManagedObjectContext(managedObjectContext) as [Thread]
+        let allThreads = fetchAll(Thread.self, inContext: managedObjectContext)
         XCTAssertTrue(allThreads.count == 1)
         let canpoliThread = allThreads.first!
         XCTAssertEqual(canpoliThread.threadID, "3507451")
         XCTAssertEqual(canpoliThread.title!, "Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe")
         XCTAssertFalse(canpoliThread.closed)
-        XCTAssertTrue(Forum.numberOfObjectsInManagedObjectContext(managedObjectContext) == 1)
+        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).count == 1)
         XCTAssertEqual(canpoliThread.forum!.name!, "Debate & Discussion")
-        let allGroups = ForumGroup.fetchAllInManagedObjectContext(managedObjectContext) as [ForumGroup]
+        let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
         XCTAssertTrue(allGroups.count == 1)
         let group = allGroups[0]
         XCTAssertEqual(group.name!, "Discussion")
@@ -104,16 +103,16 @@ class PostsPageScrapingTests: ScrapingTestCase {
     
     func testLastPage() {
         scrapeFixtureNamed("showthread-last")
-        let thread = (Thread.fetchAllInManagedObjectContext(managedObjectContext) as [Thread])[0]
+        let thread = fetchAll(Thread.self, inContext: managedObjectContext)[0]
         XCTAssertEqual(thread.lastPostAuthorName!, "Ashmole")
         XCTAssertEqual(thread.lastPostDate!.timeIntervalSince1970, 1357586460)
     }
     
     func testIgnoredPost() {
         scrapeFixtureNamed("showthread2")
-        let post = Post.fetchArbitraryInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "postID = %@", "428957756"))
+        let post = fetchOne(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID = %@", "428957756"))!
         XCTAssertTrue(post.ignored)
-        let others = Post.fetchAllInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
+        let others = fetchAll(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
         XCTAssertTrue(others.count > 0)
         let ignored = (others as NSArray).valueForKeyPath("@distinctUnionOfObjects.ignored") as [Bool]
         XCTAssertTrue(ignored.count == 1);

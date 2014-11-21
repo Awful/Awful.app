@@ -54,11 +54,10 @@ class ForumTreeDataSource: FetchedDataSource {
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
-        if let anyMetadata = sectionInfo.objects.first as ForumMetadata? {
+        if let anyMetadata = sectionInfo.objects.first as? ForumMetadata {
             return anyMetadata.forum.group?.name
         } else {
-            let group = ForumGroup.fetchArbitraryInManagedObjectContext(fetchedResultsController.managedObjectContext, matchingPredicate: NSPredicate(format: "index = %@", section))
-            return group?.name
+            return nil
         }
     }
 }

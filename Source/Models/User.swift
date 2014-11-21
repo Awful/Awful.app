@@ -4,7 +4,6 @@
 
 @objc(User)
 public class User: AwfulManagedObject {
-
     @NSManaged public var administrator: Bool
     @NSManaged var authorClasses: String?
     @NSManaged public var canReceivePrivateMessages: Bool
@@ -25,14 +24,12 @@ public class User: AwfulManagedObject {
 
 extension User {
     var avatarURL: NSURL? {
-        get {
-            if let HTML = customTitleHTML {
-                if let element = avatarImageElement(customTitleHTML: HTML) {
-                    return NSURL(string: element.objectForKeyedSubscript("src") as String!)
-                }
+        if let HTML = customTitleHTML {
+            if let element = avatarImageElement(customTitleHTML: HTML) {
+                return NSURL(string: element.objectForKeyedSubscript("src") as String!)
             }
-            return nil
         }
+        return nil
     }
 }
 
@@ -43,97 +40,42 @@ private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
         document.firstNodeMatchingSelector("a > img:first-child")
 }
 
-class UserKey: AwfulObjectKey {
+final class UserKey: AwfulObjectKey {
     let userID: String?
     let username: String?
+    
     init(userID: String!, username: String!) {
-        assert(!empty(userID) || !empty(username))
+        let userID = nilIfEmpty(userID)
+        let username = nilIfEmpty(username)
+        precondition(userID != nil || username != nil)
+        
         self.userID = userID
         self.username = username
         super.init(entityName: User.entityName())
     }
+    
     required init(coder: NSCoder) {
         userID = coder.decodeObjectForKey(userIDKey) as String?
         username = coder.decodeObjectForKey(usernameKey) as String?
         super.init(coder: coder)
     }
-    override func encodeWithCoder(coder: NSCoder) {
-        super.encodeWithCoder(coder)
-        if let userID = userID {
-            coder.encodeObject(userID, forKey: userIDKey)
-        }
-        if let username = username {
-            coder.encodeObject(username, forKey: usernameKey)
-        }
-    }
-    override func isEqual(object: AnyObject?) -> Bool {
-        if !super.isEqual(object) { return false }
-        if let other = object as? UserKey {
-            if userID != nil && other.userID != nil {
-                return other.userID! == userID!
-            } else if username != nil && other.username != nil {
-                return other.username! == username!
-            }
-        }
-        return false
-    }
-    override class func valuesForKeysInObjectKeys(objectKeys: [AwfulObjectKey]) -> [String: [AnyObject]] {
-        var userIDs = [String]()
-        var usernames = [String]()
-        for key in objectKeys as [UserKey] {
-            if let userID = key.userID {
-                userIDs.append(userID)
-            }
-            if let username = key.username {
-                usernames.append(username)
-            }
-        }
-        return [
-            "userID": userIDs,
-            "username": usernames
-        ]
+    
+    override var keys: [String] {
+        return [userIDKey, usernameKey]
     }
 }
-
 private let userIDKey = "userID"
 private let usernameKey = "username"
 
 extension User {
     override var objectKey: UserKey {
-        get { return UserKey(userID: userID, username: username) }
-    }
-    
-    override func applyObjectKey(objectKey: AwfulObjectKey) {
-        let objectKey = objectKey as UserKey
-        if !empty(objectKey.userID) {
-            userID = objectKey.userID
-        }
-        if !empty(objectKey.username) {
-            username = objectKey.username
-        }
-    }
-    
-    class func objectForKey(userKey: UserKey, inManagedObjectContext context: NSManagedObjectContext) -> User {
-        var subpredicates = [NSPredicate]()
-        if !empty(userKey.userID) {
-            subpredicates.append(NSPredicate(format: "userID = %@", userKey.userID!)!)
-        }
-        if !empty(userKey.username) {
-            subpredicates.append(NSPredicate(format: "username = %@", userKey.username!)!)
-        }
-        let predicate = NSCompoundPredicate.orPredicateWithSubpredicates(subpredicates)
-        var user = User.fetchArbitraryInManagedObjectContext(context, matchingPredicate: predicate)
-        if user == nil {
-            user = User.insertInManagedObjectContext(context)
-        }
-        user.applyObjectKey(userKey)
-        return user
+        return UserKey(userID: userID, username: username)
     }
 }
 
-private func empty(string: String?) -> Bool {
-    if let string = string {
-        return string.isEmpty
+func nilIfEmpty(s: String!) -> String? {
+    if s != nil && s.isEmpty {
+        return nil
     }
-    return true
+    return s
 }

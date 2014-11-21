@@ -53,11 +53,11 @@
         {{
             NSString *typeText = typeCell.textContent;
             if ([typeText rangeOfString:@"PROBATION"].location != NSNotFound) {
-                info[@"punishment"] = @(PunishmentSentenceProbation);
+                info[@"sentence"] = @(PunishmentSentenceProbation);
             } else if ([typeText rangeOfString:@"PERMABAN"].location != NSNotFound) {
-                info[@"punishment"] = @(PunishmentSentencePermaban);
+                info[@"sentence"] = @(PunishmentSentencePermaban);
             } else if ([typeText rangeOfString:@"BAN"].location != NSNotFound) {
-                info[@"punishment"] = @(PunishmentSentenceBan);
+                info[@"sentence"] = @(PunishmentSentenceBan);
             }
         }}
         
@@ -68,7 +68,7 @@
             NSString *username = userLink.textContent;
             if (userID.length > 0 || username.length > 0) {
                 UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
-                info[@"userKey"] = userKey;
+                info[@"subjectUserKey"] = userKey;
                 [userKeys addObject:userKey];
             }
         }}
@@ -110,9 +110,9 @@
         {{
             HTMLElement *dateCell = [row firstNodeMatchingSelector:@"td:nth-of-type(2)"];
             NSDate *date = [DateParser() dateFromString:dateCell.textContent];
-            PunishmentSentence sentence = [info[@"punishment"] integerValue];
+            PunishmentSentence sentence = [info[@"sentence"] integerValue];
             User *subject;
-            UserKey *userKey = info[@"userKey"];
+            UserKey *userKey = info[@"subjectUserKey"];
             if (userKey) {
                 subject = usersByKey[userKey];
             }

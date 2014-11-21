@@ -31,9 +31,9 @@
     
     HTMLElement *body = [self.node firstNodeMatchingSelector:@"body"];
     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:body[@"data-thread"]];
-    self.thread = [Thread objectWithKey:threadKey inManagedObjectContext:self.managedObjectContext];
+    self.thread = [Thread objectForKey:threadKey inManagedObjectContext:self.managedObjectContext];
     ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
-    Forum *forum = [Forum objectWithKey:forumKey inManagedObjectContext:self.managedObjectContext];
+    Forum *forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
     self.thread.forum = forum;
     
     if (!self.thread.threadID && [body firstNodeMatchingSelector:@"div.standard div.inner a[href*=archives.php]"]) {
@@ -63,7 +63,7 @@
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.queryDictionary[@"forumid"]];
-            Forum *subforum = [Forum objectWithKey:subforumKey inManagedObjectContext:self.managedObjectContext];
+            Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
             currentForum.parentForum = subforum;

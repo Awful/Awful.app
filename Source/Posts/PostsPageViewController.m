@@ -1149,7 +1149,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         }
     }
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
-    Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:managedObjectContext];
+    Thread *thread = [Thread objectForKey:threadKey inManagedObjectContext:managedObjectContext];
     User *author;
     if (userKey) {
         author = [User objectForKey:userKey inManagedObjectContext:managedObjectContext];

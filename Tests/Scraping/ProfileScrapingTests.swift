@@ -6,14 +6,13 @@ import XCTest
 import Awful
 
 class ProfileScrapingTests: ScrapingTestCase {
-    
     override class func scraperClass() -> AnyClass {
         return ProfileScraper.self
     }
     
     func testWithAvatarAndText() {
         let scraper = scrapeFixtureNamed("profile") as ProfileScraper
-        XCTAssertTrue(User.numberOfObjectsInManagedObjectContext(managedObjectContext) == 1)
+        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         let pokeyman = scraper.profile
         XCTAssertEqual(pokeyman.user.userID!, "106125")
         XCTAssertEqual(pokeyman.user.username!, "pokeyman")

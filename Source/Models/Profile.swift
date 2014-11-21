@@ -4,7 +4,6 @@
 
 @objc(Profile)
 public class Profile: AwfulManagedObject {
-
     @NSManaged var aboutMe: String?
     @NSManaged public var aimName: String?
     @NSManaged public var gender: String?

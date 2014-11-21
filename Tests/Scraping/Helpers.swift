@@ -2,20 +2,31 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-extension AwfulManagedObject {
-    class func numberOfObjectsInManagedObjectContext(context: NSManagedObjectContext) -> Int {
-        let fetchRequest = NSFetchRequest(entityName: entityName())
-        var error: NSError?
-        let count = context.countForFetchRequest(fetchRequest, error: &error)
-        assert(count != NSNotFound, "error fetching count: \(error!)")
-        return count
-    }
-    
-    class func fetchAllInManagedObjectContext(context: NSManagedObjectContext) -> [AnyObject]? {
-        let fetchRequest = NSFetchRequest(entityName: entityName())
-        var error: NSError?
-        let results = context.executeFetchRequest(fetchRequest, error: &error)
-        assert(results != nil, "error fetching: \(error!)")
-        return results
-    }
+import Awful
+
+func fetchAll<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: NSPredicate? = nil) -> [T] {
+    let fetchRequest = NSFetchRequest(entityName: T.entityName())
+    fetchRequest.predicate = predicate
+    var error: NSError?
+    let results = context.executeFetchRequest(fetchRequest, error: &error) as [T]!
+    assert(results != nil, "error fetching: \(error!)")
+    return results
+}
+
+func fetchOne<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: NSPredicate? = nil) -> T? {
+    let fetchRequest = NSFetchRequest(entityName: T.entityName())
+    fetchRequest.predicate = predicate
+    fetchRequest.fetchLimit = 1
+    var error: NSError?
+    let results = context.executeFetchRequest(fetchRequest, error: &error) as [T]!
+    assert(results != nil, "error fetching: \(error!)")
+    return results.first
+}
+
+func fixtureNamed(basename: String) -> HTMLDocument {
+    let fixtureURL = NSBundle(forClass: ScrapingTestCase.self).URLForResource(basename, withExtension: "html", subdirectory: "Fixtures")!
+    var error: NSError?
+    let fixtureHTML = NSString(contentsOfURL: fixtureURL, encoding: NSWindowsCP1252StringEncoding, error:&error)
+    assert(fixtureHTML != nil, "error loading fixture from \(fixtureURL): \(error!)")
+    return HTMLDocument(string: fixtureHTML)
 }

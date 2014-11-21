@@ -264,11 +264,11 @@
     PostComposeViewController *replyViewController;
     NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
     if (postKey) {
-        Post *post = [Post objectWithKey:postKey inManagedObjectContext:managedObjectContext];
+        Post *post = [Post objectForKey:postKey inManagedObjectContext:managedObjectContext];
         NSString *originalText = [coder decodeObjectForKey:OriginalTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:originalText];
     } else if (threadKey) {
-        Thread *thread = [Thread objectWithKey:threadKey inManagedObjectContext:managedObjectContext];
+        Thread *thread = [Thread objectForKey:threadKey inManagedObjectContext:managedObjectContext];
         NSString *quotedText = [coder decodeObjectForKey:QuotedTextKey];
         replyViewController = [[PostComposeViewController alloc] initWithThread:thread quotedText:quotedText];
     } else {

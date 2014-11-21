@@ -111,7 +111,7 @@ class ForumListViewController: AwfulTableViewController {
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
         if let forumIDs = AwfulSettings.sharedSettings().favoriteForums as [String]? {
             AwfulSettings.sharedSettings().favoriteForums = nil
-            let metadatas = ForumMetadata.fetchAllInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "forum.forumID IN %@", forumIDs)) as [ForumMetadata]
+            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs, inManagedObjectContext: managedObjectContext)
             for (i, metadata) in enumerate(metadatas) {
                 metadata.favoriteIndex = Int32(i)
                 metadata.favorite = true

@@ -6,20 +6,18 @@ import XCTest
 import Awful
 
 class ForumHierarchyScrapingTests: ScrapingTestCase {
-
     override class func scraperClass() -> AnyClass {
         return AwfulForumHierarchyScraper.self
     }
     
     func testHierarchy() {
         let scraper = scrapeFixtureNamed("forumdisplay") as AwfulForumHierarchyScraper
-        let groups = ForumGroup.fetchAllInManagedObjectContext(managedObjectContext) as [ForumGroup]
+        let groups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
         let groupNames = groups.map{$0.name!}.sorted(<)
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
-        XCTAssertEqual(groups.count, ForumGroup.numberOfObjectsInManagedObjectContext(managedObjectContext))
-        XCTAssertTrue(Forum.numberOfObjectsInManagedObjectContext(managedObjectContext) == 66)
+        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).count == 66)
         
-        let EN = Forum.fetchArbitraryInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "name BEGINSWITH 'E/N'"))
+        let EN = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name BEGINSWITH 'E/N'"))!
         XCTAssertEqual(EN.forumID, "214")
         XCTAssertEqual(EN.name!, "E/N Bullshit")
         let GBS = EN.parentForum!
@@ -30,7 +28,7 @@ class ForumHierarchyScrapingTests: ScrapingTestCase {
         XCTAssertEqual(main.name!, "Main")
         XCTAssertEqual(EN.group!, main)
         
-        let gameRoom = Forum.fetchArbitraryInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '103'"))
+        let gameRoom = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '103'"))!
         XCTAssertEqual(gameRoom.name!, "The Game Room")
         let traditionalGames = gameRoom.parentForum!
         XCTAssertEqual(traditionalGames.forumID, "234")

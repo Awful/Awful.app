@@ -6,9 +6,8 @@ import XCTest
 import Awful
 
 class FormScrapingTests: ScrapingTestCase {
-
     private func scrapeFormFixtureNamed(fixtureName: String) -> AwfulForm {
-        let document = loadFixtureNamed(fixtureName)
+        let document = fixtureNamed(fixtureName)
         let formElement = document.firstNodeMatchingSelector("form[name='vbform']")
         let form = AwfulForm(element: formElement)
         form.scrapeThreadTagsIntoManagedObjectContext(managedObjectContext)
@@ -41,7 +40,7 @@ class FormScrapingTests: ScrapingTestCase {
     func testThread() {
         let form = scrapeFormFixtureNamed("newthread")
         XCTAssertTrue(form.threadTags.count == 51)
-        XCTAssertEqual(ThreadTag.numberOfObjectsInManagedObjectContext(managedObjectContext), form.threadTags.count)
+        XCTAssertEqual(fetchAll(ThreadTag.self, inContext: managedObjectContext).count, form.threadTags.count)
         XCTAssertTrue(form.secondaryThreadTags == nil)
         let parameters = form.allParameters
         XCTAssertNotNil(parameters["subject"])
@@ -58,7 +57,7 @@ class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed("newthread-at")
         XCTAssertTrue(form.threadTags.count == 55)
         XCTAssertTrue(form.secondaryThreadTags.count == 2)
-        let secondaryTags = ThreadTag.fetchAllInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
+        let secondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
     }
     
@@ -66,7 +65,7 @@ class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed("newthread-samart")
         XCTAssertTrue(form.threadTags.count == 69)
         XCTAssertTrue(form.secondaryThreadTags.count == 4)
-        let possibleSecondaryTags = ThreadTag.fetchAllInManagedObjectContext(managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'")) as [ThreadTag]
+        let possibleSecondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
         let secondaryTags = possibleSecondaryTags.filter { $0.threadTagID!.toInt()! < 5 }
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count)
     }

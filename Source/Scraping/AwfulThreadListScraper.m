@@ -29,7 +29,7 @@
     HTMLElement *body = [self.node awful_firstNodeMatchingCachedSelector:@"body"];
     if (body[@"data-forum"]) {
         ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
-        self.forum = [Forum objectWithKey:forumKey inManagedObjectContext:self.managedObjectContext];
+        self.forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
         self.forum.canPost = !![body firstNodeMatchingSelector:@"ul.postbuttons a[href*='newthread']"];
     }
     
@@ -54,7 +54,7 @@
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.queryDictionary[@"forumid"]];
-            Forum *subforum = [Forum objectWithKey:subforumKey inManagedObjectContext:self.managedObjectContext];
+            Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
             currentForum.parentForum = subforum;

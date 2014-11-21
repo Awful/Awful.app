@@ -6,7 +6,6 @@ import XCTest
 import Awful
 
 class PostScrapingTests: ScrapingTestCase {
-    
     override class func scraperClass() -> AnyClass {
         return AwfulPostScraper.self
     }

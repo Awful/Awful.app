@@ -3,10 +3,10 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import XCTest
+import Awful
 import CoreData
 
 class ScrapingTestCase: XCTestCase {
-    
     var managedObjectContext: NSManagedObjectContext!
     
     private var storeCoordinator: NSPersistentStoreCoordinator = {
@@ -15,7 +15,6 @@ class ScrapingTestCase: XCTestCase {
         return NSPersistentStoreCoordinator(managedObjectModel: model)
         }()
     private var memoryStore: NSPersistentStore!
-    
     
     class func scraperClass() -> AnyClass {
         fatalError("subclass implementation please")
@@ -43,18 +42,10 @@ class ScrapingTestCase: XCTestCase {
     }
     
     func scrapeFixtureNamed(fixtureName: String) -> AwfulScraper {
-        let document = loadFixtureNamed(fixtureName)
+        let document = fixtureNamed(fixtureName)
         let scraperClass = self.dynamicType.scraperClass() as AwfulScraper.Type
         let scraper = scraperClass.scrapeNode(document, intoManagedObjectContext: managedObjectContext)
-        XCTAssertNil(scraper.error, "error scraping \(scraperClass): \(scraper.error)")
-        return scraper;
+        assert(scraper.error == nil, "error scraping \(scraperClass): \(scraper.error)")
+        return scraper
     }
-}
-
-func loadFixtureNamed(basename: String) -> HTMLDocument {
-    let fixtureURL = NSBundle(forClass: ScrapingTestCase.self).URLForResource(basename, withExtension: "html", subdirectory: "Fixtures")!
-    var error: NSError?
-    let fixtureHTML = NSString(contentsOfURL: fixtureURL, encoding: NSWindowsCP1252StringEncoding, error:&error)
-    assert(fixtureHTML != nil, "error loading fixture from \(fixtureURL): \(error!)")
-    return HTMLDocument(string: fixtureHTML)
 }
