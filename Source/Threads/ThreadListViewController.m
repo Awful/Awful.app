@@ -305,7 +305,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.forum.objectKey forKey:ForumKeyKey];
     [coder encodeObject:_newThreadViewController forKey:NewThreadViewControllerKey];
-    [coder encodeObject:self.filterThreadTag.threadTagID forKey:FilterThreadTagIDKey];
+    [coder encodeObject:self.filterThreadTag.objectKey forKey:FilterThreadTagKeyKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -313,17 +313,24 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super decodeRestorableStateWithCoder:coder];
     _newThreadViewController = [coder decodeObjectForKey:NewThreadViewControllerKey];
     _newThreadViewController.delegate = self;
-    NSString *filterThreadTagID = [coder decodeObjectForKey:FilterThreadTagIDKey];
-    if (filterThreadTagID) {
-        self.filterThreadTag = [ThreadTag fetchArbitraryInManagedObjectContext:self.forum.managedObjectContext
-                                                       matchingPredicateFormat:@"threadTagID = %@", filterThreadTagID];
-        [self updateFilterButtonText];
+    ThreadTagKey *filterTagKey = [coder decodeObjectForKey:FilterThreadTagKeyKey];
+    if (!filterTagKey) {
+        // AwfulObjectKey was introduced in Awful 3.2.
+        NSString *filterThreadTagID = [coder decodeObjectForKey:obsolete_FilterThreadTagIDKey];
+        if (filterThreadTagID) {
+            filterTagKey = [[ThreadTagKey alloc] initWithImageName:nil threadTagID:filterThreadTagID];
+        }
     }
+    if (filterTagKey) {
+        self.filterThreadTag = [ThreadTag objectForKey:filterTagKey inManagedObjectContext:self.forum.managedObjectContext];
+    }
+    [self updateFilterButtonText];
 }
 
 static NSString * const obsolete_ForumIDKey = @"AwfulForumID";
 static NSString * const ForumKeyKey = @"ForumKey";
 static NSString * const NewThreadViewControllerKey = @"AwfulNewThreadViewController";
-static NSString * const FilterThreadTagIDKey = @"AwfulFilterThreadTagID";
+static NSString * const FilterThreadTagKeyKey = @"FilterThreadTagKey";
+static NSString * const obsolete_FilterThreadTagIDKey = @"AwfulFilterThreadTagID";
 
 @end
