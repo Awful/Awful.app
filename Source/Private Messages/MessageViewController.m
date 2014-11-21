@@ -421,10 +421,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     PrivateMessage *privateMessage = [PrivateMessage objectForKey:messageKey inManagedObjectContext:managedObjectContext];
     MessageViewController *messageViewController = [[self alloc] initWithPrivateMessage:privateMessage];
     messageViewController.restorationIdentifier = identifierComponents.lastObject;
-    NSError *error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
     return messageViewController;
 }
 

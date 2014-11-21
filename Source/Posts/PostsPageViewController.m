@@ -1156,10 +1156,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }
     PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:thread author:author];
     postsView.restorationIdentifier = identifierComponents.lastObject;
-    NSError *error;
-    if (![managedObjectContext save:&error]) {
-        NSLog(@"%s error saving managed object context: %@", __PRETTY_FUNCTION__, error);
-    }
     return postsView;
 }
 

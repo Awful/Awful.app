@@ -345,6 +345,14 @@ static void RemoveOldDataStores(void)
     return [self.rootViewControllerStack viewControllerWithRestorationIdentifierPath:identifierComponents];
 }
 
+- (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder
+{
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
+    }
+}
+
 /**
  * An NSNumber containing an AwfulInterfaceVersion. Encoded when preserving state, and possibly useful for determining whether to decode state or to somehow migrate the preserved state.
  */
