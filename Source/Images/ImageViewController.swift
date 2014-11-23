@@ -6,8 +6,7 @@ import UIKit
 
 /// Downloads an image and shows it in a zoomable scroll view for inspection and further action.
 class ImageViewController: AwfulViewController {
-    
-    let URL: NSURL!
+    let URL: NSURL
     var doneAction: (() -> Void)?
     private var downloadTask: NSURLSessionTask!
     private var imageData: NSData?
@@ -21,7 +20,7 @@ class ImageViewController: AwfulViewController {
     @IBOutlet private var overlaidViews: [UIView]!
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private weak var statusBarBackgroundViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var panToDismissGestureRecognizer: UIPanGestureRecognizer!
+    @IBOutlet private var panToDismissGestureRecognizer: UIPanGestureRecognizer!
 
     init(URL: NSURL) {
         self.URL = URL
@@ -232,7 +231,6 @@ class ImageViewController: AwfulViewController {
 }
 
 extension ImageViewController: UIGestureRecognizerDelegate {
-    
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == panToDismissGestureRecognizer {
             return true
@@ -241,7 +239,7 @@ extension ImageViewController: UIGestureRecognizerDelegate {
     }
 }
 
-class ContentCenteringScrollView: UIScrollView {
+private class ContentCenteringScrollView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if let contentView = delegate?.viewForZoomingInScrollView?(self) {
@@ -277,4 +275,59 @@ extension ImageViewController: UIScrollViewDelegate {
             setShowingOverlaidViews(false, animated: true)
         }
     }
+}
+
+/// Adds a "Preview Image" activity. The image's URL needs to go through wrapURL() before being added to the activityItems array, and no other activities will see or attempt to use the URL.
+class ImagePreviewActivity: UIActivity {
+    class func wrapImageURL(imageURL: NSURL) -> AnyObject {
+        return ImageURLWrapper(imageURL)
+    }
+    
+    private(set) var activityViewController: UIViewController!
+    
+    override func activityType() -> String? {
+        return "com.awfulapp.Awful.ImagePreview"
+    }
+    
+    override func activityTitle() -> String? {
+        return "Preview Image"
+    }
+    
+    override func activityImage() -> UIImage? {
+        return UIImage(named: "quick-look")
+    }
+    
+    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+        return any(activityItems) { $0 is ImageURLWrapper }
+    }
+    
+    override func prepareWithActivityItems(activityItems: [AnyObject]) {
+        let wrapper = first(activityItems) { $0 is ImageURLWrapper } as ImageURLWrapper
+        let imageURL = wrapper.imageURL
+        let imageViewController = ImageViewController(URL: imageURL)
+        imageViewController.doneAction = { self.activityDidFinish(true) }
+        activityViewController = imageViewController
+    }
+    
+    private class ImageURLWrapper: NSObject {
+        let imageURL: NSURL
+        
+        init(_ imageURL: NSURL) {
+            self.imageURL = imageURL
+            super.init()
+        }
+    }
+}
+
+func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: (T) -> Bool) -> Bool {
+    return first(sequence, includeElement) != nil
+}
+
+func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: (T) -> Bool) -> T? {
+    for element in sequence {
+        if includeElement(element) {
+            return element
+        }
+    }
+    return nil
 }

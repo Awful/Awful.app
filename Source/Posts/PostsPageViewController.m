@@ -676,11 +676,11 @@
             NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
             NSMutableArray *items = [NSMutableArray new];
             [items addObject:URL];
-            if (imageURL) [items addObject:imageURL];
             NSMutableArray *activities = [NSMutableArray new];
             [activities addObject:[TUSafariActivity new]];
             [activities addObject:[ARChromeActivity new]];
             if (imageURL) {
+                [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
                 [activities addObject:[ImagePreviewActivity new]];
             }
             UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];

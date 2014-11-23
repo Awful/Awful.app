@@ -209,7 +209,7 @@
     [activities addObject:[TUSafariActivity new]];
     [activities addObject:[ARChromeActivity new]];
     if (imageURL) {
-        [items addObject:imageURL];
+        [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
         [activities addObject:[ImagePreviewActivity new]];
     }
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];

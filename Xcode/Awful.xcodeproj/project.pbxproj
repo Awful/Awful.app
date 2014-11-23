@@ -197,7 +197,6 @@
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B0B19CA050300510187 /* ImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0919CA050300510187 /* ImageViewController.xib */; };
-		1CBE1B0D19CA17D400510187 /* ImagePreviewActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0C19CA17D400510187 /* ImagePreviewActivity.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
 		1CC22AB519F972C200D5BABD /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1CC4525E180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4525D180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.m */; };
@@ -676,7 +675,6 @@
 		1CBDB5C316259C6D0004BDF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		1CBE1B0919CA050300510187 /* ImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
-		1CBE1B0C19CA17D400510187 /* ImagePreviewActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewActivity.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
 		1CC4525C180B366900F5F043 /* AwfulFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
@@ -1360,7 +1358,6 @@
 		1CBE1B0719CA03F100510187 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				1CBE1B0C19CA17D400510187 /* ImagePreviewActivity.swift */,
 				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
 				1CBE1B0919CA050300510187 /* ImageViewController.xib */,
 			);
@@ -2317,7 +2314,6 @@
 				1CF6BFE51A1E3B0D006AE9FE /* Punishment.swift in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */,
-				1CBE1B0D19CA17D400510187 /* ImagePreviewActivity.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C8D114F19AFF16D005D46CB /* ForumCell.swift in Sources */,
 				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
