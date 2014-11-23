@@ -146,7 +146,8 @@ class ImageViewController: AwfulViewController {
 
     @IBAction func didTapAction(sender: UIButton) {
         cancelFlashTimer()
-        let activityViewController = UIActivityViewController(activityItems: [imageData!], applicationActivities: nil)
+        let wrappedURL: AnyObject = CopyURLActivity.wrapURL(URL)
+        let activityViewController = UIActivityViewController(activityItems: [imageData!, wrappedURL], applicationActivities: [CopyURLActivity()])
         presentViewController(activityViewController, animated: true, completion: nil)
         let popover = activityViewController.popoverPresentationController
         popover?.sourceView = sender

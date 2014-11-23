@@ -29,6 +29,7 @@
 #import "ThreadListViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
 #import "UIBarButtonItem+AwfulConvenience.h"
+#import "UIPasteboard+AwfulStringyURLs.h"
 #import "UISplitViewController+AwfulConvenient.h"
 #import "UITableView+HideStuff.h"
 #import "UIViewController+AwfulAnnoyingSwift.h"

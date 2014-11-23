@@ -63,6 +63,7 @@
 		1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
 		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
 		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
+		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* MessageComposeViewController.m */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
@@ -472,6 +473,7 @@
 		1C3A147119DFD0D00022C44C /* showsmilies.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmilies.webarchive; sourceTree = "<group>"; };
 		1C3A147419DFDE380022C44C /* Smilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Smilies.sqlite; sourceTree = "<group>"; };
 		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
+		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C414F31181F79F400813EE2 /* MessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeViewController.h; sourceTree = "<group>"; };
 		1C414F32181F79F400813EE2 /* MessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeViewController.m; sourceTree = "<group>"; };
@@ -1024,6 +1026,7 @@
 				1CF3A466180C768100EC2450 /* AwfulURLRouter.m */,
 				1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */,
 				1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */,
+				1C4079691A228DA6004A082F /* CopyURLActivity.swift */,
 				1C96D0AA1682B1140043B194 /* NSURL+Awful.h */,
 				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
 				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
@@ -2219,6 +2222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
+				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,

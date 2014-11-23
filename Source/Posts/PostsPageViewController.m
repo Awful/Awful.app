@@ -682,6 +682,8 @@
             if (imageURL) {
                 [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
                 [activities addObject:[ImagePreviewActivity new]];
+                [items addObject:[CopyURLActivity wrapURL:imageURL]];
+                [activities addObject:[[CopyURLActivity alloc] initWithTitle:@"Copy Image URL"]];
             }
             UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];
             [self presentViewController:activityViewController animated:YES completion:nil];
