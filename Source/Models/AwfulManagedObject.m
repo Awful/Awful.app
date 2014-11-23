@@ -47,7 +47,7 @@
 
 + (NSArray *)objectsForKeys:(NSArray *)objectKeys inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
-    NSParameterAssert(objectKeys.count > 1);
+    NSParameterAssert(objectKeys.count >= 1);
     NSParameterAssert(managedObjectContext);
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
