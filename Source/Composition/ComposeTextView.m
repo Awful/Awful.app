@@ -18,6 +18,7 @@
 @property (copy, nonatomic) NSArray *URLSubmenuItems;
 @property (readonly, copy, nonatomic) NSArray *insertImageSubmenuItems;
 @property (copy, nonatomic) NSArray *formattingSubmenuItems;
+@property (copy, nonatomic) NSArray *videoSubmenuItems;
 
 @property (strong, nonatomic) SmilieKeyboard *smilieKeyboard;
 @property (assign, nonatomic) BOOL showingSmilieKeyboard;
@@ -74,10 +75,12 @@
 
 - (NSArray *)topLevelMenuItems
 {
-    if (_topLevelMenuItems) return _topLevelMenuItems;
-    _topLevelMenuItems = @[ [[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self showURLMenuOrLinkifySelection]; }],
-                            [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self showInsertImageSubmenu]; }],
-                            [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }] ];
+    if (!_topLevelMenuItems) {
+        _topLevelMenuItems = @[[[PSMenuItem alloc] initWithTitle:@"[url]" block:^{ [self showURLMenuOrLinkifySelection]; }],
+                               [[PSMenuItem alloc] initWithTitle:@"[img]" block:^{ [self showInsertImageSubmenu]; }],
+                               [[PSMenuItem alloc] initWithTitle:@"Format" block:^{ [self showFormattingSubmenu]; }],
+                               [[PSMenuItem alloc] initWithTitle:@"[video]" block:^{ [self showVideoSubmenuOrWrapInTag]; }]];
+    }
     return _topLevelMenuItems;
 }
 
@@ -123,6 +126,15 @@
                                  [[PSMenuItem alloc] initWithTitle:@"[code]"
                                                              block:^{ [self wrapSelectionInTag:@"[code]\n"]; }] ];
     return _formattingSubmenuItems;
+}
+
+- (NSArray *)videoSubmenuItems
+{
+    if (!_videoSubmenuItems) {
+        _videoSubmenuItems = @[[[PSMenuItem alloc] initWithTitle:@"[video]" block:^{ [self wrapSelectionInTag:@"[video]"]; }],
+                               [[PSMenuItem alloc] initWithTitle:@"Paste" block:^{ [self insertVideoAtURL:[UIPasteboard generalPasteboard].awful_URL]; }]];
+    }
+    return _videoSubmenuItems;
 }
 
 static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceType sourceType)
@@ -305,6 +317,33 @@ static BOOL IsImageAvailableForPickerSourceType(UIImagePickerControllerSourceTyp
 - (void)showFormattingSubmenu
 {
     [self immediatelyShowSubmenuWithItems:self.formattingSubmenuItems];
+}
+
+- (void)showVideoSubmenuOrWrapInTag
+{
+    if (SeemsToBeAVideoURL([UIPasteboard generalPasteboard].awful_URL)) {
+        [self immediatelyShowSubmenuWithItems:self.videoSubmenuItems];
+    } else {
+        [self wrapSelectionInTag:@"[video]"];
+    }
+}
+
+- (void)insertVideoAtURL:(NSURL *)videoURL
+{
+    NSString *videoTag = [NSString stringWithFormat:@"[video]%@[/video]", videoURL.absoluteString];
+    [self.textStorage replaceCharactersInRange:self.selectedRange withString:videoTag];
+    self.selectedRange = NSMakeRange(self.selectedRange.location + videoTag.length, 0);
+}
+
+static BOOL SeemsToBeAVideoURL(NSURL *URL)
+{
+    NSString *host = URL.host.lowercaseString;
+    NSString *path = URL.path.lowercaseString;
+    return ([host hasSuffix:@"youtube.com"] ||
+            [host hasSuffix:@"video.yahoo.com"] ||
+            ([host hasSuffix:@"cnn.com"] && [path hasPrefix:@"/video"]) ||
+            ([host hasSuffix:@"foxnews.com"] && [path hasPrefix:@"/video"]) ||
+            [host hasSuffix:@"vimeo.com"]);
 }
 
 #pragma mark - UIImagePickerControllerDelegate
