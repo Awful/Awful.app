@@ -8,14 +8,39 @@ public class PrivateMessage: AwfulManagedObject {
     @NSManaged public var innerHTML: String?
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var messageID: String
+    // When we scrape a folder of messages, we can't get at the "from" user's userID. rawFromUsername holds this unhelpful bit of data until we learn of the user's ID and can use the `from` relationship.
+    @NSManaged var rawFromUsername: String?
     @NSManaged public var replied: Bool
     @NSManaged public var seen: Bool
     @NSManaged public var sentDate: NSDate?
     @NSManaged public var subject: String?
     
-    @NSManaged public var from: User? /* via sentPrivateMessages */
+    @NSManaged private var primitiveFrom: User? /* via sentPrivateMessages */
     @NSManaged public var threadTag: ThreadTag?
     @NSManaged var to: User? /* via receivedPrivateMessages */
+}
+
+extension PrivateMessage {
+    public var from: User? {
+        get {
+            willAccessValueForKey("from")
+            let from = primitiveFrom
+            didAccessValueForKey("from")
+            return from
+        }
+        set {
+            willChangeValueForKey("from")
+            willChangeValueForKey("rawFromUsername")
+            primitiveFrom = newValue
+            rawFromUsername = nil
+            didChangeValueForKey("rawFromUsername")
+            didChangeValueForKey("from")
+        }
+    }
+    
+    var fromUsername: String? {
+        return from?.username ?? rawFromUsername
+    }
 }
 
 final class PrivateMessageKey: AwfulObjectKey {

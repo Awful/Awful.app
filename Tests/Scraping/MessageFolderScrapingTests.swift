@@ -15,9 +15,8 @@ class MessageFolderScrapingTests: ScrapingTestCase {
         let messages = scraper.messages
         XCTAssertTrue(messages.count == 4)
         XCTAssertEqual(messages.count, fetchAll(PrivateMessage.self, inContext: managedObjectContext).count)
-        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 3)
         
-        let tagged = fetchOne(PrivateMessage.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "from.username = 'CamH'"))!
+        let tagged = fetchOne(PrivateMessage.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "rawFromUsername = 'CamH'"))!
         XCTAssertEqual(tagged.messageID, "4549686")
         XCTAssertEqual(tagged.subject!, "Re: Awful app etc.")
         XCTAssertEqual(tagged.sentDate!.timeIntervalSince1970, 1348778940)

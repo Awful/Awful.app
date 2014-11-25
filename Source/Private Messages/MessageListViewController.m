@@ -258,7 +258,7 @@ static NSString * const MessageCellIdentifier = @"Message";
         cell.tagOverlayImageView.image = nil;
     }
     
-    cell.senderLabel.text = pm.from.username;
+    cell.senderLabel.text = pm.fromUsername;
     cell.dateLabel.text = [self stringForSentDate:pm.sentDate];
     cell.subjectLabel.text = pm.subject;
     

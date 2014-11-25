@@ -27,14 +27,26 @@
     [super scrape];
     if (self.error) return;
     
-    // Posts and PMs have a "Profile" link we can grab. Profiles, unsurprisingly, don't.
+    // Posts and PMs have a "Profile" link we can grab. Profiles and ignored posts don't.
     HTMLElement *profileLink = [self.node firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'userid']"];
     if (profileLink) {
         NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
         self.userID = URL.queryDictionary[@"userid"];
     } else {
-        HTMLElement *userIDInput = [self.node firstNodeMatchingSelector:@"input[name = 'userid']"];
-        self.userID = userIDInput[@"value"];
+        // Ignored posts still put the userid in the td.userinfo.
+        NSString *userInfoClass = [self.node firstNodeMatchingSelector:@"td.userinfo"][@"class"];
+        if (userInfoClass) {
+            NSScanner *scanner = [NSScanner scannerWithString:userInfoClass];
+            [scanner scanUpToString:@"userid-" intoString:nil];
+            [scanner scanString:@"userid-" intoString:nil];
+            NSString *userID;
+            if ([scanner scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&userID]) {
+                self.userID = userID;
+            }
+        } else {
+            HTMLElement *userIDInput = [self.node firstNodeMatchingSelector:@"input[name = 'userid']"];
+            self.userID = userIDInput[@"value"];
+        }
     }
     HTMLElement *authorTerm = [self.node firstNodeMatchingSelector:@"dt.author"];
     self.username = authorTerm.textContent;

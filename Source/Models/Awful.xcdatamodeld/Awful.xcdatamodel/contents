@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C68k" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Forum" representedClassName="Forum" syncable="YES">
         <attribute name="canPost" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="forumID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -45,6 +45,7 @@
         <attribute name="innerHTML" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastModifiedDate" attributeType="Date" syncable="YES"/>
         <attribute name="messageID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="rawFromUsername" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="replied" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="seen" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="sentDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -139,7 +140,7 @@
         <element name="ForumGroup" positionX="27" positionY="171" width="128" height="103"/>
         <element name="ForumMetadata" positionX="45" positionY="180" width="128" height="120"/>
         <element name="Post" positionX="0" positionY="0" width="128" height="193"/>
-        <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="PrivateMessage" positionX="0" positionY="0" width="128" height="223"/>
         <element name="Profile" positionX="27" positionY="153" width="128" height="270"/>
         <element name="Thread" positionX="0" positionY="0" width="128" height="420"/>
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>

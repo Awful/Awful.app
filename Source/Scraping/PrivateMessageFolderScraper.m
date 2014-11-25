@@ -62,8 +62,7 @@
             HTMLElement *fromCell = [row firstNodeMatchingSelector:@"td.sender"];
             NSString *fromUsername = fromCell.textContent;
             if (fromUsername.length > 0) {
-                UserKey *userKey = [[UserKey alloc] initWithUserID:nil username:fromUsername];
-                message.from = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
+                message.rawFromUsername = fromUsername;
             }
         }}
         
