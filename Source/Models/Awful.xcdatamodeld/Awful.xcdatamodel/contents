@@ -126,7 +126,7 @@
         <attribute name="lastModifiedDate" attributeType="Date" syncable="YES"/>
         <attribute name="moderator" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="regdate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="userID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="userID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="posts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Post" inverseName="author" inverseEntity="Post" syncable="YES"/>
         <relationship name="profile" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Profile" inverseName="user" inverseEntity="Profile" syncable="YES"/>
@@ -145,6 +145,6 @@
         <element name="Thread" positionX="0" positionY="0" width="128" height="420"/>
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="150"/>
-        <element name="User" positionX="0" positionY="0" width="128" height="268"/>
+        <element name="User" positionX="0" positionY="0" width="128" height="270"/>
     </elements>
 </model>

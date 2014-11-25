@@ -22,10 +22,10 @@ class LepersColonyPageScrapingTests: ScrapingTestCase {
         XCTAssertEqual(first.post!.postID, "421665753")
         XCTAssertEqual(first.date.timeIntervalSince1970, 1384078200)
         XCTAssertEqual(first.subject.username!, "Kheldragar")
-        XCTAssertEqual(first.subject.userID!, "202925")
+        XCTAssertEqual(first.subject.userID, "202925")
         XCTAssertTrue(first.reasonHTML!.rangeOfString("shitty as you") != nil)
         XCTAssertEqual(first.requester!.username!, "Ralp")
-        XCTAssertEqual(first.requester!.userID!, "61644")
+        XCTAssertEqual(first.requester!.userID, "61644")
         XCTAssertEqual(first.approver!, first.requester!)
     }
 }

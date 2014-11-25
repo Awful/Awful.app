@@ -14,7 +14,7 @@ class ProfileScrapingTests: ScrapingTestCase {
         let scraper = scrapeFixtureNamed("profile") as ProfileScraper
         XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         let pokeyman = scraper.profile
-        XCTAssertEqual(pokeyman.user.userID!, "106125")
+        XCTAssertEqual(pokeyman.user.userID, "106125")
         XCTAssertEqual(pokeyman.user.username!, "pokeyman")
         XCTAssertTrue(pokeyman.user.customTitleHTML!.rangeOfString("play?") != nil)
         XCTAssertTrue(pokeyman.user.customTitleHTML!.rangeOfString("title-pokeyman") != nil)

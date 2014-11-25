@@ -11,7 +11,7 @@ public class User: AwfulManagedObject {
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var moderator: Bool
     @NSManaged public var regdate: NSDate?
-    @NSManaged public var userID: String?
+    @NSManaged public var userID: String
     @NSManaged public var username: String?
     
     @NSManaged var posts: NSMutableSet /* Post */
@@ -41,13 +41,11 @@ private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
 }
 
 final class UserKey: AwfulObjectKey {
-    let userID: String?
+    let userID: String
     let username: String?
     
-    init(userID: String!, username: String!) {
-        let userID = nilIfEmpty(userID)
-        let username = nilIfEmpty(username)
-        precondition(userID != nil || username != nil)
+    init(userID: String, username: String?) {
+        precondition(!userID.isEmpty)
         
         self.userID = userID
         self.username = username
@@ -55,13 +53,24 @@ final class UserKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        userID = coder.decodeObjectForKey(userIDKey) as String?
+        userID = coder.decodeObjectForKey(userIDKey) as String
         username = coder.decodeObjectForKey(usernameKey) as String?
         super.init(coder: coder)
     }
     
     override var keys: [String] {
         return [userIDKey, usernameKey]
+    }
+    
+    override func isEqual(object: AnyObject?) -> Bool {
+        if let other = object as? UserKey {
+            return other.userID == userID
+        }
+        return false
+    }
+    
+    override var hash: Int {
+        return entityName.hash ^ userID.hash
     }
 }
 private let userIDKey = "userID"

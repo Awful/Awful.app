@@ -37,7 +37,7 @@ class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssertEqual(firstPost.thread!, canpoliThread)
         let majuju = firstPost.author!
         XCTAssertEqual(majuju.username!, "Majuju")
-        XCTAssertEqual(majuju.userID!, "108110")
+        XCTAssertEqual(majuju.userID, "108110")
         XCTAssertTrue(majuju.canReceivePrivateMessages);
         XCTAssertEqual(majuju.regdate!.timeIntervalSince1970, 1167350400)
         XCTAssertTrue(majuju.customTitleHTML!.rangeOfString("AAA") != nil)
