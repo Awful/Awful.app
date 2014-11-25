@@ -52,7 +52,7 @@
         switch (self.smilieList) {
             case SmilieListAll: {
                 NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
-                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"imageData != nil"];
+                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"imageData != nil AND potentiallyObjectionable = NO"];
                 fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"section" ascending:YES],
                                                  [NSSortDescriptor sortDescriptorWithKey:@"text" ascending:YES]];
                 fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
