@@ -57,10 +57,12 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:_textView];
     }
     _textView = textView;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textViewTextDidChange:)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:textView];
+    if (textView) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(textViewTextDidChange:)
+                                                     name:UITextViewTextDidChangeNotification
+                                                   object:textView];
+    }
     [self updateAutocloseButtonState];
 }
 
