@@ -172,14 +172,12 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
     
     private var primaryNavigationController: UINavigationController {
-        get { return tabBarController.selectedViewController as UINavigationController }
+        return tabBarController.selectedViewController as UINavigationController
     }
 
     private var detailNavigationController: UINavigationController? {
-        get {
-            let viewControllers = splitViewController.viewControllers as [UINavigationController]
-            return viewControllers.count > 1 ? viewControllers[1] : nil
-        }
+        let viewControllers = splitViewController.viewControllers as [UINavigationController]
+        return viewControllers.count > 1 ? viewControllers[1] : nil
     }
     
     override init() {
@@ -188,7 +186,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 }
 
 extension RootViewControllerStack: UISplitViewControllerDelegate {
-    
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
@@ -247,15 +244,25 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
                 viewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             }
             
-            self.detailNavigationController!.setViewControllers([viewController], animated: false)
+            detailNavigationController!.setViewControllers([viewController], animated: false)
             
             // Laying out the split view now prevents it from getting caught up in the animation block that hides the primary view controller. Otherwise we get to see an ugly animated resizing of the new secondary view from a 0-rect up to full screen.
-            self.splitViewController.view.layoutIfNeeded()
+            splitViewController.view.layoutIfNeeded()
             
             splitViewController.awful_hidePrimaryViewController()
         }
         
         return true
+    }
+    
+    func targetDisplayModeForActionInSplitViewController(splitViewController: UISplitViewController) -> UISplitViewControllerDisplayMode {
+        // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
+        if let detailNav = detailNavigationController {
+            if let root = detailNav.viewControllers.first as UIViewController? {
+                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .AllVisible ? nil : splitViewController.displayModeButtonItem()
+            }
+        }
+        return .Automatic
     }
 }
 
