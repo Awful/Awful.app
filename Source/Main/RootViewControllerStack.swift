@@ -129,7 +129,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             case .PrimaryHidden:
                 splitViewController.preferredDisplayMode = .PrimaryHidden
             default:
-                fatalError("unexpected display mode") /* can't interpolaote splitViewController.displayMode?? */
+                fatalError("unexpected display mode \(splitViewController.displayMode)")
             }
         } else {
             splitViewController.preferredDisplayMode = .Automatic
@@ -137,7 +137,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     func viewControllerWithRestorationIdentifierPath(identifierComponents: [String]) -> UIViewController? {
-
         // I can't recursively call a nested function? Toss it in a closure then I guess.
         var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
         search = { identifierComponents, viewControllers in
@@ -146,7 +145,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 if identifierComponents.count == 1 {
                     return currentViewController
                 } else if currentViewController.respondsToSelector("viewControllers") {
-
                     // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
                     let remainingPath = identifierComponents[1..<identifierComponents.count]
                     let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as [UIViewController]
@@ -160,7 +158,6 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 
     func didAppear() {
         if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
-
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
                 detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
@@ -169,6 +166,12 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 
         // I can't seem to get the iPhone 6+ to open in landscape to a primary overlay display mode. This makes that happen.
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
+        
+        // Sometimes after restoring state the split view decides to go .AllVisible when we're in portrait orientation. It only seems to happen when "Hide sidebar in landscape" is off. The preferredDisplayMode is .Automatic. It's clearly something goofy because the sidebar view controller doesn't get any viewWill/DidAppear: methods. Anyway.
+        let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
+        if !splitViewController.collapsed && isPortrait && splitViewController.displayMode == .AllVisible {
+            splitViewController.preferredDisplayMode = .PrimaryHidden
+        }
     }
     
     private var primaryNavigationController: UINavigationController {
