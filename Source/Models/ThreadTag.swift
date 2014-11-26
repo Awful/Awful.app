@@ -21,7 +21,8 @@ extension ThreadTag {
 }
 
 private func imageNameFromURL(URL: NSURL) -> String {
-    return URL.lastPathComponent!.stringByDeletingPathExtension
+    // This silly casting works around an API change between Xcode 6.1 and Xcode 6.1.1, wherein NSURL.lastPathComponent went from returning `String` to returning `String?`. The cast allows compilation on either version.
+    return (URL.lastPathComponent as String!).stringByDeletingPathExtension
 }
 
 final class ThreadTagKey: AwfulObjectKey {
