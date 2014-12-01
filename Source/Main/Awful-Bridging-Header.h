@@ -1,7 +1,3 @@
-//
-//  Use this file to import your target's public headers that you would like to expose to Swift.
-//
-
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
@@ -15,6 +11,7 @@
 #import "AwfulThemePicker.h"
 #import "BookmarkedThreadListViewController.h"
 #import "EmptyViewController.h"
+#import <DZNWebViewController/DZNWebViewController.h>
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"

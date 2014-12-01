@@ -31,6 +31,10 @@ install_resource()
       echo "xcrun momc \"${PODS_ROOT}/$1\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/`basename "$1" .xcdatamodeld`.momd\""
       xcrun momc "${PODS_ROOT}/$1" "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/`basename "$1" .xcdatamodeld`.momd"
       ;;
+    *.xcmappingmodel)
+      echo "xcrun mapc \"${PODS_ROOT}/$1\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/`basename "$1" .xcmappingmodel`.cdm\""
+      xcrun mapc "${PODS_ROOT}/$1" "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/`basename "$1" .xcmappingmodel`.cdm"
+      ;;
     *.xcassets)
       ;;
     /*)
@@ -49,6 +53,32 @@ install_resource()
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@3x.png"
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity@3x~ipad.png"
                     install_resource "ARChromeActivity/ARChromeActivity/ARChromeActivity~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_chrome@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_chrome@2x~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_dolphin@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_dolphin@2x~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_link@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_link@2x~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_opera@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_opera@2x~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_activity_safari@2x~ipad.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_action.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_action@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_action@3x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_backward.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_backward@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_backward@3x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_forward.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_forward@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_forward@3x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_reload.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_reload@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_reload@3x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_stop.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_stop@2x.png"
+                    install_resource "DZNWebViewController/Source/Resources/dzn_icn_toolbar_stop@3x.png"
+                    install_resource "DZNWebViewController/Source/Resources/de.lproj"
+                    install_resource "DZNWebViewController/Source/Resources/en.lproj"
                     install_resource "WebViewJavascriptBridge/WebViewJavascriptBridge/WebViewJavascriptBridge.js.txt"
                     install_resource "${BUILT_PRODUCTS_DIR}/TUSafariActivity.bundle"
           

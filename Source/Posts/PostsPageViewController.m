@@ -16,7 +16,6 @@
 #import "AwfulSettings.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>

@@ -54,6 +54,12 @@
 #define COCOAPODS_VERSION_MINOR_ARChromeActivity 0
 #define COCOAPODS_VERSION_PATCH_ARChromeActivity 3
 
+// DZNWebViewController
+#define COCOAPODS_POD_AVAILABLE_DZNWebViewController
+#define COCOAPODS_VERSION_MAJOR_DZNWebViewController 3
+#define COCOAPODS_VERSION_MINOR_DZNWebViewController 0
+#define COCOAPODS_VERSION_PATCH_DZNWebViewController 0
+
 // GRMustache
 #define COCOAPODS_POD_AVAILABLE_GRMustache
 #define COCOAPODS_VERSION_MAJOR_GRMustache 7

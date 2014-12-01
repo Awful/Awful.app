@@ -11,7 +11,6 @@
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
 #import "PrivateMessageViewModel.h"

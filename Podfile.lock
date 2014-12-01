@@ -1,11 +1,11 @@
 PODS:
   - AFNetworking (2.4.1):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-    - AFNetworking/UIKit
+    - AFNetworking/NSURLConnection (= 2.4.1)
+    - AFNetworking/NSURLSession (= 2.4.1)
+    - AFNetworking/Reachability (= 2.4.1)
+    - AFNetworking/Security (= 2.4.1)
+    - AFNetworking/Serialization (= 2.4.1)
+    - AFNetworking/UIKit (= 2.4.1)
   - AFNetworking/NSURLConnection (2.4.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
@@ -21,6 +21,7 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.3)
+  - DZNWebViewController (3.0)
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
@@ -56,6 +57,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (= 2.4.1)
   - ARChromeActivity (= 1.0.3)
+  - DZNWebViewController (= 3.0)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
   - HTMLReader (= 0.5.8)
@@ -70,6 +72,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   ARChromeActivity: 2e2c2b135e6d278164e2dfe355d904e0c5c7500e
+  DZNWebViewController: 73361f52eafcc6fc46a868b8bb2ec3bae65dfe69
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
   HTMLReader: e61b43d69deb09d8098a7aabacdd6cafd8749373
@@ -82,4 +85,4 @@ SPEC CHECKSUMS:
   TUSafariActivity: 63c6b0584d1f0a731e955c0e4d9c89cde63bedc2
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac
 
-COCOAPODS: 0.34.4
+COCOAPODS: 0.35.0
