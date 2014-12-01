@@ -1176,13 +1176,14 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     }];
 }
 
-- (NSOperation *)readPrivateMessage:(PrivateMessage *)message
-                            andThen:(void (^)(NSError *error))callback
+- (NSOperation *)readPrivateMessageWithKey:(PrivateMessageKey *)messageKey
+                                   andThen:(void (^)(NSError *error, PrivateMessage *message))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
+    NSManagedObjectContext *mainManagedObjectContext = self.managedObjectContext;
     return [_HTTPManager GET:@"private.php"
                   parameters:@{ @"action": @"show",
-                                @"privatemessageid": message.messageID }
+                                @"privatemessageid": messageKey.messageID }
                      success:^(AFHTTPRequestOperation *operation, HTMLDocument *document)
     {
         [managedObjectContext performBlock:^{
@@ -1192,13 +1193,15 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 [managedObjectContext save:&error];
             }
             if (callback) {
+                NSManagedObjectID *objectID = scraper.privateMessage.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    callback(error);
+                    PrivateMessage *message = objectID ? [mainManagedObjectContext awful_objectWithID:objectID] : nil;
+                    callback(error, message);
                 }];
             }
         }];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (callback) callback(error);
+        if (callback) callback(error, nil);
     }];
 }
 

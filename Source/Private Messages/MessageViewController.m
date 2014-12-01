@@ -13,7 +13,6 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
-#import "Handoff.h"
 #import "MessageComposeViewController.h"
 #import "PrivateMessageViewModel.h"
 #import "RapSheetViewController.h"
@@ -312,7 +311,7 @@
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         [self.view addSubview:self.loadingView];
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] readPrivateMessage:self.privateMessage andThen:^(NSError *error) {
+        [[AwfulForumsClient client] readPrivateMessageWithKey:self.privateMessage.objectKey andThen:^(NSError *error, PrivateMessage *message) {
             __typeof__(self) self = weakSelf;
             self.title = self.privateMessage.subject;
             [self renderMessage];
@@ -340,7 +339,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeReadingMessage];
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeReadingMessage];
     self.userActivity.needsSave = YES;
 }
 
@@ -352,7 +351,7 @@
 
 - (void)updateUserActivityState:(NSUserActivity *)activity
 {
-    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoMessageIDKey: self.privateMessage.messageID}];
+    [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoMessageIDKey: self.privateMessage.messageID}];
     NSString *subject = self.privateMessage.subject;
     activity.title = subject.length > 0 ? subject : @"Private Message";
     activity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"/private.php?action=show&privatemessageid=%@", self.privateMessage.messageID]

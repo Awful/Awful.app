@@ -22,7 +22,6 @@
     #import "CrashlyticsAPIKey.h"
 #endif
 #import <GRMustache/GRMustache.h>
-#import "Handoff.h"
 @import Smilies;
 #import "Awful-Swift.h"
 
@@ -395,7 +394,17 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 - (void)application:(UIApplication *)application didUpdateUserActivity:(NSUserActivity *)userActivity
 {
     // Bit of future-proofing.
-    [userActivity addUserInfoEntriesFromDictionary:@{HandoffInfoVersionKey: @(HandoffVersion)}];
+    [userActivity addUserInfoEntriesFromDictionary:@{Handoff.InfoVersionKey: @(HandoffVersion)}];
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
+{
+    NSURL *awfulURL = userActivity.awfulURL;
+    if (awfulURL) {
+        [self.URLRouter routeURL:awfulURL];
+        return YES;
+    }
+    return NO;
 }
 
 static const NSInteger HandoffVersion = 1;

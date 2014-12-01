@@ -7,6 +7,7 @@
 #import "AwfulForm.h"
 #import "AwfulThreadPage.h"
 @class Forum, Post, PrivateMessage, Profile, Thread, ThreadTag, User;
+@class PrivateMessageKey;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -286,7 +287,7 @@
 - (NSOperation *)countUnreadPrivateMessagesInInboxAndThen:(void (^)(NSError *error, NSInteger unreadMessageCount))callback;
 
 /**
- * @param callback A block to call after listing the logged-in user's PM inbox, which takes as parameters: an NSError object on failure, or nil on success; and an array of AwfulPrivateMessage objects on success, or nil on failure.
+ * @param callback A block to call after listing the logged-in user's PM inbox, which takes as parameters: an NSError object on failure, or nil on success; and an array of PrivateMessage objects on success, or nil on failure.
  *
  * @return An enqueued network operation.
  */
@@ -301,12 +302,12 @@
                               andThen:(void (^)(NSError *error))callback;
 
 /**
- * @param callback A block to call after reading the message, which takes as a parameter an NSError object on failure, or nil on success.
+ * @param callback A block to call after reading the message, which takes as parameters: an NSError object on failure, or nil on success; and the read PrivateMessage object on success, or nil on failure.
  *
  * @return An enqueued network operation.
  */
-- (NSOperation *)readPrivateMessage:(PrivateMessage *)message
-                            andThen:(void (^)(NSError *error))callback;
+- (NSOperation *)readPrivateMessageWithKey:(PrivateMessageKey *)messageKey
+                                   andThen:(void (^)(NSError *error, PrivateMessage *message))callback;
 
 /**
  * @param callback A block to call after quoting the message, which takes as parameters: an NSError object on failure or nil on success; and the quoted BBcode contents on success or nil on failure.

@@ -6,7 +6,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
-#import "Handoff.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
 
@@ -85,7 +84,7 @@
 {
     [super viewDidAppear:animated];
     [self refreshIfNecessary];
-    self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeListingThreads];
+    self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeListingThreads];
     self.userActivity.needsSave = YES;
     [self becomeFirstResponder];
 }
@@ -125,7 +124,7 @@
 - (void)updateUserActivityState:(NSUserActivity *)activity
 {
     activity.title = @"Bookmarked Threads";
-    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoBookmarksKey: @YES}];
+    [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoBookmarksKey: @YES}];
     activity.webpageURL = [NSURL URLWithString:@"/bookmarkthreads.php" relativeToURL:[AwfulForumsClient client].baseURL];
 }
 

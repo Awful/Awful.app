@@ -322,17 +322,22 @@ static NSString * const MessageCellIdentifier = @"Message";
     self.tabBarItem.badgeValue = newValue > 0 ? @(newValue).stringValue : nil;
 }
 
+- (void)showMessage:(PrivateMessage *)message
+{
+    MessageViewController *messageViewController = [[MessageViewController alloc] initWithPrivateMessage:message];
+    messageViewController.restorationIdentifier = @"Private Message";
+    [self showDetailViewController:messageViewController sender:self];
+}
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PrivateMessage *pm = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    if (!pm.seen) {
+    PrivateMessage *message = [_dataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    if (!message.seen) {
         [self decrementBadgeValue];
     }
-    MessageViewController *messageViewController = [[MessageViewController alloc] initWithPrivateMessage:pm];
-    messageViewController.restorationIdentifier = @"Private Message";
-    [self showDetailViewController:messageViewController sender:self];
+    [self showMessage:message];
 }
 
 #pragma mark - AwfulComposeTextViewControllerDelegate

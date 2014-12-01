@@ -18,7 +18,6 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "BrowserViewController.h"
 #import <GRMustache/GRMustache.h>
-#import "Handoff.h"
 #import "MessageComposeViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostComposeViewController.h"
@@ -1017,7 +1016,7 @@
 - (void)configureUserActivityIfPossible
 {
     if (self.page >= 1) {
-        self.userActivity = [[NSUserActivity alloc] initWithActivityType:HandoffActivityTypeBrowsingPosts];
+        self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeBrowsingPosts];
         self.userActivity.needsSave = YES;
     } else {
         self.userActivity = nil;
@@ -1027,10 +1026,10 @@
 - (void)updateUserActivityState:(NSUserActivity *)activity
 {
     activity.title = self.thread.title;
-    [activity addUserInfoEntriesFromDictionary:@{HandoffInfoThreadIDKey: self.thread.threadID,
-                                                 HandoffInfoPageKey: @(self.page)}];
+    [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoThreadIDKey: self.thread.threadID,
+                                                 Handoff.InfoPageKey: @(self.page)}];
     if (self.author) {
-        [activity addUserInfoEntriesFromDictionary:@{HandoffInfoFilteredThreadUserIDKey: self.author.userID}];
+        [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoFilteredThreadUserIDKey: self.author.userID}];
     }
     
     NSMutableString *relativeString = [NSMutableString new];

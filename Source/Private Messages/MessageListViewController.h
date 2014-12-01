@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UIViewController+AwfulTheme.h"
+@class PrivateMessage;
 
 /**
  * A MessageListViewController shows a list of private messages.
@@ -18,5 +19,7 @@
  * The managed object context prividing the private messages.
  */
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+- (void)showMessage:(PrivateMessage *)message;
 
 @end

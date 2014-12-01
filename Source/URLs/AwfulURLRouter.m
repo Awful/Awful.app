@@ -35,6 +35,7 @@
     _routes = [JLRoutes new];
     __weak __typeof__(self) weakSelf = self;
     
+    #pragma mark /forums/:forumID
     [_routes addRoute:@"/forums/:forumID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         ForumKey *key = [[ForumKey alloc] initWithForumID:parameters[@"forumID"]];
@@ -46,18 +47,22 @@
         }
     }];
     
-    [_routes addRoute:@"/forums" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumListViewController class]];
+    #pragma mark /forums
+    [_routes addRoute:@"/forums" handler:^BOOL(NSDictionary *parameters) {
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumListViewController class]];
     }];
     
+    #pragma mark /threads/:threadID/pages/:page
     [_routes addRoute:@"/threads/:threadID/pages/:page" handler:^(NSDictionary *parameters) {
         return [weakSelf showThreadWithParameters:parameters];
     }];
     
+    #pragma mark /threads/:threadID
     [_routes addRoute:@"/threads/:threadID" handler:^(NSDictionary *parameters) {
         return [weakSelf showThreadWithParameters:parameters];
     }];
     
+    #pragma mark /posts/:postID
     [_routes addRoute:@"/posts/:postID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         PostKey *key = [[PostKey alloc] initWithPostID:parameters[@"postID"]];
@@ -99,18 +104,59 @@
         return YES;
     }];
     
-    [_routes addRoute:@"/messages" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
+    #pragma mark /messages/:messageID
+    [_routes addRoute:@"/messages/:messageID" handler:^(NSDictionary *parameters) {
+        __typeof__(self) self = weakSelf;
+        MessageListViewController *inbox = [self selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
+        if (!inbox) {
+            return NO;
+        }
+        [inbox.navigationController popToViewController:inbox animated:NO];
+        
+        PrivateMessageKey *messageKey = [[PrivateMessageKey alloc] initWithMessageID:parameters[@"messageID"]];
+        PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
+        if (message) {
+            [inbox showMessage:message];
+            return YES;
+        }
+        
+        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.rootViewController.view
+                                                                             title:@"Locating Message"
+                                                                              mode:MRProgressOverlayViewModeIndeterminate
+                                                                          animated:YES];
+        overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+        [[AwfulForumsClient sharedClient] readPrivateMessageWithKey:messageKey andThen:^(NSError *error, PrivateMessage *message) {
+            if (error) {
+                overlay.titleLabelText = @"Message Not Found";
+                overlay.mode = MRProgressOverlayViewModeCross;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [overlay dismiss:YES];
+                });
+            } else {
+                [overlay dismiss:YES completion:^{
+                    [inbox showMessage:message];
+                }];
+            }
+        }];
+        return YES;
     }];
     
-    [_routes addRoute:@"/bookmarks" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
+    #pragma mark /messages
+    [_routes addRoute:@"/messages" handler:^BOOL(NSDictionary *parameters) {
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[MessageListViewController class]];
     }];
     
-    [_routes addRoute:@"/settings" handler:^(NSDictionary *parameters) {
-        return [weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[SettingsViewController class]];
+    #pragma mark /bookmarks
+    [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
     }];
     
+    #pragma mark /settings
+    [_routes addRoute:@"/settings" handler:^BOOL(NSDictionary *parameters) {
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[SettingsViewController class]];
+    }];
+    
+    #pragma mark /users/:userID
     [_routes addRoute:@"/users/:userID" handler:^(NSDictionary *parameters) {
         __typeof__(self) self = weakSelf;
         void (^success)() = ^(User *user) {
@@ -133,16 +179,7 @@
         return YES;
     }];
 	
-	[_routes addRoute:@"/banlist" handler:^BOOL(NSDictionary *parameters) {
-		__typeof__(self) self = weakSelf;
-		
-		RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:nil];
-		[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
-		
-		return YES;
-	}];
-	
-	
+	#pragma mark /banlist/:userID
 	[_routes addRoute:@"/banlist/:userID" handler:^BOOL(NSDictionary *parameters) {
 		__typeof__(self) self = weakSelf;
 		
@@ -166,6 +203,16 @@
 		}];
 		return YES;
 	}];
+	
+    #pragma mark /banlist
+	[_routes addRoute:@"/banlist" handler:^BOOL(NSDictionary *parameters) {
+		__typeof__(self) self = weakSelf;
+		
+		RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:nil];
+		[self.rootViewController presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+		
+		return YES;
+	}];
     
     return _routes;
 }
@@ -180,27 +227,28 @@
     ThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadListViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
-        return [self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
+        return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
         ForumListViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumListViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList openForum:forum animated:NO];
-        return [self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
+        return !![self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
     }
 }
 
-- (BOOL)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
+- (id)selectTopmostViewControllerContainingViewControllerOfClass:(Class)class
 {
     UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
     UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
     for (UIViewController *topmost in tabBarController.viewControllers) {
-        if ([topmost awful_firstDescendantViewControllerOfClass:class]) {
+        UIViewController *match = [topmost awful_firstDescendantViewControllerOfClass:class];
+        if (match) {
             tabBarController.selectedViewController = topmost;
             [splitViewController awful_showPrimaryViewController];
-            return YES;
+            return match;
         }
     }
-    return NO;
+    return nil;
 }
 
 - (BOOL)showThreadWithParameters:(NSDictionary *)parameters
@@ -234,6 +282,10 @@
         page = pageString.integerValue ?: thread.beenSeen ? AwfulThreadPageNextUnread : 1;
     }
     [postsViewController loadPage:page updatingCache:YES];
+    if (parameters[@"post"]) {
+        PostKey *postKey = [[PostKey alloc] initWithPostID:parameters[@"post"]];
+        [postsViewController scrollPostToVisible:[Post objectForKey:postKey inManagedObjectContext:self.managedObjectContext]];
+    }
     return [self showPostsViewController:postsViewController];
 }
 
