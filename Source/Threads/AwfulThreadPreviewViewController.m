@@ -5,6 +5,7 @@
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
+#import "AwfulFrameworkCategories.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTheme.h"

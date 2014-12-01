@@ -6,7 +6,7 @@
 //  Copyright (c) 2012年 flexfrank.net. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import UIKit;
 
 @interface FVGifAnimation : NSObject{
     NSArray* images;

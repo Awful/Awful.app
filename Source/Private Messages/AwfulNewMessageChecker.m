@@ -5,6 +5,7 @@
 #import "AwfulNewMessageChecker.h"
 #import "AwfulForumsClient.h"
 #import "AwfulRefreshMinder.h"
+@import UIKit;
 
 @interface AwfulNewMessageChecker ()
 

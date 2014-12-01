@@ -4,6 +4,7 @@
 
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import <AFNetworking/AFNetworking.h>
+#import "AwfulFrameworkCategories.h"
 #import "AwfulRefreshMinder.h"
 #import "CacheHeaderCalculations.h"
 
