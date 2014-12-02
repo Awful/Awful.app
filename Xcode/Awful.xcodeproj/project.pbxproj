@@ -1117,7 +1117,7 @@
 			children = (
 				1C4506C61A2C3B1700767306 /* BrowserViewController.swift */,
 			);
-			name = Browsing;
+			path = Browsing;
 			sourceTree = "<group>";
 		};
 		1C4981F319C5389500502134 /* Rap Sheets */ = {
