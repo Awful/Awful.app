@@ -278,7 +278,6 @@
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
 		8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */; };
 		8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
-		8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */; };
 		8C8813A218492AC80058009E /* mac-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8813A118492AC70058009E /* mac-watch.png */; };
 		8C8FA47E19AD7CA300B67AAA /* award.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47719AD7CA300B67AAA /* award.png */; };
 		8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47819AD7CA300B67AAA /* diamond-icon.png */; };
@@ -789,8 +788,6 @@
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
 		8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-loading@2x.png"; sourceTree = "<group>"; };
 		8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-left.png"; sourceTree = "<group>"; };
-		8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVGifAnimation.h; sourceTree = "<group>"; };
-		8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVGifAnimation.m; sourceTree = "<group>"; };
 		8C8813A118492AC70058009E /* mac-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mac-watch.png"; sourceTree = "<group>"; };
 		8C8FA47719AD7CA300B67AAA /* award.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = award.png; sourceTree = "<group>"; };
 		8C8FA47819AD7CA300B67AAA /* diamond-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diamond-icon.png"; sourceTree = "<group>"; };
@@ -906,7 +903,6 @@
 			isa = PBXGroup;
 			children = (
 				1C09BFE51A09B9A5007C11F5 /* 1Password */,
-				8C700287169C6EFA00FC0B78 /* AnimatedGif */,
 				1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */,
 				1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
@@ -1622,15 +1618,6 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		8C700287169C6EFA00FC0B78 /* AnimatedGif */ = {
-			isa = PBXGroup;
-			children = (
-				8C700288169C6EFA00FC0B78 /* FVGifAnimation.h */,
-				8C700289169C6EFA00FC0B78 /* FVGifAnimation.m */,
-			);
-			path = AnimatedGif;
-			sourceTree = "<group>";
-		};
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -2270,7 +2257,6 @@
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */,
-				8C70028A169C6EFA00FC0B78 /* FVGifAnimation.m in Sources */,
 				1C7487F116A88BAD0068B8A3 /* KeyboardBar.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,

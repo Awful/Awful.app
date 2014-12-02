@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulLoadingView.h"
-#import "FVGifAnimation.h"
+#import <FLAnimatedImage/FLAnimatedImage.h>
 
 @interface AwfulDefaultLoadingView : AwfulLoadingView @end
 @interface AwfulYOSPOSLoadingView : AwfulLoadingView @end
@@ -259,7 +259,7 @@
 
 @interface AwfulWinpos95LoadingView ()
 
-@property (strong, nonatomic) UIImageView *hourglassImageView;
+@property (strong, nonatomic) FLAnimatedImageView *hourglassImageView;
 
 @end
 
@@ -270,10 +270,11 @@
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor = [UIColor colorWithRed:0.067 green:0.502 blue:0.502 alpha:1];
         
-        _hourglassImageView = [UIImageView new];
-        NSURL *gifURL = [[NSBundle mainBundle] URLForResource:@"hourglass" withExtension:@"gif"];
-        FVGifAnimation *gif = [[FVGifAnimation alloc] initWithURL:gifURL];
-        [gif setAnimationToImageView:_hourglassImageView];
+        _hourglassImageView = [FLAnimatedImageView new];
+        NSData *GIFData = [NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"hourglass" withExtension:@"gif"]];
+        FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:GIFData];
+        _hourglassImageView.animatedImage = image;
+        _hourglassImageView.bounds = (CGRect){.size = image.size};
         [self addSubview:_hourglassImageView];
         UIPanGestureRecognizer *pan = [UIPanGestureRecognizer new];
         [pan addTarget:self action:@selector(didPan:)];
@@ -305,7 +306,6 @@
 
 - (void)layoutSubviews
 {
-    [self.hourglassImageView sizeToFit];
     const CGFloat margin = 8;
     CGRect container = (CGRect){
         .size.width = CGRectGetWidth(self.hourglassImageView.frame) + margin,

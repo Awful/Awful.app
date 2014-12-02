@@ -305,12 +305,10 @@ typedef NS_ENUM(NSUInteger, SettingType)
         if ([settingSection[@"Action"] isEqualToString:@"ShowProfile"]) {
             [header setTarget:self action:NSStringFromSelector(@selector(showProfile))];
         }
-        [[AwfulAvatarLoader loader] applyCachedAvatarImageForUser:self.loggedInUser toImageView:header.avatarImageView];
-        [header.avatarImageView startAnimating];
-        [[AwfulAvatarLoader loader] applyAvatarImageForUser:self.loggedInUser completionBlock:^(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error) {
+        [header setAvatarImage:[[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser]];
+        [[AwfulAvatarLoader loader] fetchAvatarImageForUser:self.loggedInUser completionBlock:^(BOOL modified, id image, NSError *error) {
             if (modified) {
-                applyBlock(header.avatarImageView);
-                [header.avatarImageView startAnimating];
+                [header setAvatarImage:image];
             }
         }];
         return header;

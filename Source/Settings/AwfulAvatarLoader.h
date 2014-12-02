@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import UIKit;
+#import <FLAnimatedImage/FLAnimatedImage.h>
 @class User;
 
 /**
@@ -23,21 +24,17 @@
 @property (readonly, strong, nonatomic) NSURL *cacheFolder;
 
 /**
- * If a cached avatar image exists for a user, it's applied to the given image view and YES is returned. Otherwise the image view is not modified, and NO is returned.
- *
- * (Why doesn't this method simply return a UIImage, you ask? So it can handle animated GIFs.)
+ * Returns a cached avatar image, if one exists for the user. Otherwise returns nil.
  */
-- (BOOL)applyCachedAvatarImageForUser:(User *)user toImageView:(UIImageView *)imageView;
+- (id /* UIImage or FLAnimatedImage */)cachedAvatarImageForUser:(User *)user;
 
 /**
  * Finds and caches a user's current avatar image.
  *
- * @param completionBlock A block to call after finding an avatar image, which returns nothing and receives as parameters: YES if the avatar has changed from the cached image; a block to apply the avatar to a UIImageView; and an error if an error occurred.
- *
- * (Why doesn't the completion block simply receive a UIImage, you ask? So it can handle animated GIFs.)
+ * @param completionBlock A block to call after finding an avatar image, which returns nothing and receives as parameters: YES if the avatar has changed from the cached image; the image if it is successfully found and has been modified; and an error if an error occurred.
  */
-- (void)applyAvatarImageForUser:(User *)user
-                completionBlock:(void (^)(BOOL modified, void (^applyBlock)(UIImageView *), NSError *error))completionBlock;
+- (void)fetchAvatarImageForUser:(User *)user
+                completionBlock:(void (^)(BOOL modified, id /* UIImage or FLAnimatedImage */ image, NSError *error))completionBlock;
 
 /**
  * Deletes all cached images and information.

@@ -7,9 +7,9 @@ import UIKit
 class SettingsAvatarHeader: UIView {
     
     // Strong reference in case we temporarily remove it
-    @IBOutlet var avatarImageView: UIImageView!
+    @IBOutlet private var avatarImageView: FLAnimatedImageView!
     
-    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet private(set) weak var usernameLabel: UILabel!
     @IBOutlet private var avatarConstraints: [NSLayoutConstraint]!
     @IBOutlet private var insetConstraints: [NSLayoutConstraint]!
     
@@ -24,32 +24,6 @@ class SettingsAvatarHeader: UIView {
     
     class func newFromNib() -> SettingsAvatarHeader {
         return NSBundle.mainBundle().loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)[0] as SettingsAvatarHeader
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        avatarImageView.addObserver(self, forKeyPath: "image", options: .Initial, context: KVOContext)
-        avatarImageView.addObserver(self, forKeyPath: "animationImages", options: nil, context: KVOContext)
-    }
-    
-    deinit {
-        avatarImageView.removeObserver(self, forKeyPath: "image", context: KVOContext)
-        avatarImageView.removeObserver(self, forKeyPath: "animationImages", context: KVOContext)
-    }
-    
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if context == KVOContext {
-            if hasAvatar {
-                addSubview(avatarImageView)
-                setNeedsUpdateConstraints()
-                invalidateIntrinsicContentSize()
-            } else {
-                avatarImageView.removeFromSuperview()
-            }
-        } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
     }
     
     override func updateConstraints() {
@@ -72,11 +46,27 @@ class SettingsAvatarHeader: UIView {
     }
     
     private var hasAvatar: Bool {
-        get { return avatarImageView.image != nil || avatarImageView.animationImages != nil }
+        return avatarImageView.image != nil
+    }
+    
+    func setAvatarImage(image: AnyObject?) {
+        if let image = image as? FLAnimatedImage {
+            avatarImageView.animatedImage = image
+        } else {
+            avatarImageView.image = image as? UIImage
+        }
+        
+        if hasAvatar {
+            addSubview(avatarImageView)
+            setNeedsUpdateConstraints()
+            invalidateIntrinsicContentSize()
+            avatarImageView.startAnimating()
+        } else {
+            avatarImageView.removeFromSuperview()
+        }
     }
     
     // MARK: Target-action
-    
     
     @IBOutlet private weak var tapGestureRecognizer: UITapGestureRecognizer!
     private var target: AnyObject!
@@ -101,4 +91,4 @@ class SettingsAvatarHeader: UIView {
     }
 }
 
-private let KVOContext = UnsafeMutablePointer<Void>()
+private var KVOContext = 0
