@@ -314,6 +314,10 @@ footer:after {
   top: -9999px;
   left: -9999px;
 }
+header,
+footer {
+  -webkit-user-select: none;
+}
 body {
   color: #ddd;
   background-color: #060606;

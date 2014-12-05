@@ -408,3 +408,8 @@ footer {
   top: -9999px;
   left: -9999px;
 }
+
+// Redirect long-presses in the header and footer into the post itself. (Someone kept accidentally long-pressing the ... button.)
+header, footer {
+  -webkit-user-select: none;
+}

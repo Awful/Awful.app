@@ -314,6 +314,10 @@ footer:after {
   top: -9999px;
   left: -9999px;
 }
+header,
+footer {
+  -webkit-user-select: none;
+}
 html {
   font-family: Arial;
   -webkit-font-smoothing: none;
