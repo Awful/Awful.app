@@ -174,13 +174,15 @@
                                    -window.bounds.size.height * window.layer.anchorPoint.y);
     
     // Rotate according to device orientation
-    CGContextRotateCTM(context, 2*M_PI - MRRotationForStatusBarOrientation());
+    if(!MRSystemVersionGreaterThanOrEqualTo8()) {
+        CGContextRotateCTM(context, 2*M_PI - MRRotationForStatusBarOrientation());
+    }
     
     // Translate to draw at the absolute origin of the receiver
     CGContextTranslateCTM(context, -origin.x, -origin.y);
     
     // Draw the window
-    [window drawViewHierarchyInRect:window.bounds afterScreenUpdates:YES];
+    [window.layer renderInContext:context];
     
     // Capture the image and exit context
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();

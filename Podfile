@@ -5,13 +5,13 @@ link_with 'Awful'
 inhibit_all_warnings!
 
 target :Awful do
-  pod 'AFNetworking', '2.4.1'
+  pod 'AFNetworking', '2.5.0'
   pod 'ARChromeActivity', '1.0.3'
   pod 'DZNWebViewController', '3.0'
   pod 'GRMustache', '7.3.0'
   pod 'ImgurAnonymousAPIClient', '0.2'
   pod 'JLRoutes', '1.5.1'
-  pod 'MRProgress/Overlay', '0.7.0'
+  pod 'MRProgress/Overlay', '0.8.0'
   pod 'PSMenuItem', '0.0.1'
   pod 'SVPullToRefresh', :head
   pod 'TUSafariActivity', '1.0.2'

@@ -6,6 +6,15 @@
 //  Copyright (c) 2013 Marius Rackwitz. All rights reserved.
 //
 
+//#define MRProgress_EnableUIVisualEffectView
+#if defined(MRProgress_EnableUIVisualEffectView)
+    #define MR_UIEffectViewIsEnabled   1
+#else
+    #define MR_UIEffectViewIsEnabled   0
+#endif
+#define MR_UIEffectViewIsAllowed   (MR_UIEffectViewIsEnabled && __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000)
+#define MR_UIEffectViewIsAvailable (MR_UIEffectViewIsAllowed && NSClassFromString(@"UIVisualEffectView") != nil)
+
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import "MRProgressOverlayView.h"
@@ -26,6 +35,7 @@ static const CGFloat MRProgressOverlayViewMotionEffectExtent = 10;
 
 @property (nonatomic, weak, readwrite) UIView *dialogView;
 @property (nonatomic, weak, readwrite) UIView *blurView;
+@property (nonatomic, strong, readwrite) UIView *blurMaskView;
 @property (nonatomic, weak, readwrite) UILabel *titleLabel;
 
 - (UIView *)createModeView;
@@ -169,7 +179,6 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     
     // Create blurView
     self.blurView = [self createBlurView];
-    self.blurView.layer.cornerRadius = cornerRadius;
     
     // Create container with contents
     UIView *dialogView = [UIView new];
@@ -287,11 +296,30 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 #pragma mark - Create subviews
 
 - (UIView *)createBlurView {
-    UIView *blurView = [MRBlurView new];
-    blurView.alpha = 0.98;
-    [self addSubview:blurView];
+    const CGFloat cornerRadius = MRProgressOverlayViewCornerRadius;
     
-    return blurView;
+    if (MR_UIEffectViewIsAvailable) {
+        #if MR_UIEffectViewIsAllowed
+            UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
+            [self addSubview:effectView];
+            
+            // Setup mask view
+            UIView *maskView = [UIView new];
+            maskView.backgroundColor = UIColor.whiteColor;
+            maskView.layer.cornerRadius = cornerRadius;
+            self.blurMaskView = maskView; // Memorize for layout changes
+            
+            effectView.maskView = maskView;
+            
+            return effectView;
+        #endif
+    } else {
+        UIView *blurView = [MRBlurView new];
+        blurView.alpha = 0.98;
+        blurView.layer.cornerRadius = cornerRadius;
+        [self addSubview:blurView];
+        return blurView;
+    }
 }
 
 - (UIView *)createModeView {
@@ -520,9 +548,8 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 
 - (void)setSubviewTransform:(CGAffineTransform)transform alpha:(CGFloat)alpha {
     self.blurView.transform = transform;
-    self.blurView.alpha = alpha;
     self.dialogView.transform = transform;
-    self.dialogView.alpha = alpha;
+    self.alpha = alpha;
 }
 
 - (void)show:(BOOL)animated {
@@ -612,7 +639,9 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
 
 // Don't overwrite layoutSubviews here. This would cause issues with animation.
 - (void)manualLayoutSubviews {
-    self.transform = self.transformForOrientation;
+    if (!MRSystemVersionGreaterThanOrEqualTo8()) {
+        self.transform = self.transformForOrientation;
+    }
     
     CGRect bounds = self.superview.bounds;
     UIEdgeInsets insets = UIEdgeInsetsZero;
@@ -625,11 +654,15 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     self.center = CGPointMake((bounds.size.width - insets.left - insets.right) / 2.0f,
                               (bounds.size.height - insets.top - insets.bottom) / 2.0f);
 
-    if ([self.superview isKindOfClass:UIWindow.class] && UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation)) {
-        // Swap width and height
-        self.bounds = (CGRect){CGPointZero, {bounds.size.height, bounds.size.width}};
-    } else {
+    if (MRSystemVersionGreaterThanOrEqualTo8()) {
         self.bounds = (CGRect){CGPointZero, bounds.size};
+    } else {
+        if ([self.superview isKindOfClass:UIWindow.class] && UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation)) {
+            // Swap width and height
+            self.bounds = (CGRect){CGPointZero, {bounds.size.height, bounds.size.width}};
+        } else {
+            self.bounds = (CGRect){CGPointZero, bounds.size};
+        }
     }
     
     const CGFloat dialogPadding = 15;
@@ -729,7 +762,18 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
     {
         self.dialogView.frame = MRCenterCGSizeInCGRect(CGSizeMake(dialogWidth, y), self.bounds);
         
-        self.blurView.frame = self.dialogView.frame;
+        if (!CGRectEqualToRect(self.blurView.frame, self.dialogView.frame)) {
+            self.blurView.frame = self.dialogView.frame;
+            
+            if (MR_UIEffectViewIsAvailable) {
+                #if MR_UIEffectViewIsAllowed
+                    // As the blurMaskView will be copied internally by UIKit, we have to re-assign
+                    // it to the blurView, after we change its layout
+                    self.blurMaskView.frame = self.dialogView.bounds;
+                    self.blurView.maskView = self.blurMaskView;
+                #endif
+            }
+        }
     }
 }
 
