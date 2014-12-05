@@ -296,17 +296,17 @@
     // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
     UINavigationController *targetNavigationController;
     UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
-    if (splitViewController.collapsed) {
-        UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
-        targetNavigationController = (UINavigationController *)tabBarController.selectedViewController;
+    if (splitViewController.viewControllers.count == 2) {
+        targetNavigationController = splitViewController.viewControllers[1];
     } else {
-        targetNavigationController = splitViewController.viewControllers.lastObject;
-        
-        // If the detail view controller is empty, showing the posts view controller actually is as simple as showing a detail view controller, and we can exit early.
-        if ([targetNavigationController awful_firstDescendantViewControllerOfClass:[EmptyViewController class]]) {
-            [splitViewController showDetailViewController:postsViewController sender:self];
-            return YES;
-        }
+        UITabBarController *tabBarController = splitViewController.viewControllers[0];
+        targetNavigationController = (UINavigationController *)tabBarController.selectedViewController;
+    }
+    
+    // If the detail view controller is empty, showing the posts view controller actually is as simple as showing a detail view controller, and we can exit early.
+    if ([targetNavigationController.topViewController isKindOfClass:[EmptyViewController class]]) {
+        [splitViewController showDetailViewController:postsViewController sender:self];
+        return YES;
     }
     
     // Posts view controllers by default hide the bottom bar when pushed. This moves the tab bar controller's tab bar out of the way, making room for the toolbar. However, if some earlier posts view controller has already done this for us, and we went ahead oblivious, we would hide our own toolbar!
