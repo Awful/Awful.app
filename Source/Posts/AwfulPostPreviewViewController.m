@@ -5,6 +5,7 @@
 #import "AwfulPostPreviewViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
+#import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
@@ -168,13 +169,18 @@
     context[@"userInterfaceIdiom"] = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";
 	context[@"version"] = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     context[@"stylesheet"] = self.theme[@"postsViewCSS"];
+    NSError *error;
+    NSString *script = LoadJavaScriptResources(@[@"zepto.min.js", @"common.js"], &error);
+    if (!script) {
+        NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
+    }
+    context[@"script"] = script;
     context[@"post"] = [[PostViewModel alloc] initWithPost:self.fakePost];
     int fontScalePercentage = [AwfulSettings sharedSettings].fontScale;
     if (fontScalePercentage != 100) {
         context[@"fontScalePercentage"] = @(fontScalePercentage);
     }
     
-    NSError *error;
     NSString *HTML = [GRMustacheTemplate renderObject:context fromResource:@"PostPreview" bundle:nil error:&error];
     if (!HTML) {
         NSLog(@"%s error loading post preview HTML: %@", __PRETTY_FUNCTION__, error);
