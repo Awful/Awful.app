@@ -5,12 +5,9 @@
 import UIKit
 import WebKit
 
-/// A ProfileViewController shows detailed information about a particular user.
-class ProfileViewController: AwfulViewController {
-    
+/// Shows detailed information about a particular user.
+final class ProfileViewController: AwfulViewController {
     let user: User
-    private var webView: WKWebView { get { return view as WKWebView } }
-    private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
     init(user: User) {
         self.user = user
@@ -25,6 +22,12 @@ class ProfileViewController: AwfulViewController {
     required init(coder: NSCoder) {
         fatalError("NSCoding is not supported")
     }
+    
+    private var webView: WKWebView {
+        return view as WKWebView
+    }
+    
+    private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
     override func loadView() {
         let configuration = WKWebViewConfiguration()
@@ -64,12 +67,12 @@ class ProfileViewController: AwfulViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if presentingViewController != nil && self.navigationController?.viewControllers.count == 1 {
-            let barButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: nil)
-            barButtonItem.awful_actionBlock = { (_) in
+        if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
+            let doneItem = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: nil)
+            doneItem.awful_actionBlock = { _ in
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
-            navigationItem.leftBarButtonItem = barButtonItem
+            navigationItem.leftBarButtonItem = doneItem
         }
     }
     
@@ -94,12 +97,12 @@ class ProfileViewController: AwfulViewController {
         if let error = error {
             NSLog("[%@ %@] error rendering profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
         }
-        webView.loadHTMLString(HTML, baseURL: baseURL())
+        webView.loadHTMLString(HTML, baseURL: baseURL)
     }
-}
-
-private func baseURL() -> NSURL {
-    return AwfulForumsClient.sharedClient().baseURL
+    
+    private var baseURL: NSURL {
+        return AwfulForumsClient.sharedClient().baseURL
+    }
 }
 
 extension ProfileViewController: WKScriptMessageHandler {
@@ -109,7 +112,7 @@ extension ProfileViewController: WKScriptMessageHandler {
             sendPrivateMessage()
         case "showHomepageActions":
             let body = message.body as [String:String]
-            if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL()) {
+            if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL) {
                 showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]))
             }
         default:
@@ -155,16 +158,16 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
         self.webView = webView
         super.init()
         
-        webView.addObserver(self, forKeyPath: "loading", options: .New, context: KVOContext_wheremynamespacesat)
+        webView.addObserver(self, forKeyPath: "loading", options: .New, context: &KVOContext)
     }
     
     deinit {
-        webView.removeObserver(self, forKeyPath: "loading", context: KVOContext_wheremynamespacesat)
+        webView.removeObserver(self, forKeyPath: "loading", context: &KVOContext)
         on = false
     }
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if context == KVOContext_wheremynamespacesat {
+        if context == &KVOContext {
             if let loading = change[NSKeyValueChangeNewKey] as? NSNumber {
                 on = loading.boolValue
             }
@@ -174,4 +177,4 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
     }
 }
 
-private let KVOContext_wheremynamespacesat = UnsafeMutablePointer<Void>()
+private var KVOContext = 0

@@ -308,11 +308,6 @@ static NSString * const ThreadCellIdentifier = @"Thread";
     [self presentViewController:actionViewController animated:YES completion:nil];
 }
 
-- (void)doneWithProfile
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
