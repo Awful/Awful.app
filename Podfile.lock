@@ -26,7 +26,7 @@ PODS:
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
   - HTMLReader (0.5.8)
-  - ImgurAnonymousAPIClient (0.2):
+  - ImgurAnonymousAPIClient (0.3):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
   - JRSwizzle (1.0)
@@ -61,7 +61,7 @@ DEPENDENCIES:
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
   - HTMLReader (= 0.5.8)
-  - ImgurAnonymousAPIClient (= 0.2)
+  - ImgurAnonymousAPIClient (= 0.3)
   - JLRoutes (= 1.5.1)
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (= 0.0.1)
@@ -76,7 +76,7 @@ SPEC CHECKSUMS:
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
   HTMLReader: e61b43d69deb09d8098a7aabacdd6cafd8749373
-  ImgurAnonymousAPIClient: 3b485250b3ebc216dc42c5cb5315f75e655dfabf
+  ImgurAnonymousAPIClient: 2b544330a9295cb17489f2fc5e94f6c237372737
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   MRProgress: 2b65d6ec30a5d08b55efd3ceb3e714a5c6c9a28b

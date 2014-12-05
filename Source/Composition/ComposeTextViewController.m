@@ -285,9 +285,9 @@
             dispatch_group_leave(group);
         };
         if ([image isKindOfClass:[NSURL class]]) {
-            [[ImgurAnonymousAPIClient client] uploadAssetWithURL:image filename:@"image.png" completionHandler:uploadComplete];
+            [[ImgurAnonymousAPIClient sharedClient] uploadAssetWithURL:image filename:@"image.png" completionHandler:uploadComplete];
         } else {
-            [[ImgurAnonymousAPIClient client] uploadImage:image withFilename:@"image.png" completionHandler:uploadComplete];
+            [[ImgurAnonymousAPIClient sharedClient] uploadImage:image withFilename:@"image.png" completionHandler:uploadComplete];
         }
         [progress resignCurrent];
     }

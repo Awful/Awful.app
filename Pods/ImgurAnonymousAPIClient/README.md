@@ -2,7 +2,7 @@
 
 An anonymous Imgur image uploader.
 
-ImgurAnonymousAPIClient requires [AFNetworking 2.0 or higher][AFNetworking] and requires iOS 7.0 or OS X 10.9.
+ImgurAnonymousAPIClient requires [AFNetworking 2][AFNetworking] and either iOS 7.0 or OS X 10.9. On iOS 8 (and probably OS X 10.10), AFNetworking 2.3.1 or higher is required.
 
 ## Usage
 

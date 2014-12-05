@@ -77,7 +77,7 @@
     return [self initWithClientID:clientID];
 }
 
-+ (instancetype)client
++ (instancetype)sharedClient
 {
     static ImgurAnonymousAPIClient *client;
     static dispatch_once_t onceToken;
