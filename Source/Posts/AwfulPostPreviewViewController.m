@@ -69,6 +69,7 @@
     __weak __typeof__(self) weakSelf = self;
     _postButtonItem.awful_actionBlock = ^(UIBarButtonItem *item) {
         __typeof__(self) self = weakSelf;
+        item.enabled = NO;
         self.submitBlock();
     };
     return _postButtonItem;
