@@ -63,6 +63,12 @@
     return self;
 }
 
+- (void)setTitle:(NSString *)title
+{
+    [super setTitle:title];
+    self.navigationItem.titleLabel.text = title;
+}
+
 - (void)renderMessage
 {
     PrivateMessageViewModel *viewModel = [[PrivateMessageViewModel alloc] initWithPrivateMessage:self.privateMessage];
