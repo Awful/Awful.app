@@ -5,12 +5,9 @@
 import UIKit
 
 @IBDesignable
-class HairlineView: UIView {
-    
+final class HairlineView: UIView {
     var thickness: CGFloat {
-        get {
-            return 1 / max(traitCollection.displayScale, 1)
-        }
+        return 1 / max(traitCollection.displayScale, 1)
     }
     
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
@@ -23,5 +20,4 @@ class HairlineView: UIView {
     override func intrinsicContentSize() -> CGSize {
         return CGSize(width: UIViewNoIntrinsicMetric, height: thickness)
     }
-
 }

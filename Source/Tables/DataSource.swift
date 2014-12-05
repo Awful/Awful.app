@@ -4,8 +4,7 @@
 
 import UIKit
 
-@objc
-protocol DataSource: UITableViewDataSource {
+@objc protocol DataSource: UITableViewDataSource {
     weak var delegate: DataSourceDelegate? { get set }
     var numberOfSections: Int { get }
     func itemAtIndexPath(indexPath: NSIndexPath) -> AnyObject
@@ -15,8 +14,7 @@ protocol DataSource: UITableViewDataSource {
     optional func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath
 }
 
-@objc
-protocol DataSourceDelegate: NSObjectProtocol {
+@objc protocol DataSourceDelegate: NSObjectProtocol {
     optional func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath])
     optional func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath])
     optional func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath])

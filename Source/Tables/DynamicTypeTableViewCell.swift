@@ -10,7 +10,6 @@ A table view cell that updates its Dynamic Type labels whenever the preferred si
 A maximum point size (the largest available setting before augmenting with accessibility) is enforced.
 */
 class DynamicTypeTableViewCell: UITableViewCell {
-    
     /// Labels that should update whenever Dynamic Type settings change.
     @IBOutlet private var dynamicTypeLabels: [UILabel]!
     

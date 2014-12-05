@@ -5,7 +5,6 @@
 import UIKit
 
 class ForumCell: DynamicTypeTableViewCell {
-    
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var separator: UIView!
     
@@ -24,8 +23,7 @@ class ForumCell: DynamicTypeTableViewCell {
     }
 }
 
-class ForumTreeCell: ForumCell {
-    
+final class ForumTreeCell: ForumCell {
     @IBOutlet weak var disclosureButton: UIButton!
     @IBOutlet private weak var nameSpaceConstraint: NSLayoutConstraint!
     @IBOutlet weak var favoriteButton: UIButton!
@@ -37,8 +35,7 @@ class ForumTreeCell: ForumCell {
     }
 }
 
-class ForumFavoriteCell: ForumCell {
-    
+final class ForumFavoriteCell: ForumCell {
     @IBOutlet weak var starImageView: UIImageView!
     @IBOutlet weak var hiddenStarConstraint: NSLayoutConstraint!
     

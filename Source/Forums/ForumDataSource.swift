@@ -3,8 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 /// Lists all the forums, in groups, allowing forums to hide or show their subforums.
-class ForumTreeDataSource: FetchedDataSource {
-    
+final class ForumTreeDataSource: FetchedDataSource {
     init(managedObjectContext: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest(entityName: ForumMetadata.entityName())
         fetchRequest.predicate = NSPredicate(format: "visibleInForumList = YES")
@@ -12,7 +11,7 @@ class ForumTreeDataSource: FetchedDataSource {
             NSSortDescriptor(key: "forum.group.index", ascending: true),
             NSSortDescriptor(key: "forum.index", ascending: true)
         ]
-        super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: "forum.group.index", cacheName: nil)
+        super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: "forum.group.index")
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -63,15 +62,14 @@ class ForumTreeDataSource: FetchedDataSource {
 }
 
 /// Lists all forums with a gold star.
-class ForumFavoriteDataSource: FetchedDataSource {
-    
+final class ForumFavoriteDataSource: FetchedDataSource {
     init(managedObjectContext: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest(entityName: ForumMetadata.entityName())
         fetchRequest.predicate = NSPredicate(format: "favorite = YES")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "favoriteIndex", ascending: true)]
         
         // Giving a nil sectionNameKeyPath would have the fetched results controller always return one section, even when it's empty. By giving this trivial sectionNameKeyPath, the FRC will return zero sections if it is empty and one section if it is not.
-        super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: "favorite", cacheName: nil)
+        super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: "favorite")
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

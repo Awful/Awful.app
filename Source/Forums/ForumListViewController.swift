@@ -4,7 +4,6 @@
 
 @objc(ForumListViewController)
 class ForumListViewController: AwfulTableViewController {
-    
     let managedObjectContext: NSManagedObjectContext
     private let dataSource: DataSource
     private let favoriteDataSource: ForumFavoriteDataSource
@@ -44,6 +43,7 @@ class ForumListViewController: AwfulTableViewController {
         let managedObjectContext: NSManagedObjectContext
         let entity: NSEntityDescription
         let changeBlock: [Forum] -> Void
+        
         init(managedObjectContext context: NSManagedObjectContext, changeBlock: [Forum] -> Void) {
             managedObjectContext = context
             entity = NSEntityDescription.entityForName(Forum.entityName(), inManagedObjectContext: context)!
@@ -51,9 +51,11 @@ class ForumListViewController: AwfulTableViewController {
             super.init()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "objectsDidChange:", name: NSManagedObjectContextObjectsDidChangeNotification, object: context)
         }
+        
         deinit {
             NSNotificationCenter.defaultCenter().removeObserver(self)
         }
+        
         @objc private func objectsDidChange(notification: NSNotification) {
             let userInfo = notification.userInfo as [String:AnyObject]
             let changedObjects = NSMutableSet()

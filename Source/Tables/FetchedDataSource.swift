@@ -5,12 +5,11 @@
 import CoreData
 
 class FetchedDataSource: NSObject {
-    
     let fetchedResultsController: NSFetchedResultsController
     weak var delegate: DataSourceDelegate?
     
-    init(fetchRequest: NSFetchRequest, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String?, cacheName: String?) {
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
+    init(fetchRequest: NSFetchRequest, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String?) {
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: nil)
         super.init()
         
         fetchedResultsController.delegate = self
@@ -26,9 +25,11 @@ class FetchedDataSource: NSObject {
         fetchedResultsController.managedObjectContext.processPendingChanges()
         ignoreUpdates = false
     }
+    
     private var ignoreUpdates = false
     
     private var storedUpdates: [(DataSourceDelegate) -> Void] = []
+    
     private func storeUpdate(update: (DataSourceDelegate) -> Void) {
         if !ignoreUpdates {
             storedUpdates.append(update)
@@ -38,7 +39,7 @@ class FetchedDataSource: NSObject {
 
 extension FetchedDataSource: DataSource {
     var numberOfSections: Int {
-        get { return fetchedResultsController.sections!.count }
+        return fetchedResultsController.sections!.count
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

@@ -2,10 +2,10 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-class CompoundDataSource: NSObject {
-    
+final class CompoundDataSource: NSObject {
     private let dataSources = NSMutableOrderedSet()
     private var startingGlobalSections = [Int]()
+    
     var numberOfSections: Int {
         get {
             if let lastStart = startingGlobalSections.last {
