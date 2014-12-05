@@ -54,6 +54,7 @@ extension Thread {
                 willChangeValueForKey("totalReplies")
                 primitiveTotalReplies = NSNumber(int: minimumTotalReplies)
                 didChangeValueForKey("totalReplies")
+                updateAnyUnreadPosts()
             }
         }
     }
@@ -73,7 +74,7 @@ extension Thread {
             if newValue > totalReplies + 1 {
                 totalReplies = newValue - 1
             }
-            anyUnreadPosts = unreadPosts > 0
+            updateAnyUnreadPosts()
         }
     }
     
@@ -95,8 +96,12 @@ extension Thread {
                 primitiveNumberOfPages = NSNumber(int: minimumNumberOfPages)
                 didChangeValueForKey("numberOfPages")
             }
-            anyUnreadPosts = unreadPosts > 0
+            updateAnyUnreadPosts()
         }
+    }
+    
+    private func updateAnyUnreadPosts() {
+        anyUnreadPosts = seenPosts > 0 && unreadPosts > 0
     }
     
     var unreadPosts: Int32 {

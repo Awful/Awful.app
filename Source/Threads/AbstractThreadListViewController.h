@@ -17,4 +17,6 @@
  */
 @property (readonly, strong, nonatomic) AwfulFetchedResultsControllerDataSource *threadDataSource;
 
+- (void)configureFetchedResultsController;
+
 @end

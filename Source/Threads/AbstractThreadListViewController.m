@@ -42,6 +42,12 @@
     return _threadDataSource;
 }
 
+- (void)configureFetchedResultsController
+{
+    // Subclass implementation please.
+    [self doesNotRecognizeSelector:_cmd];
+}
+
 - (void)loadView
 {
     [super loadView];
@@ -55,11 +61,15 @@ static NSString * const ThreadCellIdentifier = @"Thread";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self configureFetchedResultsController];
     __weak __typeof__(self) weakSelf = self;
     _settingsObserver = [[NSNotificationCenter defaultCenter] addObserverForName:AwfulSettingsDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
-        if ([notification.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.showThreadTags]) {
-            __typeof__(self) self = weakSelf;
+        __typeof__(self) self = weakSelf;
+        NSString *key = notification.userInfo[AwfulSettingsDidChangeSettingKey];
+        if ([key isEqual:AwfulSettingsKeys.showThreadTags]) {
             [self.tableView reloadData];
+        } else if ([key isEqualToString:AwfulSettingsKeys.threadsSortedByUnread]) {
+            [self configureFetchedResultsController];
         }
     }];
 }

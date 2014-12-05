@@ -20,11 +20,6 @@
     NSUndoManager *_undoManager;
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     if ((self = [super initWithNibName:nil bundle:nil])) {
@@ -39,8 +34,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self configureFetchedResultsController];
-
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     __weak __typeof__(self) weakSelf = self;
@@ -49,11 +42,6 @@
         [self loadPage:self.mostRecentlyLoadedPage + 1];
     }];
     self.tableView.showsInfiniteScrolling = NO;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
 }
 
 - (void)configureFetchedResultsController
@@ -61,7 +49,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[Thread entityName]];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES AND bookmarkListPage > 0"];
     NSMutableArray *sortDescriptors = [NSMutableArray new];
-    if ([AwfulSettings sharedSettings].bookmarksSortedByUnread) {
+    if ([AwfulSettings sharedSettings].threadsSortedByUnread) {
         [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
 	}
     [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
@@ -71,13 +59,6 @@
                                                                                          managedObjectContext:self.managedObjectContext
                                                                                            sectionNameKeyPath:nil
                                                                                                     cacheName:nil];
-}
-
-- (void)settingsDidChange:(NSNotification *)note
-{
-    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.bookmarksSortedByUnread]) {
-        [self configureFetchedResultsController];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated

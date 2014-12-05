@@ -40,19 +40,9 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>Look and Feel</string>
+			<string>Posts</string>
 			<key>Settings</key>
 			<array>
-				<dict>
-					<key>Title</key>
-					<string>Show Thread Tags</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_thread_tags</string>
-				</dict>
 				<dict>
 					<key>Title</key>
 					<string>Show Avatars</string>
@@ -91,6 +81,52 @@
 				</dict>
 				<dict>
 					<key>Title</key>
+					<string>Always Preview New Posts</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>confirm_before_replying</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Threads</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Show Thread Tags</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_thread_tags</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Sort Unread Threads First</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>bookmarks_sorted_unread</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Sidebar</string>
+			<key>Device</key>
+			<string>iPad-like</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
 					<string>Hide Sidebar in Landscape</string>
 					<key>Type</key>
 					<string>Switch</string>
@@ -125,40 +161,6 @@
 					<string>AwfulSettingsUbiquitousThemesController</string>
 					<key>Key</key>
 					<string>ubiquitous_theme_names</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Bookmarks</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Sort Unread Threads First</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
-					<key>Key</key>
-					<string>bookmarks_sorted_unread</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>Title</key>
-			<string>Posting</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Always Preview Posts</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>confirm_before_replying</string>
 				</dict>
 			</array>
 		</dict>

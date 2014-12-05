@@ -63,9 +63,7 @@
 
 - (void)updateFilter
 {
-    if ([self isViewLoaded]) {
-        self.threadDataSource.fetchedResultsController = [self createFetchedResultsController];
-    }
+    [self configureFetchedResultsController];
 }
 
 static NSString * const kFilterThreadsTitle = @"Filter Threads";
@@ -82,7 +80,7 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
     return _threadTagPicker;
 }
 
-- (NSFetchedResultsController *)createFetchedResultsController
+- (void)configureFetchedResultsController
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:Thread.entityName];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"hideFromThreadList == NO AND forum == %@", self.forum];
@@ -90,19 +88,23 @@ static NSString * const kFilterThreadsTitle = @"Filter Threads";
         NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"threadTag == %@", self.filterThreadTag];
         fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[ fetchRequest.predicate, filterPredicate ]];
     }
-    fetchRequest.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES],
-                                 [NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO] ];
+    NSMutableArray *sortDescriptors = [NSMutableArray new];
+    [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"stickyIndex" ascending:YES]];
+    if ([AwfulSettings sharedSettings].threadsSortedByUnread) {
+        [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"anyUnreadPosts" ascending:NO]];
+    }
+    [sortDescriptors addObject:[NSSortDescriptor sortDescriptorWithKey:@"lastPostDate" ascending:NO]];
+    fetchRequest.sortDescriptors = sortDescriptors;
     fetchRequest.fetchBatchSize = 20;
-    return [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                               managedObjectContext:self.forum.managedObjectContext
-                                                 sectionNameKeyPath:nil
-                                                          cacheName:nil];
+    self.threadDataSource.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                         managedObjectContext:self.forum.managedObjectContext
+                                                                                           sectionNameKeyPath:nil
+                                                                                                    cacheName:nil];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.threadDataSource.fetchedResultsController = [self createFetchedResultsController];
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     __weak __typeof__(self) weakSelf = self;
