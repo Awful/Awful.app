@@ -49,7 +49,7 @@ extension Thread {
             primitiveNumberOfPages = NSNumber(int: newValue)
             didChangeValueForKey("numberOfPages")
             
-            let minimumTotalReplies: Int32 = 1 + (newValue - 1) * 40
+            let minimumTotalReplies: Int32 = (newValue - 1) * 40
             if minimumTotalReplies > totalReplies {
                 willChangeValueForKey("totalReplies")
                 primitiveTotalReplies = NSNumber(int: minimumTotalReplies)
