@@ -12,6 +12,20 @@ class ForumCell: DynamicTypeTableViewCell {
         return 44
     }
     
+    var selectedBackgroundColor: UIColor? {
+        get {
+            return selectedBackgroundView?.backgroundColor
+        }
+        set {
+            if let newValue = newValue {
+                selectedBackgroundView = UIView()
+                selectedBackgroundView.backgroundColor = newValue
+            } else {
+                selectedBackgroundView = nil
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

@@ -235,10 +235,7 @@ extension ForumListViewController: UITableViewDelegate {
         if let cell = cell as? ForumCell {
             cell.nameLabel.textColor = theme["listTextColor"] as UIColor?
             cell.backgroundColor = theme["listBackgroundColor"] as UIColor?
-            if cell.selectedBackgroundView == nil {
-                cell.selectedBackgroundView = UIView()
-            }
-            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
+            cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
             if indexPath.row + 1 == tableView.numberOfRowsInSection(indexPath.section) {
                 cell.separator.backgroundColor = cell.backgroundColor
             } else {
