@@ -24,12 +24,17 @@ class ForumListViewController: AwfulTableViewController {
                 // Don't do anything if we're rearranging favorites. It's the same issue mentioned by the comment in dataSource(_:performBatchUpdates:completion:).
                 return
             }
-            self.tableView.beginUpdates()
-            for forum in forums {
-                let indexPaths = self.dataSource.indexPathsForItem(forum.metadata)
-                self.dataSource(self.dataSource, didRefreshItemsAtIndexPaths: indexPaths)
+            
+            if forums.count <= 4 {
+                self.tableView.beginUpdates()
+                for forum in forums {
+                    let indexPaths = self.dataSource.indexPathsForItem(forum.metadata)
+                    self.dataSource(self.dataSource, didRefreshItemsAtIndexPaths: indexPaths)
+                }
+                self.tableView.endUpdates()
+            } else {
+                self.tableView.reloadData()
             }
-            self.tableView.endUpdates()
         }
         
         navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
