@@ -29,7 +29,7 @@ class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssertEqual(allUsernames, ["Choochacacko", "csammis", "Dreylad", "escape artist", "Ferg", "I am in", "pokeyman", "Ranma4703", "Salaminizer", "Scaevolus", "Sir Davey"])
         
         let wireThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'The Wire'"))!
-        XCTAssertEqual(wireThread.starCategory, AwfulStarCategory.Orange.rawValue)
+        XCTAssertEqual(wireThread.starCategory, AwfulStarCategory.Orange)
         XCTAssertEqual(wireThread.threadTag!.imageName!, "tava-vintage")
         XCTAssertFalse(wireThread.sticky)
         XCTAssertEqual(wireThread.title!, "The Wire: The Rewatch... and all the pieces matter.")
@@ -42,7 +42,7 @@ class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssertEqual(wireThread.lastPostAuthorName!, "MC Fruit Stripe")
         
         let CoCFAQ = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'FAQ'"))!
-        XCTAssertEqual(CoCFAQ.starCategory, AwfulStarCategory.Orange.rawValue)
+        XCTAssertEqual(CoCFAQ.starCategory, AwfulStarCategory.Orange)
         XCTAssertEqual(CoCFAQ.threadTag!.imageName!, "help")
         XCTAssertTrue(CoCFAQ.sticky)
         XCTAssertTrue(CoCFAQ.stickyIndex == 0)
@@ -55,7 +55,7 @@ class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssertEqual(CoCFAQ.lastPostAuthorName!, "Scaevolus")
         
         let androidAppThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "author.username = 'Ferg'"))!
-        XCTAssertEqual(androidAppThread.starCategory, AwfulStarCategory.Red.rawValue)
+        XCTAssertEqual(androidAppThread.starCategory, AwfulStarCategory.Red)
         XCTAssertTrue(androidAppThread.numberOfVotes == 159)
         XCTAssertTrue(androidAppThread.rating == 4.79)
     }
@@ -127,7 +127,7 @@ class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssertEqual(lastTag.imageName!, "tcc-weed")
         
         let rulesThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'Improved Rules'"))!
-        XCTAssertEqual(rulesThread.starCategory, AwfulStarCategory.None.rawValue)
+        XCTAssertEqual(rulesThread.starCategory, AwfulStarCategory.None)
         XCTAssertEqual(rulesThread.threadTag!.imageName!, "icon23-banme")
         XCTAssertTrue(rulesThread.sticky)
         XCTAssertTrue(rulesThread.stickyIndex != 0)
@@ -141,7 +141,7 @@ class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssertEqual(rulesThread.lastPostAuthorName!, "Xandu")
         
         let venezuelanThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'Venezuelan'"))!
-        XCTAssertEqual(venezuelanThread.starCategory, AwfulStarCategory.None.rawValue)
+        XCTAssertEqual(venezuelanThread.starCategory, AwfulStarCategory.None)
         XCTAssertEqual(venezuelanThread.threadTag!.imageName!, "lf-marx")
         XCTAssertFalse(venezuelanThread.sticky)
         XCTAssertEqual(venezuelanThread.title!, "Venezuelan elections")
