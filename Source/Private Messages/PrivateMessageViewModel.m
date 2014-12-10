@@ -33,6 +33,11 @@
     return [self showAvatars] ? nil : self.privateMessage.from.avatarURL;
 }
 
+- (NSString *)fromUsername
+{
+    return self.privateMessage.fromUsername;
+}
+
 - (BOOL)showAvatars
 {
     return [AwfulSettings sharedSettings].showAvatars;

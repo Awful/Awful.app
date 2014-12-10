@@ -34,6 +34,9 @@
  */
 @property (readonly, strong, nonatomic) NSURL *hiddenAvatarURL;
 
+/// The author's username.
+@property (readonly, nonatomic) NSString *fromUsername;
+
 /**
  * The contents of the message, modified per the user's settings for loading images etc.
  */

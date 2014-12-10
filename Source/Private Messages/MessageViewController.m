@@ -313,7 +313,7 @@
     longPress.delegate = self;
     [self.webView addGestureRecognizer:longPress];
     
-    if (self.privateMessage.innerHTML.length == 0) {
+    if (self.privateMessage.innerHTML.length == 0 || self.privateMessage.from == nil) {
         self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
         [self.view addSubview:self.loadingView];
         __weak __typeof__(self) weakSelf = self;
