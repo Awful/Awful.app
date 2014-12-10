@@ -7,6 +7,7 @@
 @objc(BookmarkedThreadListViewController)
 final class BookmarkListViewController: ThreadListViewController {
     let managedObjectContext: NSManagedObjectContext
+    
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         super.init()

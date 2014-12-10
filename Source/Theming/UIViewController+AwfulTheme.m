@@ -41,6 +41,9 @@
 @end
 
 @implementation AwfulTableViewController
+{
+    BOOL _hasAppeared;
+}
 
 - (id)init
 {
@@ -67,6 +70,16 @@
 - (AwfulTheme *)theme
 {
     return [AwfulTheme currentTheme];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (_hasAppeared) {
+        // Updates to the table view when it's offscreen don't actually happen. So whenever we're about to appear (after the first time), let's help out by reloading the table.
+        [self.tableView reloadData];
+    }
+    _hasAppeared = YES;
 }
 
 @end
