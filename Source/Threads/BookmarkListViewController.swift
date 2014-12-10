@@ -40,12 +40,8 @@ final class BookmarkListViewController: ThreadListViewController {
         tableView.showsInfiniteScrolling = false
     }
     
-    private var visible = false
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        visible = true
         
         refreshIfNecessary()
         
@@ -61,8 +57,6 @@ final class BookmarkListViewController: ThreadListViewController {
         
         resignFirstResponder()
         undoManager.removeAllActions()
-        
-        visible = false
     }
     
     override func viewDidDisappear(animated: Bool) {

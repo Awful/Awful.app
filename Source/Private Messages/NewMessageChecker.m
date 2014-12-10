@@ -1,22 +1,20 @@
-//  AwfulNewMessageChecker.m
+//  NewMessageChecker.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulNewMessageChecker.h"
+#import "NewMessageChecker.h"
 #import "AwfulForumsClient.h"
 #import "AwfulRefreshMinder.h"
 @import UIKit;
 
-@interface AwfulNewMessageChecker ()
+@interface NewMessageChecker ()
 
-@property (assign, nonatomic) NSInteger unreadMessageCount;
+@property (assign, nonatomic) NSInteger unreadCount;
+@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
-@implementation AwfulNewMessageChecker
-{
-    NSTimer *_timer;
-}
+@implementation NewMessageChecker
 
 - (void)dealloc
 {
@@ -39,21 +37,31 @@
     return self;
 }
 
-- (NSInteger)unreadMessageCount
+- (NSInteger)unreadCount
 {
     return [[NSUserDefaults standardUserDefaults] integerForKey:UnreadMessageCountKey];
 }
 
-- (void)setUnreadMessageCount:(NSInteger)unreadMessageCount
+- (void)setUnreadCount:(NSInteger)unreadCount
 {
-    [[NSUserDefaults standardUserDefaults] setInteger:unreadMessageCount forKey:UnreadMessageCountKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:unreadCount forKey:UnreadMessageCountKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NewMessageCheckerUnreadCountDidChangeNotification
+                                                        object:self
+                                                      userInfo:@{NewMessageCheckerUnreadCountKey: @(unreadCount)}];
+}
+
+- (void)decrementUnreadCount
+{
+    if (self.unreadCount > 0) {
+        self.unreadCount--;
+    }
 }
 
 static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
 
-+ (instancetype)checker
++ (instancetype)sharedChecker
 {
-    static AwfulNewMessageChecker *instance = nil;
+    static NewMessageChecker *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [self new];
@@ -89,16 +97,13 @@ static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
 {
     if ([[AwfulRefreshMinder minder] shouldRefreshNewPrivateMessages]) {
         __weak __typeof__(self) weakSelf = self;
-        [[AwfulForumsClient client] countUnreadPrivateMessagesInInboxAndThen:^(NSError *error, NSInteger unreadMessageCount) {
+        [[AwfulForumsClient client] countUnreadPrivateMessagesInInboxAndThen:^(NSError *error, NSInteger unreadCount) {
             __typeof__(self) self = weakSelf;
             if (error) {
                 NSLog(@"%s error checking for new private messages: %@", __PRETTY_FUNCTION__, error);
                 return;
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:AwfulDidFinishCheckingNewPrivateMessagesNotification
-                                                                object:self
-                                                              userInfo:@{ AwfulNewPrivateMessageCountKey: @(unreadMessageCount) }];
-            self.unreadMessageCount = unreadMessageCount;
+            self.unreadCount = unreadCount;
             [[AwfulRefreshMinder minder] didFinishRefreshingNewPrivateMessages];
         }];
     }
@@ -106,6 +111,5 @@ static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
 
 @end
 
-NSString * const AwfulDidFinishCheckingNewPrivateMessagesNotification = @"AwfulNewPrivateMessagesNotification";
-
-NSString * const AwfulNewPrivateMessageCountKey = @"AwfulNewPrivateMessageCountKey";
+NSString * const NewMessageCheckerUnreadCountDidChangeNotification = @"Awful.NewMessageCheckerUnreadCountDidChangeNotification";
+NSString * const NewMessageCheckerUnreadCountKey = @"unreadCount";

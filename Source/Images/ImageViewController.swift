@@ -5,14 +5,13 @@
 import UIKit
 
 /// Downloads an image and shows it in a zoomable scroll view for inspection and further action.
-class ImageViewController: AwfulViewController {
+final class ImageViewController: AwfulViewController {
     let URL: NSURL
     var doneAction: (() -> Void)?
     private var downloadTask: NSURLSessionTask!
     private var imageData: NSData?
     private var showingOverlaidViews: Bool = false
     private var flashTimer: NSTimer?
-    private var visible: Bool = false
     
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var scrollView: UIScrollView!
@@ -38,15 +37,10 @@ class ImageViewController: AwfulViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        visible = true
+        
         if imageData != nil {
             flashOverlaidViews()
         }
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        visible = false
     }
     
     private enum DecodedImage {

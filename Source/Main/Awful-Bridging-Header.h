@@ -19,8 +19,8 @@
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
-#import "MessageListViewController.h"
 #import "MessageViewController.h"
+#import "NewMessageChecker.h"
 #import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
 #import "ProfileViewModel.h"

@@ -13,6 +13,7 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
+#import "NewMessageChecker.h"
 #import "PrivateMessageViewModel.h"
 #import "RapSheetViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
@@ -323,6 +324,10 @@
             [self.loadingView removeFromSuperview];
             self.loadingView = nil;
             self.userActivity.needsSave = YES;
+            if (!message.seen) {
+                [[NewMessageChecker sharedChecker] decrementUnreadCount];
+                message.seen = YES;
+            }
         }];
     } else {
         [self renderMessage];

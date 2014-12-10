@@ -26,6 +26,9 @@
  */
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
 
+/// Whether the view controller is currently visible (i.e. has received `viewDidAppear:` without having subsequently received `viewDidDisappear:`).
+@property (readonly, assign, nonatomic) BOOL visible;
+
 @end
 
 /**
@@ -37,6 +40,9 @@
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
 @property (readonly, strong, nonatomic) AwfulTheme *theme;
+
+/// Whether the view controller is currently visible (i.e. has received `viewDidAppear:` without having subsequently received `viewDidDisappear:`).
+@property (readonly, assign, nonatomic) BOOL visible;
 
 @end
 

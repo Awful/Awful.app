@@ -25,6 +25,12 @@
 
 @end
 
+@interface AwfulViewController ()
+
+@property (assign, nonatomic) BOOL visible;
+
+@end
+
 @implementation AwfulViewController
 
 - (void)viewDidLoad
@@ -37,6 +43,25 @@
 {
     return [AwfulTheme currentTheme];
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    self.visible = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.visible = NO;
+}
+
+@end
+
+@interface AwfulTableViewController ()
+
+@property (assign, nonatomic) BOOL visible;
 
 @end
 
@@ -80,6 +105,19 @@
         [self.tableView reloadData];
     }
     _hasAppeared = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    self.visible = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.visible = NO;
 }
 
 @end

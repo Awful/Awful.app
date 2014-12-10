@@ -6,7 +6,6 @@
 #import "AwfulForumsClient.h"
 #import "EmptyViewController.h"
 #import <JLRoutes/JLRoutes.h>
-#import "MessageListViewController.h"
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostsPageViewController.h"
 #import "RapSheetViewController.h"

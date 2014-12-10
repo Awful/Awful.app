@@ -10,7 +10,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
 #import "AwfulMinusFixURLProtocol.h"
-#import "AwfulNewMessageChecker.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
@@ -22,6 +21,7 @@
     #import "CrashlyticsAPIKey.h"
 #endif
 #import <GRMustache/GRMustache.h>
+#import "NewMessageChecker.h"
 @import Smilies;
 #import "Awful-Swift.h"
 
@@ -268,7 +268,7 @@ static void RemoveOldDataStores(void)
     
     [self showPromptIfLoginCookieExpiresSoon];
     
-    [[AwfulNewMessageChecker checker] refreshIfNecessary];
+    [[NewMessageChecker sharedChecker] refreshIfNecessary];
     
     [[AwfulPostsViewExternalStylesheetLoader loader] refreshIfNecessary];
     
