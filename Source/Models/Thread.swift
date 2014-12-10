@@ -17,7 +17,7 @@ public class Thread: AwfulManagedObject {
     @NSManaged public var numberOfVotes: Int32
     @NSManaged public var rating: Float32
     @NSManaged private var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
-    @NSManaged public var starCategory: Int16
+    @NSManaged private var primitiveStarCategory: NSNumber
     @NSManaged public var sticky: Bool
     @NSManaged public var stickyIndex: Int32
     @NSManaged public var threadID: String
@@ -75,6 +75,20 @@ extension Thread {
                 totalReplies = newValue - 1
             }
             updateAnyUnreadPosts()
+        }
+    }
+    
+    public var starCategory: AwfulStarCategory {
+        get {
+            willAccessValueForKey("starCategory")
+            let starCategory = Int16(primitiveStarCategory.integerValue)
+            didAccessValueForKey("starCategory")
+            return AwfulStarCategory(rawValue: starCategory) ?? .None
+        }
+        set {
+            willChangeValueForKey("starCategory")
+            primitiveStarCategory = Int(newValue.rawValue)
+            didChangeValueForKey("starCategory")
         }
     }
     

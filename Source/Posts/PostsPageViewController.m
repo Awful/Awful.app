@@ -23,7 +23,6 @@
 #import "PostViewModel.h"
 #import "RapSheetViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
-#import "ThreadListViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"

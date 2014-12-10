@@ -125,7 +125,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)updateTweaks
 {
-	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksForForumID:self.forum.forumID];
+	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksWithForumID:self.forum.forumID];
 	
 	//Apply autocorrection tweaks to subject field
 	self.fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType;

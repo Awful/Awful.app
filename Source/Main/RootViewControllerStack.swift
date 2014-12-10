@@ -25,7 +25,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         let forums = ForumListViewController.newFromStoryboard()
         forums.restorationIdentifier = "Forum list"
         
-        let bookmarks = BookmarkedThreadListViewController(managedObjectContext: managedObjectContext)
+        let bookmarks = BookmarkListViewController(managedObjectContext: managedObjectContext)
         bookmarks.restorationIdentifier = "Bookmarks"
         
         let lepers = RapSheetViewController()

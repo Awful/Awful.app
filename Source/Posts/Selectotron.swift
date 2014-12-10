@@ -5,9 +5,9 @@
 import UIKit
 
 /**
-A Selectotron is a modal view controller for picking a particular page of a thread. By default it presents in a popover on all devices.
+A modal view controller for picking a particular page of a thread. By default it presents in a popover on all devices.
 */
-class Selectotron : AwfulViewController {
+final class Selectotron : AwfulViewController {
     let postsViewController: PostsPageViewController
     
     @IBOutlet weak var jumpButton: UIButton!
@@ -58,11 +58,11 @@ class Selectotron : AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as? UIColor
-        let backgroundColor = theme["sheetBackgroundColor"] as? UIColor
+        view.tintColor = theme["tintColor"] as UIColor?
+        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
         view.backgroundColor = backgroundColor
         popoverPresentationController?.backgroundColor = backgroundColor
-        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
+        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
         picker.reloadAllComponents()
     }
     

@@ -7,7 +7,7 @@ import UIKit
 /**
 A PostsPageSettingsViewController is a modal view controller for changing settings specific to a posts page. By default it presents in a popover on all devices.
 */
-class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentationControllerDelegate {
+final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentationControllerDelegate {
     let forum: Forum
     
     var themes: [AwfulTheme] {
@@ -72,17 +72,17 @@ class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentatio
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as? UIColor
-        let backgroundColor = theme["sheetBackgroundColor"] as? UIColor
+        view.tintColor = theme["tintColor"] as UIColor?
+        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
         view.backgroundColor = backgroundColor
         popoverPresentationController?.backgroundColor = backgroundColor
-		headerLabel.textColor = theme["sheetTitleColor"] as? UIColor ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
-        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as? UIColor
+		headerLabel.textColor = theme["sheetTitleColor"] as UIColor? ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
+        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
         for label in labels {
-            label.textColor = theme["sheetTextColor"] as? UIColor ?? UIColor.blackColor()
+            label.textColor = theme["sheetTextColor"] as UIColor? ?? UIColor.blackColor()
         }
         for uiswitch in switches {
-            uiswitch.onTintColor = theme["settingsSwitchColor"] as? UIColor
+            uiswitch.onTintColor = theme["settingsSwitchColor"] as UIColor?
         }
         
         // Theme picker's background is a light grey so I can see it (until I figure out how live views work in Xcode 6), but it should be transparent for real.

@@ -6,7 +6,7 @@
 
 @interface AwfulForumTweaks : NSObject
 
-+ (instancetype)tweaksForForumID:(NSString *)forumID;
++ (instancetype)tweaksWithForumID:(NSString *)forumID;
 
 /**
  * Returns a custom post button title

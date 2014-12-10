@@ -4,7 +4,6 @@
 
 #import "AwfulURLRouter.h"
 #import "AwfulForumsClient.h"
-#import "BookmarkedThreadListViewController.h"
 #import "EmptyViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import "MessageListViewController.h"
@@ -12,7 +11,6 @@
 #import "PostsPageViewController.h"
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
-#import "ThreadListViewController.h"
 #import "Awful-Swift.h"
 
 @implementation AwfulURLRouter
@@ -148,7 +146,7 @@
     
     #pragma mark /bookmarks
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkListViewController class]];
     }];
     
     #pragma mark /settings
@@ -224,7 +222,7 @@
 
 - (BOOL)jumpToForum:(Forum *)forum
 {
-    ThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadListViewController class]];
+    ForumSpecificThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumSpecificThreadListViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];

@@ -45,7 +45,7 @@
     return self;
 }
 
-- (AwfulForumTweaks *)tweaksForForumWithID:(NSString *)forumID
+- (AwfulForumTweaks *)tweaksWithForumID:(NSString *)forumID
 {
 	NSDictionary *tweaks = _tweaks[forumID];
 	return [[AwfulForumTweaks alloc] initWithDictionary:tweaks];
@@ -65,14 +65,14 @@
 	return defaultTweaks;
 }
 
-+ (AwfulForumTweaks*)tweaksForForumID:(NSString*)forumID
++ (AwfulForumTweaks*)tweaksWithForumID:(NSString*)forumID
 {
-	return [AwfulForumTweaksLoader.sharedLoader tweaksForForumWithID:forumID];
+	return [AwfulForumTweaksLoader.sharedLoader tweaksWithForumID:forumID];
 }
 
 + (id)objectForKeyedSubscript:(NSString *)key
 {
-	return [self tweaksForForumID:key];
+	return [self tweaksWithForumID:key];
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
@@ -131,8 +131,7 @@
 
 - (BOOL)showRatings
 {
-	id value = self[@"showRatings"];
-    return value && [value boolValue];
+    return [(self[@"showRatings"] ?: @YES) boolValue];
 }
 
 

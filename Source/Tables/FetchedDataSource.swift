@@ -100,11 +100,15 @@ extension FetchedDataSource: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         if let delegate = delegate {
             if !storedUpdates.isEmpty {
-                delegate.dataSource?(self, performBatchUpdates: {
-                    for update in self.storedUpdates {
-                        update(delegate)
-                    }
-                }, completion: nil)
+                if storedUpdates.count < 5 {
+                    delegate.dataSource?(self, performBatchUpdates: {
+                        for update in self.storedUpdates {
+                            update(delegate)
+                        }
+                        }, completion: nil)
+                } else {
+                    delegate.dataSourceDidReloadData?(self)
+                }
             }
         }
         storedUpdates.removeAll()

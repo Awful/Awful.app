@@ -39,7 +39,7 @@
     return self;
 }
 
-- (instancetype)initWithStyle:(UITableViewStyle)style
+- (instancetype)init
 {
     return [self initWithUser:nil];
 }

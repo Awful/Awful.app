@@ -28,3 +28,48 @@ import UIKit
     optional func dataSourceDidReloadData(dataSource: DataSource)
     optional func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?)
 }
+
+extension AwfulTableViewController: DataSourceDelegate {
+    func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
+        tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath]) {
+        tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath]) {
+        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didMoveItemAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
+        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
+    }
+    
+    func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet) {
+        tableView.insertSections(sections, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didRemoveSections sections: NSIndexSet) {
+        tableView.deleteSections(sections, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet) {
+        tableView.reloadSections(sections, withRowAnimation: .Automatic)
+    }
+    
+    func dataSource(dataSource: DataSource, didMoveSection fromSection: Int, toSection: Int) {
+        tableView.moveSection(fromSection, toSection: toSection)
+    }
+    
+    func dataSourceDidReloadData(dataSource: DataSource) {
+        tableView.reloadData()
+    }
+    
+    func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
+        tableView.beginUpdates()
+        updates()
+        tableView.endUpdates()
+        completion?()
+    }
+}

@@ -152,7 +152,7 @@ class ForumListViewController: AwfulTableViewController {
     }
 
     func openForum(forum: Forum, animated: Bool) {
-        let threadList = ThreadListViewController(forum: forum)
+        let threadList = ForumSpecificThreadListViewController(forum: forum)
         threadList.restorationClass = ThreadListViewController.self
         threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
@@ -266,43 +266,23 @@ extension ForumListViewController: UITableViewDelegate {
 private let headerIdentifier = "Header"
 
 extension ForumListViewController: DataSourceDelegate {
-    func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
+    override func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
         tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
     }
     
-    func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
-    }
-    
-    func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath]) {
+    override func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath]) {
         tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
     }
-    
-    func dataSource(dataSource: DataSource, didMoveItemAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
-    }
 
-    func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet) {
+    override func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet) {
         tableView.insertSections(sections, withRowAnimation: .Top)
     }
     
-    func dataSource(dataSource: DataSource, didRemoveSections sections: NSIndexSet) {
-        tableView.deleteSections(sections, withRowAnimation: .Automatic)
-    }
-    
-    func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet) {
+    override func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet) {
         tableView.reloadSections(sections, withRowAnimation: .None)
     }
     
-    func dataSource(dataSource: DataSource, didMoveSection fromSection: Int, toSection: Int) {
-        tableView.moveSection(fromSection, toSection: toSection)
-    }
-    
-    func dataSourceDidReloadData(dataSource: DataSource) {
-        tableView.reloadData()
-    }
-    
-    func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
+    override func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
         // Moving favorites around triggers updates to the tree part of the table. Unfortunately, if we perform those updates while the moved rows are animating, the rows involved in the move get horribly deformed. This is a pretty stupid workaround, but here we are: don't bother updating the table if we're editing. We'll reload the table once we're done rearranging favorites.
         if !editing {
             tableView.beginUpdates()

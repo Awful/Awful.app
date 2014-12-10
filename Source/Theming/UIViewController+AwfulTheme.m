@@ -42,6 +42,11 @@
 
 @implementation AwfulTableViewController
 
+- (id)init
+{
+    return [super initWithNibName:nil bundle:nil];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
