@@ -90,12 +90,12 @@
     [super viewWillAppear:animated];
     [self updateSubmitButtonItem];
     [self beginObservingKeyboardNotifications];
-    [self focusInitialFirstResponder];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self focusInitialFirstResponder];
     [self beginObservingTextChangeNotification];
 }
 
