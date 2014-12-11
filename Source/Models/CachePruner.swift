@@ -2,8 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-class CachePruner: NSOperation {
-    
+final class CachePruner: NSOperation {
     let managedObjectContext: NSManagedObjectContext
     
     init(managedObjectContext context: NSManagedObjectContext) {
@@ -45,7 +44,8 @@ class CachePruner: NSOperation {
             
             var error: NSError?
             if !context.save(&error) {
-                fatalError("error saving: \(error!)")
+                // Would prefer fatalError() but that doesn't show up in Crashlytics logs.
+                NSException(name: NSGenericException, reason: "error saving: \(error!)", userInfo: nil).raise()
             }
         }
     }

@@ -2,8 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-class DataStore: NSObject {
-    
+final class DataStore: NSObject {
     /// A directory in which the store is saved. Since stores can span multiple files, a directory is required.
     let storeDirectoryURL: NSURL
     
@@ -51,6 +50,7 @@ class DataStore: NSObject {
     }
     
     private var pruneTimer: NSTimer?
+    
     private func invalidatePruneTimer() {
         pruneTimer?.invalidate()
         pruneTimer = nil
@@ -98,7 +98,7 @@ class DataStore: NSObject {
         let queue = NSOperationQueue()
         queue.maxConcurrentOperationCount = 1
         return queue
-    }()
+        }()
     
     func prune() {
         let pruner = CachePruner(managedObjectContext: mainManagedObjectContext)
@@ -106,6 +106,9 @@ class DataStore: NSObject {
     }
     
     func deleteStoreAndReset() {
+        invalidatePruneTimer()
+        operationQueue.cancelAllOperations()
+        
         NSNotificationCenter.defaultCenter().postNotificationName(DataStoreWillResetNotification, object: self)
         
         mainManagedObjectContext.reset()
@@ -130,9 +133,10 @@ class DataStore: NSObject {
 }
 
 /// A LastModifiedContextObserver updates the lastModifiedDate attribute (for any objects that have one) whenever its context is saved.
-class LastModifiedContextObserver: NSObject {
+final class LastModifiedContextObserver: NSObject {
     let managedObjectContext: NSManagedObjectContext
     let relevantEntities: [NSEntityDescription]
+    
     init(managedObjectContext context: NSManagedObjectContext) {
         managedObjectContext = context
         let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
@@ -141,9 +145,11 @@ class LastModifiedContextObserver: NSObject {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "contextWillSave:", name: NSManagedObjectContextWillSaveNotification, object: context)
     }
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
     @objc private func contextWillSave(notification: NSNotification) {
         let context = notification.object as NSManagedObjectContext
         let lastModifiedDate = NSDate()
