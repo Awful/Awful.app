@@ -104,10 +104,6 @@
 {
     [super themeDidChange];
     
-    AwfulTheme *theme = self.theme;
-    self.view.backgroundColor = theme[@"backgroundColor"];
-    self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
-    
     [self renderPreview];
 }
 

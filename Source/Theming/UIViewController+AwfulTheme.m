@@ -44,6 +44,21 @@
     return [AwfulTheme currentTheme];
 }
 
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    
+    self.view.backgroundColor = self.theme[@"backgroundColor"];
+    
+    UIScrollView *scrollView;
+    if ([self.view isKindOfClass:[UIScrollView class]]) {
+        scrollView = (UIScrollView *)self.view;
+    } else if ([self.view respondsToSelector:@selector(scrollView)]) {
+        scrollView = [(id)self.view scrollView];
+    }
+    scrollView.indicatorStyle = self.theme.scrollIndicatorStyle;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -82,10 +97,14 @@
 {
     [super themeDidChange];
     AwfulTheme *theme = self.theme;
-    self.tableView.backgroundColor = theme[@"backgroundColor"];
+    
+    self.view.backgroundColor = theme[@"backgroundColor"];
+    
     self.refreshControl.tintColor = theme[@"listTextColor"];
-    self.tableView.separatorColor = theme[@"listSeparatorColor"];
+    
     self.tableView.indicatorStyle = theme.scrollIndicatorStyle;
+    self.tableView.separatorColor = theme[@"listSeparatorColor"];
+    
     if (self.visible) {
         [self.tableView reloadData];
     }
@@ -131,8 +150,11 @@
 {
 	[super themeDidChange];
     AwfulTheme *theme = self.theme;
-    self.collectionView.backgroundColor = theme[@"collectionViewBackgroundColor"];
+    
+    self.view.backgroundColor = theme[@"collectionViewBackgroundColor"];
+    
 	self.collectionView.indicatorStyle = theme.scrollIndicatorStyle;
+    
 	[self.collectionView reloadData];
 }
 

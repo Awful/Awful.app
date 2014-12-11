@@ -339,8 +339,6 @@
     if (_didRender) {
         [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     }
-    self.view.backgroundColor = theme[@"backgroundColor"];
-    self.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     self.loadingView.tintColor = theme[@"backgroundColor"];
 }
 

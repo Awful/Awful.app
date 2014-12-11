@@ -484,7 +484,6 @@
     [super themeDidChange];
     
     AwfulTheme *theme = self.theme;
-    self.view.backgroundColor = theme[@"backgroundColor"];
     self.postsView.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     

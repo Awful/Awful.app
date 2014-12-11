@@ -57,9 +57,6 @@ final class ProfileViewController: AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.backgroundColor = theme["backgroundColor"] as UIColor?
-        webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
-        
         let darkMode = AwfulSettings.sharedSettings().darkTheme ? "true" : "false"
         webView.evaluateJavaScript("darkMode(\(darkMode))", completionHandler: nil)
     }

@@ -79,9 +79,7 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"backgroundColor"];
     self.textView.textColor = self.theme[@"listTextColor"];
-    self.textView.indicatorStyle = self.theme.scrollIndicatorStyle;
     self.textView.keyboardAppearance = self.theme.keyboardAppearance;
 }
 

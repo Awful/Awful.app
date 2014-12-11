@@ -7,12 +7,6 @@
 
 @implementation EmptyViewController
 
-- (void)themeDidChange
-{
-    [super themeDidChange];
-    self.view.backgroundColor = self.theme[@"backgroundColor"];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
