@@ -157,20 +157,31 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     func didAppear() {
+        // Believe me, it occurs to me that this is highly suspicious and probably indicates misuse of the split view controller. I would happily welcome corrected impressions and/or simplification suggestions. This is ugly.
+        
+        // I can't seem to get the iPhone 6+ to open in landscape to a primary overlay display mode. This makes that happen.
+        kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
+        
+        // Sometimes after restoring state the split view decides to get the wrong display mode, possibly through some combination of state restoration goofiness (e.g. preserving in one orientation then restoring in another) and the "Hide sidebar in landscape" setting (set to NO in both cases).
+        let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
+        if !splitViewController.collapsed {
+            // One possibility is restoring in portrait orientation with the sidebar always visible.
+            if isPortrait && splitViewController.displayMode == .AllVisible {
+                splitViewController.preferredDisplayMode = .PrimaryHidden
+            }
+            
+            // Another possibility is restoring in landscape orientation with the sidebar always hidden, and no button to show it.
+            if !isPortrait && splitViewController.displayMode == .PrimaryHidden && splitViewController.preferredDisplayMode == .Automatic {
+                splitViewController.preferredDisplayMode = .AllVisible
+                splitViewController.preferredDisplayMode = .Automatic
+            }
+        }
+        
         if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
                 detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             }
-        }
-
-        // I can't seem to get the iPhone 6+ to open in landscape to a primary overlay display mode. This makes that happen.
-        kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
-        
-        // Sometimes after restoring state the split view decides to go .AllVisible when we're in portrait orientation. It only seems to happen when "Hide sidebar in landscape" is off. The preferredDisplayMode is .Automatic. It's clearly something goofy because the sidebar view controller doesn't get any viewWill/DidAppear: methods. Anyway.
-        let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
-        if !splitViewController.collapsed && isPortrait && splitViewController.displayMode == .AllVisible {
-            splitViewController.preferredDisplayMode = .PrimaryHidden
         }
     }
     
