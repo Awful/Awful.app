@@ -3,7 +3,6 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostsPageViewController.h"
-#import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulForumsClient.h"
@@ -23,7 +22,6 @@
 #import "PostViewModel.h"
 #import "RapSheetViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
-#import <TUSafariActivity/TUSafariActivity.h>
 #import <WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -674,8 +672,8 @@
             NSMutableArray *items = [NSMutableArray new];
             [items addObject:URL];
             NSMutableArray *activities = [NSMutableArray new];
-            [activities addObject:[TUSafariActivity new]];
-            [activities addObject:[ARChromeActivity new]];
+            [activities addObject:[SVWebViewControllerActivitySafari new]];
+            [activities addObject:[SVWebViewControllerActivityChrome new]];
             if (imageURL) {
                 [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
                 [activities addObject:[ImagePreviewActivity new]];
@@ -843,7 +841,7 @@
         components.fragment = [NSString stringWithFormat:@"post%@", post.postID];
         NSURL *URL = components.URL;
         
-        NSArray *browserActivities = @[[TUSafariActivity new], [ARChromeActivity new]];
+        NSArray *browserActivities = @[[SVWebViewControllerActivitySafari new], [SVWebViewControllerActivityChrome new]];
         UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[URL]
                                                                                              applicationActivities:browserActivities];
         activityViewController.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
@@ -1105,7 +1103,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                 [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
             }
         } else if ([URL opensInBrowser]) {
-            [BrowserViewController presentBrowserForURL:URL fromViewController:self];
+            [SVWebViewController presentBrowserForURL:URL fromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }

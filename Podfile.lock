@@ -20,8 +20,6 @@ PODS:
   - AFNetworking/UIKit (2.5.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ARChromeActivity (1.0.3)
-  - DZNWebViewController (3.0)
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
@@ -51,13 +49,11 @@ PODS:
     - MRProgress/Helper
   - PSMenuItem (0.0.1)
   - SVPullToRefresh (HEAD based on 0.4.1)
-  - TUSafariActivity (1.0.2)
+  - SVWebViewController (HEAD based on 1.0)
   - WebViewJavascriptBridge (4.1.4)
 
 DEPENDENCIES:
   - AFNetworking (= 2.5.0)
-  - ARChromeActivity (= 1.0.3)
-  - DZNWebViewController (= 3.0)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
   - HTMLReader (= 0.5.8)
@@ -66,13 +62,11 @@ DEPENDENCIES:
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (= 0.0.1)
   - SVPullToRefresh (HEAD)
-  - TUSafariActivity (= 1.0.2)
+  - SVWebViewController (HEAD)
   - WebViewJavascriptBridge (= 4.1.4)
 
 SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
-  ARChromeActivity: 2e2c2b135e6d278164e2dfe355d904e0c5c7500e
-  DZNWebViewController: 73361f52eafcc6fc46a868b8bb2ec3bae65dfe69
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
   HTMLReader: e61b43d69deb09d8098a7aabacdd6cafd8749373
@@ -82,7 +76,7 @@ SPEC CHECKSUMS:
   MRProgress: 2b65d6ec30a5d08b55efd3ceb3e714a5c6c9a28b
   PSMenuItem: 0b715b3c76482cdc4656a54d6d601205b49306e3
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
-  TUSafariActivity: 63c6b0584d1f0a731e955c0e4d9c89cde63bedc2
+  SVWebViewController: fbf917baa92744c54cfb89a52a4c056e409973a4
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac
 
 COCOAPODS: 0.35.0

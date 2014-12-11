@@ -1,5 +1,4 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
-#import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
@@ -15,7 +14,6 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "EmptyViewController.h"
-#import <DZNWebViewController/DZNWebViewController.h>
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
@@ -28,8 +26,10 @@
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <SVWebViewController/SVWebViewController.h>
+#import <SVWebViewController/SVWebViewControllerActivityChrome.h>
+#import <SVWebViewController/SVWebViewControllerActivitySafari.h>
 #import "ThreadComposeViewController.h"
-#import <TUSafariActivity/TUSafariActivity.h>
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UIPasteboard+AwfulStringyURLs.h"
 #import "UISplitViewController+AwfulConvenient.h"

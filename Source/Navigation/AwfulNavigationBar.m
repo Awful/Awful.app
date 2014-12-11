@@ -16,8 +16,6 @@
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
         self.barStyle = UIBarStyleBlack;
         
-        self.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
-        
         UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
         [longPress addTarget:self action:@selector(longPress:)];
         [self addGestureRecognizer:longPress];
