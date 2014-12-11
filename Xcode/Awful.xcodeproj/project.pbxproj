@@ -203,6 +203,8 @@
 		1CC22AB519F972C200D5BABD /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
 		1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */; };
+		1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */; };
+		1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
@@ -675,6 +677,8 @@
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
 		1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageListViewController.swift; sourceTree = "<group>"; };
 		1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulBrowser.swift; sourceTree = "<group>"; };
+		1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionViewController.swift; sourceTree = "<group>"; };
+		1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollViewKeyboardAvoider.swift; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
@@ -1561,6 +1565,8 @@
 				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
 				1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */,
 				1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */,
+				1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */,
+				1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -2224,6 +2230,7 @@
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
 				1CA04BE9195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m in Sources */,
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
+				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */,
@@ -2283,6 +2290,7 @@
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
+				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CDD48BA17EE1F1700E4DAE3 /* AwfulThemeLoader.m in Sources */,
