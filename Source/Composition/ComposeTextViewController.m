@@ -14,6 +14,7 @@
 @interface ComposeTextViewController ()
 
 @property (readonly, strong, nonatomic) UIView *viewToOverlay;
+@property (strong, nonatomic) CompositionMenuTree *menuTree;
 
 @end
 
@@ -34,11 +35,12 @@
     [self endObservingTextChangeNotification];
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if (!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) return nil;
-    self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
-    self.navigationItem.rightBarButtonItem = self.submitButtonItem;
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        self.navigationItem.leftBarButtonItem = self.cancelButtonItem;
+        self.navigationItem.rightBarButtonItem = self.submitButtonItem;
+    }
     return self;
 }
 
@@ -81,6 +83,13 @@
     [super themeDidChange];
     self.textView.textColor = self.theme[@"listTextColor"];
     self.textView.keyboardAppearance = self.theme.keyboardAppearance;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.menuTree = [[CompositionMenuTree alloc] initWithTextView:self.textView];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -10,6 +10,7 @@
 #import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulStarCategory.h"
+#import "AwfulTextAttachment.h"
 #import "AwfulThemeLoader.h"
 #import "AwfulThemePicker.h"
 #import "AwfulThreadTagLoader.h"
@@ -23,6 +24,7 @@
 #import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
 #import "ProfileViewModel.h"
+#import <PSMenuItem/PSMenuItem.h>
 #import "PunishmentSentence.h"
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
