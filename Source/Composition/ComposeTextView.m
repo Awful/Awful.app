@@ -3,12 +3,12 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "ComposeTextView.h"
-#import "KeyboardBar.h"
+#import "CompositionInputAccessoryView.h"
 #import "Awful-Swift.h"
 
 @interface ComposeTextView () <CompositionHidesMenuItems>
 
-@property (strong, nonatomic) KeyboardBar *BBcodeBar;
+@property (strong, nonatomic) CompositionInputAccessoryView *BBcodeBar;
 
 @end
 
@@ -16,12 +16,10 @@
 
 @synthesize hidesBuiltInMenuItems = _hidesBuiltInMenuItems;
 
-- (KeyboardBar *)BBcodeBar
+- (CompositionInputAccessoryView *)BBcodeBar
 {
     if (!_BBcodeBar) {
-        CGRect frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
-                                  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
-        _BBcodeBar = [[KeyboardBar alloc] initWithFrame:frame textView:self];
+        _BBcodeBar = [[CompositionInputAccessoryView alloc] initWithTextView:self];
         _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
     }
     return _BBcodeBar;

@@ -127,7 +127,7 @@
 		1C6FFEDB182A74A60014311C /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C6FFEE1182AA5CB0014311C /* ScrapingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */; };
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
-		1C7487F116A88BAD0068B8A3 /* KeyboardBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */; };
+		1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */; };
 		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
 		1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -564,8 +564,8 @@
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
 		1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagAndRatingView.h; sourceTree = "<group>"; };
 		1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagAndRatingView.m; sourceTree = "<group>"; };
-		1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardBar.h; sourceTree = "<group>"; };
-		1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardBar.m; sourceTree = "<group>"; };
+		1C7487EF16A88BAD0068B8A3 /* CompositionInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositionInputAccessoryView.h; sourceTree = "<group>"; };
+		1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompositionInputAccessoryView.m; sourceTree = "<group>"; };
 		1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HierarchySearch.h"; sourceTree = "<group>"; };
 		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
 		1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISplitViewController+AwfulConvenient.h"; sourceTree = "<group>"; };
@@ -1573,10 +1573,10 @@
 				1CBC74B0181A4DC30076234E /* ComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
-				1C7487EF16A88BAD0068B8A3 /* KeyboardBar.h */,
-				1C7487F016A88BAD0068B8A3 /* KeyboardBar.m */,
 				1CC256B81A3AA206003FA7A8 /* CloseBBcodeTagCommand.h */,
 				1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */,
+				1C7487EF16A88BAD0068B8A3 /* CompositionInputAccessoryView.h */,
+				1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */,
 				1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */,
 				1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */,
 				1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */,
@@ -2248,7 +2248,7 @@
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */,
-				1C7487F116A88BAD0068B8A3 /* KeyboardBar.m in Sources */,
+				1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
 				1CA86BDA1A380B5E00103C1C /* ForumSpecificThreadListViewController.swift in Sources */,

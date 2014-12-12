@@ -1,8 +1,8 @@
-//  KeyboardBar.m
+//  CompositionInputAccessoryView.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "KeyboardBar.h"
+#import "CompositionInputAccessoryView.h"
 #import "CloseBBcodeTagCommand.h"
 #import "Awful-Swift.h"
 @import Smilies;
@@ -11,7 +11,7 @@
 
 @end
 
-@interface KeyboardBar ()
+@interface CompositionInputAccessoryView ()
 
 @property (strong, nonatomic) KeyboardButton *smilieButton;
 @property (strong, nonatomic) ShowSmilieKeyboardCommand *smilieCommand;
@@ -26,15 +26,16 @@
 
 @end
 
-@implementation KeyboardBar
+@implementation CompositionInputAccessoryView
 
 - (void)dealloc
 {
     [_autocloseCommand removeObserver:self forKeyPath:@"enabled" context:KVOContext];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame textView:(UITextView *)textView
+- (instancetype)initWithTextView:(UITextView *)textView
 {
+    CGRect frame = (CGRect){ .size.height = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38 };
     if ((self = [super initWithFrame:frame inputViewStyle:UIInputViewStyleDefault])) {
         _textView = textView;
         

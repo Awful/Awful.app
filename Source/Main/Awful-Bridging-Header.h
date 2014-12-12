@@ -15,6 +15,7 @@
 #import "AwfulThemePicker.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
+#import "CompositionInputAccessoryView.h"
 #import "EmptyViewController.h"
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <GRMustache/GRMustache.h>

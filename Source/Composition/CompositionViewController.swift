@@ -21,11 +21,16 @@ final class CompositionViewController: AwfulViewController {
     }
     
     private var keyboardAvoider: ScrollViewKeyboardAvoider?
+    private var BBcodeBar: CompositionInputAccessoryView?
+    private var menuTree: CompositionMenuTree?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
+        BBcodeBar = CompositionInputAccessoryView(textView: textView)
+        textView.inputAccessoryView = BBcodeBar
+        menuTree = CompositionMenuTree(textView: textView)
     }
     
     override func themeDidChange() {
@@ -33,6 +38,8 @@ final class CompositionViewController: AwfulViewController {
         
         textView.textColor = theme["listTextColor"] as UIColor?
         textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        textView.keyboardAppearance = theme.keyboardAppearance
+        BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
     }
     
     override func viewWillAppear(animated: Bool) {
