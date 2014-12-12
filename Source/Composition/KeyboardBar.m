@@ -4,6 +4,7 @@
 
 #import "KeyboardBar.h"
 #import "CloseBBcodeTagCommand.h"
+#import "Awful-Swift.h"
 @import Smilies;
 
 @interface KeyboardButton : SmilieButton
@@ -13,8 +14,11 @@
 @interface KeyboardBar ()
 
 @property (strong, nonatomic) KeyboardButton *smilieButton;
+@property (strong, nonatomic) ShowSmilieKeyboardCommand *smilieCommand;
+
 @property (copy, nonatomic) NSArray *middleButtons;
 @property (strong, nonatomic) UIView *middleButtonContainer;
+
 @property (strong, nonatomic) KeyboardButton *autocloseButton;
 @property (strong, nonatomic) CloseBBcodeTagCommand *autocloseCommand;
 
@@ -50,6 +54,8 @@
         self.autocloseButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:self.autocloseButton];
         
+        _smilieCommand = [[ShowSmilieKeyboardCommand alloc] initWithTextView:textView];
+        
         _autocloseCommand = [[CloseBBcodeTagCommand alloc] initWithTextView:textView];
         [_autocloseCommand addObserver:self forKeyPath:@"enabled" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:KVOContext];
         
@@ -73,6 +79,12 @@
         [_smilieButton addTarget:self action:@selector(didTapSmilieButton) forControlEvents:UIControlEventTouchUpInside];
     }
     return _smilieButton;
+}
+
+- (void)didTapSmilieButton
+{
+    [[UIDevice currentDevice] playInputClick];
+    [self.smilieCommand execute];
 }
 
 - (NSArray *)middleButtons
@@ -102,9 +114,10 @@
     return _autocloseButton;
 }
 
-- (void)didTapSmilieButton
+- (void)didTapAutocloseButton
 {
-    [self.delegate toggleSmilieKeyboardForKeyboardBar:self];
+    [[UIDevice currentDevice] playInputClick];
+    [self.autocloseCommand execute];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -119,12 +132,6 @@
 }
 
 static void * KVOContext = &KVOContext;
-
-- (void)didTapAutocloseButton
-{
-    [[UIDevice currentDevice] playInputClick];
-    [self.autocloseCommand execute];
-}
 
 - (void)didPressSingleCharacterKey:(KeyboardButton *)button
 {

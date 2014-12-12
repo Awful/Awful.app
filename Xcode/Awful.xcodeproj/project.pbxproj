@@ -206,6 +206,7 @@
 		1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */; };
 		1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */; };
 		1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */; };
+		1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
@@ -682,6 +683,7 @@
 		1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulBrowser.swift; sourceTree = "<group>"; };
 		1CC256B81A3AA206003FA7A8 /* CloseBBcodeTagCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloseBBcodeTagCommand.h; sourceTree = "<group>"; };
 		1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloseBBcodeTagCommand.m; sourceTree = "<group>"; };
+		1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowSmilieKeyboardCommand.swift; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
@@ -1572,6 +1574,7 @@
 				1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */,
 				1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */,
 				1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */,
+				1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -2258,6 +2261,7 @@
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
+				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */,

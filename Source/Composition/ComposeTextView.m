@@ -8,9 +8,8 @@
 #import "KeyboardBar.h"
 @import MobileCoreServices;
 #import <PSMenuItem/PSMenuItem.h>
-@import Smilies;
 
-@interface ComposeTextView () <KeyboardBarDelegate, SmilieKeyboardDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface ComposeTextView () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) KeyboardBar *BBcodeBar;
 
@@ -19,10 +18,6 @@
 @property (readonly, copy, nonatomic) NSArray *insertImageSubmenuItems;
 @property (copy, nonatomic) NSArray *formattingSubmenuItems;
 @property (copy, nonatomic) NSArray *videoSubmenuItems;
-
-@property (strong, nonatomic) SmilieKeyboard *smilieKeyboard;
-@property (assign, nonatomic) BOOL showingSmilieKeyboard;
-@property (copy, nonatomic) NSString *justInsertedSmilieText;
 
 @end
 
@@ -39,36 +34,9 @@
         CGRect frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
                                   UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
         _BBcodeBar = [[KeyboardBar alloc] initWithFrame:frame textView:self];
-        _BBcodeBar.delegate = self;
         _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
-                  }
+    }
     return _BBcodeBar;
-}
-
-- (SmilieKeyboard *)smilieKeyboard
-{
-    if (!_smilieKeyboard) {
-        _smilieKeyboard = [SmilieKeyboard new];
-        _smilieKeyboard.delegate = self;
-        _smilieKeyboard.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    }
-    return _smilieKeyboard;
-}
-
-- (void)setShowingSmilieKeyboard:(BOOL)showingSmilieKeyboard
-{
-    _showingSmilieKeyboard = showingSmilieKeyboard;
-    if (showingSmilieKeyboard && !self.inputView) {
-        self.inputView = self.smilieKeyboard.view;
-        [self reloadInputViews];
-    } else if (!showingSmilieKeyboard && self.inputView) {
-        self.inputView = nil;
-        self.smilieKeyboard = nil;
-        [self reloadInputViews];
-    }
-    if (!showingSmilieKeyboard) {
-        self.justInsertedSmilieText = nil;
-    }
 }
 
 #pragma mark - UIMenuController shenanigans
@@ -389,52 +357,6 @@ static BOOL SeemsToBeAVideoURL(NSURL *URL)
     if ([viewController isEqual:navigationController.viewControllers.firstObject]) {
         viewController.navigationItem.title = @"Insert Image";
     }
-}
-
-#pragma mark - KeyboardBarDelegate
-
-- (void)toggleSmilieKeyboardForKeyboardBar:(KeyboardBar *)keyboardBar
-{
-    self.showingSmilieKeyboard = !self.showingSmilieKeyboard;
-}
-
-#pragma mark - SmilieKeyboardDelegate
-
-- (void)advanceToNextInputModeForSmilieKeyboard:(SmilieKeyboard *)keyboard
-{
-    self.showingSmilieKeyboard = NO;
-}
-
-- (void)deleteBackwardForSmilieKeyboard:(SmilieKeyboard *)keyboard
-{
-    if (self.selectedRange.length == 0 && self.justInsertedSmilieText) {
-        NSRange locationOfSmilie = [self.text rangeOfString:self.justInsertedSmilieText options:(NSBackwardsSearch | NSAnchoredSearch) range:NSMakeRange(0, self.selectedRange.location)];
-        if (locationOfSmilie.location != NSNotFound) {
-            do {
-                [self deleteBackward];
-            } while (![self.text hasSuffix:@":"]);
-        }
-    }
-    self.justInsertedSmilieText = nil;
-    [self deleteBackward];
-}
-
-- (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie
-{
-    [self insertText:smilie.text];
-    self.justInsertedSmilieText = smilie.text;
-    [smilie.managedObjectContext performBlock:^{
-        smilie.metadata.lastUsedDate = [NSDate date];
-        NSError *error;
-        if (![smilie.managedObjectContext save:&error]) {
-            NSLog(@"%s error saving after updating last used date: %@", __PRETTY_FUNCTION__, error);
-        }
-    }];
-}
-
-- (void)smilieKeyboard:(SmilieKeyboard *)keyboard insertNumberOrDecimal:(NSString *)numberOrDecimal
-{
-    [self insertText:numberOrDecimal];
 }
 
 #pragma mark - UITextInputTraits
