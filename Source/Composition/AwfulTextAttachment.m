@@ -15,6 +15,15 @@
 
 @implementation AwfulTextAttachment
 
+- (instancetype)initWithImage:(UIImage *)image assetURL:(NSURL *)assetURL
+{
+    if ((self = [super initWithData:nil ofType:nil])) {
+        self.image = image;
+        _assetURL = assetURL;
+    }
+    return self;
+}
+
 - (UIImage *)image
 {
     UIImage *image = super.image;
@@ -103,7 +112,7 @@ static UIImage * ThumbnailImageForImage(UIImage *image, CGSize thumbnailSize)
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [super initWithCoder:coder])) {
         _assetURL = [coder decodeObjectForKey:AssetURLKey];
@@ -119,4 +128,10 @@ static UIImage * ThumbnailImageForImage(UIImage *image, CGSize thumbnailSize)
 
 static NSString * const AssetURLKey = @"AwfulAssetURL";
 
+static const CGSize RequiresThumbnailImageSize = {800, 600};
+
 @end
+
+BOOL ImageSizeRequiresThumbnailing(CGSize imageSize) {
+    return imageSize.width > RequiresThumbnailImageSize.width || imageSize.height > RequiresThumbnailImageSize.height;
+}

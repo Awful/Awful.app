@@ -60,5 +60,3 @@
 }
 
 @end
-
-const CGSize RequiresThumbnailImageSize = {800, 600};

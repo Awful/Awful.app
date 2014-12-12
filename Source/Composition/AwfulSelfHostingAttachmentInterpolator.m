@@ -33,12 +33,6 @@
     {
         if (!attachment) return;
         
-        NSString *t = @"";
-        CGSize imageSize = attachment.image.size;
-        if (imageSize.width > RequiresThumbnailImageSize.width || imageSize.height > RequiresThumbnailImageSize.height) {
-            t = @"t";
-        }
-        
         NSString *path = [basePath stringByAppendingPathComponent:@(_URLs.count).stringValue];
         NSURL *servedImageURL;
         if ([attachment isKindOfClass:[AwfulTextAttachment class]]) {
@@ -53,6 +47,7 @@
         }
         [_URLs addObject:servedImageURL];
         
+        NSString *t = ImageSizeRequiresThumbnailing(attachment.image.size) ? @"t" : @"";
         // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
         NSString *replacement = [NSString stringWithFormat:@"[%@img]http://%@[/%@img]", t, servedImageURL.absoluteString, t];
         [mutableString replaceCharactersInRange:range withAttributedString:[[NSAttributedString alloc] initWithString:replacement]];

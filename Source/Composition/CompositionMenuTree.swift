@@ -95,9 +95,7 @@ final class CompositionMenuTree: NSObject {
         let font = textView.font
         let textColor = textView.textColor
         
-        let attachment = AwfulTextAttachment()
-        attachment.image = image
-        attachment.assetURL = assetURL
+        let attachment = AwfulTextAttachment(image: image, assetURL: assetURL)
         let string = NSAttributedString(attachment: attachment)
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
         textView.textStorage.replaceCharactersInRange(textView.selectedRange, withAttributedString: string)
@@ -128,6 +126,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         if let edited = info[UIImagePickerControllerEditedImage] as UIImage? {
+            // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
             insertImage(edited)
         } else {
             let original = info[UIImagePickerControllerOriginalImage] as UIImage

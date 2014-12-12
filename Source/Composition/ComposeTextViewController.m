@@ -245,13 +245,7 @@
                  if (!attachment) return;
                  NSURL *URL = URLs[[attachments indexOfObject:attachment]];
                  
-                 NSString *t = @"";
-                 CGSize imageSize = attachment.image.size;
-                 if (imageSize.width > RequiresThumbnailImageSize.width ||
-                     imageSize.height > RequiresThumbnailImageSize.height) {
-                     t = @"t";
-                 }
-                 
+                 NSString *t = ImageSizeRequiresThumbnailing(attachment.image.size) ? @"t" : @"";
                  NSString *replacement = [NSString stringWithFormat:@"[%@img]%@[/%@img]", t, URL.absoluteString, t];
                  [submission replaceCharactersInRange:range withString:replacement];
              }];
