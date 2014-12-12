@@ -35,13 +35,13 @@
 
 - (KeyboardBar *)BBcodeBar
 {
-    if (_BBcodeBar) return _BBcodeBar;
-    _BBcodeBar = [KeyboardBar new];
-    _BBcodeBar.delegate = self;
-    _BBcodeBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
+    if (!_BBcodeBar) {
+        CGRect frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds),
                                   UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 66 : 38);
-    _BBcodeBar.textView = self;
-    _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
+        _BBcodeBar = [[KeyboardBar alloc] initWithFrame:frame textView:self];
+        _BBcodeBar.delegate = self;
+        _BBcodeBar.keyboardAppearance = self.keyboardAppearance;
+                  }
     return _BBcodeBar;
 }
 

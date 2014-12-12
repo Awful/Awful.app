@@ -3,14 +3,15 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import UIKit;
-
 @protocol KeyboardBarDelegate;
 
 @interface KeyboardBar : UIInputView <UIInputViewAudioFeedback>
 
-@property (weak, nonatomic) id <KeyboardBarDelegate> delegate;
+- (instancetype)initWithFrame:(CGRect)frame textView:(UITextView *)textView NS_DESIGNATED_INITIALIZER;
 
-@property (weak, nonatomic) UITextView *textView;
+@property (readonly, weak, nonatomic) UITextView *textView;
+
+@property (weak, nonatomic) id <KeyboardBarDelegate> delegate;
 
 @property (assign, nonatomic) UIKeyboardAppearance keyboardAppearance;
 
