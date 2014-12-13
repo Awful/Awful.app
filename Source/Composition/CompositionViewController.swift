@@ -16,7 +16,7 @@ final class CompositionViewController: AwfulViewController {
     }
     
     override func loadView() {
-        let textView = UITextView()
+        let textView = CompositionTextView()
         view = textView
     }
     
@@ -52,5 +52,17 @@ final class CompositionViewController: AwfulViewController {
         super.viewDidAppear(animated)
         
         textView.flashScrollIndicators()
+    }
+}
+
+final class CompositionTextView: UITextView, CompositionHidesMenuItems {
+    var hidesBuiltInMenuItems: Bool = false
+    
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if hidesBuiltInMenuItems {
+            return false
+        }
+        
+        return super.canPerformAction(action, withSender: sender)
     }
 }
