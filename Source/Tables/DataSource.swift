@@ -63,13 +63,17 @@ extension AwfulTableViewController: DataSourceDelegate {
     }
     
     func dataSourceDidReloadData(dataSource: DataSource) {
-        tableView.reloadData()
+        if visible {
+            tableView.reloadData()
+        }
     }
     
     func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
-        tableView.beginUpdates()
-        updates()
-        tableView.endUpdates()
-        completion?()
+        if visible {
+            tableView.beginUpdates()
+            updates()
+            tableView.endUpdates()
+            completion?()
+        }
     }
 }

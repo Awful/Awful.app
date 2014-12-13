@@ -283,6 +283,8 @@ extension ForumListViewController: DataSourceDelegate {
     }
     
     override func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
+        if !visible { return }
+        
         // Moving favorites around triggers updates to the tree part of the table. Unfortunately, if we perform those updates while the moved rows are animating, the rows involved in the move get horribly deformed. This is a pretty stupid workaround, but here we are: don't bother updating the table if we're editing. We'll reload the table once we're done rearranging favorites.
         if !editing {
             tableView.beginUpdates()

@@ -66,9 +66,6 @@
 @end
 
 @implementation AwfulTableViewController
-{
-    BOOL _hasAppeared;
-}
 
 - (id)init
 {
@@ -89,7 +86,9 @@
     self.refreshControl.tintColor = theme[@"listTextColor"];
     self.tableView.separatorColor = theme[@"listSeparatorColor"];
     self.tableView.indicatorStyle = theme.scrollIndicatorStyle;
-    [self.tableView reloadData];
+    if (self.visible) {
+        [self.tableView reloadData];
+    }
 }
 
 - (AwfulTheme *)theme
@@ -100,11 +99,9 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (_hasAppeared) {
-        // Updates to the table view when it's offscreen don't actually happen. So whenever we're about to appear (after the first time), let's help out by reloading the table.
-        [self.tableView reloadData];
-    }
-    _hasAppeared = YES;
+    
+    // Updates to the table view when it's offscreen are a bad idea, so we'll avoid those and reload just before appearing instead.
+    [self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated
