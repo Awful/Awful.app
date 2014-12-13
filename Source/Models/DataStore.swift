@@ -87,7 +87,7 @@ final class DataStore: NSObject {
                 case NSMigrationMissingSourceModelError, NSMigrationMissingMappingModelError:
                     fatalError("automatic migration failed at \(storeURL): \(error!)")
                 default:
-                    break;
+                    break
                 }
             }
             fatalError("could not load persistent store at \(storeURL): \(error!)")
