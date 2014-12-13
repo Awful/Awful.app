@@ -1081,6 +1081,7 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
+				1C8A8CFD1A3C28E900E4F6A4 /* Swift */,
 				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1259,6 +1260,14 @@
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		1C8A8CFD1A3C28E900E4F6A4 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				1CC256C01A3B154A003FA7A8 /* ArrayExtensions.swift */,
+			);
+			path = Swift;
 			sourceTree = "<group>";
 		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
@@ -1521,7 +1530,6 @@
 			children = (
 				1CD82F341946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.h */,
 				1CD82F351946B99400B0C5BD /* ALAssetsLibrary+AwfulConvenient.m */,
-				1CC256C01A3B154A003FA7A8 /* ArrayExtensions.swift */,
 				1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */,
 				1CE2D9CC166ABD0D0024AC1C /* NSFileManager+UserDirectories.h */,
 				1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */,
