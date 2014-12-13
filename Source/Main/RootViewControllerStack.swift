@@ -281,7 +281,11 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
 }
 
 private func navigationIdentifier(rootIdentifier: String?) -> String {
-    return "\(rootIdentifier) navigation"
+    if let identifier = rootIdentifier {
+        return "\(identifier) navigation"
+    } else {
+        return "Navigation"
+    }
 }
 
 func partition<S:Sliceable>(s: S, test: (S.Generator.Element) -> Bool) -> (S.SubSlice, S.SubSlice) {
