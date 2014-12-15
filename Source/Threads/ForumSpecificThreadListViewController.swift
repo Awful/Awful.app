@@ -305,6 +305,7 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
         if AwfulSettings.sharedSettings().threadsSortedByUnread {
             sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
+        sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
         fetchRequest.fetchBatchSize = 20
         super.init(fetchRequest: fetchRequest, managedObjectContext: forum.managedObjectContext!, sectionNameKeyPath: nil)

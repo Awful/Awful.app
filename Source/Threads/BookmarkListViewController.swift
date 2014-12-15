@@ -147,8 +147,9 @@ final class BookmarkDataSource: ThreadDataSource {
         fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
         var sortDescriptors = [NSSortDescriptor(key: "bookmarkListPage", ascending: true)]
         if AwfulSettings.sharedSettings().threadsSortedByUnread {
-            sortDescriptors.insert(NSSortDescriptor(key: "anyUnreadPosts", ascending: false), atIndex: 0)
+            sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
+        sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
         fetchRequest.fetchBatchSize = 20
         super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil)
