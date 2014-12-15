@@ -9,7 +9,6 @@ public class Thread: AwfulManagedObject {
     @NSManaged var bookmarked: Bool
     @NSManaged var bookmarkListPage: Bool
     @NSManaged public var closed: Bool
-    @NSManaged var hideFromThreadList: Bool
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
     @NSManaged public var lastPostDate: NSDate?
@@ -21,6 +20,7 @@ public class Thread: AwfulManagedObject {
     @NSManaged public var sticky: Bool
     @NSManaged public var stickyIndex: Int32
     @NSManaged public var threadID: String
+    @NSManaged public var threadListPage: Int32
     @NSManaged public var title: String?
     @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     

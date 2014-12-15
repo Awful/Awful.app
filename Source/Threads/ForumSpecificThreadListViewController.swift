@@ -293,7 +293,7 @@ private let obsolete_FilterThreadTagIDKey = "AwfulFilterThreadTagID"
 final class ForumSpecificThreadDataSource: ThreadDataSource {
     init(forum: Forum, filteredByThreadTag threadTag: ThreadTag?) {
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
-        let basePredicate = NSPredicate(format: "hideFromThreadList == NO AND forum == %@", forum)!
+        let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)!
         if let threadTag = threadTag {
             let morePredicate = NSPredicate(format: "threadTag == %@", threadTag)!
             fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([basePredicate, morePredicate])
@@ -301,10 +301,10 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
             fetchRequest.predicate = basePredicate
         }
         var sortDescriptors = [NSSortDescriptor(key: "stickyIndex", ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: "threadListPage", ascending: true))
         if AwfulSettings.sharedSettings().threadsSortedByUnread {
             sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
-        sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
         fetchRequest.fetchBatchSize = 20
         super.init(fetchRequest: fetchRequest, managedObjectContext: forum.managedObjectContext!, sectionNameKeyPath: nil)

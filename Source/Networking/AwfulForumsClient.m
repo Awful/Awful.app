@@ -297,13 +297,13 @@
             NSError *error = scraper.error;
             if (scraper.threads && !error) {
                 if (page == 1) {
-                    NSMutableSet *threadsToHide = [scraper.forum.threads mutableCopy];
+                    NSMutableSet *threadsToForget = [scraper.forum.threads mutableCopy];
                     for (Thread *thread in scraper.threads) {
-                        [threadsToHide removeObject:thread];
+                        [threadsToForget removeObject:thread];
                     }
-                    [threadsToHide setValue:@YES forKey:@"hideFromThreadList"];
+                    [threadsToForget setValue:@(0) forKey:@"threadListPage"];
                 }
-                [scraper.threads setValue:@NO forKey:@"hideFromThreadList"];
+                [scraper.threads setValue:@(page) forKey:@"threadListPage"];
                 [managedObjectContext save:&error];
             }
 
