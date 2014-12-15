@@ -91,7 +91,7 @@ final class BookmarkListViewController: ThreadListViewController {
             }
             
             self?.refreshControl?.endRefreshing()
-            self?.tableView.infiniteScrollingView.stopAnimating()
+            self?.tableView.infiniteScrollingView?.stopAnimating()
             self?.tableView.showsInfiniteScrolling = threads.count >= 40
         }
     }
