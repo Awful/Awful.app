@@ -3,18 +3,12 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageViewController.h"
-#import "AwfulAppDelegate.h"
-#import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
-#import "AwfulSettings.h"
 #import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import <GRMustache/GRMustache.h>
 #import "MessageComposeViewController.h"
-#import "NewMessageChecker.h"
 #import "PrivateMessageViewModel.h"
-#import "RapSheetViewController.h"
 #import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
@@ -209,8 +203,8 @@
     NSMutableArray *items = [NSMutableArray new];
     [items addObject:URL];
     NSMutableArray *activities = [NSMutableArray new];
-    [activities addObject:[SVWebViewControllerActivitySafari new]];
-    [activities addObject:[SVWebViewControllerActivityChrome new]];
+    [activities addObject:[TUSafariActivity new]];
+    [activities addObject:[ARChromeActivity new]];
     if (imageURL) {
         [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
         [activities addObject:[ImagePreviewActivity new]];
@@ -243,7 +237,7 @@
     UIAlertController *actionSheet = [UIAlertController actionSheet];
     
     [actionSheet addActionWithTitle:@"Open" handler:^{
-        [SVWebViewController presentBrowserForURL:components.URL fromViewController:self];
+        [YABrowserViewController presentBrowserForURL:components.URL fromViewController:self];
     }];
     
     NSString *openInTitle = @"Open in Safari";
@@ -380,7 +374,7 @@
         if (awfulURL) {
             [[AwfulAppDelegate instance] openAwfulURL:awfulURL];
         } else if ([URL opensInBrowser]) {
-            [SVWebViewController presentBrowserForURL:URL fromViewController:self];
+            [YABrowserViewController presentBrowserForURL:URL fromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }

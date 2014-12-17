@@ -48,6 +48,12 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 0
 
+// ARChromeActivity
+#define COCOAPODS_POD_AVAILABLE_ARChromeActivity
+#define COCOAPODS_VERSION_MAJOR_ARChromeActivity 1
+#define COCOAPODS_VERSION_MINOR_ARChromeActivity 0
+#define COCOAPODS_VERSION_PATCH_ARChromeActivity 4
+
 // GRMustache
 #define COCOAPODS_POD_AVAILABLE_GRMustache
 #define COCOAPODS_VERSION_MAJOR_GRMustache 7
@@ -132,15 +138,21 @@
 #define COCOAPODS_VERSION_MINOR_SVPullToRefresh 4
 #define COCOAPODS_VERSION_PATCH_SVPullToRefresh 1
 
-// SVWebViewController
-#define COCOAPODS_POD_AVAILABLE_SVWebViewController
-#define COCOAPODS_VERSION_MAJOR_SVWebViewController 1
-#define COCOAPODS_VERSION_MINOR_SVWebViewController 0
-#define COCOAPODS_VERSION_PATCH_SVWebViewController 0
+// TUSafariActivity
+#define COCOAPODS_POD_AVAILABLE_TUSafariActivity
+#define COCOAPODS_VERSION_MAJOR_TUSafariActivity 1
+#define COCOAPODS_VERSION_MINOR_TUSafariActivity 0
+#define COCOAPODS_VERSION_PATCH_TUSafariActivity 2
 
 // WebViewJavascriptBridge
 #define COCOAPODS_POD_AVAILABLE_WebViewJavascriptBridge
 #define COCOAPODS_VERSION_MAJOR_WebViewJavascriptBridge 4
 #define COCOAPODS_VERSION_MINOR_WebViewJavascriptBridge 1
 #define COCOAPODS_VERSION_PATCH_WebViewJavascriptBridge 4
+
+// YABrowserViewController
+#define COCOAPODS_POD_AVAILABLE_YABrowserViewController
+#define COCOAPODS_VERSION_MAJOR_YABrowserViewController 0
+#define COCOAPODS_VERSION_MINOR_YABrowserViewController 1
+#define COCOAPODS_VERSION_PATCH_YABrowserViewController 1
 

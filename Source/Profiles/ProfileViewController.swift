@@ -123,7 +123,7 @@ extension ProfileViewController: WKScriptMessageHandler {
     }
     
     private func showActionsForHomepage(URL: NSURL, atRect rect: CGRect) {
-        let activityViewController = UIActivityViewController(activityItems: [URL], applicationActivities: [SVWebViewControllerActivitySafari(), SVWebViewControllerActivityChrome()])
+        let activityViewController = UIActivityViewController(activityItems: [URL], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
         presentViewController(activityViewController, animated: true, completion: nil)
         let popover = activityViewController.popoverPresentationController
         popover?.sourceRect = rect
