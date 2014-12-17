@@ -78,6 +78,12 @@
 #define COCOAPODS_VERSION_MINOR_JRSwizzle 0
 #define COCOAPODS_VERSION_PATCH_JRSwizzle 0
 
+// KVOController
+#define COCOAPODS_POD_AVAILABLE_KVOController
+#define COCOAPODS_VERSION_MAJOR_KVOController 1
+#define COCOAPODS_VERSION_MINOR_KVOController 0
+#define COCOAPODS_VERSION_PATCH_KVOController 3
+
 // MRProgress/ActivityIndicator
 #define COCOAPODS_POD_AVAILABLE_MRProgress_ActivityIndicator
 #define COCOAPODS_VERSION_MAJOR_MRProgress_ActivityIndicator 0

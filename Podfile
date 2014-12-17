@@ -10,6 +10,7 @@ target :Awful do
   pod 'GRMustache', '7.3.0'
   pod 'ImgurAnonymousAPIClient', '0.3'
   pod 'JLRoutes', '1.5.1'
+  pod 'KVOController', '1.0.3'
   pod 'MRProgress/Overlay', '0.8.0'
   pod 'PSMenuItem', '0.0.1'
   pod 'SVPullToRefresh', :head

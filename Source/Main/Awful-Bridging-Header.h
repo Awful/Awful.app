@@ -19,6 +19,7 @@
 #import "EmptyViewController.h"
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <GRMustache/GRMustache.h>
+#import <KVOController/FBKVOController.h>
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"
 #import "NewMessageChecker.h"
