@@ -346,6 +346,7 @@ static void RemoveOldDataStores(void)
 
 - (void)application:(UIApplication *)application didDecodeRestorableStateWithCoder:(NSCoder *)coder
 {
+    // We may have created some new objects during state restoration, so let's do a save now that that's done.
     NSError *error;
     if (![self.managedObjectContext save:&error]) {
         NSLog(@"%s error saving: %@", __PRETTY_FUNCTION__, error);
