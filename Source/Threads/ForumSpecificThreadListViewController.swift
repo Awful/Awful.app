@@ -8,10 +8,9 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     init(forum: Forum) {
         self.forum = forum
-        super.init()
+        super.init(nibName: nil, bundle: nil)
         
         forum.addObserver(self, forKeyPath: "name", options: .Initial, context: &KVOContext)
-        navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
         navigationItem.rightBarButtonItem = newThreadItem
         updateNewThreadItemEnabled()
     }

@@ -67,7 +67,6 @@
         self.restorationClass = self.class;
         
         self.navigationItem.rightBarButtonItem = self.composeItem;
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         
         self.hidesBottomBarWhenPushed = YES;
         

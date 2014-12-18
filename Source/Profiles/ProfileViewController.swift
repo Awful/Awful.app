@@ -16,7 +16,6 @@ final class ProfileViewController: AwfulViewController {
         title = user.username ?? "Profile"
         modalPresentationStyle = .FormSheet
         hidesBottomBarWhenPushed = true
-        navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
     }
     
     required init(coder: NSCoder) {

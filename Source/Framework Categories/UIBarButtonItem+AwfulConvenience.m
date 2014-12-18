@@ -27,11 +27,6 @@
     return item;
 }
 
-+ (instancetype)awful_emptyBackBarButtonItem
-{
-    return [[self alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-}
-
 - (void (^)(UIBarButtonItem *))awful_actionBlock
 {
     AwfulActionBlockWrapper *wrapper = objc_getAssociatedObject(self, ActionBlockKey);

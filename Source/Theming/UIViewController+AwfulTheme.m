@@ -25,6 +25,11 @@
 
 @end
 
+static void CommonInit(UIViewController *self)
+{
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+}
+
 @interface AwfulViewController ()
 
 @property (assign, nonatomic) BOOL visible;
@@ -32,6 +37,22 @@
 @end
 
 @implementation AwfulViewController
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        CommonInit(self);
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        CommonInit(self);
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -82,9 +103,20 @@
 
 @implementation AwfulTableViewController
 
-- (id)init
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    return [super initWithNibName:nil bundle:nil];
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        CommonInit(self);
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        CommonInit(self);
+    }
+    return self;
 }
 
 - (void)viewDidLoad
@@ -139,6 +171,22 @@
 @end
 
 @implementation AwfulCollectionViewController
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        CommonInit(self);
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if ((self = [super initWithCoder:coder])) {
+        CommonInit(self);
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {

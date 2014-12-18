@@ -38,7 +38,6 @@
         _forum = forum;
         self.title = DefaultTitle;
         self.submitButtonItem.title = @"Preview";
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.restorationClass = self.class;
         [self updateTweaks];
     }

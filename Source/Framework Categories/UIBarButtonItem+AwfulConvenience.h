@@ -17,11 +17,6 @@
 + (instancetype)awful_fixedSpace:(CGFloat)width;
 
 /**
- * Returns a UIBarButtonItem with an empty title that, used as -[UINavigationItem backBarButtonItem], shows just the arrow for a back button.
- */
-+ (instancetype)awful_emptyBackBarButtonItem;
-
-/**
  * A block called instead of the button item's target and action.
  *
  * @warning Setting an action block and then changing the button item's target or action will likely stop the block from being called.

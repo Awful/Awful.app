@@ -9,7 +9,7 @@ final class MessageListViewController: AwfulTableViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init()
+        super.init(nibName: nil, bundle: nil)
         
         title = "Private Messages"
         
@@ -18,7 +18,6 @@ final class MessageListViewController: AwfulTableViewController {
         tabBarItem.image = UIImage(named: "pm-icon")
         updateUnreadMessageCountBadge()
         
-        navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "didTapComposeButtonItem:")
         

@@ -34,7 +34,6 @@
             self.tabBarItem.title = @"Lepers";
             self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
         }
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
     }
     return self;
 }

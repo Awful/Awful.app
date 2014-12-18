@@ -36,8 +36,6 @@ class ForumListViewController: AwfulTableViewController {
                 self.tableView.reloadData()
             }
         }
-        
-        navigationItem.backBarButtonItem = UIBarButtonItem.awful_emptyBackBarButtonItem()
     }
     
     class func newFromStoryboard() -> ForumListViewController {

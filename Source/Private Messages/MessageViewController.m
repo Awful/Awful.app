@@ -45,7 +45,6 @@
         _privateMessage = privateMessage;
         self.title = privateMessage.subject;
         self.navigationItem.rightBarButtonItem = self.replyButtonItem;
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.hidesBottomBarWhenPushed = YES;
         self.restorationClass = self.class;
         [[NSNotificationCenter defaultCenter] addObserver:self

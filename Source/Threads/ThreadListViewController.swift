@@ -14,8 +14,8 @@ class ThreadListViewController: AwfulTableViewController {
         }
     }
     
-    override init() {
-        super.init()
+    override init(nibName: String?, bundle: NSBundle?) {
+        super.init(nibName: nibName, bundle: bundle)
         makeNewDataSource()
     }
 

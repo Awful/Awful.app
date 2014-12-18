@@ -26,7 +26,6 @@
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         _managedObjectContext = managedObjectContext;
         self.title = @"Settings";
-        self.navigationItem.backBarButtonItem = [UIBarButtonItem awful_emptyBackBarButtonItem];
         self.tabBarItem.image = [UIImage imageNamed:@"cog"];
     }
     return self;
