@@ -2,10 +2,10 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPostPreviewViewController.h"
+#import "PostPreviewViewController.h"
 @class Forum, ThreadTag;
 
-@interface AwfulThreadPreviewViewController : AwfulPostPreviewViewController
+@interface AwfulThreadPreviewViewController : PostPreviewViewController
 
 - (instancetype)initWithForum:(Forum *)forum
                       subject:(NSString *)subject

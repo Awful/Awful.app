@@ -5,10 +5,23 @@
 final class CompositionViewController: AwfulViewController {
     override init() {
         super.init(nibName: nil, bundle: nil)
+        
+        restorationClass = self.dynamicType
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override var title: String? {
+        didSet {
+            navigationItem.titleLabel.text = title
+            navigationItem.titleLabel.sizeToFit()
+        }
+    }
+    
+    @objc private func didTapCancel() {
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     var textView: UITextView {
@@ -17,7 +30,11 @@ final class CompositionViewController: AwfulViewController {
     
     override func loadView() {
         let textView = CompositionTextView()
+        textView.restorationIdentifier = "Composition text view"
         view = textView
+        
+        BBcodeBar = CompositionInputAccessoryView(textView: textView)
+        textView.inputAccessoryView = BBcodeBar
     }
     
     private var keyboardAvoider: ScrollViewKeyboardAvoider?
@@ -28,8 +45,6 @@ final class CompositionViewController: AwfulViewController {
         super.viewDidLoad()
         
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
-        BBcodeBar = CompositionInputAccessoryView(textView: textView)
-        textView.inputAccessoryView = BBcodeBar
         menuTree = CompositionMenuTree(textView: textView)
     }
     
@@ -46,12 +61,25 @@ final class CompositionViewController: AwfulViewController {
         super.viewWillAppear(animated)
         
         textView.becomeFirstResponder()
+        
+        // Leave an escape hatch in case we were restored without an associated workspace. This can happen when a crash leaves old state information behind.
+        if navigationItem.leftBarButtonItem == nil {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel")
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         textView.flashScrollIndicators()
+    }
+}
+
+extension CompositionViewController: UIViewControllerRestoration {
+    class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+        let composition = self()
+        composition.restorationIdentifier = identifierComponents.last as String?
+        return composition
     }
 }
 

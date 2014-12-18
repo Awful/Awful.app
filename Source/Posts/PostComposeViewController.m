@@ -7,8 +7,8 @@
 #import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulPostPreviewViewController.h"
 #import "AwfulSettings.h"
+#import "PostPreviewViewController.h"
 #import "Awful-Swift.h"
 
 @interface PostComposeViewController () <UIViewControllerRestoration>
@@ -145,11 +145,11 @@
 
 - (void)previewPostWithSubmitBlock:(void (^)(void))submitBlock cancelBlock:(void (^)(void))cancelBlock
 {
-    AwfulPostPreviewViewController *preview;
+    PostPreviewViewController *preview;
     if (self.thread) {
-        preview = [[AwfulPostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.attributedText];
+        preview = [[PostPreviewViewController alloc] initWithThread:self.thread BBcode:self.textView.attributedText];
     } else if (self.post) {
-        preview = [[AwfulPostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.attributedText];
+        preview = [[PostPreviewViewController alloc] initWithPost:self.post BBcode:self.textView.attributedText];
     }
     
     preview.submitBlock = submitBlock;

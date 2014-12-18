@@ -1,8 +1,8 @@
-//  AwfulPostPreviewViewController.m
+//  PostPreviewViewController.m
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "AwfulPostPreviewViewController.h"
+#import "PostPreviewViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
@@ -15,7 +15,7 @@
 #import "PostViewModel.h"
 #import "Awful-Swift.h"
 
-@interface AwfulPostPreviewViewController () <UIWebViewDelegate>
+@interface PostPreviewViewController () <UIWebViewDelegate>
 
 @property (strong, nonatomic) UIBarButtonItem *postButtonItem;
 
@@ -30,7 +30,7 @@
 
 @end
 
-@implementation AwfulPostPreviewViewController
+@implementation PostPreviewViewController
 {
     BOOL _webViewDidLoadOnce;
     Post *_fakePost;

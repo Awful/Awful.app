@@ -250,8 +250,14 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
     NSParameterAssert(key);
     id old = self[key];
     if (old == object || [old isEqual:object]) return;
+    
+    [self willChangeValueForKey:(NSString *)key];
+    
     [self setObject:object withoutNotifyingForKey:key];
-    NSDictionary *userInfo = @{ AwfulSettingsDidChangeSettingKey : key };
+    
+    [self didChangeValueForKey:(NSString *)key];
+    
+    NSDictionary *userInfo = @{AwfulSettingsDidChangeSettingKey : key};
     void (^notify)(void) = ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:AwfulSettingsDidChangeNotification object:self userInfo:userInfo];
     };
@@ -260,6 +266,16 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
     } else {
         dispatch_async(dispatch_get_main_queue(), notify);
     }
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+    return self[key];
+}
+
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    self[key] = value;
 }
 
 - (void)setObject:(id)object withoutNotifyingForKey:(id)key

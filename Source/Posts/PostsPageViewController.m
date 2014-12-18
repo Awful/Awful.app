@@ -38,6 +38,7 @@
 @property (nonatomic) AwfulLoadingView *loadingView;
 
 @property (strong, nonatomic) PostComposeViewController *replyViewController;
+@property (strong, nonatomic) ReplyWorkspace *replyWorkspace;
 @property (strong, nonatomic) MessageComposeViewController *messageViewController;
 
 @property (copy, nonatomic) NSArray *posts;
@@ -288,14 +289,34 @@
     __weak __typeof__(self) weakSelf = self;
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
-        if (!self.replyViewController) {
-            self.replyViewController = [[PostComposeViewController alloc] initWithThread:self.thread quotedText:nil];
-            self.replyViewController.delegate = self;
-            self.replyViewController.restorationIdentifier = @"Reply composition";
+        if (self.replyViewController) {
+            return [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
         }
-        [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
+        
+        if (!self.replyWorkspace) {
+            self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
+            self.replyWorkspace.completion = self.replyCompletionBlock;
+        }
+        [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
     };
     return _composeItem;
+}
+
+typedef void (^ReplyCompletion)(BOOL, BOOL);
+
+- (ReplyCompletion)replyCompletionBlock
+{
+    __weak __typeof__(self) weakSelf = self;
+    return ^(BOOL saveDraft, BOOL didSucceed) {
+        __typeof__(self) self = weakSelf;
+        if (!saveDraft) {
+            self.replyWorkspace = nil;
+        }
+        if (didSucceed) {
+            [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
+    };
 }
 
 - (UIBarButtonItem *)settingsItem
@@ -1156,6 +1177,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
     [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrolledFractionOfContentKey];
+    [coder encodeObject:self.replyWorkspace forKey:ReplyWorkspaceKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
@@ -1174,6 +1196,8 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
     _scrollToFractionAfterLoading = [coder decodeFloatForKey:ScrolledFractionOfContentKey];
+    self.replyWorkspace = [coder decodeObjectForKey:ReplyWorkspaceKey];
+    self.replyWorkspace.completion = self.replyCompletionBlock;
 }
 
 - (void)applicationFinishedRestoringState
@@ -1191,5 +1215,6 @@ static NSString * const ReplyViewControllerKey = @"AwfulReplyViewController";
 static NSString * const MessageViewControllerKey = @"AwfulMessageViewController";
 static NSString * const AdvertisementHTMLKey = @"AwfulAdvertisementHTML";
 static NSString * const ScrolledFractionOfContentKey = @"AwfulScrolledFractionOfContentSize";
+static NSString * const ReplyWorkspaceKey = @"Reply workspace";
 
 @end

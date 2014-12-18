@@ -1,4 +1,4 @@
-//  AwfulPostPreviewViewController.h
+//  PostPreviewViewController.h
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,9 +6,9 @@
 @class Post, Thread;
 
 /**
- * An AwfulPostPreviewViewController previews a post (new or edited).
+ * A PostPreviewViewController previews a post (new or edited).
  */
-@interface AwfulPostPreviewViewController : AwfulViewController
+@interface PostPreviewViewController : AwfulViewController
 
 /**
  * Preview editing a post. One of two designated initializers.
@@ -33,7 +33,7 @@
 
 @end
 
-@interface AwfulPostPreviewViewController (SubclassingHooks)
+@interface PostPreviewViewController (SubclassingHooks)
 
 - (instancetype)initWithBBcode:(NSAttributedString *)BBcode;
 - (void)fetchPreviewIfNecessary;
