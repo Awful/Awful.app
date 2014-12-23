@@ -9,6 +9,7 @@
 #import "ComposeTextView.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
+#import "UploadImageAttachments.h"
 #import "Awful-Swift.h"
 
 @interface ComposeTextViewController ()
@@ -159,100 +160,46 @@
 
 - (void)submit
 {
-    __weak __typeof__(self) weakSelf = self;
-    NSMutableAttributedString *submission = [self.textView.attributedText mutableCopy];
-    void (^submit)(void) = ^{
-        __typeof__(self) self = weakSelf;
-        MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.viewToOverlay
-                                                                             title:self.submissionInProgressTitle
-                                                                              mode:MRProgressOverlayViewModeIndeterminate
-                                                                          animated:YES];
-        overlay.tintColor = self.theme[@"tintColor"];
-        [self submitComposition:submission.string completionHandler:^(BOOL success) {
-            [overlay dismiss:YES completion:^{
-                if (success) {
-                    if (self.delegate) {
-                        [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
-                    } else {
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    }
-                } else {
-                    [self enableEverything];
-                    [self focusInitialFirstResponder];
-                }
-            }];
-        }];
-    };
-    
-    NSMutableArray *attachments = [NSMutableArray new];
-    [submission enumerateAttribute:NSAttachmentAttributeName
-                           inRange:NSMakeRange(0, submission.length)
-                           options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                        usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
-    {
-        if (attachment) {
-            [attachments addObject:attachment];
-        }
-    }];
-    if (attachments.count == 0) {
-        submit();
-        return;
-    }
-    
     MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.viewToOverlay
-                                                                         title:@"Uploading images"
+                                                                         title:self.submissionInProgressTitle
                                                                           mode:MRProgressOverlayViewModeIndeterminate
                                                                       animated:YES];
     overlay.tintColor = self.theme[@"tintColor"];
-    
-    NSMutableArray *images = [NSMutableArray new];
-    ALAssetsLibrary *library = [ALAssetsLibrary new];
-    for (AwfulTextAttachment *attachment in attachments) {
-        
-        // Images in the assets library can be uploaded directly from the library.
-        if ([attachment isKindOfClass:[AwfulTextAttachment class]] && attachment.assetURL) {
-            NSError *error;
-            ALAsset *asset = [library awful_assetForURL:attachment.assetURL error:&error];
-            if (!asset) NSLog(@"%s error loading asset at URL %@: %@", __PRETTY_FUNCTION__, attachment.assetURL, error);
-            
-            // However, images that have been edited on the device (e.g. cropped in the Photos app) should fall back to the UIImage object, which has those edits applied. The asset library will only give us the unadjusted image.
-            if (asset && !asset.defaultRepresentation.metadata[@"AdjustmentXMP"]) {
-                [images addObject:attachment.assetURL];
-                continue;
-            }
-        }
-        
-        [images addObject:attachment.image];
-    }
-    
-    _imageUploadProgress = [self uploadImages:images completionHandler:^(NSArray *URLs, NSError *error) {
+
+    __weak __typeof__(self) weakSelf = self;
+    _imageUploadProgress = UploadImageAttachments(self.textView.attributedText, ^(NSString *plainText, NSError *error) {
         __typeof__(self) self = weakSelf;
-        _imageUploadProgress = nil;
         if (error) {
             [overlay dismiss:NO];
             
-            // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
-            UIViewController *presenter = self.navigationController ?: self;
-            [presenter presentViewController:[UIAlertController alertWithTitle:@"Image Upload Failed" error:error] animated:YES completion:^{
-                [self enableEverything];
-            }];
+            [self enableEverything];
+            
+            if (([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSUserCancelledError)) {
+                [self focusInitialFirstResponder];
+            } else {
+                // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
+                UIViewController *presenter = self.navigationController ?: self;
+                [presenter presentViewController:[UIAlertController alertWithTitle:@"Image Upload Failed" error:error] animated:YES completion:nil];
+            }
         } else {
-            [submission enumerateAttribute:NSAttachmentAttributeName
-                                   inRange:NSMakeRange(0, submission.length)
-                                   options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                                usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
-             {
-                 if (!attachment) return;
-                 NSURL *URL = URLs[[attachments indexOfObject:attachment]];
-                 
-                 NSString *t = ImageSizeRequiresThumbnailing(attachment.image.size) ? @"t" : @"";
-                 NSString *replacement = [NSString stringWithFormat:@"[%@img]%@[/%@img]", t, URL.absoluteString, t];
-                 [submission replaceCharactersInRange:range withString:replacement];
-             }];
-            [overlay dismiss:NO];
-            submit();
+            __weak __typeof__(self) weakSelf = self;
+            [self submitComposition:plainText completionHandler:^(BOOL success) {
+                __typeof__(self) self = weakSelf;
+                [overlay dismiss:YES completion:^{
+                    if (success) {
+                        if (self.delegate) {
+                            [self.delegate composeTextViewController:self didFinishWithSuccessfulSubmission:YES shouldKeepDraft:NO];
+                        } else {
+                            [self dismissViewControllerAnimated:YES completion:nil];
+                        }
+                    } else {
+                        [self enableEverything];
+                        [self focusInitialFirstResponder];
+                    }
+                }];
+            }];
         }
-    }];
+    });
 }
 
 - (UIView *)viewToOverlay
@@ -263,41 +210,6 @@
     } else {
         return self.view;
     }
-}
-
-- (NSProgress *)uploadImages:(NSArray *)images completionHandler:(void (^)(NSArray *URLs, NSError *error))completionHandler
-{
-    NSProgress *progress = [NSProgress progressWithTotalUnitCount:images.count];
-    dispatch_group_t group = dispatch_group_create();
-    NSPointerArray *URLs = [NSPointerArray strongObjectsPointerArray];
-    URLs.count = images.count;
-    for (id image in images) {
-        dispatch_group_enter(group);
-        [progress becomeCurrentWithPendingUnitCount:1];
-        void (^uploadComplete)() = ^(NSURL *imgurURL, NSError *error) {
-            if (error) {
-                if (!progress.cancelled) {
-                    [progress cancel];
-                    if (completionHandler) completionHandler(nil, error);
-                }
-            } else {
-                [URLs replacePointerAtIndex:[images indexOfObject:image] withPointer:(__bridge void *)imgurURL];
-            }
-            dispatch_group_leave(group);
-        };
-        if ([image isKindOfClass:[NSURL class]]) {
-            [[ImgurAnonymousAPIClient sharedClient] uploadAssetWithURL:image filename:@"image.png" completionHandler:uploadComplete];
-        } else {
-            [[ImgurAnonymousAPIClient sharedClient] uploadImage:image withFilename:@"image.png" completionHandler:uploadComplete];
-        }
-        [progress resignCurrent];
-    }
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        if (!progress.cancelled) {
-            if (completionHandler) completionHandler(URLs.allObjects, nil);
-        }
-    });
-    return progress;
 }
 
 - (void)submitComposition:(NSString *)composition completionHandler:(void(^)(BOOL success))completionHandler

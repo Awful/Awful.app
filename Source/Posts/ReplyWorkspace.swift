@@ -82,24 +82,37 @@ final class ReplyWorkspace: NSObject {
     @objc private func didTapPost(sender: UIBarButtonItem) {
         let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view.window, animated: true)
         progressView.tintColor = viewController.view.tintColor
-        
-        // TODO upload images, cancelable by tapping on overlay
-        
         progressView.titleLabelText = "Posting…"
-        AwfulForumsClient.sharedClient().replyToThread(draft.thread, withBBcode: compositionViewController.textView.text) { [unowned self] error, post in
-            progressView.dismiss(true)
-            
+        
+        let uploadProgress = UploadImageAttachments(compositionViewController.textView.attributedText) { [unowned self] plainText, error in
             if let error = error {
+                progressView.dismiss(true)
                 if !(error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError) {
-                    let alert = UIAlertController(networkError: error, handler: nil)
+                    let alert = UIAlertController(title: "Image Upload Failed", error: error)
                     self.viewController.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
-                DraftStore.sharedStore().deleteDraft(self.draft)
+                progressView.stopBlock = nil;
                 
-                self.completion?(saveDraft: false, didSucceed: true)
+                AwfulForumsClient.sharedClient().replyToThread(self.draft.thread, withBBcode: plainText) { [unowned self] error, post in
+                    progressView.dismiss(true)
+                    
+                    if let error = error {
+                        if !(error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError) {
+                            let alert = UIAlertController(networkError: error, handler: nil)
+                            self.viewController.presentViewController(alert, animated: true, completion: nil)
+                        }
+                    } else {
+                        DraftStore.sharedStore().deleteDraft(self.draft)
+                        
+                        self.completion?(saveDraft: false, didSucceed: true)
+                    }
+                }
             }
         }
+        
+        progressView.stopBlock = { _ in
+            uploadProgress.cancel() }
     }
     
     /// Present this view controller to let someone compose a reply.

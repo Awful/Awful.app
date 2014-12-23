@@ -46,4 +46,5 @@
 #import "UIViewController+AwfulTheme.h"
 #import "UIViewController+HierarchySearch.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "UploadImageAttachments.h"
 #import <YABrowserViewController/YABrowserViewController.h>
