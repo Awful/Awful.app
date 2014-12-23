@@ -78,7 +78,7 @@ final class BookmarkListViewController: ThreadListViewController {
     }
     
     private func loadPage(page: Int) {
-        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error, threads) in
+        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
             if let error = error {
                 if self?.visible == true {
                     let alert = UIAlertController(networkError: error, handler: nil)
@@ -91,7 +91,7 @@ final class BookmarkListViewController: ThreadListViewController {
             
             self?.refreshControl?.endRefreshing()
             self?.tableView.infiniteScrollingView?.stopAnimating()
-            self?.tableView.showsInfiniteScrolling = threads.count >= 40
+            self?.tableView.showsInfiniteScrolling = threads?.count >= 40
         }
     }
     
