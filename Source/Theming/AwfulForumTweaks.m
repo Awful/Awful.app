@@ -48,14 +48,14 @@
 - (AwfulForumTweaks *)tweaksWithForumID:(NSString *)forumID
 {
 	NSDictionary *tweaks = _tweaks[forumID];
-	return [[AwfulForumTweaks alloc] initWithDictionary:tweaks];
+    return tweaks ? [[AwfulForumTweaks alloc] initWithDictionary:tweaks] : nil;
 }
 
 @end
 
 @implementation AwfulForumTweaks
 
-+(instancetype)defaultTweaks
++ (instancetype)defaultTweaks
 {
 	static AwfulForumTweaks *defaultTweaks;
 	static dispatch_once_t onceToken;
@@ -77,10 +77,9 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
-	if (!(self = [super init])) return nil;
-	
-	_dictionary = dictionary;
-	
+    if ((self = [super init])) {
+        _dictionary = dictionary;
+    }
     return self;
 }
 

@@ -70,13 +70,14 @@ final class ReplyWorkspace: NSObject {
         didSet {
             assert(oldValue == nil, "please set compositionViewController only once")
             
-            compositionViewController.textView.attributedText = draft.text
+            let textView = compositionViewController.textView
+            textView.attributedText = draft.text
             KVOController.observe(draft, keyPath: "thread.title", options: .Initial | .New) { _, _, change in
                 self.compositionViewController.title = change[NSKeyValueChangeNewKey] as? String
             }
             
             textViewNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: compositionViewController.textView, queue: NSOperationQueue.mainQueue()) { [unowned self] note in
-                self.rightButtonItem.enabled = self.compositionViewController.textView.hasText()
+                self.rightButtonItem.enabled = textView.hasText()
             }
             
             let navigationItem = compositionViewController.navigationItem
@@ -84,6 +85,12 @@ final class ReplyWorkspace: NSObject {
             navigationItem.rightBarButtonItem = rightButtonItem
             KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts, options: .Initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
+            }
+            
+            if let tweaks = AwfulForumTweaks(forumID: draft.thread.forum?.forumID) {
+                textView.autocapitalizationType = tweaks.autocapitalizationType
+                textView.autocorrectionType = tweaks.autocorrectionType
+                textView.spellCheckingType = tweaks.spellCheckingType
             }
         }
     }
