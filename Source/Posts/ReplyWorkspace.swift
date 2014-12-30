@@ -71,8 +71,8 @@ final class ReplyWorkspace: NSObject {
             assert(oldValue == nil, "please set compositionViewController only once")
             
             compositionViewController.textView.attributedText = draft.text
-            KVOController.observe(draft.thread, keyPath: "title", options: .Initial) { [unowned self] thread, change in
-                self.compositionViewController.title = thread.title
+            KVOController.observe(draft, keyPath: "thread.title", options: .Initial | .New) { _, _, change in
+                self.compositionViewController.title = change[NSKeyValueChangeNewKey] as? String
             }
             
             textViewNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: compositionViewController.textView, queue: NSOperationQueue.mainQueue()) { [unowned self] note in
@@ -82,7 +82,7 @@ final class ReplyWorkspace: NSObject {
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
             navigationItem.rightBarButtonItem = rightButtonItem
-            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts, options: .Initial) { [unowned self] _, _ in
+            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts, options: .Initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
             }
         }
@@ -142,10 +142,12 @@ final class ReplyWorkspace: NSObject {
         progressView.stopBlock = { _ in
             submitProgress.cancel() }
         
-        self.KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { [weak self] progress, change in
-            if progress.fractionCompleted >= 1 || progress.cancelled {
-                progressView.stopBlock = nil
-                self?.KVOController.unobserve(progress)
+        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { _, object, _ in
+            if let progress = object as? NSProgress {
+                if progress.fractionCompleted >= 1 || progress.cancelled {
+                    progressView.stopBlock = nil
+                    self.KVOController.unobserve(progress)
+                }
             }
         }
     }

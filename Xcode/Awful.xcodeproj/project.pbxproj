@@ -29,7 +29,6 @@
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
-		1C2434DB1A419F5100DC8EA4 /* KVOControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434DA1A419F5100DC8EA4 /* KVOControllerExtensions.swift */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
@@ -432,7 +431,6 @@
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
-		1C2434DA1A419F5100DC8EA4 /* KVOControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOControllerExtensions.swift; sourceTree = "<group>"; };
 		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
 		1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextViewController.m; sourceTree = "<group>"; };
 		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
@@ -1275,7 +1273,6 @@
 			isa = PBXGroup;
 			children = (
 				1CC256C01A3B154A003FA7A8 /* ArrayExtensions.swift */,
-				1C2434DA1A419F5100DC8EA4 /* KVOControllerExtensions.swift */,
 			);
 			path = Swift;
 			sourceTree = "<group>";
@@ -2216,7 +2213,6 @@
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1C051C9C1A15EB7200F81EA2 /* DataStore.swift in Sources */,
-				1C2434DB1A419F5100DC8EA4 /* KVOControllerExtensions.swift in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */,
 				1CFE98411827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m in Sources */,
