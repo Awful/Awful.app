@@ -91,7 +91,7 @@ final class ReplyWorkspace: NSObject {
     private var textViewNotificationToken: AnyObject?
     
     private lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
-        return UIBarButtonItem(title: "Post", style: .Done, target: self, action: "didTapPost:")
+        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .Done, target: self, action: "didTapPost:")
         }()
     
     private func updateRightButtonItem() {
@@ -99,7 +99,7 @@ final class ReplyWorkspace: NSObject {
             rightButtonItem.title = "Preview"
             rightButtonItem.action = "didTapPreview:"
         } else {
-            rightButtonItem.title = "Post"
+            rightButtonItem.title = draft.submitButtonTitle
             rightButtonItem.action = "didTapPost:"
         }
     }
@@ -113,7 +113,7 @@ final class ReplyWorkspace: NSObject {
         saveTextToDraft()
         
         let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text)
-        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .Done, target: self, action: "didTapPost:")
+        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .Done, target: self, action: "didTapPost:")
         (viewController as UINavigationController).pushViewController(preview, animated: true)
     }
     
@@ -122,7 +122,7 @@ final class ReplyWorkspace: NSObject {
         
         let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view.window, animated: true)
         progressView.tintColor = viewController.view.tintColor
-        progressView.titleLabelText = "Posting…"
+        progressView.titleLabelText = draft.progressViewTitle
         
         let submitProgress = draft.submit { [unowned self] error in
             progressView.dismiss(true)
@@ -166,7 +166,7 @@ final class ReplyWorkspace: NSObject {
         return compositionViewController.enclosingNavigationController
     }
     
-    /// Insert a quoted post at the current cursor location.
+    /// Append a quoted post to the reply.
     func quotePost(post: Post) {
         let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: true)
         progressView.titleLabelText = "Quoting post…"
@@ -202,7 +202,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     }
     
     func encodeRestorableStateWithCoder(coder: NSCoder) {
-        draft.text = compositionViewController.textView.attributedText
+        saveTextToDraft()
         DraftStore.sharedStore().saveDraft(draft)
         coder.encodeObject(draft.storePath, forKey: Keys.draftPath)
         coder.encodeObject(compositionViewController, forKey: Keys.compositionViewController)
@@ -210,7 +210,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     class func objectWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIStateRestoring? {
         if let path = coder.decodeObjectForKey(Keys.draftPath) as String? {
-            if let draft = DraftStore.sharedStore().loadDraft(path) as? NewReplyDraft {
+            if let draft = DraftStore.sharedStore().loadDraft(path) as ReplyDraft? {
                 return self(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last as String?)
             }
         }
@@ -230,10 +230,18 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     }
 }
 
-@objc protocol ReplyDraft: StorableDraft {
+@objc protocol ReplyDraft: StorableDraft, SubmittableDraft, ReplyUI {
     var thread: Thread { get }
     var text: NSAttributedString? { get set }
+}
+
+@objc protocol SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress
+}
+
+@objc protocol ReplyUI {
+    var submitButtonTitle: String { get }
+    var progressViewTitle: String { get }
 }
 
 final class NewReplyDraft: NSObject, ReplyDraft {
@@ -261,18 +269,6 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     private struct Keys {
         static let threadKey = "threadKey"
         static let text = "text"
-    }
-    
-    func submit(completion: NSError? -> Void) -> NSProgress {
-        return UploadImageAttachments(text!) { [unowned self] plainText, error in
-            if let error = error {
-                completion(error)
-            } else {
-                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { error, post in
-                    completion(error)
-                }
-            }
-        }
     }
     
     var storePath: String {
@@ -312,6 +308,26 @@ final class EditReplyDraft: NSObject, ReplyDraft {
         return post.thread!
     }
     
+    var storePath: String {
+        return "edits/\(post.postID)"
+    }
+}
+
+extension NewReplyDraft: SubmittableDraft {
+    func submit(completion: NSError? -> Void) -> NSProgress {
+        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+            if let error = error {
+                completion(error)
+            } else {
+                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { error, post in
+                    completion(error)
+                }
+            }
+        }
+    }
+}
+
+extension EditReplyDraft: SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress {
         return UploadImageAttachments(text!) { [unowned self] plainText, error in
             if let error = error {
@@ -321,8 +337,24 @@ final class EditReplyDraft: NSObject, ReplyDraft {
             }
         }
     }
+}
+
+extension NewReplyDraft: ReplyUI {
+    var submitButtonTitle: String {
+        return "Post"
+    }
     
-    var storePath: String {
-        return "edits/\(post.postID)"
+    var progressViewTitle: String {
+        return "Posting…"
+    }
+}
+
+extension EditReplyDraft: ReplyUI {
+    var submitButtonTitle: String {
+        return "Save"
+    }
+    
+    var progressViewTitle: String {
+        return "Saving…"
     }
 }
