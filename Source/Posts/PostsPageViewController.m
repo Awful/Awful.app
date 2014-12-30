@@ -37,7 +37,6 @@
 @property (copy, nonatomic) NSString *advertisementHTML;
 @property (nonatomic) AwfulLoadingView *loadingView;
 
-@property (strong, nonatomic) PostComposeViewController *replyViewController;
 @property (strong, nonatomic) ReplyWorkspace *replyWorkspace;
 @property (strong, nonatomic) MessageComposeViewController *messageViewController;
 
@@ -289,10 +288,6 @@
     __weak __typeof__(self) weakSelf = self;
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
-        if (self.replyViewController) {
-            return [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
-        }
-        
         if (!self.replyWorkspace) {
             self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
             self.replyWorkspace.completion = self.replyCompletionBlock;
@@ -515,7 +510,6 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     configureButton(topBar.previousPostsButton);
     configureButton(topBar.scrollToBottomButton);
     
-    [self.replyViewController themeDidChange];
     [self.messageViewController themeDidChange];
 }
 
@@ -889,41 +883,21 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                     [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Edit Post" error:error] animated:YES completion:nil];
                     return;
                 }
-                self.replyViewController = [[PostComposeViewController alloc] initWithPost:post originalText:text];
-                self.replyViewController.restorationIdentifier = @"Edit composition";
-                self.replyViewController.delegate = self;
-                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
+                self.replyWorkspace = [[ReplyWorkspace alloc] initWithPost:post];
+                self.replyWorkspace.completion = self.replyCompletionBlock;
+                [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
             }];
         }]];
     }
     
     if (!self.thread.closed) {
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
-            [[AwfulForumsClient client] quoteBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *quotedText) {
-                __typeof__(self) self = weakSelf;
-                if (error) {
-                    [self presentViewController:[UIAlertController alertWithTitle:@"Could Not Quote Post" error:error] animated:YES completion:nil];
-                    return;
-                }
-                if (self.replyViewController) {
-                    UITextView *textView = self.replyViewController.textView;
-                    void (^appendString)(NSString *) = ^(NSString *string) {
-                        UITextRange *endRange = [textView textRangeFromPosition:textView.endOfDocument toPosition:textView.endOfDocument];
-                        [textView replaceRange:endRange withText:string];
-                    };
-                    if ([textView comparePosition:textView.beginningOfDocument toPosition:textView.endOfDocument] != NSOrderedSame) {
-                        while (![textView.text hasSuffix:@"\n\n"]) {
-                            appendString(@"\n");
-                        }
-                    }
-                    appendString(quotedText);
-                } else {
-                    self.replyViewController = [[PostComposeViewController alloc] initWithThread:self.thread quotedText:quotedText];
-                    self.replyViewController.delegate = self;
-                    self.replyViewController.restorationIdentifier = @"Reply composition";
-                }
-                [self presentViewController:[self.replyViewController enclosingNavigationController] animated:YES completion:nil];
-            }];
+            if (!self.replyWorkspace) {
+                self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
+                self.replyWorkspace.completion = self.replyCompletionBlock;
+            }
+            [self.replyWorkspace quotePost:post];
+            [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
         }]];
     }
     
@@ -1061,26 +1035,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 didFinishWithSuccessfulSubmission:(BOOL)success
                   shouldKeepDraft:(BOOL)keepDraft
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (composeTextViewController == self.replyViewController) {
-            if (success) {
-                if (self.replyViewController.thread) {
-                    [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
-                } else {
-                    Post *post = self.replyViewController.post;
-                    if (self.author) {
-                        [self loadPage:post.singleUserPage updatingCache:YES];
-                    } else {
-                        [self loadPage:post.page updatingCache:YES];
-                    }
-                    [self scrollPostToVisible:self.replyViewController.post];
-                }
-            }
-            if (!keepDraft) {
-                self.replyViewController = nil;
-            }
-        }
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -1173,7 +1128,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeInteger:self.page forKey:PageKey];
     [coder encodeObject:self.author.objectID forKey:AuthorUserKeyKey];
     [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
-    [coder encodeObject:self.replyViewController forKey:ReplyViewControllerKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
     [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrolledFractionOfContentKey];
@@ -1184,8 +1138,6 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 {
     _restoringState = YES;
     [super decodeRestorableStateWithCoder:coder];
-    self.replyViewController = [coder decodeObjectForKey:ReplyViewControllerKey];
-    self.replyViewController.delegate = self;
     self.messageViewController = [coder decodeObjectForKey:MessageViewControllerKey];
     self.messageViewController.delegate = self;
     self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];

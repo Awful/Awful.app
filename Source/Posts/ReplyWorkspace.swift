@@ -18,9 +18,32 @@ final class ReplyWorkspace: NSObject {
     */
     var completion: ((saveDraft: Bool, didSucceed: Bool) -> Void)?
     
+    /// Constructs a workspace for a new reply to a thread.
     convenience init(thread: Thread) {
-        let draft = ReplyDraft(thread: thread)
+        let draft = NewReplyDraft(thread: thread)
         self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
+    }
+    
+    /// Constructs a workspace for editing a reply.
+    convenience init(post: Post) {
+        let draft = EditReplyDraft(post: post)
+        self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
+        
+        let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: false)
+        progressView.titleLabelText = "Reading post…"
+        
+        AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post) { [weak self] error, BBcode in
+            progressView.dismiss(true)
+            
+            if let error = error {
+                if self?.compositionViewController.visible == true {
+                    let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
+                    self?.viewController.presentViewController(alert, animated: true, completion: nil)
+                }
+            } else {
+                self?.compositionViewController.textView.text = BBcode
+            }
+        }
     }
     
     /// A nil restorationIdentifier implies that we were not created by UIKit state restoration.
@@ -30,6 +53,12 @@ final class ReplyWorkspace: NSObject {
         super.init()
         
         UIApplication.registerObjectForStateRestoration(self, restorationIdentifier: self.restorationIdentifier)
+    }
+    
+    deinit {
+        if let textViewNotificationToken: AnyObject = textViewNotificationToken {
+            NSNotificationCenter.defaultCenter().removeObserver(textViewNotificationToken)
+        }
     }
     
     /*
@@ -46,6 +75,10 @@ final class ReplyWorkspace: NSObject {
                 self.compositionViewController.title = thread.title
             }
             
+            textViewNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: compositionViewController.textView, queue: NSOperationQueue.mainQueue()) { [unowned self] note in
+                self.rightButtonItem.enabled = self.compositionViewController.textView.hasText()
+            }
+            
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
             navigationItem.rightBarButtonItem = rightButtonItem
@@ -54,6 +87,8 @@ final class ReplyWorkspace: NSObject {
             }
         }
     }
+    
+    private var textViewNotificationToken: AnyObject?
     
     private lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
         return UIBarButtonItem(title: "Post", style: .Done, target: self, action: "didTapPost:")
@@ -70,49 +105,53 @@ final class ReplyWorkspace: NSObject {
     }
     
     @objc private func didTapCancel(sender: UIBarButtonItem) {
-        completion?(saveDraft: true, didSucceed: false)
+        let saveDraft = compositionViewController.textView.attributedText.length > 0
+        completion?(saveDraft: saveDraft, didSucceed: false)
     }
     
     @objc private func didTapPreview(sender: UIBarButtonItem) {
-        let preview = PostPreviewViewController(thread: draft.thread, BBcode: compositionViewController.textView.attributedText)
+        saveTextToDraft()
+        
+        let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text)
         preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .Done, target: self, action: "didTapPost:")
         (viewController as UINavigationController).pushViewController(preview, animated: true)
     }
     
     @objc private func didTapPost(sender: UIBarButtonItem) {
+        saveTextToDraft()
+        
         let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view.window, animated: true)
         progressView.tintColor = viewController.view.tintColor
         progressView.titleLabelText = "Posting…"
         
-        let uploadProgress = UploadImageAttachments(compositionViewController.textView.attributedText) { [unowned self] plainText, error in
+        let submitProgress = draft.submit { [unowned self] error in
+            progressView.dismiss(true)
+            
             if let error = error {
-                progressView.dismiss(true)
                 if !(error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError) {
                     let alert = UIAlertController(title: "Image Upload Failed", error: error)
                     self.viewController.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
-                progressView.stopBlock = nil;
+                DraftStore.sharedStore().deleteDraft(self.draft)
                 
-                AwfulForumsClient.sharedClient().replyToThread(self.draft.thread, withBBcode: plainText) { [unowned self] error, post in
-                    progressView.dismiss(true)
-                    
-                    if let error = error {
-                        if !(error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError) {
-                            let alert = UIAlertController(networkError: error, handler: nil)
-                            self.viewController.presentViewController(alert, animated: true, completion: nil)
-                        }
-                    } else {
-                        DraftStore.sharedStore().deleteDraft(self.draft)
-                        
-                        self.completion?(saveDraft: false, didSucceed: true)
-                    }
-                }
+                self.completion?(saveDraft: false, didSucceed: true)
             }
         }
         
         progressView.stopBlock = { _ in
-            uploadProgress.cancel() }
+            submitProgress.cancel() }
+        
+        self.KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { [weak self] progress, change in
+            if progress.fractionCompleted >= 1 || progress.cancelled {
+                progressView.stopBlock = nil
+                self?.KVOController.unobserve(progress)
+            }
+        }
+    }
+    
+    private func saveTextToDraft() {
+        draft.text = compositionViewController.textView.attributedText
     }
     
     /// Present this view controller to let someone compose a reply.
@@ -123,6 +162,35 @@ final class ReplyWorkspace: NSObject {
         }
         
         return compositionViewController.enclosingNavigationController
+    }
+    
+    /// Insert a quoted post at the current cursor location.
+    func quotePost(post: Post) {
+        let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: true)
+        progressView.titleLabelText = "Quoting post…"
+        
+        AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] error, BBcode in
+            progressView.dismiss(true)
+            
+            if let error = error {
+                let alert = UIAlertController(title: "Could Not Quote Post", error: error)
+                self?.viewController.presentViewController(alert, animated: true, completion: nil)
+                
+            } else if let textView = self?.compositionViewController.textView {
+                let appendString: String -> Void = { string in
+                    let endRange = textView.textRangeFromPosition(textView.endOfDocument, toPosition: textView.endOfDocument)
+                    textView.replaceRange(endRange, withText: string)
+                }
+                
+                if textView.comparePosition(textView.beginningOfDocument, toPosition: textView.endOfDocument) != .OrderedSame {
+                    while !textView.text.hasSuffix("\n\n") {
+                        appendString("\n")
+                    }
+                }
+                
+                appendString(BBcode)
+            }
+        }
     }
 }
 
@@ -140,7 +208,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     class func objectWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIStateRestoring? {
         if let path = coder.decodeObjectForKey(Keys.draftPath) as String? {
-            if let draft = DraftStore.sharedStore().loadDraft(path) as ReplyDraft? {
+            if let draft = DraftStore.sharedStore().loadDraft(path) as? NewReplyDraft {
                 return self(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last as String?)
             }
         }
@@ -160,7 +228,13 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     }
 }
 
-final class ReplyDraft: NSObject, NSCoding, StorableDraft {
+@objc protocol ReplyDraft: StorableDraft {
+    var thread: Thread { get }
+    var text: NSAttributedString? { get set }
+    func submit(completion: NSError? -> Void) -> NSProgress
+}
+
+final class NewReplyDraft: NSObject, ReplyDraft {
     let thread: Thread
     var text: NSAttributedString?
     
@@ -187,7 +261,66 @@ final class ReplyDraft: NSObject, NSCoding, StorableDraft {
         static let text = "text"
     }
     
+    func submit(completion: NSError? -> Void) -> NSProgress {
+        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+            if let error = error {
+                completion(error)
+            } else {
+                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { error, post in
+                    completion(error)
+                }
+            }
+        }
+    }
+    
     var storePath: String {
         return "replies/\(thread.threadID)"
+    }
+}
+
+final class EditReplyDraft: NSObject, ReplyDraft {
+    let post: Post
+    var text: NSAttributedString?
+    
+    init(post: Post, text: NSAttributedString? = nil) {
+        self.post = post
+        self.text = text
+        super.init()
+    }
+    
+    convenience init(coder: NSCoder) {
+        let postKey = coder.decodeObjectForKey(Keys.postKey) as PostKey
+        let post = Post.objectForKey(postKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as Post
+        let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
+        self.init(post: post, text: text)
+    }
+    
+    func encodeWithCoder(coder: NSCoder) {
+        coder.encodeObject(post.objectKey, forKey: Keys.postKey)
+        coder.encodeObject(text, forKey: Keys.text)
+    }
+    
+    private struct Keys {
+        static let postKey = "postKey"
+        static let text = "text"
+    }
+    
+    var thread: Thread {
+        // TODO can we assume an edited post always has a thread?
+        return post.thread!
+    }
+    
+    func submit(completion: NSError? -> Void) -> NSProgress {
+        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+            if let error = error {
+                completion(error)
+            } else {
+                AwfulForumsClient.sharedClient().editPost(self.post, setBBcode: plainText, andThen: completion)
+            }
+        }
+    }
+    
+    var storePath: String {
+        return "edits/\(post.postID)"
     }
 }

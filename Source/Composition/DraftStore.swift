@@ -74,7 +74,7 @@ final class DraftStore {
 }
 
 /// Something a DraftStore can deal with.
-protocol StorableDraft: NSCoding {
+@objc protocol StorableDraft: NSCoding {
     /// A file system-safe path that uniquely describes this draft. For example, a draft reply to a particular thread might return "/reply/3510131". The path can be used later to retrieve the saved draft.
     var storePath: String { get }
 }
