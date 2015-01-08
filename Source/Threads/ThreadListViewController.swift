@@ -134,7 +134,7 @@ class ThreadDataSource: FetchedDataSource {
                 cell.secondaryTagImageView.hidden = true
             }
         
-            cell.showsRating = AwfulForumTweaks(forumID: thread.forum?.forumID).showRatings
+            cell.showsRating = AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true
             if cell.showsRating {
                 let rating = lroundf(thread.rating).clamp(0...5)
                 if rating == 0 {
