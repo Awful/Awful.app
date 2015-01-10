@@ -225,7 +225,7 @@ extension ForumSpecificThreadListViewController: AwfulThreadTagPickerControllerD
         if imageName == AwfulThreadTagLoaderNoFilterImageName {
             threadTag = nil
         } else {
-            threadTag = forum.threadTags.array.takeFirst { ($0 as ThreadTag).imageName == imageName } as ThreadTag?
+            threadTag = forum.threadTags.array.first { ($0 as ThreadTag).imageName == imageName } as ThreadTag?
         }
         
         AwfulRefreshMinder.sharedMinder().forgetForum(forum)
@@ -319,14 +319,3 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
 }
 
 private var KVOContext = 0
-
-extension Array {
-    func takeFirst(predicate: Element -> Bool) -> Element? {
-        for item in self {
-            if predicate(item) {
-                return item
-            }
-        }
-        return nil
-    }
-}
