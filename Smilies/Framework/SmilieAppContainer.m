@@ -40,10 +40,6 @@ static NSString * ScrollFractionKey(SmilieList smilieList)
     return [NSString stringWithFormat:@"SmilieScrollFraction%@", @(smilieList)];
 }
 
-extern float SmilieKeyboardScrollFractionForSmilieList(SmilieList smilieList);
-extern void SmilieKeyboardSetScrollFractionForSmilieList(SmilieList smilieList, float scrollFraction);
-
-
 float SmilieKeyboardScrollFractionForSmilieList(SmilieList smilieList)
 {
     return [SharedDefaults() floatForKey:ScrollFractionKey(smilieList)];
