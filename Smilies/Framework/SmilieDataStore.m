@@ -6,71 +6,52 @@
 #import "SmilieAppContainer.h"
 #import "SmilieMetadata.h"
 
-@interface SmilieDataStore ()
-
-@property (strong, nonatomic) NSPersistentStoreCoordinator *storeCoordinator;
-@property (strong, nonatomic) NSPersistentStore *bundledSmilieStore;
-@property (strong, nonatomic) NSPersistentStore *appContainerSmilieStore;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
-@end
-
 @implementation SmilieDataStore
 
-- (NSManagedObjectContext *)managedObjectContext
+- (instancetype)init
 {
-    if (!_managedObjectContext) {
+    if ((self = [super init])) {
+        NSManagedObjectModel *model = [[self class] managedObjectModel];
+        _storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
         
-        // Make sure the stores are loaded.
-        [self bundledSmilieStore];
-        [self appContainerSmilieStore];
+        [self addStores];
         
         _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedObjectContext.persistentStoreCoordinator = self.storeCoordinator;
     }
-    return _managedObjectContext;
+    return self;
 }
 
-- (NSPersistentStoreCoordinator *)storeCoordinator
+- (void)addStores
 {
-    if (!_storeCoordinator) {
-        NSManagedObjectModel *model = [[self class] managedObjectModel];
-        _storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-    }
-    return _storeCoordinator;
-}
-
-- (NSPersistentStore *)bundledSmilieStore
-{
-    if (!_bundledSmilieStore) {
-        NSError *error;
-        _bundledSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                  configuration:@"NoMetadata"
-                                                                            URL:BundledSmilieStoreURL()
-                                                                        options:@{NSReadOnlyPersistentStoreOption: @YES}
-                                                                          error:&error];
-        if (!_bundledSmilieStore) {
-            NSLog(@"%s error adding bundled store: %@", __PRETTY_FUNCTION__, error);
-        }
-    }
-    return _bundledSmilieStore;
-}
-
-- (NSPersistentStore *)appContainerSmilieStore
-{
+    // This silly dance (addStores along with addBundledSmilieStore) provides a hook for testing. Since a data store might get accessed by multiple threads, it needs its stores and context to be ready to go after initialization -- careless lazy-loading won't cut it.
+    
+    [self addBundledSmilieStore];
+    
+    NSError *error;
+    _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                   configuration:nil
+                                                                             URL:AppContainerSmilieStoreURL()
+                                                                         options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                                                                   NSInferMappingModelAutomaticallyOption: @YES}
+                                                                           error:&error];
     if (!_appContainerSmilieStore) {
-        NSError *error;
-        _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                       configuration:nil
-                                                                                 URL:AppContainerSmilieStoreURL()
-                                                                             options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
-                                                                                       NSInferMappingModelAutomaticallyOption: @YES}
-                                                                               error:&error];
-        if (!_appContainerSmilieStore) {
-            NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
-        }
+        NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
+        return;
     }
-    return _appContainerSmilieStore;
+}
+
+- (void)addBundledSmilieStore
+{
+    NSError *error;
+    _bundledSmilieStore = [_storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                          configuration:@"NoMetadata"
+                                                                    URL:BundledSmilieStoreURL()
+                                                                options:@{NSReadOnlyPersistentStoreOption: @YES}
+                                                                  error:&error];
+    if (!_bundledSmilieStore) {
+        NSLog(@"%s error adding bundled store: %@", __PRETTY_FUNCTION__, error);
+    }
 }
 
 static NSURL * BundledSmilieStoreURL(void)

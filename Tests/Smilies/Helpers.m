@@ -10,31 +10,47 @@ SmilieWebArchive * FixtureWebArchive(void)
     return [[SmilieWebArchive alloc] initWithURL:URL];
 }
 
+@interface SmilieDataStore ()
+
+- (void)addBundledSmilieStore;
+
+@end
+
 @implementation TestDataStore
 {
     NSPersistentStore *_inMemoryStore;
-    BOOL _nothingBundled;
+    BOOL _includeBundledDataStore;
 }
 
 + (instancetype)newNothingBundledDataStore
 {
-    TestDataStore *dataStore = [self new];
-    dataStore->_nothingBundled = YES;
-    return dataStore;
+    return [[self alloc] initWithBundledDataStore:NO];
 }
 
-- (NSPersistentStore *)bundledSmilieStore
+- (instancetype)initWithBundledDataStore:(BOOL)includeBundledDataStore
 {
-    return _nothingBundled ? nil : super.bundledSmilieStore;
+    _includeBundledDataStore = includeBundledDataStore;
+    return [super init];
+}
+
+- (instancetype)init
+{
+    return [self initWithBundledDataStore:YES];
+}
+
+- (void)addStores
+{
+    if (_includeBundledDataStore) {
+        [self addBundledSmilieStore];
+    }
+    
+    NSError *error;
+    _inMemoryStore = [self.storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error];
+    NSAssert(_inMemoryStore, @"error creating in-memory store: %@", error);
 }
 
 - (NSPersistentStore *)appContainerSmilieStore
 {
-    if (!_inMemoryStore) {
-        NSError *error;
-        _inMemoryStore = [self.storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error];
-        NSAssert(_inMemoryStore, @"error creating in-memory store: %@", error);
-    }
     return _inMemoryStore;
 }
 
