@@ -74,6 +74,7 @@
 		1C442FCD1A0E1C77001BD898 /* ThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */; };
 		1C442FCF1A0E27E2001BD898 /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCE1A0E27E2001BD898 /* Thread.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
+		1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */; };
@@ -489,6 +490,7 @@
 		1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTag.swift; sourceTree = "<group>"; };
 		1C442FCE1A0E27E2001BD898 /* Thread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thread.swift; sourceTree = "<group>"; };
 		1C4506C31A2BAB3800767306 /* Handoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handoff.swift; sourceTree = "<group>"; };
+		1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteTableController.swift; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadTests.m; sourceTree = "<group>"; };
@@ -998,6 +1000,7 @@
 				1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */,
 				1CE55A771A10675700E474A6 /* FetchedDataSource.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
+				1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -2343,6 +2346,7 @@
 				1C6D2EA8182E81B000785766 /* PrivateMessageScraper.m in Sources */,
 				1CE694AB182FF0E500B24928 /* LepersColonyPageScraper.m in Sources */,
 				1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */,
+				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* UIViewController+AwfulTheme.m in Sources */,
 				1CBC74B1181A4DC30076234E /* ComposeTextView.m in Sources */,
 				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,

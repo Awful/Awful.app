@@ -26,17 +26,25 @@ final class BookmarkListViewController: ThreadListViewController {
         self.dataSource = dataSource
     }
     
+    private lazy var infiniteTableController: InfiniteTableController = { [unowned self] in
+        let controller = InfiniteTableController(tableView: self.tableView) { [unowned self] in
+            self.loadPage(self.mostRecentlyLoadedPage + 1)
+        }
+        controller.enabled = false
+        return controller
+        }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         self.refreshControl = refreshControl
-        
-        tableView.addInfiniteScrollingWithActionHandler { [unowned self] in
-            self.loadPage(self.mostRecentlyLoadedPage + 1)
-        }
-        tableView.showsInfiniteScrolling = false
+    }
+    
+    override func themeDidChange() {
+        super.themeDidChange()
+        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -90,12 +98,16 @@ final class BookmarkListViewController: ThreadListViewController {
             }
             
             self?.refreshControl?.endRefreshing()
-            self?.tableView.infiniteScrollingView?.stopAnimating()
-            self?.tableView.showsInfiniteScrolling = threads?.count >= 40
+            self?.infiniteTableController.stop()
+            self?.infiniteTableController.enabled = threads?.count >= 40
         }
     }
     
     private var mostRecentlyLoadedPage = 0
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        infiniteTableController.scrollViewDidScroll(scrollView)
+    }
     
     override func canBecomeFirstResponder() -> Bool {
         return true

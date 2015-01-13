@@ -86,7 +86,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
                 self?.presentViewController(alert, animated: true, completion: nil)
             } else {
                 if page == 1 {
-                    self?.tableView.showsInfiniteScrolling = true
+                    self?.infiniteTableController.enabled = true
                 }
                 
                 if self?.threadTag == nil {
@@ -100,7 +100,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
             
             self?.mostRecentlyLoadedPage = page
             self?.refreshControl?.endRefreshing()
-            self?.tableView.infiniteScrollingView.stopAnimating()
+            self?.infiniteTableController.stop()
         }
     }
     
@@ -155,16 +155,20 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         activity.webpageURL = NSURL(string: "http://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
     }
     
+    private lazy var infiniteTableController: InfiniteTableController = { [unowned self] in
+        let controller = InfiniteTableController(tableView: self.tableView) { [unowned self] in
+            self.loadPage(self.mostRecentlyLoadedPage + 1)
+        }
+        controller.enabled = false
+        return controller
+        }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let refresh = UIRefreshControl()
         refresh.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         self.refreshControl = refresh
-        
-        tableView.addInfiniteScrollingWithActionHandler { [unowned self] in
-            self.loadPage(self.mostRecentlyLoadedPage + 1)
-        }
         
         tableView.tableHeaderView = filterButton
         updateFilterButtonText()
@@ -175,6 +179,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     override func themeDidChange() {
         super.themeDidChange()
         filterButton.tintColor = theme["tintColor"] as UIColor?
+        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -191,13 +196,17 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        tableView.showsInfiniteScrolling = mostRecentlyLoadedPage > 1
+        infiniteTableController.enabled = mostRecentlyLoadedPage > 1
         
         refreshIfNecessary()
         
         let userActivity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
         userActivity.needsSave = true
         self.userActivity = userActivity
+    }
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        infiniteTableController.scrollViewDidScroll(scrollView)
     }
 }
 
