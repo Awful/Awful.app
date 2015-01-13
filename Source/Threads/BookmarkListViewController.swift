@@ -7,6 +7,7 @@
 @objc(BookmarkedThreadListViewController)
 final class BookmarkListViewController: ThreadListViewController {
     let managedObjectContext: NSManagedObjectContext
+    private var mostRecentlyLoadedPage = 0
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -103,13 +104,13 @@ final class BookmarkListViewController: ThreadListViewController {
         }
     }
     
-    private var mostRecentlyLoadedPage = 0
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         infiniteTableController.scrollViewDidScroll(scrollView)
     }
     
     override func canBecomeFirstResponder() -> Bool {
+        // For undo.
         return true
     }
     
