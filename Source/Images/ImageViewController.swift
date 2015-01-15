@@ -234,7 +234,7 @@ extension ImageViewController: UIGestureRecognizerDelegate {
     }
 }
 
-private class ContentCenteringScrollView: UIScrollView {
+private final class ContentCenteringScrollView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if let contentView = delegate?.viewForZoomingInScrollView?(self) {
@@ -273,7 +273,7 @@ extension ImageViewController: UIScrollViewDelegate {
 }
 
 /// Adds a "Preview Image" activity. The image's URL needs to go through wrapURL() before being added to the activityItems array, and no other activities will see or attempt to use the URL.
-class ImagePreviewActivity: UIActivity {
+final class ImagePreviewActivity: UIActivity {
     class func wrapImageURL(imageURL: NSURL) -> AnyObject {
         return ImageURLWrapper(imageURL)
     }
