@@ -1,4 +1,4 @@
-//  ArrayExtensions.swift
+//  CoreExtensions.swift
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -21,4 +21,17 @@ extension Array {
             return nil
         }
     }
+}
+
+func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
+    return first(sequence, includeElement) != nil
+}
+
+func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> T? {
+    for element in sequence {
+        if includeElement(element) {
+            return element
+        }
+    }
+    return nil
 }

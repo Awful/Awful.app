@@ -313,16 +313,3 @@ final class ImagePreviewActivity: UIActivity {
         }
     }
 }
-
-func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: (T) -> Bool) -> Bool {
-    return first(sequence, includeElement) != nil
-}
-
-func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: (T) -> Bool) -> T? {
-    for element in sequence {
-        if includeElement(element) {
-            return element
-        }
-    }
-    return nil
-}
