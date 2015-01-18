@@ -1,5 +1,7 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
+#import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import <AsyncDisplayKit/ASDisplayNode+Subclasses.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
