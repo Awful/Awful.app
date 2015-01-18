@@ -23,13 +23,15 @@ extension Array {
     }
 }
 
-func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
-    return first(sequence, includeElement) != nil
+/// Returns true if any elements in sequence pass the predicate.
+func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, predicate: T -> Bool) -> Bool {
+    return first(sequence, predicate) != nil
 }
 
-func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> T? {
+/// Returns the first element in sequence that passes the predicate.
+func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, predicate: T -> Bool) -> T? {
     for element in sequence {
-        if includeElement(element) {
+        if predicate(element) {
             return element
         }
     }

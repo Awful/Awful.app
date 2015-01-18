@@ -119,6 +119,7 @@
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C674AB01A6C217900240966 /* NewThreadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C674AAF1A6C217900240966 /* NewThreadListViewController.swift */; };
 		1C6D2E99182C5F6900785766 /* ProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* ProfileScraper.m */; };
 		1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */; };
 		1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
@@ -128,6 +129,10 @@
 		1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFEDB182A74A60014311C /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C6FFEE1182AA5CB0014311C /* ScrapingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */; };
+		1C71A7841A6EA04700F79C39 /* ThreadTagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */; };
+		1C71A7871A6EA30800F79C39 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7861A6EA30800F79C39 /* Geometry.swift */; };
+		1C71A7891A6EA34D00F79C39 /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7881A6EA34D00F79C39 /* Dispatch.swift */; };
+		1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */; };
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */; };
 		1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */; };
@@ -212,7 +217,7 @@
 		1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */; };
 		1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */; };
 		1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */; };
-		1CC256C11A3B154A003FA7A8 /* CoreExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */; };
+		1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
@@ -547,6 +552,7 @@
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
+		1C674AAF1A6C217900240966 /* NewThreadListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadListViewController.swift; sourceTree = "<group>"; };
 		1C6D2E97182C5F6900785766 /* ProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileScraper.h; sourceTree = "<group>"; };
 		1C6D2E98182C5F6900785766 /* ProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileScraper.m; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapingTests.swift; sourceTree = "<group>"; };
@@ -568,6 +574,10 @@
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
+		1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagNode.swift; sourceTree = "<group>"; };
+		1C71A7861A6EA30800F79C39 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
+		1C71A7881A6EA34D00F79C39 /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
+		1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSAtomic.swift; sourceTree = "<group>"; };
 		1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagAndRatingView.h; sourceTree = "<group>"; };
 		1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagAndRatingView.m; sourceTree = "<group>"; };
 		1C7487EF16A88BAD0068B8A3 /* CompositionInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositionInputAccessoryView.h; sourceTree = "<group>"; };
@@ -696,7 +706,7 @@
 		1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloseBBcodeTagCommand.m; sourceTree = "<group>"; };
 		1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowSmilieKeyboardCommand.swift; sourceTree = "<group>"; };
 		1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionMenuTree.swift; sourceTree = "<group>"; };
-		1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtensions.swift; sourceTree = "<group>"; };
+		1CC256C01A3B154A003FA7A8 /* Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swift.swift; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
@@ -1067,6 +1077,7 @@
 				1CA04BE8195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m */,
 				1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */,
 				1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */,
+				1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */,
 			);
 			path = "Thread Tags";
 			sourceTree = "<group>";
@@ -1076,6 +1087,7 @@
 			children = (
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
+				1C71A7851A6EA2B000F79C39 /* Extensions */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1CE2D99D16688AC40024AC1C /* Framework Categories */,
 				1CBE1B0719CA03F100510187 /* Images */,
@@ -1091,7 +1103,6 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
-				1C8A8CFD1A3C28E900E4F6A4 /* Swift */,
 				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1233,6 +1244,17 @@
 			path = Profiles;
 			sourceTree = "<group>";
 		};
+		1C71A7851A6EA2B000F79C39 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				1C71A7881A6EA34D00F79C39 /* Dispatch.swift */,
+				1C71A7861A6EA30800F79C39 /* Geometry.swift */,
+				1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */,
+				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
 			isa = PBXGroup;
 			children = (
@@ -1270,14 +1292,6 @@
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
 			);
 			path = Settings;
-			sourceTree = "<group>";
-		};
-		1C8A8CFD1A3C28E900E4F6A4 /* Swift */ = {
-			isa = PBXGroup;
-			children = (
-				1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */,
-			);
-			path = Swift;
 			sourceTree = "<group>";
 		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
@@ -1479,6 +1493,7 @@
 				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
 				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
 				1CA86BD51A370FD300103C1C /* ThreadListViewController.swift */,
+				1C674AAF1A6C217900240966 /* NewThreadListViewController.swift */,
 			);
 			path = Threads;
 			sourceTree = "<group>";
@@ -2202,6 +2217,8 @@
 			files = (
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
+				1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */,
+				1C71A7841A6EA04700F79C39 /* ThreadTagNode.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
@@ -2212,6 +2229,7 @@
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
+				1C71A7891A6EA34D00F79C39 /* Dispatch.swift in Sources */,
 				1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
@@ -2247,6 +2265,7 @@
 				1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */,
 				1CD82F2D19428D0900B0C5BD /* AwfulImageURLProtocol.m in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
+				1C674AB01A6C217900240966 /* NewThreadListViewController.swift in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
 				1C6D2EA2182D5DFB00785766 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,
@@ -2281,7 +2300,7 @@
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* PrivateMessageViewModel.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
-				1CC256C11A3B154A003FA7A8 /* CoreExtensions.swift in Sources */,
+				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
@@ -2327,6 +2346,7 @@
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
 				1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */,
+				1C71A7871A6EA30800F79C39 /* Geometry.swift in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1C9804E418D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m in Sources */,
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
