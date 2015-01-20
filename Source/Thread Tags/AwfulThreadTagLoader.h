@@ -10,7 +10,7 @@
 @interface AwfulThreadTagLoader : NSObject
 
 /**
- * Loads and caches a thread tag image using the convenient singleton.
+ * Loads and caches a thread tag image using the convenient singleton. Is as thread-safe as +[UIImage imageNamed:].
  *
  * @param imageName The basename of the thread tag (i.e. no path or extension).
  *
@@ -21,22 +21,22 @@
 + (UIImage *)imageNamed:(NSString *)imageName;
 
 /**
- * A generic image representing a thread.
+ * A generic image representing a thread. Is as thread-safe as +[UIImage imageNamed:].
  */
 + (UIImage *)emptyThreadTagImage;
 
 /**
- * A generic image representing a private message.
+ * A generic image representing a private message. Is as thread-safe as +[UIImage imageNamed:].
  */
 + (UIImage *)emptyPrivateMessageImage;
 
 /**
- * A placeholder image representing "no selection".
+ * A placeholder image representing "no selection". Is as thread-safe as +[UIImage imageNamed:].
  */
 + (UIImage *)unsetThreadTagImage;
 
 /**
- * A placeholder image representing "no filter".
+ * A placeholder image representing "no filter". Is as thread-safe as +[UIImage imageNamed:].
  */
 + (UIImage *)noFilterTagImage;
 
@@ -61,7 +61,7 @@
 @property (readonly, strong, nonatomic) NSURL *cacheFolder;
 
 /**
- * Loads and caches a thread tag image.
+ * Loads and caches a thread tag image. Is as thread-safe as +[UIImage imageNamed:].
  *
  * @param imageName The basename of the thread tag (i.e. no path or extension).
  *
