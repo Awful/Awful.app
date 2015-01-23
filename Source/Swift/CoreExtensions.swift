@@ -35,3 +35,15 @@ func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, inclu
     }
     return nil
 }
+
+extension Int {
+    func clamp<T: IntervalType where T.Bound == Int>(interval: T) -> Int {
+        if self < interval.start {
+            return interval.start
+        } else if self > interval.end {
+            return interval.end
+        } else {
+            return self
+        }
+    }
+}
