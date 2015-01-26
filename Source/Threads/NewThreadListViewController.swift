@@ -310,6 +310,7 @@ private struct ThreadViewModel {
     let tagImageName: String?
     let ratingImage: UIImage?
     
+    /// Must be called on the main thread.
     init(thread: Thread, theme: AwfulTheme) {
         self.theme = theme
         title = thread.title ?? ""
