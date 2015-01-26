@@ -129,7 +129,6 @@
 		1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
 		1C6FFEDB182A74A60014311C /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C6FFEE1182AA5CB0014311C /* ScrapingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */; };
-		1C71A7841A6EA04700F79C39 /* ThreadTagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */; };
 		1C71A7871A6EA30800F79C39 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7861A6EA30800F79C39 /* Geometry.swift */; };
 		1C71A7891A6EA34D00F79C39 /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7881A6EA34D00F79C39 /* Dispatch.swift */; };
 		1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */; };
@@ -574,7 +573,6 @@
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
-		1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagNode.swift; sourceTree = "<group>"; };
 		1C71A7861A6EA30800F79C39 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		1C71A7881A6EA34D00F79C39 /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSAtomic.swift; sourceTree = "<group>"; };
@@ -1077,7 +1075,6 @@
 				1CA04BE8195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m */,
 				1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */,
 				1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */,
-				1C71A7831A6EA04700F79C39 /* ThreadTagNode.swift */,
 			);
 			path = "Thread Tags";
 			sourceTree = "<group>";
@@ -2218,7 +2215,6 @@
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */,
-				1C71A7841A6EA04700F79C39 /* ThreadTagNode.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,

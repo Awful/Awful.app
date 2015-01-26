@@ -178,27 +178,43 @@ private final class ThreadCellNode: ASCellNode {
     }
     
     private final class TagAndRatingNode: ASDisplayNode {
-        private let tagNode = ThreadTagNode()
-        private let ratingNode = ASImageNode()
+        
+        // Public API
         
         override init() {
             super.init()
-            addSubnode(tagNode)
             addSubnode(ratingNode)
         }
         
         func setTagImageName(tagImageName: String?, placeholderImage: UIImage?) {
-            tagNode.missingTagImage = placeholderImage
-            tagNode.tagImageName = tagImageName
+            if let placeholderImage = placeholderImage {
+                tagController = ThreadTagController(placeholderImage: placeholderImage, tagImageName: tagImageName)
+            } else {
+                tagController = nil
+            }
         }
         
         var ratingImage: UIImage? {
-            get {
-                return ratingNode.image
+            get { return ratingNode.image }
+            set { ratingNode.image = newValue }
+        }
+        
+        
+        // Private API
+        
+        private let ratingNode = ASImageNode()
+        private var tagController: ThreadTagController! {
+            didSet {
+                if let oldNode = oldValue?.node {
+                    oldNode.removeFromSupernode()
+                }
+                if let newNode = tagController?.node {
+                    addSubnode(newNode)
+                }
             }
-            set {
-                ratingNode.image = newValue
-            }
+        }
+        private var tagNode: ASDisplayNode {
+            return tagController.node
         }
         
         private var padding: CGFloat { return 2 }
@@ -206,7 +222,9 @@ private final class ThreadCellNode: ASCellNode {
         private override func calculateSizeThatFits(constrainedSize: CGSize) -> CGSize {
             let tagSize = tagNode.measure(constrainedSize)
             let ratingSize = ratingNode.measure(constrainedSize)
-            if ratingSize.isEmpty {
+            if tagSize.isEmpty {
+                return ratingSize
+            } else if ratingSize.isEmpty {
                 return tagSize
             } else {
                 return CGSize(
@@ -227,6 +245,56 @@ private final class ThreadCellNode: ASCellNode {
     }
 }
 
+/// Loads a thread tag into an ASImageNode, showing a placeholder when necessary.
+final private class ThreadTagController: NSObject {
+    
+    // Public API
+    
+    var node: ASDisplayNode { return imageNode }
+    
+    /// The placeholder image is displayed immediately. The named tag image is displayed once it's available.
+    init(placeholderImage: UIImage?, tagImageName: String?) {
+        imageNode.image = placeholderImage
+        super.init()
+        
+        if let imageName = tagImageName {
+            dispatch_main_async {
+                if let tagImage = AwfulThreadTagLoader.imageNamed(imageName) {
+                    self.imageNode.image = tagImage
+                } else {
+                    self.tagImageName = imageName
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: "newTagImageAvailable:", name: AwfulThreadTagLoaderNewImageAvailableNotification, object: nil)
+                }
+            }
+        }
+    }
+    
+    
+    // Private API
+    
+    private let imageNode = ASImageNode()
+    private var tagImageName: String?
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
+    @objc private func newTagImageAvailable(note: NSNotification) {
+        if let newImageName = note.userInfo?[AwfulThreadTagLoaderNewImageNameKey] as String? {
+            if newImageName == tagImageName {
+                dispatch_main_async {
+                    if let tagImage = AwfulThreadTagLoader.imageNamed(self.tagImageName) {
+                        self.imageNode.image = tagImage
+                    }
+                }
+                
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: note.name, object: nil)
+            }
+        }
+    }
+}
+
+/// Presents a thread to a thread cell.
 private struct ThreadViewModel {
     let theme: AwfulTheme
     let title: String
