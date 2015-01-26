@@ -90,6 +90,7 @@ private final class ThreadCellNode: ASCellNode {
         didSet {
             tagAndRatingNode.setTagImageName(viewModel.tagImageName, placeholderImage: viewModel.missingTagImage)
             tagAndRatingNode.ratingNode.image = viewModel.ratingImage
+            tagAndRatingNode.alpha = viewModel.tagAndRatingAlpha
             
             titleNode.attributedString = NSAttributedString(string: viewModel.title, attributes: [
                 NSFontAttributeName: viewModel.titleFont,
@@ -296,32 +297,46 @@ final private class ThreadTagController: NSObject {
 
 /// Presents a thread to a thread cell.
 private struct ThreadViewModel {
-    let theme: AwfulTheme
     let title: String
     let titleFont: UIFont
-    var bottomLine: String { return "\(numberOfPages) pages. \(killedBy)" }
+    let titleColor: UIColor
+    
+    let bottomLine: String
     let bottomLineFont: UIFont
-    private let numberOfPages: String
-    private let killedBy: String
+    let bottomLineTextColor: UIColor
+
     let unreadPosts: String
     let unreadPostsFont: UIFont
     let unreadPostsColor: UIColor
+    
     let missingTagImage: UIImage?
     let tagImageName: String?
     let ratingImage: UIImage?
+    let tagAndRatingAlpha: CGFloat
     
-    /// Must be called on the main thread.
+    let separatorColor: UIColor
+    let backgroundColor: UIColor
+    
+    /// Must be called on the main thread. (Properties can be accessed from any thread.)
     init(thread: Thread, theme: AwfulTheme) {
-        self.theme = theme
+        let appearsClosed = thread.closed && !thread.sticky
+        
         title = thread.title ?? ""
-        numberOfPages = "\(thread.numberOfPages)"
+        if appearsClosed {
+            titleColor = UIColor.grayColor()
+        } else {
+            titleColor = theme["listTextColor"] as UIColor? ?? UIColor.blackColor()
+        }
+        
+        let pages = "\(thread.numberOfPages) pages"
         if thread.beenSeen {
             let lastPoster = thread.lastPostAuthorName ?? ""
-            killedBy = "Killed by \(lastPoster)"
+            bottomLine = "\(pages). Killed by \(lastPoster)"
         } else {
             let author = thread.author?.username ?? ""
-            killedBy = "Posted by \(author)"
+            bottomLine = "\(pages). Posted by \(author)"
         }
+        bottomLineTextColor = theme["listSecondaryTextColor"] as UIColor? ?? UIColor.darkGrayColor()
         
         unreadPosts = thread.beenSeen ? "\(thread.unreadPosts)" : ""
         unreadPostsColor = {
@@ -359,26 +374,16 @@ private struct ThreadViewModel {
             if rating > 0 && (AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true) {
                 ratingImage = UIImage(named: "rating\(rating)")
             }
+            
+            tagAndRatingAlpha = appearsClosed ? 0.5 : 1
         } else {
             missingTagImage = nil
             tagImageName = nil
+            tagAndRatingAlpha = 1
         }
-    }
-    
-    var titleColor: UIColor {
-        return theme["listTextColor"] as UIColor? ?? UIColor.blackColor()
-    }
-    
-    var bottomLineTextColor: UIColor {
-        return theme["listSecondaryTextColor"] as UIColor? ?? UIColor.darkGrayColor()
-    }
-    
-    var separatorColor: UIColor? {
-        return theme["listSeparatorColor"] as UIColor?
-    }
-    
-    var backgroundColor: UIColor? {
-        return theme["listBackgroundColor"] as UIColor?
+        
+        separatorColor = theme["listSeparatorColor"] as UIColor? ?? UIColor.grayColor()
+        backgroundColor = theme["listBackgroundColor"] as UIColor? ?? UIColor.whiteColor()
     }
 }
 
