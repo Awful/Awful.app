@@ -355,7 +355,7 @@ private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSF
     
     private func viewModelForThreadAtIndexPath(indexPath: NSIndexPath) -> ThreadViewModel {
         var viewModel: ThreadViewModel!
-        dispatch_main_sync {
+        controller.managedObjectContext.performBlockAndWait {
             let thread = self[indexPath]
             viewModel = ThreadViewModel(thread: thread, theme: self.theme)
         }
