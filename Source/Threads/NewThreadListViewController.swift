@@ -219,7 +219,7 @@ private final class ThreadCellNode: ASCellNode {
         
         private var padding: CGFloat { return 2 }
         
-        private override func calculateSizeThatFits(constrainedSize: CGSize) -> CGSize {
+        override func calculateSizeThatFits(constrainedSize: CGSize) -> CGSize {
             let tagSize = tagNode.measure(constrainedSize)
             let ratingSize = ratingNode.measure(constrainedSize)
             if tagSize.isEmpty {
@@ -233,7 +233,7 @@ private final class ThreadCellNode: ASCellNode {
             }
         }
         
-        private override func layout() {
+        override func layout() {
             tagNode.frame = CGRect(size: tagNode.calculatedSize, centeredInRect: bounds)
             let ratingSize = ratingNode.calculatedSize
             ratingNode.frame = CGRect(size: ratingSize, centeredInRect: bounds)
