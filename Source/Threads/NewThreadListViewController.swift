@@ -337,7 +337,7 @@ private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSF
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: AwfulAppDelegate.instance().managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         var error: NSError?
         if !controller.performFetch(&error) {
-            fatalError("initial fetch failedf: \(error)")
+            fatalError("initial fetch failed: \(error)")
         }
         
         controller.delegate = self
