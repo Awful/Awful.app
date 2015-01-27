@@ -3,17 +3,32 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 final class NewThreadListViewController: AwfulViewController, ASTableViewDelegate {
-    private let tableView: ASTableView
-    private var refreshControl: UIRefreshControl!
+    private let tableView = ASTableView()
+    private let refreshControl = UIRefreshControl()
     private lazy var dataSource: NewBookmarksDataSource = { [unowned self] in
         return NewBookmarksDataSource(tableView: self.tableView, themeProvider: self) }()
+    private lazy var infiniteTableController: InfiniteTableController = { [unowned self] in
+        let controller = InfiniteTableController(tableView: self.tableView) { [unowned self] in
+            self.loadBookmarksPage(self.mostRecentlyLoadedPage + 1)
+        }
+        controller.enabled = false
+        return controller
+        }()
+    private var mostRecentlyLoadedPage = 0
     
     override init() {
-        tableView = ASTableView()
         super.init(nibName: nil, bundle: nil)
         
         tableView.asyncDataSource = dataSource
         tableView.asyncDelegate = self
+        
+        tableView.separatorStyle = .None
+        
+        refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        // HACK: UIRefreshControl is only documented to work with UITableViewController. Expect this to break at any time.
+        tableView.addSubview(refreshControl)
+        
+        self.view = tableView
         
         title = "Bookmarks"
         tabBarItem.image = UIImage(named: "bookmarks")
@@ -23,15 +38,36 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func refresh(sender: UIRefreshControl?) {
-        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(1) { [weak self] error, threads in
-            if error != nil && self?.visible == true {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
+    private func loadBookmarksPage(page: Int) {
+        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
+            if let error = error {
+                if self?.visible == true {
+                    let alert = UIAlertController(networkError: error, handler: nil)
+                    self?.presentViewController(alert, animated: true, completion: nil)
+                }
             }
             
-            sender?.endRefreshing()
-            return
+            if error == nil {
+                self?.mostRecentlyLoadedPage = page
+                AwfulRefreshMinder.sharedMinder().didFinishRefreshingBookmarks()
+            }
+            
+            self?.refreshControl.endRefreshing()
+            self?.infiniteTableController.stop()
+            self?.infiniteTableController.enabled = threads?.count >= 40
+        }
+    }
+    
+    @objc private func refresh() {
+        refreshControl.beginRefreshing()
+        loadBookmarksPage(1)
+    }
+    
+    private func refreshIfNecessary() {
+        if !AwfulForumsClient.sharedClient().reachable { return }
+        
+        if dataSource.isEmpty || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks() {
+            refresh()
         }
     }
     
@@ -52,24 +88,18 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
     
     // MARK: View lifecycle
     
-    override func loadView() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
         KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.threadsSortedByUnread, options: nil) { [unowned self] _, _, _ in
             self.dataSource = NewBookmarksDataSource(tableView: self.tableView, themeProvider: self)
             self.tableView.asyncDataSource = self.dataSource
             self.tableView.reloadData()
         }
+        
         KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.showThreadTags, options: nil) { [unowned self] _, _, _ in
             self.tableView.reloadData()
         }
-        
-        // HACK: UIRefreshControl is only documented to work with UITableViewController. Expect this to break at any time.
-        refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
-        tableView.addSubview(refreshControl)
-        
-        tableView.separatorStyle = .None
-        
-        view = tableView
     }
     
     override func themeDidChange() {
@@ -77,6 +107,12 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
         
         tableView.reloadData()
         refreshControl.tintColor = theme["listText"]
+        infiniteTableController.spinnerColor = theme["listText"]
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        refreshIfNecessary()
     }
 }
 
@@ -401,7 +437,7 @@ extension NewThreadListViewController: ThemeProvider {}
 private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSFetchedResultsControllerDelegate {
     private let tableView: UITableView
     private let themeProvider: ThemeProvider
-    var theme: AwfulTheme { return themeProvider.theme }
+    var isEmpty: Bool { return controller.fetchedObjects?.isEmpty ?? true }
     
     lazy var controller: NSFetchedResultsController = { [unowned self] in
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
@@ -438,7 +474,7 @@ private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSF
         var viewModel: ThreadViewModel!
         controller.managedObjectContext.performBlockAndWait {
             let thread = self[indexPath]
-            viewModel = ThreadViewModel(thread: thread, theme: self.theme)
+            viewModel = ThreadViewModel(thread: thread, theme: self.themeProvider.theme)
         }
         return viewModel
     }
