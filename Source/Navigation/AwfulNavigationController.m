@@ -4,7 +4,7 @@
 
 #import "AwfulNavigationController.h"
 #import "AwfulUnpoppingViewHandler.h"
-#import "UIViewController+AwfulTheme.h"
+#import "Awful-Swift.h"
 
 @interface AwfulNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIViewControllerRestoration>
 

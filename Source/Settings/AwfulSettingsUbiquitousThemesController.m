@@ -3,8 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSettingsUbiquitousThemesController.h"
-#import "AwfulSettings.h"
-#import "AwfulThemeLoader.h"
+#import "Awful-Swift.h"
 
 @interface AwfulSettingsUbiquitousThemesController ()
 

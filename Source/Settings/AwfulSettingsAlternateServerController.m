@@ -3,9 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSettingsAlternateServerController.h"
-#import "AwfulForumsClient.h"
-#import "AwfulRefreshMinder.h"
-#import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @interface AwfulSettingsAlternateServerController ()
 

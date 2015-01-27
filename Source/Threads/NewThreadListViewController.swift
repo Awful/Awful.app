@@ -74,8 +74,9 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
     
     override func themeDidChange() {
         super.themeDidChange()
+        
         tableView.reloadData()
-        refreshControl.tintColor = theme["listTextColor"] as? UIColor
+        refreshControl.tintColor = theme["listText"]
     }
 }
 
@@ -329,7 +330,7 @@ private struct ThreadViewModel {
         if appearsClosed {
             titleColor = UIColor.grayColor()
         } else {
-            titleColor = theme["listTextColor"] as UIColor? ?? UIColor.blackColor()
+            titleColor = theme["listText"]
         }
         
         let pages = "\(thread.numberOfPages) pages"
@@ -340,16 +341,16 @@ private struct ThreadViewModel {
             let author = thread.author?.username ?? ""
             bottomLine = "\(pages). Posted by \(author)"
         }
-        bottomLineTextColor = theme["listSecondaryTextColor"] as UIColor? ?? UIColor.darkGrayColor()
+        bottomLineTextColor = theme["listSecondaryText"]
         
         unreadPosts = thread.beenSeen ? "\(thread.unreadPosts)" : ""
         unreadPostsColor = {
             if thread.unreadPosts > 0 {
                 switch (thread.starCategory) {
-                case .Orange: return theme["unreadBadgeOrangeColor"] as UIColor?
-                case .Red: return theme["unreadBadgeRedColor"] as UIColor?
-                case .Yellow: return theme["unreadBadgeYellowColor"] as UIColor?
-                case .None: return theme["tintColor"] as UIColor?
+                case .Orange: return theme["unreadBadgeOrange"]
+                case .Red: return theme["unreadBadgeRed"]
+                case .Yellow: return theme["unreadBadgeYellow"]
+                case .None: return theme["tint"]
                 }
             }
             return nil
@@ -386,8 +387,8 @@ private struct ThreadViewModel {
             tagAndRatingAlpha = 1
         }
         
-        separatorColor = theme["listSeparatorColor"] as UIColor? ?? UIColor.grayColor()
-        backgroundColor = theme["listBackgroundColor"] as UIColor? ?? UIColor.whiteColor()
+        separatorColor = theme["listSeparator"]
+        backgroundColor = theme["listBackground"]
     }
 }
 

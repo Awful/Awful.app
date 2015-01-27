@@ -87,6 +87,7 @@
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
 		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
+		1C57C7CD1A7844EE00AC34CE /* AwfulTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C57C7CC1A7844EE00AC34CE /* AwfulTheme.swift */; };
 		1C588D3F19EA7FDD004C7809 /* SmilieOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C588D4019EA7FDD004C7809 /* SmilieOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */; };
 		1C588D4319EA9785004C7809 /* CleanupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4119EA974C004C7809 /* CleanupTests.m */; };
@@ -508,6 +509,7 @@
 		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
 		1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsAvatarHeader.swift; sourceTree = "<group>"; };
 		1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsAvatarHeader.xib; sourceTree = "<group>"; };
+		1C57C7CC1A7844EE00AC34CE /* AwfulTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulTheme.swift; sourceTree = "<group>"; };
 		1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieOperation.h; sourceTree = "<group>"; };
 		1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieOperation.m; sourceTree = "<group>"; };
 		1C588D4119EA974C004C7809 /* CleanupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CleanupTests.m; sourceTree = "<group>"; };
@@ -1531,6 +1533,7 @@
 				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
 				1CDD48B517EE1CD000E4DAE3 /* AwfulTheme.h */,
 				1CDD48B617EE1CD000E4DAE3 /* AwfulTheme.m */,
+				1C57C7CC1A7844EE00AC34CE /* AwfulTheme.swift */,
 				1CDD48B817EE1F1700E4DAE3 /* AwfulThemeLoader.h */,
 				1CDD48B917EE1F1700E4DAE3 /* AwfulThemeLoader.m */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
@@ -2355,6 +2358,7 @@
 				1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1C6FFED7182A67210014311C /* AwfulCompoundDateParser.m in Sources */,
+				1C57C7CD1A7844EE00AC34CE /* AwfulTheme.swift in Sources */,
 				1C442FCD1A0E1C77001BD898 /* ThreadTag.swift in Sources */,
 				1CDD48B717EE1CD000E4DAE3 /* AwfulTheme.m in Sources */,
 				1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */,

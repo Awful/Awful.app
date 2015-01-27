@@ -130,7 +130,7 @@ extension InAppActionViewController: UICollectionViewDataSource, UICollectionVie
         cell.titleLabel.text = item.title
         cell.titleLabel.textColor = theme["sheetTextColor"] as UIColor? ?? UIColor.blackColor()
         cell.iconImageView.image = item.icon
-        cell.tintColor = theme[item.themeKey] as? UIColor
+        cell.tintColor = theme[item.themeKey]
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = item.title
         cell.accessibilityTraits = UIAccessibilityTraitButton

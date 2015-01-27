@@ -56,28 +56,28 @@
 
 - (BOOL)forumSpecific
 {
-    return !![self objectForKey:@"relevantForumID"];
+    return !![self rawObjectForKey:@"relevantForumID"];
 }
 
-- (id)objectForKey:(id)key
+- (id)rawObjectForKey:(NSString *)key
 {
-    return _dictionary[key] ?: [self.parentTheme objectForKey:key];
+    return _dictionary[key] ?: [self.parentTheme rawObjectForKey:key];
 }
 
-- (id)objectForKeyedSubscript:(NSString *)key
+- (id)objectForKey:(NSString *)key
 {
     if ([key hasSuffix:@"Color"]) {
         return [self colorForKey:key];
     } else if ([key hasSuffix:@"CSS"]) {
         return [self stylesheetForKey:key];
     } else {
-        return [self objectForKey:key];
+        return [self rawObjectForKey:key];
     }
 }
 
 - (UIColor *)colorForKey:(NSString *)key
 {
-    NSString *value = [self objectForKey:key];
+    NSString *value = [self rawObjectForKey:key];
     if (!value) return nil;
     return [UIColor awful_colorWithHexCode:value] ?: ColorWithPatternImageNamed(value);
 }
@@ -89,7 +89,7 @@ static UIColor * ColorWithPatternImageNamed(NSString *name)
 
 - (NSString *)stylesheetForKey:(NSString *)key
 {
-    NSURL *url = [[NSBundle mainBundle] URLForResource:[self objectForKey:key] withExtension:nil];
+    NSURL *url = [[NSBundle mainBundle] URLForResource:[self rawObjectForKey:key] withExtension:nil];
     NSError *error;
     NSString *stylesheet = [NSString stringWithContentsOfURL:url usedEncoding:nil error:&error];
     NSAssert(stylesheet, @"could not load stylesheet in theme %@ for key %@; error: %@", self.name, key, error);

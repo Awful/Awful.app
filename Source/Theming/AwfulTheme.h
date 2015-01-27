@@ -67,9 +67,7 @@
  */
 @property (weak, nonatomic) AwfulTheme *parentTheme;
 
-/**
- * Returns an NSString or a UIColor for the given key.
- */
-- (id)objectForKeyedSubscript:(id)key;
+/// Returns an NSString or a UIColor for the given key.
+- (id)objectForKey:(NSString *)key;
 
 @end
