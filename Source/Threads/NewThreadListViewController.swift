@@ -6,7 +6,7 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
     private let tableView: ASTableView
     private var refreshControl: UIRefreshControl!
     private lazy var dataSource: NewBookmarksDataSource = { [unowned self] in
-        return NewBookmarksDataSource(themeProvider: self) }()
+        return NewBookmarksDataSource(tableView: self.tableView, themeProvider: self) }()
     
     override init() {
         tableView = ASTableView()
@@ -54,7 +54,7 @@ final class NewThreadListViewController: AwfulViewController, ASTableViewDelegat
     
     override func loadView() {
         KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.threadsSortedByUnread, options: nil) { [unowned self] _, _, _ in
-            self.dataSource = NewBookmarksDataSource(themeProvider: self)
+            self.dataSource = NewBookmarksDataSource(tableView: self.tableView, themeProvider: self)
             self.tableView.asyncDataSource = self.dataSource
             self.tableView.reloadData()
         }
@@ -394,6 +394,7 @@ private protocol ThemeProvider {
 extension NewThreadListViewController: ThemeProvider {}
 
 private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSFetchedResultsControllerDelegate {
+    private let tableView: UITableView
     private let themeProvider: ThemeProvider
     var theme: AwfulTheme { return themeProvider.theme }
     
@@ -418,7 +419,8 @@ private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSF
         return controller
         }()
     
-    init(themeProvider: ThemeProvider) {
+    init(tableView: UITableView, themeProvider: ThemeProvider) {
+        self.tableView = tableView
         self.themeProvider = themeProvider
         super.init()
     }
@@ -452,6 +454,7 @@ private final class NewBookmarksDataSource: NSObject, ASTableViewDataSource, NSF
     // MARK: NSFetchedResultsControllerDelegate
     
     private func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        // TODO something useful
+        // TODO once ASTableView can handle beginUpdates/endUpdates, do that instead
+        tableView.reloadData()
     }
 }
