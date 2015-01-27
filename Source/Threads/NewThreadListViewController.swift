@@ -132,9 +132,11 @@ private final class ThreadCellNode: ASCellNode {
     }
     
     private var outerInsets: UIEdgeInsets { return UIEdgeInsets(horizontal: 8, vertical: 8) }
-    private var tagPadding: UIEdgeInsets { return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8) }
-    private var bottomLinePadding: UIEdgeInsets { return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0) }
-    private var unreadPostsPadding: UIEdgeInsets { return UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0) }
+    private struct Padding {
+        static let tagRight: CGFloat = 8
+        static let titleBottom: CGFloat = 4
+        static let unreadPostsLeft: CGFloat = 5
+    }
     
     private var titlePadding = UIEdgeInsetsZero
     
@@ -143,14 +145,14 @@ private final class ThreadCellNode: ASCellNode {
         let leftSize = tagAndRatingNode.measure(availableSize)
         let rightSize = unreadPostsNode.measure(availableSize)
         titlePadding = UIEdgeInsets(
-            left: leftSize.width > 0 ? tagPadding.right : 0,
-            right: rightSize.width > 0 ? unreadPostsPadding.left : 0)
+            left: leftSize.width > 0 ? Padding.tagRight : 0,
+            right: rightSize.width > 0 ? Padding.unreadPostsLeft : 0)
         
         let availableMiddleWidth = availableSize.width - leftSize.width - rightSize.width - titlePadding.horizontal
         let titleSize = titleNode.measure(CGSize(width: availableMiddleWidth, height: constrainedSize.height))
         let bottomLineSize = bottomLineNode.measure(CGSize(width: availableMiddleWidth, height: constrainedSize.height))
         
-        let middleHeight = titleSize.height + bottomLineSize.height + bottomLinePadding.top
+        let middleHeight = titleSize.height + Padding.titleBottom + bottomLineSize.height
         let requiredHeight = max(leftSize.height, middleHeight, rightSize.height)
         return CGSize(width: constrainedSize.width, height: ceil(requiredHeight + outerInsets.vertical))
     }
@@ -166,9 +168,9 @@ private final class ThreadCellNode: ASCellNode {
         
         let titleSize = titleNode.calculatedSize
         let bottomLineSize = bottomLineNode.calculatedSize
-        let combinedTextSize = CGSize(width: middlePart.width, height: titleSize.height + bottomLineSize.height + bottomLinePadding.top)
+        let combinedTextSize = CGSize(width: middlePart.width, height: titleSize.height + Padding.titleBottom + bottomLineSize.height)
         let combinedTextFrame = CGRect(size: combinedTextSize, centeredInRect: middlePart)
-        let (titleFrame, bottomLineFrame) = combinedTextFrame.rectsByDividing(titleSize.height, fromEdge: .MinYEdge, withGap: bottomLinePadding.top)
+        let (titleFrame, bottomLineFrame) = combinedTextFrame.rectsByDividing(titleSize.height, fromEdge: .MinYEdge, withGap: Padding.titleBottom)
         titleNode.frame = titleFrame
         bottomLineNode.frame = bottomLineFrame
         
@@ -218,7 +220,9 @@ private final class ThreadCellNode: ASCellNode {
             return tagController.node
         }
         
-        private var padding: CGFloat { return 2 }
+        private struct Padding {
+            static let tagBottom: CGFloat = 2
+        }
         
         override func calculateSizeThatFits(constrainedSize: CGSize) -> CGSize {
             let tagSize = tagNode.measure(constrainedSize)
@@ -230,7 +234,7 @@ private final class ThreadCellNode: ASCellNode {
             } else {
                 return CGSize(
                     width: max(tagSize.width, ratingSize.width),
-                    height: tagSize.height + ratingSize.height + padding)
+                    height: tagSize.height + Padding.tagBottom + ratingSize.height)
             }
         }
         
