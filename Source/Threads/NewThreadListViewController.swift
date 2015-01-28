@@ -215,7 +215,7 @@ private final class ThreadCellNode: ASCellNode {
         unreadPostsNode.frame = CGRect(size: rightSize, centeredInRect: rightPart)
         
         let pixelHeight = 1 / UIScreen.mainScreen().scale
-        separator.frame = CGRect(x: CGRectGetMinX(titleNode.frame), y: bounds.height - pixelHeight, width: bounds.width, height: pixelHeight)
+        separator.frame = CGRect(x: CGRectGetMinX(titleNode.frame), y: bounds.maxY - pixelHeight, width: bounds.width, height: pixelHeight)
     }
     
     private final class TagAndRatingNode: ASDisplayNode {
