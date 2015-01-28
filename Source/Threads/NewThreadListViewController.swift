@@ -127,6 +127,7 @@ private final class ThreadCellNode: ASCellNode {
         didSet {
             tagAndRatingNode.setTagImageName(viewModel.tagImageName, placeholderImage: viewModel.missingTagImage)
             tagAndRatingNode.ratingNode.image = viewModel.ratingImage
+            tagAndRatingNode.secondaryTagImage = viewModel.secondaryTagImage
             tagAndRatingNode.alpha = viewModel.tagAndRatingAlpha
             
             titleNode.attributedString = NSAttributedString(string: viewModel.title, attributes: [
@@ -224,6 +225,7 @@ private final class ThreadCellNode: ASCellNode {
         override init() {
             super.init()
             addSubnode(ratingNode)
+            addSubnode(secondaryTagNode)
         }
         
         func setTagImageName(tagImageName: String?, placeholderImage: UIImage?) {
@@ -232,6 +234,11 @@ private final class ThreadCellNode: ASCellNode {
             } else {
                 tagController = nil
             }
+        }
+        
+        var secondaryTagImage: UIImage? {
+            get { return secondaryTagNode.image }
+            set { secondaryTagNode.image = newValue }
         }
         
         var ratingImage: UIImage? {
@@ -243,13 +250,14 @@ private final class ThreadCellNode: ASCellNode {
         // Private API
         
         private let ratingNode = ASImageNode()
+        private let secondaryTagNode = ASImageNode()
         private var tagController: ThreadTagController! {
             didSet {
                 if let oldNode = oldValue?.node {
                     oldNode.removeFromSupernode()
                 }
                 if let newNode = tagController?.node {
-                    addSubnode(newNode)
+                    insertSubnode(newNode, belowSubnode: secondaryTagNode)
                 }
             }
         }
@@ -262,6 +270,8 @@ private final class ThreadCellNode: ASCellNode {
         }
         
         override func calculateSizeThatFits(constrainedSize: CGSize) -> CGSize {
+            secondaryTagNode.measure(constrainedSize)
+            
             let tagSize = tagNode.measure(constrainedSize)
             let ratingSize = ratingNode.measure(constrainedSize)
             if tagSize.isEmpty {
@@ -283,6 +293,12 @@ private final class ThreadCellNode: ASCellNode {
                 tagNode.frame.origin.y = 0
                 ratingNode.frame.origin.y = bounds.maxY - ratingSize.height
             }
+            
+            let secondaryTagSize = secondaryTagNode.calculatedSize
+            secondaryTagNode.frame = CGRect(origin: CGPoint(
+                x: tagNode.frame.maxX - secondaryTagSize.width + 1,
+                y: tagNode.frame.maxY - secondaryTagSize.height + 1),
+                size: secondaryTagSize)
         }
     }
 }
@@ -353,6 +369,7 @@ private struct ThreadViewModel {
     let missingTagImage: UIImage?
     let tagImageName: String?
     let ratingImage: UIImage?
+    let secondaryTagImage: UIImage?
     let tagAndRatingAlpha: CGFloat
     
     let separatorColor: UIColor
@@ -414,6 +431,10 @@ private struct ThreadViewModel {
             let rating = lroundf(thread.rating).clamp(0...5)
             if rating > 0 && (AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true) {
                 ratingImage = UIImage(named: "rating\(rating)")
+            }
+            
+            if let secondaryImageName = thread.secondaryThreadTag?.imageName {
+                secondaryTagImage = AwfulThreadTagLoader.imageNamed(secondaryImageName)
             }
             
             tagAndRatingAlpha = appearsClosed ? 0.5 : 1
