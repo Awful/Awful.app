@@ -132,7 +132,6 @@
 		1C6FFEE1182AA5CB0014311C /* ScrapingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */; };
 		1C71A7871A6EA30800F79C39 /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7861A6EA30800F79C39 /* Geometry.swift */; };
 		1C71A7891A6EA34D00F79C39 /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A7881A6EA34D00F79C39 /* Dispatch.swift */; };
-		1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */; };
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */; };
 		1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */; };
@@ -577,7 +576,6 @@
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
 		1C71A7861A6EA30800F79C39 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		1C71A7881A6EA34D00F79C39 /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
-		1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSAtomic.swift; sourceTree = "<group>"; };
 		1C73922117DFC3DA00089248 /* AwfulThreadTagAndRatingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagAndRatingView.h; sourceTree = "<group>"; };
 		1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagAndRatingView.m; sourceTree = "<group>"; };
 		1C7487EF16A88BAD0068B8A3 /* CompositionInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositionInputAccessoryView.h; sourceTree = "<group>"; };
@@ -1248,7 +1246,6 @@
 			children = (
 				1C71A7881A6EA34D00F79C39 /* Dispatch.swift */,
 				1C71A7861A6EA30800F79C39 /* Geometry.swift */,
-				1C71A78A1A6EA37B00F79C39 /* OSAtomic.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 			);
 			path = Extensions;
@@ -2217,7 +2214,6 @@
 			files = (
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
-				1C71A78B1A6EA37B00F79C39 /* OSAtomic.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C6D2EAE182EB37A00785766 /* AuthorScraper.m in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
