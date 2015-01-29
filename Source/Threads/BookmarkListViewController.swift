@@ -3,9 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 /// A list of bookmarked threads.
-// The @objc name here is for state restoration purposes. I'm not trying to be confusing :-)
 @objc(BookmarkedThreadListViewController)
 final class BookmarkListViewController: ThreadListViewController {
+    // The @objc name of this class maintains state restoration across the version that introduced this Swift implementation.
     let managedObjectContext: NSManagedObjectContext
     private var mostRecentlyLoadedPage = 0
     
