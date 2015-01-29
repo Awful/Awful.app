@@ -21,6 +21,10 @@ final class BookmarkListViewController: ThreadListViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var sortByUnreadSettingsKey: String {
+        return AwfulSettingsKeys.bookmarksSortedByUnread
+    }
+    
     override func makeNewDataSource() {
         let dataSource = BookmarkDataSource(managedObjectContext: managedObjectContext)
         dataSource.deletionDelegate = self
@@ -158,7 +162,7 @@ final class BookmarkDataSource: ThreadDataSource {
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
         fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
         var sortDescriptors = [NSSortDescriptor(key: "bookmarkListPage", ascending: true)]
-        if AwfulSettings.sharedSettings().threadsSortedByUnread {
+        if AwfulSettings.sharedSettings().bookmarksSortedByUnread {
             sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
         sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))

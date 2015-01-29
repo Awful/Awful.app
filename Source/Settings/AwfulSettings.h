@@ -23,7 +23,9 @@
 
 @property (assign, nonatomic) BOOL showImages;
 
-@property (assign, nonatomic) BOOL threadsSortedByUnread;
+@property (assign, nonatomic) BOOL forumThreadsSortedByUnread;
+
+@property (assign, nonatomic) BOOL bookmarksSortedByUnread;
 
 @property (assign, nonatomic) BOOL confirmNewPosts;
 
@@ -88,7 +90,8 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *userID;
-	__unsafe_unretained NSString *threadsSortedByUnread;
+    __unsafe_unretained NSString *forumThreadsSortedByUnread;
+    __unsafe_unretained NSString *bookmarksSortedByUnread;
     __unsafe_unretained NSString *canSendPrivateMessages;
     __unsafe_unretained NSString *showThreadTags;
     __unsafe_unretained NSString *favoriteForums;

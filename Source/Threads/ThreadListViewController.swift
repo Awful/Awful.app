@@ -14,6 +14,10 @@ class ThreadListViewController: AwfulTableViewController {
         }
     }
     
+    var sortByUnreadSettingsKey: String {
+        fatalError("subclass implementation please")
+    }
+    
     override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nibName, bundle: bundle)
         makeNewDataSource()
@@ -47,7 +51,7 @@ class ThreadListViewController: AwfulTableViewController {
                     if self.isViewLoaded() {
                         self.tableView.reloadData()
                     }
-                } else if key == AwfulSettingsKeys.threadsSortedByUnread {
+                } else if key == self.sortByUnreadSettingsKey {
                     self.makeNewDataSource()
                 }
             }

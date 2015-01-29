@@ -23,6 +23,10 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         forum.removeObserver(self, forKeyPath: "name", context: &KVOContext)
     }
     
+    override var sortByUnreadSettingsKey: String {
+        return AwfulSettingsKeys.forumThreadsSortedByUnread
+    }
+    
     override func makeNewDataSource() {
         dataSource = ForumSpecificThreadDataSource(forum: forum, filteredByThreadTag: threadTag)
     }
@@ -310,7 +314,7 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
         }
         var sortDescriptors = [NSSortDescriptor(key: "stickyIndex", ascending: true)]
         sortDescriptors.append(NSSortDescriptor(key: "threadListPage", ascending: true))
-        if AwfulSettings.sharedSettings().threadsSortedByUnread {
+        if AwfulSettings.sharedSettings().forumThreadsSortedByUnread {
             sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
         sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))

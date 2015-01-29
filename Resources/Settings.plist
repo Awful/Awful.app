@@ -108,13 +108,23 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Sort Unread Threads First</string>
+					<string>Sort Unread Bookmarks First</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
 					<false/>
 					<key>Key</key>
 					<string>bookmarks_sorted_unread</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Sort Unread Threads First</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>forum_threads_sorted_unread</string>
 				</dict>
 			</array>
 		</dict>
