@@ -79,7 +79,8 @@ extension FetchedDataSource: NSFetchedResultsControllerDelegate {
             case .Update:
                 delegate.dataSource?(self, didRefreshItemsAtIndexPaths: [oldIndexPath!])
             case .Move:
-                delegate.dataSource?(self, didMoveItemAtIndexPath: oldIndexPath!, toIndexPath: newIndexPath!)
+                delegate.dataSource?(self, didRemoveItemsAtIndexPaths: [oldIndexPath!])
+                delegate.dataSource?(self, didInsertItemsAtIndexPaths: [newIndexPath!])
             }
         }
     }

@@ -257,7 +257,8 @@
             
         case NSFetchedResultsChangeMove: {
             [self.updateBlocks addObject:^{
-                [collectionView moveItemAtIndexPath:indexPath toIndexPath:newIndexPath];
+                [collectionView deleteItemsAtIndexPaths:@[indexPath]];
+                [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
             }];
             break;
         }
