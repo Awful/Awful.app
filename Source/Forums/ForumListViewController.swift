@@ -151,7 +151,7 @@ class ForumListViewController: AwfulTableViewController {
 
     func openForum(forum: Forum, animated: Bool) {
         let threadList = ForumSpecificThreadListViewController(forum: forum)
-        threadList.restorationClass = ThreadListViewController.self
+        threadList.restorationClass = ForumSpecificThreadListViewController.self
         threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
     }
