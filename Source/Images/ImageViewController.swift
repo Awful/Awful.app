@@ -338,7 +338,7 @@ final class ImageViewController: UIViewController {
         view = RootView()
         
         rootView.doneButton.addTarget(self, action: "didTapDone", forControlEvents: .TouchUpInside)
-        rootView.actionButton.addTarget(self, action: "didTapAction", forControlEvents: .TouchUpInside)
+        rootView.actionButton.addTarget(self, action: "didTapAction:", forControlEvents: .TouchUpInside)
         
         rootView.tap.addTarget(self, action: "didTapImage:")
         rootView.panToDismissAction = { [unowned self] in self.dismiss() }
