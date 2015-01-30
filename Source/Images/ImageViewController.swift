@@ -319,7 +319,11 @@ final class ImageViewController: UIViewController {
         // MARK: UIGestureRecognizerDelegate
         
         private func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            return gestureRecognizer == panToDismiss
+            if gestureRecognizer == panToDismiss {
+                return otherGestureRecognizer is UIPanGestureRecognizer
+            }
+            
+            return false
         }
         
         // MARK: UIScrollViewDelegate
