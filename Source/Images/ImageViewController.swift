@@ -197,22 +197,33 @@ final class ImageViewController: UIViewController {
                 
                 spinner.stopAnimating()
                 
-                if let image = image {
-                    let scrollViewSize = scrollView.bounds.size
-                    let fitsOnScreenZoomScale = min(image.size.width / scrollViewSize.width, image.size.height / scrollViewSize.height, 1)
-                    scrollView.minimumZoomScale = fitsOnScreenZoomScale
-                    scrollView.zoomScale = fitsOnScreenZoomScale
-                    scrollView.maximumZoomScale = 25 * fitsOnScreenZoomScale
-                    scrollView.contentSize = image.size
-                }
-                
                 setNeedsLayout()
             }
         }
         
+        private var didConfigureScrollView = false
+        
         override func layoutSubviews() {
             scrollView.frame = bounds
-            imageView.sizeToFit()
+            
+            if !didConfigureScrollView {
+                let scrollViewSize = scrollView.bounds.size
+                if scrollViewSize.width > 0 && scrollViewSize.height > 0 {
+                    if let imageSize = image?.size {
+                        scrollView.contentSize = imageSize
+                        // FLAnimatedImageView.sizeToFit() sometimes doesn't change the size?
+                        imageView.frame = CGRect(origin: CGPointZero, size: imageSize)
+                        
+                        let fitsOnScreenZoomScale = min(scrollViewSize.width / imageSize.width, scrollViewSize.height / imageSize.height, 1)
+                        scrollView.minimumZoomScale = fitsOnScreenZoomScale
+                        scrollView.maximumZoomScale = 25 * fitsOnScreenZoomScale
+                        scrollView.zoomScale = fitsOnScreenZoomScale
+                        
+                        didConfigureScrollView = true
+                    }
+                }
+            }
+            
             centerImageInScrollView()
             
             let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
