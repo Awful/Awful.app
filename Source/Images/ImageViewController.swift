@@ -83,7 +83,7 @@ final class ImageViewController: UIViewController {
         cancelHideOverlayTimer()
         let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
-        let activityViewController = UIActivityViewController(activityItems: [image!.data, wrappedURL], applicationActivities: [CopyURLActivity()])
+        let activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
         presentViewController(activityViewController, animated: true, completion: nil)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
@@ -375,19 +375,19 @@ private enum DecodedImage {
     case Static(image: UIImage, data: NSData)
     case Error(NSError)
     
-    var data: NSData {
+    var data: NSData? {
         switch self {
         case let .Animated(animatedImage): return animatedImage.data
         case let .Static(_, data: data): return data
-        case .Error: fatalError("this decoded image has no data")
+        case .Error: return nil
         }
     }
     
-    var size: CGSize {
+    var size: CGSize? {
         switch self {
         case let .Animated(animatedImage): return animatedImage.size
         case let .Static(image: image, _): return image.size
-        case .Error: fatalError("this decoded image has no size")
+        case .Error: return nil
         }
     }
 }
