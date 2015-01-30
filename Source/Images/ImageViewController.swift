@@ -226,6 +226,12 @@ final class ImageViewController: UIViewController {
             
             centerImageInScrollView()
             
+            spinner.center = CGPoint(x: bounds.midX, y: bounds.midY)
+            
+            layoutOverlay()
+        }
+        
+        private func layoutOverlay() {
             let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
             // Status bar frame is in screen coordinates.
             let statusBarHeight = min(statusBarFrame.width, statusBarFrame.height)
@@ -244,8 +250,6 @@ final class ImageViewController: UIViewController {
                 x: bounds.maxX - 10 - actionButtonSize.width,
                 y: bounds.maxY - 20 - actionButtonSize.height),
                 size: actionButtonSize)
-            
-            spinner.center = CGPoint(x: bounds.midX, y: bounds.midY)
         }
         
         func centerImageInScrollView() {
@@ -264,8 +268,7 @@ final class ImageViewController: UIViewController {
             UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .BeginFromCurrentState, animations: {
                 self.awful_viewController.setNeedsStatusBarAppearanceUpdate()
                 UIView.performWithoutAnimation {
-                    self.setNeedsLayout()
-                    self.layoutIfNeeded()
+                    self.layoutOverlay()
                 }
                 
                 for view in self.overlayViews {
