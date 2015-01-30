@@ -255,7 +255,7 @@
 
 - (void)previewImageAtURL:(NSURL *)URL
 {
-    ImageViewController *preview = [[ImageViewController alloc] initWithURL:URL];
+    ImageViewController *preview = [[ImageViewController alloc] initWithImageURL:URL];
     preview.title = self.title;
     [self presentViewController:preview animated:YES completion:nil];
 }

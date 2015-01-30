@@ -1,6 +1,7 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
+#import "AwfulErrorDomain.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulIconActionCell.h"

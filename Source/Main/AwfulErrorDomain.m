@@ -7,12 +7,13 @@
 NSString * const AwfulErrorDomain = @"AwfulErrorDomain";
 
 const struct AwfulErrorCodes AwfulErrorCodes = {
-    .badUsernameOrPassword = -1000,
-    .threadIsClosed = -1001,
-    .parseError = -1002,
-    .dataMigrationError = -1003,
-    .missingDataStore = -1004,
-    .forbidden = -1005,
-    .databaseUnavailable = -1006,
-    .archivesRequired = -1007,
+    .badUsernameOrPassword = 1,
+    .threadIsClosed = 2,
+    .parseError = 3,
+    .dataMigrationError = 4,
+    .missingDataStore = 5,
+    .forbidden = 6,
+    .databaseUnavailable = 7,
+    .archivesRequired = 8,
+    .badServerResponse = NSURLErrorBadServerResponse,
 };
