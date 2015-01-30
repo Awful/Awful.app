@@ -253,12 +253,21 @@ final class ImageViewController: UIViewController {
         }
         
         func centerImageInScrollView() {
+            // Thanks for the idea to use contentInset! http://petersteinberger.com/blog/2013/how-to-center-uiscrollview/
             let contentSize = scrollView.contentSize
             let scrollViewSize = scrollView.bounds.size
-            // Thanks for the idea to use contentInset! http://petersteinberger.com/blog/2013/how-to-center-uiscrollview/
-            let horizontalInset = contentSize.width < scrollViewSize.width ? (scrollViewSize.width - contentSize.width) / 2 : 0
-            let verticalInset = contentSize.height < scrollViewSize.height ? (scrollViewSize.height - contentSize.height) / 2 : 0
-            scrollView.contentInset = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
+
+            var horizontal: CGFloat = 0
+            if contentSize.width < scrollViewSize.width {
+                horizontal = (scrollViewSize.width - contentSize.width) / 2
+            }
+
+            var vertical: CGFloat = 0
+            if contentSize.height < scrollViewSize.height {
+                vertical = (scrollViewSize.height - contentSize.height) / 2
+            }
+
+            scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
         }
         
         func setOverlayHidden(hidden: Bool, animated: Bool) {
