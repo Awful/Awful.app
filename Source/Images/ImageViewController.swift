@@ -358,7 +358,8 @@ final class ImageViewController: UIViewController {
         func scrollViewDidZoom(scrollView: UIScrollView) {
             centerImageInScrollView()
             
-            if !overlayHidden {
+            // Setting the scroll view zoom scale can trigger a didZoom delegate call, which can cause us to hide the overlay almost immediately after becoming visible. So check for a completed scroll view configuration too.
+            if !overlayHidden && didConfigureScrollView {
                 setOverlayHidden(true, animated: true)
             }
         }
