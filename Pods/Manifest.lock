@@ -21,6 +21,9 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.4)
+  - AsyncDisplayKit (1.1.1):
+    - AsyncDisplayKit/ASDealloc2MainObject (= 1.1.1)
+  - AsyncDisplayKit/ASDealloc2MainObject (1.1.1)
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
@@ -58,6 +61,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (= 2.5.0)
   - ARChromeActivity (= 1.0.4)
+  - AsyncDisplayKit (= 1.1.1)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
   - HTMLReader (= 0.5.8)
@@ -74,6 +78,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   ARChromeActivity: d8471d0f78b7fcc1de57929cfc1751b3a7f58bad
+  AsyncDisplayKit: 897b28140c6c73fbe8d6168f19ce7cbd87c94ee8
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
   HTMLReader: e61b43d69deb09d8098a7aabacdd6cafd8749373

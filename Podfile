@@ -7,6 +7,7 @@ inhibit_all_warnings!
 target :Awful do
   pod 'AFNetworking', '2.5.0'
   pod 'ARChromeActivity', '1.0.4'
+  pod 'AsyncDisplayKit', '1.1.1'
   pod 'GRMustache', '7.3.0'
   pod 'ImgurAnonymousAPIClient', '0.3'
   pod 'JLRoutes', '1.5.1'

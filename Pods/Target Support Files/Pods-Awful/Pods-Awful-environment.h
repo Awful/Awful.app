@@ -54,6 +54,18 @@
 #define COCOAPODS_VERSION_MINOR_ARChromeActivity 0
 #define COCOAPODS_VERSION_PATCH_ARChromeActivity 4
 
+// AsyncDisplayKit
+#define COCOAPODS_POD_AVAILABLE_AsyncDisplayKit
+#define COCOAPODS_VERSION_MAJOR_AsyncDisplayKit 1
+#define COCOAPODS_VERSION_MINOR_AsyncDisplayKit 1
+#define COCOAPODS_VERSION_PATCH_AsyncDisplayKit 1
+
+// AsyncDisplayKit/ASDealloc2MainObject
+#define COCOAPODS_POD_AVAILABLE_AsyncDisplayKit_ASDealloc2MainObject
+#define COCOAPODS_VERSION_MAJOR_AsyncDisplayKit_ASDealloc2MainObject 1
+#define COCOAPODS_VERSION_MINOR_AsyncDisplayKit_ASDealloc2MainObject 1
+#define COCOAPODS_VERSION_PATCH_AsyncDisplayKit_ASDealloc2MainObject 1
+
 // GRMustache
 #define COCOAPODS_POD_AVAILABLE_GRMustache
 #define COCOAPODS_VERSION_MAJOR_GRMustache 7

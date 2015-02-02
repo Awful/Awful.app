@@ -4,10 +4,9 @@
 
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulNewThreadTagObserver.h"
-#import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerCell.h"
 #import "AwfulThreadTagPickerLayout.h"
+#import "Awful-Swift.h"
 
 @interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverControllerDelegate>
 
