@@ -9,7 +9,6 @@ final class ImageViewController: UIViewController {
     private var downloadProgress: NSProgress!
     private var image: DecodedImage?
     private var rootView: RootView { return view as RootView }
-    private var hideOverlayTimer: NSTimer?
     
     init(imageURL: NSURL) {
         self.imageURL = imageURL
@@ -33,7 +32,6 @@ final class ImageViewController: UIViewController {
         switch image {
         case .Animated, .Static:
             rootView.image = image
-            hideOverlayAfterDelay()
         case let .Error(error):
             let alert = UIAlertController(networkError: error, handler: { action in
                 self.dismiss()
@@ -44,7 +42,7 @@ final class ImageViewController: UIViewController {
     
     private func dismiss() {
         downloadProgress.cancel()
-        cancelHideOverlayTimer()
+        rootView.cancelHideOverlayAfterDelay()
         
         if let action = doneAction {
             action()
@@ -61,26 +59,12 @@ final class ImageViewController: UIViewController {
         return .LightContent
     }
     
-    private func hideOverlayAfterDelay() {
-        hideOverlayTimer = NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: "hideOverlayTimerDidFire:", userInfo: nil, repeats: false)
-    }
-    
-    @objc private func hideOverlayTimerDidFire(timer: NSTimer) {
-        cancelHideOverlayTimer()
-        rootView.setOverlayHidden(true, animated: true)
-    }
-    
-    private func cancelHideOverlayTimer() {
-        hideOverlayTimer?.invalidate()
-        hideOverlayTimer = nil
-    }
-    
     @IBAction private func didTapDone() {
         dismiss()
     }
     
     @IBAction private func didTapAction(sender: UIButton) {
-        cancelHideOverlayTimer()
+        rootView.cancelHideOverlayAfterDelay()
         let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
         let activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
@@ -88,13 +72,6 @@ final class ImageViewController: UIViewController {
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
-        }
-    }
-    
-    @IBAction private func didTapImage(sender: UITapGestureRecognizer) {
-        if sender.state == .Ended {
-            cancelHideOverlayTimer()
-            rootView.setOverlayHidden(!rootView.overlayHidden, animated: true)
         }
     }
     
@@ -108,6 +85,7 @@ final class ImageViewController: UIViewController {
         let actionButton = SlopButton()
         var overlayViews: [UIView] { return [statusBarBackground, doneButton, actionButton] }
         var overlayHidden = false
+        var hideOverlayTimer: NSTimer?
         let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
         let tap = UITapGestureRecognizer()
         let panToDismiss = UIPanGestureRecognizer()
@@ -117,6 +95,7 @@ final class ImageViewController: UIViewController {
         override init() {
             super.init(frame: CGRectZero)
             
+            tap.addTarget(self, action: "didTapImage:")
             tap.requireGestureRecognizerToFail(doubleTap)
             addGestureRecognizer(tap)
             
@@ -193,7 +172,11 @@ final class ImageViewController: UIViewController {
                     imageView.image = nil
                 }
                 
-                actionButton.hidden = image == nil
+                if image != nil {
+                    actionButton.hidden = false
+                    
+                    hideOverlayAfterDelay()
+                }
                 
                 spinner.stopAnimating()
                 
@@ -273,6 +256,8 @@ final class ImageViewController: UIViewController {
         func setOverlayHidden(hidden: Bool, animated: Bool) {
             overlayHidden = hidden
             
+            cancelHideOverlayAfterDelay()
+            
             let duration = animated ? 0.3 : 0
             UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .BeginFromCurrentState, animations: {
                 self.awful_viewController.setNeedsStatusBarAppearanceUpdate()
@@ -284,6 +269,27 @@ final class ImageViewController: UIViewController {
                     view.alpha = hidden ? 0 : 1
                 }
                 }, completion: nil)
+        }
+        
+        func hideOverlayAfterDelay() {
+            hideOverlayTimer = NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: "hideOverlayTimerDidFire:", userInfo: nil, repeats: false)
+        }
+        
+        @objc private func hideOverlayTimerDidFire(timer: NSTimer) {
+            setOverlayHidden(true, animated: true)
+        }
+        
+        func cancelHideOverlayAfterDelay() {
+            hideOverlayTimer?.invalidate()
+            hideOverlayTimer = nil
+        }
+        
+        // MARK: Gesture recognizers
+        
+        @IBAction private func didTapImage(sender: UITapGestureRecognizer) {
+            if sender.state == .Ended {
+                setOverlayHidden(!overlayHidden, animated: true)
+            }
         }
         
         private var panStart: NSTimeInterval = 0
@@ -309,12 +315,15 @@ final class ImageViewController: UIViewController {
                         }
                     }
                 }
+                
             default:
-                break;
+                break
             }
         }
         
         @IBAction private func didDoubleTap(sender: UITapGestureRecognizer) {
+            cancelHideOverlayAfterDelay()
+            
             if scrollView.zoomScale == scrollView.minimumZoomScale {
                 let midpoint = sender.locationInView(scrollView)
                 let halfSize = CGSize(width: scrollView.contentSize.width / 2, height: scrollView.contentSize.height / 2)
@@ -356,7 +365,6 @@ final class ImageViewController: UIViewController {
         rootView.doneButton.addTarget(self, action: "didTapDone", forControlEvents: .TouchUpInside)
         rootView.actionButton.addTarget(self, action: "didTapAction:", forControlEvents: .TouchUpInside)
         
-        rootView.tap.addTarget(self, action: "didTapImage:")
         rootView.panToDismissAction = { [unowned self] in self.dismiss() }
     }
     
@@ -374,7 +382,7 @@ final class ImageViewController: UIViewController {
         super.viewDidAppear(animated)
         
         if image != nil {
-            hideOverlayAfterDelay()
+            rootView.hideOverlayAfterDelay()
         }
     }
 }
