@@ -265,7 +265,7 @@ final class ImageViewController: UIViewController {
             
             let duration = animated ? 0.3 : 0
             UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .BeginFromCurrentState, animations: {
-                self.awful_viewController.setNeedsStatusBarAppearanceUpdate()
+                self.awful_viewController?.setNeedsStatusBarAppearanceUpdate()
                 UIView.performWithoutAnimation {
                     self.layoutOverlay()
                 }
