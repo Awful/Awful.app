@@ -33,7 +33,7 @@ final class ImageViewController: UIViewController {
         case .Animated, .Static:
             rootView.image = image
         case let .Error(error):
-            let alert = UIAlertController(networkError: error, handler: { action in
+            let alert = UIAlertController(networkError: error, handler: { [unowned self] action in
                 self.dismiss()
             })
             presentViewController(alert, animated: true, completion: nil)
