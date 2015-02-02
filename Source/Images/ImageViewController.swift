@@ -84,6 +84,7 @@ final class ImageViewController: UIViewController {
         let doneButton = SlopButton()
         let actionButton = SlopButton()
         var overlayViews: [UIView] { return [statusBarBackground, doneButton, actionButton] }
+        var overlayButtons: [UIButton] { return [doneButton, actionButton] }
         var overlayHidden = false
         var hideOverlayTimer: NSTimer?
         let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
@@ -146,7 +147,7 @@ final class ImageViewController: UIViewController {
             actionButton.backgroundColor = overlaidBackgroundColor
             actionButton.layer.cornerRadius = buttonCornerRadius
             // Wait until image loads before allowing actions.
-            actionButton.hidden = true
+            actionButton.enabled = false
             addSubview(actionButton)
             
             spinner.startAnimating()
@@ -255,6 +256,10 @@ final class ImageViewController: UIViewController {
         
         func setOverlayHidden(hidden: Bool, animated: Bool) {
             overlayHidden = hidden
+            
+            for button in overlayButtons {
+                button.enabled = !hidden
+            }
             
             cancelHideOverlayAfterDelay()
             
