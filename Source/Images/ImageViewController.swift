@@ -371,7 +371,7 @@ final class ImageViewController: UIViewController {
         rootView.doneButton.addTarget(self, action: "didTapDone", forControlEvents: .TouchUpInside)
         rootView.actionButton.addTarget(self, action: "didTapAction:", forControlEvents: .TouchUpInside)
         
-        rootView.panToDismissAction = { [unowned self] in self.dismiss() }
+        rootView.panToDismissAction = { [weak self] in self?.dismiss(); return }
     }
     
     override func viewDidLoad() {
