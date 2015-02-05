@@ -148,6 +148,7 @@ final class ImageViewController: UIViewController {
             actionButton.layer.cornerRadius = buttonCornerRadius
             // Wait until image loads before allowing actions.
             actionButton.enabled = false
+            actionButton.hidden = true
             addSubview(actionButton)
             
             spinner.startAnimating()
@@ -174,6 +175,7 @@ final class ImageViewController: UIViewController {
                 }
                 
                 if image != nil {
+                    actionButton.enabled = true
                     actionButton.hidden = false
                     
                     hideOverlayAfterDelay()
