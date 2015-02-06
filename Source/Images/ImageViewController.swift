@@ -516,10 +516,14 @@ final class ImagePreviewActivity: UIActivity {
     }
     
     override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+        CLSNSLogv("%@ items: %@", getVaList([__FUNCTION__, activityItems]))
+        
         return any(activityItems) { $0 is ImageURLWrapper }
     }
     
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
+        CLSNSLogv("%@ items: %@", getVaList([__FUNCTION__, activityItems]))
+        
         let wrapper = first(activityItems) { $0 is ImageURLWrapper } as ImageURLWrapper
         let imageURL = wrapper.imageURL
         let imageViewController = ImageViewController(imageURL: imageURL)
@@ -527,12 +531,17 @@ final class ImagePreviewActivity: UIActivity {
         activityViewController = imageViewController
     }
     
-    private class ImageURLWrapper: NSObject {
+    // This is meant to be private but if I do that I can't override description???
+    class ImageURLWrapper: NSObject {
         let imageURL: NSURL
         
         init(_ imageURL: NSURL) {
             self.imageURL = imageURL
             super.init()
+        }
+        
+        override var description: String {
+            return NSString(format: "<%@: %p> %@", NSStringFromClass(self.dynamicType), unsafeBitCast(self, self.dynamicType), imageURL)
         }
     }
 }
