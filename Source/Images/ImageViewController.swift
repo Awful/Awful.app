@@ -524,11 +524,14 @@ final class ImagePreviewActivity: UIActivity {
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
         CLSNSLogv("%@ items: %@", getVaList([__FUNCTION__, activityItems]))
         
-        let wrapper = first(activityItems) { $0 is ImageURLWrapper } as ImageURLWrapper
-        let imageURL = wrapper.imageURL
-        let imageViewController = ImageViewController(imageURL: imageURL)
-        imageViewController.doneAction = { self.activityDidFinish(true) }
-        activityViewController = imageViewController
+        if let wrapper = (first(activityItems) { $0 is ImageURLWrapper }) as? ImageURLWrapper {
+            let imageURL = wrapper.imageURL
+            let imageViewController = ImageViewController(imageURL: imageURL)
+            imageViewController.doneAction = { self.activityDidFinish(true) }
+            activityViewController = imageViewController
+        } else {
+            CLSNSLogv("%@ couldn't find anything of type %@", getVaList([__FUNCTION__, "\(ImageURLWrapper.self)"]))
+        }
     }
     
     // This is meant to be private but if I do that I can't override description???
