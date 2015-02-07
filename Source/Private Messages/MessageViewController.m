@@ -205,8 +205,9 @@
     [activities addObject:[TUSafariActivity new]];
     [activities addObject:[ARChromeActivity new]];
     if (imageURL) {
-        [items addObject:[ImagePreviewActivity wrapImageURL:imageURL]];
-        [activities addObject:[ImagePreviewActivity new]];
+        ImagePreviewActivity *imagePreview = [[ImagePreviewActivity alloc] initWithImageURL:imageURL];
+        [items addObject:imagePreview];
+        [activities addObject:imagePreview];
         [items addObject:[CopyURLActivity wrapURL:imageURL]];
         [activities addObject:[[CopyURLActivity alloc] initWithTitle:@"Copy Image URL"]];
     }

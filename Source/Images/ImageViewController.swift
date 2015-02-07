@@ -494,11 +494,13 @@ private func downloadImage(URL: NSURL, #completion: DecodedImage -> Void) -> NSP
     return progress
 }
 
-/// Adds a "Preview Image" activity which uses an ImageViewController. The image's URL needs to go through wrapURL() before being added to the activityItems array, and no other activities will see or attempt to use the URL.
+/// Adds a "Preview Image" activity which uses an ImageViewController. Add the activity both as an application activity and as one of the activity items.
 final class ImagePreviewActivity: UIActivity {
-    /// Prepares an image URL for use by an ImagePreviewActivity. Plain NSURL objects are not recognized by an ImagePreviewActivity!
-    class func wrapImageURL(imageURL: NSURL) -> AnyObject {
-        return ImageURLWrapper(imageURL)
+    let imageURL: NSURL
+    
+    init(imageURL: NSURL) {
+        self.imageURL = imageURL
+        super.init()
     }
     
     private(set) var activityViewController: UIViewController!
@@ -516,35 +518,12 @@ final class ImagePreviewActivity: UIActivity {
     }
     
     override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
-        CLSNSLogv("%@ items: %@", getVaList([__FUNCTION__, activityItems]))
-        
-        return any(activityItems) { $0 is ImageURLWrapper }
+        return any(activityItems) { $0 as NSObject == self }
     }
     
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
-        CLSNSLogv("%@ items: %@", getVaList([__FUNCTION__, activityItems]))
-        
-        if let wrapper = (first(activityItems) { $0 is ImageURLWrapper }) as? ImageURLWrapper {
-            let imageURL = wrapper.imageURL
-            let imageViewController = ImageViewController(imageURL: imageURL)
-            imageViewController.doneAction = { self.activityDidFinish(true) }
-            activityViewController = imageViewController
-        } else {
-            CLSNSLogv("%@ couldn't find anything of type %@", getVaList([__FUNCTION__, "\(ImageURLWrapper.self)"]))
-        }
-    }
-    
-    // This is meant to be private but if I do that I can't override description???
-    class ImageURLWrapper: NSObject {
-        let imageURL: NSURL
-        
-        init(_ imageURL: NSURL) {
-            self.imageURL = imageURL
-            super.init()
-        }
-        
-        override var description: String {
-            return NSString(format: "<%@: %p> %@", NSStringFromClass(self.dynamicType), unsafeBitCast(self, self.dynamicType), imageURL)
-        }
+        let imageViewController = ImageViewController(imageURL: imageURL)
+        imageViewController.doneAction = { self.activityDidFinish(true) }
+        activityViewController = imageViewController
     }
 }
