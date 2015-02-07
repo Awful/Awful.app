@@ -36,7 +36,6 @@
 		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
 		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
 		1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */; };
-		1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447DC175D2D5E007377C5 /* Settings.bundle */; };
 		1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E0175D9991007377C5 /* PostViewModel.m */; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */; };
@@ -65,6 +64,8 @@
 		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
 		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
+		1C40D4AA1A85F57400D9F793 /* Acknowledgements.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */; };
+		1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C414F32181F79F400813EE2 /* MessageComposeViewController.m */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
@@ -445,7 +446,6 @@
 		1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagView.m; sourceTree = "<group>"; };
 		1C3447D0174D9B01007377C5 /* AwfulThreadTagButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagButton.h; sourceTree = "<group>"; };
 		1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagButton.m; sourceTree = "<group>"; };
-		1C3447DC175D2D5E007377C5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		1C3447DF175D9991007377C5 /* PostViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostViewModel.h; sourceTree = "<group>"; };
 		1C3447E0175D9991007377C5 /* PostViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostViewModel.m; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
@@ -479,6 +479,8 @@
 		1C3A147419DFDE380022C44C /* Smilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Smilies.sqlite; sourceTree = "<group>"; };
 		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
+		1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Acknowledgements.mustache; sourceTree = "<group>"; };
+		1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C414F31181F79F400813EE2 /* MessageComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeViewController.h; sourceTree = "<group>"; };
 		1C414F32181F79F400813EE2 /* MessageComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeViewController.m; sourceTree = "<group>"; };
@@ -1252,6 +1254,8 @@
 		1C8694A216EF78D3003FE89E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */,
+				1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */,
 				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
 				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
@@ -1643,7 +1647,6 @@
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
-				1C3447DC175D2D5E007377C5 /* Settings.bundle */,
 				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
@@ -1963,6 +1966,7 @@
 				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
 				1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
+				1C40D4AA1A85F57400D9F793 /* Acknowledgements.mustache in Resources */,
 				8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
@@ -2000,7 +2004,6 @@
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
-				1C3447DD175D2D5E007377C5 /* Settings.bundle in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
@@ -2299,6 +2302,7 @@
 				1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */,
 				1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */,
 				1CF6BFE51A1E3B0D006AE9FE /* Punishment.swift in Sources */,
+				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,

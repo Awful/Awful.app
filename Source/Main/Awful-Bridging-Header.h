@@ -39,6 +39,7 @@
 #import "ThreadComposeViewController.h"
 #import <TUSafariActivity/TUSafariActivity.h>
 #import "UIBarButtonItem+AwfulConvenience.h"
+#import "UIColor+AwfulConvenience.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIPasteboard+AwfulStringyURLs.h"
 #import "UISplitViewController+AwfulConvenient.h"

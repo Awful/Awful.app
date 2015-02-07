@@ -25,4 +25,20 @@
     return [UIColor colorWithRed:(red / 255.) green:(green / 255.) blue:(blue / 255.) alpha:(alpha / 255.)];
 }
 
+- (NSString *)awful_hexCode
+{
+    CGFloat components[3] = {0};
+    components[0] = -1;
+    [self getRed:components green:components + 1 blue:components + 2 alpha:nil];
+    if (components[0] == -1) {
+        return nil;
+    }
+    
+    components[0] *= 255;
+    components[1] *= 255;
+    components[2] *= 255;
+    
+    return [NSString stringWithFormat:@"#%02x%02x%02x", (unsigned int)lroundf(components[0]), (unsigned int)lroundf(components[1]), (unsigned int)lroundf(components[2])];
+}
+
 @end

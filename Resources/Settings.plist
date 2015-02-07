@@ -192,6 +192,19 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Title</key>
+			<string>Thank You</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Acknowledgements</string>
+					<key>ViewController</key>
+					<string>Awful.AcknowledgementsViewController</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>VisibleInSettingsTab</key>
 			<false/>
 			<key>Settings</key>

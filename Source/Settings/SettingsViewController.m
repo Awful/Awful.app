@@ -264,7 +264,11 @@ typedef NS_ENUM(NSUInteger, SettingType)
         [[AwfulAppDelegate instance] openAwfulURL:URL];
     } else if (setting[@"ViewController"]) {
         UIViewController *viewController = [NSClassFromString(setting[@"ViewController"]) new];
-        [self.navigationController pushViewController:viewController animated:YES];
+        if (viewController.modalPresentationStyle == UIModalPresentationFormSheet && [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+            [self presentViewController:[viewController enclosingNavigationController] animated:YES completion:nil];
+        } else {
+            [self.navigationController pushViewController:viewController animated:YES];
+        }
     } else {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"don't know how to handle selection of setting" userInfo:nil];
     }
