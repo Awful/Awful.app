@@ -101,12 +101,16 @@
 		<string>#ffffff</string>
 		<key>collectionViewTextColor</key>
 		<string>#000000</string>
+		<key>unreadBadgeBlueColor</key>
+		<string>#1e84af</string>
+		<key>unreadBadgeGrayColor</key>
+		<string>#7f7f7f</string>
 		<key>unreadBadgeOrangeColor</key>
 		<string>#ff8000</string>
 		<key>unreadBadgeRedColor</key>
 		<string>#ff0000</string>
 		<key>unreadBadgeYellowColor</key>
-		<string>#ffff00</string>
+		<string>#f3f135</string>
 		<key>keyboardAppearance</key>
 		<string>Light</string>
 		<key>sheetBackgroundColor</key>
@@ -202,6 +206,10 @@
 		<string>#151515</string>
 		<key>collectionViewTextColor</key>
 		<string>#dddddd</string>
+		<key>unreadBadgeBlueColor</key>
+		<string>#83dafd</string>
+		<key>unreadBadgeGrayColor</key>
+		<string>#bebebe</string>
 		<key>keyboardAppearance</key>
 		<string>Dark</string>
 		<key>sheetBackgroundColor</key>

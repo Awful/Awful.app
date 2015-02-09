@@ -79,11 +79,11 @@ extension ThreadListViewController: UITableViewDelegate {
             cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
             
             switch (thread.unreadPosts, thread.starCategory) {
-            case (0, _): cell.unreadRepliesLabel.textColor = UIColor.grayColor()
+            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"] as UIColor?
             case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"] as UIColor?
             case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"] as UIColor?
             case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"] as UIColor?
-            case (_, .None): cell.unreadRepliesLabel.textColor = theme["tintColor"] as UIColor?
+            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"] as UIColor?
             }
         }
     }
