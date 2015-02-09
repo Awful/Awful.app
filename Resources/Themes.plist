@@ -233,6 +233,10 @@
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>description</key>
+		<string>Pink</string>
+		<key>descriptiveColor</key>
+		<string>#fd9a9a</string>
 		<key>sheetTitleColor</key>
 		<string>#ffffff</string>
 		<key>sheetTitleBackgroundColor</key>
@@ -243,14 +247,10 @@
 		<string>#b24c4bf0</string>
 		<key>sheetTextColor</key>
 		<string>#000000</string>
-		<key>description</key>
-		<string>Pink</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#FD9999</string>
 		<key>backgroundColor</key>
 		<string>#ff3399</string>
-		<key>descriptiveColor</key>
-		<string>#fd9a9a</string>
 		<key>relevantForumID</key>
 		<string>26</string>
 		<key>postsViewCSS</key>
@@ -304,13 +304,13 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
-		<key>listSecondaryTextColor</key>
-		<string>#000000</string>
-		<key>listBackgroundColor</key>
-		<string>#68cc24</string>
 		<key>description</key>
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
+		<string>#68cc24</string>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
 		<string>#68cc24</string>
 		<key>relevantForumID</key>
 		<string>25</string>
@@ -321,14 +321,14 @@
 	</dict>
 	<key>Macinyos</key>
 	<dict>
-		<key>listSecondaryTextColor</key>
-		<string>#000000</string>
-		<key>listBackgroundColor</key>
-		<string>#888888</string>
 		<key>description</key>
 		<string>Macinyos</string>
 		<key>descriptiveColor</key>
 		<string>macinyos-wallpaper</string>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
+		<string>#888888</string>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>postsLoadingViewType</key>
@@ -338,13 +338,13 @@
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
-		<key>listSecondaryTextColor</key>
-		<string>#000000</string>
-		<key>listBackgroundColor</key>
-		<string>#107f7f</string>
 		<key>description</key>
 		<string>Winpos 95</string>
 		<key>descriptiveColor</key>
+		<string>#107f7f</string>
+		<key>listSecondaryTextColor</key>
+		<string>#000000</string>
+		<key>listBackgroundColor</key>
 		<string>#107f7f</string>
 		<key>relevantForumID</key>
 		<string>219</string>
@@ -355,14 +355,14 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>parent</key>
+		<string>dark</string>
 		<key>description</key>
 		<string>Green console</string>
 		<key>descriptiveColor</key>
 		<string>#57ff57</string>
 		<key>relevantForumID</key>
 		<string>219</string>
-		<key>parent</key>
-		<string>dark</string>
 		<key>backgroundColor</key>
 		<string>#000000</string>
 		<key>listSecondaryTextColor</key>
@@ -426,13 +426,13 @@
 	<dict>
 		<key>parent</key>
 		<string>YOSPOS</string>
-		<key>listFontName</key>
-		<string>Courier</string>
-		<key>listSecondaryTextColor</key>
-		<string>#ebd04b</string>
 		<key>description</key>
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
+		<string>#ebd04b</string>
+		<key>listFontName</key>
+		<string>Courier</string>
+		<key>listSecondaryTextColor</key>
 		<string>#ebd04b</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#eacf4b</string>
