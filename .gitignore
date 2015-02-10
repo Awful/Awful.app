@@ -1,3 +1,6 @@
+# Big, pointless HTMLReader cruft.
+/Carthage/Checkouts/HTMLReader/Tests/html5lib
+
 # API keys
 /CrashlyticsAPIKey.h
 /Xcode/crashlytics.sh

@@ -8,7 +8,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
 #import "AwfulStarCategory.h"
-#import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
 
@@ -161,8 +160,8 @@
         {{
             HTMLElement *postDateCell = [table firstNodeMatchingSelector:@"td.postdate"];
             if (postDateCell) {
-                HTMLTextNode *postDateText = postDateCell.children.lastObject;
-                NSString *postDateString = [postDateText.data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                HTMLNode *postDateText = postDateCell.children.lastObject;
+                NSString *postDateString = [postDateText.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 post.postDate = [[AwfulCompoundDateParser postDateParser] dateFromString:postDateString];
             }
         }}

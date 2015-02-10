@@ -133,6 +133,10 @@
 		1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C73922217DFC3DA00089248 /* AwfulThreadTagAndRatingView.m */; };
 		1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */; };
 		1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */; };
+		1C76C9551A8A049E00A68266 /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
+		1C76C9561A8A049E00A68266 /* HTMLReader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1C76C95B1A8A04BF00A68266 /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
+		1C76C95C1A8A04D200A68266 /* HTMLReader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
 		1C797D68199DC7B000468056 /* UISplitViewController+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D67199DC7B000468056 /* UISplitViewController+AwfulConvenient.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -355,6 +359,76 @@
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
 		};
+		1C76C9411A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C6C1F4C1A179BF600236076;
+			remoteInfo = "HTMLReader iOS";
+		};
+		1C76C9431A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C9C3ECA176BC53900E982C9;
+			remoteInfo = "Tests on iOS";
+		};
+		1C76C9451A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C88293B18369DD70051653C;
+			remoteInfo = "HTMLReader OS X";
+		};
+		1C76C9471A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C88295018369DD70051653C;
+			remoteInfo = "Tests on OS X";
+		};
+		1C76C9491A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1CD5250918DC83E6003F46A3;
+			remoteInfo = Benchmarker;
+		};
+		1C76C94B1A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C9513C91A80971100BB2CC9;
+			remoteInfo = "Encoding Labeler";
+		};
+		1C76C94D1A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C9A2A071836FEAE0059FE17;
+			remoteInfo = "Entity Fetcher";
+		};
+		1C76C94F1A8A046900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C9C3EB9176BC53900E982C9;
+			remoteInfo = "HTMLReader iOS Static Library";
+		};
+		1C76C9571A8A049E00A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C6C1F4B1A179BF600236076;
+			remoteInfo = "HTMLReader iOS";
+		};
+		1C76C9591A8A04B900A68266 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C6C1F4B1A179BF600236076;
+			remoteInfo = "HTMLReader iOS";
+		};
 		1CF0E9CA1A191B980067511E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -371,6 +445,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1C76C95C1A8A04D200A68266 /* HTMLReader.framework in Embed Frameworks */,
 				1C3A145F19DFC6970022C44C /* Smilies.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -382,6 +457,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1C76C9561A8A049E00A68266 /* HTMLReader.framework in Embed Frameworks */,
 				1C66A9D519DD304F001B9A41 /* Smilies.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -577,6 +653,7 @@
 		1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompositionInputAccessoryView.m; sourceTree = "<group>"; };
 		1C76C66A1A49E87F00E81286 /* UploadImageAttachments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadImageAttachments.h; sourceTree = "<group>"; };
 		1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadImageAttachments.m; sourceTree = "<group>"; };
+		1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HTMLReader.xcodeproj; path = ../Carthage/Checkouts/HTMLReader/HTMLReader.xcodeproj; sourceTree = "<group>"; };
 		1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HierarchySearch.h"; sourceTree = "<group>"; };
 		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
 		1C797D66199DC7B000468056 /* UISplitViewController+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISplitViewController+AwfulConvenient.h"; sourceTree = "<group>"; };
@@ -848,6 +925,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C76C95B1A8A04BF00A68266 /* HTMLReader.framework in Frameworks */,
 				1D07BB6ECA7B62EE688F30AB /* libPods-Smilies.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -880,6 +958,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C76C9551A8A049E00A68266 /* HTMLReader.framework in Frameworks */,
 				1CF0E9DD1A19F21F0067511E /* Crashlytics.framework in Frameworks */,
 				673FAE1D0081DA15654CD40E /* libPods-Awful.a in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
@@ -923,6 +1002,7 @@
 				1C09BFE51A09B9A5007C11F5 /* 1Password */,
 				1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */,
 				1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */,
+				1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
@@ -1233,6 +1313,21 @@
 				1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */,
 			);
 			path = Profiles;
+			sourceTree = "<group>";
+		};
+		1C76C9371A8A046800A68266 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1C76C9421A8A046900A68266 /* HTMLReader.framework */,
+				1C76C9441A8A046900A68266 /* Tests on iOS.xctest */,
+				1C76C9461A8A046900A68266 /* HTMLReader.framework */,
+				1C76C9481A8A046900A68266 /* Tests on OS X.xctest */,
+				1C76C94A1A8A046900A68266 /* Benchmarker */,
+				1C76C94C1A8A046900A68266 /* Encoding Labeler */,
+				1C76C94E1A8A046900A68266 /* Entity Fetcher */,
+				1C76C9501A8A046900A68266 /* libHTMLReader.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
@@ -1738,6 +1833,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1C76C95A1A8A04B900A68266 /* PBXTargetDependency */,
 			);
 			name = Smilies;
 			productName = Smilies;
@@ -1815,6 +1911,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1C76C9581A8A049E00A68266 /* PBXTargetDependency */,
 				1C66A9D319DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
@@ -1882,6 +1979,12 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1C76C9371A8A046800A68266 /* Products */;
+					ProjectRef = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
@@ -1893,6 +1996,65 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1C76C9421A8A046900A68266 /* HTMLReader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HTMLReader.framework;
+			remoteRef = 1C76C9411A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C9441A8A046900A68266 /* Tests on iOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Tests on iOS.xctest";
+			remoteRef = 1C76C9431A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C9461A8A046900A68266 /* HTMLReader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = HTMLReader.framework;
+			remoteRef = 1C76C9451A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C9481A8A046900A68266 /* Tests on OS X.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Tests on OS X.xctest";
+			remoteRef = 1C76C9471A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C94A1A8A046900A68266 /* Benchmarker */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = Benchmarker;
+			remoteRef = 1C76C9491A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C94C1A8A046900A68266 /* Encoding Labeler */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "Encoding Labeler";
+			remoteRef = 1C76C94B1A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C94E1A8A046900A68266 /* Entity Fetcher */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "Entity Fetcher";
+			remoteRef = 1C76C94D1A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1C76C9501A8A046900A68266 /* libHTMLReader.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libHTMLReader.a;
+			remoteRef = 1C76C94F1A8A046900A68266 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		1C3A143119DFC5D10022C44C /* Resources */ = {
@@ -2397,6 +2559,16 @@
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
 		};
+		1C76C9581A8A049E00A68266 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "HTMLReader iOS";
+			targetProxy = 1C76C9571A8A049E00A68266 /* PBXContainerItemProxy */;
+		};
+		1C76C95A1A8A04B900A68266 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "HTMLReader iOS";
+			targetProxy = 1C76C9591A8A04B900A68266 /* PBXContainerItemProxy */;
+		};
 		1CF0E9CB1A191B980067511E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -2453,10 +2625,6 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2495,10 +2663,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2640,10 +2804,6 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/..";
@@ -2684,10 +2844,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Tests/Smilies/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks @loader_path/..";
@@ -2805,10 +2961,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Tests/Scraping/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
@@ -2844,10 +2996,6 @@
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../Pods/Headers/Public",
-				);
 				INFOPLIST_FILE = ../Tests/Scraping/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

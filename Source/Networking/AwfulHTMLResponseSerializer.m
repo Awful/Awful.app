@@ -4,7 +4,7 @@
 
 #import "AwfulHTMLResponseSerializer.h"
 #import "AwfulErrorDomain.h"
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 
 @implementation AwfulHTMLResponseSerializer
 

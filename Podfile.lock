@@ -24,7 +24,6 @@ PODS:
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.5.8)
   - ImgurAnonymousAPIClient (0.3):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
@@ -49,7 +48,7 @@ PODS:
   - MRProgress/ProgressBaseClass (0.8.0)
   - MRProgress/Stopable (0.8.0):
     - MRProgress/Helper
-  - PSMenuItem (0.0.1)
+  - PSMenuItem (1.0.0)
   - SVPullToRefresh (HEAD based on 0.4.1)
   - TUSafariActivity (1.0.2)
   - WebViewJavascriptBridge (4.1.4)
@@ -60,29 +59,37 @@ DEPENDENCIES:
   - ARChromeActivity (= 1.0.4)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
-  - HTMLReader (= 0.5.8)
   - ImgurAnonymousAPIClient (= 0.3)
   - JLRoutes (= 1.5.1)
   - KVOController (= 1.0.3)
   - MRProgress/Overlay (= 0.8.0)
-  - PSMenuItem (= 0.0.1)
+  - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - SVPullToRefresh (HEAD)
   - TUSafariActivity (= 1.0.2)
   - WebViewJavascriptBridge (= 4.1.4)
   - YABrowserViewController (= 0.1.1)
+
+EXTERNAL SOURCES:
+  PSMenuItem:
+    :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
+    :git: https://github.com/steipete/PSMenuItem
+
+CHECKOUT OPTIONS:
+  PSMenuItem:
+    :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
+    :git: https://github.com/steipete/PSMenuItem
 
 SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   ARChromeActivity: d8471d0f78b7fcc1de57929cfc1751b3a7f58bad
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
-  HTMLReader: e61b43d69deb09d8098a7aabacdd6cafd8749373
   ImgurAnonymousAPIClient: 2b544330a9295cb17489f2fc5e94f6c237372737
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   KVOController: b1139ef1fc373b6757e4b69493fedd7b56eb1272
   MRProgress: 2b65d6ec30a5d08b55efd3ceb3e714a5c6c9a28b
-  PSMenuItem: 0b715b3c76482cdc4656a54d6d601205b49306e3
+  PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   SVPullToRefresh: d5161ebc833a38b465364412e5e307ca80bbb190
   TUSafariActivity: 63c6b0584d1f0a731e955c0e4d9c89cde63bedc2
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac

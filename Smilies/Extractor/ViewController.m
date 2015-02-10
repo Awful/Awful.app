@@ -4,7 +4,7 @@
 
 #import "ViewController.h"
 @import CoreData;
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 @import ImageIO;
 @import Smilies;
 #import "SmilieWebArchive.h"

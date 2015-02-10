@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import <HTMLReader/HTMLTextNode.h>
 #import "Awful-Swift.h"
 
 @interface ProfileScraper ()
@@ -55,10 +54,12 @@
     HTMLElement *messageLink = [self.node firstNodeMatchingSelector:@"dl.contacts dt.pm + dd a"];
     self.profile.user.canReceivePrivateMessages = !!messageLink;
     
+    Class HTMLTextNode = NSClassFromString(@"HTMLTextNode");
+    
     HTMLElement *ICQDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.icq + dd"];
     if (ICQDefinition) {
         NSString *ICQText = [ICQDefinition.children.firstObject textContent];
-        if (ICQDefinition.numberOfChildren == 1 && [ICQDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+        if (ICQDefinition.numberOfChildren == 1 && [ICQDefinition.children[0] isKindOfClass:HTMLTextNode]) {
             self.profile.icqName = ICQText;
         } else {
             self.profile.icqName = nil;
@@ -68,7 +69,7 @@
     HTMLElement *AIMDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.aim + dd"];
     if (AIMDefinition) {
         NSString *AIMText = [AIMDefinition.children.firstObject textContent];
-        if (AIMDefinition.numberOfChildren == 1 && [AIMDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+        if (AIMDefinition.numberOfChildren == 1 && [AIMDefinition.children[0] isKindOfClass:HTMLTextNode]) {
             self.profile.aimName = AIMText;
         } else {
             self.profile.aimName = nil;
@@ -78,7 +79,7 @@
     HTMLElement *yahooDefinition = [self.node firstNodeMatchingSelector:@"dl.contacts dt.yahoo + dd"];
     if (yahooDefinition) {
         NSString *yahooText = [yahooDefinition.children.firstObject textContent];
-        if (yahooDefinition.numberOfChildren == 1 && [yahooDefinition.children[0] isKindOfClass:[HTMLTextNode class]]) {
+        if (yahooDefinition.numberOfChildren == 1 && [yahooDefinition.children[0] isKindOfClass:HTMLTextNode]) {
             self.profile.yahooName = yahooText;
         } else {
             self.profile.yahooName = nil;
@@ -135,17 +136,17 @@
     for (NSUInteger i = 0; i < remainingAdditionalInfo.count; i++) {
         HTMLElement *term = remainingAdditionalInfo[i];
         if (!([term isKindOfClass:[HTMLElement class]] && [term.tagName isEqualToString:@"dt"])) continue;
-        HTMLTextNode *termText = term.children.firstObject;
-        if (![termText isKindOfClass:[HTMLTextNode class]]) continue;
+        HTMLNode *termText = term.children.firstObject;
+        if (![termText isKindOfClass:HTMLTextNode]) continue;
         HTMLElement *definition = remainingAdditionalInfo[++i];
-        HTMLTextNode *definitionText = definition.children.firstObject;
-        if (![definitionText isKindOfClass:[HTMLTextNode class]]) continue;
-        if ([termText.data hasPrefix:@"Location"]) {
-            self.profile.location = definitionText.data;
-        } else if ([termText.data hasPrefix:@"Interests"]) {
-            self.profile.interests = definitionText.data;
-        } else if ([termText.data hasPrefix:@"Occupation"]) {
-            self.profile.occupation = definitionText.data;
+        HTMLNode *definitionText = definition.children.firstObject;
+        if (![definitionText isKindOfClass:HTMLTextNode]) continue;
+        if ([termText.textContent hasPrefix:@"Location"]) {
+            self.profile.location = definitionText.textContent;
+        } else if ([termText.textContent hasPrefix:@"Interests"]) {
+            self.profile.interests = definitionText.textContent;
+        } else if ([termText.textContent hasPrefix:@"Occupation"]) {
+            self.profile.occupation = definitionText.textContent;
         }
     }
 }

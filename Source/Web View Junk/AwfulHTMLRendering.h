@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 
 /**
  * Modifies document in-place by adding the "mention" class to the header above a quote if it says "username posted:".

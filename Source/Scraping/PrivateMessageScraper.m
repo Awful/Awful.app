@@ -7,7 +7,6 @@
 #import "AwfulCompoundDateParser.h"
 #import "AwfulErrorDomain.h"
 #import "AwfulScanner.h"
-#import <HTMLReader/HTMLTextNode.h>
 #import "NSURL+QueryDictionary.h"
 #import "Awful-Swift.h"
 
@@ -38,9 +37,9 @@
     PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
     
     HTMLElement *breadcrumbs = [self.node firstNodeMatchingSelector:@"div.breadcrumbs b"];
-    HTMLTextNode *subjectText = breadcrumbs.children.lastObject;
-    if ([subjectText isKindOfClass:[HTMLTextNode class]]) {
-        message.subject = subjectText.data;
+    HTMLNode *subjectText = breadcrumbs.children.lastObject;
+    if ([subjectText isKindOfClass:NSClassFromString(@"HTMLTextNode")]) {
+        message.subject = subjectText.textContent;
     }
     
     HTMLElement *postDateCell = [self.node firstNodeMatchingSelector:@"td.postdate"];

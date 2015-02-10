@@ -4,7 +4,7 @@
 
 @import CoreData;
 @import Foundation;
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 
 /**
  * An AwfulForm object describes an HTML form.

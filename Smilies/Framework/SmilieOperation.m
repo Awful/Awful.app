@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieOperation.h"
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 @import ImageIO;
 #import "Smilie.h"
 #import "SmilieDataStore.h"
