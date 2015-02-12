@@ -102,6 +102,9 @@ static void CommonInit(UIViewController *self)
 @end
 
 @implementation AwfulTableViewController
+{
+    BOOL _viewIsLoading;
+}
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -121,8 +124,10 @@ static void CommonInit(UIViewController *self)
 
 - (void)viewDidLoad
 {
+    _viewIsLoading = YES;
     [super viewDidLoad];
     [self themeDidChange];
+    _viewIsLoading = NO;
 }
 
 - (void)themeDidChange
@@ -137,7 +142,7 @@ static void CommonInit(UIViewController *self)
     self.tableView.indicatorStyle = theme.scrollIndicatorStyle;
     self.tableView.separatorColor = theme[@"listSeparatorColor"];
     
-    if (self.visible) {
+    if (!_viewIsLoading) {
         [self.tableView reloadData];
     }
 }
@@ -147,18 +152,9 @@ static void CommonInit(UIViewController *self)
     return [AwfulTheme currentTheme];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    // Updates to the table view when it's offscreen are a bad idea, so we'll avoid those and reload just before appearing instead.
-    [self.tableView reloadData];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     self.visible = YES;
 }
 
@@ -171,6 +167,9 @@ static void CommonInit(UIViewController *self)
 @end
 
 @implementation AwfulCollectionViewController
+{
+    BOOL _viewIsLoading;
+}
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -190,20 +189,24 @@ static void CommonInit(UIViewController *self)
 
 - (void)viewDidLoad
 {
+    _viewIsLoading = YES;
     [super viewDidLoad];
     [self themeDidChange];
+    _viewIsLoading = NO;
 }
 
 - (void)themeDidChange
 {
-	[super themeDidChange];
+    [super themeDidChange];
     AwfulTheme *theme = self.theme;
     
     self.view.backgroundColor = theme[@"collectionViewBackgroundColor"];
     
-	self.collectionView.indicatorStyle = theme.scrollIndicatorStyle;
+    self.collectionView.indicatorStyle = theme.scrollIndicatorStyle;
     
-	[self.collectionView reloadData];
+    if (!_viewIsLoading) {
+        [self.collectionView reloadData];
+    }
 }
 
 - (AwfulTheme *)theme
