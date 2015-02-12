@@ -213,7 +213,7 @@
 		1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */; };
 		1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */; };
 		1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */; };
-		1CC256C11A3B154A003FA7A8 /* CoreExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */; };
+		1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC780231612D989002AF958 /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
@@ -698,7 +698,7 @@
 		1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloseBBcodeTagCommand.m; sourceTree = "<group>"; };
 		1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowSmilieKeyboardCommand.swift; sourceTree = "<group>"; };
 		1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionMenuTree.swift; sourceTree = "<group>"; };
-		1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreExtensions.swift; sourceTree = "<group>"; };
+		1CC256C01A3B154A003FA7A8 /* Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swift.swift; sourceTree = "<group>"; };
 		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
 		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
@@ -1078,6 +1078,7 @@
 			children = (
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
+				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
 				1CC7800E1612D8AE002AF958 /* Forums */,
 				1CE2D99D16688AC40024AC1C /* Framework Categories */,
 				1CBE1B0719CA03F100510187 /* Images */,
@@ -1093,7 +1094,6 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C8694A216EF78D3003FE89E /* Settings */,
-				1C8A8CFD1A3C28E900E4F6A4 /* Swift */,
 				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1276,12 +1276,12 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		1C8A8CFD1A3C28E900E4F6A4 /* Swift */ = {
+		1C8A8CFD1A3C28E900E4F6A4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1CC256C01A3B154A003FA7A8 /* CoreExtensions.swift */,
+				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 			);
-			path = Swift;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
@@ -2284,7 +2284,7 @@
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* PrivateMessageViewModel.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
-				1CC256C11A3B154A003FA7A8 /* CoreExtensions.swift in Sources */,
+				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
