@@ -67,11 +67,14 @@
 - (void)setAwful_setting:(NSString *)settingsKey
 {
     SettingsBinding *binding = [[SettingsBinding alloc] initWithSettingsKey:settingsKey];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
     if ([self respondsToSelector:@selector(awful_settingDidChange:)]) {
         binding.target = self;
         binding.action = @selector(awful_settingDidChange:);
         [binding sendAction];
     }
+    #pragma clang diagnostic pop
     self.awful_binding = binding;
 }
 

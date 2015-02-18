@@ -6,6 +6,7 @@
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 @import AVFoundation;
 #import "AwfulAvatarLoader.h"
+@import AwfulCore;
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulImageURLProtocol.h"
@@ -231,7 +232,7 @@ static void RemoveOldDataStores(void)
     
     NSURL *storeURL = [[[NSFileManager defaultManager] applicationSupportDirectory] URLByAppendingPathComponent:@"CachedForumData"
                                                                                                     isDirectory:YES];
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Awful" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle bundleForClass:[DataStore class]] URLForResource:@"Awful" withExtension:@"momd"];
     _dataStore = [[DataStore alloc] initWithStoreDirectoryURL:storeURL modelURL:modelURL];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
