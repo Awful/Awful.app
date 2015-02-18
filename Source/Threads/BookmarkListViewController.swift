@@ -11,7 +11,7 @@ final class BookmarkListViewController: ThreadListViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         
         title = "Bookmarks"
         tabBarItem.image = UIImage(named: "bookmarks")
@@ -49,7 +49,7 @@ final class BookmarkListViewController: ThreadListViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
+        infiniteTableController.spinnerColor = theme["listTextColor"] as! UIColor?
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -177,7 +177,7 @@ final class BookmarkDataSource: ThreadDataSource {
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            let thread = itemAtIndexPath(indexPath) as Thread
+            let thread = itemAtIndexPath(indexPath) as! Thread
             deletionDelegate?.setThread(thread, isBookmarked: false)
         }
     }

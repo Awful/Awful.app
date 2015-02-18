@@ -24,9 +24,7 @@ final class CompositionViewController: AwfulViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    var textView: UITextView {
-        return view as UITextView
-    }
+    var textView: UITextView { return view as! UITextView }
     
     override func loadView() {
         let textView = CompositionTextView()
@@ -51,7 +49,7 @@ final class CompositionViewController: AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        textView.textColor = theme["listTextColor"] as UIColor?
+        textView.textColor = theme["listTextColor"] as! UIColor?
         textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
@@ -78,7 +76,7 @@ final class CompositionViewController: AwfulViewController {
 extension CompositionViewController: UIViewControllerRestoration {
     class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         let composition = self()
-        composition.restorationIdentifier = identifierComponents.last as String?
+        composition.restorationIdentifier = identifierComponents.last as! String?
         return composition
     }
 }

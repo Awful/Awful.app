@@ -4,6 +4,8 @@
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
 public class AwfulManagedObject: NSManagedObject {
+    var objectKey: AwfulObjectKey { fatalError("subclass implementation please") }
+    
     public class func entityName() -> String {
         return NSStringFromClass(self)
     }
@@ -39,7 +41,7 @@ class AwfulObjectKey: NSObject, NSCoding, NSCopying {
     }
     
     required init(coder: NSCoder) {
-        entityName = coder.decodeObjectForKey(entityNameKey) as String
+        entityName = coder.decodeObjectForKey(entityNameKey) as! String
         super.init()
     }
     
@@ -60,8 +62,8 @@ class AwfulObjectKey: NSObject, NSCoding, NSCopying {
                 return false
             }
             for key in keys {
-                let otherValue = other.valueForKey(key) as NSObject!
-                let value = valueForKey(key) as NSObject!
+                let otherValue = other.valueForKey(key) as! NSObject!
+                let value = valueForKey(key) as! NSObject!
                 if otherValue != nil && value != nil && otherValue != value {
                     return false
                 }
@@ -74,7 +76,7 @@ class AwfulObjectKey: NSObject, NSCoding, NSCopying {
     override var hash: Int {
         var hash = entityName.hash
         if keys.count == 1 {
-            let value = valueForKey(keys[0]) as NSObject!
+            let value = valueForKey(keys[0]) as! NSObject!
             hash ^= value.hash
         }
         return hash
@@ -86,7 +88,7 @@ private extension AwfulObjectKey {
     var predicate: NSPredicate {
         let subpredicates: [NSPredicate] = reduce(keys, []) { accum, key in
             if let value = self.valueForKey(key) as? NSObject {
-                return accum + [NSPredicate(format: "%K == %@", key, value)!]
+                return accum + [NSPredicate(format: "%K == %@", key, value)]
             } else {
                 return accum
             }
@@ -119,22 +121,18 @@ private extension AwfulObjectKey {
 }
 
 extension AwfulManagedObject {
-    var objectKey: AwfulObjectKey {
-        fatalError("subclass implementation please")
-    }
-    
     class func existingObjectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject? {
         let request = NSFetchRequest(entityName: objectKey.entityName)
         request.predicate = objectKey.predicate
         request.fetchLimit = 1
         var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as [AwfulManagedObject]?
+        let results = context.executeFetchRequest(request, error: &error) as! [AwfulManagedObject]?
         assert(results != nil, "error fetching: \(error!)")
         return results!.first
     }
     
     class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
-        var object = existingObjectForKey(objectKey, inManagedObjectContext: context) as AwfulManagedObject!
+        var object = existingObjectForKey(objectKey, inManagedObjectContext: context) as! AwfulManagedObject!
         if object == nil {
             object = insertIntoManagedObjectContext(context)
         }
@@ -162,7 +160,7 @@ extension AwfulManagedObject {
         let aggregateValues = objectKeys[0].dynamicType.valuesForKeysInObjectKeys(objectKeys)
         var subpredicates = [NSPredicate]()
         for (key, values) in aggregateValues {
-            subpredicates.append(NSPredicate(format: "%K IN %@", key, values)!)
+            subpredicates.append(NSPredicate(format: "%K IN %@", key, values))
         }
         if subpredicates.count == 1 {
             request.predicate = subpredicates[0]
@@ -170,7 +168,7 @@ extension AwfulManagedObject {
             request.predicate = NSCompoundPredicate.orPredicateWithSubpredicates(subpredicates)
         }
         var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as [AwfulManagedObject]!
+        let results = context.executeFetchRequest(request, error: &error) as! [AwfulManagedObject]!
         assert(results != nil, "error fetching: \(error!)")
         
         var existingByKey = [AwfulObjectKey: AwfulManagedObject](minimumCapacity: results.count)

@@ -58,11 +58,11 @@ final class Selectotron : AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as UIColor?
-        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
+        view.tintColor = theme["tintColor"] as! UIColor?
+        let backgroundColor = theme["sheetBackgroundColor"] as! UIColor?
         view.backgroundColor = backgroundColor
         popoverPresentationController?.backgroundColor = backgroundColor
-        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
+        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as! UIColor?
         picker.reloadAllComponents()
     }
     
@@ -95,7 +95,7 @@ final class Selectotron : AwfulViewController {
 }
 
 extension Selectotron: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
 }
@@ -109,7 +109,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
         return Int(postsViewController.numberOfPages)
     }
     
-    func pickerView(pickerView: UIPickerView!, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString! {
+    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
             NSForegroundColorAttributeName: theme["sheetTextColor"],
             NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
@@ -117,11 +117,11 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)
     }
     
-    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         updateJumpButtonTitle()
     }
     
-    func pickerView(pickerView: UIPickerView!, accessibilityLabelForComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String {
         return "Page \(component + 1)"
     }
 }

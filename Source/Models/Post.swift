@@ -34,6 +34,10 @@ public class Post: AwfulManagedObject {
     
     /// Where the post is located.
     @NSManaged public var thread: Thread?
+    
+    override var objectKey: PostKey {
+        return PostKey(postID: postID)
+    }
 }
 
 extension Post {
@@ -74,7 +78,7 @@ final class PostKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        postID = coder.decodeObjectForKey(postIDKey) as String
+        postID = coder.decodeObjectForKey(postIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -82,10 +86,5 @@ final class PostKey: AwfulObjectKey {
         return [postIDKey]
     }
 }
-private let postIDKey = "postID"
 
-extension Post {
-    override var objectKey: PostKey {
-        return PostKey(postID: postID)
-    }
-}
+private let postIDKey = "postID"

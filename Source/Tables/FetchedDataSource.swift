@@ -47,7 +47,7 @@ extension FetchedDataSource: DataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
+        let sectionInfo = fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
         return sectionInfo.numberOfObjects
     }
     

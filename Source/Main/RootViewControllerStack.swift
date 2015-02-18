@@ -76,8 +76,8 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         let messagesRestorationIdentifier = "Messages"
         var messagesTabIndex: Int?
         for (i, root) in enumerate(roots) {
-            let navigationController = root as UINavigationController
-            let viewController = navigationController.viewControllers[0] as UIViewController
+            let navigationController = root as! UINavigationController
+            let viewController = navigationController.viewControllers[0] as! UIViewController
             if viewController.restorationIdentifier == messagesRestorationIdentifier {
                 messagesTabIndex = i
                 break
@@ -101,7 +101,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
     
     @objc private func settingsDidChange(notification: NSNotification) {
-        let userInfo = notification.userInfo as [String:String]
+        let userInfo = notification.userInfo as! [String:String]
         let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]!
         if changeKey == AwfulSettingsKeys.canSendPrivateMessages {
             updateMessagesTabPresence()
@@ -147,7 +147,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 } else if currentViewController.respondsToSelector("viewControllers") {
                     // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
                     let remainingPath = identifierComponents[1..<identifierComponents.count]
-                    let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as [UIViewController]
+                    let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as! [UIViewController]
                     return search(Array(remainingPath), subsequentViewControllers)
                 }
             }
@@ -177,7 +177,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             }
         }
         
-        if let detail = detailNavigationController?.viewControllers.first as UIViewController? {
+        if let detail = detailNavigationController?.viewControllers.first as! UIViewController? {
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
                 detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
@@ -186,11 +186,11 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
     
     private var primaryNavigationController: UINavigationController {
-        return tabBarController.selectedViewController as UINavigationController
+        return tabBarController.selectedViewController as! UINavigationController
     }
 
     private var detailNavigationController: UINavigationController? {
-        let viewControllers = splitViewController.viewControllers as [UINavigationController]
+        let viewControllers = splitViewController.viewControllers as! [UINavigationController]
         return viewControllers.count > 1 ? viewControllers[1] : nil
     }
     
@@ -203,8 +203,8 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
     func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
-        let secondaryNavigationController = secondaryViewController as UINavigationController
-        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
+        let secondaryNavigationController = secondaryViewController as! UINavigationController
+        if let detail = secondaryNavigationController.viewControllers.first as! UIViewController? {
             detail.navigationItem.leftBarButtonItem = nil
         }
         
@@ -226,16 +226,16 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         return true
     }
     
-    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController!) -> UIViewController! {
+    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
-        let viewControllers = primaryNavigationController.viewControllers as [UIViewController]
+        let viewControllers = primaryNavigationController.viewControllers as! [UIViewController]
         let (primaryStack, secondaryStack) = partition(viewControllers) { $0.prefersSecondaryViewController }
         let secondaryNavigationController = createEmptyDetailNavigationController()
         primaryNavigationController.viewControllers = Array(primaryStack)
         secondaryNavigationController.viewControllers = Array(secondaryStack.isEmpty ? [EmptyViewController()] : secondaryStack)
         
-        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
+        if let detail = secondaryNavigationController.viewControllers.first as! UIViewController? {
             detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
         }
         
@@ -250,7 +250,7 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         splitViewController.preferredDisplayMode = tempMode
     }
     
-    func splitViewController(splitViewController: UISplitViewController, showDetailViewController viewController: UIViewController!, sender: AnyObject!) -> Bool {
+    func splitViewController(splitViewController: UISplitViewController, showDetailViewController viewController: UIViewController, sender: AnyObject?) -> Bool {
         if splitViewController.collapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
@@ -272,7 +272,7 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
     func targetDisplayModeForActionInSplitViewController(splitViewController: UISplitViewController) -> UISplitViewControllerDisplayMode {
         // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
         if let detailNav = detailNavigationController {
-            if let root = detailNav.viewControllers.first as UIViewController? {
+            if let root = detailNav.viewControllers.first as! UIViewController? {
                 root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .AllVisible ? nil : splitViewController.displayModeButtonItem()
             }
         }

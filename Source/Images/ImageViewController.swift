@@ -8,7 +8,7 @@ final class ImageViewController: UIViewController {
     private var doneAction: (() -> Void)?
     private var downloadProgress: NSProgress!
     private var image: DecodedImage?
-    private var rootView: RootView { return view as RootView }
+    private var rootView: RootView { return view as! RootView }
     
     init(imageURL: NSURL) {
         self.imageURL = imageURL
@@ -503,7 +503,11 @@ final class ImagePreviewActivity: UIActivity {
         super.init()
     }
     
-    private(set) var activityViewController: UIViewController!
+    override func activityViewController() -> UIViewController? {
+        return _activityViewController
+    }
+    
+    private var _activityViewController: UIViewController?
     
     override func activityType() -> String? {
         return "com.awfulapp.Awful.ImagePreview"
@@ -518,12 +522,12 @@ final class ImagePreviewActivity: UIActivity {
     }
     
     override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
-        return any(activityItems) { $0 as NSObject == self }
+        return any(activityItems) { $0 as! NSObject == self }
     }
     
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
         let imageViewController = ImageViewController(imageURL: imageURL)
         imageViewController.doneAction = { self.activityDidFinish(true) }
-        activityViewController = imageViewController
+        _activityViewController = imageViewController
     }
 }

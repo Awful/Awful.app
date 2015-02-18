@@ -41,7 +41,7 @@ class CopyURLActivity: UIActivity {
     private var URL: NSURL!
     
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
-        let container = first(activityItems) { $0 is URLToCopyContainer } as URLToCopyContainer
+        let container = first(activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
         URL = container.URL
     }
     

@@ -18,8 +18,8 @@ class ThreadListViewController: AwfulTableViewController {
         fatalError("subclass implementation please")
     }
     
-    override init(nibName: String?, bundle: NSBundle?) {
-        super.init(nibName: nibName, bundle: bundle)
+    init() {
+        super.init(style: .Plain)
         makeNewDataSource()
     }
 
@@ -64,32 +64,32 @@ class ThreadListViewController: AwfulTableViewController {
 extension ThreadListViewController: UITableViewDelegate {
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let cell = cell as? ThreadCell {
-            let thread = dataSource.itemAtIndexPath(indexPath) as Thread
+            let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
 
-            cell.backgroundColor = theme["listBackgroundColor"] as UIColor?
-            cell.titleLabel.textColor = theme["listTextColor"] as UIColor?
-            cell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.pageIcon.borderColor = theme["listSecondaryTextColor"] as UIColor? ?? UIColor.grayColor()
-            cell.killedByLabel.textColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.tintColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.fontNameForLabels = theme["listFontName"] as String?
-            cell.separator.backgroundColor = theme["listSeparatorColor"] as UIColor?
+            cell.backgroundColor = theme["listBackgroundColor"] as! UIColor?
+            cell.titleLabel.textColor = theme["listTextColor"] as! UIColor?
+            cell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"] as! UIColor?
+            cell.pageIcon.borderColor = (theme["listSecondaryTextColor"] as! UIColor?) ?? UIColor.grayColor()
+            cell.killedByLabel.textColor = theme["listSecondaryTextColor"] as! UIColor?
+            cell.tintColor = theme["listSecondaryTextColor"] as! UIColor?
+            cell.fontNameForLabels = theme["listFontName"] as! String?
+            cell.separator.backgroundColor = theme["listSeparatorColor"] as! UIColor?
             
             cell.selectedBackgroundView = UIView()
-            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
+            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as! UIColor?
             
             switch (thread.unreadPosts, thread.starCategory) {
-            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"] as UIColor?
-            case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"] as UIColor?
-            case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"] as UIColor?
-            case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"] as UIColor?
-            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"] as UIColor?
+            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"] as! UIColor?
+            case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"] as! UIColor?
+            case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"] as! UIColor?
+            case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"] as! UIColor?
+            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"] as! UIColor?
             }
         }
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataSource.itemAtIndexPath(indexPath) as Thread
+        let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
@@ -104,8 +104,8 @@ class ThreadDataSource: FetchedDataSource {
     private var threadTagObservers = [String: AwfulNewThreadTagObserver]()
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Thread", forIndexPath: indexPath) as ThreadCell
-        let thread = itemAtIndexPath(indexPath) as Thread
+        let cell = tableView.dequeueReusableCellWithIdentifier("Thread", forIndexPath: indexPath) as! ThreadCell
+        let thread = itemAtIndexPath(indexPath) as! Thread
         cell.setLongPressTarget(self, action: "showThreadActions:")
         
         cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
@@ -119,7 +119,7 @@ class ThreadDataSource: FetchedDataSource {
                     let threadID = thread.threadID
                     threadTagObservers[threadID] = AwfulNewThreadTagObserver(imageName: imageName) { [unowned self] image in
                         if let indexPath = tableView.indexPathForCell(cell) {
-                            let thread = self.itemAtIndexPath(indexPath) as Thread
+                            let thread = self.itemAtIndexPath(indexPath) as! Thread
                             if thread.threadID == threadID {
                                 cell.tagImageView.image = image
                             }
@@ -182,7 +182,7 @@ class ThreadDataSource: FetchedDataSource {
     @objc private func showThreadActions(cell: ThreadCell) {
         let tableView: UITableView = cell.nearestSuperviewOfDeclaredType()
         if let indexPath = tableView.indexPathForCell(cell) {
-            let thread = itemAtIndexPath(indexPath) as Thread
+            let thread = itemAtIndexPath(indexPath) as! Thread
             showActionsForThread(thread, forTableView: tableView)
         }
     }

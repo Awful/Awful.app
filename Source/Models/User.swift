@@ -20,13 +20,17 @@ public class User: AwfulManagedObject {
     @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged var threads: NSMutableSet /* Thread */
+    
+    override var objectKey: UserKey {
+        return UserKey(userID: userID, username: username)
+    }
 }
 
 extension User {
     var avatarURL: NSURL? {
         if let HTML = customTitleHTML {
             if let element = avatarImageElement(customTitleHTML: HTML) {
-                return NSURL(string: element.objectForKeyedSubscript("src") as String!)
+                return NSURL(string: element.objectForKeyedSubscript("src") as! String!)
             }
         }
         return nil
@@ -53,8 +57,8 @@ final class UserKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        userID = coder.decodeObjectForKey(userIDKey) as String
-        username = coder.decodeObjectForKey(usernameKey) as String?
+        userID = coder.decodeObjectForKey(userIDKey) as! String
+        username = coder.decodeObjectForKey(usernameKey) as! String?
         super.init(coder: coder)
     }
     
@@ -75,12 +79,6 @@ final class UserKey: AwfulObjectKey {
 }
 private let userIDKey = "userID"
 private let usernameKey = "username"
-
-extension User {
-    override var objectKey: UserKey {
-        return UserKey(userID: userID, username: username)
-    }
-}
 
 func nilIfEmpty(s: String!) -> String? {
     if s != nil && s.isEmpty {

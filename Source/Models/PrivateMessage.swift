@@ -18,6 +18,10 @@ public class PrivateMessage: AwfulManagedObject {
     @NSManaged private var primitiveFrom: User? /* via sentPrivateMessages */
     @NSManaged public var threadTag: ThreadTag?
     @NSManaged var to: User? /* via receivedPrivateMessages */
+    
+    override var objectKey: PrivateMessageKey {
+        return PrivateMessageKey(messageID: messageID)
+    }
 }
 
 extension PrivateMessage {
@@ -52,7 +56,7 @@ final class PrivateMessageKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        messageID = coder.decodeObjectForKey(messageIDKey) as String
+        messageID = coder.decodeObjectForKey(messageIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -60,10 +64,5 @@ final class PrivateMessageKey: AwfulObjectKey {
         return [messageIDKey]
     }
 }
-private let messageIDKey = "messageID"
 
-extension PrivateMessage {
-    override var objectKey: PrivateMessageKey {
-        get { return PrivateMessageKey(messageID: messageID) }
-    }
-}
+private let messageIDKey = "messageID"

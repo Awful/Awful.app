@@ -19,6 +19,10 @@ public class Forum: AwfulManagedObject {
     @NSManaged public var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
     @NSManaged private(set) var metadata: ForumMetadata
     
+    override var objectKey: ForumKey {
+        return ForumKey(forumID: forumID)
+    }
+    
     override public func awakeFromInitialInsert() {
         metadata = ForumMetadata.insertIntoManagedObjectContext(managedObjectContext!)
     }
@@ -34,7 +38,7 @@ final class ForumKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        forumID = coder.decodeObjectForKey(forumIDKey) as String
+        forumID = coder.decodeObjectForKey(forumIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -42,13 +46,8 @@ final class ForumKey: AwfulObjectKey {
         return [forumIDKey]
     }
 }
-private let forumIDKey = "forumID"
 
-extension Forum {
-    override var objectKey: ForumKey {
-        return ForumKey(forumID: forumID)
-    }
-}
+private let forumIDKey = "forumID"
 
 @objc(ForumGroup)
 public class ForumGroup: AwfulManagedObject {
@@ -57,6 +56,10 @@ public class ForumGroup: AwfulManagedObject {
     @NSManaged public var name: String?
     
     @NSManaged public var forums: NSMutableSet /* Forum */
+    
+    override var objectKey: ForumGroupKey {
+        return ForumGroupKey(groupID: groupID)
+    }
 }
 
 final class ForumGroupKey: AwfulObjectKey {
@@ -68,7 +71,7 @@ final class ForumGroupKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        groupID = coder.decodeObjectForKey(groupIDKey) as String
+        groupID = coder.decodeObjectForKey(groupIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -76,13 +79,8 @@ final class ForumGroupKey: AwfulObjectKey {
         return [groupIDKey]
     }
 }
-private let groupIDKey = "groupID"
 
-extension ForumGroup {
-    override var objectKey: ForumGroupKey {
-        return ForumGroupKey(groupID: groupID)
-    }
-}
+private let groupIDKey = "groupID"
 
 @objc(ForumMetadata)
 class ForumMetadata: AwfulManagedObject {
@@ -99,7 +97,7 @@ extension ForumMetadata {
         let request = NSFetchRequest(entityName: entityName())
         request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
         var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as [ForumMetadata]!
+        let results = context.executeFetchRequest(request, error: &error) as! [ForumMetadata]!
         assert(results != nil, "error fetching: \(error!)")
         return results
     }

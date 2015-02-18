@@ -12,6 +12,10 @@ public class ThreadTag: AwfulManagedObject {
     @NSManaged var secondaryForums: NSMutableSet /* AwfulForum via secondaryThreadTags */
     @NSManaged var secondaryThreads: NSMutableSet /* AwfulThread via secondaryThreadTag */
     @NSManaged var threads: NSMutableSet /* AwfulThread via threadTag */
+    
+    override var objectKey: ThreadTagKey {
+        return ThreadTagKey(imageName: imageName, threadTagID: threadTagID)
+    }
 }
 
 extension ThreadTag {
@@ -40,8 +44,8 @@ final class ThreadTagKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        imageName = coder.decodeObjectForKey(imageNameKey) as String?
-        threadTagID = coder.decodeObjectForKey(threadTagIDKey) as String?
+        imageName = coder.decodeObjectForKey(imageNameKey) as! String?
+        threadTagID = coder.decodeObjectForKey(threadTagIDKey) as! String?
         super.init(coder: coder)
     }
     
@@ -55,11 +59,5 @@ private let threadTagIDKey = "threadTagID"
 extension ThreadTagKey {
     convenience init(imageURL: NSURL, threadTagID: String?) {
         self.init(imageName: imageNameFromURL(imageURL), threadTagID: threadTagID)
-    }
-}
-
-extension ThreadTag {
-    override var objectKey: ThreadTagKey {
-        return ThreadTagKey(imageName: imageName, threadTagID: threadTagID)
     }
 }

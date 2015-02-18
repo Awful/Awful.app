@@ -8,7 +8,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     init(forum: Forum) {
         self.forum = forum
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         
         forum.addObserver(self, forKeyPath: "name", options: .Initial, context: &KVOContext)
         navigationItem.rightBarButtonItem = newThreadItem
@@ -112,7 +112,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     private var justLoaded: Bool = false
     private lazy var filterButton: UIButton = { [unowned self] in
-        let button = UIButton.buttonWithType(.System) as UIButton
+        let button = UIButton.buttonWithType(.System) as! UIButton
         button.frame.size.height = button.intrinsicContentSize().height + 8
         button.addTarget(self, action: "showFilterPicker:", forControlEvents: .TouchUpInside)
         return button
@@ -134,8 +134,8 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     private lazy var threadTagPicker: AwfulThreadTagPickerController = { [unowned self] in
         let imageNames = self.forum.threadTags.array
-            .filter { ($0 as ThreadTag).imageName != nil }
-            .map { ($0 as ThreadTag).imageName! }
+            .filter { ($0 as! ThreadTag).imageName != nil }
+            .map { ($0 as! ThreadTag).imageName! }
         let picker = AwfulThreadTagPickerController(imageNames: imageNames, secondaryImageNames: nil)
         picker.delegate = self
         picker.title = "Filter Threads"
@@ -145,7 +145,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if context == &KVOContext {
-            if object as NSObject == forum && keyPath == "name" {
+            if object as! NSObject == forum && keyPath == "name" {
                 title = forum.name
             }
         } else {
@@ -182,8 +182,8 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        filterButton.tintColor = theme["tintColor"] as UIColor?
-        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
+        filterButton.tintColor = theme["tintColor"] as! UIColor?
+        infiniteTableController.spinnerColor = theme["listTextColor"] as! UIColor?
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -238,7 +238,7 @@ extension ForumSpecificThreadListViewController: AwfulThreadTagPickerControllerD
         if imageName == AwfulThreadTagLoaderNoFilterImageName {
             threadTag = nil
         } else {
-            threadTag = forum.threadTags.array.first { ($0 as ThreadTag).imageName == imageName } as ThreadTag?
+            threadTag = forum.threadTags.array.first { ($0 as! ThreadTag).imageName == imageName } as! ThreadTag?
         }
         
         AwfulRefreshMinder.sharedMinder().forgetForum(forum)
@@ -252,15 +252,15 @@ extension ForumSpecificThreadListViewController: AwfulThreadTagPickerControllerD
 
 extension ForumSpecificThreadListViewController: UIViewControllerRestoration, UIStateRestoring {
     class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-        var forumKey = coder.decodeObjectForKey(ForumKeyKey) as ForumKey!
+        var forumKey = coder.decodeObjectForKey(ForumKeyKey) as! ForumKey!
         if forumKey == nil {
-            let forumID = coder.decodeObjectForKey(obsolete_ForumIDKey) as String
+            let forumID = coder.decodeObjectForKey(obsolete_ForumIDKey) as! String
             forumKey = ForumKey(forumID: forumID)
         }
         let managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
-        let forum = Forum.objectForKey(forumKey, inManagedObjectContext: managedObjectContext) as Forum
+        let forum = Forum.objectForKey(forumKey, inManagedObjectContext: managedObjectContext) as! Forum
         let viewController = ForumSpecificThreadListViewController(forum: forum)
-        viewController.restorationIdentifier = identifierComponents.last as String?
+        viewController.restorationIdentifier = identifierComponents.last as! String?
         viewController.restorationClass = self
         return viewController
     }
@@ -281,7 +281,7 @@ extension ForumSpecificThreadListViewController: UIViewControllerRestoration, UI
             threadComposeViewController = compose
         }
         
-        var tagKey = coder.decodeObjectForKey(FilterThreadTagKeyKey) as ThreadTagKey?
+        var tagKey = coder.decodeObjectForKey(FilterThreadTagKeyKey) as! ThreadTagKey?
         if tagKey == nil {
             if let tagID = coder.decodeObjectForKey(obsolete_FilterThreadTagIDKey) as? String {
                 tagKey = ThreadTagKey(imageName: nil, threadTagID: tagID)
@@ -305,9 +305,9 @@ private let obsolete_FilterThreadTagIDKey = "AwfulFilterThreadTagID"
 final class ForumSpecificThreadDataSource: ThreadDataSource {
     init(forum: Forum, filteredByThreadTag threadTag: ThreadTag?) {
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
-        let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)!
+        let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)
         if let threadTag = threadTag {
-            let morePredicate = NSPredicate(format: "threadTag == %@", threadTag)!
+            let morePredicate = NSPredicate(format: "threadTag == %@", threadTag)
             fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([basePredicate, morePredicate])
         } else {
             fetchRequest.predicate = basePredicate
@@ -324,8 +324,8 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath) as ThreadCell
-        let thread = itemAtIndexPath(indexPath) as Thread
+        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath) as! ThreadCell
+        let thread = itemAtIndexPath(indexPath) as! Thread
         cell.stickyImageView.hidden = !thread.sticky
         return cell
     }

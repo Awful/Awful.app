@@ -11,7 +11,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     let forum: Forum
     
     var themes: [AwfulTheme] {
-        return AwfulThemeLoader.sharedLoader().themesForForumWithID(forum.forumID) as [AwfulTheme]
+        return AwfulThemeLoader.sharedLoader().themesForForumWithID(forum.forumID) as! [AwfulTheme]
     }
     
     var selectedTheme: AwfulTheme! {
@@ -72,17 +72,17 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as UIColor?
-        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
+        view.tintColor = theme["tintColor"] as! UIColor?
+        let backgroundColor = theme["sheetBackgroundColor"] as! UIColor?
         view.backgroundColor = backgroundColor
         popoverPresentationController?.backgroundColor = backgroundColor
-		headerLabel.textColor = theme["sheetTitleColor"] as UIColor? ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
-        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
+		headerLabel.textColor = (theme["sheetTitleColor"] as! UIColor?) ?? UIColor.blackColor()
+        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as! UIColor?
         for label in labels {
-            label.textColor = theme["sheetTextColor"] as UIColor? ?? UIColor.blackColor()
+            label.textColor = (theme["sheetTextColor"] as! UIColor?) ?? UIColor.blackColor()
         }
         for uiswitch in switches {
-            uiswitch.onTintColor = theme["settingsSwitchColor"] as UIColor?
+            uiswitch.onTintColor = theme["settingsSwitchColor"] as! UIColor?
         }
         
         // Theme picker's background is a light grey so I can see it (until I figure out how live views work in Xcode 6), but it should be transparent for real.
@@ -91,7 +91,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     
     // MARK: UIAdaptivePresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
     

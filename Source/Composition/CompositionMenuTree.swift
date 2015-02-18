@@ -47,7 +47,7 @@ final class CompositionMenuTree: NSObject {
     private var selectedTextViewRect: CGRect {
         let fallback = textView.bounds
         if let selection = textView.selectedTextRange {
-            return (textView.selectionRectsForRange(selection) as [UITextSelectionRect])
+            return (textView.selectionRectsForRange(selection) as! [UITextSelectionRect])
                 .map { $0.rect }
                 .reduce { CGRectUnion($0, $1) }
                 ?? fallback
@@ -122,18 +122,18 @@ final class CompositionMenuTree: NSObject {
 
 extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        if viewController == (navigationController.viewControllers as [UIViewController]).first {
+        if viewController == (navigationController.viewControllers as! [UIViewController]).first {
             viewController.navigationItem.title = "Insert Image"
         }
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        if let edited = info[UIImagePickerControllerEditedImage] as UIImage? {
+        if let edited = info[UIImagePickerControllerEditedImage] as! UIImage? {
             // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
             insertImage(edited)
         } else {
-            let original = info[UIImagePickerControllerOriginalImage] as UIImage
-            insertImage(original, withAssetURL: (info[UIImagePickerControllerReferenceURL] as NSURL))
+            let original = info[UIImagePickerControllerOriginalImage] as! UIImage
+            insertImage(original, withAssetURL: (info[UIImagePickerControllerReferenceURL] as! NSURL))
         }
         picker.dismissViewControllerAnimated(true) {
             self.textView.becomeFirstResponder()
@@ -263,7 +263,7 @@ private func linkifySelection(tree: CompositionMenuTree) {
     let textView = tree.textView
     if let selectionRange = textView.selectedTextRange {
         let selection: NSString = textView.textInRange(selectionRange)
-        let matches = detector.matchesInString(selection, options: nil, range: NSRange(location: 0, length: selection.length)) as [NSTextCheckingResult]
+        let matches = detector.matchesInString(selection as! String, options: nil, range: NSRange(location: 0, length: selection.length)) as! [NSTextCheckingResult]
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
                 return wrapSelectionInTag("[url]")(tree: tree)
@@ -291,7 +291,7 @@ private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
         equalsPart.length = end.location - equalsPart.location
     }
     
-    let closingTag = NSMutableString(string: tagspec)
+    let closingTag = NSMutableString(string: tagspec as! String)
     if equalsPart.location != NSNotFound {
         closingTag.deleteCharactersInRange(equalsPart)
     }
@@ -303,8 +303,8 @@ private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
     var selectedRange = textView.selectedRange
     
     if let selection = textView.selectedTextRange {
-        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end), withText: closingTag)
-        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start), withText: tagspec)
+        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end), withText: closingTag as! String)
+        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start), withText: tagspec as! String)
     }
     
     if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {

@@ -30,6 +30,10 @@ public class Thread: AwfulManagedObject {
     @NSManaged public var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
     @NSManaged public var threadTag: ThreadTag? /* via threads */
+    
+    override var objectKey: ThreadKey {
+        return ThreadKey(threadID: threadID)
+    }
 }
 
 extension Thread {
@@ -133,7 +137,7 @@ final class ThreadKey: AwfulObjectKey {
     }
     
     required init(coder: NSCoder) {
-        threadID = coder.decodeObjectForKey(threadIDKey) as String
+        threadID = coder.decodeObjectForKey(threadIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -141,13 +145,8 @@ final class ThreadKey: AwfulObjectKey {
         return [threadIDKey]
     }
 }
-private let threadIDKey = "threadID"
 
-extension Thread {
-    override var objectKey: ThreadKey {
-        return ThreadKey(threadID: threadID)
-    }
-}
+private let threadIDKey = "threadID"
 
 @objc(ThreadFilter)
 class ThreadFilter: AwfulManagedObject {
@@ -181,7 +180,7 @@ extension Thread {
         request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
         var error: NSError?
-        let results = managedObjectContext!.executeFetchRequest(request, error: &error) as [ThreadFilter]!
+        let results = managedObjectContext!.executeFetchRequest(request, error: &error) as! [ThreadFilter]!
         assert(results != nil, "error fetching: \(error!)")
         return results.first
     }
