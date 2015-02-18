@@ -15,7 +15,7 @@ BOILERPLATE = "Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/A
 
 ROOT = (Pathname.new(__FILE__).dirname + "../").realpath
 
-%w[Smilies Source Tests].each do |subpath|
+%w[Core Smilies Source Tests].each do |subpath|
   Dir.chdir(ROOT + subpath)
   `ag -il "copyright.*all rights reserved"`.split("\n").each do |path|
     before = File.read(path)
