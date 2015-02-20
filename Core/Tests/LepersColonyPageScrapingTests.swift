@@ -13,19 +13,19 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
     func testFirstPage() {
         let scraper = scrapeFixtureNamed("banlist") as LepersColonyPageScraper
         let punishments = scraper.punishments as [Punishment]
-        XCTAssertTrue(punishments.count == 50)
-        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).count == 71)
-        XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
+        XCTAssert(punishments.count == 50)
+        XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 71)
+        XCTAssert(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
         
         let first = punishments[0]
-        XCTAssertEqual(first.sentence, PunishmentSentence.Probation)
-        XCTAssertEqual(first.post!.postID, "421665753")
-        XCTAssertEqual(first.date.timeIntervalSince1970, 1384078200)
-        XCTAssertEqual(first.subject.username!, "Kheldragar")
-        XCTAssertEqual(first.subject.userID, "202925")
-        XCTAssertTrue(first.reasonHTML!.rangeOfString("shitty as you") != nil)
-        XCTAssertEqual(first.requester!.username!, "Ralp")
-        XCTAssertEqual(first.requester!.userID, "61644")
-        XCTAssertEqual(first.approver!, first.requester!)
+        XCTAssert(first.sentence == PunishmentSentence.Probation)
+        XCTAssert(first.post!.postID == "421665753")
+        XCTAssert(first.date.timeIntervalSince1970 == 1384078200)
+        XCTAssert(first.subject.username == "Kheldragar")
+        XCTAssert(first.subject.userID == "202925")
+        XCTAssert(first.reasonHTML!.rangeOfString("shitty as you") != nil)
+        XCTAssert(first.requester!.username == "Ralp")
+        XCTAssert(first.requester!.userID == "61644")
+        XCTAssert(first.approver! == first.requester!)
     }
 }
