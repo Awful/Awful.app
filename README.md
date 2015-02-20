@@ -33,7 +33,7 @@ There are *optional* dependencies for building Awful. You only need them if you'
 
 * [CocoaPods][] manages Objective-C library dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
     * **Even if you add a dependency directly to the Xcode project**, please update `Source/Settings/Acknowledgements.mustache` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
-* [Carthage][] checks out a single dependency, [HTMLReader][], for us because CocoaPods can't handle a situation nicely for us (at least, I haven't figured out how). If you're updating HTMLReader, please edit the `Cartfile` and use Carthage to check it out.
+* [Carthage][] checks out a few dependencies for us because CocoaPods can't handle the situation nicely (at least, I haven't figured out how). If you'd like to add or update a dependency and you can't find it in the Podfile, check the Cartfile.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).
@@ -62,6 +62,15 @@ If you're curious about anything at all, stop by the [thread][current thread] an
 [fork]: https://github.com/Awful/Awful.app/fork_select
 [pull requests]: https://github.com/Awful/Awful.app/pulls
 
+Project Structure
+-----------------
+
+Awful is broken down somewhat:
+
+* `Awful` is the iOS app.
+* `AwfulCore` is a framework that does the scraping and networking with the Forums. It's meant to be compatible with both iOS and OS X, but nobody's actually tried on OS X.
+* `Smilies` is a framework that downloads smilies and presents them as a keyboard. It's meant to be compatible with both iOS and OS X, but nobody's actually tried on OS X.
+
 Data Flow
 ---------
 
@@ -69,8 +78,8 @@ The [HTTP client][] connects to the Something Awful Forums and parses its conten
 
 Awful's Core Data store is a cache of content from the Forums. Any user info specific to the app is stored in [user defaults][]. The Core Data store may be (and can be, since it's stored in the application's Caches directory) deleted at any time.
 
-[HTTP client]: Source/Networking/AwfulHTTPClient.h
-[entities]: Source/Models
+[HTTP client]: Core/Networking/AwfulForumsClient.h
+[entities]: Core/Models
 [forums]: Source/Forums
 [threads]: Source/Threads
 [posts]: Source/Posts
