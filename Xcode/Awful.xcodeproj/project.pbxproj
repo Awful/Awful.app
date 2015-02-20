@@ -13,6 +13,9 @@
 		1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */; };
 		1C03B52019C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */; };
 		1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C991A14E0EC00F81EA2 /* ForumDataSource.swift */; };
+		1C097A781A963D5200425EEF /* ImgurAnonymousAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C097A771A963D5200425EEF /* ImgurAnonymousAPIClient.m */; };
+		1C097A811A963D7B00425EEF /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; };
+		1C097A821A963D8400425EEF /* AFNetworking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -339,6 +342,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1C097A7D1A963D6200425EEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C097A791A963D6200425EEF /* AFNetworking.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1C0979DC1A96395200425EEF;
+			remoteInfo = AFNetworking;
+		};
+		1C097A7F1A963D7200425EEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C097A791A963D6200425EEF /* AFNetworking.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C0979DB1A96395200425EEF;
+			remoteInfo = AFNetworking;
+		};
 		1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -493,6 +510,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1C097A821A963D8400425EEF /* AFNetworking.framework in Embed Frameworks */,
 				1C76C9561A8A049E00A68266 /* HTMLReader.framework in Embed Frameworks */,
 				1C66A9D519DD304F001B9A41 /* Smilies.framework in Embed Frameworks */,
 				1C3CF97E1A94B9B50065C964 /* AwfulCore.framework in Embed Frameworks */,
@@ -528,6 +546,9 @@
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
 		1C051C9F1A16F8D700F81EA2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
+		1C097A761A963D5200425EEF /* ImgurAnonymousAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImgurAnonymousAPIClient.h; path = ../Carthage/Checkouts/ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h; sourceTree = "<group>"; };
+		1C097A771A963D5200425EEF /* ImgurAnonymousAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImgurAnonymousAPIClient.m; path = ../Carthage/Checkouts/ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.m; sourceTree = "<group>"; };
+		1C097A791A963D6200425EEF /* AFNetworking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AFNetworking.xcodeproj; path = AFNetworking/AFNetworking.xcodeproj; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1C09963A16C0AECA00A62D5E /* AwfulPunishmentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPunishmentCell.h; sourceTree = "<group>"; };
@@ -1007,6 +1028,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C097A811A963D7B00425EEF /* AFNetworking.framework in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CF0E9DD1A19F21F0067511E /* Crashlytics.framework in Frameworks */,
 				1C76C9551A8A049E00A68266 /* HTMLReader.framework in Frameworks */,
@@ -1050,9 +1072,11 @@
 			isa = PBXGroup;
 			children = (
 				1C09BFE51A09B9A5007C11F5 /* 1Password */,
-				1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */,
+				1C097A791A963D6200425EEF /* AFNetworking.xcodeproj */,
 				1CF0E9DC1A19F21F0067511E /* Crashlytics.framework */,
+				1CF0E9DE1A19F5520067511E /* CrashlyticsAPIKey.h */,
 				1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */,
+				1C097A6E1A963D3E00425EEF /* ImgurAnonymousAPIClient */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
@@ -1125,6 +1149,23 @@
 				1C6D2E98182C5F6900785766 /* ProfileScraper.m */,
 			);
 			path = Scraping;
+			sourceTree = "<group>";
+		};
+		1C097A6E1A963D3E00425EEF /* ImgurAnonymousAPIClient */ = {
+			isa = PBXGroup;
+			children = (
+				1C097A761A963D5200425EEF /* ImgurAnonymousAPIClient.h */,
+				1C097A771A963D5200425EEF /* ImgurAnonymousAPIClient.m */,
+			);
+			name = ImgurAnonymousAPIClient;
+			sourceTree = "<group>";
+		};
+		1C097A7A1A963D6200425EEF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1C097A7E1A963D6200425EEF /* AFNetworking.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1C098AE519C6B38E0031C12A /* Tables */ = {
@@ -2019,6 +2060,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1C097A801A963D7200425EEF /* PBXTargetDependency */,
 				1C3CF97C1A94B9B50065C964 /* PBXTargetDependency */,
 				1C76C9581A8A049E00A68266 /* PBXTargetDependency */,
 				1C66A9D319DD304F001B9A41 /* PBXTargetDependency */,
@@ -2094,6 +2136,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 1C097A7A1A963D6200425EEF /* Products */;
+					ProjectRef = 1C097A791A963D6200425EEF /* AFNetworking.xcodeproj */;
+				},
+				{
 					ProductGroup = 1C76C9371A8A046800A68266 /* Products */;
 					ProjectRef = 1C76C9361A8A046800A68266 /* HTMLReader.xcodeproj */;
 				},
@@ -2112,6 +2158,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1C097A7E1A963D6200425EEF /* AFNetworking.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AFNetworking.framework;
+			remoteRef = 1C097A7D1A963D6200425EEF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		1C76C9421A8A046900A68266 /* HTMLReader.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -2588,6 +2641,7 @@
 				1C6D2E9F182D24DE00785766 /* AwfulHTMLRequestSerializer.m in Sources */,
 				1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */,
 				1CA86BD61A370FD300103C1C /* ThreadListViewController.swift in Sources */,
+				1C097A781A963D5200425EEF /* ImgurAnonymousAPIClient.m in Sources */,
 				1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
@@ -2657,6 +2711,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1C097A801A963D7200425EEF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AFNetworking;
+			targetProxy = 1C097A7F1A963D7200425EEF /* PBXContainerItemProxy */;
+		};
 		1C3A146119DFC6AA0022C44C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
@@ -3169,6 +3228,10 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3201,6 +3264,10 @@
 					"DEBUG=0",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
+				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

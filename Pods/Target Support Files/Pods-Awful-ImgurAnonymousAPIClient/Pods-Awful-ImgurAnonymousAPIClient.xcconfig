@@ -1,1 +1,0 @@
-PODS_AWFUL_IMGURANONYMOUSAPICLIENT_OTHER_LDFLAGS = -framework "AssetsLibrary" -framework "ImageIO" -framework "MobileCoreServices"

@@ -1,4 +1,3 @@
-#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 #import <ARChromeActivity/ARChromeActivity.h>
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"

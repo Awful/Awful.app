@@ -5,10 +5,8 @@ link_with 'Awful'
 inhibit_all_warnings!
 
 target :Awful do
-  pod 'AFNetworking', '2.5.0'
   pod 'ARChromeActivity', '1.0.4'
   pod 'GRMustache', '7.3.0'
-  pod 'ImgurAnonymousAPIClient', '0.3'
   pod 'JLRoutes', '1.5.1'
   pod 'KVOController', '1.0.3'
   pod 'MRProgress/Overlay', '0.8.0'

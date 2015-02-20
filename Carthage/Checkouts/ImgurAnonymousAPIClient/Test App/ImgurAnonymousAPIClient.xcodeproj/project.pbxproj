@@ -1,0 +1,364 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1CE9C4A51928D1F700994269 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE9C4A41928D1F700994269 /* main.m */; };
+		1CE9C4A91928D1F700994269 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE9C4A81928D1F700994269 /* AppDelegate.m */; };
+		1CE9C4AC1928D1F700994269 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE9C4AA1928D1F700994269 /* Main_iPhone.storyboard */; };
+		1CE9C4AF1928D1F700994269 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE9C4AD1928D1F700994269 /* Main_iPad.storyboard */; };
+		1CE9C4B21928D1F700994269 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE9C4B11928D1F700994269 /* ViewController.m */; };
+		1CE9C4B41928D1F700994269 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CE9C4B31928D1F700994269 /* Images.xcassets */; };
+		1CE9C4D21928D34E00994269 /* ImgurAnonymousAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE9C4D11928D34E00994269 /* ImgurAnonymousAPIClient.m */; };
+		EF0879EFEC4447A39DA08A1E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54672995BE26445ABCBBB35F /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1C7D8955192B7F4A00003576 /* ImgurAnonymousAPIClient.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = ImgurAnonymousAPIClient.podspec; path = ../ImgurAnonymousAPIClient.podspec; sourceTree = "<group>"; };
+		1CE9C4951928D1F700994269 /* ImgurClientTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImgurClientTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CE9C4A01928D1F700994269 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1CE9C4A41928D1F700994269 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1CE9C4A61928D1F700994269 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		1CE9C4A71928D1F700994269 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1CE9C4A81928D1F700994269 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1CE9C4AB1928D1F700994269 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
+		1CE9C4AE1928D1F700994269 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		1CE9C4B01928D1F700994269 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		1CE9C4B11928D1F700994269 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		1CE9C4B31928D1F700994269 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1CE9C4D01928D34E00994269 /* ImgurAnonymousAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImgurAnonymousAPIClient.h; path = ../ImgurAnonymousAPIClient.h; sourceTree = "<group>"; };
+		1CE9C4D11928D34E00994269 /* ImgurAnonymousAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImgurAnonymousAPIClient.m; path = ../ImgurAnonymousAPIClient.m; sourceTree = "<group>"; };
+		31282C3013FF4AB5A05795CB /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		54672995BE26445ABCBBB35F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1CE9C4921928D1F700994269 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF0879EFEC4447A39DA08A1E /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1CE9C48C1928D1F700994269 = {
+			isa = PBXGroup;
+			children = (
+				1CE9C4D01928D34E00994269 /* ImgurAnonymousAPIClient.h */,
+				1CE9C4D11928D34E00994269 /* ImgurAnonymousAPIClient.m */,
+				1C7D8955192B7F4A00003576 /* ImgurAnonymousAPIClient.podspec */,
+				1CE9C49E1928D1F700994269 /* Test App */,
+				1CE9C4961928D1F700994269 /* Products */,
+				31282C3013FF4AB5A05795CB /* Pods.xcconfig */,
+				EEA7667EAAB0437CA3732864 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		1CE9C4961928D1F700994269 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1CE9C4951928D1F700994269 /* ImgurClientTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1CE9C49E1928D1F700994269 /* Test App */ = {
+			isa = PBXGroup;
+			children = (
+				1CE9C4A71928D1F700994269 /* AppDelegate.h */,
+				1CE9C4A81928D1F700994269 /* AppDelegate.m */,
+				1CE9C4B31928D1F700994269 /* Images.xcassets */,
+				1CE9C4A01928D1F700994269 /* Info.plist */,
+				1CE9C4A41928D1F700994269 /* main.m */,
+				1CE9C4AD1928D1F700994269 /* Main_iPad.storyboard */,
+				1CE9C4AA1928D1F700994269 /* Main_iPhone.storyboard */,
+				1CE9C4A61928D1F700994269 /* Prefix.pch */,
+				1CE9C4B01928D1F700994269 /* ViewController.h */,
+				1CE9C4B11928D1F700994269 /* ViewController.m */,
+			);
+			name = "Test App";
+			sourceTree = "<group>";
+		};
+		EEA7667EAAB0437CA3732864 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				54672995BE26445ABCBBB35F /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1CE9C4941928D1F700994269 /* Test App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CE9C4CA1928D1F800994269 /* Build configuration list for PBXNativeTarget "Test App" */;
+			buildPhases = (
+				7486012378004975A8F42590 /* Check Pods Manifest.lock */,
+				1CE9C4911928D1F700994269 /* Sources */,
+				1CE9C4921928D1F700994269 /* Frameworks */,
+				1CE9C4931928D1F700994269 /* Resources */,
+				C642576893654132A4613F3F /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Test App";
+			productName = ImgurHTTPClient;
+			productReference = 1CE9C4951928D1F700994269 /* ImgurClientTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1CE9C48D1928D1F700994269 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Nolan Waite";
+			};
+			buildConfigurationList = 1CE9C4901928D1F700994269 /* Build configuration list for PBXProject "ImgurAnonymousAPIClient" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1CE9C48C1928D1F700994269;
+			productRefGroup = 1CE9C4961928D1F700994269 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1CE9C4941928D1F700994269 /* Test App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1CE9C4931928D1F700994269 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CE9C4AF1928D1F700994269 /* Main_iPad.storyboard in Resources */,
+				1CE9C4B41928D1F700994269 /* Images.xcassets in Resources */,
+				1CE9C4AC1928D1F700994269 /* Main_iPhone.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7486012378004975A8F42590 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C642576893654132A4613F3F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1CE9C4911928D1F700994269 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CE9C4B21928D1F700994269 /* ViewController.m in Sources */,
+				1CE9C4A91928D1F700994269 /* AppDelegate.m in Sources */,
+				1CE9C4A51928D1F700994269 /* main.m in Sources */,
+				1CE9C4D21928D34E00994269 /* ImgurAnonymousAPIClient.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1CE9C4AA1928D1F700994269 /* Main_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1CE9C4AB1928D1F700994269 /* Base */,
+			);
+			name = Main_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		1CE9C4AD1928D1F700994269 /* Main_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1CE9C4AE1928D1F700994269 /* Base */,
+			);
+			name = Main_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1CE9C4C81928D1F800994269 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
+			};
+			name = Debug;
+		};
+		1CE9C4C91928D1F800994269 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
+			};
+			name = Release;
+		};
+		1CE9C4CB1928D1F800994269 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31282C3013FF4AB5A05795CB /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = ImgurClientTest;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1CE9C4CC1928D1F800994269 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31282C3013FF4AB5A05795CB /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = ImgurClientTest;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1CE9C4901928D1F700994269 /* Build configuration list for PBXProject "ImgurAnonymousAPIClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CE9C4C81928D1F800994269 /* Debug */,
+				1CE9C4C91928D1F800994269 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1CE9C4CA1928D1F800994269 /* Build configuration list for PBXNativeTarget "Test App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CE9C4CB1928D1F800994269 /* Debug */,
+				1CE9C4CC1928D1F800994269 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1CE9C48D1928D1F700994269 /* Project object */;
+}
