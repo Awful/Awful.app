@@ -13,16 +13,16 @@ final class MessageFolderScrapingTests: ScrapingTestCase {
     func testInbox() {
         let scraper = scrapeFixtureNamed("private-list") as PrivateMessageFolderScraper
         let messages = scraper.messages
-        XCTAssertTrue(messages.count == 4)
-        XCTAssertEqual(messages.count, fetchAll(PrivateMessage.self, inContext: managedObjectContext).count)
+        XCTAssert(messages.count == 4)
+        XCTAssert(messages.count == fetchAll(PrivateMessage.self, inContext: managedObjectContext).count)
         
         let tagged = fetchOne(PrivateMessage.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "rawFromUsername = 'CamH'"))!
-        XCTAssertEqual(tagged.messageID, "4549686")
-        XCTAssertEqual(tagged.subject!, "Re: Awful app etc.")
-        XCTAssertEqual(tagged.sentDate!.timeIntervalSince1970, 1348778940)
-        XCTAssertEqual(tagged.threadTag!.imageName!, "sex")
-        XCTAssertTrue(tagged.replied)
-        XCTAssertTrue(tagged.seen)
-        XCTAssertFalse(tagged.forwarded)
+        XCTAssert(tagged.messageID == "4549686")
+        XCTAssert(tagged.subject == "Re: Awful app etc.")
+        XCTAssert(tagged.sentDate!.timeIntervalSince1970 == 1348778940)
+        XCTAssert(tagged.threadTag!.imageName == "sex")
+        XCTAssert(tagged.replied)
+        XCTAssert(tagged.seen)
+        XCTAssert(!tagged.forwarded)
     }
 }

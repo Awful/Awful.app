@@ -1,10 +1,9 @@
 language: objective-c
 osx_image: xcode61
 before_install:
-  - brew update
-  - brew install xctool || brew upgrade xctool
-install: true # skip cocoapods
-script: xctool test
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+install: true # skip cocoapods; all dependencies are already in the repo
+script: make test
 notifications:
   email:
     - nolan@nolanw.ca

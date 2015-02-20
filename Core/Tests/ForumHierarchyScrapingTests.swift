@@ -18,28 +18,28 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
         XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).count == 66)
         
         let EN = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name BEGINSWITH 'E/N'"))!
-        XCTAssertEqual(EN.forumID, "214")
-        XCTAssertEqual(EN.name!, "E/N Bullshit")
+        XCTAssert(EN.forumID == "214")
+        XCTAssert(EN.name == "E/N Bullshit")
         let GBS = EN.parentForum!
-        XCTAssertEqual(GBS.forumID, "1")
-        XCTAssertEqual(GBS.name!, "General Bullshit")
+        XCTAssert(GBS.forumID == "1")
+        XCTAssert(GBS.name == "General Bullshit")
         let main = GBS.group!
-        XCTAssertEqual(main.groupID, "48")
-        XCTAssertEqual(main.name!, "Main")
-        XCTAssertEqual(EN.group!, main)
+        XCTAssert(main.groupID == "48")
+        XCTAssert(main.name == "Main")
+        XCTAssert(EN.group == main)
         
         let gameRoom = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '103'"))!
-        XCTAssertEqual(gameRoom.name!, "The Game Room")
+        XCTAssert(gameRoom.name == "The Game Room")
         let traditionalGames = gameRoom.parentForum!
-        XCTAssertEqual(traditionalGames.forumID, "234")
-        XCTAssertEqual(traditionalGames.name!, "Traditional Games")
+        XCTAssert(traditionalGames.forumID == "234")
+        XCTAssert(traditionalGames.name == "Traditional Games")
         let games = traditionalGames.parentForum!
-        XCTAssertEqual(games.forumID, "44")
-        XCTAssertEqual(games.name!, "Games")
+        XCTAssert(games.forumID == "44")
+        XCTAssert(games.name == "Games")
         let discussion = games.group!
-        XCTAssertEqual(discussion.groupID, "51")
-        XCTAssertEqual(discussion.name!, "Discussion")
-        XCTAssertEqual(traditionalGames.group!, discussion)
-        XCTAssertEqual(gameRoom.group!, discussion)
+        XCTAssert(discussion.groupID == "51")
+        XCTAssert(discussion.name == "Discussion")
+        XCTAssert(traditionalGames.group == discussion)
+        XCTAssert(gameRoom.group == discussion)
     }
 }

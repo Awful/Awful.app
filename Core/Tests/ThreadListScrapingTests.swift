@@ -14,73 +14,73 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         let scraper = scrapeFixtureNamed("showthread-asktell") as AwfulThreadListScraper
         let stupidQuestions = scraper.threads.first as Thread
         let askTag = stupidQuestions.secondaryThreadTag!
-        XCTAssertEqual(askTag.imageName!, "ama")
+        XCTAssert(askTag.imageName == "ama")
     }
     
     func testBookmarkedThreadList() {
         let scraper = scrapeFixtureNamed("bookmarkthreads") as AwfulThreadListScraper
         let scrapedThreads = scraper.threads
-        XCTAssertTrue(scrapedThreads.count == 11)
-        XCTAssertEqual(scrapedThreads.count, fetchAll(Thread.self, inContext: managedObjectContext).count)
-        XCTAssertTrue(fetchAll(ForumGroup.self, inContext: managedObjectContext).isEmpty)
-        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
+        XCTAssert(scrapedThreads.count == 11)
+        XCTAssert(scrapedThreads.count == fetchAll(Thread.self, inContext: managedObjectContext).count)
+        XCTAssert(fetchAll(ForumGroup.self, inContext: managedObjectContext).isEmpty)
+        XCTAssert(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
         let allUsers = fetchAll(User.self, inContext: managedObjectContext)
-        let allUsernames = allUsers.map{$0.username!}.sorted { $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending }
-        XCTAssertEqual(allUsernames, ["Choochacacko", "csammis", "Dreylad", "escape artist", "Ferg", "I am in", "pokeyman", "Ranma4703", "Salaminizer", "Scaevolus", "Sir Davey"])
+        let allUsernames = allUsers.map { $0.username! }.sorted(<)
+        XCTAssert(allUsernames == ["Choochacacko", "Dreylad", "Ferg", "I am in", "Ranma4703", "Salaminizer", "Scaevolus", "Sir Davey", "csammis", "escape artist", "pokeyman"])
         
         let wireThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'The Wire'"))!
-        XCTAssertEqual(wireThread.starCategory, AwfulStarCategory.Orange)
-        XCTAssertEqual(wireThread.threadTag!.imageName!, "tava-vintage")
-        XCTAssertFalse(wireThread.sticky)
-        XCTAssertEqual(wireThread.title!, "The Wire: The Rewatch... and all the pieces matter.")
-        XCTAssertTrue(wireThread.seenPosts == 435)
-        XCTAssertEqual(wireThread.author!.username!, "escape artist")
-        XCTAssertTrue(wireThread.totalReplies == 434)
-        XCTAssertTrue(wireThread.numberOfVotes == 0)
-        XCTAssertTrue(wireThread.rating == 0)
-        XCTAssertTrue(wireThread.lastPostDate!.timeIntervalSince1970 == 1357964700)
-        XCTAssertEqual(wireThread.lastPostAuthorName!, "MC Fruit Stripe")
+        XCTAssert(wireThread.starCategory == .Orange)
+        XCTAssert(wireThread.threadTag!.imageName == "tava-vintage")
+        XCTAssert(!wireThread.sticky)
+        XCTAssert(wireThread.title == "The Wire: The Rewatch... and all the pieces matter.")
+        XCTAssert(wireThread.seenPosts == 435)
+        XCTAssert(wireThread.author!.username == "escape artist")
+        XCTAssert(wireThread.totalReplies == 434)
+        XCTAssert(wireThread.numberOfVotes == 0)
+        XCTAssert(wireThread.rating == 0)
+        XCTAssert(wireThread.lastPostDate!.timeIntervalSince1970 == 1357964700)
+        XCTAssert(wireThread.lastPostAuthorName == "MC Fruit Stripe")
         
         let CoCFAQ = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'FAQ'"))!
-        XCTAssertEqual(CoCFAQ.starCategory, AwfulStarCategory.Orange)
-        XCTAssertEqual(CoCFAQ.threadTag!.imageName!, "help")
-        XCTAssertTrue(CoCFAQ.sticky)
-        XCTAssertTrue(CoCFAQ.stickyIndex == 0)
-        XCTAssertEqual(CoCFAQ.title!, "Cavern of Cobol FAQ (Read this first)")
-        XCTAssertTrue(CoCFAQ.seenPosts == 1)
-        XCTAssertEqual(CoCFAQ.author!.username!, "Scaevolus")
-        XCTAssertTrue(CoCFAQ.totalReplies == 0)
-        XCTAssertTrue(CoCFAQ.rating == 0)
-        XCTAssertEqual(CoCFAQ.lastPostDate!.timeIntervalSince1970, 1209381240)
-        XCTAssertEqual(CoCFAQ.lastPostAuthorName!, "Scaevolus")
+        XCTAssert(CoCFAQ.starCategory == .Orange)
+        XCTAssert(CoCFAQ.threadTag!.imageName == "help")
+        XCTAssert(CoCFAQ.sticky)
+        XCTAssert(CoCFAQ.stickyIndex == 0)
+        XCTAssert(CoCFAQ.title == "Cavern of Cobol FAQ (Read this first)")
+        XCTAssert(CoCFAQ.seenPosts == 1)
+        XCTAssert(CoCFAQ.author!.username == "Scaevolus")
+        XCTAssert(CoCFAQ.totalReplies == 0)
+        XCTAssert(CoCFAQ.rating == 0)
+        XCTAssert(CoCFAQ.lastPostDate!.timeIntervalSince1970 == 1209381240)
+        XCTAssert(CoCFAQ.lastPostAuthorName == "Scaevolus")
         
         let androidAppThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "author.username = 'Ferg'"))!
-        XCTAssertEqual(androidAppThread.starCategory, AwfulStarCategory.Red)
-        XCTAssertTrue(androidAppThread.numberOfVotes == 159)
-        XCTAssertTrue(androidAppThread.rating == 4.79)
+        XCTAssert(androidAppThread.starCategory == .Red)
+        XCTAssert(androidAppThread.numberOfVotes == 159)
+        XCTAssert(androidAppThread.rating == 4.79)
     }
     
     func testDebateAndDiscussionThreadList() {
         let scraper = scrapeFixtureNamed("forumdisplay") as AwfulThreadListScraper
         let scrapedThreads = scraper.threads
-        XCTAssertTrue(scrapedThreads.count == 40)
+        XCTAssert(scrapedThreads.count == 40)
         let allThreads = fetchAll(Thread.self, inContext: managedObjectContext)
-        XCTAssertEqual(allThreads.count, scrapedThreads.count);
+        XCTAssert(allThreads.count == scrapedThreads.count);
         let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        XCTAssertTrue(allGroups.count == 1)
+        XCTAssert(allGroups.count == 1)
         let discussion = allGroups.first!
-        XCTAssertEqual(discussion.name!, "Discussion")
-        XCTAssertTrue(discussion.forums.count == 1)
+        XCTAssert(discussion.name == "Discussion")
+        XCTAssert(discussion.forums.count == 1)
         let allForums = fetchAll(Forum.self, inContext: managedObjectContext)
-        XCTAssertTrue(allForums.count == 1)
+        XCTAssert(allForums.count == 1)
         let debateAndDiscussion = allForums.first!
-        XCTAssertEqual(debateAndDiscussion.name!, "Debate & Discussion")
-        XCTAssertEqual(debateAndDiscussion.forumID, "46")
+        XCTAssert(debateAndDiscussion.name == "Debate & Discussion")
+        XCTAssert(debateAndDiscussion.forumID == "46")
         let threadForums = NSSet(array: allThreads.map{$0.forum!})
-        XCTAssertEqual(threadForums, NSSet(object: debateAndDiscussion))
+        XCTAssert(threadForums == NSSet(object: debateAndDiscussion))
         let allUsers = fetchAll(User.self, inContext: managedObjectContext)
         let allUsernames = allUsers.map{$0.username!}.sorted { $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending }
-        XCTAssertEqual(allUsernames, [
+        XCTAssert(allUsernames == [
             "a bad enough dude",
             "Bedlamdan",
             "BiggerBoat",
@@ -118,56 +118,56 @@ final class ThreadListScrapingTests: ScrapingTestCase {
             "XyloJW",
             "Zikan"])
         let tags = debateAndDiscussion.threadTags.array as [ThreadTag]
-        XCTAssertTrue(tags.count == 106)
+        XCTAssert(tags.count == 106)
         let firstTag = tags.first!
-        XCTAssertEqual(firstTag.threadTagID!, "357")
-        XCTAssertEqual(firstTag.imageName!, "dd-offmeds")
+        XCTAssert(firstTag.threadTagID == "357")
+        XCTAssert(firstTag.imageName == "dd-offmeds")
         let lastTag = tags.last!
-        XCTAssertEqual(lastTag.threadTagID!, "245")
-        XCTAssertEqual(lastTag.imageName!, "tcc-weed")
+        XCTAssert(lastTag.threadTagID == "245")
+        XCTAssert(lastTag.imageName == "tcc-weed")
         
         let rulesThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'Improved Rules'"))!
-        XCTAssertEqual(rulesThread.starCategory, AwfulStarCategory.None)
-        XCTAssertEqual(rulesThread.threadTag!.imageName!, "icon23-banme")
-        XCTAssertTrue(rulesThread.sticky)
-        XCTAssertTrue(rulesThread.stickyIndex != 0)
-        XCTAssertEqual(rulesThread.title!, "The Improved Rules of Debate and Discussion - New Update")
-        XCTAssertTrue(rulesThread.seenPosts == 12)
-        XCTAssertEqual(rulesThread.author!.username!, "tonelok")
-        XCTAssertTrue(rulesThread.totalReplies == 11)
-        XCTAssertTrue(rulesThread.numberOfVotes == 0)
-        XCTAssertTrue(rulesThread.rating == 0)
-        XCTAssertEqual(rulesThread.lastPostDate!.timeIntervalSince1970, 1330198920)
-        XCTAssertEqual(rulesThread.lastPostAuthorName!, "Xandu")
+        XCTAssert(rulesThread.starCategory == .None)
+        XCTAssert(rulesThread.threadTag!.imageName == "icon23-banme")
+        XCTAssert(rulesThread.sticky)
+        XCTAssert(rulesThread.stickyIndex != 0)
+        XCTAssert(rulesThread.title == "The Improved Rules of Debate and Discussion - New Update")
+        XCTAssert(rulesThread.seenPosts == 12)
+        XCTAssert(rulesThread.author!.username == "tonelok")
+        XCTAssert(rulesThread.totalReplies == 11)
+        XCTAssert(rulesThread.numberOfVotes == 0)
+        XCTAssert(rulesThread.rating == 0)
+        XCTAssert(rulesThread.lastPostDate!.timeIntervalSince1970 == 1330198920)
+        XCTAssert(rulesThread.lastPostAuthorName == "Xandu")
         
         let venezuelanThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'Venezuelan'"))!
-        XCTAssertEqual(venezuelanThread.starCategory, AwfulStarCategory.None)
-        XCTAssertEqual(venezuelanThread.threadTag!.imageName!, "lf-marx")
+        XCTAssert(venezuelanThread.starCategory == .None)
+        XCTAssert(venezuelanThread.threadTag!.imageName == "lf-marx")
         XCTAssertFalse(venezuelanThread.sticky)
-        XCTAssertEqual(venezuelanThread.title!, "Venezuelan elections")
-        XCTAssertTrue(venezuelanThread.seenPosts == 0)
-        XCTAssertEqual(venezuelanThread.author!.username!, "a bad enough dude")
-        XCTAssertTrue(venezuelanThread.totalReplies == 410)
-        XCTAssertTrue(venezuelanThread.numberOfVotes == 0)
-        XCTAssertTrue(venezuelanThread.rating == 0)
-        XCTAssertEqual(venezuelanThread.lastPostDate!.timeIntervalSince1970, 1357082460)
-        XCTAssertEqual(venezuelanThread.lastPostAuthorName!, "d3c0y2")
+        XCTAssert(venezuelanThread.title == "Venezuelan elections")
+        XCTAssert(venezuelanThread.seenPosts == 0)
+        XCTAssert(venezuelanThread.author!.username == "a bad enough dude")
+        XCTAssert(venezuelanThread.totalReplies == 410)
+        XCTAssert(venezuelanThread.numberOfVotes == 0)
+        XCTAssert(venezuelanThread.rating == 0)
+        XCTAssert(venezuelanThread.lastPostDate!.timeIntervalSince1970 == 1357082460)
+        XCTAssert(venezuelanThread.lastPostAuthorName == "d3c0y2")
     }
     
     func testSubforumHierarchy() {
         scrapeFixtureNamed("forumdisplay2")
         let allForums = fetchAll(Forum.self, inContext: managedObjectContext)
-        XCTAssertTrue(allForums.count == 2)
+        XCTAssert(allForums.count == 2)
         let allForumNames = allForums.map{$0.name!}.sorted(<)
-        XCTAssertEqual(allForumNames, ["Games", "Let's Play!"])
+        XCTAssert(allForumNames == ["Games", "Let's Play!"])
         let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        XCTAssertTrue(allGroups.count == 1)
+        XCTAssert(allGroups.count == 1)
         let discussion = allGroups.first!
-        XCTAssertEqual(discussion.forums.count, allForums.count)
+        XCTAssert(discussion.forums.count == allForums.count)
         let games = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name = 'Games'"))!
-        XCTAssertTrue(games.childForums.count == 1)
+        XCTAssert(games.childForums.count == 1)
         let letsPlay = games.childForums.anyObject() as Forum
-        XCTAssertEqual(letsPlay.name!, "Let's Play!")
+        XCTAssert(letsPlay.name == "Let's Play!")
     }
     
     func testAcceptsNewThreads() {
@@ -175,7 +175,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         scrapeFixtureNamed("forumdisplay-goldmine")
         
         let LP = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '191'"))!
-        XCTAssertTrue(LP.canPost)
+        XCTAssert(LP.canPost)
         
         let goldmine = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '21'"))!
         XCTAssertFalse(goldmine.canPost)

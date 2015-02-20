@@ -24,6 +24,10 @@
 		1C097A921A97AF0C00425EEF /* AwfulHTMLRequestSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */; };
 		1C097A931A97AF0C00425EEF /* AwfulHTMLResponseSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */; };
 		1C097A941A97AF0C00425EEF /* AwfulHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */; };
+		1C097AA41A97C4DC00425EEF /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; };
+		1C097AA51A97C4DF00425EEF /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
+		1C097AA61A97C4ED00425EEF /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
+		1C097AA71A97C4F400425EEF /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -366,6 +370,13 @@
 			remoteGlobalIDString = 1C0979DB1A96395200425EEF;
 			remoteInfo = AFNetworking;
 		};
+		1C097AA21A97C48600425EEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
+			remoteInfo = Smilies;
+		};
 		1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -547,6 +558,7 @@
 		1190F7F213BE4EDA00B9D271 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		11FDA294151018600014FDCD /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		11FDA295151018600014FDCD /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
 		1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettingsUbiquitousThemesController.h; sourceTree = "<group>"; };
 		1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettingsUbiquitousThemesController.m; sourceTree = "<group>"; };
 		1C03B51E19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AwfulAnnoyingSwift.h"; sourceTree = "<group>"; };
@@ -939,7 +951,6 @@
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		29CEC35BC75A9530A2C7F3AC /* Pods-Awful.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.app store.xcconfig"; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		4362220BF887E9F57F3C932E /* libPods-Awful.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Awful.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ABE7443544E57456E44F96 /* libPods-Smilies.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Smilies.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -976,7 +987,7 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
-		B11C3044C58C2DB95297DE03 /* Pods-Smilies.app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.app store.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.app store.xcconfig"; sourceTree = "<group>"; };
+		AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
 		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
 		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
@@ -998,6 +1009,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C097AA41A97C4DC00425EEF /* AFNetworking.framework in Frameworks */,
+				1C097AA51A97C4DF00425EEF /* HTMLReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,7 +1018,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C097AA71A97C4F400425EEF /* AFNetworking.framework in Frameworks */,
 				1C3CF9711A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
+				1C097AA61A97C4ED00425EEF /* HTMLReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1888,10 +1903,10 @@
 		9D0762E16A2A66CEB1B627DC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				29CEC35BC75A9530A2C7F3AC /* Pods-Awful.app store.xcconfig */,
 				3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */,
-				B11C3044C58C2DB95297DE03 /* Pods-Smilies.app store.xcconfig */,
 				7F808380CDED09B0AA159709 /* Pods-Smilies.debug.xcconfig */,
+				17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */,
+				AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2043,6 +2058,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				1C097AA31A97C48600425EEF /* PBXTargetDependency */,
 			);
 			name = SmiliesTests;
 			productName = SmiliesTests;
@@ -2745,6 +2761,11 @@
 			name = AFNetworking;
 			targetProxy = 1C097A9F1A97B7E500425EEF /* PBXContainerItemProxy */;
 		};
+		1C097AA31A97C48600425EEF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
+			targetProxy = 1C097AA21A97C48600425EEF /* PBXContainerItemProxy */;
+		};
 		1C3A146119DFC6AA0022C44C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
@@ -2860,7 +2881,7 @@
 			};
 			name = Debug;
 		};
-		1C3A145419DFC5D10022C44C /* App Store */ = {
+		1C3A145419DFC5D10022C44C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2898,7 +2919,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1C3CF97F1A94B9B50065C964 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2922,7 +2943,7 @@
 			};
 			name = Debug;
 		};
-		1C3CF9801A94B9B50065C964 /* App Store */ = {
+		1C3CF9801A94B9B50065C964 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
@@ -2940,7 +2961,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1C3CF9811A94B9B50065C964 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2962,7 +2983,7 @@
 			};
 			name = Debug;
 		};
-		1C3CF9821A94B9B50065C964 /* App Store */ = {
+		1C3CF9821A94B9B50065C964 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -2978,7 +2999,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1C66A9D919DD304F001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3028,9 +3049,9 @@
 			};
 			name = Debug;
 		};
-		1C66A9DA19DD304F001B9A41 /* App Store */ = {
+		1C66A9DA19DD304F001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B11C3044C58C2DB95297DE03 /* Pods-Smilies.app store.xcconfig */;
+			baseConfigurationReference = AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -3076,7 +3097,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1C66A9DF19DD304F001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3118,7 +3139,7 @@
 			};
 			name = Debug;
 		};
-		1C66A9E019DD304F001B9A41 /* App Store */ = {
+		1C66A9E019DD304F001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3158,7 +3179,7 @@
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1C66A9FD19DD393A001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3199,7 +3220,7 @@
 			};
 			name = Debug;
 		};
-		1C66A9FE19DD393A001B9A41 /* App Store */ = {
+		1C66A9FE19DD393A001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3238,7 +3259,7 @@
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 			};
-			name = "App Store";
+			name = Release;
 		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3255,7 +3276,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
-					/Users/nolanw/code/Awful/app/Vendor,
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -3274,9 +3294,9 @@
 			};
 			name = Debug;
 		};
-		1D6058950D05DD3E006BFB54 /* App Store */ = {
+		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 29CEC35BC75A9530A2C7F3AC /* Pods-Awful.app store.xcconfig */;
+			baseConfigurationReference = 17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -3288,7 +3308,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
-					/Users/nolanw/code/Awful/app/Vendor,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -3308,7 +3327,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
-			name = "App Store";
+			name = Release;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -3353,7 +3372,7 @@
 			};
 			name = Debug;
 		};
-		C01FCF5008A954540054247B /* App Store */ = {
+		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3390,7 +3409,7 @@
 					"-Wno-unused-parameter",
 				);
 			};
-			name = "App Store";
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -3399,7 +3418,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C3A145319DFC5D10022C44C /* Debug */,
-				1C3A145419DFC5D10022C44C /* App Store */,
+				1C3A145419DFC5D10022C44C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3408,7 +3427,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C3CF97F1A94B9B50065C964 /* Debug */,
-				1C3CF9801A94B9B50065C964 /* App Store */,
+				1C3CF9801A94B9B50065C964 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3417,7 +3436,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C3CF9811A94B9B50065C964 /* Debug */,
-				1C3CF9821A94B9B50065C964 /* App Store */,
+				1C3CF9821A94B9B50065C964 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3426,7 +3445,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C66A9D919DD304F001B9A41 /* Debug */,
-				1C66A9DA19DD304F001B9A41 /* App Store */,
+				1C66A9DA19DD304F001B9A41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3435,7 +3454,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C66A9DF19DD304F001B9A41 /* Debug */,
-				1C66A9E019DD304F001B9A41 /* App Store */,
+				1C66A9E019DD304F001B9A41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3444,7 +3463,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C66A9FD19DD393A001B9A41 /* Debug */,
-				1C66A9FE19DD393A001B9A41 /* App Store */,
+				1C66A9FE19DD393A001B9A41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3453,7 +3472,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
-				1D6058950D05DD3E006BFB54 /* App Store */,
+				1D6058950D05DD3E006BFB54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3462,7 +3481,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
-				C01FCF5008A954540054247B /* App Store */,
+				C01FCF5008A954540054247B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
