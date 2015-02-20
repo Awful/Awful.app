@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import <AwfulCore/AwfulScraper.h>
+#import "AwfulScraper.h"
 @class Post;
 
 /// An AwfulPostScraper scrapes a single AwfulPost object.

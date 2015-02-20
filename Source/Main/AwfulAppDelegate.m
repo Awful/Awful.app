@@ -112,7 +112,26 @@ static id _instance;
          {
              [snapshot removeFromSuperview];
          }];
+    } else if ([setting isEqualToString:AwfulSettingsKeys.customBaseURL]) {
+        [self updateClientBaseURL];
     }
+}
+
+- (void)updateClientBaseURL
+{
+    NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: @"http://forums.somethingawful.com";
+    NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
+    if (components.scheme.length == 0) {
+        components.scheme = @"http";
+    }
+    
+    // Bare IP address is parsed by NSURLComponents as a path.
+    if (!components.host && components.path) {
+        components.host = components.path;
+        components.path = nil;
+    }
+    
+    [AwfulForumsClient sharedClient].baseURL = components.URL;
 }
 
 - (void)preferredContentSizeDidChange:(NSNotification *)note
@@ -160,9 +179,6 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
 
 - (void)logOut
 {
-    // Reset the HTTP client so it gets remade (if necessary) with the default URL.
-    [[AwfulForumsClient client] reset];
-    
     // Logging out doubles as an "empty cache" button.
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
@@ -171,6 +187,9 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings sharedSettings] reset];
     [[AwfulAvatarLoader loader] emptyCache];
+    
+    // Do this after resetting settings so that it gets the default baseURL.
+    [self updateClientBaseURL];
     
     __weak __typeof__(self) weakSelf = self;
     [self setRootViewController:[self.loginViewController enclosingNavigationController] animated:YES completion:^{
@@ -239,7 +258,14 @@ static void RemoveOldDataStores(void)
         RemoveOldDataStores();
     });
     
-    [AwfulForumsClient client].managedObjectContext = self.managedObjectContext;
+    [AwfulForumsClient sharedClient].managedObjectContext = self.managedObjectContext;
+    [self updateClientBaseURL];
+    
+    __weak __typeof__(self) weakSelf = self;
+    [AwfulForumsClient sharedClient].didRemotelyLogOutBlock = ^{
+        [weakSelf logOut];
+    };
+    
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [NSURLCache setSharedURLCache:[[NSURLCache alloc] initWithMemoryCapacity:5 * 1024 * 1024
                                                                 diskCapacity:50 * 1024 * 1024
