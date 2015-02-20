@@ -84,6 +84,9 @@
             if (error) {
                 NSLog(@"failed refreshing user info: %@", error);
             } else {
+                [AwfulSettings sharedSettings].userID = user.userID;
+                [AwfulSettings sharedSettings].username = user.username;
+                [AwfulSettings sharedSettings].canSendPrivateMessages = user.canReceivePrivateMessages;
                 [tableView reloadData];
                 [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
             }

@@ -3,23 +3,19 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulForumsClient.h"
-#import "AwfulAppDelegate.h"
-#import "AwfulErrorDomain.h"
 #import "AwfulForumHierarchyScraper.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulHTTPRequestOperationManager.h"
-#import "AwfulImageURLProtocol.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulScanner.h"
-#import "AwfulSettings.h"
 #import "AwfulThreadListScraper.h"
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "LepersColonyPageScraper.h"
+#import "NSURLQueryDictionary.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
 #import "ProfileScraper.h"
-#import "Awful-Swift.h"
+#import <AwfulCore/AwfulCore-Swift.h>
 
 @interface NSManagedObjectContext (AwfulConvenient)
 
@@ -40,23 +36,19 @@
 
 - (void)dealloc
 {
+    [_HTTPManager.operationQueue cancelAllOperations];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (id)init
 {
-    if (!(self = [super init])) return nil;
-    [self reset];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(settingsDidChange:)
-                                                 name:AwfulSettingsDidChangeNotification
-                                               object:nil];
-    
-    // When a user changes their password, subsequent HTTP operations will come back without a login cookie. So any operation might bear the news that we've been logged out.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(networkingOperationDidStart:)
-                                                 name:AFNetworkingOperationDidStartNotification
-                                               object:nil];
+    if ((self = [super init])) {
+        // When a user changes their password, subsequent HTTP operations will come back without a login cookie. So any operation might bear the news that we've been logged out.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(networkingOperationDidStart:)
+                                                     name:AFNetworkingOperationDidStartNotification
+                                                   object:nil];
+    }
     return self;
 }
 
@@ -78,6 +70,16 @@
 - (NSURL *)baseURL
 {
     return _HTTPManager.baseURL;
+}
+
+- (void)setBaseURL:(NSURL *)baseURL
+{
+    if ([baseURL isEqual:self.baseURL]) {
+        return;
+    }
+    
+    [_HTTPManager.operationQueue cancelAllOperations];
+    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
 }
 
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -134,30 +136,6 @@
     }];
 }
 
-- (void)reset
-{
-    [_HTTPManager.operationQueue cancelAllOperations];
-    NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: @"http://forums.somethingawful.com";
-    NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
-    if (components.scheme.length == 0) {
-        components.scheme = @"http";
-    }
-    
-    // Bare IP address is parsed by NSURLComponents as a path.
-    if (!components.host && components.path) {
-        components.host = components.path;
-        components.path = nil;
-    }
-    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:components.URL];
-}
-
-- (void)settingsDidChange:(NSNotification *)note
-{
-    if ([note.userInfo[AwfulSettingsDidChangeSettingKey] isEqual:AwfulSettingsKeys.customBaseURL]) {
-        [self reset];
-    }
-}
-
 - (BOOL)reachable
 {
     return _HTTPManager.reachabilityManager.reachable;
@@ -201,7 +179,9 @@
     
     // We only subscribed for this notification if we were logged in at the time. If we aren't logged in now, the cookies changed, and we need to finish logging out.
     if (!op.error && !self.loggedIn) {
-        [[AwfulAppDelegate instance] logOut];
+        if (self.didRemotelyLogOutBlock) {
+            self.didRemotelyLogOutBlock();
+        }
     }
 }
 
@@ -238,8 +218,8 @@
         if (operation.response.statusCode == 401) {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Invalid username or password",
                                         NSUnderlyingErrorKey: error };
-            error = [NSError errorWithDomain:AwfulErrorDomain
-                                        code:AwfulErrorCodes.badUsernameOrPassword
+            error = [NSError errorWithDomain:AwfulCoreError.domain
+                                        code:AwfulCoreError.invalidUsernameOrPassword
                                     userInfo:userInfo];
         }
         if (callback) callback(error, nil);
@@ -444,8 +424,8 @@
                     if (form) {
                         [mainManagedObjectContext save:&error];
                     } else {
-                        error = [NSError errorWithDomain:AwfulErrorDomain
-                                                    code:AwfulErrorCodes.parseError
+                        error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                    code:AwfulCoreError.parseError
                                                 userInfo:@{ NSLocalizedDescriptionKey: @"Could not find new thread form" }];
                     }
                     callback(error, form);
@@ -479,12 +459,12 @@
                 NSError *error;
                 HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                 if (specialMessage && [specialMessage.textContent rangeOfString:@"accepting"].location != NSNotFound) {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.forbidden
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.forbidden
                                             userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to post threads in this forum" }];
                 } else {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.parseError
                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find new thread form" }];
                 }
                 if (callback) {
@@ -510,14 +490,14 @@
              {
                  HTMLElement *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                 NSString *threadID = URL.queryDictionary[@"threadid"];
+                 NSString *threadID = AwfulCoreQueryDictionaryWithURL(URL)[@"threadid"];
                  NSError *error;
                  Thread *thread;
                  if (threadID.length > 0) {
                      ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
                      thread = [Thread objectForKey:threadKey inManagedObjectContext:mainManagedObjectContext];
                  } else {
-                     error = [NSError errorWithDomain:AwfulErrorDomain code:AwfulErrorCodes.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
+                     error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
                  }
                  if (callback) callback(error, thread);
              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -546,8 +526,8 @@
             WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(postbody);
             if (callback) callback(nil, postbody.innerHTML);
         } else {
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError
+            NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                 code:AwfulCoreError.parseError
                                              userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewed original post" }];
             if (callback) callback(error, nil);
         }
@@ -627,7 +607,7 @@
     // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
     [operation setRedirectResponseBlock:^(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         NSURL *URL = request.URL;
-        NSMutableDictionary *queryDictionary = [URL.queryDictionary mutableCopy];
+        NSMutableDictionary *queryDictionary = [AwfulCoreQueryDictionaryWithURL(URL) mutableCopy];
         queryDictionary[@"perpage"] = @"40";
         NSMutableArray *queryParts = [NSMutableArray new];
         for (id key in queryDictionary) {
@@ -690,8 +670,8 @@
                     } else {
                         description = @"Could not reply; failed to find the form.";
                     }
-                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                         code:AwfulErrorCodes.parseError
+                    NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                         code:AwfulCoreError.parseError
                                                      userInfo:@{ NSLocalizedDescriptionKey: description }];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         callback(error, nil);
@@ -710,8 +690,9 @@
                  HTMLElement *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
                                       [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                 if ([URL.queryDictionary[@"goto"] isEqual:@"post"]) {
-                     NSString *postID = URL.queryDictionary[@"postid"];
+                 NSDictionary *queryDictionary = AwfulCoreQueryDictionaryWithURL(URL);
+                 if ([queryDictionary[@"goto"] isEqual:@"post"]) {
+                     NSString *postID = queryDictionary[@"postid"];
                      if (postID.length > 0) {
                          PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
                          post = [Post objectForKey:postKey inManagedObjectContext:mainManagedObjectContext];
@@ -744,8 +725,8 @@
             WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(element);
             if (callback) callback(nil, element.innerHTML);
         } else {
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError
+            NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                 code:AwfulCoreError.parseError
                                              userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewed post" }];
             if (callback) callback(error, nil);
         }
@@ -770,12 +751,12 @@
             NSError *error;
             if (!message) {
                 if (form) {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.parseError
                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find post contents in edit post form" }];
                 } else {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.parseError
                                             userInfo:@{ NSLocalizedDescriptionKey: @"Could not find edit post form" }];
                 }
             }
@@ -808,12 +789,12 @@
             if (!BBcode) {
                 HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                 if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.forbidden
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.forbidden
                                             userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to post in this thread" }];
                 } else {
-                    error = [NSError errorWithDomain:AwfulErrorDomain
-                                                code:AwfulErrorCodes.parseError
+                    error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                code:AwfulCoreError.parseError
                                             userInfo:@{ NSLocalizedDescriptionKey: @"Failed to quote post; could not find form" }];
                 }
             }
@@ -845,12 +826,12 @@
                     NSError *error;
                     HTMLElement *specialMessage = [document firstNodeMatchingSelector:@"#content center div.standard"];
                     if (specialMessage && [specialMessage.textContent rangeOfString:@"permission"].location != NSNotFound) {
-                        error = [NSError errorWithDomain:AwfulErrorDomain
-                                                    code:AwfulErrorCodes.forbidden
+                        error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                    code:AwfulCoreError.forbidden
                                                 userInfo:@{ NSLocalizedDescriptionKey: @"You're not allowed to edit posts in this thread" }];
                     } else {
-                        error = [NSError errorWithDomain:AwfulErrorDomain
-                                                    code:AwfulErrorCodes.parseError
+                        error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                    code:AwfulCoreError.parseError
                                                 userInfo:@{ NSLocalizedDescriptionKey: @"Failed to edit post; could not find form" }];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -892,8 +873,8 @@
             WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(postbody);
             if (callback) callback(nil, postbody.innerHTML);
         } else {
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError
+            NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                 code:AwfulCoreError.parseError
                                              userInfo:@{ NSLocalizedDescriptionKey: @"Could not find previewd post" }];
             if (callback) callback(error, nil);
         }
@@ -904,8 +885,7 @@
 
 static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *postbody)
 {
-    NSString *selector = [NSString stringWithFormat:@"img[src^='http://%@']", AwfulImageURLScheme];
-    for (HTMLElement *img in [postbody nodesMatchingSelector:selector]) {
+    for (HTMLElement *img in [postbody nodesMatchingSelector:@"img[src^='http://awful-image']"]) {
         NSString *src = img[@"src"];
         src = [src substringFromIndex:@"http://".length];
         img[@"src"] = src;
@@ -928,8 +908,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
         if (callback) {
             NSString *message = @"The post could not be found";
-            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                 code:AwfulErrorCodes.parseError
+            NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                 code:AwfulCoreError.parseError
                                              userInfo:@{ NSLocalizedDescriptionKey: message }];
             callback(error, nil, 0);
         }
@@ -946,7 +926,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         didSucceed = YES;
         if (!response) return request;
         [op cancel];
-        NSDictionary *query = [request.URL queryDictionary];
+        NSDictionary *query = AwfulCoreQueryDictionaryWithURL(request.URL);
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             [managedObjectContext performBlock:^{
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
@@ -964,8 +944,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                         } else {
                             NSString *message = @"The post's thread could not be parsed";
                             NSError *underlyingError = error;
-                            NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                                 code:AwfulErrorCodes.parseError
+                            NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                                 code:AwfulCoreError.parseError
                                                              userInfo:@{ NSLocalizedDescriptionKey: message,
                                                                          NSUnderlyingErrorKey: underlyingError }];
                             callback(error, nil, 0);
@@ -978,8 +958,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 NSString *missingInfo = query[@"threadid"] ? @"page number" : @"thread ID";
                 NSString *message = [NSString stringWithFormat:@"The %@ could not be found",
                                      missingInfo];
-                NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                     code:AwfulErrorCodes.parseError
+                NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                     code:AwfulCoreError.parseError
                                                  userInfo:@{ NSLocalizedDescriptionKey: message }];
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     callback(error, nil, 0);
@@ -1008,12 +988,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
             User *user = scraper.profile.user;
             if (user) {
                 [managedObjectContext save:&error];
-                [AwfulSettings sharedSettings].userID = user.userID;
-                [AwfulSettings sharedSettings].username = user.username;
-                [AwfulSettings sharedSettings].canSendPrivateMessages = user.canReceivePrivateMessages;
             }
             if (callback) {
-                NSManagedObjectID *objectID = scraper.profile.user.objectID;
+                NSManagedObjectID *objectID = user.objectID;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     User *user = [mainManagedObjectContext awful_objectWithID:objectID];
                     callback(error, user);
@@ -1226,8 +1203,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 } else {
                     description = @"Failed quoting private message; could not find form";
                 }
-                error = [NSError errorWithDomain:AwfulErrorDomain
-                                            code:AwfulErrorCodes.parseError
+                error = [NSError errorWithDomain:AwfulCoreError.domain
+                                            code:AwfulCoreError.parseError
                                         userInfo:@{ NSLocalizedDescriptionKey: description }];
             }
             if (callback) {
@@ -1271,8 +1248,8 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                     } else {
                         description = @"Could not find new private message form";
                     }
-                    NSError *error = [NSError errorWithDomain:AwfulErrorDomain
-                                                         code:AwfulErrorCodes.parseError
+                    NSError *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                                         code:AwfulCoreError.parseError
                                                      userInfo:@{ NSLocalizedDescriptionKey: description }];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         callback(error, nil);

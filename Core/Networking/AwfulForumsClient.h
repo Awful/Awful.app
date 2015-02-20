@@ -2,9 +2,12 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@import AwfulCore;
 @import CoreData;
 @import Foundation;
+#import <AwfulCore/AwfulForm.h>
+#import <AwfulCore/AwfulThreadPage.h>
+@class Forum, Post, PrivateMessage, Profile, Thread, ThreadTag, User;
+@class PrivateMessageKey;
 
 /**
  * An AwfulForumsClient sends data to and scrapes data from the Something Awful Forums.
@@ -22,19 +25,16 @@
 + (instancetype)sharedClient;
 
 /**
- * The Forums endpoint for the client. Typically http://forums.somethingawful.com
+    The Forums endpoint for the client. Typically http://forums.somethingawful.com
+ 
+    Setting a new baseURL cancels all in-flight requests.
  */
-@property (readonly, strong, nonatomic) NSURL *baseURL;
+@property (strong, nonatomic) NSURL *baseURL;
 
 /**
  * A managed object context into which data is imported after scraping.
  */
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
-/**
- * Cancels all in-flight operations and recreates the base URL from settings.
- */
-- (void)reset;
 
 /**
  * Whether or not the Forums endpoint appears reachable.
@@ -50,6 +50,9 @@
  * When the valid, logged-in session expires.
  */
 @property (readonly, strong, nonatomic) NSDate *loginCookieExpiryDate;
+
+/// A block to call when the login session is destroyed. Not called when logging out from Awful.
+@property (copy, nonatomic) void (^didRemotelyLogOutBlock)(void);
 
 #pragma mark - Sessions
 

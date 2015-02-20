@@ -3,8 +3,8 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulHTMLResponseSerializer.h"
-#import "AwfulErrorDomain.h"
 @import HTMLReader;
+#import <AwfulCore/AwfulCore-Swift.h>
 
 @implementation AwfulHTMLResponseSerializer
 
@@ -25,8 +25,8 @@
     }
     if (!string) {
         if (error) {
-            *error = [NSError errorWithDomain:AwfulErrorDomain
-                                         code:AwfulErrorCodes.parseError
+            *error = [NSError errorWithDomain:AwfulCoreError.domain
+                                         code:AwfulCoreError.parseError
                                      userInfo:@{ NSLocalizedDescriptionKey: @"Parsing failed; string could not be decoded",
                                                  NSURLErrorFailingURLErrorKey: response.URL }];
         }
