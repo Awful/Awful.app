@@ -2049,7 +2049,6 @@
 				1C66A9C619DD304E001B9A41 /* Sources */,
 				1C66A9C719DD304E001B9A41 /* Frameworks */,
 				1C66A9C819DD304E001B9A41 /* Resources */,
-				1C66A9E519DD31A6001B9A41 /* Run Tests */,
 			);
 			buildRules = (
 			);
@@ -2403,20 +2402,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Awful/Pods-Awful-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		1C66A9E519DD31A6001B9A41 /* Run Tests */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Tests";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
 		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
 			isa = PBXShellScriptBuildPhase;
