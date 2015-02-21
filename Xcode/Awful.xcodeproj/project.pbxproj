@@ -26,8 +26,6 @@
 		1C097A941A97AF0C00425EEF /* AwfulHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */; };
 		1C097AA41A97C4DC00425EEF /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; };
 		1C097AA51A97C4DF00425EEF /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
-		1C097AA61A97C4ED00425EEF /* HTMLReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C76C9421A8A046900A68266 /* HTMLReader.framework */; };
-		1C097AA71A97C4F400425EEF /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C097A7E1A963D6200425EEF /* AFNetworking.framework */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09963B16C0AECA00A62D5E /* AwfulPunishmentCell.m */; };
@@ -1018,9 +1016,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C097AA71A97C4F400425EEF /* AFNetworking.framework in Frameworks */,
 				1C3CF9711A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
-				1C097AA61A97C4ED00425EEF /* HTMLReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1054,9 +1050,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C097A811A963D7B00425EEF /* AFNetworking.framework in Frameworks */,
-				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CF0E9DD1A19F21F0067511E /* Crashlytics.framework in Frameworks */,
 				1C76C9551A8A049E00A68266 /* HTMLReader.framework in Frameworks */,
+				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				673FAE1D0081DA15654CD40E /* libPods-Awful.a in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
 			);
