@@ -2139,7 +2139,6 @@
 					};
 					1C66A9C919DD304E001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
-						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 					1C66A9EE19DD3939001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
