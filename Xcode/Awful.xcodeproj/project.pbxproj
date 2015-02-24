@@ -229,7 +229,6 @@
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
-		1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C96D0B61682BBF10043B194 /* Browsers.plist */; };
 		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
 		1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C977C2819CD286200DD6459 /* CacheHeaderCalculations.m */; };
@@ -788,7 +787,6 @@
 		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
 		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
-		1C96D0B61682BBF10043B194 /* Browsers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Browsers.plist; sourceTree = "<group>"; };
 		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
 		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C977C2719CD286200DD6459 /* CacheHeaderCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheHeaderCalculations.h; sourceTree = "<group>"; };
@@ -1862,7 +1860,6 @@
 			isa = PBXGroup;
 			children = (
 				1C66AA0819DD3D14001B9A41 /* Awful.entitlements */,
-				1C96D0B61682BBF10043B194 /* Browsers.plist */,
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
@@ -2339,7 +2336,6 @@
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
-				1C96D0B71682BBF10043B194 /* Browsers.plist in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
