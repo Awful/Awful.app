@@ -482,6 +482,10 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         if ([AwfulSettings sharedSettings].showImages) {
             [_webViewJavaScriptBridge callHandler:@"loadLinkifiedImages"];
         }
+    } else if ([settingKey isEqualToString:AwfulSettingsKeys.handoffEnabled]) {
+        if (self.visible) {
+            [self configureUserActivityIfPossible];
+        }
     }
 }
 
@@ -997,8 +1001,10 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 - (void)configureUserActivityIfPossible
 {
     if (self.page >= 1) {
-        self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeBrowsingPosts];
-        self.userActivity.needsSave = YES;
+        if ([AwfulSettings sharedSettings].handoffEnabled) {
+            self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeBrowsingPosts];
+            self.userActivity.needsSave = YES;
+        }
     } else {
         self.userActivity = nil;
     }

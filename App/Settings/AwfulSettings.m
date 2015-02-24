@@ -242,6 +242,8 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
     self[AwfulSettingsKeys.ubiquitousThemeNames] = ubiquitousThemeNames;
 }
 
+BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -322,4 +324,5 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .hideSidebarInLandscape = @"hide_sidebar_in_landscape",
     .fontScale = @"font_scale",
     .ubiquitousThemeNames = @"ubiquitous_theme_names",
+    .handoffEnabled = @"handoff_enabled",
 };

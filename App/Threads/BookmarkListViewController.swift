@@ -21,6 +21,10 @@ final class BookmarkListViewController: ThreadListViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override var sortByUnreadSettingsKey: String {
         return AwfulSettingsKeys.bookmarksSortedByUnread
     }
@@ -45,6 +49,8 @@ final class BookmarkListViewController: ThreadListViewController {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         self.refreshControl = refreshControl
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
     }
     
     override func themeDidChange() {
@@ -57,9 +63,7 @@ final class BookmarkListViewController: ThreadListViewController {
         
         refreshIfNecessary()
         
-        let userActivity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
-        userActivity.needsSave = true
-        self.userActivity = userActivity
+        configureUserActivity()
         
         becomeFirstResponder()
     }
@@ -75,6 +79,16 @@ final class BookmarkListViewController: ThreadListViewController {
         super.viewDidDisappear(animated)
         
         userActivity = nil
+    }
+    
+    @objc private func settingsDidChange(note: NSNotification) {
+        if let key = note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
+            if key == AwfulSettingsKeys.handoffEnabled {
+                if visible {
+                    configureUserActivity()
+                }
+            }
+        }
     }
     
     private func refreshIfNecessary() {
@@ -139,6 +153,14 @@ final class BookmarkListViewController: ThreadListViewController {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.presentViewController(alert, animated: true, completion: nil)
             }
+        }
+    }
+    
+    private func configureUserActivity() {
+        if AwfulSettings.sharedSettings().handoffEnabled {
+            let userActivity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
+            userActivity.needsSave = true
+            self.userActivity = userActivity
         }
     }
     

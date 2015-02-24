@@ -47,6 +47,7 @@
             
             // Check for prefix so that "iPad-like" also matches.
             if (section[@"Device"] && ![section[@"Device"] hasPrefix:currentDevice]) continue;
+            if ([section[@"DeviceCapability"] isEqual:@"Handoff"] && ![UIDevice currentDevice].isHandoffCapable) continue;
             if (section[@"VisibleInSettingsTab"] && ![section[@"VisibleInSettingsTab"] boolValue]) continue;
             NSMutableDictionary *filteredSection = [section mutableCopy];
             NSArray *settings = filteredSection[@"Settings"];

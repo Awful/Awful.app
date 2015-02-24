@@ -272,7 +272,28 @@
         }
     } else if ([changedSetting isEqualToString:AwfulSettingsKeys.fontScale]) {
         [_webViewJavaScriptBridge callHandler:@"fontScale" data:@((int)[AwfulSettings sharedSettings].fontScale)];
+    } else if ([changedSetting isEqualToString:AwfulSettingsKeys.handoffEnabled]) {
+        if (self.visible) {
+            [self configureUserActivity];
+        }
     }
+}
+
+- (void)configureUserActivity
+{
+    if ([AwfulSettings sharedSettings].handoffEnabled) {
+        self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeReadingMessage];
+        self.userActivity.needsSave = YES;
+    }
+}
+
+- (void)updateUserActivityState:(NSUserActivity *)activity
+{
+    [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoMessageIDKey: self.privateMessage.messageID}];
+    NSString *subject = self.privateMessage.subject;
+    activity.title = subject.length > 0 ? subject : @"Private Message";
+    activity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"/private.php?action=show&privatemessageid=%@", self.privateMessage.messageID]
+                                 relativeToURL:[AwfulForumsClient client].baseURL];
 }
 
 - (UIWebView *)webView
@@ -337,23 +358,13 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    self.userActivity = [[NSUserActivity alloc] initWithActivityType:Handoff.ActivityTypeReadingMessage];
-    self.userActivity.needsSave = YES;
+    [self configureUserActivity];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     self.userActivity = nil;
-}
-
-- (void)updateUserActivityState:(NSUserActivity *)activity
-{
-    [activity addUserInfoEntriesFromDictionary:@{Handoff.InfoMessageIDKey: self.privateMessage.messageID}];
-    NSString *subject = self.privateMessage.subject;
-    activity.title = subject.length > 0 ? subject : @"Private Message";
-    activity.webpageURL = [NSURL URLWithString:[NSString stringWithFormat:@"/private.php?action=show&privatemessageid=%@", self.privateMessage.messageID]
-                                 relativeToURL:[AwfulForumsClient client].baseURL];
 }
 
 #pragma mark - UIWebViewDelegate

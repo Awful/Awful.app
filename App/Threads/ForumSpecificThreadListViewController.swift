@@ -21,6 +21,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     deinit {
         forum.removeObserver(self, forKeyPath: "name", context: &KVOContext)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override var sortByUnreadSettingsKey: String {
@@ -153,6 +154,24 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         }
     }
     
+    @objc private func settingsDidChange(note: NSNotification) {
+        if let key = note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
+            if key == AwfulSettingsKeys.handoffEnabled {
+                if visible {
+                    configureUserActivity()
+                }
+            }
+        }
+    }
+    
+    private func configureUserActivity() {
+        if AwfulSettings.sharedSettings().handoffEnabled {
+            let userActivity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
+            userActivity.needsSave = true
+            self.userActivity = userActivity
+        }
+    }
+    
     override func updateUserActivityState(activity: NSUserActivity) {
         activity.title = forum.name
         activity.addUserInfoEntriesFromDictionary([Handoff.InfoForumIDKey: forum.forumID])
@@ -176,6 +195,8 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         
         tableView.tableHeaderView = filterButton
         updateFilterButtonText()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
         
         justLoaded = true
     }
@@ -204,9 +225,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         
         refreshIfNecessary()
         
-        let userActivity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
-        userActivity.needsSave = true
-        self.userActivity = userActivity
+        configureUserActivity()
     }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {

@@ -67,3 +67,45 @@ extension NSUserActivity {
         return nil
     }
 }
+
+extension UIDevice {
+    /// Whether the device is capable of Handoff. Returns true even if the user has otherwise disabled Handoff.
+    var isHandoffCapable: Bool {
+        // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
+        // Models are listed at http://theiphonewiki.com/wiki/Models
+        // Let's assume all future models also support Handoff.
+        let scanner = NSScanner(string: modelIdentifier())
+        var major: Int = Int.min
+        if scanner.scanString("iPad", intoString: nil) && scanner.scanInteger(&major) {
+            return major >= 2
+        } else if scanner.scanString("iPhone", intoString: nil) && scanner.scanInteger(&major) {
+            return major >= 5
+        } else if scanner.scanString("iPod", intoString: nil) && scanner.scanInteger(&major) {
+            return major >= 5
+        } else {
+            return false
+        }
+    }
+}
+
+private func modelIdentifier() -> String {
+    var size: UInt = 0
+    if sysctlbyname("hw.machine", nil, &size, nil, 0) != 0 {
+        NSLog("%@ failed to get buffer size", __FUNCTION__)
+        return ""
+    }
+    
+    let bufferSize = Int(size) + 1
+    var buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
+    if sysctlbyname("hw.machine", buffer, &size, nil, 0) != 0 {
+        NSLog("%@ failed to get model identifier", __FUNCTION__)
+        buffer.dealloc(bufferSize)
+        return ""
+    }
+    
+    buffer[Int(size)] = 0
+    let identifier = String.fromCString(buffer)!
+    
+    buffer.dealloc(bufferSize)
+    return identifier
+}

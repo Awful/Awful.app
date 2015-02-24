@@ -192,6 +192,25 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Explanation</key>
+			<string>Handoff allows you to continue reading threads on nearby devices.</string>
+			<key>DeviceCapability</key>
+			<string>Handoff</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Handoff</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>handoff_enabled</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Thank You</string>
 			<key>Settings</key>

@@ -55,6 +55,8 @@
 
 @property (copy, nonatomic) NSArray *ubiquitousThemeNames;
 
+@property (assign, nonatomic) BOOL handoffEnabled;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -100,4 +102,5 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *hideSidebarInLandscape;
     __unsafe_unretained NSString *fontScale;
     __unsafe_unretained NSString *ubiquitousThemeNames;
+    __unsafe_unretained NSString *handoffEnabled;
 } AwfulSettingsKeys;
