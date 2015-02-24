@@ -1,11 +1,11 @@
-//  UIViewController+AwfulTheme.h
+//  AwfulViewController.h
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import UIKit;
-#import "AwfulTheme.h"
+@class Theme;
 
-@interface UIViewController (AwfulTheme) 
+@interface UIViewController (ThemeSupport)
 
 /**
  * Called when the view controller's theme, derived or otherwise, changes. Subclass implementations should reload and/or update any views customized by the theme, and should call the superclass implementation.
@@ -24,7 +24,7 @@
 /**
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
-@property (readonly, strong, nonatomic) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) Theme *theme;
 
 /// Whether the view controller is currently visible (i.e. has received `viewDidAppear:` without having subsequently received `viewDidDisappear:`).
 @property (readonly, assign, nonatomic) BOOL visible;
@@ -39,7 +39,7 @@
 /**
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
-@property (readonly, strong, nonatomic) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) Theme *theme;
 
 /// Whether the view controller is currently visible (i.e. has received `viewDidAppear:` without having subsequently received `viewDidDisappear:`).
 @property (readonly, assign, nonatomic) BOOL visible;
@@ -54,6 +54,6 @@
 /**
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.
  */
-@property (readonly, strong, nonatomic) AwfulTheme *theme;
+@property (readonly, strong, nonatomic) Theme *theme;
 
 @end

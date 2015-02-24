@@ -51,7 +51,7 @@ final class CompositionViewController: AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        textView.textColor = theme["listTextColor"] as UIColor?
+        textView.textColor = theme["listTextColor"]
         textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance

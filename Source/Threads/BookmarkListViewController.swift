@@ -49,7 +49,7 @@ final class BookmarkListViewController: ThreadListViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
+        infiniteTableController.spinnerColor = theme["listTextColor"]
     }
     
     override func viewDidAppear(animated: Bool) {

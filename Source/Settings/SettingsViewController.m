@@ -226,7 +226,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
     UIView *selectedBackgroundView = [UIView new];

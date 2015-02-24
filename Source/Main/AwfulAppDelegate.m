@@ -14,7 +14,6 @@
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
-#import "AwfulThemeLoader.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
 #if __has_include("CrashlyticsAPIKey.h")
@@ -92,7 +91,7 @@ static id _instance;
 
 - (void)themeDidChange
 {
-    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+    self.window.tintColor = [Theme currentTheme][@"tintColor"];
     [self.window.rootViewController themeDidChange];
 }
 
@@ -276,7 +275,7 @@ static void RemoveOldDataStores(void)
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+    self.window.tintColor = [Theme currentTheme][@"tintColor"];
     if ([AwfulForumsClient client].loggedIn) {
         [self setRootViewController:self.rootViewControllerStack.rootViewController animated:NO completion:nil];
     } else {

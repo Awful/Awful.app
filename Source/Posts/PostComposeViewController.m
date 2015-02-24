@@ -118,9 +118,9 @@
     }
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
-    return [AwfulTheme currentThemeForForum:self.forum];
+    return [Theme currentThemeForForum:self.forum];
 }
 
 - (Forum *)forum

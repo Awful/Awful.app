@@ -5,9 +5,7 @@
 #import "MessageViewController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
-#import "AwfulTheme.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import "MessageComposeViewController.h"
 #import "PrivateMessageViewModel.h"
 #import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
@@ -329,7 +327,7 @@
 - (void)themeDidChange
 {
     [super themeDidChange];
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     if (_didRender) {
         [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     }

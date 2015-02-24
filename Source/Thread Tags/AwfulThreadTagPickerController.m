@@ -8,6 +8,7 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerCell.h"
 #import "AwfulThreadTagPickerLayout.h"
+#import "Awful-Swift.h"
 
 @interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverControllerDelegate>
 
@@ -87,6 +88,12 @@
         const CGFloat popoverCornerRadius = 10;
         self.collectionView.contentInset = UIEdgeInsetsMake(popoverCornerRadius, 0, popoverCornerRadius, 0);
     }
+}
+
+- (void)themeDidChange
+{
+    [super themeDidChange];
+    self.view.backgroundColor = self.theme[@"tagPickerBackgroundColor"];
 }
 
 - (void)presentFromView:(UIView *)view
@@ -194,7 +201,7 @@
     if ([self sectionIsForSecondaryThreadTags:indexPath.section]) {
         AwfulSecondaryTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SecondaryCellIdentifier forIndexPath:indexPath];
         
-        cell.titleTextColor = self.theme[@"collectionViewTextColor"];
+        cell.titleTextColor = self.theme[@"tagPickerTextColor"];
         cell.tagImageName = self.secondaryImageNames[indexPath.item];
         
         return cell;

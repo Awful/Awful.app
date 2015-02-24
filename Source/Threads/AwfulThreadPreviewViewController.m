@@ -3,11 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSelfHostingAttachmentInterpolator.h"
-#import "AwfulSettings.h"
-#import "AwfulTheme.h"
 #import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 
@@ -55,9 +52,9 @@
     [self repositionCell];
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
-    return [AwfulTheme currentThemeForForum:self.forum];
+    return [Theme currentThemeForForum:self.forum];
 }
 
 - (void)fetchPreviewIfNecessary
@@ -125,7 +122,7 @@
     self.threadCell.numberOfPagesLabel.text = @"1";
     self.threadCell.killedByLabel.text = [NSString stringWithFormat:@"Posting in %@", self.forum.name];
     
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     self.threadCell.backgroundColor = theme[@"listBackgroundColor"];
     self.threadCell.titleLabel.textColor = theme[@"listTextColor"];
     self.threadCell.numberOfPagesLabel.textColor = theme[@"listSecondaryTextColor"];

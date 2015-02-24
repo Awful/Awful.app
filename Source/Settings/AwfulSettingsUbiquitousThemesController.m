@@ -3,8 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSettingsUbiquitousThemesController.h"
-#import "AwfulSettings.h"
-#import "AwfulThemeLoader.h"
+#import "Awful-Swift.h"
 
 @interface AwfulSettingsUbiquitousThemesController ()
 
@@ -38,11 +37,8 @@
 
 - (void)loadData
 {
-    NSArray *themes = [AwfulThemeLoader sharedLoader].themes;
-    NSIndexSet *forumSpecificThemeIndexes = [themes indexesOfObjectsPassingTest:^BOOL(AwfulTheme *theme, NSUInteger i, BOOL *stop) {
-        return !!theme[@"relevantForumID"];
-    }];
-    self.themes = [themes objectsAtIndexes:forumSpecificThemeIndexes];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID = nil"];
+    self.themes = [[Theme allThemes] filteredArrayUsingPredicate:predicate];
     self.selectedThemeNames = [AwfulSettings sharedSettings].ubiquitousThemeNames;
 }
 
@@ -77,7 +73,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    AwfulTheme *theme = self.themes[indexPath.row];
+    Theme *theme = self.themes[indexPath.row];
     
     {{
         cell.textLabel.text = theme.descriptiveName;
@@ -127,7 +123,7 @@ static NSString * const CellIdentifier = @"Cell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    AwfulTheme *theme = self.themes[indexPath.row];
+    Theme *theme = self.themes[indexPath.row];
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     NSMutableArray *updatedSelection = [self.selectedThemeNames mutableCopy] ?: [NSMutableArray new];
     if ([self.selectedThemeNames containsObject:theme.name]) {

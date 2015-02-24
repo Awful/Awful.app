@@ -2,13 +2,12 @@
 //
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "UIViewController+AwfulTheme.h"
+#import "AwfulViewController.h"
 @import CoreData;
 
 @interface SettingsViewController : AwfulTableViewController
 
-// Designated initializer.
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 

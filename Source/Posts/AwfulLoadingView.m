@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulLoadingView.h"
-#import <FLAnimatedImage/FLAnimatedImage.h>
+#import "Awful-Swift.h"
 
 @interface AwfulDefaultLoadingView : AwfulLoadingView @end
 @interface AwfulYOSPOSLoadingView : AwfulLoadingView @end
@@ -12,7 +12,7 @@
 
 @interface AwfulLoadingView ()
 
-@property (strong, nonatomic) AwfulTheme *theme;
+@property (strong, nonatomic) Theme *theme;
 
 - (void)retheme;
 
@@ -20,7 +20,7 @@
 
 @implementation AwfulLoadingView
 
-+ (instancetype)loadingViewForTheme:(AwfulTheme *)theme
++ (instancetype)loadingViewForTheme:(Theme *)theme
 {
 	AwfulLoadingView *loadingView;
 	

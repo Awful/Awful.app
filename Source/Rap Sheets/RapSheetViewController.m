@@ -195,7 +195,7 @@
     }}
     
     {{
-        AwfulTheme *theme = self.theme;
+        Theme *theme = self.theme;
         cell.textLabel.textColor = theme[@"listTextColor"];
         cell.detailTextLabel.textColor = theme[@"listSecondaryTextColor"];
         cell.reasonLabel.textColor = theme[@"listTextColor"];

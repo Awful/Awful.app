@@ -55,8 +55,8 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         }
     }
     
-    override var theme: AwfulTheme {
-        return AwfulTheme.currentThemeForForum(forum)
+    override var theme: Theme {
+        return Theme.currentThemeForForum(forum)
     }
     
     private func refreshIfNecessary() {
@@ -182,8 +182,8 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        filterButton.tintColor = theme["tintColor"] as UIColor?
-        infiniteTableController.spinnerColor = theme["listTextColor"] as UIColor?
+        filterButton.tintColor = theme["tintColor"]
+        infiniteTableController.spinnerColor = theme["listTextColor"]
     }
     
     override func viewWillAppear(animated: Bool) {

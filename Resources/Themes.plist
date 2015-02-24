@@ -4,155 +4,173 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
-		<key>description</key>
-		<string>Chill</string>
 		<key>relevantForumID</key>
 		<string>268</string>
-		<key>listFontName</key>
-		<string>ChalkboardSE-Regular</string>
-		<key>sheetTitleColor</key>
-		<string>#ffffff</string>
-		<key>sheetTitleBackgroundColor</key>
-		<string>#5492c1</string>
-		<key>sheetBackgroundColor</key>
-		<string>#e7e7ff</string>
-		<key>sheetDimColor</key>
-		<string>#494875f0</string>
-		<key>sheetTextColor</key>
-		<string>#000000</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#e7e7ff</string>
-		<key>listSecondaryTextColor</key>
+		<key>description</key>
+		<string>Chill</string>
+		<key>descriptiveColor</key>
 		<string>#9999ff</string>
 		<key>backgroundColor</key>
 		<string>#9999ff</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-byob.css</string>
-		<key>listTextColor</key>
-		<string>#006666</string>
-		<key>listSeparatorColor</key>
-		<string>#003333</string>
-		<key>listBackgroundColor</key>
-		<string>#ccccff</string>
-		<key>collectionViewBackgroundColor</key>
-		<string>#ccccff</string>
-		<key>collectionViewTextColor</key>
-		<string>#006666</string>
-		<key>descriptiveColor</key>
-		<string>#9999ff</string>
+		<key>Lists</key>
+		<dict>
+			<key>listFontName</key>
+			<string>ChalkboardSE-Regular</string>
+			<key>listTextColor</key>
+			<string>#006666</string>
+			<key>listSecondaryTextColor</key>
+			<string>#9999ff</string>
+			<key>listSeparatorColor</key>
+			<string>#003333</string>
+			<key>listBackgroundColor</key>
+			<string>#ccccff</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#e7e7ff</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#5492c1</string>
+			<key>sheetTextColor</key>
+			<string>#000000</string>
+			<key>sheetDimColor</key>
+			<string>#494875f0</string>
+			<key>sheetBackgroundColor</key>
+			<string>#e7e7ff</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerTextColor</key>
+			<string>#006666</string>
+			<key>tagPickerBackgroundColor</key>
+			<string>#ccccff</string>
+		</dict>
 	</dict>
 	<key>default</key>
 	<dict>
 		<key>description</key>
 		<string>Light</string>
-		<key>scrollIndicatorStyle</key>
-		<string>Black</string>
-		<key>backgroundColor</key>
-		<string>#f4f3f3</string>
 		<key>descriptiveColor</key>
 		<string>#ffffff</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
-		<key>basementHeaderBackgroundColor</key>
-		<string>#061d2855</string>
-		<key>basementLabelColor</key>
-		<string>#ffffff</string>
-		<key>basementBadgeColor</key>
-		<string>#dddddd</string>
-		<key>basementSeparatorColor</key>
-		<string>#ffffff55</string>
-		<key>browserBackgroundColor</key>
-		<string>#f5f5f5</string>
-		<key>listHeaderTextColor</key>
-		<string>#808080</string>
-		<key>listHeaderBackgroundColor</key>
-		<string>#e4e4e4</string>
-		<key>listTextColor</key>
-		<string>#000000</string>
-		<key>listSecondaryTextColor</key>
-		<string>#808080</string>
-		<key>listSeparatorColor</key>
-		<string>#cccccc</string>
-		<key>listBackgroundColor</key>
-		<string>#ffffff</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#cccccc</string>
-		<key>navigationBarTextColor</key>
-		<string>#ffffff</string>
-		<key>navigationBarTintColor</key>
-		<string>#1483b1</string>
-		<key>toolbarTextColor</key>
-		<string>#1e84af</string>
-		<key>postsLoadingViewTintColor</key>
-		<string>#f5f5f5</string>
-		<key>postsViewCSS</key>
-		<string>posts-view.css</string>
-		<key>postsTopBarTextColor</key>
-		<string>#eeeeee</string>
-		<key>postsTopBarBackgroundColor</key>
-		<string>#1773a1</string>
-		<key>splitViewBackgroundColor</key>
-		<string>#f5f5f5</string>
-		<key>splitDividerColor</key>
-		<string>#e9e9e9</string>
-		<key>tabBarBackgroundColor</key>
-		<string>#444444</string>
-		<key>collectionViewBackgroundColor</key>
-		<string>#ffffff</string>
-		<key>collectionViewTextColor</key>
-		<string>#000000</string>
-		<key>unreadBadgeBlueColor</key>
-		<string>#1e84af</string>
-		<key>unreadBadgeGrayColor</key>
-		<string>#7f7f7f</string>
-		<key>unreadBadgeOrangeColor</key>
-		<string>#ff8000</string>
-		<key>unreadBadgeRedColor</key>
-		<string>#ff0000</string>
-		<key>unreadBadgeYellowColor</key>
-		<string>#f3f135</string>
+		<key>backgroundColor</key>
+		<string>#f4f3f3</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Dark</string>
 		<key>keyboardAppearance</key>
 		<string>Light</string>
-		<key>sheetBackgroundColor</key>
-		<string>#eeeeee</string>
-		<key>sheetTitleColor</key>
-		<string>#333333</string>
-		<key>sheetTitleBackgroundColor</key>
-		<string>#ffffff</string>
-		<key>sheetTextColor</key>
-		<string>#000000</string>
-		<key>sheetDimColor</key>
-		<string>#777777f0</string>
 		<key>placeholderTextColor</key>
 		<string>#999999</string>
-		<key>addBookmarkIconColor</key>
-		<string>#5cc22e</string>
-		<key>copyURLIconColor</key>
-		<string>#5585bf</string>
-		<key>editPostIconColor</key>
-		<string>ae5317</string>
-		<key>jumpToFirstPageIconColor</key>
-		<string>#333333</string>
-		<key>jumpToLastPageIconColor</key>
-		<string>#333333</string>
-		<key>markUnreadIconColor</key>
-		<string>#7c47a7</string>
-		<key>markReadUpToHereIconColor</key>
-		<string>#56b52b</string>
-		<key>profileIconColor</key>
-		<string>#e35e0d</string>
-		<key>quoteIconColor</key>
-		<string>#777777</string>
-		<key>rapSheetIconColor</key>
-		<string>#dc8c3e</string>
-		<key>removeBookmarkIconColor</key>
-		<string>#e24021</string>
-		<key>sendPMIconColor</key>
-		<string>#4ba692</string>
-		<key>singleUserIconColor</key>
-		<string>#3c93a2</string>
-		<key>voteIconColor</key>
-		<string>#fcdc48</string>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#5cc22e</string>
+			<key>copyURLIconColor</key>
+			<string>#5585bf</string>
+			<key>editPostIconColor</key>
+			<string>ae5317</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#333333</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#333333</string>
+			<key>markUnreadIconColor</key>
+			<string>#7c47a7</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#56b52b</string>
+			<key>profileIconColor</key>
+			<string>#e35e0d</string>
+			<key>quoteIconColor</key>
+			<string>#777777</string>
+			<key>rapSheetIconColor</key>
+			<string>#dc8c3e</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#e24021</string>
+			<key>sendPMIconColor</key>
+			<string>#4ba692</string>
+			<key>singleUserIconColor</key>
+			<string>#3c93a2</string>
+			<key>voteIconColor</key>
+			<string>#fcdc48</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderTextColor</key>
+			<string>#808080</string>
+			<key>listHeaderBackgroundColor</key>
+			<string>#e4e4e4</string>
+			<key>listTextColor</key>
+			<string>#000000</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listSeparatorColor</key>
+			<string>#cccccc</string>
+			<key>listBackgroundColor</key>
+			<string>#ffffff</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#cccccc</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#1483b1</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#444444</string>
+			<key>toolbarTextColor</key>
+			<string>#1e84af</string>
+			<key>toolbarTintColor</key>
+			<string>#000000</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#f5f5f5</string>
+			<key>postsViewCSS</key>
+			<string>posts-view.css</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#1773a1</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#eeeeee</string>
+			<key>sheetTitleColor</key>
+			<string>#333333</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#ffffff</string>
+			<key>sheetTextColor</key>
+			<string>#000000</string>
+			<key>sheetDimColor</key>
+			<string>#777777f0</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerTextColor</key>
+			<string>#000000</string>
+			<key>tagPickerBackgroundColor</key>
+			<string>#ffffff</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#1e84af</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#7f7f7f</string>
+			<key>unreadBadgeOrangeColor</key>
+			<string>#ff8000</string>
+			<key>unreadBadgeRedColor</key>
+			<string>#ff0000</string>
+			<key>unreadBadgeYellowColor</key>
+			<string>#f3f135</string>
+		</dict>
 	</dict>
 	<key>dark</key>
 	<dict>
@@ -162,148 +180,174 @@
 		<string>#151515</string>
 		<key>tintColor</key>
 		<string>#0f4f70</string>
-		<key>scrollIndicatorStyle</key>
-		<string>White</string>
 		<key>backgroundColor</key>
 		<string>#060606</string>
-		<key>tabBarBackgroundColor</key>
-		<string>#151515</string>
-		<key>listHeaderTextColor</key>
-		<string>#ffffff</string>
-		<key>listHeaderBackgroundColor</key>
-		<string>#1c1c1c</string>
-		<key>listTextColor</key>
-		<string>#dddddd</string>
-		<key>listSecondaryTextColor</key>
-		<string>#808080</string>
-		<key>listBackgroundColor</key>
-		<string>#151515</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#333333</string>
-		<key>listSeparatorColor</key>
-		<string>#262626</string>
-		<key>splitViewBackgroundColor</key>
-		<string>060606</string>
-		<key>splitDividerColor</key>
-		<string>#111111</string>
-		<key>navigationBarTextColor</key>
-		<string>#dddddd</string>
-		<key>navigationBarTintColor</key>
-		<string>#0f4f70</string>
-		<key>toolbarTintColor</key>
-		<string>#000000</string>
-		<key>postsLoadingViewTintColor</key>
-		<string>#060606</string>
-		<key>postsTopBarTextColor</key>
-		<string>#eeeeee</string>
-		<key>postsTopBarBackgroundColor</key>
-		<string>#0c3c57</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-dark.css</string>
-		<key>settingsSwitchColor</key>
-		<string>#237733</string>
-		<key>collectionViewBackgroundColor</key>
-		<string>#151515</string>
-		<key>collectionViewTextColor</key>
-		<string>#dddddd</string>
-		<key>unreadBadgeBlueColor</key>
-		<string>#83dafd</string>
-		<key>unreadBadgeGrayColor</key>
-		<string>#bebebe</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Light</string>
 		<key>keyboardAppearance</key>
 		<string>Dark</string>
-		<key>sheetBackgroundColor</key>
-		<string>#0c0c0c</string>
-		<key>sheetTitleColor</key>
-		<string>#ffffff</string>
-		<key>sheetTitleBackgroundColor</key>
-		<string>#0c0c0c</string>
-		<key>sheetTextColor</key>
-		<string>#ffffff</string>
-		<key>sheetDimColor</key>
-		<string>#202020f2</string>
 		<key>placeholderTextColor</key>
 		<string>#666666</string>
-		<key>quoteIconColor</key>
-		<string>#dbdbdb</string>
-		<key>jumpToFirstPageIconColor</key>
-		<string>#eeeeee</string>
-		<key>jumpToLastPageIconColor</key>
-		<string>#eeeeee</string>
+		<key>settingsSwitchColor</key>
+		<string>#237733</string>
+		<key>Action icons</key>
+		<dict>
+			<key>quoteIconColor</key>
+			<string>#dbdbdb</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#eeeeee</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#eeeeee</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderTextColor</key>
+			<string>#ffffff</string>
+			<key>listHeaderBackgroundColor</key>
+			<string>#1c1c1c</string>
+			<key>listTextColor</key>
+			<string>#dddddd</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listBackgroundColor</key>
+			<string>#151515</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listSeparatorColor</key>
+			<string>#262626</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTextColor</key>
+			<string>#dddddd</string>
+			<key>navigationBarTintColor</key>
+			<string>#0f4f70</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#151515</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#060606</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#0c3c57</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-dark.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTextColor</key>
+			<string>#ffffff</string>
+			<key>sheetDimColor</key>
+			<string>#202020f2</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#83dafd</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#bebebe</string>
+		</dict>
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>relevantForumID</key>
+		<string>26</string>
 		<key>description</key>
 		<string>Pink</string>
 		<key>descriptiveColor</key>
 		<string>#fd9a9a</string>
-		<key>sheetTitleColor</key>
-		<string>#ffffff</string>
-		<key>sheetTitleBackgroundColor</key>
-		<string>#ac72b2</string>
-		<key>sheetBackgroundColor</key>
-		<string>#efbfef</string>
-		<key>sheetDimColor</key>
-		<string>#b24c4bf0</string>
-		<key>sheetTextColor</key>
-		<string>#000000</string>
-		<key>postsLoadingViewTintColor</key>
-		<string>#FD9999</string>
 		<key>backgroundColor</key>
 		<string>#ff3399</string>
-		<key>relevantForumID</key>
-		<string>26</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-fyad.css</string>
-		<key>listSeparatorColor</key>
-		<string>#0000</string>
-		<key>listBackgroundColor</key>
-		<string>#ffccff</string>
-		<key>collectionViewBackgroundColor</key>
-		<string>#ffccff</string>
-		<key>collectionViewTextColor</key>
-		<string>#000000</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#cea8ce</string>
-		<key>listTextColor</key>
-		<string>#000000</string>
-		<key>autocorrection</key>
-		<false/>
-		<key>autocapitalization</key>
-		<false/>
-		<key>checkSpelling</key>
-		<false/>
-		<key>addBookmarkIconColor</key>
-		<string>#834e83</string>
-		<key>copyURLIconColor</key>
-		<string>#834e83</string>
-		<key>editPostIconColor</key>
-		<string>#834e83</string>
-		<key>jumpToFirstPageIconColor</key>
-		<string>#834e83</string>
-		<key>jumpToLastPageIconColor</key>
-		<string>#834e83</string>
-		<key>markUnreadIconColor</key>
-		<string>#834e83</string>
-		<key>markReadUpToHereIconColor</key>
-		<string>#834e83</string>
-		<key>profileIconColor</key>
-		<string>#834e83</string>
-		<key>quoteIconColor</key>
-		<string>#834e83</string>
-		<key>rapSheetIconColor</key>
-		<string>#834e83</string>
-		<key>removeBookmarkIconColor</key>
-		<string>#834e83</string>
-		<key>sendPMIconColor</key>
-		<string>#834e83</string>
-		<key>singleUserIconColor</key>
-		<string>#834e83</string>
-		<key>voteIconColor</key>
-		<string>#834e83</string>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#834e83</string>
+			<key>copyURLIconColor</key>
+			<string>#834e83</string>
+			<key>editPostIconColor</key>
+			<string>#834e83</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#834e83</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#834e83</string>
+			<key>markUnreadIconColor</key>
+			<string>#834e83</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#834e83</string>
+			<key>profileIconColor</key>
+			<string>#834e83</string>
+			<key>quoteIconColor</key>
+			<string>#834e83</string>
+			<key>rapSheetIconColor</key>
+			<string>#834e83</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#834e83</string>
+			<key>sendPMIconColor</key>
+			<string>#834e83</string>
+			<key>singleUserIconColor</key>
+			<string>#834e83</string>
+			<key>voteIconColor</key>
+			<string>#834e83</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
+			<key>listTextColor</key>
+			<string>#000000</string>
+			<key>listSeparatorColor</key>
+			<string>#0000</string>
+			<key>listBackgroundColor</key>
+			<string>#ffccff</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#cea8ce</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#FD9999</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-fyad.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#ac72b2</string>
+			<key>sheetBackgroundColor</key>
+			<string>#efbfef</string>
+			<key>sheetDimColor</key>
+			<string>#b24c4bf0</string>
+			<key>sheetTextColor</key>
+			<string>#000000</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#ffccff</string>
+			<key>tagPickerTextColor</key>
+			<string>#000000</string>
+		</dict>
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>relevantForumID</key>
+		<string>25</string>
 		<key>description</key>
 		<string>Sickly</string>
 		<key>descriptiveColor</key>
@@ -312,8 +356,6 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#68cc24</string>
-		<key>relevantForumID</key>
-		<string>25</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#159933</string>
 		<key>postsViewCSS</key>
@@ -321,6 +363,8 @@
 	</dict>
 	<key>Macinyos</key>
 	<dict>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>description</key>
 		<string>Macinyos</string>
 		<key>descriptiveColor</key>
@@ -329,8 +373,6 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#888888</string>
-		<key>relevantForumID</key>
-		<string>219</string>
 		<key>postsLoadingViewType</key>
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
@@ -338,6 +380,8 @@
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>description</key>
 		<string>Winpos 95</string>
 		<key>descriptiveColor</key>
@@ -346,8 +390,6 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#107f7f</string>
-		<key>relevantForumID</key>
-		<string>219</string>
 		<key>postsLoadingViewType</key>
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
@@ -355,72 +397,87 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>relevantForumID</key>
+		<string>219</string>
 		<key>parent</key>
 		<string>dark</string>
 		<key>description</key>
 		<string>Green console</string>
 		<key>descriptiveColor</key>
 		<string>#57ff57</string>
-		<key>relevantForumID</key>
-		<string>219</string>
 		<key>backgroundColor</key>
 		<string>#000000</string>
-		<key>listSecondaryTextColor</key>
-		<string>#57FF57</string>
-		<key>listFontName</key>
-		<string>Courier</string>
-		<key>postsLoadingViewType</key>
-		<string>YOSPOS</string>
-		<key>postsLoadingViewTintColor</key>
-		<string>#5ffc60</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-yospos.css</string>
-		<key>listBackgroundColor</key>
-		<string>#151515</string>
-		<key>collectionViewBackgroundColor</key>
-		<string>#151515</string>
-		<key>collectionViewTextColor</key>
-		<string>#57FF57</string>
-		<key>listSelectedBackgroundColor</key>
-		<string>#333333</string>
-		<key>listTextColor</key>
-		<string>#57FF57</string>
-		<key>sheetTextColor</key>
-		<string>#57FF57</string>
-		<key>sheetTitleColor</key>
-		<string>#57FF57</string>
-		<key>addBookmarkIconColor</key>
-		<string>#57FF57</string>
-		<key>copyURLIconColor</key>
-		<string>#57FF57</string>
-		<key>editPostIconColor</key>
-		<string>#57FF57</string>
-		<key>jumpToFirstPageIconColor</key>
-		<string>#57FF57</string>
-		<key>jumpToLastPageIconColor</key>
-		<string>#57FF57</string>
-		<key>markUnreadIconColor</key>
-		<string>#57FF57</string>
-		<key>markReadUpToHereIconColor</key>
-		<string>#57FF57</string>
-		<key>postsTopBarBackgroundColor</key>
-		<string>#57FF57</string>
-		<key>postsTopBarTextColor</key>
-		<string>#000000</string>
-		<key>profileIconColor</key>
-		<string>#57FF57</string>
-		<key>quoteIconColor</key>
-		<string>#57FF57</string>
-		<key>rapSheetIconColor</key>
-		<string>#57FF57</string>
-		<key>removeBookmarkIconColor</key>
-		<string>#57FF57</string>
-		<key>sendPMIconColor</key>
-		<string>#57FF57</string>
-		<key>singleUserIconColor</key>
-		<string>#57FF57</string>
-		<key>voteIconColor</key>
-		<string>#57FF57</string>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#57FF57</string>
+			<key>copyURLIconColor</key>
+			<string>#57FF57</string>
+			<key>editPostIconColor</key>
+			<string>#57FF57</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#57FF57</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#57FF57</string>
+			<key>markUnreadIconColor</key>
+			<string>#57FF57</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#57FF57</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#57FF57</string>
+			<key>postsTopBarTextColor</key>
+			<string>#000000</string>
+			<key>profileIconColor</key>
+			<string>#57FF57</string>
+			<key>quoteIconColor</key>
+			<string>#57FF57</string>
+			<key>rapSheetIconColor</key>
+			<string>#57FF57</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#57FF57</string>
+			<key>sendPMIconColor</key>
+			<string>#57FF57</string>
+			<key>singleUserIconColor</key>
+			<string>#57FF57</string>
+			<key>voteIconColor</key>
+			<string>#57FF57</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
+			<key>listSecondaryTextColor</key>
+			<string>#57FF57</string>
+			<key>listFontName</key>
+			<string>Courier</string>
+			<key>listBackgroundColor</key>
+			<string>#151515</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listTextColor</key>
+			<string>#57FF57</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewType</key>
+			<string>YOSPOS</string>
+			<key>postsLoadingViewTintColor</key>
+			<string>#5ffc60</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-yospos.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetTextColor</key>
+			<string>#57FF57</string>
+			<key>sheetTitleColor</key>
+			<string>#57FF57</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#57FF57</string>
+		</dict>
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
@@ -430,52 +487,64 @@
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
 		<string>#ebd04b</string>
-		<key>listFontName</key>
-		<string>Courier</string>
-		<key>listSecondaryTextColor</key>
-		<string>#ebd04b</string>
-		<key>postsLoadingViewTintColor</key>
-		<string>#eacf4b</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-amberpos.css</string>
-		<key>listTextColor</key>
-		<string>#ebd04b</string>
-		<key>sheetTextColor</key>
-		<string>#ebd04b</string>
-		<key>sheetTitleColor</key>
-		<string>#ebd04b</string>
-		<key>addBookmarkIconColor</key>
-		<string>#ebd04b</string>
-		<key>copyURLIconColor</key>
-		<string>#ebd04b</string>
-		<key>editPostIconColor</key>
-		<string>#ebd04b</string>
-		<key>jumpToFirstPageIconColor</key>
-		<string>#ebd04b</string>
-		<key>jumpToLastPageIconColor</key>
-		<string>#ebd04b</string>
-		<key>markUnreadIconColor</key>
-		<string>#ebd04b</string>
-		<key>markReadUpToHereIconColor</key>
-		<string>#ebd04b</string>
-		<key>postsTopBarBackgroundColor</key>
-		<string>#ebd04b</string>
-		<key>postsTopBarTextColor</key>
-		<string>#000000</string>
-		<key>profileIconColor</key>
-		<string>#ebd04b</string>
-		<key>quoteIconColor</key>
-		<string>#ebd04b</string>
-		<key>rapSheetIconColor</key>
-		<string>#ebd04b</string>
-		<key>removeBookmarkIconColor</key>
-		<string>#ebd04b</string>
-		<key>sendPMIconColor</key>
-		<string>#ebd04b</string>
-		<key>singleUserIconColor</key>
-		<string>#ebd04b</string>
-		<key>voteIconColor</key>
-		<string>#ebd04b</string>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#ebd04b</string>
+			<key>copyURLIconColor</key>
+			<string>#ebd04b</string>
+			<key>editPostIconColor</key>
+			<string>#ebd04b</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#ebd04b</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#ebd04b</string>
+			<key>markUnreadIconColor</key>
+			<string>#ebd04b</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#ebd04b</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#ebd04b</string>
+			<key>postsTopBarTextColor</key>
+			<string>#000000</string>
+			<key>profileIconColor</key>
+			<string>#ebd04b</string>
+			<key>quoteIconColor</key>
+			<string>#ebd04b</string>
+			<key>rapSheetIconColor</key>
+			<string>#ebd04b</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#ebd04b</string>
+			<key>sendPMIconColor</key>
+			<string>#ebd04b</string>
+			<key>singleUserIconColor</key>
+			<string>#ebd04b</string>
+			<key>voteIconColor</key>
+			<string>#ebd04b</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
+			<key>listFontName</key>
+			<string>Courier</string>
+			<key>listSecondaryTextColor</key>
+			<string>#ebd04b</string>
+			<key>listTextColor</key>
+			<string>#ebd04b</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#eacf4b</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-amberpos.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetTextColor</key>
+			<string>#ebd04b</string>
+			<key>sheetTitleColor</key>
+			<string>#ebd04b</string>
+		</dict>
 	</dict>
 </dict>
 </plist>

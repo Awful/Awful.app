@@ -75,7 +75,7 @@
                                                                              title:@"Locating Post"
                                                                               mode:MRProgressOverlayViewModeIndeterminate
                                                                           animated:YES];
-        overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+        overlay.tintColor = [Theme currentTheme][@"tintColor"];
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] locatePostWithID:key.postID andThen:^(NSError *error, Post *post, AwfulThreadPage page) {
             __typeof__(self) self = weakSelf;
@@ -121,7 +121,7 @@
                                                                              title:@"Locating Message"
                                                                               mode:MRProgressOverlayViewModeIndeterminate
                                                                           animated:YES];
-        overlay.tintColor = [AwfulTheme currentTheme][@"tintColor"];
+        overlay.tintColor = [Theme currentTheme][@"tintColor"];
         [[AwfulForumsClient sharedClient] readPrivateMessageWithKey:messageKey andThen:^(NSError *error, PrivateMessage *message) {
             if (error) {
                 overlay.titleLabelText = @"Message Not Found";

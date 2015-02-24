@@ -219,8 +219,8 @@ extension ForumListViewController: UITableViewDelegate {
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel.textColor = theme["listHeaderTextColor"] as UIColor?
-            header.contentView.backgroundColor = theme["listHeaderBackgroundColor"] as UIColor?
+            header.textLabel.textColor = theme["listHeaderTextColor"]
+            header.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
             header.textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         }
     }
@@ -236,13 +236,13 @@ extension ForumListViewController: UITableViewDelegate {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let cell = cell as? ForumCell {
-            cell.nameLabel.textColor = theme["listTextColor"] as UIColor?
-            cell.backgroundColor = theme["listBackgroundColor"] as UIColor?
-            cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
+            cell.nameLabel.textColor = theme["listTextColor"]
+            cell.backgroundColor = theme["listBackgroundColor"]
+            cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"]
             if indexPath.row + 1 == tableView.numberOfRowsInSection(indexPath.section) {
                 cell.separator.backgroundColor = cell.backgroundColor
             } else {
-                cell.separator.backgroundColor = theme["listSeparatorColor"] as UIColor?
+                cell.separator.backgroundColor = theme["listSeparatorColor"]
             }
         }
     }

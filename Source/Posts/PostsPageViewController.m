@@ -274,10 +274,10 @@
     [self.webView loadRequest:request];
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
     Forum *forum = self.thread.forum;
-    return forum.forumID.length > 0 ? [AwfulTheme currentThemeForForum:self.thread.forum] : [AwfulTheme currentTheme];
+    return forum.forumID.length > 0 ? [Theme currentThemeForForum:self.thread.forum] : [Theme currentTheme];
 }
 
 - (UIBarButtonItem *)composeItem
@@ -489,7 +489,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 {
     [super themeDidChange];
     
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     self.postsView.webView.scrollView.indicatorStyle = theme.scrollIndicatorStyle;
     [_webViewJavaScriptBridge callHandler:@"changeStylesheet" data:theme[@"postsViewCSS"]];
     

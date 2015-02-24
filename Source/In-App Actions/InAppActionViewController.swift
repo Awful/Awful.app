@@ -95,16 +95,13 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     override func themeDidChange() {
         super.themeDidChange()
         
-        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
-        view.backgroundColor = backgroundColor
-        collectionView.backgroundColor = backgroundColor
-        headerLabel.textColor = theme["sheetTitleColor"] as UIColor? ?? UIColor.blackColor()
-        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
+        view.backgroundColor = theme["sheetBackgroundColor"]
+        collectionView.backgroundColor = theme["sheetBackgroundColor"]
+        headerLabel.textColor = theme["sheetTitleColor"]
+        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"]
         collectionView.reloadItemsAtIndexPaths(collectionView.indexPathsForVisibleItems())
         collectionView.indicatorStyle = theme.scrollIndicatorStyle
-        if let popover = popoverPresentationController {
-            popover.backgroundColor = backgroundColor
-        }
+        popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
     }
     
     override func viewDidLayoutSubviews() {
@@ -128,9 +125,9 @@ extension InAppActionViewController: UICollectionViewDataSource, UICollectionVie
         let item = items[indexPath.item]
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as AwfulIconActionCell
         cell.titleLabel.text = item.title
-        cell.titleLabel.textColor = theme["sheetTextColor"] as UIColor? ?? UIColor.blackColor()
+        cell.titleLabel.textColor = theme["sheetTextColor"]
         cell.iconImageView.image = item.icon
-        cell.tintColor = theme[item.themeKey] as? UIColor
+        cell.tintColor = theme[item.themeKey]
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = item.title
         cell.accessibilityTraits = UIAccessibilityTraitButton

@@ -1,11 +1,11 @@
-//  UIViewController+AwfulTheme.m
+//  AwfulViewController.m
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "UIViewController+AwfulTheme.h"
-#import "AwfulSettings.h"
+#import "AwfulViewController.h"
+#import "Awful-Swift.h"
 
-@implementation UIViewController (AwfulTheme)
+@implementation UIViewController (ThemeSupport)
 
 - (void)themeDidChange
 {
@@ -60,9 +60,9 @@ static void CommonInit(UIViewController *self)
     [self themeDidChange];
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
-    return [AwfulTheme currentTheme];
+    return [Theme currentTheme];
 }
 
 - (void)themeDidChange
@@ -133,7 +133,7 @@ static void CommonInit(UIViewController *self)
 - (void)themeDidChange
 {
     [super themeDidChange];
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     
     self.view.backgroundColor = theme[@"backgroundColor"];
     
@@ -147,9 +147,9 @@ static void CommonInit(UIViewController *self)
     }
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
-    return [AwfulTheme currentTheme];
+    return [Theme currentTheme];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -198,9 +198,9 @@ static void CommonInit(UIViewController *self)
 - (void)themeDidChange
 {
     [super themeDidChange];
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     
-    self.view.backgroundColor = theme[@"collectionViewBackgroundColor"];
+    self.view.backgroundColor = theme[@"backgroundColor"];
     
     self.collectionView.indicatorStyle = theme.scrollIndicatorStyle;
     
@@ -209,9 +209,9 @@ static void CommonInit(UIViewController *self)
     }
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
-    return [AwfulTheme currentTheme];
+    return [Theme currentTheme];
 }
 
 @end

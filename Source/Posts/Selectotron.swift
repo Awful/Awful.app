@@ -58,11 +58,10 @@ final class Selectotron : AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as UIColor?
-        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
-        view.backgroundColor = backgroundColor
-        popoverPresentationController?.backgroundColor = backgroundColor
-        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
+        view.tintColor = theme["tintColor"]
+        view.backgroundColor = theme["sheetBackgroundColor"]
+        popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
+        buttonRow.backgroundColor = theme["sheetTitleBackgroundColor"]
         picker.reloadAllComponents()
     }
     
@@ -111,7 +110,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     
     func pickerView(pickerView: UIPickerView!, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString! {
         let attributes = [
-            NSForegroundColorAttributeName: theme["sheetTextColor"],
+            NSForegroundColorAttributeName: theme["sheetTextColor"]!,
             NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)

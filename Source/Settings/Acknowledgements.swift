@@ -6,12 +6,8 @@ import UIKit
 
 final class AcknowledgementsViewController: AwfulViewController {
     private var webView: WKWebView { return view as WKWebView }
-    private var backgroundColor: UIColor {
-        return theme["backgroundColor"] as UIColor? ?? UIColor.whiteColor()
-    }
-    private var textColor: UIColor {
-        return theme["listTextColor"] as UIColor? ?? UIColor.blackColor()
-    }
+    private var backgroundColor: UIColor { return theme["backgroundColor"]! }
+    private var textColor: UIColor { return theme["listTextColor"]! }
     
     override init() {
         super.init(nibName: nil, bundle: nil)

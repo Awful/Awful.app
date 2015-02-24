@@ -94,10 +94,10 @@
     self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
 }
 
-- (AwfulTheme *)theme
+- (Theme *)theme
 {
     Thread *thread = self.thread ?: self.editingPost.thread;
-    return [AwfulTheme currentThemeForForum:thread.forum];
+    return [Theme currentThemeForForum:thread.forum];
 }
 
 - (void)themeDidChange

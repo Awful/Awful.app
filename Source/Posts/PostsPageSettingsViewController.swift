@@ -4,17 +4,12 @@
 
 import UIKit
 
-/**
-A PostsPageSettingsViewController is a modal view controller for changing settings specific to a posts page. By default it presents in a popover on all devices.
-*/
+/// A PostsPageSettingsViewController is a modal view controller for changing settings specific to a posts page. By default it presents in a popover on all devices.
 final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPresentationControllerDelegate {
     let forum: Forum
+    var themes: [Theme] { return Theme.themesForForum(forum) }
     
-    var themes: [AwfulTheme] {
-        return AwfulThemeLoader.sharedLoader().themesForForumWithID(forum.forumID) as [AwfulTheme]
-    }
-    
-    var selectedTheme: AwfulTheme! {
+    var selectedTheme: Theme! {
         get {
             return _selectedTheme
         }
@@ -25,7 +20,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
             }
         }
     }
-    private var _selectedTheme: AwfulTheme?
+    private var _selectedTheme: Theme?
     
     init(forum: Forum) {
         self.forum = forum
@@ -44,8 +39,8 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     @IBAction func changeSelectedTheme(sender: AwfulThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
         AwfulSettings.sharedSettings().setThemeName(selectedTheme.name, forForumID: forum.forumID)
-        if !selectedTheme.forumSpecific {
-            AwfulSettings.sharedSettings().darkTheme = selectedTheme != AwfulThemeLoader.sharedLoader().defaultTheme
+        if selectedTheme.forumID == nil {
+            AwfulSettings.sharedSettings().darkTheme = selectedTheme != Theme.defaultTheme
         }
     }
     
@@ -72,17 +67,16 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     override func themeDidChange() {
         super.themeDidChange()
         
-        view.tintColor = theme["tintColor"] as UIColor?
-        let backgroundColor = theme["sheetBackgroundColor"] as UIColor?
-        view.backgroundColor = backgroundColor
-        popoverPresentationController?.backgroundColor = backgroundColor
-		headerLabel.textColor = theme["sheetTitleColor"] as UIColor? ?? UIColor.blackColor()  //BUG Beta 7: UILabel doesn't accept optionals for textColor, but probably should.  Bug filed.
-        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"] as UIColor?
+        view.tintColor = theme["tintColor"]
+        view.backgroundColor = theme["sheetBackgroundColor"]
+        popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
+		headerLabel.textColor = theme["sheetTitleColor"]
+        headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"]
         for label in labels {
-            label.textColor = theme["sheetTextColor"] as UIColor? ?? UIColor.blackColor()
+            label.textColor = theme["sheetTextColor"]
         }
         for uiswitch in switches {
-            uiswitch.onTintColor = theme["settingsSwitchColor"] as UIColor?
+            uiswitch.onTintColor = theme["settingsSwitchColor"]
         }
         
         // Theme picker's background is a light grey so I can see it (until I figure out how live views work in Xcode 6), but it should be transparent for real.

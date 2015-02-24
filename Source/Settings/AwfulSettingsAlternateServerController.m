@@ -3,9 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSettingsAlternateServerController.h"
-#import "AwfulForumsClient.h"
-#import "AwfulRefreshMinder.h"
-#import "AwfulSettings.h"
+#import "Awful-Swift.h"
 
 @interface AwfulSettingsAlternateServerController ()
 
@@ -65,7 +63,7 @@ static NSString * const AgeOldSomethingAwfulIPAddress = @"216.86.148.111";
         }
     }
     
-    AwfulTheme *theme = self.theme;
+    Theme *theme = self.theme;
     cell.backgroundColor = theme[@"listBackgroundColor"];
     cell.textLabel.textColor = theme[@"listTextColor"];
     if (!cell.selectedBackgroundView) cell.selectedBackgroundView = [UIView new];

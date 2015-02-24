@@ -66,24 +66,24 @@ extension ThreadListViewController: UITableViewDelegate {
         if let cell = cell as? ThreadCell {
             let thread = dataSource.itemAtIndexPath(indexPath) as Thread
 
-            cell.backgroundColor = theme["listBackgroundColor"] as UIColor?
-            cell.titleLabel.textColor = theme["listTextColor"] as UIColor?
-            cell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.pageIcon.borderColor = theme["listSecondaryTextColor"] as UIColor? ?? UIColor.grayColor()
-            cell.killedByLabel.textColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.tintColor = theme["listSecondaryTextColor"] as UIColor?
-            cell.fontNameForLabels = theme["listFontName"] as String?
-            cell.separator.backgroundColor = theme["listSeparatorColor"] as UIColor?
+            cell.backgroundColor = theme["listBackgroundColor"]
+            cell.titleLabel.textColor = theme["listTextColor"]
+            cell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"]
+            cell.pageIcon.borderColor = theme["listSecondaryTextColor"]!
+            cell.killedByLabel.textColor = theme["listSecondaryTextColor"]
+            cell.tintColor = theme["listSecondaryTextColor"]
+            cell.fontNameForLabels = theme["listFontName"]
+            cell.separator.backgroundColor = theme["listSeparatorColor"]
             
             cell.selectedBackgroundView = UIView()
-            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
+            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
             
             switch (thread.unreadPosts, thread.starCategory) {
-            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"] as UIColor?
-            case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"] as UIColor?
-            case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"] as UIColor?
-            case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"] as UIColor?
-            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"] as UIColor?
+            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"]
+            case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"]
+            case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"]
+            case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"]
+            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"]
             }
         }
     }

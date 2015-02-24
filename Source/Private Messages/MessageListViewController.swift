@@ -140,15 +140,15 @@ extension MessageListViewController: UITableViewDelegate {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let cell = cell as MessageCell
-        cell.backgroundColor = theme["listBackgroundColor"] as UIColor?
-        cell.senderLabel.textColor = theme["listTextColor"] as UIColor?
+        cell.backgroundColor = theme["listBackgroundColor"]
+        cell.senderLabel.textColor = theme["listTextColor"]
         let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleSubheadline)
         cell.senderLabel.font = UIFont.boldSystemFontOfSize(descriptor.pointSize)
-        cell.dateLabel.textColor = theme["listTextColor"] as UIColor?
-        cell.subjectLabel.textColor = theme["listTextColor"] as UIColor?
-        cell.separator.backgroundColor = theme["listSeparatorColor"] as UIColor?
+        cell.dateLabel.textColor = theme["listTextColor"]
+        cell.subjectLabel.textColor = theme["listTextColor"]
+        cell.separator.backgroundColor = theme["listSeparatorColor"]
         let selectedBackgroundView = UIView()
-        selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"] as UIColor?
+        selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
         cell.selectedBackgroundView = selectedBackgroundView
     }
 }
