@@ -94,12 +94,12 @@ Awful's [posts view][] is fully customizable using CSS. There's a [default theme
 
 The rest of Awful is themed in a a [big plist][theme plist]. If you can't find a theme key you'd like to use, ask and we'll add it!
 
-[posts view]: Source/Posts/AwfulPostsView.h
-[default theme]: Source/Theming/posts-view.css
-[YOSPOS CSS theme]: Source/Theming/posts-view-219.less
-[FYAD CSS theme]: Source/Theming/posts-view-26.less
-[AwfulTheme]: Source/Theming/AwfulTheme.h
-[theme plist]: Resources/Themes.plist
+[posts view]: App/Posts/AwfulPostsView.h
+[default theme]: App/Theming/posts-view.css
+[YOSPOS CSS theme]: App/Theming/posts-view-219.less
+[FYAD CSS theme]: App/Theming/posts-view-26.less
+[AwfulTheme]: App/Theming/AwfulTheme.h
+[theme plist]: App/Theming/Themes.plist
 
 Thread Tags
 -----------

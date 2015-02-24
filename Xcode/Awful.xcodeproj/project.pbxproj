@@ -969,7 +969,7 @@
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RapSheetViewController.h; sourceTree = "<group>"; };
 		8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Xcode/Info.plist; sourceTree = "<group>"; };
+		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CE6100518CAACF9002E92DA /* posts-view-byob.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-byob.css"; sourceTree = "<group>"; };
 		8CE6100718CAAF74002E92DA /* cat.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cat.gif; sourceTree = "<group>"; };
@@ -1298,6 +1298,7 @@
 				1C9FDAFE16E486A600C665B5 /* AwfulThreadTagPickerCell.m */,
 				1CD82F4F194D92FE00B0C5BD /* AwfulThreadTagPickerController.h */,
 				1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */,
+				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
 				1CA04BE7195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.h */,
 				1CA04BE8195DD24B001BC2B7 /* AwfulThreadTagPickerLayout.m */,
 				1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */,
@@ -1309,6 +1310,7 @@
 		1C3857A115675AFE0078AF95 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				1C66AA0819DD3D14001B9A41 /* Awful.entitlements */,
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
 				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
@@ -1316,6 +1318,7 @@
 				1CE2D99D16688AC40024AC1C /* Framework Categories */,
 				1CBE1B0719CA03F100510187 /* Images */,
 				1C28B34A1729DC9700254EE7 /* In-App Actions */,
+				8CCD498215B497A700E5893B /* Info.plist */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CB6010616D826DA00CBEE22 /* Messages */,
@@ -1553,6 +1556,7 @@
 				1CE8FE001709E728006A3B84 /* AwfulSettingsAlternateServerController.m */,
 				1C01B445197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.h */,
 				1C01B446197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m */,
+				8CCD4CC315B497A800E5893B /* Settings.plist */,
 				1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */,
 				1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */,
 				1C54D30919BBC717002AC6B9 /* SettingsBinding.h */,
@@ -1746,6 +1750,7 @@
 				837D67F01861C3D700464055 /* AwfulForumTweaks.m */,
 				1CDD48C917EE8FB400E4DAE3 /* AwfulViewController.h */,
 				1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */,
+				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
 				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */,
@@ -1755,6 +1760,7 @@
 				1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */,
 				1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
+				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CB15BCE1A9CEB8800176E73 /* Themes.swift */,
 			);
 			path = Theming;
@@ -1859,15 +1865,9 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1C66AA0819DD3D14001B9A41 /* Awful.entitlements */,
-				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
-				8CCD498215B497A700E5893B /* Info.plist */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
-				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
-				8CCD4CC315B497A800E5893B /* Settings.plist */,
-				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			name = Resources;
@@ -3237,7 +3237,7 @@
 				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = " Debug";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
@@ -3251,7 +3251,7 @@
 					"$(inherited)",
 					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
 				);
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = ../App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_MODULE_NAME = Awful;
@@ -3269,7 +3269,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = ../Resources/Awful.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
@@ -3286,7 +3286,7 @@
 					"$(inherited)",
 					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
 				);
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = ../App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_MODULE_NAME = Awful;

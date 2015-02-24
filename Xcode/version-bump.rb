@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'pathname'
-Dir.chdir(Pathname.new(__FILE__).dirname.to_s)
+Dir.chdir((Pathname.new(__FILE__).dirname + "../App").to_s)
 
 def ensure_git_clean()
   if !`git status --porcelain`.empty?
