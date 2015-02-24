@@ -189,7 +189,7 @@ private let rootItems = [
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
         if let URL = UIPasteboard.generalPasteboard().awful_URL {
-            if videoURLIsTaggable(URL) {
+            if videoTagURLForURL(URL) != nil {
                 return tree.showSubmenu(videoSubmenuItems)
             }
         }
@@ -230,7 +230,7 @@ private let formattingItems = [
 private let videoSubmenuItems = [
     MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
-        if let URL = UIPasteboard.generalPasteboard().awful_URL {
+        if let URL = videoTagURLForURL(UIPasteboard.generalPasteboard().awful_URL) {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
                 let tag = "[video]\(URL.absoluteString!)[/video]"
@@ -242,14 +242,31 @@ private let videoSubmenuItems = [
     })
 ]
 
-private func videoURLIsTaggable(URL: NSURL) -> Bool {
+private func videoTagURLForURL(URL: NSURL) -> NSURL? {
     switch (URL.host?.lowercaseString, URL.path?.lowercaseString) {
-    case let (.Some(host), .Some(path)) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"): return true
-    case let (.Some(host), .Some(path)) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"): return true
-    case let (.Some(host), _) where host.hasSuffix("video.yahoo.com"): return true
-    case let (.Some(host), _) where host.hasSuffix("vimeo.com"): return true
-    case let (.Some(host), _) where host.hasSuffix("youtube.com"): return true
-    default: return false
+    case let (.Some(host), .Some(path)) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"):
+        return URL
+    case let (.Some(host), .Some(path)) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"):
+        return URL
+    case let (.Some(host), _) where host.hasSuffix("video.yahoo.com"):
+        return URL
+    case let (.Some(host), _) where host.hasSuffix("vimeo.com"):
+        return URL
+    case let (.Some(host), .Some(path)) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
+        return URL
+    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && countElements(path) > 1:
+        if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true) {
+            let videoID = URL.pathComponents![1] as String
+            components.host = "www.youtube.com"
+            components.path = "/watch"
+            var queryItems = components.queryItems as [NSURLQueryItem]? ?? [NSURLQueryItem]()
+            queryItems.insert(NSURLQueryItem(name: "v", value: videoID), atIndex: 0)
+            components.queryItems = queryItems
+            return components.URL
+        }
+        return nil
+    default:
+        return nil
     }
 }
 
