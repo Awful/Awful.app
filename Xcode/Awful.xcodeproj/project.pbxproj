@@ -250,6 +250,8 @@
 		1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB060781936C7B4005263EA /* PostPreviewViewController.m */; };
 		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
+		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
+		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
@@ -829,6 +831,8 @@
 		1CB060781936C7B4005263EA /* PostPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPreviewViewController.m; sourceTree = "<group>"; };
 		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
 		1CB15BCE1A9CEB8800176E73 /* Themes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
+		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
+		1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLMenuPresenter+WebViewJunk.swift"; sourceTree = "<group>"; };
 		1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWaffleimagesURLProtocol.h; sourceTree = "<group>"; };
 		1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWaffleimagesURLProtocol.m; sourceTree = "<group>"; };
 		1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshMinder.h; sourceTree = "<group>"; };
@@ -1281,6 +1285,7 @@
 				1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */,
 				1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */,
 				1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */,
+				1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */,
 			);
 			path = "In-App Actions";
 			sourceTree = "<group>";
@@ -1537,6 +1542,7 @@
 				1C8E10511918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m */,
 				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
+				1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */,
 			);
 			path = "Web View Junk";
 			sourceTree = "<group>";
@@ -2637,6 +2643,7 @@
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */,
 				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
+				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1C051C9A1A14E0EC00F81EA2 /* ForumDataSource.swift in Sources */,
 				1C7487F116A88BAD0068B8A3 /* CompositionInputAccessoryView.m in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
@@ -2698,6 +2705,7 @@
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
+				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
 				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */,

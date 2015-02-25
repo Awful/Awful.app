@@ -46,5 +46,6 @@
 #import "UIViewController+AwfulAnnoyingSwift.h"
 #import "UIViewController+HierarchySearch.h"
 #import "UIViewController+NavigationEnclosure.h"
+#import "UIWebView+AwfulConvenience.h"
 #import "UploadImageAttachments.h"
 #import <YABrowserViewController/YABrowserViewController.h>

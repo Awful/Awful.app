@@ -669,74 +669,15 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
         __typeof__(self) self = weakSelf;
+        [self.postsView.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
+        
         if (elementInfo.count == 0) return;
         
-        NSURL *imageURL = [NSURL URLWithString:elementInfo[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
-        if (elementInfo[@"spoiledLink"]) {
-            [self.postsView.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
-            
-            NSDictionary *linkInfo = elementInfo[@"spoiledLink"];
-            NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            NSMutableArray *items = [NSMutableArray new];
-            [items addObject:URL];
-            NSMutableArray *activities = [NSMutableArray new];
-            [activities addObject:[TUSafariActivity new]];
-            [activities addObject:[ARChromeActivity new]];
-            if (imageURL) {
-                ImagePreviewActivity *imagePreview = [[ImagePreviewActivity alloc] initWithImageURL:imageURL];
-                [items addObject:imagePreview];
-                [activities addObject:imagePreview];
-                [items addObject:[CopyURLActivity wrapURL:imageURL]];
-                [activities addObject:[[CopyURLActivity alloc] initWithTitle:@"Copy Image URL"]];
-            }
-            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];
-            [self presentViewController:activityViewController animated:YES completion:nil];
-            UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
-            popover.sourceRect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
-            popover.sourceView = self.view;
-        } else if (imageURL) {
-            [self previewImageAtURL:imageURL];
-        } else if (elementInfo[@"spoiledVideo"]) {
-            NSDictionary *videoInfo = elementInfo[@"spoiledVideo"];
-            NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            NSURL *safariURL;
-            if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
-                NSString *youtubeVideoID = URL.lastPathComponent;
-                safariURL = [NSURL URLWithString:[NSString stringWithFormat:
-                                                  @"http://www.youtube.com/watch?v=%@", youtubeVideoID]];
-            } else if ([URL.host hasSuffix:@"player.vimeo.com"]) {
-                NSString *vimeoVideoID = URL.lastPathComponent;
-                safariURL = [NSURL URLWithString:[NSString stringWithFormat:
-                                                  @"http://vimeo.com/%@", vimeoVideoID]];
-            }
-            if (!safariURL) return;
-            
-            UIAlertController *actionSheet = [UIAlertController actionSheet];
-            NSString *openInTitle = @"Open in Safari";
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
-                openInTitle = @"Open in YouTube";
-            }
-            [actionSheet addActionWithTitle:openInTitle handler:^{
-                [[UIApplication sharedApplication] openURL:safariURL];
-            }];
-            
-            [actionSheet addCancelActionWithHandler:nil];
-            [self presentViewController:actionSheet animated:YES completion:nil];
-            actionSheet.popoverPresentationController.sourceRect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
-            actionSheet.popoverPresentationController.sourceView = self.webView;
-        } else {
-            if (elementInfo.count > 1 || !elementInfo[@"unspoiledLink"]) {
-                NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, elementInfo);
-            }
+        BOOL ok = [URLMenuPresenter presentInterestingElements:elementInfo fromViewController:self fromWebView:self.webView];
+        if (!ok && !elementInfo[@"unspoiledLink"]) {
+            NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, elementInfo);
         }
     }];
-}
-
-- (void)previewImageAtURL:(NSURL *)URL
-{
-    ImageViewController *preview = [[ImageViewController alloc] initWithImageURL:URL];
-    preview.title = self.title;
-    [self presentViewController:preview animated:YES completion:nil];
 }
 
 - (NSString *)renderedPostAtIndex:(NSInteger)index

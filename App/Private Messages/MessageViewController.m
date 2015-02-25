@@ -169,94 +169,16 @@
         __weak __typeof__(self) weakSelf = self;
         [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *response) {
             __typeof__(self) self = weakSelf;
-            if (response.count == 0) return;
-            
             [self.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
             
-            NSURL *imageURL = [NSURL URLWithString:response[@"spoiledImageURL"] relativeToURL:[AwfulForumsClient client].baseURL];
-            if (response[@"spoiledLink"]) {
-                NSDictionary *linkInfo = response[@"spoiledLink"];
-                NSURL *URL = [NSURL URLWithString:linkInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-                CGRect rect = [self.webView awful_rectForElementBoundingRect:linkInfo[@"rect"]];
-                [self showMenuForLinkToURL:URL fromRect:rect withImageURL:imageURL];
-            } else if (imageURL) {
-                [self previewImageAtURL:imageURL];
-            } else if (response[@"spoiledVideo"]) {
-                NSDictionary *videoInfo = response[@"spoiledVideo"];
-                NSURL *URL = [NSURL URLWithString:videoInfo[@"URL"] relativeToURL:[AwfulForumsClient client].baseURL];
-                CGRect rect = [self.webView awful_rectForElementBoundingRect:videoInfo[@"rect"]];
-                [self showMenuForVideoAtURL:URL fromRect:rect];
-            } else {
-                if (response.count > 1 || !response[@"unspoiledLink"]) {
-                    NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, response);
-                }
+            if (response.count == 0) return;
+            
+            BOOL ok = [URLMenuPresenter presentInterestingElements:response fromViewController:self fromWebView:self.webView];
+            if (!ok && !response[@"unspoiledLink"]) {
+                NSLog(@"%s unexpected interesting elements for data %@ response: %@", __PRETTY_FUNCTION__, data, response);
             }
         }];
     }
-}
-
-- (void)showMenuForLinkToURL:(NSURL *)URL fromRect:(CGRect)rect withImageURL:(NSURL *)imageURL
-{
-    NSMutableArray *items = [NSMutableArray new];
-    [items addObject:URL];
-    NSMutableArray *activities = [NSMutableArray new];
-    [activities addObject:[TUSafariActivity new]];
-    [activities addObject:[ARChromeActivity new]];
-    if (imageURL) {
-        ImagePreviewActivity *imagePreview = [[ImagePreviewActivity alloc] initWithImageURL:imageURL];
-        [items addObject:imagePreview];
-        [activities addObject:imagePreview];
-        [items addObject:[CopyURLActivity wrapURL:imageURL]];
-        [activities addObject:[[CopyURLActivity alloc] initWithTitle:@"Copy Image URL"]];
-    }
-    UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:activities];
-    [self presentViewController:activityViewController animated:YES completion:nil];
-    UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
-    popover.sourceRect = rect;
-    popover.sourceView = self.view;
-}
-
-- (void)showMenuForVideoAtURL:(NSURL *)URL fromRect:(CGRect)rect
-{
-    NSURLComponents *components = [NSURLComponents new];
-    if ([URL.host hasSuffix:@"youtube-nocookie.com"]) {
-        components.scheme = @"http";
-        components.host = @"www.youtube.com";
-        components.path = @"/watch";
-        components.query = [@"v=" stringByAppendingString:URL.lastPathComponent];
-    } else if ([URL.host hasSuffix:@"player.vimeo.com"]) {
-        components.scheme = @"http";
-        components.host = @"vimeo.com";
-        components.path = [@"/" stringByAppendingString:URL.lastPathComponent];
-    } else {
-        return;
-    }
-    
-    UIAlertController *actionSheet = [UIAlertController actionSheet];
-    
-    [actionSheet addActionWithTitle:@"Open" handler:^{
-        [YABrowserViewController presentBrowserForURL:components.URL fromViewController:self];
-    }];
-    
-    NSString *openInTitle = @"Open in Safari";
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"youtube://"]]) {
-        openInTitle = @"Open in YouTube";
-    }
-    [actionSheet addActionWithTitle:openInTitle handler:^{
-        [[UIApplication sharedApplication] openURL:components.URL];
-    }];
-    
-    [actionSheet addCancelActionWithHandler:nil];
-    [self presentViewController:actionSheet animated:YES completion:nil];
-    actionSheet.popoverPresentationController.sourceRect = rect;
-    actionSheet.popoverPresentationController.sourceView = self.view;
-}
-
-- (void)previewImageAtURL:(NSURL *)URL
-{
-    ImageViewController *preview = [[ImageViewController alloc] initWithImageURL:URL];
-    preview.title = self.title;
-    [self presentViewController:preview animated:YES completion:nil];
 }
 
 - (void)settingsDidChange:(NSNotification *)note
