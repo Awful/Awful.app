@@ -28,15 +28,20 @@
     
     [self addBundledSmilieStore];
     
-    NSError *error;
-    _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                   configuration:nil
-                                                                             URL:AppContainerSmilieStoreURL()
-                                                                         options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
-                                                                                   NSInferMappingModelAutomaticallyOption: @YES}
-                                                                           error:&error];
-    if (!_appContainerSmilieStore) {
-        NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
+    if (SmilieKeyboardHasFullAccess()) {
+        NSError *error;
+        _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                       configuration:nil
+                                                                                 URL:AppContainerSmilieStoreURL()
+                                                                             options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                                                                       NSInferMappingModelAutomaticallyOption: @YES}
+                                                                               error:&error];
+        if (!_appContainerSmilieStore) {
+            NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
+            return;
+        }
+    } else {
+        NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
         return;
     }
 }
