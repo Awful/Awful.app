@@ -6,4 +6,4 @@ install: true # skip cocoapods; all dependencies are already in the repo
 script: make test
 notifications:
   email:
-    - nolan@nolanw.ca
+    # - nolan@nolanw.ca
