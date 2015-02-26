@@ -193,6 +193,7 @@
 		1CA86BDA1A380B5E00103C1C /* ForumSpecificThreadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA86BD91A380B5E00103C1C /* ForumSpecificThreadListViewController.swift */; };
 		1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB060781936C7B4005263EA /* PostPreviewViewController.m */; };
 		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
+		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
@@ -667,6 +668,7 @@
 		1CB060771936C7B4005263EA /* PostPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostPreviewViewController.h; sourceTree = "<group>"; };
 		1CB060781936C7B4005263EA /* PostPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostPreviewViewController.m; sourceTree = "<group>"; };
 		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
+		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
 		1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWaffleimagesURLProtocol.h; sourceTree = "<group>"; };
 		1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWaffleimagesURLProtocol.m; sourceTree = "<group>"; };
 		1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshMinder.h; sourceTree = "<group>"; };
@@ -1461,6 +1463,7 @@
 				1C3447DF175D9991007377C5 /* PostViewModel.h */,
 				1C3447E0175D9991007377C5 /* PostViewModel.m */,
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
+				1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */,
 				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
 				1C82AC4C199F5C1500CB15FE /* Selectotron.xib */,
 			);
@@ -2228,6 +2231,7 @@
 				1C6D2E99182C5F6900785766 /* ProfileScraper.m in Sources */,
 				1C35FB7C1832A5A900B52724 /* AwfulForm.m in Sources */,
 				1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */,
+				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C6D2EB2182FDCBC00785766 /* PrivateMessageFolderScraper.m in Sources */,
 				1C73922317DFC3DA00089248 /* AwfulThreadTagAndRatingView.m in Sources */,
 				1CF6BFE91A1FB21D006AE9FE /* AwfulManagedObject.swift in Sources */,

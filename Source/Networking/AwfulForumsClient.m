@@ -992,6 +992,22 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
     return op;
 }
 
+- (NSOperation *)reportPost:(Post *)post
+                 withReason:(NSString *)reason
+                    andThen:(void (^)(NSError *error))callback
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    parameters[@"action"] = @"submit";
+    parameters[@"postid"] = post.postID;
+    parameters[@"comments"] = reason.length > 60 ? [reason substringToIndex:60] : (reason ?: @"");
+    return [_HTTPManager POST:@"modalert.php" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        // Error checking is intentionally lax here. Let plat non-havers spin their wheels.
+        if (callback) callback(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (callback) callback(error);
+    }];
+}
+
 #pragma mark - People
 
 - (NSOperation *)learnLoggedInUserInfoAndThen:(void (^)(NSError *error, User *user))callback

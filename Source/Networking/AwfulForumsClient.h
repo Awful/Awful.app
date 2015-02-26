@@ -246,6 +246,13 @@
 - (NSOperation *)locatePostWithID:(NSString *)postID
                           andThen:(void (^)(NSError *error, Post *post, AwfulThreadPage page))callback;
 
+/**
+ * @param reason A further explanation of what's wrong with the post. Truncated to 60 characters.
+ */
+- (NSOperation *)reportPost:(Post *)post
+                 withReason:(NSString *)reason
+                    andThen:(void (^)(NSError *error))callback;
+
 #pragma mark - People
 
 /**

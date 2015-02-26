@@ -79,6 +79,12 @@
             icon = [UIImage imageNamed:@"rap-sheet"];
             themeKey = @"rapSheetIconColor";
             break;
+            
+        case AwfulIconActionItemTypeReportPost:
+            title = @"Report\nPost";
+            icon = [UIImage imageNamed:@"rap-sheet"];
+            themeKey = @"rapSheetIconColor";
+            break;
         
         case AwfulIconActionItemTypeRemoveBookmark:
             title = @"Remove Bookmark";

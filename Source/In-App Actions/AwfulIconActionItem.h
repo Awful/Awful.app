@@ -16,6 +16,7 @@ typedef NS_ENUM(NSInteger, AwfulIconActionItemType)
     AwfulIconActionItemTypeQuotePost,
     AwfulIconActionItemTypeRapSheet,
     AwfulIconActionItemTypeRemoveBookmark,
+    AwfulIconActionItemTypeReportPost,
     AwfulIconActionItemTypeSendPrivateMessage,
     AwfulIconActionItemTypeSingleUsersPosts,
     AwfulIconActionItemTypeUserProfile,
