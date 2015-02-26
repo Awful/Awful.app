@@ -3,14 +3,12 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostsPageViewController.h"
-#import "AwfulErrorDomain.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
-#import <MRProgress/MRProgressOverlayView.h>
 #import "PostComposeViewController.h"
 #import "PostViewModel.h"
 #import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
@@ -846,6 +844,11 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
             [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
         }]];
     }
+    
+    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeReportPost action:^{
+        ReportPostViewController *report = [[ReportPostViewController alloc] initWithPost:post];
+        [self presentViewController:[report enclosingNavigationController] animated:YES completion:nil];
+    }]];
     
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {

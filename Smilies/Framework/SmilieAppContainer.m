@@ -54,3 +54,8 @@ NSURL * SmilieKeyboardSharedContainerURL(void)
 {
     return [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:AppGroupIdentifier];
 }
+
+BOOL SmilieKeyboardHasFullAccess(void)
+{
+    return [[NSFileManager defaultManager] isReadableFileAtPath:SmilieKeyboardSharedContainerURL().path];
+}

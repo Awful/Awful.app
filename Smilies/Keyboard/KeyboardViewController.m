@@ -52,7 +52,7 @@
                                              metrics:nil
                                                views:views]];
     
-    if (!(HasFullAccess() || SmilieKeyboardIsAwfulAppActive())) {
+    if (!(SmilieKeyboardHasFullAccess() || SmilieKeyboardIsAwfulAppActive())) {
         self.needsFullAccessView.translatesAutoresizingMaskIntoConstraints = NO;
         [mainView addSubview:self.needsFullAccessView];
         
@@ -81,11 +81,6 @@
             }];
         };
     }
-}
-
-static BOOL HasFullAccess(void)
-{
-    return [[NSFileManager defaultManager] isReadableFileAtPath:SmilieKeyboardSharedContainerURL().path];
 }
 
 // Redeclared as IBAction.

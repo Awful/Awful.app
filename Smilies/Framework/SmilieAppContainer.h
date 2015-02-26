@@ -18,3 +18,5 @@ extern float SmilieKeyboardScrollFractionForSmilieList(SmilieList smilieList);
 extern void SmilieKeyboardSetScrollFractionForSmilieList(SmilieList smilieList, float scrollFraction);
 
 extern NSURL * SmilieKeyboardSharedContainerURL(void);
+
+extern BOOL SmilieKeyboardHasFullAccess(void);

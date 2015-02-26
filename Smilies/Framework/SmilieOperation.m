@@ -6,6 +6,7 @@
 @import HTMLReader;
 @import ImageIO;
 #import "Smilie.h"
+#import "SmilieAppContainer.h"
 #import "SmilieDataStore.h"
 
 @implementation SmilieCleanUpDuplicateDataOperation
@@ -20,6 +21,11 @@
 
 - (void)main
 {
+    if (!SmilieKeyboardHasFullAccess()) {
+        NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
+        return;
+    }
+    
     NSPersistentStoreCoordinator *storeCoordinator = self.dataStore.managedObjectContext.persistentStoreCoordinator;
     NSDictionary *bundledMetadata = [storeCoordinator metadataForPersistentStore:self.dataStore.bundledSmilieStore];
     NSDictionary *appContainerMetadata = [storeCoordinator metadataForPersistentStore:self.dataStore.appContainerSmilieStore];
@@ -156,6 +162,11 @@
 - (void)start
 {
     if (self.cancelled) {
+        return;
+    }
+    
+    if (!SmilieKeyboardHasFullAccess()) {
+        NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
         return;
     }
     
@@ -315,6 +326,11 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
 
 - (void)main
 {
+    if (!SmilieKeyboardHasFullAccess()) {
+        NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
+        return;
+    }
+    
     NSDictionary *metadata = [self.dataStore.storeCoordinator metadataForPersistentStore:self.dataStore.appContainerSmilieStore];
     NSDate *lastSuccessfulScrape = metadata[SmilieLastSuccessfulScrapeDateKey];
     if (lastSuccessfulScrape && -[lastSuccessfulScrape timeIntervalSinceNow] > 60 * 60 * 20) return;
