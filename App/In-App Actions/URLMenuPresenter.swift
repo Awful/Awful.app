@@ -8,6 +8,32 @@ private enum _URLMenuPresenter {
     case Link(URL: NSURL, imageURL: NSURL?)
     case Video(URL: NSURL)
     
+    func presentInDefaultBrowser(fromViewController presenter: UIViewController) {
+        var URL: NSURL
+        switch self {
+        case .Link(let linkURL, _):
+            URL = linkURL
+        case .Video(let rawURL):
+            if let videoURL = VideoURL(rawURL) {
+                URL = videoURL.unembeddedURL
+            } else {
+                URL = rawURL
+            }
+        }
+        
+        let browser = AwfulSettings.sharedSettings().defaultBrowser
+        switch browser {
+        case AwfulDefaultBrowserAwful:
+            YABrowserViewController.presentBrowserForURL(URL, fromViewController: presenter)
+        case AwfulDefaultBrowserSafari:
+            UIApplication.sharedApplication().openURL(URL)
+        case AwfulDefaultBrowserChrome:
+            UIApplication.sharedApplication().openURL(chromifyURL(URL))
+        default:
+            fatalError("unexpected browser \(browser)")
+        }
+    }
+    
     func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
@@ -15,22 +41,30 @@ private enum _URLMenuPresenter {
         case let .Link(linkURL, imageURL):
             alert.title = linkURL.absoluteString
             
-            alert.addAction(UIAlertAction(title: "Open in Safari", style: .Default, handler: { _ in
-                UIApplication.sharedApplication().openURL(linkURL)
-                return
-            }))
-            
-            if UIApplication.sharedApplication().canOpenURL(NSURL(string: "googlechrome://")!) {
-                let components = NSURLComponents(URL: linkURL, resolvingAgainstBaseURL: true)!
-                if components.scheme?.lowercaseString == "http" {
-                    components.scheme = "googlechrome"
-                } else if components.scheme?.lowercaseString == "https" {
-                    components.scheme = "googlechromes"
+            let nonDefaultBrowsers = (AwfulDefaultBrowsers() as [String]).filter { $0 != AwfulSettings.sharedSettings().defaultBrowser }
+            for browser in nonDefaultBrowsers {
+                switch browser {
+                case AwfulDefaultBrowserAwful:
+                    alert.addAction(UIAlertAction(title: "Open in Awful", style: .Default, handler: { _ in
+                        YABrowserViewController.presentBrowserForURL(linkURL, fromViewController: presenter)
+                        return
+                    }))
+                    
+                case AwfulDefaultBrowserSafari:
+                    alert.addAction(UIAlertAction(title: "Open in Safari", style: .Default, handler: { _ in
+                        UIApplication.sharedApplication().openURL(linkURL)
+                        return
+                    }))
+                    
+                case AwfulDefaultBrowserChrome:
+                    alert.addAction(UIAlertAction(title: "Open in Chrome", style: .Default, handler: { _ in
+                        UIApplication.sharedApplication().openURL(chromifyURL(linkURL))
+                        return
+                    }))
+                    
+                default:
+                    fatalError("unexpected browser \(browser)")
                 }
-                alert.addAction(UIAlertAction(title: "Open in Chrome", style: .Default, handler: { _ in
-                    UIApplication.sharedApplication().openURL(components.URL!)
-                    return
-                }))
             }
             
             alert.addAction(UIAlertAction(title: "Copy URL", style: .Default, handler: { _ in
@@ -138,6 +172,16 @@ private enum _URLMenuPresenter {
     }
 }
 
+private func chromifyURL(URL: NSURL) -> NSURL {
+    let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true)!
+    if components.scheme?.lowercaseString == "http" {
+        components.scheme = "googlechrome"
+    } else if components.scheme?.lowercaseString == "https" {
+        components.scheme = "googlechromes"
+    }
+    return components.URL!
+}
+
 /// Presents a menu for a link or a video.
 final class URLMenuPresenter: NSObject {
     private let menuPresenter: _URLMenuPresenter
@@ -150,6 +194,10 @@ final class URLMenuPresenter: NSObject {
     init(videoURL: NSURL) {
         menuPresenter = .Video(URL: videoURL)
         super.init()
+    }
+    
+    func presentInDefaultBrowser(fromViewController presenter: UIViewController) {
+        menuPresenter.presentInDefaultBrowser(fromViewController: presenter)
     }
     
     func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {

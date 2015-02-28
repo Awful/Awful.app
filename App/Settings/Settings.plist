@@ -150,6 +150,25 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Explanation</key>
+			<string>Which browser to open when tapping a link. Long-press a link for more options.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Default Browser</string>
+					<key>ViewController</key>
+					<string>Awful.SettingsDefaultBrowserController</string>
+					<key>Default</key>
+					<string>Awful</string>
+					<key>Key</key>
+					<string>default_browser</string>
+					<key>ShowValue</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Themes</string>
 			<key>Settings</key>

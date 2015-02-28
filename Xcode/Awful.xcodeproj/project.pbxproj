@@ -288,6 +288,7 @@
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
 		1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
+		1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
 		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
@@ -894,6 +895,7 @@
 		1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulViewController.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
+		1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDefaultBrowserController.swift; sourceTree = "<group>"; };
 		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
@@ -1571,6 +1573,7 @@
 				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
 				11FDA294151018600014FDCD /* SettingsViewController.h */,
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
+				1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2674,6 +2677,7 @@
 				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */,
 				1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */,
+				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
 				1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */,
 				1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */,

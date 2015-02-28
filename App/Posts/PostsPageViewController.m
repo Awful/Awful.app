@@ -1019,7 +1019,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                 [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
             }
         } else if ([URL opensInBrowser]) {
-            [YABrowserViewController presentBrowserForURL:URL fromViewController:self];
+            [[[URLMenuPresenter alloc] initWithLinkURL:URL imageURL:nil] presentInDefaultBrowserFromViewController:self];
         } else {
             [[UIApplication sharedApplication] openURL:URL];
         }

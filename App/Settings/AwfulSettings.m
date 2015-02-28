@@ -3,6 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulSettings.h"
+@import UIKit;
 
 @implementation AwfulSettings
 
@@ -244,6 +245,26 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
 
 BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
 
+- (NSString *)defaultBrowser
+{
+    NSString *browser = self[AwfulSettingsKeys.defaultBrowser];
+    
+    if ([browser isEqualToString:AwfulDefaultBrowserChrome] && !AwfulDefaultBrowserIsChromeInstalled()) {
+        return AwfulDefaultBrowserSafari;
+    }
+    
+    return browser;
+}
+
+- (void)setDefaultBrowser:(NSString *)defaultBrowser
+{
+    if (defaultBrowser.length > 0) {
+        NSAssert([AwfulDefaultBrowsers() containsObject:defaultBrowser], @"trying to set unknown default browser %@", defaultBrowser);
+    }
+    
+    self[AwfulSettingsKeys.defaultBrowser] = defaultBrowser;
+}
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -325,4 +346,24 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .fontScale = @"font_scale",
     .ubiquitousThemeNames = @"ubiquitous_theme_names",
     .handoffEnabled = @"handoff_enabled",
+    .defaultBrowser = @"default_browser",
 };
+
+NSArray * AwfulDefaultBrowsers(void)
+{
+    NSArray *alwaysInstalled = @[AwfulDefaultBrowserAwful, AwfulDefaultBrowserSafari];
+    if (AwfulDefaultBrowserIsChromeInstalled()) {
+        return [alwaysInstalled arrayByAddingObject:AwfulDefaultBrowserChrome];
+    } else {
+        return alwaysInstalled;
+    }
+}
+
+NSString * const AwfulDefaultBrowserAwful = @"Awful";
+NSString * const AwfulDefaultBrowserSafari = @"Safari";
+NSString * const AwfulDefaultBrowserChrome = @"Chrome";
+
+BOOL AwfulDefaultBrowserIsChromeInstalled(void)
+{
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
+}

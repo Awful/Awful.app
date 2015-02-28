@@ -154,7 +154,7 @@ typedef NS_ENUM(NSUInteger, SettingType)
         settingType = StepperSetting;
         identifier = @"Stepper";
     } else if (setting[@"ViewController"]) {
-        if (setting[@"DisplayTransformer"]) {
+        if (setting[@"DisplayTransformer"] || [setting[@"ShowValue"] boolValue]) {
             settingType = DisclosureDetailSetting;
             identifier = @"DisclosureDetail";
         } else {
@@ -191,13 +191,18 @@ typedef NS_ENUM(NSUInteger, SettingType)
     
     // Set it up as we like it.
     
-    if (setting[@"DisplayTransformer"]) {
-        NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
-        if (settingType == DisclosureDetailSetting) {
+    if (setting[@"DisplayTransformer"] || [setting[@"ShowValue"] boolValue]) {
+        if (setting[@"DisplayTransformer"]) {
+            NSValueTransformer *transformer = [NSClassFromString(setting[@"DisplayTransformer"]) new];
+            if (settingType == DisclosureDetailSetting) {
+                cell.textLabel.text = setting[@"Title"];
+                cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
+            } else {
+                cell.textLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
+            }
+        } else if ([setting[@"ShowValue"] boolValue]) {
             cell.textLabel.text = setting[@"Title"];
-            cell.detailTextLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
-        } else {
-            cell.textLabel.text = [transformer transformedValue:[AwfulSettings sharedSettings]];
+            cell.detailTextLabel.text = [AwfulSettings sharedSettings][setting[@"Key"]];
         }
     } else {
         cell.textLabel.text = setting[@"Title"];

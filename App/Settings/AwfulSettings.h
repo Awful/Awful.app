@@ -6,17 +6,19 @@
 
 @interface AwfulSettings : NSObject
 
-/**
- * Returns a convenient singleton instance.
- */
+/// The convenient singleton instance.
 + (instancetype)sharedSettings;
 
+/// Registers the default settings in the standard NSUserDefaults.
 - (void)registerDefaults;
 
+/// Moves any old settings to their new values, and deletes now-irrelevant settings.
 - (void)migrateOldSettings;
 
+/// Returns an array of NSDictionary values each describing a section of settings.
 @property (readonly, copy, nonatomic) NSArray *sections;
 
+/// Returns an NSDictionary describing the keyed setting.
 - (NSDictionary *)infoForSettingWithKey:(NSString *)key;
 
 @property (assign, nonatomic) BOOL showAvatars;
@@ -57,33 +59,31 @@
 
 @property (assign, nonatomic) BOOL handoffEnabled;
 
+/// Values are one of the strings listed below as AwfulDefaultBrowserXXX.
+@property (copy, nonatomic) NSString *defaultBrowser;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
 
-/**
- * Clear all settings.
- */
+/// Clears all settings from the standard NSUserDefaults.
 - (void)reset;
 
 @end
 
-/**
- * Sent to default center whenever a setting changes. The userInfo dictionary has a value for AwfulSettingsDidChangeSettingKey.
- */
+/// Sent whenever a setting changes. The userInfo dictionary has a value for AwfulSettingsDidChangeSettingKey.
 extern NSString * const AwfulSettingsDidChangeNotification;
 
-/**
- * One of the values in AwfulSettingsKeys indicating which setting changed.
- */
+/// The value is one of the keys in AwfulSettingsKeys indicating which setting changed.
 extern NSString * const AwfulSettingsDidChangeSettingKey;
 
 /**
- * Possible values for AwfulSettingsDidChangeSettingKey, and keys for subscripting.
- *
- * N.B. Undocumented here are:
- *   - "theme-X" keys, where X is a forum ID.
- *   - "forum-expanded-X" keys, where X is a forum ID.
+    Possible values for AwfulSettingsDidChangeSettingKey, and keys for subscripting.
+ 
+    N.B. Undocumented here are:
+    
+        * "theme-X" keys, where X is a forum ID.
+        * "forum-expanded-X" keys, where X is a forum ID.
  */
 extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
@@ -103,4 +103,22 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *fontScale;
     __unsafe_unretained NSString *ubiquitousThemeNames;
     __unsafe_unretained NSString *handoffEnabled;
+    __unsafe_unretained NSString *defaultBrowser;
 } AwfulSettingsKeys;
+
+#pragma mark Possible values for the defaultBrowser setting
+
+/// Returns all available, installed default browsers.
+extern NSArray * AwfulDefaultBrowsers(void);
+
+/// The built-in Awful Browser.
+extern NSString * const AwfulDefaultBrowserAwful;
+
+/// Safari.
+extern NSString * const AwfulDefaultBrowserSafari;
+
+/// Chrome. If Chrome is not installed, Safari is returned instead.
+extern NSString * const AwfulDefaultBrowserChrome;
+
+/// Returns whether Chrome is installed.
+extern BOOL AwfulDefaultBrowserIsChromeInstalled(void);
