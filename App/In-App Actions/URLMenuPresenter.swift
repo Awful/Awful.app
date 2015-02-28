@@ -107,7 +107,7 @@ private enum _URLMenuPresenter {
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         
         presenter.presentViewController(alert, animated: true, completion: nil)
-        if let popover = presenter.popoverPresentationController {
+        if let popover = alert.popoverPresentationController {
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
         }
