@@ -6,10 +6,10 @@
 @import Foundation;
 @import HTMLReader;
 
-/// An AwfulForm object describes an HTML form.
+/// Describes an HTML form and helps prepare it for submission.
 @interface AwfulForm : NSObject
 
-/// @param node The <form> element representing the form.
+/// @param element The <form> element representing the form.
 - (instancetype)initWithElement:(HTMLElement *)element NS_DESIGNATED_INITIALIZER;
 
 @property (readonly, strong, nonatomic) HTMLElement *element;
