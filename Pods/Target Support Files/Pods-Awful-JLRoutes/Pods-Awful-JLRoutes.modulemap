@@ -1,0 +1,6 @@
+framework module JLRoutes {
+  umbrella header "Pods-Awful-JLRoutes-umbrella.h"
+
+  export *
+  module * { export * }
+}

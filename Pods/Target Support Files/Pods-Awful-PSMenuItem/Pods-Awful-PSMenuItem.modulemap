@@ -1,0 +1,6 @@
+framework module PSMenuItem {
+  umbrella header "Pods-Awful-PSMenuItem-umbrella.h"
+
+  export *
+  module * { export * }
+}

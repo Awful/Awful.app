@@ -1,8 +1,32 @@
 PODS:
+  - AFNetworking (2.5.1):
+    - AFNetworking/NSURLConnection (= 2.5.1)
+    - AFNetworking/NSURLSession (= 2.5.1)
+    - AFNetworking/Reachability (= 2.5.1)
+    - AFNetworking/Security (= 2.5.1)
+    - AFNetworking/Serialization (= 2.5.1)
+    - AFNetworking/UIKit (= 2.5.1)
+  - AFNetworking/NSURLConnection (2.5.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.5.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.1)
+  - AFNetworking/Security (2.5.1)
+  - AFNetworking/Serialization (2.5.1)
+  - AFNetworking/UIKit (2.5.1):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.4)
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.0):
     - JRSwizzle (~> 1.0)
+  - HTMLReader (0.6.1)
+  - ImgurAnonymousAPIClient (0.3.1):
+    - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
   - JRSwizzle (1.0)
   - KVOController (1.0.3)
@@ -32,9 +56,12 @@ PODS:
   - YABrowserViewController (0.1.1)
 
 DEPENDENCIES:
+  - AFNetworking (= 2.5.1)
   - ARChromeActivity (= 1.0.4)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.0)
+  - HTMLReader (= 0.6.1)
+  - ImgurAnonymousAPIClient (= 0.3.1)
   - JLRoutes (= 1.5.1)
   - KVOController (= 1.0.3)
   - MRProgress/Overlay (= 0.8.0)
@@ -55,9 +82,12 @@ CHECKOUT OPTIONS:
     :git: https://github.com/steipete/PSMenuItem
 
 SPEC CHECKSUMS:
+  AFNetworking: 8bee59492a6ff15d69130efa4d0dc67e0094a52a
   ARChromeActivity: d8471d0f78b7fcc1de57929cfc1751b3a7f58bad
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
   GRMustache: efecd3b603f0a7a99cf6bdf3998782ee0c465726
+  HTMLReader: dbcd34d10785e73b3763ab4a534ffa65b669acbd
+  ImgurAnonymousAPIClient: 9bb8f6b3f9cb3fb89e279b929e9e112f7a4f35f0
   JLRoutes: 3400fe314fc01c861a14ff7e183d209b0cd302ae
   JRSwizzle: 30da7a2c539a4ebf954b16d15f6dd8221c9f6fa5
   KVOController: b1139ef1fc373b6757e4b69493fedd7b56eb1272
@@ -68,4 +98,4 @@ SPEC CHECKSUMS:
   WebViewJavascriptBridge: 259a6c8c67b492bd8079c9944b6866d3476e16ac
   YABrowserViewController: eb5d0ba780c8965a612e13c68835cd5877ee3077
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.36.0

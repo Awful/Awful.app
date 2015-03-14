@@ -1,0 +1,6 @@
+framework module SVPullToRefresh {
+  umbrella header "Pods-Awful-SVPullToRefresh-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module GRMustache {
+  umbrella header "Pods-Awful-GRMustache-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -7,7 +7,8 @@
 #import "AwfulLoadingView.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "PrivateMessageViewModel.h"
-#import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
+@import GRMustache;
+@import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
 
 @interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>

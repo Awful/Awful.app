@@ -1,0 +1,6 @@
+framework module HTMLReader {
+  umbrella header "Pods-Awful-HTMLReader-umbrella.h"
+
+  export *
+  module * { export * }
+}

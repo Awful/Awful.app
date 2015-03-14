@@ -1,0 +1,6 @@
+framework module ImgurAnonymousAPIClient {
+  umbrella header "Pods-Awful-ImgurAnonymousAPIClient-umbrella.h"
+
+  export *
+  module * { export * }
+}
