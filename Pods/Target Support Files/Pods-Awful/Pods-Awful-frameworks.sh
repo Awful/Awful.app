@@ -48,6 +48,7 @@ code_sign() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework '_1PasswordExtension.framework'
   install_framework 'AFNetworking.framework'
   install_framework 'ARChromeActivity.framework'
   install_framework 'FLAnimatedImage.framework'
@@ -65,6 +66,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'YABrowserViewController.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework '_1PasswordExtension.framework'
   install_framework 'AFNetworking.framework'
   install_framework 'ARChromeActivity.framework'
   install_framework 'FLAnimatedImage.framework'

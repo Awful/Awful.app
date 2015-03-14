@@ -15,6 +15,7 @@ end
 
 target :Awful do
   install :gifs, :networking, :scraping
+  pod '1PasswordExtension', '1.1.2'
   pod 'ARChromeActivity', '1.0.4'
   pod 'GRMustache', '7.3.0'
   pod 'ImgurAnonymousAPIClient', '0.3.1'

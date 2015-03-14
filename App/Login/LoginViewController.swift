@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import _1PasswordExtension
 import UIKit
 
 class LoginViewController: AwfulViewController {
@@ -68,6 +69,12 @@ class LoginViewController: AwfulViewController {
         // Can't set this in the storyboard for some reason.
         nextBarButtonItem.enabled = false
         
+        // Left to its own devices, the storyboard can't load the 1Password image at runtime, and we get "Could not load the image referenced from a nib in the bundle with identifier" in the console. Works great in IB though. I'm not sure how to say "please load this image from the bundle it's actually in", so we'll fix it up here.
+        let bundle = NSBundle(forClass: OnePasswordExtension.self)
+        if let image = UIImage(named: "onepassword-button", inBundle: bundle, compatibleWithTraitCollection: nil) {
+            onePasswordButton.setImage(image, forState: .Normal)
+        }
+        
         if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
             onePasswordButton.removeFromSuperview()
             view.addConstraints(onePasswordUnavailableConstraints)
@@ -110,7 +117,7 @@ class LoginViewController: AwfulViewController {
         
         OnePasswordExtension.sharedExtension().findLoginForURLString("http://forums.somethingawful.com", forViewController: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
             if loginInfo == nil {
-                if error.code != AppExtensionErrorCodeCancelledByUser {
+                if error.code != Int(AppExtensionErrorCodeCancelledByUser) {
                     NSLog("[%@ %@] 1Password extension failed: %@", reflect(self).summary, __FUNCTION__, error)
                 }
                 return

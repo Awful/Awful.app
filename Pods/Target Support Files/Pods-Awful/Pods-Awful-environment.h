@@ -6,6 +6,12 @@
 // project.
 
 
+// 1PasswordExtension
+#define COCOAPODS_POD_AVAILABLE_1PasswordExtension
+#define COCOAPODS_VERSION_MAJOR_1PasswordExtension 1
+#define COCOAPODS_VERSION_MINOR_1PasswordExtension 1
+#define COCOAPODS_VERSION_PATCH_1PasswordExtension 2
+
 // AFNetworking
 #define COCOAPODS_POD_AVAILABLE_AFNetworking
 #define COCOAPODS_VERSION_MAJOR_AFNetworking 2

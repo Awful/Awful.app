@@ -1,4 +1,5 @@
 PODS:
+  - 1PasswordExtension (1.1.2)
   - AFNetworking (2.5.1):
     - AFNetworking/NSURLConnection (= 2.5.1)
     - AFNetworking/NSURLSession (= 2.5.1)
@@ -56,6 +57,7 @@ PODS:
   - YABrowserViewController (0.1.1)
 
 DEPENDENCIES:
+  - 1PasswordExtension (= 1.1.2)
   - AFNetworking (= 2.5.1)
   - ARChromeActivity (= 1.0.4)
   - FLAnimatedImage (= 1.0.2)
@@ -82,6 +84,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/steipete/PSMenuItem
 
 SPEC CHECKSUMS:
+  1PasswordExtension: 38b5be7dd6dbe786c98f15d51d50ad21150db60a
   AFNetworking: 8bee59492a6ff15d69130efa4d0dc67e0094a52a
   ARChromeActivity: d8471d0f78b7fcc1de57929cfc1751b3a7f58bad
   FLAnimatedImage: afad03395f23120142bc15c9117bbcd1f85d2daa
