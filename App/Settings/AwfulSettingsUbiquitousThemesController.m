@@ -37,8 +37,9 @@
 
 - (void)loadData
 {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"forumID = nil"];
-    self.themes = [[Theme allThemes] filteredArrayUsingPredicate:predicate];
+    self.themes = [[Theme allThemes] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Theme *theme, NSDictionary *_) {
+        return theme.forumID != nil;
+    }]];
     self.selectedThemeNames = [AwfulSettings sharedSettings].ubiquitousThemeNames;
 }
 
