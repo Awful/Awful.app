@@ -168,41 +168,87 @@ final class ReplyWorkspace: NSObject {
     
     /// Present this view controller to let someone compose a reply.
     var viewController: UIViewController {
+        createCompositionViewController()
+        return compositionViewController.enclosingNavigationController
+    }
+    
+    private func createCompositionViewController() {
         if compositionViewController == nil {
             compositionViewController = CompositionViewController()
             compositionViewController.restorationIdentifier = "\(self.restorationIdentifier) Reply composition"
         }
-        
-        return compositionViewController.enclosingNavigationController
     }
     
     /// Append a quoted post to the reply.
     func quotePost(post: Post) {
-        let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: true)
-        progressView.titleLabelText = "Quoting post…"
+        createCompositionViewController()
+        let textView = compositionViewController.textView
+        let font = textView.font
+        let textColor = textView.textColor
+        
+        let attachment = EllipsisTextAttachment()
+        textView.textStorage.replaceCharactersInRange(textView.selectedRange, withAttributedString: NSAttributedString(attachment: attachment))
+        
+        textView.font = font
+        textView.textColor = textColor
+        
+        if let selection = textView.selectedTextRange {
+            let afterPosition = textView.positionFromPosition(selection.end, offset: 1)
+            textView.selectedTextRange = textView.textRangeFromPosition(afterPosition, toPosition: afterPosition)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(UITextViewTextDidChangeNotification, object: textView)
         
         AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] error, BBcode in
-            progressView.dismiss(true)
+            let textView = self?.compositionViewController.textView
+            var attachmentRange: NSRange?
+            textView?.textStorage.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, (textView!.text as NSString).length), options: nil) { value, range, stop in
+                if let value = value as? EllipsisTextAttachment {
+                    if value == attachment {
+                        attachmentRange = range
+                        stop.memory = true
+                    }
+                }
+            }
+            
+            func replaceWithString(string: String) {
+                if let range = attachmentRange {
+                    let start = textView!.positionFromPosition(textView!.beginningOfDocument, offset: range.location)!
+                    let end = textView!.positionFromPosition(start, offset: range.length)!
+                    let textRange = textView!.textRangeFromPosition(start, toPosition: end)
+                    textView!.replaceRange(textRange, withText: string)
+                }
+            }
             
             if let error = error {
                 let alert = UIAlertController(title: "Could Not Quote Post", error: error)
                 self?.viewController.presentViewController(alert, animated: true, completion: nil)
+                replaceWithString("")
                 
-            } else if let textView = self?.compositionViewController.textView {
-                let appendString: String -> Void = { string in
-                    let endRange = textView.textRangeFromPosition(textView.endOfDocument, toPosition: textView.endOfDocument)
-                    textView.replaceRange(endRange, withText: string)
-                }
-                
-                if textView.comparePosition(textView.beginningOfDocument, toPosition: textView.endOfDocument) != .OrderedSame {
-                    while !textView.text.hasSuffix("\n\n") {
-                        appendString("\n")
-                    }
-                }
-                
-                appendString(BBcode)
+            } else {
+                replaceWithString(BBcode)
             }
         }
+    }
+}
+
+private class EllipsisTextAttachment: NSTextAttachment {
+    override init(data: NSData?, ofType UTI: String?) {
+        super.init(data: data, ofType: UTI)
+        image = UIImage(named: "quote-ellipsis")
+    }
+    
+    convenience override init() {
+        // "Designated initializer" my ass.
+        self.init(data: nil, ofType: nil)
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
+    }
+    
+    private override func encodeWithCoder(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
     }
 }
 
