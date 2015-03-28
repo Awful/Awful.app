@@ -3,7 +3,6 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
-import WebKit
 
 final class AcknowledgementsViewController: AwfulViewController {
     private var webView: WKWebView { return view as WKWebView }

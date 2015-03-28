@@ -23,6 +23,7 @@
 #import <MRProgress/MRProgressOverlayView.h>
 #import "NewMessageChecker.h"
 #import "NSFileManager+UserDirectories.h"
+#import "OnePasswordExtension.h"
 #import "PostPreviewViewController.h"
 #import "PostsPageViewController.h"
 #import "ProfileViewModel.h"
