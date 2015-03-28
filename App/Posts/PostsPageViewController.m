@@ -11,12 +11,7 @@
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 #import "PostComposeViewController.h"
 #import "PostViewModel.h"
-@import ARChromeActivity;
-@import GRMustache;
-@import MRProgress;
-@import SVPullToRefresh;
-@import TUSafariActivity;
-@import WebViewJavascriptBridge;
+#import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
 #import "Awful-Swift.h"
 
 @interface PostsPageViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>

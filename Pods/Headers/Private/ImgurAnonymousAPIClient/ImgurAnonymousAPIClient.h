@@ -1,1 +1,0 @@
-../../../ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h

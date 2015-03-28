@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ufC-wZ-h7g">
+            <objects>
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
+                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qus-dX-T8n">
+                                <rect key="frame" x="20" y="20" width="100" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Choose Image">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseImage:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="y12-0F-9DO"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="44a-th-bgU">
+                                <rect key="frame" x="250" y="20" width="50" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Upload">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="upload:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="LTv-C8-l4g"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="z44-cX-P4z">
+                                <rect key="frame" x="0.0" y="58" width="320" height="452"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t21-mU-OcM">
+                                <rect key="frame" x="20" y="518" width="280" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="URL"/>
+                                <connections>
+                                    <action selector="openURLInSafari:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="mzr-f1-cPK"/>
+                                </connections>
+                            </button>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kx9-Ci-pWA" userLabel="Overlay">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zJz-Am-JEa" userLabel="Uploading HUD">
+                                        <rect key="frame" x="80" y="207" width="160" height="154"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Uploading…" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4PH-Qk-Nqy">
+                                                <rect key="frame" x="20" y="45" width="120" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KZU-Bz-f1G">
+                                                <rect key="frame" x="56" y="104" width="48" height="30"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal" title="Cancel">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="cancelUpload:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="g6P-vF-iIl"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="154" id="15p-6e-Xie"/>
+                                            <constraint firstAttribute="centerX" secondItem="KZU-Bz-f1G" secondAttribute="centerX" id="GE9-Q9-iKl"/>
+                                            <constraint firstAttribute="width" constant="160" id="KTR-l5-37w"/>
+                                            <constraint firstAttribute="trailing" secondItem="4PH-Qk-Nqy" secondAttribute="trailing" constant="20" id="LhC-2v-WVK"/>
+                                            <constraint firstItem="4PH-Qk-Nqy" firstAttribute="top" secondItem="zJz-Am-JEa" secondAttribute="top" constant="45" id="M8S-Ia-sgl"/>
+                                            <constraint firstAttribute="bottom" secondItem="KZU-Bz-f1G" secondAttribute="bottom" constant="20" id="dFN-qD-hWP"/>
+                                            <constraint firstItem="4PH-Qk-Nqy" firstAttribute="leading" secondItem="zJz-Am-JEa" secondAttribute="leading" constant="20" id="k6W-g7-HP3"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="centerY" secondItem="zJz-Am-JEa" secondAttribute="centerY" id="Gfs-e1-WVE"/>
+                                    <constraint firstAttribute="centerX" secondItem="zJz-Am-JEa" secondAttribute="centerX" id="qS8-7T-qGz"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="z44-cX-P4z" secondAttribute="trailing" id="54E-ky-sdr"/>
+                            <constraint firstItem="qus-dX-T8n" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="5CQ-De-bPE"/>
+                            <constraint firstAttribute="trailing" secondItem="44a-th-bgU" secondAttribute="trailing" constant="20" id="8Ib-oC-fuT"/>
+                            <constraint firstItem="t21-mU-OcM" firstAttribute="top" secondItem="z44-cX-P4z" secondAttribute="bottom" constant="8" id="8nZ-O4-Q9f"/>
+                            <constraint firstItem="qus-dX-T8n" firstAttribute="baseline" secondItem="44a-th-bgU" secondAttribute="baseline" id="FGA-iV-njD"/>
+                            <constraint firstItem="t21-mU-OcM" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="HXi-Ot-P67"/>
+                            <constraint firstItem="qus-dX-T8n" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="Kgq-i5-UHO"/>
+                            <constraint firstAttribute="trailing" secondItem="Kx9-Ci-pWA" secondAttribute="trailing" id="MEv-8u-iyZ"/>
+                            <constraint firstItem="z44-cX-P4z" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="PwQ-ja-taD"/>
+                            <constraint firstAttribute="trailing" secondItem="t21-mU-OcM" secondAttribute="trailing" constant="20" id="Rr7-uY-Vb5"/>
+                            <constraint firstItem="Kx9-Ci-pWA" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="gur-Ke-a9H"/>
+                            <constraint firstItem="Kx9-Ci-pWA" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="m62-OL-Sgp"/>
+                            <constraint firstItem="z44-cX-P4z" firstAttribute="top" secondItem="44a-th-bgU" secondAttribute="bottom" constant="8" id="mIN-Nd-OYZ"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="t21-mU-OcM" secondAttribute="bottom" constant="20" id="mmO-ce-Pqu"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Kx9-Ci-pWA" secondAttribute="bottom" id="oTa-mg-3Z6"/>
+                            <constraint firstItem="44a-th-bgU" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="qN9-RC-NVT"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="URLButton" destination="t21-mU-OcM" id="0KD-qq-pUU"/>
+                        <outlet property="chooseImageButton" destination="qus-dX-T8n" id="Ouv-zn-2W0"/>
+                        <outlet property="imageView" destination="z44-cX-P4z" id="FPx-R5-5R6"/>
+                        <outlet property="uploadButton" destination="44a-th-bgU" id="chj-QH-bOu"/>
+                        <outlet property="uploadingHUD" destination="Kx9-Ci-pWA" id="zVb-Q1-534"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

@@ -1,6 +1,0 @@
-framework module Pods_Smilies {
-  umbrella header "Pods-Smilies-umbrella.h"
-
-  export *
-  module * { export * }
-}

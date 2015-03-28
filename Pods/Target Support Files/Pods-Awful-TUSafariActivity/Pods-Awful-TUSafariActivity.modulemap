@@ -1,6 +1,0 @@
-framework module TUSafariActivity {
-  umbrella header "Pods-Awful-TUSafariActivity-umbrella.h"
-
-  export *
-  module * { export * }
-}

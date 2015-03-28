@@ -1,6 +1,0 @@
-framework module JRSwizzle {
-  umbrella header "Pods-Awful-JRSwizzle-umbrella.h"
-
-  export *
-  module * { export * }
-}

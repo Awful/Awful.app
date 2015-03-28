@@ -2,8 +2,6 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import FLAnimatedImage
-
 /// Downloads an image and shows it in a zoomable scroll view.
 final class ImageViewController: UIViewController {
     private let imageURL: NSURL
