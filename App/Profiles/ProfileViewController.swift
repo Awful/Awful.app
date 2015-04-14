@@ -24,7 +24,7 @@ final class ProfileViewController: AwfulViewController {
     }
     
     private var webView: WKWebView {
-        return view as WKWebView
+        return view as! WKWebView
     }
     
     private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
@@ -37,11 +37,11 @@ final class ProfileViewController: AwfulViewController {
         for filename in ["zepto.min.js", "common.js", "profile.js"] {
             let URL = NSBundle.mainBundle().URLForResource(filename, withExtension: nil)
             var error: NSError?
-            let source = NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding, error: &error) as NSString!
+            let source = NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding, error: &error) as String?
             if source == nil {
                 NSException(name: NSInternalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
             }
-            let script = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+            let script = WKUserScript(source: source!, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
             userContentController.addUserScript(script)
         }
         configuration.userContentController = userContentController
@@ -108,7 +108,7 @@ extension ProfileViewController: WKScriptMessageHandler {
         case "sendPrivateMessage":
             sendPrivateMessage()
         case "showHomepageActions":
-            let body = message.body as [String:String]
+            let body = message.body as! [String:String]
             if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL) {
                 showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]))
             }

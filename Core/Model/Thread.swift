@@ -136,7 +136,7 @@ public final class ThreadKey: AwfulObjectKey {
     }
     
     public required init(coder: NSCoder) {
-        threadID = coder.decodeObjectForKey(threadIDKey) as String
+        threadID = coder.decodeObjectForKey(threadIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -184,7 +184,7 @@ extension Thread {
         request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
         var error: NSError?
-        let results = managedObjectContext!.executeFetchRequest(request, error: &error) as [ThreadFilter]!
+        let results = managedObjectContext!.executeFetchRequest(request, error: &error) as! [ThreadFilter]!
         assert(results != nil, "error fetching: \(error!)")
         return results.first
     }

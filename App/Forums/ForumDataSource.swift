@@ -15,8 +15,8 @@ final class ForumTreeDataSource: FetchedDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Forum", forIndexPath: indexPath) as ForumTreeCell
-        let metadata = itemAtIndexPath(indexPath) as ForumMetadata
+        let cell = tableView.dequeueReusableCellWithIdentifier("Forum", forIndexPath: indexPath) as! ForumTreeCell
+        let metadata = itemAtIndexPath(indexPath) as! ForumMetadata
         let forum = metadata.forum
         
         var accessibilityLabel = forum.name ?? ""
@@ -52,7 +52,7 @@ final class ForumTreeDataSource: FetchedDataSource {
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
+        let sectionInfo = fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
         if let anyMetadata = sectionInfo.objects.first as? ForumMetadata {
             return anyMetadata.forum.group?.name
         } else {
@@ -73,8 +73,8 @@ final class ForumFavoriteDataSource: FetchedDataSource {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Favorite", forIndexPath: indexPath) as ForumCell
-        let metadata = itemAtIndexPath(indexPath) as ForumMetadata
+        let cell = tableView.dequeueReusableCellWithIdentifier("Favorite", forIndexPath: indexPath) as! ForumCell
+        let metadata = itemAtIndexPath(indexPath) as! ForumMetadata
         cell.nameLabel.text = metadata.forum.name
         return cell
     }
@@ -89,7 +89,7 @@ final class ForumFavoriteDataSource: FetchedDataSource {
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            let metadata = itemAtIndexPath(indexPath) as ForumMetadata
+            let metadata = itemAtIndexPath(indexPath) as! ForumMetadata
             metadata.favorite = false
         }
     }
@@ -100,7 +100,7 @@ final class ForumFavoriteDataSource: FetchedDataSource {
     
     func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
         userDrivenChange {
-            var favorites = self.fetchedResultsController.fetchedObjects as [ForumMetadata]
+            var favorites = self.fetchedResultsController.fetchedObjects as! [ForumMetadata]
             let moved = favorites.removeAtIndex(fromIndexPath.row)
             favorites.insert(moved, atIndex: toIndexPath.row)
             for (i, metadata) in enumerate(favorites) {

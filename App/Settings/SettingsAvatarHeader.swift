@@ -23,7 +23,7 @@ class SettingsAvatarHeader: UIView {
     }
     
     class func newFromNib() -> SettingsAvatarHeader {
-        return NSBundle.mainBundle().loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)[0] as SettingsAvatarHeader
+        return NSBundle.mainBundle().loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)[0] as! SettingsAvatarHeader
     }
     
     override func updateConstraints() {

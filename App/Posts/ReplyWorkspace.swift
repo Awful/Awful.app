@@ -83,7 +83,7 @@ final class ReplyWorkspace: NSObject {
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
             navigationItem.rightBarButtonItem = rightButtonItem
-            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts, options: .Initial) { [unowned self] _, _, change in
+            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts as String, options: .Initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
             }
             
@@ -121,7 +121,7 @@ final class ReplyWorkspace: NSObject {
         
         let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text)
         preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .Done, target: self, action: "didTapPost:")
-        (viewController as UINavigationController).pushViewController(preview, animated: true)
+        (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     
     @objc private func didTapPost(sender: UIBarButtonItem) {
@@ -262,9 +262,9 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     }
     
     class func objectWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIStateRestoring? {
-        if let path = coder.decodeObjectForKey(Keys.draftPath) as String? {
-            if let draft = DraftStore.sharedStore().loadDraft(path) as ReplyDraft? {
-                return self(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last as String?)
+        if let path = coder.decodeObjectForKey(Keys.draftPath) as! String? {
+            if let draft = DraftStore.sharedStore().loadDraft(path) as! ReplyDraft? {
+                return self(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last as! String?)
             }
         }
         
@@ -274,7 +274,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     func decodeRestorableStateWithCoder(coder: NSCoder!) {
         // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
-        compositionViewController = coder.decodeObjectForKey(Keys.compositionViewController) as CompositionViewController
+        compositionViewController = coder.decodeObjectForKey(Keys.compositionViewController) as! CompositionViewController
     }
 
     private struct Keys {
@@ -308,8 +308,8 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     }
     
     convenience init(coder: NSCoder) {
-        let threadKey = coder.decodeObjectForKey(Keys.threadKey) as ThreadKey
-        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as Thread
+        let threadKey = coder.decodeObjectForKey(Keys.threadKey) as! ThreadKey
+        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Thread
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
     }
@@ -340,8 +340,8 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     }
     
     convenience init(coder: NSCoder) {
-        let postKey = coder.decodeObjectForKey(Keys.postKey) as PostKey
-        let post = Post.objectForKey(postKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as Post
+        let postKey = coder.decodeObjectForKey(Keys.postKey) as! PostKey
+        let post = Post.objectForKey(postKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Post
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
         self.init(post: post, text: text)
     }

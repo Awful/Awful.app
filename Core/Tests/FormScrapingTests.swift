@@ -21,11 +21,11 @@ final class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed("newreply")
         XCTAssertTrue(form.threadTags == nil)
         let parameters = form.recommendedParameters()
-        XCTAssertEqual(parameters["action"] as String, "postreply")
-        XCTAssertEqual(parameters["threadid"] as String, "3507451")
-        XCTAssertEqual(parameters["formkey"] as String, "0253d85a945b60daa0165f718df82b8a")
-        XCTAssertEqual(parameters["form_cookie"] as String, "80c74b48f557")
-        XCTAssertTrue((parameters["message"] as String).rangeOfString("terrible") != nil)
+        XCTAssertEqual(parameters["action"] as! String, "postreply")
+        XCTAssertEqual(parameters["threadid"] as! String, "3507451")
+        XCTAssertEqual(parameters["formkey"] as! String, "0253d85a945b60daa0165f718df82b8a")
+        XCTAssertEqual(parameters["form_cookie"] as! String, "80c74b48f557")
+        XCTAssertTrue((parameters["message"] as! String).rangeOfString("terrible") != nil)
         XCTAssertNotNil(parameters["parseurl"])
         XCTAssertNotNil(parameters["bookmark"])
         XCTAssertNil(parameters["disablesmilies"])
@@ -45,12 +45,12 @@ final class FormScrapingTests: ScrapingTestCase {
         let parameters = form.allParameters
         XCTAssertNotNil(parameters["subject"])
         XCTAssertNotNil(parameters["message"])
-        XCTAssertEqual(parameters["forumid"] as String, "1")
-        XCTAssertEqual(parameters["action"] as String, "postthread")
-        XCTAssertEqual(parameters["formkey"] as String, "0253d85a945b60daa0165f718df82b8a")
-        XCTAssertEqual(parameters["form_cookie"] as String, "e29a15add831")
-        XCTAssertEqual(parameters["parseurl"] as String, "yes")
-        XCTAssertEqual(parameters["bookmark"] as String, "yes")
+        XCTAssertEqual(parameters["forumid"] as! String, "1")
+        XCTAssertEqual(parameters["action"] as! String, "postthread")
+        XCTAssertEqual(parameters["formkey"] as! String, "0253d85a945b60daa0165f718df82b8a")
+        XCTAssertEqual(parameters["form_cookie"] as! String, "e29a15add831")
+        XCTAssertEqual(parameters["parseurl"] as! String, "yes")
+        XCTAssertEqual(parameters["bookmark"] as! String, "yes")
     }
     
     func testAskTellThread() {
@@ -74,6 +74,6 @@ final class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed("private-reply")
         let parameters = form.allParameters
         XCTAssertNotNil(parameters["message"])
-        XCTAssertTrue((parameters["message"] as String).rangeOfString("InFlames235 wrote") != nil)
+        XCTAssertTrue((parameters["message"] as! String).rangeOfString("InFlames235 wrote") != nil)
     }
 }

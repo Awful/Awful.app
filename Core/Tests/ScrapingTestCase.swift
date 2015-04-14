@@ -43,7 +43,7 @@ class ScrapingTestCase: XCTestCase {
     
     func scrapeFixtureNamed(fixtureName: String) -> AwfulScraper {
         let document = fixtureNamed(fixtureName)
-        let scraperClass = self.dynamicType.scraperClass() as AwfulScraper.Type
+        let scraperClass = self.dynamicType.scraperClass() as! AwfulScraper.Type
         let scraper = scraperClass.scrapeNode(document, intoManagedObjectContext: managedObjectContext)
         assert(scraper.error == nil, "error scraping \(scraperClass): \(scraper.error)")
         return scraper

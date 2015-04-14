@@ -11,8 +11,8 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
     }
     
     func testFirstPage() {
-        let scraper = scrapeFixtureNamed("banlist") as LepersColonyPageScraper
-        let punishments = scraper.punishments as [Punishment]
+        let scraper = scrapeFixtureNamed("banlist") as! LepersColonyPageScraper
+        let punishments = scraper.punishments as! [Punishment]
         XCTAssert(punishments.count == 50)
         XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 71)
         XCTAssert(fetchAll(Post.self, inContext: managedObjectContext).count == 46)

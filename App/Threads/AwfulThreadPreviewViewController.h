@@ -17,6 +17,5 @@
 @property (readonly, copy, nonatomic) NSString *subject;
 @property (readonly, strong, nonatomic) ThreadTag *threadTag;
 @property (readonly, strong, nonatomic) ThreadTag *secondaryThreadTag;
-@property (readonly, copy, nonatomic) NSAttributedString *BBcode;
 
 @end

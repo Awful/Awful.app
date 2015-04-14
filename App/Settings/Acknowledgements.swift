@@ -5,12 +5,12 @@
 import UIKit
 
 final class AcknowledgementsViewController: AwfulViewController {
-    private var webView: WKWebView { return view as WKWebView }
+    private var webView: WKWebView { return view as! WKWebView }
     private var backgroundColor: UIColor { return theme["backgroundColor"]! }
     private var textColor: UIColor { return theme["listTextColor"]! }
     
-    override init() {
-        super.init(nibName: nil, bundle: nil)
+    override init(nibName: String?, bundle: NSBundle?) {
+        super.init(nibName: nibName, bundle: bundle)
         
         title = "Acknowledgements"
         modalPresentationStyle = .FormSheet
@@ -73,7 +73,7 @@ final class AcknowledgementsViewController: AwfulViewController {
 extension AcknowledgementsViewController: WKNavigationDelegate {
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .LinkActivated {
-            UIApplication.sharedApplication().openURL(navigationAction.request.URL)
+            UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
             decisionHandler(.Cancel)
         } else {
             decisionHandler(.Allow)

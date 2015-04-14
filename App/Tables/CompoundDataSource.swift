@@ -9,7 +9,7 @@ final class CompoundDataSource: NSObject {
     var numberOfSections: Int {
         get {
             if let lastStart = startingGlobalSections.last {
-                return lastStart + (dataSources.lastObject as DataSource).numberOfSections
+                return lastStart + (dataSources.lastObject as! DataSource).numberOfSections
             } else {
                 return 0
             }
@@ -52,7 +52,7 @@ extension CompoundDataSource {
     private func dataSourceForGlobalSection(globalSection: Int) -> (DataSource, localSection: Int) {
         assert(globalSection < numberOfSections)
         let index = nearestStartingGlobalSectionForGlobalSection(globalSection)
-        return (dataSources.objectAtIndex(index) as DataSource, localSection: globalSection - startingGlobalSections[index])
+        return (dataSources.objectAtIndex(index) as! DataSource, localSection: globalSection - startingGlobalSections[index])
     }
     
     private func nearestStartingGlobalSectionForGlobalSection(globalSection: Int) -> Int {
@@ -102,7 +102,7 @@ extension CompoundDataSource {
         if index + 1 == dataSources.count {
             return numberOfSections - startingGlobalSectionForDataSource(localDataSource)
         } else {
-            let nextDataSource = dataSources.objectAtIndex(index + 1) as DataSource
+            let nextDataSource = dataSources.objectAtIndex(index + 1) as! DataSource
             return startingGlobalSectionForDataSource(nextDataSource) - startingGlobalSectionForDataSource(localDataSource)
         }
     }
@@ -124,7 +124,7 @@ extension CompoundDataSource: DataSource {
     }
     
     func indexPathsForItem(item: AnyObject) -> [NSIndexPath] {
-        let typedDataSources = self.dataSources.array as [DataSource]
+        let typedDataSources = self.dataSources.array as! [DataSource]
         return typedDataSources.reduce([]) { $0 + self.globalize($1, $1.indexPathsForItem(item)) }
     }
     

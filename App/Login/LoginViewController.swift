@@ -59,7 +59,7 @@ class LoginViewController: AwfulViewController {
     }
     
     class func newFromStoryboard() -> LoginViewController {
-        return UIStoryboard(name: "Login", bundle: nil).instantiateInitialViewController() as LoginViewController
+        return UIStoryboard(name: "Login", bundle: nil).instantiateInitialViewController() as! LoginViewController
     }
     
     override func viewDidLoad() {
@@ -115,8 +115,8 @@ class LoginViewController: AwfulViewController {
                 }
                 return
             }
-            self?.usernameTextField.text = loginInfo[AppExtensionUsernameKey] as NSString
-            self?.passwordTextField.text = loginInfo[AppExtensionPasswordKey] as NSString
+            self?.usernameTextField.text = loginInfo[AppExtensionUsernameKey] as! NSString as String
+            self?.passwordTextField.text = loginInfo[AppExtensionPasswordKey] as! NSString as String
             self?.state = .CanAttemptLogin
         }
     }
@@ -169,12 +169,12 @@ extension LoginViewController: UITextFieldDelegate {
 
 extension LoginViewController {
     @objc private func keyboardWillChangeFrame(notification: NSNotification) {
-        let userInfo = notification.userInfo as [NSObject:NSObject]
-        let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as NSNumber
-        let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as NSNumber
+        let userInfo = notification.userInfo as! [NSObject:NSObject]
+        let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
+        let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
         let options = UIViewAnimationOptions(UInt(curve.unsignedIntegerValue) << 16)
         UIView.animateWithDuration(duration.doubleValue, delay: 0, options: options, animations: {
-            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
+            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
             let windowKeyboardFrame = self.view.window!.convertRect(keyboardFrame, fromWindow: nil)
             let localKeyboardFrame = self.view.convertRect(windowKeyboardFrame, fromView: nil)
             let insetBottom = CGRectIntersection(localKeyboardFrame, self.view.bounds).height

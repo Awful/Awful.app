@@ -31,6 +31,21 @@
     return self;
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self initWithManagedObjectContext:nil];
+}
+
+- (instancetype)initWithStyle:(UITableViewStyle)style
+{
+    return [self initWithManagedObjectContext:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self initWithManagedObjectContext:nil];
+}
+
 - (NSArray *)sections
 {
     if (!_sections) {

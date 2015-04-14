@@ -11,7 +11,7 @@ final class MessageFolderScrapingTests: ScrapingTestCase {
     }
 
     func testInbox() {
-        let scraper = scrapeFixtureNamed("private-list") as PrivateMessageFolderScraper
+        let scraper = scrapeFixtureNamed("private-list") as! PrivateMessageFolderScraper
         let messages = scraper.messages
         XCTAssert(messages.count == 4)
         XCTAssert(messages.count == fetchAll(PrivateMessage.self, inContext: managedObjectContext).count)

@@ -53,7 +53,7 @@ public final class PrivateMessageKey: AwfulObjectKey {
     }
     
     public required init(coder: NSCoder) {
-        messageID = coder.decodeObjectForKey(messageIDKey) as String
+        messageID = coder.decodeObjectForKey(messageIDKey) as! String
         super.init(coder: coder)
     }
     

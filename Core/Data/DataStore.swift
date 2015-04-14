@@ -142,7 +142,7 @@ public final class LastModifiedContextObserver: NSObject {
     
     public init(managedObjectContext context: NSManagedObjectContext) {
         managedObjectContext = context
-        let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
+        let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as! [NSEntityDescription]
         relevantEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
         super.init()
         
@@ -154,11 +154,11 @@ public final class LastModifiedContextObserver: NSObject {
     }
     
     @objc private func contextWillSave(notification: NSNotification) {
-        let context = notification.object as NSManagedObjectContext
+        let context = notification.object as! NSManagedObjectContext
         let lastModifiedDate = NSDate()
-        let insertedOrUpdated = context.insertedObjects.setByAddingObjectsFromSet(context.updatedObjects)
+        let insertedOrUpdated = context.insertedObjects.union(context.updatedObjects)
         context.performBlockAndWait {
-            let relevantObjects = filter(insertedOrUpdated) { contains(self.relevantEntities, ($0 as NSManagedObject).entity) }
+            let relevantObjects = filter(insertedOrUpdated) { contains(self.relevantEntities, ($0 as! NSManagedObject).entity) }
             (relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
         }
     }

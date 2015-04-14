@@ -3,9 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 final class CompositionViewController: AwfulViewController {
-    override init() {
+    override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nil, bundle: nil)
-        
         restorationClass = self.dynamicType
     }
     
@@ -25,7 +24,7 @@ final class CompositionViewController: AwfulViewController {
     }
     
     var textView: UITextView {
-        return view as UITextView
+        return view as! UITextView
     }
     
     override func loadView() {
@@ -78,7 +77,7 @@ final class CompositionViewController: AwfulViewController {
 extension CompositionViewController: UIViewControllerRestoration {
     class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         let composition = self()
-        composition.restorationIdentifier = identifierComponents.last as String?
+        composition.restorationIdentifier = identifierComponents.last as! String?
         return composition
     }
 }

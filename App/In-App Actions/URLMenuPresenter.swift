@@ -41,7 +41,7 @@ private enum _URLMenuPresenter {
         case let .Link(linkURL, imageURL):
             alert.title = linkURL.absoluteString
             
-            let nonDefaultBrowsers = (AwfulDefaultBrowsers() as [String]).filter { $0 != AwfulSettings.sharedSettings().defaultBrowser }
+            let nonDefaultBrowsers = (AwfulDefaultBrowsers() as! [String]).filter { $0 != AwfulSettings.sharedSettings().defaultBrowser }
             for browser in nonDefaultBrowsers {
                 switch browser {
                 case AwfulDefaultBrowserAwful:

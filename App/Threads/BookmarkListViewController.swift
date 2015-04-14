@@ -26,7 +26,7 @@ final class BookmarkListViewController: ThreadListViewController {
     }
     
     override var sortByUnreadSettingsKey: String {
-        return AwfulSettingsKeys.bookmarksSortedByUnread
+        return AwfulSettingsKeys.bookmarksSortedByUnread as String
     }
     
     override func makeNewDataSource() {
@@ -199,7 +199,7 @@ final class BookmarkDataSource: ThreadDataSource {
 
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            let thread = itemAtIndexPath(indexPath) as Thread
+            let thread = itemAtIndexPath(indexPath) as! Thread
             deletionDelegate?.setThread(thread, isBookmarked: false)
         }
     }

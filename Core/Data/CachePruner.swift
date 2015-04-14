@@ -15,13 +15,13 @@ final class CachePruner: NSOperation {
     override func main() {
         let context = managedObjectContext
         context.performBlockAndWait {
-            let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
+            let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as! [NSEntityDescription]
             let prunableEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
             
             var candidateObjectIDs = [NSManagedObjectID]()
             let components = NSDateComponents()
             components.day = -7
-            let calendar = NSCalendar(calendarIdentifier: NSGregorianCalendar)!
+            let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
             let oneWeekAgo = calendar.dateByAddingComponents(components, toDate: NSDate(), options: nil)!
             let fetchRequest = NSFetchRequest()
             fetchRequest.predicate = NSPredicate(format: "lastModifiedDate < %@", oneWeekAgo)
@@ -29,7 +29,7 @@ final class CachePruner: NSOperation {
             for entity in prunableEntities {
                 fetchRequest.entity = entity
                 var error: NSError?
-                if let result = context.executeFetchRequest(fetchRequest, error: &error) as [NSManagedObjectID]? {
+                if let result = context.executeFetchRequest(fetchRequest, error: &error) as! [NSManagedObjectID]? {
                     candidateObjectIDs += result
                 } else {
                     NSLog("[%@ %@] error fetching: %@", reflect(self).summary, __FUNCTION__, error!)

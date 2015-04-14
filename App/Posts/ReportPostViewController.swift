@@ -41,15 +41,15 @@ final class ReportPostViewController: AwfulViewController {
     }
     
     @IBAction private func commentTextFieldDidChange(textField: UITextField) {
-        navigationItem.rightBarButtonItem?.enabled = countElements(textField.text ?? "") <= 60
+        navigationItem.rightBarButtonItem?.enabled = count(textField.text ?? "") <= 60
     }
     
     private class RootView: UIView {
         let instructionLabel = UILabel()
         let commentTextField = UITextField()
         
-        override init() {
-            super.init(frame: CGRectZero)
+        override init(frame: CGRect) {
+            super.init(frame: frame)
             
             instructionLabel.text = "Did this post break the forum rules? If so, please report it."
             instructionLabel.numberOfLines = 0
@@ -74,7 +74,7 @@ final class ReportPostViewController: AwfulViewController {
         }
     }
     
-    private var rootView: RootView { return view as RootView }
+    private var rootView: RootView { return view as! RootView }
     
     override func loadView() {
         view = RootView()

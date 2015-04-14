@@ -8,7 +8,7 @@ class ForumListViewController: AwfulTableViewController {
     private let dataSource: DataSource
     private let favoriteDataSource: ForumFavoriteDataSource
     private let treeDataSource: ForumTreeDataSource
-    private let contextObserver: ForumContextObserver!
+    private var contextObserver: ForumContextObserver!
 
     required init(coder: NSCoder) {
         managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
@@ -39,7 +39,7 @@ class ForumListViewController: AwfulTableViewController {
     }
     
     class func newFromStoryboard() -> ForumListViewController {
-        return UIStoryboard(name: "ForumList", bundle: nil).instantiateInitialViewController() as ForumListViewController
+        return UIStoryboard(name: "ForumList", bundle: nil).instantiateInitialViewController() as! ForumListViewController
     }
     
     private class ForumContextObserver: NSObject {
@@ -60,14 +60,14 @@ class ForumListViewController: AwfulTableViewController {
         }
         
         @objc private func objectsDidChange(notification: NSNotification) {
-            let userInfo = notification.userInfo as [String:AnyObject]
-            let changedObjects = NSMutableSet()
+            let userInfo = notification.userInfo as! [String:AnyObject]
+            var changedObjects = Set<NSManagedObject>()
             for key in [NSUpdatedObjectsKey, NSRefreshedObjectsKey] {
-                if let updated = userInfo[key] as NSSet? {
-                    changedObjects.unionSet(updated)
+                if let updated = userInfo[key] as! Set<NSManagedObject>? {
+                    changedObjects.unionInPlace(updated)
                 }
             }
-            let forums = filter(changedObjects) { ($0 as NSManagedObject).entity == self.entity } as [Forum]
+            let forums = filter(changedObjects) { $0.entity == self.entity } as! [Forum]
             if !forums.isEmpty {
                 changeBlock(forums)
             }
@@ -114,7 +114,7 @@ class ForumListViewController: AwfulTableViewController {
     
     private func migrateFavoriteForumsFromSettings() {
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
-        if let forumIDs = AwfulSettings.sharedSettings().favoriteForums as [String]? {
+        if let forumIDs = AwfulSettings.sharedSettings().favoriteForums as! [String]? {
             AwfulSettings.sharedSettings().favoriteForums = nil
             let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs, inManagedObjectContext: managedObjectContext)
             for (i, metadata) in enumerate(metadatas) {
@@ -132,7 +132,7 @@ class ForumListViewController: AwfulTableViewController {
         sender.selected = !sender.selected
         let cell: UITableViewCell = sender.nearestSuperviewOfDeclaredType()
         let indexPath = tableView.indexPathForCell(cell)!
-        let metadata = dataSource.itemAtIndexPath(indexPath) as ForumMetadata
+        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
         metadata.showsChildrenInForumList = sender.selected
         metadata.updateSubtreeVisibility()
     }
@@ -140,7 +140,7 @@ class ForumListViewController: AwfulTableViewController {
     @IBAction private func didTapFavoriteStar(sender: UIButton) {
         let cell: UITableViewCell = sender.nearestSuperviewOfDeclaredType()
         let indexPath = tableView.indexPathForCell(cell)!
-        let metadata = dataSource.itemAtIndexPath(indexPath) as ForumMetadata
+        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
         metadata.favoriteIndex = Int32(favoriteDataSource.fetchedResultsController.fetchedObjects?.count ?? 0)
         metadata.favorite = true
         
@@ -187,7 +187,7 @@ extension UIView {
         while currentView != nil {
             // `if currentView is T` doesn't work here and I'm not sure why (T seems to get stuck as UIView somehow and self.superview is invariably returned).
             if currentView.isKindOfClass(T) {
-                return currentView as T
+                return currentView as! T
             } else {
                 currentView = currentView.superview
             }
@@ -198,7 +198,7 @@ extension UIView {
 
 extension ForumMetadata {
     func updateSubtreeVisibility() {
-        let childMetadatas = map(forum.childForums) { ($0 as Forum).metadata }
+        let childMetadatas = map(forum.childForums) { ($0 as! Forum).metadata }
         for child in childMetadatas {
             if showsChildrenInForumList {
                 child.visibleInForumList = visibleInForumList
@@ -212,7 +212,7 @@ extension ForumMetadata {
 
 extension ForumListViewController: UITableViewDelegate {
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as UITableViewHeaderFooterView
+        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! UITableViewHeaderFooterView
         header.textLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
         return header
     }
@@ -248,7 +248,7 @@ extension ForumListViewController: UITableViewDelegate {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let metadata = dataSource.itemAtIndexPath(indexPath) as ForumMetadata
+        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
         openForum(metadata.forum, animated: true)
     }
     

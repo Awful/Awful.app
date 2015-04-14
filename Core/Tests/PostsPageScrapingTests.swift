@@ -11,8 +11,8 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     }
     
     func testCanadianPoliticsThread() {
-        let scraper = scrapeFixtureNamed("showthread") as AwfulPostsPageScraper
-        let posts = scraper.posts as [Post]
+        let scraper = scrapeFixtureNamed("showthread") as! AwfulPostsPageScraper
+        let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
         let allThreads = fetchAll(Thread.self, inContext: managedObjectContext)
         XCTAssert(allThreads.count == 1)
@@ -67,8 +67,8 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     
     func testWeirdSizeTags() {
         // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
-        let scraper = scrapeFixtureNamed("showthread2") as AwfulPostsPageScraper
-        let posts = scraper.posts as [Post]
+        let scraper = scrapeFixtureNamed("showthread2") as! AwfulPostsPageScraper
+        let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
         let ganker = posts[24]
         XCTAssert(ganker.author!.username == "Ganker")
@@ -78,16 +78,16 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     }
     
     func testFYADThreadIndex() {
-        let scraper = scrapeFixtureNamed("showthread-fyad") as AwfulPostsPageScraper
-        let posts = scraper.posts as [Post]
+        let scraper = scrapeFixtureNamed("showthread-fyad") as! AwfulPostsPageScraper
+        let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 10)
         let last = posts.last!
         XCTAssert(last.page == 2)
     }
     
     func testFYADThreadPageOne() {
-        let scraper = scrapeFixtureNamed("showthread-fyad2") as AwfulPostsPageScraper
-        let posts = scraper.posts as [Post]
+        let scraper = scrapeFixtureNamed("showthread-fyad2") as! AwfulPostsPageScraper
+        let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
         let first = posts[0]
         XCTAssert(first.author!.username == "BiG TrUcKs !!!")
@@ -114,7 +114,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssert(post.ignored)
         let others = fetchAll(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
         XCTAssert(others.count > 0)
-        let ignored = (others as NSArray).valueForKeyPath("@distinctUnionOfObjects.ignored") as [Bool]
+        let ignored = (others as NSArray).valueForKeyPath("@distinctUnionOfObjects.ignored") as! [Bool]
         XCTAssert(ignored.count == 1);
         XCTAssert(ignored[0] == false)
     }

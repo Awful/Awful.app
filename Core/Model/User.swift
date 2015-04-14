@@ -29,7 +29,7 @@ extension User {
     public var avatarURL: NSURL? {
         if let HTML = customTitleHTML {
             if let element = avatarImageElement(customTitleHTML: HTML) {
-                return NSURL(string: element.objectForKeyedSubscript("src") as String!)
+                return NSURL(string: element.objectForKeyedSubscript("src") as! String!)
             }
         }
         return nil
@@ -57,8 +57,8 @@ public final class UserKey: AwfulObjectKey {
     }
     
     public required init(coder: NSCoder) {
-        userID = coder.decodeObjectForKey(userIDKey) as String
-        username = coder.decodeObjectForKey(usernameKey) as String?
+        userID = coder.decodeObjectForKey(userIDKey) as! String
+        username = coder.decodeObjectForKey(usernameKey) as! String?
         super.init(coder: coder)
     }
     

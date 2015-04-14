@@ -11,7 +11,7 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
     }
     
     func testHierarchy() {
-        let scraper = scrapeFixtureNamed("forumdisplay") as AwfulForumHierarchyScraper
+        let scraper = scrapeFixtureNamed("forumdisplay") as! AwfulForumHierarchyScraper
         let groups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
         let groupNames = groups.map{$0.name!}.sorted(<)
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])

@@ -37,7 +37,7 @@ public final class ForumKey: AwfulObjectKey {
     }
     
     public required init(coder: NSCoder) {
-        forumID = coder.decodeObjectForKey(forumIDKey) as String
+        forumID = coder.decodeObjectForKey(forumIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -72,7 +72,7 @@ public final class ForumGroupKey: AwfulObjectKey {
     }
     
     public required init(coder: NSCoder) {
-        groupID = coder.decodeObjectForKey(groupIDKey) as String
+        groupID = coder.decodeObjectForKey(groupIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -103,7 +103,7 @@ extension ForumMetadata {
         let request = NSFetchRequest(entityName: entityName())
         request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
         var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as [ForumMetadata]!
+        let results = context.executeFetchRequest(request, error: &error) as! [ForumMetadata]!
         assert(results != nil, "error fetching: \(error!)")
         return results
     }

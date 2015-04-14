@@ -89,7 +89,7 @@ extension UIDevice {
 }
 
 private func modelIdentifier() -> String {
-    var size: UInt = 0
+    var size: Int = 0
     if sysctlbyname("hw.machine", nil, &size, nil, 0) != 0 {
         NSLog("%@ failed to get buffer size", __FUNCTION__)
         return ""

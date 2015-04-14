@@ -11,7 +11,7 @@ final class PrivateMessageScrapingTests: ScrapingTestCase {
     }
     
     func testSingleMessage() {
-        let scraper = scrapeFixtureNamed("private-one") as PrivateMessageScraper
+        let scraper = scrapeFixtureNamed("private-one") as! PrivateMessageScraper
         let message = scraper.privateMessage
         XCTAssert(fetchAll(PrivateMessage.self, inContext: managedObjectContext).count == 1)
         XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 1)

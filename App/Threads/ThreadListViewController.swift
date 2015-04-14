@@ -64,7 +64,7 @@ class ThreadListViewController: AwfulTableViewController {
 extension ThreadListViewController: UITableViewDelegate {
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let cell = cell as? ThreadCell {
-            let thread = dataSource.itemAtIndexPath(indexPath) as Thread
+            let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
 
             cell.backgroundColor = theme["listBackgroundColor"]
             cell.titleLabel.textColor = theme["listTextColor"]
@@ -89,7 +89,7 @@ extension ThreadListViewController: UITableViewDelegate {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataSource.itemAtIndexPath(indexPath) as Thread
+        let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
@@ -104,8 +104,8 @@ class ThreadDataSource: FetchedDataSource {
     private var threadTagObservers = [String: AwfulNewThreadTagObserver]()
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Thread", forIndexPath: indexPath) as ThreadCell
-        let thread = itemAtIndexPath(indexPath) as Thread
+        let cell = tableView.dequeueReusableCellWithIdentifier("Thread", forIndexPath: indexPath) as! ThreadCell
+        let thread = itemAtIndexPath(indexPath) as! Thread
         cell.setLongPressTarget(self, action: "showThreadActions:")
         
         cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
@@ -119,7 +119,7 @@ class ThreadDataSource: FetchedDataSource {
                     let threadID = thread.threadID
                     threadTagObservers[threadID] = AwfulNewThreadTagObserver(imageName: imageName) { [unowned self] image in
                         if let indexPath = tableView.indexPathForCell(cell) {
-                            let thread = self.itemAtIndexPath(indexPath) as Thread
+                            let thread = self.itemAtIndexPath(indexPath) as! Thread
                             if thread.threadID == threadID {
                                 cell.tagImageView.image = image
                             }
@@ -182,7 +182,7 @@ class ThreadDataSource: FetchedDataSource {
     @objc private func showThreadActions(cell: ThreadCell) {
         let tableView: UITableView = cell.nearestSuperviewOfDeclaredType()
         if let indexPath = tableView.indexPathForCell(cell) {
-            let thread = itemAtIndexPath(indexPath) as Thread
+            let thread = itemAtIndexPath(indexPath) as! Thread
             showActionsForThread(thread, forTableView: tableView)
         }
     }

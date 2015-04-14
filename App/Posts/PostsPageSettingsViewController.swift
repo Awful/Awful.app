@@ -85,7 +85,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     
     // MARK: UIAdaptivePresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
     

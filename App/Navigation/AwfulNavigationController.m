@@ -17,6 +17,9 @@
 
 @implementation AwfulNavigationController
 
+@dynamic navigationBar;
+@dynamic toolbar;
+
 // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
 
 - (id)init

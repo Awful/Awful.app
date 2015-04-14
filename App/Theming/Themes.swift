@@ -33,7 +33,7 @@ import UIKit
     
     /// The name of the theme, suitable for presentation.
     var descriptiveName: String {
-        return (dictionary["descriptiveName"] as String?) ?? name
+        return (dictionary["descriptiveName"] as! String?) ?? name
     }
     
     /// A color representative of the theme, suitable for presentation.
@@ -43,12 +43,12 @@ import UIKit
     
     /// The ID of the forum for which the theme is designed, or nil if there was no forum in mind.
     var forumID: String? {
-        return dictionary["relevantForumID"] as String?
+        return dictionary["relevantForumID"] as! String?
     }
     
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     var keyboardAppearance: UIKeyboardAppearance {
-        let appearance = (dictionary["keyboardAppearance"] as String?) ?? parent?["keyboardAppearance"] ?? "default"
+        let appearance = (dictionary["keyboardAppearance"] as! String?) ?? parent?["keyboardAppearance"] ?? "default"
         switch appearance {
         case "Dark", "dark":
             return .Dark
@@ -63,7 +63,7 @@ import UIKit
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
-        if let style = (dictionary["scrollIndicatorStyle"] as String?) ?? parent?["scrollIndicatorStyle"] {
+        if let style = (dictionary["scrollIndicatorStyle"] as! String?) ?? parent?["scrollIndicatorStyle"] {
             switch style {
             case "Dark", "dark":
                 return .Black
@@ -98,12 +98,12 @@ import UIKit
     /// The named theme attribute as a string.
     subscript(key: String) -> String? {
         @objc(stringNamed:) get {
-            if let value = (dictionary[key] as String?) ?? parent?[key] {
+            if let value = (dictionary[key] as! String?) ?? parent?[key] {
                 if key.hasSuffix("CSS") {
                     let URL = NSBundle.mainBundle().URLForResource(value, withExtension: nil)!
                     var error: NSError?
                     if let CSS = NSString(contentsOfURL: URL, usedEncoding: nil, error: &error) {
-                        return CSS
+                        return CSS as String
                     } else {
                         fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)")
                     }
@@ -162,12 +162,12 @@ private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
 
 private let bundledThemes: [String: Theme] = {
     let URL = NSBundle.mainBundle().URLForResource("Themes", withExtension: "plist")!
-    let plist = NSDictionary(contentsOfURL: URL) as [String: AnyObject]
+    let plist = NSDictionary(contentsOfURL: URL) as! [String: AnyObject]
     
     var themes = [String: Theme]()
     
     for (name, dictionary) in plist {
-        themes[name] = Theme(name: name, dictionary: dictionary as [String: AnyObject])
+        themes[name] = Theme(name: name, dictionary: dictionary as! [String: AnyObject])
     }
     
     for (name, var theme) in themes {

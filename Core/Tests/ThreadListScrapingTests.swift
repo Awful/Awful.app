@@ -11,14 +11,14 @@ final class ThreadListScrapingTests: ScrapingTestCase {
     }
     
     func testAskTellThreadList() {
-        let scraper = scrapeFixtureNamed("showthread-asktell") as AwfulThreadListScraper
-        let stupidQuestions = scraper.threads.first as Thread
+        let scraper = scrapeFixtureNamed("showthread-asktell") as! AwfulThreadListScraper
+        let stupidQuestions = scraper.threads.first as! Thread
         let askTag = stupidQuestions.secondaryThreadTag!
         XCTAssert(askTag.imageName == "ama")
     }
     
     func testBookmarkedThreadList() {
-        let scraper = scrapeFixtureNamed("bookmarkthreads") as AwfulThreadListScraper
+        let scraper = scrapeFixtureNamed("bookmarkthreads") as! AwfulThreadListScraper
         let scrapedThreads = scraper.threads
         XCTAssert(scrapedThreads.count == 11)
         XCTAssert(scrapedThreads.count == fetchAll(Thread.self, inContext: managedObjectContext).count)
@@ -61,7 +61,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
     }
     
     func testDebateAndDiscussionThreadList() {
-        let scraper = scrapeFixtureNamed("forumdisplay") as AwfulThreadListScraper
+        let scraper = scrapeFixtureNamed("forumdisplay") as! AwfulThreadListScraper
         let scrapedThreads = scraper.threads
         XCTAssert(scrapedThreads.count == 40)
         let allThreads = fetchAll(Thread.self, inContext: managedObjectContext)
@@ -117,7 +117,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
             "WYA",
             "XyloJW",
             "Zikan"])
-        let tags = debateAndDiscussion.threadTags.array as [ThreadTag]
+        let tags = debateAndDiscussion.threadTags.array as! [ThreadTag]
         XCTAssert(tags.count == 106)
         let firstTag = tags.first!
         XCTAssert(firstTag.threadTagID == "357")
@@ -166,7 +166,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(discussion.forums.count == allForums.count)
         let games = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name = 'Games'"))!
         XCTAssert(games.childForums.count == 1)
-        let letsPlay = games.childForums.anyObject() as Forum
+        let letsPlay = games.childForums.anyObject() as! Forum
         XCTAssert(letsPlay.name == "Let's Play!")
     }
     

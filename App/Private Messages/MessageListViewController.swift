@@ -134,12 +134,12 @@ final class MessageListViewController: AwfulTableViewController {
 
 extension MessageListViewController: UITableViewDelegate {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let message = dataSource.itemAtIndexPath(indexPath) as PrivateMessage
+        let message = dataSource.itemAtIndexPath(indexPath) as! PrivateMessage
         showMessage(message)
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        let cell = cell as MessageCell
+        let cell = cell as! MessageCell
         cell.backgroundColor = theme["listBackgroundColor"]
         cell.senderLabel.textColor = theme["listTextColor"]
         let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleSubheadline)
@@ -172,7 +172,7 @@ extension MessageListViewController: UIStateRestoring {
     override func decodeRestorableStateWithCoder(coder: NSCoder) {
         super.decodeRestorableStateWithCoder(coder)
         
-        composeViewController = coder.decodeObjectForKey(ComposeViewControllerKey) as MessageComposeViewController?
+        composeViewController = coder.decodeObjectForKey(ComposeViewControllerKey) as! MessageComposeViewController?
         composeViewController?.delegate = self
     }
 }
@@ -212,8 +212,8 @@ final class MessagesDataSource: FetchedDataSource {
     private var threadTagObservers = [String: AwfulNewThreadTagObserver]()
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let message = itemAtIndexPath(indexPath) as PrivateMessage
-        let cell = tableView.dequeueReusableCellWithIdentifier("Message", forIndexPath: indexPath) as MessageCell
+        let message = itemAtIndexPath(indexPath) as! PrivateMessage
+        let cell = tableView.dequeueReusableCellWithIdentifier("Message", forIndexPath: indexPath) as! MessageCell
         
         cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
         if cell.showsTag {
@@ -226,7 +226,7 @@ final class MessagesDataSource: FetchedDataSource {
                     let messageID = message.messageID
                     threadTagObservers[messageID] = AwfulNewThreadTagObserver(imageName: imageName) { [unowned self] image in
                         if let indexPath = tableView.indexPathForCell(cell) {
-                            let message = self.itemAtIndexPath(indexPath) as PrivateMessage
+                            let message = self.itemAtIndexPath(indexPath) as! PrivateMessage
                             if message.messageID == messageID {
                                 cell.tagImageView.image = image
                             }
@@ -292,7 +292,7 @@ final class MessagesDataSource: FetchedDataSource {
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            let message = itemAtIndexPath(indexPath) as PrivateMessage
+            let message = itemAtIndexPath(indexPath) as! PrivateMessage
             deletionDelegate?.deleteMessage(message)
         }
     }

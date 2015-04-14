@@ -47,7 +47,7 @@ final class CompositionMenuTree: NSObject {
     private var selectedTextViewRect: CGRect {
         let fallback = textView.bounds
         if let selection = textView.selectedTextRange {
-            return (textView.selectionRectsForRange(selection) as [UITextSelectionRect])
+            return (textView.selectionRectsForRange(selection) as! [UITextSelectionRect])
                 .map { $0.rect }
                 .reduce { CGRectUnion($0, $1) }
                 ?? fallback
@@ -122,18 +122,18 @@ final class CompositionMenuTree: NSObject {
 
 extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        if viewController == (navigationController.viewControllers as [UIViewController]).first {
+        if viewController == (navigationController.viewControllers as! [UIViewController]).first {
             viewController.navigationItem.title = "Insert Image"
         }
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        if let edited = info[UIImagePickerControllerEditedImage] as UIImage? {
+        if let edited = info[UIImagePickerControllerEditedImage] as! UIImage? {
             // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
             insertImage(edited)
         } else {
-            let original = info[UIImagePickerControllerOriginalImage] as UIImage
-            insertImage(original, withAssetURL: (info[UIImagePickerControllerReferenceURL] as NSURL))
+            let original = info[UIImagePickerControllerOriginalImage] as! UIImage
+            insertImage(original, withAssetURL: (info[UIImagePickerControllerReferenceURL] as! NSURL))
         }
         picker.dismissViewControllerAnimated(true) {
             self.textView.becomeFirstResponder()
@@ -254,12 +254,12 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
         return URL
     case let (.Some(host), .Some(path)) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
         return URL
-    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && countElements(path) > 1:
+    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && count(path) > 1:
         if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true) {
-            let videoID = URL.pathComponents![1] as String
+            let videoID = URL.pathComponents![1] as! String
             components.host = "www.youtube.com"
             components.path = "/watch"
-            var queryItems = components.queryItems as [NSURLQueryItem]? ?? [NSURLQueryItem]()
+            var queryItems = components.queryItems as! [NSURLQueryItem]? ?? [NSURLQueryItem]()
             queryItems.insert(NSURLQueryItem(name: "v", value: videoID), atIndex: 0)
             components.queryItems = queryItems
             return components.URL
@@ -280,7 +280,7 @@ private func linkifySelection(tree: CompositionMenuTree) {
     let textView = tree.textView
     if let selectionRange = textView.selectedTextRange {
         let selection: NSString = textView.textInRange(selectionRange)
-        let matches = detector.matchesInString(selection, options: nil, range: NSRange(location: 0, length: selection.length)) as [NSTextCheckingResult]
+        let matches = detector.matchesInString(selection as String, options: nil, range: NSRange(location: 0, length: selection.length)) as! [NSTextCheckingResult]
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
                 return wrapSelectionInTag("[url]")(tree: tree)
@@ -320,8 +320,8 @@ private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
     var selectedRange = textView.selectedRange
     
     if let selection = textView.selectedTextRange {
-        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end), withText: closingTag)
-        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start), withText: tagspec)
+        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end), withText: closingTag as String)
+        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start), withText: tagspec as String)
     }
     
     if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {

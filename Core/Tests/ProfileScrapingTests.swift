@@ -11,7 +11,7 @@ final class ProfileScrapingTests: ScrapingTestCase {
     }
     
     func testWithAvatarAndText() {
-        let scraper = scrapeFixtureNamed("profile") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile") as! ProfileScraper
         XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         let pokeyman = scraper.profile
         XCTAssert(pokeyman.user.userID == "106125")
@@ -29,7 +29,7 @@ final class ProfileScrapingTests: ScrapingTestCase {
     }
     
     func testWithAvatarAndGangTag() {
-        let scraper = scrapeFixtureNamed("profile2") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile2") as! ProfileScraper
         let ronald = scraper.profile
         XCTAssert(ronald.location! == "San Francisco")
         XCTAssert(ronald.user.customTitleHTML!.rangeOfString("safs/titles") != nil)
@@ -38,7 +38,7 @@ final class ProfileScrapingTests: ScrapingTestCase {
     }
     
     func testWithFunkyText() {
-        let scraper = scrapeFixtureNamed("profile3") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile3") as! ProfileScraper
         let rinkles = scraper.profile.user
         XCTAssert(rinkles.customTitleHTML!.rangeOfString("<i>") != nil)
         XCTAssert(rinkles.customTitleHTML!.rangeOfString("I'm getting at is") != nil)
@@ -46,19 +46,19 @@ final class ProfileScrapingTests: ScrapingTestCase {
     }
     
     func testWithNoAvatarOrTitle() {
-        let scraper = scrapeFixtureNamed("profile4") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile4") as! ProfileScraper
         let crypticEdge = scraper.profile.user
         XCTAssert(crypticEdge.customTitleHTML!.rangeOfString("<br") != nil)
     }
     
     func testStupidNewbie() {
-        let scraper = scrapeFixtureNamed("profile5") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile5") as! ProfileScraper
         let newbie = scraper.profile.user
         XCTAssert(newbie.customTitleHTML!.rangeOfString("newbie.gif") != nil)
     }
     
     func testWithGangTagButNoAvatar() {
-        let scraper = scrapeFixtureNamed("profile6") as ProfileScraper
+        let scraper = scrapeFixtureNamed("profile6") as! ProfileScraper
         let gripper = scraper.profile.user
         XCTAssert(gripper.customTitleHTML!.rangeOfString("i am winner") != nil)
         XCTAssert(gripper.customTitleHTML!.rangeOfString("tccburnouts.png") != nil)

@@ -42,7 +42,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         popoverPresentationController!.delegate = self
     }
     
-    convenience override init() {
+    convenience init() {
         self.init(nibName: "InAppActionSheet", bundle: nil)
     }
     
@@ -72,7 +72,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     }
     
     private func titleDidChange() {
-        if countElements(title ?? "") == 0 {
+        if count(title ?? "") == 0 {
             if headerHeightConstraint == nil {
                 let constraint = NSLayoutConstraint(item: headerBackground, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0)
                 headerBackground.addConstraint(constraint)
@@ -123,7 +123,7 @@ extension InAppActionViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let item = items[indexPath.item]
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as AwfulIconActionCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as! AwfulIconActionCell
         cell.titleLabel.text = item.title
         cell.titleLabel.textColor = theme["sheetTextColor"]
         cell.iconImageView.image = item.icon
@@ -134,7 +134,7 @@ extension InAppActionViewController: UICollectionViewDataSource, UICollectionVie
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let item = items[indexPath.item]
         dismissViewControllerAnimated(true, completion: item.action)
     }
@@ -145,11 +145,11 @@ private let cellIdentifier = "Cell"
 
 extension InAppActionViewController: UIPopoverPresentationControllerDelegate {
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController!) -> UIModalPresentationStyle {
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
     
-    func prepareForPopoverPresentation(popover: UIPopoverPresentationController!) {
+    func prepareForPopoverPresentation(popover: UIPopoverPresentationController) {
         if let block = popoverPositioningBlock {
             var sourceRect = popover.sourceRect
             var sourceView: UIView? = popover.sourceView
@@ -159,7 +159,7 @@ extension InAppActionViewController: UIPopoverPresentationControllerDelegate {
         }
     }
     
-    func popoverPresentationController(popover: UIPopoverPresentationController!, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
+    func popoverPresentationController(popover: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
         if let block = popoverPositioningBlock {
             block(sourceRect: rect, sourceView: view)
         }
