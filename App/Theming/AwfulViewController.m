@@ -83,7 +83,6 @@ static void CommonInit(UIViewController *self)
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
     self.visible = YES;
 }
 
