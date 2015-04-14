@@ -9,7 +9,7 @@ final class MessageListViewController: AwfulTableViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .Plain)
+        super.init(nibName: nil, bundle: nil)
         
         title = "Private Messages"
         
