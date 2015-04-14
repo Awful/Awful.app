@@ -34,7 +34,7 @@
 /**
  * An AwfulTableViewController is a thin customization of UITableViewController that extends AwfulTheme support.
  */
-@interface AwfulTableViewController : UITableViewController 
+@interface AwfulTableViewController : UITableViewController
 
 /**
  * The theme to use for the view controller. Defaults to `[AwfulTheme currentTheme]`.

@@ -7,7 +7,7 @@
 
 @interface SettingsViewController : AwfulTableViewController
 
-- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 

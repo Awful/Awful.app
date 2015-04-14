@@ -105,9 +105,15 @@ static void CommonInit(UIViewController *self)
     BOOL _viewIsLoading;
 }
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        CommonInit(self);
+    }
+    return self;
+}
+
+- (instancetype)initWithStyle:(UITableViewStyle)style {
+    if ((self = [super initWithStyle:style])) {
         CommonInit(self);
     }
     return self;

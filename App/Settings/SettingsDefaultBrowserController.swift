@@ -5,19 +5,13 @@
 final class SettingsDefaultBrowserController: AwfulTableViewController {
     private var selectedIndexPath: NSIndexPath = selectedBrowserIndexPath()
     
-    // This init override stupidity brought to you by UITableViewController's poor initializer behaviour. It's fixed in the iOS 8.3 betas. Basically we want a grouped table view that we can get by calling init().
-    
-    override init(style: UITableViewStyle) {
+    init() {
         super.init(style: .Grouped)
         title = "Default Browser"
     }
     
     override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nibName, bundle: bundle)
-    }
-    
-    convenience init() {
-        self.init(style: .Grouped)
     }
 
     required init(coder: NSCoder) {

@@ -11,7 +11,7 @@ final class BookmarkListViewController: ThreadListViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         
         title = "Bookmarks"
         tabBarItem.image = UIImage(named: "bookmarks")

@@ -33,17 +33,17 @@
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    return [self initWithManagedObjectContext:nil];
+    return [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
 }
 
 - (instancetype)initWithStyle:(UITableViewStyle)style
 {
-    return [self initWithManagedObjectContext:nil];
+    return [super initWithStyle:style];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    return [self initWithManagedObjectContext:nil];
+    return [super initWithCoder:coder];
 }
 
 - (NSArray *)sections

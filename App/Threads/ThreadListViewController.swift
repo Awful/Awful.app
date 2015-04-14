@@ -18,8 +18,8 @@ class ThreadListViewController: AwfulTableViewController {
         fatalError("subclass implementation please")
     }
     
-    override init(nibName: String?, bundle: NSBundle?) {
-        super.init(nibName: nibName, bundle: bundle)
+    init() {
+        super.init(nibName: nil, bundle: nil)
         makeNewDataSource()
     }
 
