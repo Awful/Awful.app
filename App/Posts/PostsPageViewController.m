@@ -857,6 +857,14 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         [self presentViewController:[report enclosingNavigationController] animated:YES completion:nil];
     }]];
     
+    if (self.author) {
+        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeShowInThread action:^{
+            // This will add the thread to the navigation stack, giving us thread->author->thread.
+            NSString *url = [NSString stringWithFormat:@"awful://posts/%@", post.postID];
+            [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
+        }]];
+    }
+    
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
         NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];

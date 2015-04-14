@@ -98,6 +98,12 @@
             themeKey = @"sendPMIconColor";
             break;
             
+        case AwfulIconActionItemTypeShowInThread:
+            title = @"Show in\nThread";
+            icon = [UIImage imageNamed:@"single-users-posts"];
+            themeKey = @"singleUserIconColor";
+            break;
+            
         case AwfulIconActionItemTypeSingleUsersPosts:
             title = @"Just Their Posts";
             icon = [UIImage imageNamed:@"single-users-posts"];
