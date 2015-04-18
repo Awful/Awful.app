@@ -56,7 +56,7 @@ final class AcknowledgementsViewController: AwfulViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if navigationController == nil {
+        if navigationController?.viewControllers?.first as? UIViewController == self {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "didTapDone")
         } else {
             navigationItem.rightBarButtonItem = nil
