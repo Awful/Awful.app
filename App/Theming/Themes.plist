@@ -224,6 +224,10 @@
 			<string>#0f4f70</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#151515</string>
+			<key>toolbarTextColor</key>
+			<string>#1682b2</string>
+			<key>toolbarTintColor</key>
+			<string>#151515</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
