@@ -208,7 +208,7 @@ extension Theme {
     }
     
     class func themesForForum(forum: Forum) -> [Theme] {
-        let themes = bundledThemes.values.filter { $0.forumID == forum.forumID }
+        let themes = bundledThemes.values.filter { $0.forumID == forum.forumID || $0.forumID == nil }
         return sorted(themes)
     }
 }
