@@ -133,7 +133,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             insertImage(edited)
         } else {
             let original = info[UIImagePickerControllerOriginalImage] as! UIImage
-            insertImage(original, withAssetURL: (info[UIImagePickerControllerReferenceURL] as! NSURL))
+            insertImage(original, withAssetURL: info[UIImagePickerControllerReferenceURL] as! NSURL?)
         }
         picker.dismissViewControllerAnimated(true) {
             self.textView.becomeFirstResponder()
