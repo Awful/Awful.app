@@ -145,6 +145,7 @@ final class ReplyWorkspace: NSObject {
                 self.completion?(saveDraft: false, didSucceed: true)
             }
         }
+        self.submitProgress = submitProgress
         
         progressView.stopBlock = { _ in
             submitProgress.cancel() }
@@ -158,6 +159,7 @@ final class ReplyWorkspace: NSObject {
             }
         }
     }
+    private var submitProgress: NSProgress?
     
     private func saveTextToDraft() {
         draft.text = compositionViewController.textView.attributedText
