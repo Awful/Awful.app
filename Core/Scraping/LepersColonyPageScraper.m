@@ -97,6 +97,10 @@
         
         [infoDictionaries addObject:info];
     }
+
+    if (postKeys.count == 0)
+        return;
+
     NSArray *posts = [Post objectsForKeys:postKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *postsByKey = [NSDictionary dictionaryWithObjects:posts forKeys:[posts valueForKey:@"objectKey"]];
     NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
