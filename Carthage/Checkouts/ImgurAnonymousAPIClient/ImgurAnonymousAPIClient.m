@@ -210,8 +210,29 @@ static const CGFloat ArbitraryMaximumPixelWidthToAvoidRunningOutOfMemoryAndCrash
     __block NSError *underlyingError;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [library assetForURL:assetURL resultBlock:^(ALAsset *asset) {
-            representation = asset.defaultRepresentation;
-            dispatch_semaphore_signal(flag);
+            if (asset) {
+                representation = asset.defaultRepresentation;
+                dispatch_semaphore_signal(flag);
+            } else {
+                // iOS 8 workaround for photo stream from http://stackoverflow.com/a/26526199/1063051
+                [library enumerateGroupsWithTypes:ALAssetsGroupPhotoStream usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                    [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                        if ([result.defaultRepresentation.url isEqual:assetURL]) {
+                            representation = result.defaultRepresentation;
+                            *stop = YES;
+                        }
+                    }];
+                    if (asset) {
+                        *stop = YES;
+                    }
+                    if (!group) {
+                        dispatch_semaphore_signal(flag);
+                    }
+                } failureBlock:^(NSError *blockError) {
+                    underlyingError = blockError;
+                    dispatch_semaphore_signal(flag);
+                }];
+            }
         } failureBlock:^(NSError *error) {
             underlyingError = error;
             dispatch_semaphore_signal(flag);
@@ -475,9 +496,37 @@ static BOOL FilenameSuggestsJPEG(NSString *filename)
     _library = [ALAssetsLibrary new];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [_library assetForURL:self.assetURL resultBlock:^(ALAsset *asset) {
-            _assetRepresentation = self.representationUTI ? [asset representationForUTI:self.representationUTI] : asset.defaultRepresentation;
-            self.streamStatus = NSStreamStatusOpen;
-            dispatch_semaphore_signal(flag);
+            if (asset) {
+                _assetRepresentation = self.representationUTI ? [asset representationForUTI:self.representationUTI] : asset.defaultRepresentation;
+                self.streamStatus = NSStreamStatusOpen;
+                dispatch_semaphore_signal(flag);
+            } else {
+                // iOS 8 workaround for photo stream from http://stackoverflow.com/a/26526199/1063051
+                [_library enumerateGroupsWithTypes:ALAssetsGroupPhotoStream usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                    [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *asset, NSUInteger index, BOOL *stop) {
+                        if ([asset.defaultRepresentation.url isEqual:self.assetURL]) {
+                            if (self.representationUTI) {
+                                _assetRepresentation = [asset representationForUTI:self.representationUTI];
+                            }
+                            if (!_assetRepresentation) {
+                                _assetRepresentation = asset.defaultRepresentation;
+                            }
+                            self.streamStatus = NSStreamStatusOpen;
+                            *stop = YES;
+                        }
+                    }];
+                    if (asset) {
+                        *stop = YES;
+                    }
+                    if (!group) {
+                        dispatch_semaphore_signal(flag);
+                    }
+                } failureBlock:^(NSError *blockError) {
+                    self.streamStatus = NSStreamStatusError;
+                    self.streamError = blockError;
+                    dispatch_semaphore_signal(flag);
+                }];
+            }
         } failureBlock:^(NSError *error) {
             self.streamStatus = NSStreamStatusError;
             self.streamError = error;
