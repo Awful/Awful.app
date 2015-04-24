@@ -45,15 +45,16 @@ final class CompositionMenuTree: NSObject {
     }
     
     private var selectedTextViewRect: CGRect {
-        let fallback = textView.bounds
         if let selection = textView.selectedTextRange {
-            return (textView.selectionRectsForRange(selection) as! [UITextSelectionRect])
-                .map { $0.rect }
-                .reduce { CGRectUnion($0, $1) }
-                ?? fallback
-        } else {
-            return fallback
+            if selection.empty {
+                return textView.caretRectForPosition(selection.end)
+            } else if let rects = textView.selectionRectsForRange(selection) as? [UITextSelectionRect] where !rects.isEmpty {
+                return rects
+                    .map { $0.rect }
+                    .reduce(CGRect.nullRect) { $0.rectByUnion($1) }
+            }
         }
+        return textView.bounds
     }
     
     private func popToRootItems() {
