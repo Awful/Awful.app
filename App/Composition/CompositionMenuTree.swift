@@ -219,6 +219,7 @@ private let imageItems = [
 
 private let formattingItems = [
     MenuItem(title: "[b]", action: wrapSelectionInTag("[b]")),
+    MenuItem(title: "[i]", action: wrapSelectionInTag("[i]")),
     MenuItem(title: "[s]", action: wrapSelectionInTag("[s]")),
     MenuItem(title: "[u]", action: wrapSelectionInTag("[u]")),
     MenuItem(title: "[spoiler]", action: wrapSelectionInTag("[spoiler]")),
