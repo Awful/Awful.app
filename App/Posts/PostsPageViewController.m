@@ -771,9 +771,11 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     if ([post.author.username isEqualToString:[AwfulSettings sharedSettings].username]) {
         possessiveUsername = @"Your";
     }
+    
+    /// Filled in once the action popover is presented.
+    __block CGRect popoverSourceRect;
+    __block UIView *popoverSourceView;
 
-    InAppActionViewController *actionViewController = [InAppActionViewController new];
-    actionViewController.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     NSMutableArray *items = [NSMutableArray new];
     __weak __typeof__(self) weakSelf = self;
     
@@ -799,8 +801,8 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         };
         [self presentViewController:activityViewController animated:NO completion:nil];
         UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
-        popover.sourceView = actionViewController.popoverPresentationController.sourceView;
-        popover.sourceRect = actionViewController.popoverPresentationController.sourceRect;
+        popover.sourceView = popoverSourceView;
+        popover.sourceRect = popoverSourceRect;
     }];
     shareItem.title = @"Copy or Share URL";
     [items addObject:shareItem];
@@ -865,11 +867,15 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         }]];
     }
     
+    InAppActionViewController *actionViewController = [InAppActionViewController new];
+    actionViewController.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
         NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
-        *sourceView = self.webView;
+        popoverSourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        *sourceRect = popoverSourceRect;
+        popoverSourceView = self.webView;
+        *sourceView = popoverSourceView;
     };
     [self presentViewController:actionViewController animated:YES completion:nil];
 }
