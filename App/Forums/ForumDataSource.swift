@@ -90,7 +90,19 @@ final class ForumFavoriteDataSource: FetchedDataSource {
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             let metadata = itemAtIndexPath(indexPath) as! ForumMetadata
-            metadata.favorite = false
+            userDrivenChange {
+                let sections = self.fetchedResultsController.sections as? [NSFetchedResultsSectionInfo]
+                let deleteEntireSection = sections?[indexPath.section].numberOfObjects == 1
+                
+                metadata.favorite = false
+                metadata.managedObjectContext?.processPendingChanges()
+                
+                if deleteEntireSection {
+                    self.delegate?.dataSource?(self, didRemoveSections: NSIndexSet(index: indexPath.section))
+                } else {
+                    self.delegate?.dataSource?(self, didRemoveItemsAtIndexPaths: [indexPath])
+                }
+            }
         }
     }
     

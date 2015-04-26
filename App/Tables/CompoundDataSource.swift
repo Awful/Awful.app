@@ -4,22 +4,14 @@
 
 final class CompoundDataSource: NSObject {
     private let dataSources = NSMutableOrderedSet()
-    private var startingGlobalSections = [Int]()
     
     var numberOfSections: Int {
-        get {
-            if let lastStart = startingGlobalSections.last {
-                return lastStart + (dataSources.lastObject as! DataSource).numberOfSections
-            } else {
-                return 0
-            }
-        }
+        return (dataSources.array as! [DataSource]).reduce(0) { $0 + $1.numberOfSections }
     }
 
     func addDataSource(dataSource: DataSource) {
         assert(!dataSources.containsObject(dataSource), "data source \(dataSource) is already here")
         let firstNewGlobalSection = numberOfSections
-        startingGlobalSections.append(firstNewGlobalSection)
         dataSources.addObject(dataSource)
         dataSource.delegate = self
         let newSections = NSIndexSet(indexesInRange: NSRange(location: firstNewGlobalSection, length: dataSource.numberOfSections))
@@ -29,7 +21,7 @@ final class CompoundDataSource: NSObject {
     func removeDataSource(dataSource: DataSource) {
         let index = dataSources.indexOfObject(dataSource)
         assert(index != NSNotFound, "data source \(dataSource) was never here")
-        let firstOldGlobalSection = startingGlobalSections.removeAtIndex(index)
+        let firstOldGlobalSection = (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
         dataSources.removeObjectAtIndex(index)
         dataSource.delegate = nil
         let oldSections = NSIndexSet(indexesInRange: NSRange(location: firstOldGlobalSection, length: dataSource.numberOfSections))
@@ -52,17 +44,19 @@ extension CompoundDataSource {
     private func dataSourceForGlobalSection(globalSection: Int) -> (DataSource, localSection: Int) {
         assert(globalSection < numberOfSections)
         let index = nearestStartingGlobalSectionForGlobalSection(globalSection)
-        return (dataSources.objectAtIndex(index) as! DataSource, localSection: globalSection - startingGlobalSections[index])
+        let sectionsBeforeDataSource = (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
+        return (dataSources.objectAtIndex(index) as! DataSource, localSection: globalSection - sectionsBeforeDataSource)
     }
     
     private func nearestStartingGlobalSectionForGlobalSection(globalSection: Int) -> Int {
-        for (i, section) in enumerate(self.startingGlobalSections) {
-            if section > globalSection {
-                return i - 1
+        var sectionsSoFar = 0
+        for (i, dataSource) in enumerate(dataSources.array as! [DataSource]) {
+            sectionsSoFar += dataSource.numberOfSections
+            if sectionsSoFar > globalSection {
+                return i
             }
-            // Don't try to return early here if section == globalSection. Some data sources may have zero sections and we need to skip over those.
         }
-        return startingGlobalSections.count - 1
+        return 0
     }
     
     private func dataSourceForGlobalIndexPath(indexPath: NSIndexPath) -> (DataSource, localIndexPath: NSIndexPath) {
@@ -73,7 +67,7 @@ extension CompoundDataSource {
     private func startingGlobalSectionForDataSource(dataSource: DataSource) -> Int {
         let index = dataSources.indexOfObject(dataSource)
         assert(index != NSNotFound)
-        return startingGlobalSections[index]
+        return (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
     }
     
     private func globalize(localDataSource: DataSource, _ localIndexPaths: [NSIndexPath]) -> [NSIndexPath] {
@@ -104,13 +98,6 @@ extension CompoundDataSource {
         } else {
             let nextDataSource = dataSources.objectAtIndex(index + 1) as! DataSource
             return startingGlobalSectionForDataSource(nextDataSource) - startingGlobalSectionForDataSource(localDataSource)
-        }
-    }
-    
-    private func shiftStartingGlobalSectionsStartingAfterDataSource(localDataSource: DataSource, by: Int) {
-        let index = dataSources.indexOfObject(localDataSource)
-        for var i = index + 1; i < startingGlobalSections.count; i++ {
-            startingGlobalSections[i] += by
         }
     }
 }
@@ -217,6 +204,7 @@ extension CompoundDataSource: DataSourceDelegate {
     }
     
     func dataSource(localDataSource: DataSource, didRefreshItemsAtIndexPaths localIndexPaths: [NSIndexPath]) {
+        let sectionCounts = (dataSources.array as! [DataSource]).map { $0.numberOfSections }
         delegate?.dataSource?(self, didRefreshItemsAtIndexPaths: globalize(localDataSource, localIndexPaths))
     }
 
@@ -225,12 +213,10 @@ extension CompoundDataSource: DataSourceDelegate {
     }
     
     func dataSource(localDataSource: DataSource, didInsertSections localSections: NSIndexSet) {
-        shiftStartingGlobalSectionsStartingAfterDataSource(localDataSource, by: localSections.count)
         delegate?.dataSource?(self, didInsertSections: globalize(localDataSource, localSections))
     }
     
     func dataSource(localDataSource: DataSource, didRemoveSections localSections: NSIndexSet) {
-        shiftStartingGlobalSectionsStartingAfterDataSource(localDataSource, by: -localSections.count)
         delegate?.dataSource?(self, didRemoveSections: globalize(localDataSource, localSections))
     }
     
