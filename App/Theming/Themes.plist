@@ -314,7 +314,7 @@
 			<key>listTextColor</key>
 			<string>#000000</string>
 			<key>listSeparatorColor</key>
-			<string>#0000</string>
+			<string>#000000</string>
 			<key>listBackgroundColor</key>
 			<string>#ffccff</string>
 			<key>listSelectedBackgroundColor</key>
