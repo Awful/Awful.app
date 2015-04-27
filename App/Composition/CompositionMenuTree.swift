@@ -18,6 +18,7 @@ final class CompositionMenuTree: NSObject {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "textViewDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: textView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "textViewDidEndEditing:", name: UITextViewTextDidEndEditingNotification, object: textView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "menuDidHide:", name: UIMenuControllerDidHideMenuNotification, object: nil)
     }
     
     deinit {
@@ -32,17 +33,13 @@ final class CompositionMenuTree: NSObject {
         UIMenuController.sharedMenuController().menuItems = nil
     }
     
-    private func startObservingMenuDidHide() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "menuDidHide:", name: UIMenuControllerDidHideMenuNotification, object: nil)
-    }
-    
-    private func stopObservingMenuDidHide() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIMenuControllerDidHideMenuNotification, object: nil)
-    }
-    
     @objc private func menuDidHide(note: NSNotification) {
-        popToRootItems()
+        if shouldPopWhenMenuHides {
+            popToRootItems()
+        }
     }
+    
+    private var shouldPopWhenMenuHides = true
     
     private var selectedTextViewRect: CGRect {
         if let selection = textView.selectedTextRange {
@@ -63,7 +60,7 @@ final class CompositionMenuTree: NSObject {
     }
     
     private func showSubmenu(submenu: [MenuItem]) {
-        stopObservingMenuDidHide()
+        shouldPopWhenMenuHides = false
         
         UIMenuController.sharedMenuController().menuItems = psItemsForMenuItems(submenu)
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
@@ -74,7 +71,7 @@ final class CompositionMenuTree: NSObject {
         }
         UIMenuController.sharedMenuController().setMenuVisible(true, animated: true)
         
-        startObservingMenuDidHide()
+        shouldPopWhenMenuHides = true
     }
     
     private func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
