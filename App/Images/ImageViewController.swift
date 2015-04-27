@@ -353,11 +353,11 @@ final class ImageViewController: UIViewController {
         
         // MARK: UIScrollViewDelegate
         
-        func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        @objc func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
             return imageView
         }
         
-        func scrollViewDidZoom(scrollView: UIScrollView) {
+        @objc func scrollViewDidZoom(scrollView: UIScrollView) {
             centerImageInScrollView()
             
             // Setting the scroll view zoom scale can trigger a didZoom delegate call, which can cause us to hide the overlay almost immediately after becoming visible. So check for a completed scroll view configuration too.
