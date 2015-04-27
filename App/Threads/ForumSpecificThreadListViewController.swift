@@ -61,20 +61,23 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     }
     
     private func refreshIfNecessary() {
-        if !AwfulForumsClient.sharedClient().reachable { return }
-        
-        if dataSource.numberOfSections == 0 || dataSource.tableView(tableView, numberOfRowsInSection: 0) == 0 {
-            return refresh()
+        if !AwfulForumsClient.sharedClient().reachable {
+            return
         }
         
-        if let threadTag = threadTag {
-            if AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum) {
-                return refresh()
-            }
-        } else {
-            if AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum) {
-                return refresh()
-            }
+        if dataSource.numberOfSections > 0 && dataSource.tableView(tableView, numberOfRowsInSection: 0) > 0 {
+            return
+        }
+        
+        if threadTag == nil && !AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum) {
+            return
+        } else if threadTag != nil && !AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum) {
+            return
+        }
+        
+        refresh()
+        if let refreshControl = refreshControl {
+            tableView.setContentOffset(CGPoint(x: 0, y: -refreshControl.bounds.height), animated: true)
         }
     }
     

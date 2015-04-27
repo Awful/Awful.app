@@ -96,6 +96,9 @@ final class BookmarkListViewController: ThreadListViewController {
         
         if tableView.numberOfRowsInSection(0) == 0 || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks() {
             refresh()
+            if let refreshControl = refreshControl {
+                tableView.setContentOffset(CGPoint(x: 0, y: -refreshControl.bounds.height), animated: true)
+            }
         }
     }
     
