@@ -27,7 +27,17 @@
     if (self.error) return;
     
     HTMLElement *body = [self.node firstNodeMatchingSelector:@"body"];
-    ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:body[@"data-thread"]];
+    NSString *threadID = body[@"data-thread"];
+    if (threadID == nil) {
+        // fixme: refactor to avoid duplication of error block.
+        self.error = [NSError errorWithDomain:AwfulCoreError.domain
+                                         code:AwfulCoreError.archivesRequired
+                                     userInfo:@{ NSLocalizedDescriptionKey: @"Viewing this content requires the archives upgrade." }];
+        return;
+        
+    }
+    
+    ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
     self.thread = [Thread objectForKey:threadKey inManagedObjectContext:self.managedObjectContext];
     ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
     Forum *forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
