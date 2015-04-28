@@ -849,8 +849,19 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                 self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
                 self.replyWorkspace.completion = self.replyCompletionBlock;
             }
-            [self.replyWorkspace quotePost:post];
-            [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
+            
+            __weak __typeof__(self) welf = self;
+            
+            [self.replyWorkspace quotePost:post completion:^(NSError *error) {
+                __typeof__(self) self = welf;
+                
+                if (error) {
+                    UIAlertController *alert = [UIAlertController alertWithNetworkError:error];
+                    [self presentViewController:alert animated:YES completion:nil];
+                } else {
+                    [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
+                }
+            }];
         }]];
     }
     

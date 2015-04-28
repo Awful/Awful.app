@@ -179,75 +179,33 @@ final class ReplyWorkspace: NSObject {
     }
     
     /// Append a quoted post to the reply.
-    func quotePost(post: Post) {
+    func quotePost(post: Post, completion: NSError? -> Void) {
         createCompositionViewController()
-        let textView = compositionViewController.textView
-        let font = textView.font
-        let textColor = textView.textColor
-        
-        let attachment = EllipsisTextAttachment()
-        textView.textStorage.replaceCharactersInRange(textView.selectedRange, withAttributedString: NSAttributedString(attachment: attachment))
-        
-        textView.font = font
-        textView.textColor = textColor
-        
-        if let selection = textView.selectedTextRange {
-            let afterPosition = textView.positionFromPosition(selection.end, offset: 1)
-            textView.selectedTextRange = textView.textRangeFromPosition(afterPosition, toPosition: afterPosition)
-        }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(UITextViewTextDidChangeNotification, object: textView)
-        
+
         AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] error, BBcode in
-            let textView = self?.compositionViewController.textView
-            var attachmentRange: NSRange?
-            textView?.textStorage.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, (textView!.text as NSString).length), options: nil) { value, range, stop in
-                if let value = value as? EllipsisTextAttachment {
-                    if value == attachment {
-                        attachmentRange = range
-                        stop.memory = true
+            if let textView = self?.compositionViewController.textView, var replacement = BBcode {
+                let selectedRange = textView.selectedTextRange ?? textView.textRangeFromPosition(textView.endOfDocument, toPosition: textView.endOfDocument)!
+                
+                // Yep. This is just a delight.
+                let precedingOffset = max(-2, textView.offsetFromPosition(selectedRange.start, toPosition: textView.beginningOfDocument))
+                if precedingOffset < 0 {
+                    let precedingStart = textView.positionFromPosition(selectedRange.start, offset: precedingOffset)
+                    let precedingRange = textView.textRangeFromPosition(precedingStart, toPosition: selectedRange.start)
+                    let preceding = textView.textInRange(precedingRange)
+                    if preceding != "\n\n" {
+                        if preceding.hasSuffix("\n") {
+                            replacement = "\n" + replacement
+                        } else {
+                            replacement = "\n\n" + replacement
+                        }
                     }
                 }
-            }
-            
-            func replaceWithString(string: String) {
-                if let range = attachmentRange {
-                    let start = textView!.positionFromPosition(textView!.beginningOfDocument, offset: range.location)!
-                    let end = textView!.positionFromPosition(start, offset: range.length)!
-                    let textRange = textView!.textRangeFromPosition(start, toPosition: end)
-                    textView!.replaceRange(textRange, withText: string)
-                }
-            }
-            
-            if let error = error {
-                let alert = UIAlertController(title: "Could Not Quote Post", error: error)
-                self?.viewController.presentViewController(alert, animated: true, completion: nil)
-                replaceWithString("")
                 
-            } else {
-                replaceWithString(BBcode)
+                textView.replaceRange(selectedRange, withText: replacement)
             }
+            
+            completion(error)
         }
-    }
-}
-
-private class EllipsisTextAttachment: NSTextAttachment {
-    override init(data: NSData?, ofType UTI: String?) {
-        super.init(data: data, ofType: UTI)
-        image = UIImage(named: "quote-ellipsis")
-    }
-    
-    convenience override init() {
-        // "Designated initializer" my ass.
-        self.init(data: nil, ofType: nil)
-    }
-
-    required init(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
-    }
-    
-    private override func encodeWithCoder(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
     }
 }
 
