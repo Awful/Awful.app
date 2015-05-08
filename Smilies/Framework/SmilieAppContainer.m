@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieAppContainer.h"
+@import UIKit;
 
 static NSString * const AppGroupIdentifier = @"group.com.awfulapp.SmilieKeyboard";
 
@@ -57,5 +58,5 @@ NSURL * SmilieKeyboardSharedContainerURL(void)
 
 BOOL SmilieKeyboardHasFullAccess(void)
 {
-    return [[NSFileManager defaultManager] isReadableFileAtPath:SmilieKeyboardSharedContainerURL().path];
+    return [UIPasteboard generalPasteboard] != nil;
 }
