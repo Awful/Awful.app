@@ -335,6 +335,9 @@ header {
 .action-button {
   color: #1682b2;
 }
+.awful-smile {
+  image-rendering: -webkit-crisp-edges;
+}
 .postbody a,
 [data-awful-linkified-image] {
   color: #1682b2;

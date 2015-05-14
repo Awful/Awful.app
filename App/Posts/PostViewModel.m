@@ -28,9 +28,7 @@
     RemoveEmptyEditedByParagraphs(document);
     UseHTML5VimeoPlayer(document);
     HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
-    if (![AwfulSettings sharedSettings].showImages) {
-        LinkifyNonSmileyImages(document);
-    }
+    ProcessImgTags(document, ![AwfulSettings sharedSettings].showImages);
     if (self.post.ignored) {
         MarkRevealIgnoredPostLink(document);
     }

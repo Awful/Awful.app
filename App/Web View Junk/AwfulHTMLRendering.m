@@ -21,15 +21,19 @@ void HighlightQuotesOfPostsByUserNamed(HTMLDocument *document, NSString *usernam
 
 static BOOL IsSmileyURL(NSURL*);
 
-void LinkifyNonSmileyImages(HTMLDocument *document)
+void ProcessImgTags(HTMLDocument *document, BOOL linkifyNonSmiles)
 {
     for (HTMLElement *img in [document nodesMatchingSelector:@"img"]) {
         NSURL *src = [NSURL URLWithString:img[@"src"]];
         if (!IsSmileyURL(src)) {
-            HTMLElement *link = [[HTMLElement alloc] initWithTagName:@"span" attributes:@{ @"data-awful-linkified-image": @"" }];
-            link.textContent = src.absoluteString;
-            NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
-            [imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:link];
+            if (linkifyNonSmiles) {
+                HTMLElement *link = [[HTMLElement alloc] initWithTagName:@"span" attributes:@{ @"data-awful-linkified-image": @"" }];
+                link.textContent = src.absoluteString;
+                NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
+                [imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:link];
+            }
+        } else {
+            [img toggleClass:@"awful-smile"];
         }
     }
 }

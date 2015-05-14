@@ -51,9 +51,7 @@
     HTMLDocument *document = [HTMLDocument documentWithString:originalHTML];
     RemoveSpoilerStylingAndEvents(document);
     UseHTML5VimeoPlayer(document);
-    if (![AwfulSettings sharedSettings].showImages) {
-        LinkifyNonSmileyImages(document);
-    }
+    ProcessImgTags(document, ![AwfulSettings sharedSettings].showImages);
     return [document firstNodeMatchingSelector:@"body"].innerHTML;
 }
 
