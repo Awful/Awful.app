@@ -103,19 +103,22 @@
 
 - (void)smilieKeyboard:(SmilieKeyboard *)keyboard didTapSmilie:(Smilie *)smilie
 {
-    if (SmilieKeyboardIsAwfulAppActive()) {
+    if (SmilieKeyboardIsAwfulAppActive() || !SmilieKeyboardHasFullAccess()) {
         [self.textDocumentProxy insertText:smilie.text];
     } else {
         [[UIPasteboard generalPasteboard] setData:smilie.imageData forPasteboardType:smilie.imageUTI];
         [keyboard.view flashMessage:[NSString stringWithFormat:@"Copied %@", smilie.text]];
     }
-    [smilie.managedObjectContext performBlock:^{
-        smilie.metadata.lastUsedDate = [NSDate date];
-        NSError *error;
-        if (![smilie.managedObjectContext save:&error]) {
-            NSLog(@"%s error saving last used date for smilie: %@", __PRETTY_FUNCTION__, error);
-        }
-    }];
+    
+    if (SmilieKeyboardHasFullAccess()) {
+        [smilie.managedObjectContext performBlock:^{
+            smilie.metadata.lastUsedDate = [NSDate date];
+            NSError *error;
+            if (![smilie.managedObjectContext save:&error]) {
+                NSLog(@"%s error saving last used date for smilie: %@", __PRETTY_FUNCTION__, error);
+            }
+        }];
+    }
 }
 
 - (void)smilieKeyboard:(SmilieKeyboard *)keyboard insertNumberOrDecimal:(NSString *)numberOrDecimal
