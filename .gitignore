@@ -1,9 +1,10 @@
 # Big, pointless HTMLReader cruft.
 /Carthage/Checkouts/HTMLReader/Tests/html5lib
 
-# API keys
-/CrashlyticsAPIKey.h
-/Xcode/crashlytics.sh
+# App Group and Entitlements private or auto-generated files
+app-group
+/App/Awful.entitlements
+/Smilies/Keyboard/Keyboard.entitlements
 
 # OS X and Xcode junk
 .DS_Store

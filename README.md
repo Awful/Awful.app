@@ -40,6 +40,8 @@ There are *optional* dependencies for building Awful. You only need them if you'
     3. In Terminal, install less: `npm install less -g` (prepend `sudo` to avoid permissions errors).
     4. Now build the Xcode project and the CSS files will be regenerated.
 
+Awful uses an App Group to communicate and share data with the Smilie Keyboard. Unfortunately, App Group identifiers must be unique, so I can't simply set it up and have everything work. By default, Awful builds without an App Group configured, which means that the Smilie Keyboard won't be able to download new smilies, remember recent smilies, or store favourite smilies. If you like, you can create an App Group in your iOS Developer account, then simply place the identifier in a file called `app-group` in the root of the repository. After a build and run, full keyboard functionality should be yours.
+
 There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Travis CI][].
 
 [![Build Status](https://travis-ci.org/Awful/Awful.app.png)](https://travis-ci.org/Awful/Awful.app)
