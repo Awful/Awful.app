@@ -1,9 +1,9 @@
 language: objective-c
-osx_image: xcode61
+osx_image: beta-xcode6.3
 before_install:
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 install: true # skip cocoapods; all dependencies are already in the repo
 script: make test
 notifications:
   email:
-    # - nolan@nolanw.ca
+    - nolan@nolanw.ca
