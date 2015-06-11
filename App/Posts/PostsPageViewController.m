@@ -728,6 +728,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 	if (!self.author) {
 		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
             PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:self.thread author:user];
+            postsView.restorationIdentifier = @"Just their posts";
             [postsView loadPage:1 updatingCache:YES];
             [self.navigationController pushViewController:postsView animated:YES];
         }]];
