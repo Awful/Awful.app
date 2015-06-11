@@ -3440,6 +3440,7 @@
 				1C0B86131B1801FB0088BE53 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1C3A145B19DFC5D10022C44C /* Build configuration list for PBXNativeTarget "SmilieExtractor" */ = {
 			isa = XCConfigurationList;
