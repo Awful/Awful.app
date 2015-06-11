@@ -1109,7 +1109,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.thread.objectKey forKey:ThreadKeyKey];
     [coder encodeInteger:self.page forKey:PageKey];
-    [coder encodeObject:self.author.objectID forKey:AuthorUserKeyKey];
+    [coder encodeObject:self.author.objectKey forKey:AuthorUserKeyKey];
     [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
