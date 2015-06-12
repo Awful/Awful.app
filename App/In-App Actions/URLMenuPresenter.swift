@@ -51,7 +51,13 @@ private enum _URLMenuPresenter {
                     }))
                     
                 case AwfulDefaultBrowserSafari:
-                    alert.addAction(UIAlertAction(title: "Open in Safari", style: .Default, handler: { _ in
+                    let title: String
+                    if canOpenInYouTube(linkURL) {
+                        title = "Open in YouTube"
+                    } else {
+                        title = "Open in Safari"
+                    }
+                    alert.addAction(UIAlertAction(title: title, style: .Default, handler: { _ in
                         UIApplication.sharedApplication().openURL(linkURL)
                         return
                     }))
@@ -180,6 +186,21 @@ private func chromifyURL(URL: NSURL) -> NSURL {
         components.scheme = "googlechromes"
     }
     return components.URL!
+}
+
+private func canOpenInYouTube(URL: NSURL) -> Bool {
+    let installed = UIApplication.sharedApplication().canOpenURL(NSURL(string:"youtube://")!)
+    let host = URL.host?.lowercaseString
+    let query = URL.query?.lowercaseString
+    let path = URL.path?.lowercaseString
+    if installed == true
+        && host?.hasSuffix("youtube.com") == true
+        && path?.hasPrefix("/watch") == true
+        && query?.hasPrefix("v=") == true {
+            
+        return true
+    }
+    return false
 }
 
 /// Presents a menu for a link or a video.
