@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulViewController.h"
-@class Post, Thread;
+@import AwfulCore;
 
 /**
  * A PostPreviewViewController previews a post (new or edited).

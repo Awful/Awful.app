@@ -4,7 +4,7 @@
 
 @import UIKit;
 #import <FLAnimatedImage/FLAnimatedImage.h>
-@class User;
+@import AwfulCore;
 
 /**
  * An AwfulAvatarLoader fetches and caches avatar images.

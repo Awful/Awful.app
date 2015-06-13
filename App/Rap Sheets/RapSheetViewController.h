@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulViewController.h"
-@class User;
+@import AwfulCore;
 
 /**
  * An RapSheetViewController displays a list of probations and bans.
