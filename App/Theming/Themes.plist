@@ -92,6 +92,8 @@
 			<string>#e24021</string>
 			<key>sendPMIconColor</key>
 			<string>#4ba692</string>
+			<key>showInThreadIconColor</key>
+			<string>#3c93a2</string>
 			<key>singleUserIconColor</key>
 			<string>#3c93a2</string>
 			<key>voteIconColor</key>

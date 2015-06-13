@@ -281,7 +281,7 @@
 - (UIBarButtonItem *)composeItem
 {
     if (_composeItem) return _composeItem;
-    _composeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:nil action:nil];
+    _composeItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"compose"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _composeItem.accessibilityLabel = @"Reply to thread";
     __weak __typeof__(self) weakSelf = self;
     _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {

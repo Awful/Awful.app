@@ -100,8 +100,8 @@
             
         case AwfulIconActionItemTypeShowInThread:
             title = @"Show in\nThread";
-            icon = [UIImage imageNamed:@"single-users-posts"];
-            themeKey = @"singleUserIconColor";
+            icon = [UIImage imageNamed:@"show-in-thread"];
+            themeKey = @"showInThreadIconColor";
             break;
             
         case AwfulIconActionItemTypeSingleUsersPosts:

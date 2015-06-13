@@ -2,13 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "bookmarks-landscape.png"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "bookmarks-landscape@2x.png"
+      "filename" : "show-in-thread@2x.png"
     },
     {
       "idiom" : "universal",

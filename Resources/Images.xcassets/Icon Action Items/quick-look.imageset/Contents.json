@@ -2,8 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "quick-look.png"
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
@@ -13,16 +12,6 @@
     {
       "idiom" : "universal",
       "scale" : "3x"
-    },
-    {
-      "idiom" : "ipad",
-      "scale" : "1x",
-      "filename" : "quick-look~ipad.png"
-    },
-    {
-      "idiom" : "ipad",
-      "scale" : "2x",
-      "filename" : "quick-look@2x~ipad.png"
     }
   ],
   "info" : {

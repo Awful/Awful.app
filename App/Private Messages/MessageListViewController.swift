@@ -19,7 +19,9 @@ final class MessageListViewController: AwfulTableViewController {
         updateUnreadMessageCountBadge()
         
         navigationItem.leftBarButtonItem = editButtonItem()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "didTapComposeButtonItem:")
+        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapComposeButtonItem:")
+        composeItem.accessibilityLabel = "Compose"
+        navigationItem.rightBarButtonItem = composeItem
         
         let noteCenter = NSNotificationCenter.defaultCenter()
         noteCenter.addObserver(self, selector: "unreadMessageCountDidChange:", name: NewMessageCheckerUnreadCountDidChangeNotification, object: nil)

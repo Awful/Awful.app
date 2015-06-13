@@ -33,7 +33,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     }
     
     private lazy var newThreadItem: UIBarButtonItem = { [unowned self] in
-        let item = UIBarButtonItem(barButtonSystemItem: .Compose, target: self, action: "didTapNewThreadItem:")
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapNewThreadItem:")
         item.accessibilityLabel = "New thread"
         return item
         }()
