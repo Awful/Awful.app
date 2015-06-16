@@ -27,97 +27,97 @@
     NSString *themeKey;
     switch (type) {
         case AwfulIconActionItemTypeAddBookmark:
-            title = @"Add Bookmark";
+            title = @"Bookmark";
             icon = [UIImage imageNamed:@"add-bookmark"];
             themeKey = @"addBookmarkIconColor";
             break;
         
         case AwfulIconActionItemTypeCopyURL:
-            title = @"Copy\nURL";
+            title = @"Link";
             icon = [UIImage imageNamed:@"copy-url"];
             themeKey = @"copyURLIconColor";
             break;
             
         case AwfulIconActionItemTypeEditPost:
-            title = @"Edit\nPost";
+            title = @"Edit";
             icon = [UIImage imageNamed:@"edit-post"];
             themeKey = @"editPostIconColor";
             break;
         
         case AwfulIconActionItemTypeJumpToFirstPage:
-            title = @"Jump to First Page";
+            title = @"First Page";
             icon = [UIImage imageNamed:@"jump-to-first-page"];
             themeKey = @"jumpToFirstPageIconColor";
             break;
         
         case AwfulIconActionItemTypeJumpToLastPage:
-            title = @"Jump to Last Page";
+            title = @"Last Page";
             icon = [UIImage imageNamed:@"jump-to-last-page"];
             themeKey = @"jumpToLastPageIconColor";
             break;
         
         case AwfulIconActionItemTypeMarkAsUnread:
-            title = @"Mark as Unread";
+            title = @"Mark Unread";
             icon = [UIImage imageNamed:@"mark-as-unread"];
             themeKey = @"markUnreadIconColor";
             break;
             
         case AwfulIconActionItemTypeMarkReadUpToHere:
-            title = @"Mark Read Up to Here";
+            title = @"Mark Read";
             icon = [UIImage imageNamed:@"mark-read-up-to-here"];
             themeKey = @"markReadUpToHereIconColor";
             break;
 
         case AwfulIconActionItemTypeQuotePost:
-            title = @"Quote\nPost";
+            title = @"Quote";
             icon = [UIImage imageNamed:@"quote-post"];
             themeKey = @"quoteIconColor";
             break;
 
         case AwfulIconActionItemTypeRapSheet:
-            title = @"Rap\nSheet";
+            title = @"Rap Sheet";
             icon = [UIImage imageNamed:@"rap-sheet"];
             themeKey = @"rapSheetIconColor";
             break;
             
         case AwfulIconActionItemTypeReportPost:
-            title = @"Report\nPost";
+            title = @"Report";
             icon = [UIImage imageNamed:@"rap-sheet"];
             themeKey = @"rapSheetIconColor";
             break;
         
         case AwfulIconActionItemTypeRemoveBookmark:
-            title = @"Remove Bookmark";
+            title = @"Unbookmark";
             icon = [UIImage imageNamed:@"remove-bookmark"];
             themeKey = @"removeBookmarkIconColor";
             break;
             
         case AwfulIconActionItemTypeSendPrivateMessage:
-            title = @"Send\nPM";
+            title = @"PM";
             icon = [UIImage imageNamed:@"send-private-message"];
             themeKey = @"sendPMIconColor";
             break;
             
         case AwfulIconActionItemTypeShowInThread:
-            title = @"Show in\nThread";
+            title = @"All Posts";
             icon = [UIImage imageNamed:@"view-in-thread"];
             themeKey = @"showInThreadIconColor";
             break;
             
         case AwfulIconActionItemTypeSingleUsersPosts:
-            title = @"Just Their Posts";
+            title = @"Their Posts";
             icon = [UIImage imageNamed:@"single-users-posts"];
             themeKey = @"singleUserIconColor";
             break;
         
         case AwfulIconActionItemTypeUserProfile:
-            title = @"User\nProfile";
+            title = @"Profile";
             icon = [UIImage imageNamed:@"user-profile"];
             themeKey = @"profileIconColor";
             break;
         
         case AwfulIconActionItemTypeVote:
-            title = @"Vote\nThread";
+            title = @"Vote";
             icon = [UIImage imageNamed:@"vote"];
             themeKey = @"voteIconColor";
             break;

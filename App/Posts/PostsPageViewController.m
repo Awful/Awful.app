@@ -398,7 +398,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
             [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
             [UIPasteboard generalPasteboard].awful_URL = URL;
         }];
-        copyURLItem.title = @"Copy Thread URL";
+        copyURLItem.title = @"Copy URL";
         [items addObject:copyURLItem];
         [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
             UIAlertController *actionSheet = [UIAlertController actionSheet];
@@ -805,7 +805,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         popover.sourceView = popoverSourceView;
         popover.sourceRect = popoverSourceRect;
     }];
-    shareItem.title = @"Copy or Share URL";
+    shareItem.title = @"Share URL";
     [items addObject:shareItem];
     
     if (!self.author) {
