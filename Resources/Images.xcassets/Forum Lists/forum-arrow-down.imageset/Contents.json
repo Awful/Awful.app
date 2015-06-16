@@ -3,7 +3,7 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "forum-arrow-down.png"
+      "filename" : "forum-arrow-down@1x.png"
     },
     {
       "idiom" : "universal",
@@ -12,7 +12,8 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "forum-arrow-down@3x.png"
     }
   ],
   "info" : {

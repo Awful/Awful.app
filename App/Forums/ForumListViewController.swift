@@ -16,7 +16,10 @@ class ForumListViewController: AwfulTableViewController {
         treeDataSource = ForumTreeDataSource(managedObjectContext: managedObjectContext)
         dataSource = CompoundDataSource(favoriteDataSource, treeDataSource)
         super.init(coder: coder)
+        
         dataSource.delegate = self
+        
+        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
         
         // Since the data sources work on ForumMetadata entities, it won't pick up any changes to the names of the forums. We'll handle that here.
         contextObserver = ForumContextObserver(managedObjectContext: managedObjectContext) { [unowned self] forums in

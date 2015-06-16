@@ -32,7 +32,8 @@
         } else {
             self.title = @"Leper's Colony";
             self.tabBarItem.title = @"Lepers";
-            self.tabBarItem.image = [UIImage imageNamed:@"lepers_icon"];
+            self.tabBarItem.image = [UIImage imageNamed:@"lepers"];
+            self.tabBarItem.selectedImage = [UIImage imageNamed:@"lepers-filled"];
         }
     }
     return self;

@@ -15,6 +15,7 @@ final class BookmarkListViewController: ThreadListViewController {
         
         title = "Bookmarks"
         tabBarItem.image = UIImage(named: "bookmarks")
+        tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
     }
 
     required init(coder: NSCoder) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B17" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3Nj-BO-15y">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -24,10 +24,10 @@
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="32" id="AMC-yt-Wf0"/>
                                             </constraints>
-                                            <state key="normal" image="forum-arrow-right">
+                                            <state key="normal" image="forum-arrow-down">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
-                                            <state key="selected" image="forum-arrow-down"/>
+                                            <state key="selected" image="forum-arrow-minus"/>
                                             <connections>
                                                 <action selector="didToggleShowingChildren:" destination="3Nj-BO-15y" eventType="touchUpInside" id="QuZ-Ig-vAO"/>
                                             </connections>
@@ -136,7 +136,7 @@
                             <outlet property="delegate" destination="3Nj-BO-15y" id="y8d-GY-pfI"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Forums" image="list_icon" id="qRN-6x-tKv"/>
+                    <tabBarItem key="tabBarItem" title="Forums" image="forum-list" id="qRN-6x-tKv"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="Wuu-yC-4FK">
                         <autoresizingMask key="autoresizingMask"/>
@@ -151,10 +151,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="forum-arrow-down" width="21" height="12"/>
-        <image name="forum-arrow-right" width="12" height="21"/>
-        <image name="list_icon" width="20" height="20"/>
-        <image name="star-off" width="22" height="21"/>
-        <image name="star-on" width="21" height="20"/>
+        <image name="forum-arrow-down" width="12" height="8"/>
+        <image name="forum-arrow-minus" width="9" height="7"/>
+        <image name="forum-list" width="25" height="23"/>
+        <image name="star-off" width="20" height="20"/>
+        <image name="star-on" width="20" height="19"/>
     </resources>
 </document>

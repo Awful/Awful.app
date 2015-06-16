@@ -16,6 +16,7 @@ final class MessageListViewController: AwfulTableViewController {
         tabBarItem.title = "Messages"
         tabBarItem.accessibilityLabel = "Private messages"
         tabBarItem.image = UIImage(named: "pm-icon")
+        tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
         updateUnreadMessageCountBadge()
         
         navigationItem.leftBarButtonItem = editButtonItem()

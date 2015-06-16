@@ -100,7 +100,7 @@
             
         case AwfulIconActionItemTypeShowInThread:
             title = @"Show in\nThread";
-            icon = [UIImage imageNamed:@"show-in-thread"];
+            icon = [UIImage imageNamed:@"view-in-thread"];
             themeKey = @"showInThreadIconColor";
             break;
             

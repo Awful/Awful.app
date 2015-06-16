@@ -27,6 +27,7 @@
         _managedObjectContext = managedObjectContext;
         self.title = @"Settings";
         self.tabBarItem.image = [UIImage imageNamed:@"cog"];
+        self.tabBarItem.selectedImage = [UIImage imageNamed:@"cog-filled"];
     }
     return self;
 }
