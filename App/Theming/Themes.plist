@@ -387,10 +387,6 @@
 			<string>#57FF57</string>
 			<key>markReadUpToHereIconColor</key>
 			<string>#57FF57</string>
-			<key>postsTopBarBackgroundColor</key>
-			<string>#57FF57</string>
-			<key>postsTopBarTextColor</key>
-			<string>#000000</string>
 			<key>profileIconColor</key>
 			<string>#57FF57</string>
 			<key>quoteIconColor</key>
@@ -425,6 +421,10 @@
 			<string>YOSPOS</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#5ffc60</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#57FF57</string>
+			<key>postsTopBarTextColor</key>
+			<string>#000000</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-yospos.css</string>
 		</dict>
@@ -467,10 +467,6 @@
 			<string>#ebd04b</string>
 			<key>markReadUpToHereIconColor</key>
 			<string>#ebd04b</string>
-			<key>postsTopBarBackgroundColor</key>
-			<string>#ebd04b</string>
-			<key>postsTopBarTextColor</key>
-			<string>#000000</string>
 			<key>profileIconColor</key>
 			<string>#ebd04b</string>
 			<key>quoteIconColor</key>
@@ -499,6 +495,10 @@
 		<dict>
 			<key>postsLoadingViewTintColor</key>
 			<string>#eacf4b</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#ebd04b</string>
+			<key>postsTopBarTextColor</key>
+			<string>#000000</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-amberpos.css</string>
 		</dict>
