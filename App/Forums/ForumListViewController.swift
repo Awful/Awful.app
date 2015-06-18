@@ -88,7 +88,7 @@ class ForumListViewController: AwfulTableViewController {
             tableView.sectionFooterHeight = 0
         }
 
-        tableView.registerClass(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: headerIdentifier)
+        tableView.registerClass(ForumListSectionHeader.self, forHeaderFooterViewReuseIdentifier: headerIdentifier)
         tableView.dataSource = dataSource
         
         updateEditButtonPresence(animated: false)
@@ -215,16 +215,17 @@ extension ForumMetadata {
 
 extension ForumListViewController: UITableViewDelegate {
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! UITableViewHeaderFooterView
-        header.textLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
+        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! ForumListSectionHeader
+        header.sectionNameLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
         return header
     }
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel.textColor = theme["listHeaderTextColor"]
+        if let header = view as? ForumListSectionHeader {
+            header.sectionNameLabel.textColor = theme["listHeaderTextColor"]
             header.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
-            header.textLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+            header.sectionNameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+            header.textLabel.text = ""
         }
     }
     

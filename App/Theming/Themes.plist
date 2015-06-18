@@ -69,7 +69,7 @@
 		<key>Lists</key>
 		<dict>
 			<key>listHeaderTextColor</key>
-			<string>#808080</string>
+			<string>#838383</string>
 			<key>listHeaderBackgroundColor</key>
 			<string>#e4e4e4</string>
 			<key>listTextColor</key>
@@ -161,8 +161,6 @@
 		<string>#237733</string>
 		<key>Lists</key>
 		<dict>
-			<key>listHeaderTextColor</key>
-			<string>#ffffff</string>
 			<key>listHeaderBackgroundColor</key>
 			<string>#1c1c1c</string>
 			<key>listTextColor</key>
