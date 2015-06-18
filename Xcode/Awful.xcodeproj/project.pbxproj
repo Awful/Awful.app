@@ -1593,9 +1593,9 @@
 				1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */,
 				1C54D30919BBC717002AC6B9 /* SettingsBinding.h */,
 				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
+				1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */,
 				11FDA294151018600014FDCD /* SettingsViewController.h */,
 				11FDA295151018600014FDCD /* SettingsViewController.m */,
-				1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
