@@ -208,7 +208,10 @@ extension Theme {
     }
     
     class func themesForForum(forum: Forum) -> [Theme] {
-        let themes = bundledThemes.values.filter { $0.forumID == forum.forumID || $0.forumID == nil }
+        let ubiquitousNames = AwfulSettings.sharedSettings().ubiquitousThemeNames as! [String]
+        let themes = bundledThemes.values.filter {
+            $0.forumID == forum.forumID || $0.forumID == nil || contains(ubiquitousNames, $0.name)
+        }
         return sorted(themes)
     }
 }
