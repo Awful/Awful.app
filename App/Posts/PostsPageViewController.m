@@ -378,7 +378,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 - (UIBarButtonItem *)actionsItem
 {
     if (_actionsItem) return _actionsItem;
-    _actionsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
+    _actionsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action"] style:UIBarButtonItemStylePlain target:nil action:nil];
     __weak __typeof__(self) weakSelf = self;
     _actionsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
