@@ -19,6 +19,9 @@
         UILongPressGestureRecognizer *longPress = [UILongPressGestureRecognizer new];
         [longPress addTarget:self action:@selector(longPress:)];
         [self addGestureRecognizer:longPress];
+        
+        self.backIndicatorImage = [UIImage imageNamed:@"back"];
+        self.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
     }
     return self;
 }
