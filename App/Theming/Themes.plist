@@ -66,39 +66,6 @@
 		<string>Light</string>
 		<key>placeholderTextColor</key>
 		<string>#999999</string>
-		<key>Action icons</key>
-		<dict>
-			<key>addBookmarkIconColor</key>
-			<string>#5cc22e</string>
-			<key>copyURLIconColor</key>
-			<string>#5585bf</string>
-			<key>editPostIconColor</key>
-			<string>ae5317</string>
-			<key>jumpToFirstPageIconColor</key>
-			<string>#333333</string>
-			<key>jumpToLastPageIconColor</key>
-			<string>#333333</string>
-			<key>markUnreadIconColor</key>
-			<string>#7c47a7</string>
-			<key>markReadUpToHereIconColor</key>
-			<string>#56b52b</string>
-			<key>profileIconColor</key>
-			<string>#e35e0d</string>
-			<key>quoteIconColor</key>
-			<string>#777777</string>
-			<key>rapSheetIconColor</key>
-			<string>#dc8c3e</string>
-			<key>removeBookmarkIconColor</key>
-			<string>#e24021</string>
-			<key>sendPMIconColor</key>
-			<string>#4ba692</string>
-			<key>showInThreadIconColor</key>
-			<string>#3c93a2</string>
-			<key>singleUserIconColor</key>
-			<string>#3c93a2</string>
-			<key>voteIconColor</key>
-			<string>#fcdc48</string>
-		</dict>
 		<key>Lists</key>
 		<dict>
 			<key>listHeaderTextColor</key>
@@ -192,15 +159,6 @@
 		<string>#666666</string>
 		<key>settingsSwitchColor</key>
 		<string>#237733</string>
-		<key>Action icons</key>
-		<dict>
-			<key>quoteIconColor</key>
-			<string>#dbdbdb</string>
-			<key>jumpToFirstPageIconColor</key>
-			<string>#eeeeee</string>
-			<key>jumpToLastPageIconColor</key>
-			<string>#eeeeee</string>
-		</dict>
 		<key>Lists</key>
 		<dict>
 			<key>listHeaderTextColor</key>
