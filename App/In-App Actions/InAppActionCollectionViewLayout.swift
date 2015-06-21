@@ -6,7 +6,7 @@ import UIKit
 
 class InAppActionCollectionViewLayout: UICollectionViewLayout {
     
-    var itemSize: CGSize = CGSize(width: 70, height: 90) {
+    var itemSize: CGSize = CGSize(width: 70, height: 70) {
         didSet { invalidateLayout() }
     }
     var interitemSpacing: CGFloat = 6 {

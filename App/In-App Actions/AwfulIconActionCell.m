@@ -70,6 +70,6 @@
     self.titleLabel.frame = titleFrame;
 }
 
-static const CGSize ImageSize = { 56, 56 };
+static const CGSize ImageSize = { 56, 40 };
 
 @end
