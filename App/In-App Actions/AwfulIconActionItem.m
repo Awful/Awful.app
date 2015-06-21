@@ -87,7 +87,7 @@
             break;
         
         case AwfulIconActionItemTypeRemoveBookmark:
-            title = @"Unbookmark";
+            title = @"Unmark";
             icon = [UIImage imageNamed:@"remove-bookmark"];
             themeKey = @"removeBookmarkIconColor";
             break;
