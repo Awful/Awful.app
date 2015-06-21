@@ -22,6 +22,8 @@
         
         self.backIndicatorImage = [UIImage imageNamed:@"back"];
         self.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
+        
+        self.titleTextAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17 weight:UIFontWeightRegular]};
     }
     return self;
 }
