@@ -155,6 +155,8 @@
 		<string>Light</string>
 		<key>keyboardAppearance</key>
 		<string>Dark</string>
+		<key>actionIconTintColor</key>
+		<string>#126f99</string>
 		<key>placeholderTextColor</key>
 		<string>#666666</string>
 		<key>settingsSwitchColor</key>
