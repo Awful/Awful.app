@@ -108,49 +108,6 @@ header {
   -webkit-flex-wrap: wrap-reverse;
 }
 
-.clock {
-  box-sizing: border-box;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  
-  border-width: 0.1em;
-  border-style: solid;
-  border-radius: 50%;
-  
-  position: relative;
-  
-  &::before, &::after {
-    content: "";
-    position: absolute;
-    bottom: 50%;
-    margin-bottom: -0.1em;
-    left: 50%;
-    margin-left: -0.05em;
-  }
-  &::before {
-    width: 30%;
-    height: 0.1em;
-  }
-  &::after {
-    width: 0.1em;
-    height: 45%;
-  }
-}
-
-.clock-color(@color) {
-  .clock {
-    border-color: @color;
-    
-    &::before,
-    &::after {
-      background-color: @color;
-    }
-  }
-}
-.clock-color(#000);
-
 .regdate {
   display: block;
   font-size: .8em;

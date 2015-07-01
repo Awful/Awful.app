@@ -77,41 +77,6 @@ header:after {
   -webkit-flex-grow: 1;
   -webkit-flex-wrap: wrap-reverse;
 }
-.clock {
-  box-sizing: border-box;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.2em;
-  border-width: 0.1em;
-  border-style: solid;
-  border-radius: 50%;
-  position: relative;
-}
-.clock::before,
-.clock::after {
-  content: "";
-  position: absolute;
-  bottom: 50%;
-  margin-bottom: -0.1em;
-  left: 50%;
-  margin-left: -0.05em;
-}
-.clock::before {
-  width: 30%;
-  height: 0.1em;
-}
-.clock::after {
-  width: 0.1em;
-  height: 45%;
-}
-.clock {
-  border-color: #000000;
-}
-.clock::before,
-.clock::after {
-  background-color: #000000;
-}
 .regdate {
   display: block;
   font-size: .8em;
@@ -362,13 +327,6 @@ footer {
 .postdate,
 .regdate {
   color: #8e8e8e;
-}
-.clock {
-  border-color: #8e8e8e;
-}
-.clock::before,
-.clock::after {
-  background-color: #8e8e8e;
 }
 .editedby .mention {
   color: #dd89ff;
