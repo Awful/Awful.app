@@ -139,7 +139,7 @@ header:after {
   padding: 0;
   border: none;
   font-family: inherit;
-  font-size: 2.25em;
+  font-size: 2em;
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
   line-height: 1em;
@@ -272,9 +272,6 @@ post.seen {
 header {
   border-bottom: 0;
 }
-.action-button {
-  color: #1682b2;
-}
 .awful-smile {
   image-rendering: -webkit-crisp-edges;
 }
@@ -308,6 +305,7 @@ footer {
   margin-top: 0.6em;
 }
 .postdate,
+.action-button,
 .regdate {
   color: #8e8e8e;
 }

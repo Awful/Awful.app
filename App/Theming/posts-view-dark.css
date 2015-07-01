@@ -139,7 +139,7 @@ header:after {
   padding: 0;
   border: none;
   font-family: inherit;
-  font-size: 2.25em;
+  font-size: 2em;
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
   line-height: 1em;
@@ -280,9 +280,6 @@ header {
 .platinum .username:before {
   background-image: url('awful-resource://platinum-member-white.png');
 }
-.action-button {
-  color: #1682b2;
-}
 .postbody a,
 [data-awful-linkified-image] {
   color: #1682b2;
@@ -325,6 +322,7 @@ footer {
   margin-top: 0.6em;
 }
 .postdate,
+.action-button,
 .regdate {
   color: #8e8e8e;
 }
