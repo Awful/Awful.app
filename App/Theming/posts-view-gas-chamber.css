@@ -169,31 +169,6 @@ header:after {
 .award .username:before {
   content: url('awful-resource://award.png');
 }
-.chevron {
-  position: relative;
-  display: inline-block;
-  width: 0.5em;
-  height: 1em;
-}
-.chevron::before,
-.chevron::after {
-  content: "";
-  position: absolute;
-  width: 0.5em;
-  height: 15%;
-}
-.chevron::before {
-  top: 50%;
-  -webkit-transform: rotate(45deg);
-}
-.chevron::after {
-  top: 80%;
-  -webkit-transform: rotate(-45deg);
-}
-.chevron::before,
-.chevron::after {
-  background: #1682b2;
-}
 .action-button {
   margin: 0;
   padding: 0;
