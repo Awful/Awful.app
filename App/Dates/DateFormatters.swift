@@ -12,8 +12,8 @@ extension NSDateFormatter {
 private let _postDateFormatter: NSDateFormatter = {
 	let formatter = NSDateFormatter()
     
-	// Jan 2, 2003 16:05
-	formatter.dateStyle = .MediumStyle
+	// 01/02/03 16:05
+	formatter.dateStyle = .ShortStyle
 	formatter.timeStyle = .ShortStyle
     
 	return formatter
