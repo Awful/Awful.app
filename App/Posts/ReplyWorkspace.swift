@@ -72,7 +72,7 @@ final class ReplyWorkspace: NSObject {
             
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
-            KVOController.observe(draft, keyPath: "thread.title", options: .Initial | .New) { _, _, change in
+            KVOController.observe(draft, keyPath: "thread.title", options: .Initial | .New) { [unowned self] _, _, change in
                 self.compositionViewController.title = change[NSKeyValueChangeNewKey] as? String
             }
             
