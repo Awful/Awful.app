@@ -41,17 +41,8 @@ final class CompositionMenuTree: NSObject {
     
     private var shouldPopWhenMenuHides = true
     
-    private var selectedTextViewRect: CGRect {
-        if let selection = textView.selectedTextRange {
-            if selection.empty {
-                return textView.caretRectForPosition(selection.end)
-            } else if let rects = textView.selectionRectsForRange(selection) as? [UITextSelectionRect] where !rects.isEmpty {
-                return rects
-                    .map { $0.rect }
-                    .reduce(CGRect.nullRect) { $0.rectByUnion($1) }
-            }
-        }
-        return textView.bounds
+    private var targetRect: CGRect {
+        return textView.selectedRect ?? textView.bounds
     }
     
     private func popToRootItems() {
@@ -67,7 +58,7 @@ final class CompositionMenuTree: NSObject {
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
         UIMenuController.sharedMenuController().menuVisible = false
         if let selection = textView.selectedTextRange {
-            UIMenuController.sharedMenuController().setTargetRect(selectedTextViewRect, inView: textView)
+            UIMenuController.sharedMenuController().setTargetRect(targetRect, inView: textView)
         }
         UIMenuController.sharedMenuController().setMenuVisible(true, animated: true)
         
@@ -83,7 +74,7 @@ final class CompositionMenuTree: NSObject {
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad && sourceType == .PhotoLibrary {
             picker.modalPresentationStyle = .Popover
             if let popover = picker.popoverPresentationController {
-                popover.sourceRect = selectedTextViewRect
+                popover.sourceRect = targetRect
                 popover.sourceView = textView
                 popover.delegate = self
             }
