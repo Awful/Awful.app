@@ -150,11 +150,11 @@ final class ReplyWorkspace: NSObject {
         progressView.stopBlock = { _ in
             submitProgress.cancel() }
         
-        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { _, object, _ in
+        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { [weak self] _, object, _ in
             if let progress = object as? NSProgress {
                 if progress.fractionCompleted >= 1 || progress.cancelled {
                     progressView.stopBlock = nil
-                    self.KVOController.unobserve(progress)
+                    self?.KVOController.unobserve(progress)
                 }
             }
         }
