@@ -34,7 +34,7 @@ final class CompositionMenuTree: NSObject {
     }
     
     @objc private func menuDidHide(note: NSNotification) {
-        if shouldPopWhenMenuHides {
+        if shouldPopWhenMenuHides && textView.window != nil {
             popToRootItems()
         }
     }
