@@ -140,7 +140,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
             .map { ($0 as! ThreadTag).imageName! }
-        let picker = AwfulThreadTagPickerController(imageNames: imageNames, secondaryImageNames: nil)
+        let picker = AwfulThreadTagPickerController(imageNames: [AwfulThreadTagLoaderNoFilterImageName] + imageNames, secondaryImageNames: nil)
         picker.delegate = self
         picker.title = "Filter Threads"
         picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
