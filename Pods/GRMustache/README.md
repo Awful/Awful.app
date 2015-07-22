@@ -1,16 +1,22 @@
 GRMustache
 ==========
 
-GRMustache is an implementation of [Mustache templates](http://mustache.github.io/) for MacOS Cocoa and iOS.
+GRMustache is a [Mustache](http://mustache.github.io) template engine written in Objective-C, for both MacOS Cocoa and iOS.
 
 It ships with built-in goodies and extensibility hooks that let you avoid the strict minimalism of the genuine Mustache language when you need it.
 
-**System requirements**: GRMustache targets iOS down to version 4.3, MacOS down to 10.6 Snow Leopard (without garbage collection), and only depends on the Foundation framework.
-
-**September 13, 2014: GRMustache 7.3.0 is out.** [Release notes](RELEASE_NOTES.md)
+**April 22, 2015: GRMustache 7.3.2 is out.** [Release notes](RELEASE_NOTES.md)
 
 
 Get release announcements and usage tips: follow [@GRMustache on Twitter](http://twitter.com/GRMustache).
+
+
+System requirements
+-------------------
+
+GRMustache targets iOS down to version 4.3, MacOS down to 10.6 Snow Leopard (without garbage collection), and only depends on the Foundation framework.
+
+**Swift developers**: You can use GRMustache from Swift, with a limitation: you can only render Objective-C objects. Instead, consider using [GRMustache.swift](https://github.com/groue/GRMustache.swift), a pure Swift implementation of GRMustache.
 
 
 How To
@@ -51,8 +57,6 @@ rendering = [template renderObject:arthur error:NULL];
 rendering = [template renderObject:barbara error:NULL];
 rendering = ...
 ```
-
-[GRMustachio](https://github.com/mugginsoft/GRMustachio) by Jonathan Mitchell is "A super simple, interactive GRMustache based application". It can help you design and test your templates.
 
 
 Documentation

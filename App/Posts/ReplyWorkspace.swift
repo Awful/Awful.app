@@ -2,6 +2,9 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import KVOController
+import MRProgress
+
 /**
 A place for someone to compose a reply to a thread.
 

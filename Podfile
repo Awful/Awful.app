@@ -3,12 +3,21 @@ platform :ios, '8.0'
 xcodeproj 'Xcode/Awful'
 link_with 'Awful'
 inhibit_all_warnings!
+use_frameworks!
 
 # In general I don't trust library authors to adhere to semantic versioning, so always pin to a specific version or commit.
 
+def afnetworking; pod 'AFNetworking', '2.5.2'; end
+def fl_animated_image; pod 'FLAnimatedImage', '1.0.2'; end
+def html_reader; pod 'HTMLReader', '0.8'; end
+
 target :Awful do
+  afnetworking
   pod 'ARChromeActivity', '1.0.4'
-  pod 'GRMustache', '7.3.0'
+  fl_animated_image
+  pod 'GRMustache', '7.3.2'
+  html_reader
+  pod 'ImgurAnonymousAPIClient', '0.3.2'
   pod 'JLRoutes', '1.5.1'
   pod 'KVOController', '1.0.3'
   pod 'MRProgress/Overlay', '0.8.0'
@@ -20,7 +29,24 @@ target :Awful do
   pod 'YABrowserViewController', '0.1.1'
 end
 
+target :Core do
+  afnetworking
+  html_reader
+end
+
 # FLAnimatedImage is used by both Awful and Smilies targets, but CocoaPods doesn't have a good story for dealing with that. Instead we'll compile it in Smilies and leave Awful's dependency implicit.
 target :Smilies do
-  pod 'FLAnimatedImage', '1.0.2'
+  fl_animated_image
+  html_reader
+end
+
+post_install do |extension_safe_api|
+  EXTENSION_SAFE_TARGETS = %w[FLAnimatedImage HTMLReader Pods-Smilies]
+  extension_safe_api.pods_project.targets.each do |target|
+    if EXTENSION_SAFE_TARGETS.include? target.name
+      target.build_configurations.each do |config|
+        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
+      end
+    end
+  end
 end

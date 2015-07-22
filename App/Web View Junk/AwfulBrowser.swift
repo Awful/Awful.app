@@ -2,6 +2,10 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import ARChromeActivity
+import TUSafariActivity
+import YABrowserViewController
+
 extension YABrowserViewController {
     class func presentBrowserForURL(URL: NSURL, fromViewController presentingViewController: UIViewController) -> YABrowserViewController {
         let browser = YABrowserViewController()

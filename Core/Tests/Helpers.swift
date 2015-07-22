@@ -31,5 +31,5 @@ func fixtureNamed(basename: String) -> HTMLDocument {
     var error: NSError?
     let fixtureHTML = NSString(contentsOfURL: fixtureURL, encoding: NSWindowsCP1252StringEncoding, error:&error)
     assert(fixtureHTML != nil, "error loading fixture from \(fixtureURL): \(error!)")
-    return HTMLDocument(string: fixtureHTML as String?)
+    return HTMLDocument(string: fixtureHTML as! String)
 }
