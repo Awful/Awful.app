@@ -418,7 +418,7 @@ private enum DecodedImage {
 }
 
 /// Downloads and decodes the image at the URL. Completion is called on the main thread.
-private func downloadImage(URL: NSURL, #completion: DecodedImage -> Void) -> NSProgress {
+private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSProgress {
     let done: DecodedImage -> () = { image in
         dispatch_async(dispatch_get_main_queue()) {
             completion(image)
@@ -488,9 +488,9 @@ private func downloadImage(URL: NSURL, #completion: DecodedImage -> Void) -> NSP
             fatalError("No data and no error in data task callback")
         }
     }
-    task.resume()
+    task!.resume()
     
-    progress.cancellationHandler = { task.cancel() }
+    progress.cancellationHandler = { task!.cancel() }
     return progress
 }
 

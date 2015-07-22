@@ -38,6 +38,14 @@
     return self;
 }
 
+- (id)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class AwfulForm"
+                                 userInfo:nil];
+    return nil;
+}
+
+
 - (NSString *)name
 {
     [self scrapeIfNecessary];

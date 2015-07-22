@@ -15,24 +15,26 @@ final class CachePruner: NSOperation {
     override func main() {
         let context = managedObjectContext
         context.performBlockAndWait {
-            let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as! [NSEntityDescription]
+            let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
             let prunableEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
             
             var candidateObjectIDs = [NSManagedObjectID]()
             let components = NSDateComponents()
             components.day = -7
             let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-            let oneWeekAgo = calendar.dateByAddingComponents(components, toDate: NSDate(), options: nil)!
+            let oneWeekAgo = calendar.dateByAddingComponents(components, toDate: NSDate(), options: [])!
             let fetchRequest = NSFetchRequest()
             fetchRequest.predicate = NSPredicate(format: "lastModifiedDate < %@", oneWeekAgo)
             fetchRequest.resultType = .ManagedObjectIDResultType
             for entity in prunableEntities {
                 fetchRequest.entity = entity
-                var error: NSError?
-                if let result = context.executeFetchRequest(fetchRequest, error: &error) as! [NSManagedObjectID]? {
+                var result: [NSManagedObjectID] = []
+                do {
+                    result = try context.executeFetchRequest(fetchRequest) as! [NSManagedObjectID]
                     candidateObjectIDs += result
-                } else {
-                    NSLog("[%@ %@] error fetching: %@", reflect(self).summary, __FUNCTION__, error!)
+                }
+                catch {
+                    NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error fetching: \(error)")
                 }
             }
             
@@ -44,10 +46,12 @@ final class CachePruner: NSOperation {
                 context.deleteObject(object)
             }
             
-            var error: NSError?
-            if !context.save(&error) {
+            do {
+                try context.save()
+            }
+            catch {
                 // Would prefer fatalError() but that doesn't show up in Crashlytics logs.
-                NSException(name: NSGenericException, reason: "error saving: \(error!)", userInfo: nil).raise()
+                NSException(name: NSGenericException, reason: "error saving: \(error)", userInfo: nil).raise()
             }
         }
     }

@@ -179,7 +179,7 @@ class ForumListViewController: AwfulTableViewController {
         }
     }
     
-    private func updateEditButtonPresence(#animated: Bool) {
+    private func updateEditButtonPresence(animated animated: Bool) {
         navigationItem.setRightBarButtonItem(favoriteDataSource.numberOfSections > 0 ? editButtonItem() : nil, animated: animated)
     }
 }

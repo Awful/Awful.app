@@ -25,6 +25,8 @@
  */
 - (instancetype)initWithString:(NSString *)string encoding:(HTMLStringEncoding)encoding context:(HTMLElement *)context NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  * The HTML being parsed.
  */

@@ -12,6 +12,8 @@
 /// @param element The <form> element representing the form.
 - (instancetype)initWithElement:(HTMLElement *)element NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 @property (readonly, strong, nonatomic) HTMLElement *element;
 
 /// The name of the form in markup.

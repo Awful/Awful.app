@@ -38,6 +38,13 @@ typedef struct {
     return self;
 }
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class HTMLTreeEnumerator"
+                                 userInfo:nil];
+    return nil;
+}
+
 - (id)nextObject
 {
     // This enumerator works by storing the *next* node we intend to emit, and the index path that points to that next node.

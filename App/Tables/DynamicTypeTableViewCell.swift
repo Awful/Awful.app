@@ -64,7 +64,7 @@ class DynamicTypeTableViewCell: UITableViewCell {
     
     private func eachLabelWithTextStyle(block: (UILabel, String) -> Void) {
         let guessedTextStyles = guessedTextStylesByIdentifier[reuseIdentifier!]!
-        for (label, textStyle) in Zip2(dynamicTypeLabels, guessedTextStyles) {
+        for (label, textStyle) in Zip2Sequence(dynamicTypeLabels, guessedTextStyles) {
             if let textStyle = textStyle {
                 block(label, textStyle)
             }
@@ -100,7 +100,7 @@ private func guessTextStyle(label: UILabel) -> String? {
 
 private var guessedTextStylesByIdentifier = [String:[String?]]()
 
-private func fontDescriptorForTextStyle(textStyle: String, #maximumPointSize: CGFloat) -> UIFontDescriptor {
+private func fontDescriptorForTextStyle(textStyle: String, maximumPointSize: CGFloat) -> UIFontDescriptor {
     let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(textStyle)
     return descriptor.fontDescriptorWithSize(min(descriptor.pointSize, maximumPointSize))
 }

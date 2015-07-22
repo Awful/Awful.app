@@ -465,7 +465,7 @@ static HTMLSelectorPredicateGen scanPredicateFromPseudoClass(NSScanner *scanner,
                                                              HTMLSelectorPredicate typePredicate,
                                                              NSError **error)
 {
-	typedef HTMLSelectorPredicate (^CSSThing)(HTMLNthExpression nth);
+	//typedef HTMLSelectorPredicate (^CSSThing)(HTMLNthExpression nth);
     BOOL ok;
     
 	NSString *pseudo;
@@ -803,6 +803,13 @@ static HTMLSelectorPredicate SelectorFunctionForString(NSString *selectorString,
         _error = error;
     }
     return self;
+}
+
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class HTMLParser"
+                                 userInfo:nil];
+    return nil;
 }
 
 - (BOOL)matchesElement:(HTMLElement *)element

@@ -25,7 +25,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(fetchAll(ForumGroup.self, inContext: managedObjectContext).isEmpty)
         XCTAssert(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
         let allUsers = fetchAll(User.self, inContext: managedObjectContext)
-        let allUsernames = allUsers.map { $0.username! }.sorted(<)
+        let allUsernames = allUsers.map { $0.username! }.sort(<)
         XCTAssert(allUsernames == ["Choochacacko", "Dreylad", "Ferg", "I am in", "Ranma4703", "Salaminizer", "Scaevolus", "Sir Davey", "csammis", "escape artist", "pokeyman"])
         
         let wireThread = fetchOne(Thread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'The Wire'"))!
@@ -79,7 +79,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         let threadForums = NSSet(array: allThreads.map{$0.forum!})
         XCTAssert(threadForums == NSSet(object: debateAndDiscussion))
         let allUsers = fetchAll(User.self, inContext: managedObjectContext)
-        let allUsernames = allUsers.map{$0.username!}.sorted { $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending }
+        let allUsernames = allUsers.map{$0.username!}.sort { $0.caseInsensitiveCompare($1) == NSComparisonResult.OrderedAscending }
         XCTAssert(allUsernames == [
             "a bad enough dude",
             "Bedlamdan",
@@ -158,7 +158,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         scrapeFixtureNamed("forumdisplay2")
         let allForums = fetchAll(Forum.self, inContext: managedObjectContext)
         XCTAssert(allForums.count == 2)
-        let allForumNames = allForums.map{$0.name!}.sorted(<)
+        let allForumNames = allForums.map{$0.name!}.sort(<)
         XCTAssert(allForumNames == ["Games", "Let's Play!"])
         let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
         XCTAssert(allGroups.count == 1)

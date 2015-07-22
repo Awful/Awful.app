@@ -9,12 +9,6 @@ final class ForumListSectionHeader: UITableViewHeaderFooterView {
         didSet { setNeedsLayout() }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        contentView.addSubview(sectionNameLabel)
-    }
-    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         

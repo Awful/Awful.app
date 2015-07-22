@@ -23,6 +23,14 @@
     return self;
 }
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class AwfulScraper"
+                                 userInfo:nil];
+    return nil;
+}
+
+
 - (void)scrape
 {
     HTMLElement *body = [self.node firstNodeMatchingSelector:@"body.database_error"];

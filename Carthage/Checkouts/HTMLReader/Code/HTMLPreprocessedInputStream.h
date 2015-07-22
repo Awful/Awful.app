@@ -12,6 +12,7 @@
  */
 @interface HTMLPreprocessedInputStream : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithString:(NSString *)string NS_DESIGNATED_INITIALIZER;
 
 /**

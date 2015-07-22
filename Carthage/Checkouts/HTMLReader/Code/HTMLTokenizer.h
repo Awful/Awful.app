@@ -132,6 +132,8 @@
 
 - (instancetype)initWithString:(NSString *)string NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  * The code points represented by this token.
  */

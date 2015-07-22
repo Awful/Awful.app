@@ -163,9 +163,9 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
         on = false
     }
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context == &KVOContext {
-            if let loading = change[NSKeyValueChangeNewKey] as? NSNumber {
+            if let loading = change![NSKeyValueChangeNewKey] as? NSNumber {
                 on = loading.boolValue
             }
         } else {

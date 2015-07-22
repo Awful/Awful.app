@@ -179,13 +179,20 @@ extension Thread {
         filter.numberOfPages = numberOfPages
     }
     
-    private func fetchFilter(#author: User) -> ThreadFilter? {
+    private func fetchFilter(author author: User) -> ThreadFilter? {
         let request = NSFetchRequest(entityName: ThreadFilter.entityName())
         request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
-        var error: NSError?
-        let results = managedObjectContext!.executeFetchRequest(request, error: &error) as! [ThreadFilter]!
-        assert(results != nil, "error fetching: \(error!)")
+        var results: [ThreadFilter] = []
+        var success: Bool = false
+        do {
+            results = try (managedObjectContext!.executeFetchRequest(request) as! [ThreadFilter])
+            success = true
+        }
+        catch let error as NSError {
+            print("error fetching: \(error)")
+        }
+        assert(success, "error fetching, crashing")
         return results.first
     }
 }

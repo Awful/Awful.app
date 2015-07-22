@@ -105,6 +105,13 @@ typedef NS_ENUM(NSInteger, HTMLInsertionMode)
     return self;
 }
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class HTMLParser"
+                                 userInfo:nil];
+    return nil;
+}
+
 - (NSString *)string
 {
     return _tokenizer.string;

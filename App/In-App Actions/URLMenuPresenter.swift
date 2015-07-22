@@ -77,6 +77,19 @@ private enum _URLMenuPresenter {
                 UIPasteboard.generalPasteboard().awful_URL = linkURL
             }))
             
+            alert.addAction(UIAlertAction(title: "Share URL", style: .Default, handler: { _ in
+                let objectsToShare = [linkURL]
+                let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+                
+                presenter.presentViewController(activityVC, animated: true, completion: nil)
+                if let popover = activityVC.popoverPresentationController {
+                    popover.sourceRect = sourceRect
+                    popover.sourceView = sourceView
+                }
+                
+            }))
+            
+            
             if let imageURL = imageURL {
                 alert.addAction(UIAlertAction(title: "Open Image", style: .Default, handler: { _ in
                     let preview = ImageViewController(imageURL: imageURL)
@@ -88,6 +101,9 @@ private enum _URLMenuPresenter {
                     UIPasteboard.generalPasteboard().awful_URL = imageURL
                 }))
             }
+            
+            
+
             
         case let .Video(rawURL):
             if let videoURL = VideoURL(rawURL) {

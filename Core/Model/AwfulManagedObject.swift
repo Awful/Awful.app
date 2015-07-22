@@ -13,7 +13,7 @@ public class AwfulManagedObject: NSManagedObject {
     /// Convenience factory method for creating managed objects and calling their awakeFromInitialInsert() method.
     public class func insertIntoManagedObjectContext(context: NSManagedObjectContext) -> Self {
         let entity = NSEntityDescription.entityForName(entityName(), inManagedObjectContext: context)!
-        let object = self(entity: entity, insertIntoManagedObjectContext: context)
+        let object = self.init(entity: entity, insertIntoManagedObjectContext: context)
         object.awakeFromInitialInsert()
         return object
     }
@@ -87,7 +87,7 @@ private let entityNameKey = "entityName"
 
 private extension AwfulObjectKey {
     var predicate: NSPredicate {
-        let subpredicates: [NSPredicate] = reduce(keys, []) { accum, key in
+        let subpredicates: [NSPredicate] = keys.reduce([]) { accum, key in
             if let value = self.valueForKey(key) as? NSObject {
                 return accum + [NSPredicate(format: "%K == %@", key, value)]
             } else {
@@ -130,10 +130,15 @@ extension AwfulManagedObject {
         let request = NSFetchRequest(entityName: objectKey.entityName)
         request.predicate = objectKey.predicate
         request.fetchLimit = 1
-        var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as! [AwfulManagedObject]?
-        assert(results != nil, "error fetching: \(error!)")
-        return results!.first
+        var results : [AwfulManagedObject] = []
+        do {
+            results = try context.executeFetchRequest(request) as! [AwfulManagedObject]
+        }
+        catch {
+            print("error fetching: \(error)")
+            
+        }
+        return results.first
     }
     
     public class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
@@ -172,9 +177,16 @@ extension AwfulManagedObject {
         } else {
             request.predicate = NSCompoundPredicate.orPredicateWithSubpredicates(subpredicates)
         }
-        var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as! [AwfulManagedObject]!
-        assert(results != nil, "error fetching: \(error!)")
+        
+        var results : [AwfulManagedObject] = []
+        do {
+            results = try context.executeFetchRequest(request) as! [AwfulManagedObject]
+        }
+        catch {
+            print("error fetching \(error)")
+            
+        }
+
         
         var existingByKey = [AwfulObjectKey: AwfulManagedObject](minimumCapacity: results.count)
         for object in results {

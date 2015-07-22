@@ -17,6 +17,8 @@
 
 - (instancetype)initWithNode:(HTMLNode *)node managedObjectContext:(NSManagedObjectContext *)managedObjectContext NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 @property (readonly, strong, nonatomic) HTMLNode *node;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;

@@ -24,6 +24,8 @@
 
 - (instancetype)initWithString:(NSString *)selectorString NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  * A string representation of the selector.
  */

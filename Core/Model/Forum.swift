@@ -102,9 +102,16 @@ extension ForumMetadata {
     public class func metadataForForumsWithIDs(forumIDs: [String], inManagedObjectContext context: NSManagedObjectContext) -> [ForumMetadata] {
         let request = NSFetchRequest(entityName: entityName())
         request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
-        var error: NSError?
-        let results = context.executeFetchRequest(request, error: &error) as! [ForumMetadata]!
-        assert(results != nil, "error fetching: \(error!)")
+        var results : [ForumMetadata] = []
+        var success : Bool = false
+        do {
+            results = try context.executeFetchRequest(request) as! [ForumMetadata]
+            success = true;
+        }
+        catch {
+            print("error fetching: \(error)")
+        }
+        assert(success, "error fetching, crashing")
         return results
     }
 }

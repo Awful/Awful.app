@@ -23,7 +23,7 @@ final class ForumTreeDataSource: FetchedDataSource {
         
         var subforumDepth = -1
         var currentForum: Forum! = forum
-        do {
+        repeat {
             subforumDepth++
             currentForum = currentForum.parentForum
         } while currentForum != nil
@@ -52,7 +52,7 @@ final class ForumTreeDataSource: FetchedDataSource {
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionInfo = fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+        let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
         if let anyMetadata = sectionInfo.objects.first as? ForumMetadata {
             return anyMetadata.forum.group?.name
         } else {

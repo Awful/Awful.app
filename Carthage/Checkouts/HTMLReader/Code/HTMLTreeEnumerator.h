@@ -13,4 +13,6 @@
 
 - (instancetype)initWithNode:(HTMLNode *)node reversed:(BOOL)reversed NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 @end

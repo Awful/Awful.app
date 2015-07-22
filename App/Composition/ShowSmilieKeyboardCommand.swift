@@ -16,7 +16,7 @@ final class ShowSmilieKeyboardCommand: NSObject {
     private lazy var smilieKeyboard: SmilieKeyboard = {
         let keyboard = SmilieKeyboard()
         keyboard.delegate = self
-        keyboard.view.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+        keyboard.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         return keyboard
         }()
     
@@ -52,9 +52,9 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
             
             if let selectedTextRange = textView.selectedTextRange {
                 let startPosition = textView.positionFromPosition(selectedTextRange.start, offset: -(justInserted as NSString).length)
-                let range = textView.textRangeFromPosition(startPosition, toPosition: selectedTextRange.start)
-                if textView.textInRange(range) == justInserted {
-                    return textView.replaceRange(range, withText: "")
+                let range = textView.textRangeFromPosition(startPosition!, toPosition: selectedTextRange.start)
+                if textView.textInRange(range!) == justInserted {
+                    return textView.replaceRange(range!, withText: "")
                 }
             }
         }
@@ -68,9 +68,11 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
         
         smilie.managedObjectContext?.performBlock {
             smilie.metadata.lastUsedDate = NSDate()
-            var error: NSError?
-            if !smilie.managedObjectContext!.save(&error) {
-                NSLog("[%@ %@] error saving: %@", reflect(self).summary, __FUNCTION__, error!)
+            do {
+                try smilie.managedObjectContext!.save()
+            }
+            catch {
+                NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error saving: \(error)")
             }
         }
     }

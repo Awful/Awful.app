@@ -11,9 +11,13 @@ final class FormScrapingTests: ScrapingTestCase {
         let formElement = document.firstNodeMatchingSelector("form[name='vbform']")
         let form = AwfulForm(element: formElement)
         form.scrapeThreadTagsIntoManagedObjectContext(managedObjectContext)
-        var error: NSError?
-        let ok = managedObjectContext.save(&error)
-        assert(ok, "error saving context after scraping thread tags: \(error!)")
+        do {
+            try managedObjectContext.save()
+        }
+        catch {
+            fatalError("error saving context after scraping thread tags: \(error)")
+        }
+        
         return form
     }
 
@@ -66,7 +70,7 @@ final class FormScrapingTests: ScrapingTestCase {
         XCTAssertTrue(form.threadTags.count == 69)
         XCTAssertTrue(form.secondaryThreadTags.count == 4)
         let possibleSecondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
-        let secondaryTags = possibleSecondaryTags.filter { $0.threadTagID!.toInt()! < 5 }
+        let secondaryTags = possibleSecondaryTags.filter { Int($0.threadTagID!) < 5 }
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count)
     }
     

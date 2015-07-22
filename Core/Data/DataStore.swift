@@ -40,9 +40,11 @@ public final class DataStore: NSObject {
     @objc private func applicationDidEnterBackground(notification: NSNotification) {
         invalidatePruneTimer()
         
-        var error: NSError?
-        if !mainManagedObjectContext.save(&error) {
-            fatalError("error saving main managed object context: \(error!)")
+        do {
+            try mainManagedObjectContext.save()
+        }
+        catch {
+            fatalError("error saving main managed object context: \(error)")
         }
     }
     
@@ -70,12 +72,19 @@ public final class DataStore: NSObject {
         assert(persistentStore == nil, "persistent store already loaded")
         
         let fileManager = NSFileManager.defaultManager()
-        var error: NSError?
-        if !fileManager.createDirectoryAtURL(storeDirectoryURL, withIntermediateDirectories: true, attributes: nil, error: &error) {
-            fatalError("could not create directory at \(storeDirectoryURL): \(error!)")
+
+        do {
+            try fileManager.createDirectoryAtURL(storeDirectoryURL, withIntermediateDirectories: true, attributes: nil)
         }
-        if !storeDirectoryURL.setResourceValue(true, forKey: NSURLIsExcludedFromBackupKey, error: &error) {
-            NSLog("[%@ %@] failed to exclude %@ from backup. Error: %@", reflect(self).summary, __FUNCTION__, storeDirectoryURL, error!)
+        catch {
+            fatalError("could not create directory at \(storeDirectoryURL): \(error)")
+        }
+        
+        do {
+            try storeDirectoryURL.setResourceValue(true, forKey: NSURLIsExcludedFromBackupKey)
+        }
+        catch {
+            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
         }
         
         let storeURL = storeDirectoryURL.URLByAppendingPathComponent("AwfulCache.sqlite")
@@ -83,17 +92,20 @@ public final class DataStore: NSObject {
             NSMigratePersistentStoresAutomaticallyOption: true,
             NSInferMappingModelAutomaticallyOption: true
         ]
-        persistentStore = storeCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options, error: &error)
-        if persistentStore == nil {
-            if error!.domain == NSCocoaErrorDomain {
-                switch error!.code {
+        
+        do {
+            persistentStore = try storeCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options)
+        }
+        catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain {
+                switch error.code {
                 case NSMigrationMissingSourceModelError, NSMigrationMissingMappingModelError:
-                    fatalError("automatic migration failed at \(storeURL): \(error!)")
+                    fatalError("automatic migration failed at \(storeURL): \(error)")
                 default:
                     break
                 }
             }
-            fatalError("could not load persistent store at \(storeURL): \(error!)")
+            fatalError("could not load persistent store at \(storeURL): \(error)")
         }
     }
     
@@ -115,18 +127,22 @@ public final class DataStore: NSObject {
         NSNotificationCenter.defaultCenter().postNotificationName(DataStoreWillResetNotification, object: self)
         
         mainManagedObjectContext.reset()
-        
-        var error: NSError?
         if let persistentStore = persistentStore {
-            if !storeCoordinator.removePersistentStore(persistentStore, error: &error) {
-                NSLog("[%@ %@] error removing store at %@: %@", reflect(self).summary, __FUNCTION__, persistentStore.URL!, error!)
+            do {
+                try storeCoordinator.removePersistentStore(persistentStore)
+            }
+            catch {
+                NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error removing store at \(persistentStore.URL!): \(error)")
             }
             self.persistentStore = nil
         }
         assert(storeCoordinator.persistentStores.isEmpty, "unexpected persistent stores remain after reset")
         
-        if !NSFileManager.defaultManager().removeItemAtURL(storeDirectoryURL, error: &error) {
-            NSLog("[%@ %@] error deleting store directory %@: %@", reflect(self).summary, __FUNCTION__, storeDirectoryURL, error!)
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(storeDirectoryURL)
+        }
+        catch {
+            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error deleting store directory \(storeDirectoryURL): \(error)")
         }
         
         loadPersistentStore()
@@ -142,7 +158,7 @@ public final class LastModifiedContextObserver: NSObject {
     
     public init(managedObjectContext context: NSManagedObjectContext) {
         managedObjectContext = context
-        let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as! [NSEntityDescription]
+        let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
         relevantEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
         super.init()
         
@@ -158,7 +174,7 @@ public final class LastModifiedContextObserver: NSObject {
         let lastModifiedDate = NSDate()
         let insertedOrUpdated = context.insertedObjects.union(context.updatedObjects)
         context.performBlockAndWait {
-            let relevantObjects = filter(insertedOrUpdated) { contains(self.relevantEntities, ($0 as! NSManagedObject).entity) }
+            let relevantObjects = insertedOrUpdated.filter() { self.relevantEntities.contains(($0 as NSManagedObject).entity) }
             (relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
         }
     }

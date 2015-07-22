@@ -2603,6 +2603,13 @@ static inline BOOL is_lower(NSInteger c)
     return self;
 }
 
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class HTMLCharacterToken"
+                                 userInfo:nil];
+    return nil;
+}
+
 - (instancetype)leadingWhitespaceToken
 {
     CFRange range = CFRangeMake(0, self.string.length);

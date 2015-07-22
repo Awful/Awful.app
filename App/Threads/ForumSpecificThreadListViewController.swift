@@ -116,7 +116,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     private var justLoaded: Bool = false
     private lazy var filterButton: UIButton = { [unowned self] in
-        let button = UIButton.buttonWithType(.System) as! UIButton
+        let button = UIButton(type: .System) as UIButton
         button.frame.size.height = button.intrinsicContentSize().height + 8
         button.addTarget(self, action: "showFilterPicker:", forControlEvents: .TouchUpInside)
         return button
@@ -147,7 +147,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         return picker
         }()
     
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if context == &KVOContext {
             if object as! NSObject == forum && keyPath == "name" {
                 title = forum.name
