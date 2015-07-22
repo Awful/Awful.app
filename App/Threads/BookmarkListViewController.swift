@@ -146,9 +146,8 @@ final class BookmarkListViewController: ThreadListViewController {
     }()
     
     @objc private func setThread(thread: Thread, isBookmarked: Bool) {
-        let indexPath = dataSource.indexPathsForItem(thread)[0]
         undoManager.prepareWithInvocationTarget(self).setThread(thread, isBookmarked: !isBookmarked)
-        undoManager.setActionName(dataSource.tableView?(tableView, titleForDeleteConfirmationButtonForRowAtIndexPath: indexPath) ?? "")
+        undoManager.setActionName(isBookmarked ? "Bookmark" : "Unmark")
         
         thread.bookmarked = false
         AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] error in
