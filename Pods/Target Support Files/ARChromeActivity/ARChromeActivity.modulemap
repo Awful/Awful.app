@@ -1,0 +1,6 @@
+framework module ARChromeActivity {
+  umbrella header "ARChromeActivity-umbrella.h"
+
+  export *
+  module * { export * }
+}

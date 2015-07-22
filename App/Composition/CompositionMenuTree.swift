@@ -2,6 +2,7 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import PSMenuItem
 import UIKit
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.

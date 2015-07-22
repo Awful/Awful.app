@@ -1,0 +1,1 @@
+MRPROGRESS_OTHER_LDFLAGS = -framework "Accelerate" -framework "CoreGraphics" -framework "QuartzCore" -framework "UIKit"

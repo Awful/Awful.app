@@ -2,6 +2,8 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import MRProgress
+
 final class ReportPostViewController: AwfulViewController {
     private let post: Post
     

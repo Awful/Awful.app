@@ -3,15 +3,20 @@
 //  Copyright 2010 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "PostsPageViewController.h"
+@import ARChromeActivity;
 #import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
+@import GRMustache;
+@import MRProgress;
 #import "PostComposeViewController.h"
 #import "PostViewModel.h"
-#import <WebViewJavascriptBridge/WebViewJavascriptBridge.h>
+@import SVPullToRefresh;
+@import TUSafariActivity;
+@import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
 
 @interface PostsPageViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>

@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
+import YABrowserViewController
 
 private enum _URLMenuPresenter {
     case Link(URL: NSURL, imageURL: NSURL?)
