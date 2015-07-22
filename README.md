@@ -31,9 +31,8 @@ There are no *required* dependencies for building Awful; all third-party librari
 
 There are *optional* dependencies for building Awful. You only need them if you're working on the relevant part of the app.
 
-* [CocoaPods][] manages Objective-C library dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
+* [CocoaPods][] manages dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
     * **Even if you add a dependency directly to the Xcode project**, please update `Source/Settings/Acknowledgements.mustache` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
-* [Carthage][] checks out a few dependencies for us because CocoaPods can't handle the situation nicely (at least, I haven't figured out how). If you'd like to add or update a dependency and you can't find it in the Podfile, check the Cartfile.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node` (prepend `sudo` to avoid permissions errors).
@@ -46,7 +45,6 @@ There are unit tests for the HTML scraping, to help us find problems when markup
 
 [![Build Status](https://travis-ci.org/Awful/Awful.app.png)](https://travis-ci.org/Awful/Awful.app)
 
-[Carthage]: https://github.com/Carthage/Carthage
 [CocoaPods]: http://cocoapods.org/
 [HTMLReader]: https://github.com/nolanw/HTMLReader
 [LESS]: http://lesscss.org/#usage
