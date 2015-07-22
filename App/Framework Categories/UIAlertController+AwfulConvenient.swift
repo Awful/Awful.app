@@ -40,7 +40,7 @@ extension UIAlertController {
     }
 
     class func actionSheet() -> UIAlertController {
-        return self(title: nil, message: nil, preferredStyle: .ActionSheet)
+        return self.init(title: nil, message: nil, preferredStyle: .ActionSheet)
     }
 
     // MARK: Convenient actions

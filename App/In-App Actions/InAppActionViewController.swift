@@ -72,7 +72,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     }
     
     private func titleDidChange() {
-        if count(title ?? "") == 0 {
+        if (title ?? "").characters.count == 0 {
             if headerHeightConstraint == nil {
                 let constraint = NSLayoutConstraint(item: headerBackground, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0)
                 headerBackground.addConstraint(constraint)
@@ -115,7 +115,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     }
 }
 
-extension InAppActionViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension InAppActionViewController {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
@@ -143,7 +143,7 @@ extension InAppActionViewController: UICollectionViewDataSource, UICollectionVie
 
 private let cellIdentifier = "Cell"
 
-extension InAppActionViewController: UIPopoverPresentationControllerDelegate {
+extension InAppActionViewController {
     
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return .None

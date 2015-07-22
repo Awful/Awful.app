@@ -135,7 +135,7 @@ final class MessageListViewController: AwfulTableViewController {
     }
 }
 
-extension MessageListViewController: UITableViewDelegate {
+extension MessageListViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let message = dataSource.itemAtIndexPath(indexPath) as! PrivateMessage
         showMessage(message)
@@ -165,7 +165,7 @@ extension MessageListViewController: AwfulComposeTextViewControllerDelegate {
     }
 }
 
-extension MessageListViewController: UIStateRestoring {
+extension MessageListViewController {
     override func encodeRestorableStateWithCoder(coder: NSCoder) {
         super.encodeRestorableStateWithCoder(coder)
         
@@ -268,7 +268,7 @@ final class MessagesDataSource: FetchedDataSource {
     private func stringForSentDate(date: NSDate?) -> String {
         if let date = date {
             let calendar = NSCalendar.currentCalendar()
-            let units: NSCalendarUnit = .CalendarUnitDay | .CalendarUnitMonth | .CalendarUnitYear
+            let units: NSCalendarUnit = [.Day, .Month, .Year]
             let components = calendar.components(units, fromDate: date)
             let today = calendar.components(units, fromDate: NSDate())
             let formatter = components == today ? timeFormatter : dateFormatter

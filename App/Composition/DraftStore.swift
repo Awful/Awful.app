@@ -35,9 +35,11 @@ final class DraftStore {
     func saveDraft(draft: StorableDraft) {
         let URL = URLForDraftAtPath(draft.storePath)
         let enclosingDirectory = URL.URLByDeletingLastPathComponent!
-        var error: NSError?
-        if !NSFileManager.defaultManager().createDirectoryAtURL(enclosingDirectory, withIntermediateDirectories: true, attributes: nil, error: &error) {
-            fatalError("could not create draft folder at \(enclosingDirectory): \(error!)")
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtURL(enclosingDirectory, withIntermediateDirectories: true, attributes: nil)
+        }
+        catch {
+            fatalError("could not create draft folder at \(enclosingDirectory): \(error)")
         }
         
         NSKeyedArchiver.archiveRootObject(draft, toFile: URL.path!)
@@ -46,13 +48,15 @@ final class DraftStore {
     func deleteDraft(draft: StorableDraft) {
         let URL = URLForDraftAtPath(draft.storePath)
         let enclosingDirectory = URL.URLByDeletingLastPathComponent!
-        var error: NSError?
-        if !NSFileManager.defaultManager().removeItemAtURL(enclosingDirectory, error: &error) {
-            if error!.domain == NSCocoaErrorDomain && error!.code == NSFileNoSuchFileError {
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(enclosingDirectory)
+        }
+        catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
                 return
             }
             
-            fatalError("could not delete draft at \(enclosingDirectory): \(error!)")
+            fatalError("could not delete draft at \(enclosingDirectory): \(error)")
         }
     }
     
@@ -62,13 +66,15 @@ final class DraftStore {
     
     /// Deletes all drafts in the draft store's rootDirectory.
     func deleteAllDrafts() {
-        var error: NSError?
-        if !NSFileManager.defaultManager().removeItemAtURL(rootDirectory, error: &error) {
-            if error!.domain == NSCocoaErrorDomain && error!.code == NSFileNoSuchFileError {
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(rootDirectory)
+        }
+        catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
                 return
             }
             
-            fatalError("could not delete all drafts at \(rootDirectory): \(error!)")
+            fatalError("could not delete all drafts at \(rootDirectory): \(error)")
         }
     }
 }

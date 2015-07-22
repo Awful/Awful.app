@@ -27,7 +27,7 @@ final class ScrollViewKeyboardAvoider {
             
             let duration = note.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! NSTimeInterval
             let rawCurve = note.userInfo![UIKeyboardAnimationCurveUserInfoKey] as! Int
-            let options = UIViewAnimationOptions(UInt(rawCurve) << 16)
+            let options = UIViewAnimationOptions(rawValue: UInt(rawCurve) << 16)
             UIView.animateWithDuration(duration, delay: 0, options: options, animations: {
                 scrollView.contentInset.bottom = bottomInset
                 scrollView.scrollIndicatorInsets.bottom = bottomInset

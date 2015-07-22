@@ -45,5 +45,5 @@ func fixtureNamed(basename: String) -> HTMLDocument {
         fatalError("error loading fixture from \(fixtureURL): \(error)")
     }
     
-    return HTMLDocument(string: fixtureHTML as String?)
+    return HTMLDocument(string: (fixtureHTML as String?)!)
 }

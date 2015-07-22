@@ -13,9 +13,11 @@ class FetchedDataSource: NSObject {
         super.init()
         
         fetchedResultsController.delegate = self
-        var error: NSError?
-        if !fetchedResultsController.performFetch(&error) {
-            NSLog("[%@ %@] fetch did fail: %@", reflect(self).summary, __FUNCTION__, error!)
+        do {
+            try fetchedResultsController.performFetch()
+        }
+        catch {
+            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] fetch did fail: \(error)")
         }
     }
     
@@ -60,7 +62,7 @@ extension FetchedDataSource: DataSource {
     }
     
     func indexPathsForItem(item: AnyObject) -> [NSIndexPath] {
-        if let indexPath = fetchedResultsController.indexPathForObject(item) {
+        if let indexPath = fetchedResultsController.indexPathForObject(item as! NSManagedObject) {
             return [indexPath]
         } else {
             return []
@@ -69,7 +71,7 @@ extension FetchedDataSource: DataSource {
 }
 
 extension FetchedDataSource: NSFetchedResultsControllerDelegate {
-    func controller(controller: NSFetchedResultsController, didChangeObject object: AnyObject, atIndexPath oldIndexPath: NSIndexPath?, forChangeType change: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_: NSFetchedResultsController, didChangeObject object: NSManagedObject, atIndexPath oldIndexPath: NSIndexPath?, forChangeType change: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         storeUpdate { delegate in
             switch change {
             case .Insert:

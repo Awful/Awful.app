@@ -272,7 +272,7 @@ extension ForumSpecificThreadListViewController: AwfulThreadTagPickerControllerD
     }
 }
 
-extension ForumSpecificThreadListViewController: UIViewControllerRestoration, UIStateRestoring {
+extension ForumSpecificThreadListViewController: UIViewControllerRestoration {
     class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         var forumKey = coder.decodeObjectForKey(ForumKeyKey) as! ForumKey!
         if forumKey == nil {

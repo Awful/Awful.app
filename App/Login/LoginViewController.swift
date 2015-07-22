@@ -86,9 +86,9 @@ class LoginViewController: AwfulViewController {
     }
     
     @IBAction func didChangeUsername(sender: UITextField) {
-        if sender.text.isEmpty {
+        if sender.text!.isEmpty {
             state = .AwaitingUsername
-        } else if passwordTextField.text.isEmpty {
+        } else if passwordTextField.text!.isEmpty {
             state = .AwaitingPassword
         } else {
             state = .CanAttemptLogin
@@ -96,9 +96,9 @@ class LoginViewController: AwfulViewController {
     }
     
     @IBAction func didChangePassword(sender: UITextField) {
-        if sender.text.isEmpty {
+        if sender.text!.isEmpty {
             state = .AwaitingPassword
-        } else if usernameTextField.text.isEmpty {
+        } else if usernameTextField.text!.isEmpty {
             state = .AwaitingUsername
         } else {
             state = .CanAttemptLogin
@@ -172,7 +172,7 @@ extension LoginViewController {
         let userInfo = notification.userInfo as! [NSObject:NSObject]
         let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
         let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
-        let options = UIViewAnimationOptions(UInt(curve.unsignedIntegerValue) << 16)
+        let options = UIViewAnimationOptions(rawValue: UInt(curve.unsignedIntegerValue) << 16)
         UIView.animateWithDuration(duration.doubleValue, delay: 0, options: options, animations: {
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
             let windowKeyboardFrame = self.view.window!.convertRect(keyboardFrame, fromWindow: nil)

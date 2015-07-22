@@ -16,7 +16,7 @@ extension Array {
     /// Same as reduce() but with the first element used as the initial accumulated value.
     func reduce(combine: (Element, Element) -> Element) -> Element? {
         if let initial = first {
-            return Swift.reduce(dropFirst(self), initial, combine)
+            return dropFirst(self).reduce(initial, combine: combine)
         } else {
             return nil
         }
@@ -24,7 +24,7 @@ extension Array {
 }
 
 func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
-    return first(sequence, includeElement) != nil
+    return first(sequence, includeElement: includeElement) != nil
 }
 
 func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> T? {

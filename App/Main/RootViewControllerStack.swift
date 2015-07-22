@@ -75,7 +75,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         let roots = tabBarController.mutableArrayValueForKey("viewControllers")
         let messagesRestorationIdentifier = "Messages"
         var messagesTabIndex: Int?
-        for (i, root) in enumerate(roots) {
+        for (i, root) in roots.enumerate() {
             let navigationController = root as! UINavigationController
             let viewController = navigationController.viewControllers[0] as! UIViewController
             if viewController.restorationIdentifier == messagesRestorationIdentifier {
@@ -140,7 +140,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         // I can't recursively call a nested function? Toss it in a closure then I guess.
         var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
         search = { identifierComponents, viewControllers in
-            if let i = find(viewControllers.map({ $0.restorationIdentifier ?? "" }), identifierComponents[0]) {
+            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).indexOf(identifierComponents[0]) {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
@@ -199,12 +199,12 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 }
 
-extension RootViewControllerStack: UISplitViewControllerDelegate {
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController!, ontoPrimaryViewController primaryViewController: UIViewController!) -> Bool {
+extension RootViewControllerStack {
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let secondaryNavigationController = secondaryViewController as! UINavigationController
-        if let detail = secondaryNavigationController.viewControllers.first as! UIViewController? {
+        if let detail = secondaryNavigationController.viewControllers.first as UIViewController? {
             detail.navigationItem.leftBarButtonItem = nil
         }
         
@@ -214,7 +214,7 @@ extension RootViewControllerStack: UISplitViewControllerDelegate {
         }
         
         let combinedStack = primaryNavigationController.viewControllers + secondaryNavigationController.viewControllers
-        secondaryNavigationController.viewControllers = nil
+        secondaryNavigationController.viewControllers = []
         primaryNavigationController.viewControllers = combinedStack
         
         // This ugliness fixes the resulting navigation controller's toolbar appearing empty despite having the correct items. (i.e. none of the items' views are in the toolbar's view hierarchy.) Presumably if some fix is discovered for the grey screen mentioned atop kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior, I think this will be fixed too. Or at least it's worth testing out.

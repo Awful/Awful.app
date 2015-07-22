@@ -10,7 +10,7 @@ class ForumListViewController: AwfulTableViewController {
     private let treeDataSource: ForumTreeDataSource
     private var contextObserver: ForumContextObserver!
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
         favoriteDataSource = ForumFavoriteDataSource(managedObjectContext: managedObjectContext)
         treeDataSource = ForumTreeDataSource(managedObjectContext: managedObjectContext)
@@ -70,7 +70,7 @@ class ForumListViewController: AwfulTableViewController {
                     changedObjects.unionInPlace(updated)
                 }
             }
-            let forums = filter(changedObjects) { $0.entity == self.entity } as! [Forum]
+            let forums = changedObjects.filter() { $0.entity == self.entity } as! [Forum]
             if !forums.isEmpty {
                 changeBlock(forums)
             }
@@ -120,12 +120,14 @@ class ForumListViewController: AwfulTableViewController {
         if let forumIDs = AwfulSettings.sharedSettings().favoriteForums as! [String]? {
             AwfulSettings.sharedSettings().favoriteForums = nil
             let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs, inManagedObjectContext: managedObjectContext)
-            for (i, metadata) in enumerate(metadatas) {
+            for (i, metadata) in metadatas.enumerate() {
                 metadata.favoriteIndex = Int32(i)
                 metadata.favorite = true
             }
-            var error: NSError?
-            if !managedObjectContext.save(&error) {
+            do {
+                try managedObjectContext.save()
+            }
+            catch {
                 fatalError("error saving: \(error)")
             }
         }
@@ -201,7 +203,7 @@ extension UIView {
 
 extension ForumMetadata {
     func updateSubtreeVisibility() {
-        let childMetadatas = map(forum.childForums) { ($0 as! Forum).metadata }
+        let childMetadatas = forum.childForums.map() { ($0 as! Forum).metadata }
         for child in childMetadatas {
             if showsChildrenInForumList {
                 child.visibleInForumList = visibleInForumList
@@ -213,7 +215,7 @@ extension ForumMetadata {
     }
 }
 
-extension ForumListViewController: UITableViewDelegate {
+extension ForumListViewController {
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! ForumListSectionHeader
         header.sectionNameLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
@@ -225,7 +227,7 @@ extension ForumListViewController: UITableViewDelegate {
             header.sectionNameLabel.textColor = theme["listHeaderTextColor"]
             header.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
             header.sectionNameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-            header.textLabel.text = ""
+            header.textLabel!.text = ""
         }
     }
     
@@ -267,7 +269,7 @@ extension ForumListViewController: UITableViewDelegate {
 
 private let headerIdentifier = "Header"
 
-extension ForumListViewController: DataSourceDelegate {
+extension ForumListViewController {
     override func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
         tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
     }

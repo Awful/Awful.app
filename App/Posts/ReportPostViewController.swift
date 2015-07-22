@@ -43,7 +43,7 @@ final class ReportPostViewController: AwfulViewController {
     }
     
     @IBAction private func commentTextFieldDidChange(textField: UITextField) {
-        navigationItem.rightBarButtonItem?.enabled = count(textField.text ?? "") <= 60
+        navigationItem.rightBarButtonItem?.enabled = (textField.text ?? "").characters.count <= 60
     }
     
     private class RootView: UIView {

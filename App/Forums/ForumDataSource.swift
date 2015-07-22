@@ -53,7 +53,7 @@ final class ForumTreeDataSource: FetchedDataSource {
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
-        if let anyMetadata = sectionInfo.objects.first as? ForumMetadata {
+        if let anyMetadata = sectionInfo.objects!.first as? ForumMetadata {
             return anyMetadata.forum.group?.name
         } else {
             return nil
@@ -91,8 +91,8 @@ final class ForumFavoriteDataSource: FetchedDataSource {
         if editingStyle == .Delete {
             let metadata = itemAtIndexPath(indexPath) as! ForumMetadata
             userDrivenChange {
-                let sections = self.fetchedResultsController.sections as? [NSFetchedResultsSectionInfo]
-                let deleteEntireSection = sections?[indexPath.section].numberOfObjects == 1
+                let sections = self.fetchedResultsController.sections as [NSFetchedResultsSectionInfo]?
+                let deleteEntireSection = sections![indexPath.section].numberOfObjects == 1
                 
                 metadata.favorite = false
                 metadata.managedObjectContext?.processPendingChanges()
@@ -115,7 +115,7 @@ final class ForumFavoriteDataSource: FetchedDataSource {
             var favorites = self.fetchedResultsController.fetchedObjects as! [ForumMetadata]
             let moved = favorites.removeAtIndex(fromIndexPath.row)
             favorites.insert(moved, atIndex: toIndexPath.row)
-            for (i, metadata) in enumerate(favorites) {
+            for (i, metadata) in favorites.enumerate() {
                 metadata.favoriteIndex = Int32(i)
             }
         }
