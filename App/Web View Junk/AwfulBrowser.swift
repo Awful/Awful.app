@@ -12,11 +12,7 @@ extension YABrowserViewController {
         browser.URLString = URL.absoluteString
         browser.restorationIdentifier = "Awful Browser"
         browser.applicationActivities = [TUSafariActivity(), ARChromeActivity()]
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad || presentingViewController.navigationController == nil {
-            browser.presentFromViewController(presentingViewController, animated: true, completion: nil)
-        } else if let navigation = presentingViewController.navigationController {
-            navigation.pushViewController(browser, animated: true)
-        }
+        browser.presentFromViewController(presentingViewController, animated: true, completion: nil)
         return browser
     }
 }
