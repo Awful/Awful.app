@@ -107,6 +107,12 @@
     [self beginObservingTextChangeNotification];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.view endEditing:YES];
+}
+
 - (void)updateSubmitButtonItem
 {
     self.submitButtonItem.enabled = self.canSubmitComposition;

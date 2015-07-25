@@ -72,6 +72,12 @@ final class CompositionViewController: AwfulViewController {
         
         textView.flashScrollIndicators()
     }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        view.endEditing(true)
+    }
 }
 
 extension CompositionViewController: UIViewControllerRestoration {

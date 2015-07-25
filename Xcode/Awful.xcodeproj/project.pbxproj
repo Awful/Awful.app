@@ -3104,10 +3104,6 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
-				);
 				INFOPLIST_FILE = ../App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -3138,10 +3134,6 @@
 					"DEBUG=0",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)\"/../Carthage/Checkouts/**",
-				);
 				INFOPLIST_FILE = ../App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
