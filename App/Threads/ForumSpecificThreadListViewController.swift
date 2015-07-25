@@ -217,14 +217,18 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
             if let header = tableView.tableHeaderView {
                 tableView.contentOffset = CGPoint(x: 0, y: header.bounds.height)
             }
+            
             justLoaded = false
         }
+        
+        infiniteTableController.enabled = false
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        infiniteTableController.enabled = mostRecentlyLoadedPage > 1
+        let visibleThreads = dataSource.numberOfSections > 0 ? dataSource.tableView(tableView, numberOfRowsInSection: 0) : 0
+        infiniteTableController.enabled = mostRecentlyLoadedPage != 1 && visibleThreads > 0
         
         refreshIfNecessary()
         
