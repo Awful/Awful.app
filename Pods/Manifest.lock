@@ -51,7 +51,7 @@ PODS:
     - MRProgress/Helper
   - PSMenuItem (1.0.0)
   - SVPullToRefresh (HEAD based on 0.4.1)
-  - TUSafariActivity (1.0.2)
+  - TUSafariActivity (1.0.4)
   - WebViewJavascriptBridge (4.1.4)
   - YABrowserViewController (0.1.1)
 
@@ -67,7 +67,7 @@ DEPENDENCIES:
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - SVPullToRefresh (HEAD)
-  - TUSafariActivity (= 1.0.2)
+  - TUSafariActivity (= 1.0.4)
   - WebViewJavascriptBridge (= 4.1.4)
   - YABrowserViewController (= 0.1.1)
 
@@ -94,8 +94,8 @@ SPEC CHECKSUMS:
   MRProgress: 43bed03f7a1919add87aa583678c8ea244c1cd0d
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
-  TUSafariActivity: 32e3e5dc9123e5533a42d41e1c3246d12911a4a2
+  TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
   YABrowserViewController: d396a618c0a68e80ff2b182b02f74a56701283fc
 
-COCOAPODS: 0.38.0
+COCOAPODS: 0.38.2
