@@ -228,7 +228,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
         super.viewDidAppear(animated)
         
         let visibleThreads = dataSource.numberOfSections > 0 ? dataSource.tableView(tableView, numberOfRowsInSection: 0) : 0
-        infiniteTableController.enabled = mostRecentlyLoadedPage != 1 && visibleThreads > 0
+        infiniteTableController.enabled = mostRecentlyLoadedPage > 0 && visibleThreads > 0
         
         refreshIfNecessary()
         
