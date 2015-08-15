@@ -82,7 +82,7 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
                 }
             }
             
-            let margin = (bounds.width - maxElement(map(allAttributes, { CGRectGetMaxX($0.frame) }))) / 2
+            let margin = (bounds.width - allAttributes.map({ CGRectGetMaxX($0.frame) }).maxElement()!) / 2
             for attributes in allAttributes {
                 attributes.center.x += margin
             }

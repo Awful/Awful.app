@@ -84,7 +84,7 @@ public final class DataStore: NSObject {
             try storeDirectoryURL.setResourceValue(true, forKey: NSURLIsExcludedFromBackupKey)
         }
         catch {
-            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
+            NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
         }
         
         let storeURL = storeDirectoryURL.URLByAppendingPathComponent("AwfulCache.sqlite")
@@ -132,7 +132,7 @@ public final class DataStore: NSObject {
                 try storeCoordinator.removePersistentStore(persistentStore)
             }
             catch {
-                NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error removing store at \(persistentStore.URL!): \(error)")
+                NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] error removing store at \(persistentStore.URL!): \(error)")
             }
             self.persistentStore = nil
         }
@@ -142,7 +142,7 @@ public final class DataStore: NSObject {
             try NSFileManager.defaultManager().removeItemAtURL(storeDirectoryURL)
         }
         catch {
-            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] error deleting store directory \(storeDirectoryURL): \(error)")
+            NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] error deleting store directory \(storeDirectoryURL): \(error)")
         }
         
         loadPersistentStore()

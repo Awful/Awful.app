@@ -5,7 +5,7 @@
 import Foundation
 
 /// Awful NSUserActivity.userInfo keys, wrapped in a class for Objective-C exposure.
-@objc final class Handoff {
+@objc final class Handoff: NSObject {
     /// An NSNumber included in all Awful NSUserActivity.userInfo dictionaries for future-proofing.
     class var InfoVersionKey: String { return "version" }
     

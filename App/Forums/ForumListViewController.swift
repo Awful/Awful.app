@@ -258,7 +258,7 @@ extension ForumListViewController {
         openForum(metadata.forum, animated: true)
     }
     
-    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> (String!) {
         return dataSource.tableView?(tableView, titleForDeleteConfirmationButtonForRowAtIndexPath: indexPath)
     }
     

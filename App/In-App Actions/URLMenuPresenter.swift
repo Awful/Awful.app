@@ -180,10 +180,10 @@ private enum _URLMenuPresenter {
         
         var actionTitle: String {
             switch self {
-            case let .Vimeo:
+            case .Vimeo:
                 let app = appInstalled ? "Vimeo" : "Safari"
                 return "Open in \(app)"
-            case let .YouTube:
+            case .YouTube:
                 let app = appInstalled ? "YouTube" : "Safari"
                 return "Open in \(app)"
             }

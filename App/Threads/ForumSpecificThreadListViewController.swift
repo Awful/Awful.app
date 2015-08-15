@@ -25,7 +25,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     }
     
     override var sortByUnreadSettingsKey: String {
-        return AwfulSettingsKeys.forumThreadsSortedByUnread as String
+        return AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue() as String
     }
     
     override func makeNewDataSource() {
@@ -159,7 +159,7 @@ final class ForumSpecificThreadListViewController: ThreadListViewController {
     
     @objc private func settingsDidChange(note: NSNotification) {
         if let key = note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
-            if key == AwfulSettingsKeys.handoffEnabled {
+            if key == AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() {
                 if visible {
                     configureUserActivity()
                 }
@@ -334,7 +334,7 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
         let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)
         if let threadTag = threadTag {
             let morePredicate = NSPredicate(format: "threadTag == %@", threadTag)
-            fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([basePredicate, morePredicate])
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate, morePredicate])
         } else {
             fetchRequest.predicate = basePredicate
         }

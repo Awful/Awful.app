@@ -27,7 +27,8 @@ final class BookmarkListViewController: ThreadListViewController {
     }
     
     override var sortByUnreadSettingsKey: String {
-        return AwfulSettingsKeys.bookmarksSortedByUnread as String
+        // Try takeRetainedValue if this gets flushed
+        return AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String
     }
     
     override func makeNewDataSource() {
@@ -84,7 +85,7 @@ final class BookmarkListViewController: ThreadListViewController {
     
     @objc private func settingsDidChange(note: NSNotification) {
         if let key = note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
-            if key == AwfulSettingsKeys.handoffEnabled {
+            if key == AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() {
                 if visible {
                     configureUserActivity()
                 }

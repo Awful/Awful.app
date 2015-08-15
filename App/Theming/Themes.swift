@@ -21,7 +21,7 @@ import UIKit
 
     The theme named "default" is special: it is the parent of all themes that do not specify a parent. It's the root theme. All themes eventually point back to the default theme.
 */
-@objc final class Theme: Comparable {
+@objc final class Theme: NSObject, Comparable {
     let name: String
     private let dictionary: [String: AnyObject]
     private var parent: Theme?
@@ -101,12 +101,14 @@ import UIKit
             if let value = (dictionary[key] as! String?) ?? parent?[key] {
                 if key.hasSuffix("CSS") {
                     let URL = NSBundle.mainBundle().URLForResource(value, withExtension: nil)!
-                    var error: NSError?
-                    if let CSS = NSString(contentsOfURL: URL, usedEncoding: nil, error: &error) {
-                        return CSS as String
-                    } else {
+                    var CSS = NSString()
+                    do {
+                        try CSS = NSString(contentsOfURL: URL, usedEncoding: nil)
+                    }
+                    catch {
                         fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)")
                     }
+                    return CSS as String
                 } else {
                     return value
                 }
@@ -148,7 +150,7 @@ func < (lhs: Theme, rhs: Theme) -> Bool {
 }
 
 private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
-    return reduce(dictionary, [:]) { (var accum, kvpair) in
+    return dictionary.reduce([:]) { (var accum, kvpair) in
         if let nested = kvpair.1 as? [K: V] {
             for (k, v) in flatten(nested) {
                 accum[k] = v

@@ -345,7 +345,7 @@ final class ImageViewController: UIViewController {
         
         // MARK: UIGestureRecognizerDelegate
         
-        private func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        @objc private func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             if gestureRecognizer == panToDismiss {
                 return otherGestureRecognizer is UIPanGestureRecognizer
             }
@@ -490,9 +490,9 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
             fatalError("No data and no error in data task callback")
         }
     }
-    task!.resume()
+    task.resume()
     
-    progress.cancellationHandler = { task!.cancel() }
+    progress.cancellationHandler = { task.cancel() }
     return progress
 }
 

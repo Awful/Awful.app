@@ -97,7 +97,7 @@ private extension AwfulObjectKey {
         if subpredicates.count == 1 {
             return subpredicates[0]
         } else {
-            return NSCompoundPredicate.orPredicateWithSubpredicates(subpredicates)
+            return NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
     }
     
@@ -175,7 +175,7 @@ extension AwfulManagedObject {
         if subpredicates.count == 1 {
             request.predicate = subpredicates[0]
         } else {
-            request.predicate = NSCompoundPredicate.orPredicateWithSubpredicates(subpredicates)
+            request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
         
         var results : [AwfulManagedObject] = []

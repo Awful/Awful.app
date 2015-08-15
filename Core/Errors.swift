@@ -3,7 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc
-public class AwfulCoreError {
+public class AwfulCoreError : NSObject {
     public class var domain: String { return "AwfulCoreErrorDomain" }
     
     // These error codes were ported from AwfulErrorDomain.

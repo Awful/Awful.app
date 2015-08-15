@@ -17,7 +17,7 @@ class FetchedDataSource: NSObject {
             try fetchedResultsController.performFetch()
         }
         catch {
-            NSLog("[\(reflect(self).summary) \(__FUNCTION__)] fetch did fail: \(error)")
+            NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] fetch did fail: \(error)")
         }
     }
     
@@ -49,7 +49,7 @@ extension FetchedDataSource: DataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+        let sectionInfo = fetchedResultsController.sections![section]
         return sectionInfo.numberOfObjects
     }
     
@@ -71,7 +71,7 @@ extension FetchedDataSource: DataSource {
 }
 
 extension FetchedDataSource: NSFetchedResultsControllerDelegate {
-    func controller(_: NSFetchedResultsController, didChangeObject object: NSManagedObject, atIndexPath oldIndexPath: NSIndexPath?, forChangeType change: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_: NSFetchedResultsController, didChangeObject object: AnyObject, atIndexPath oldIndexPath: NSIndexPath?, forChangeType change: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         storeUpdate { delegate in
             switch change {
             case .Insert:
@@ -95,7 +95,7 @@ extension FetchedDataSource: NSFetchedResultsControllerDelegate {
             case .Delete:
                 delegate.dataSource?(self, didRemoveSections: NSIndexSet(index: sectionIndex))
             case .Update, .Move:
-                NSLog("[%@ %@] unexpected change type %@", reflect(self).summary, __FUNCTION__, change.rawValue)
+                NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] unexpected change type \(change.rawValue)")
             }
         }
     }

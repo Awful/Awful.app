@@ -16,7 +16,7 @@ extension Array {
     /// Same as reduce() but with the first element used as the initial accumulated value.
     func reduce(combine: (Element, Element) -> Element) -> Element? {
         if let initial = first {
-            return dropFirst(self).reduce(initial, combine: combine)
+            return self.dropFirst().reduce(initial, combine: combine)
         } else {
             return nil
         }
