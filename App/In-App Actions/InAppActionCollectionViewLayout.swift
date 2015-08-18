@@ -104,8 +104,8 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         }
         
         contentSize = CGSize(
-            width: max(maxElement(map(allAttributes, { CGRectGetMaxX($0.frame) })), bounds.width),
-            height: maxElement(map(allAttributes, { CGRectGetMaxY($0.frame) }))
+            width: max(allAttributes.map({ CGRectGetMaxX($0.frame) }).maxElement()!, bounds.width),
+            height: allAttributes.map({ CGRectGetMaxY($0.frame) }).maxElement()!
         )
     }
     
@@ -113,11 +113,11 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         return contentSize
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         return allAttributes.filter { CGRectIntersectsRect(rect, $0.frame) }
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> (UICollectionViewLayoutAttributes!) {
         return allAttributes[indexPath.item]
     }
     

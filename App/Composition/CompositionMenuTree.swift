@@ -69,7 +69,8 @@ final class CompositionMenuTree: NSObject {
     private func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
-        picker.mediaTypes = [kUTTypeImage]
+        let mediaType : NSString = kUTTypeImage as NSString
+        picker.mediaTypes = [mediaType as String]
         picker.allowsEditing = false
         picker.delegate = self
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad && sourceType == .PhotoLibrary {
@@ -98,7 +99,7 @@ final class CompositionMenuTree: NSObject {
         
         if let selection = textView.selectedTextRange {
             let afterImagePosition = textView.positionFromPosition(selection.end, offset: 1)
-            textView.selectedTextRange = textView.textRangeFromPosition(afterImagePosition, toPosition: afterImagePosition)
+            textView.selectedTextRange = textView.textRangeFromPosition(afterImagePosition!, toPosition: afterImagePosition!)
         }
         
         NSNotificationCenter.defaultCenter().postNotificationName(UITextViewTextDidChangeNotification, object: textView)
@@ -117,7 +118,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         }
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let edited = info[UIImagePickerControllerEditedImage] as! UIImage? {
             // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
             insertImage(edited)
@@ -191,7 +192,7 @@ private let URLItems = [
     MenuItem(title: "[url]", action: linkifySelection),
     MenuItem(title: "Paste", action: { tree in
         if let URL = UIPasteboard.generalPasteboard().awful_URL {
-            wrapSelectionInTag("[url=\(URL.absoluteString!)]")(tree: tree)
+            wrapSelectionInTag("[url=\(URL.absoluteString)]")(tree: tree)
         }
     })
 ]
@@ -224,7 +225,7 @@ private let videoSubmenuItems = [
         if let URL = videoTagURLForURL(UIPasteboard.generalPasteboard().awful_URL) {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
-                let tag = "[video]\(URL.absoluteString!)[/video]"
+                let tag = "[video]\(URL.absoluteString)[/video]"
                 let textView = tree.textView
                 textView.replaceRange(selectedTextRange, withText: tag)
                 textView.selectedRange = NSRange(location: textView.selectedRange.location + (tag as NSString).length, length: 0)
@@ -245,7 +246,7 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
         return URL
     case let (.Some(host), .Some(path)) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
         return URL
-    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && count(path) > 1:
+    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && path.characters.count > 1:
         if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true) {
             let videoID = URL.pathComponents![1] as! String
             components.host = "www.youtube.com"
@@ -262,16 +263,18 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
 }
 
 private func linkifySelection(tree: CompositionMenuTree) {
-    var error: NSError?
-    let detector: NSDataDetector! = NSDataDetector(types: NSTextCheckingType.Link.rawValue, error: &error)
-    if detector == nil {
-        return NSLog("[%@] error creating link data detector: %@", __FUNCTION__, error!)
+    var detector : NSDataDetector = NSDataDetector()
+    do {
+        detector = try NSDataDetector(types: NSTextCheckingType.Link.rawValue)
+    }
+    catch {
+        return NSLog("[\(__FUNCTION__)] error creating link data detector: \(error)")
     }
     
     let textView = tree.textView
     if let selectionRange = textView.selectedTextRange {
-        let selection: NSString = textView.textInRange(selectionRange)
-        let matches = detector.matchesInString(selection as String, options: nil, range: NSRange(location: 0, length: selection.length)) as! [NSTextCheckingResult]
+        let selection: NSString = textView.textInRange(selectionRange)!
+        let matches = detector.matchesInString(selection as String, options: [], range: NSRange(location: 0, length: selection.length)) as! [NSTextCheckingResult]
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
                 return wrapSelectionInTag("[url]")(tree: tree)
@@ -311,8 +314,8 @@ private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
     var selectedRange = textView.selectedRange
     
     if let selection = textView.selectedTextRange {
-        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end), withText: closingTag as String)
-        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start), withText: tagspec as String)
+        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end)!, withText: closingTag as String)
+        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start)!, withText: tagspec as String)
     }
     
     if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {

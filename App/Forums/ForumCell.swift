@@ -19,7 +19,7 @@ class ForumCell: DynamicTypeTableViewCell {
         set {
             if let newValue = newValue {
                 selectedBackgroundView = UIView()
-                selectedBackgroundView.backgroundColor = newValue
+                selectedBackgroundView!.backgroundColor = newValue
             } else {
                 selectedBackgroundView = nil
             }
@@ -55,7 +55,7 @@ final class ForumFavoriteCell: ForumCell {
     
     override func willTransitionToState(state: UITableViewCellStateMask) {
         super.willTransitionToState(state)
-        if state & .ShowingEditControlMask != nil {
+        if state.rawValue & UITableViewCellStateMask.ShowingEditControlMask.rawValue != 0 {
             starImageView.alpha = 0
             contentView.addConstraint(hiddenStarConstraint)
         } else {

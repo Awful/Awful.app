@@ -50,7 +50,7 @@ extension CompoundDataSource {
     
     private func nearestStartingGlobalSectionForGlobalSection(globalSection: Int) -> Int {
         var sectionsSoFar = 0
-        for (i, dataSource) in enumerate(dataSources.array as! [DataSource]) {
+        for (i, dataSource) in (dataSources.array as! [DataSource]).enumerate() {
             sectionsSoFar += dataSource.numberOfSections
             if sectionsSoFar > globalSection {
                 return i

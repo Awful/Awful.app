@@ -39,12 +39,14 @@ final class ProfileViewController: AwfulViewController {
         userContentController.addScriptMessageHandler(self, name: "showHomepageActions")
         for filename in ["zepto.min.js", "common.js", "profile.js"] {
             let URL = NSBundle.mainBundle().URLForResource(filename, withExtension: nil)
-            var error: NSError?
-            let source = NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding, error: &error) as String?
-            if source == nil {
+            var source : String = ""
+            do {
+                source = try NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding) as String
+            }
+            catch {
                 NSException(name: NSInternalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
             }
-            let script = WKUserScript(source: source!, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+            let script = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
             userContentController.addUserScript(script)
         }
         configuration.userContentController = userContentController
@@ -83,7 +85,7 @@ final class ProfileViewController: AwfulViewController {
         
         AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, profile) in
             if let error = error {
-                NSLog("[%@ %@] error fetching user profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, profile.user.username ?? "?", profile.user.userID ?? "?", error)
+                NSLog("[\(Mirror(reflecting:self)) \(__FUNCTION__)] error fetching user profile for \(profile.user.username) (ID \(profile.user.userID)): \(error)")
             } else {
                 self.renderProfile()
             }
@@ -92,10 +94,12 @@ final class ProfileViewController: AwfulViewController {
     
     private func renderProfile() {
         let viewModel = ProfileViewModel(profile: user.profile)
-        var error: NSError?
-        let HTML = GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil, error: &error)
-        if let error = error {
-            NSLog("[%@ %@] error rendering profile for %@ (ID %@): %@", reflect(self).summary, __FUNCTION__, user.username ?? "?", user.userID ?? "?", error)
+        var HTML = ""
+        do {
+            HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
+        }
+        catch {
+            NSLog("[\(Mirror(reflecting:self)) \(__FUNCTION__)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
         }
         webView.loadHTMLString(HTML, baseURL: baseURL)
     }
@@ -113,10 +117,10 @@ extension ProfileViewController: WKScriptMessageHandler {
         case "showHomepageActions":
             let body = message.body as! [String:String]
             if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL) {
-                showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]))
+                showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]!))
             }
         default:
-            println("\(self) received unknown message from webview: \(message.name)")
+            print("\(self) received unknown message from webview: \(message.name)")
         }
     }
     

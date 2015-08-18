@@ -198,7 +198,7 @@ extension Theme {
     }
     
     class var allThemes: [Theme] {
-        return sorted(bundledThemes.values)
+        return bundledThemes.values.sort()
     }
     
     class func currentThemeForForum(forum: Forum) -> Theme {
@@ -212,8 +212,8 @@ extension Theme {
     class func themesForForum(forum: Forum) -> [Theme] {
         let ubiquitousNames = AwfulSettings.sharedSettings().ubiquitousThemeNames as! [String]? ?? []
         let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID || $0.forumID == nil || contains(ubiquitousNames, $0.name)
+            $0.forumID == forum.forumID || $0.forumID == nil || ubiquitousNames.contains($0.name)
         }
-        return sorted(themes)
+        return themes.sort()
     }
 }

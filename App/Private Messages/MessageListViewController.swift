@@ -38,7 +38,7 @@ final class MessageListViewController: AwfulTableViewController {
     }
     
     @objc private func settingsDidChange(note: NSNotification) {
-        if note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String == AwfulSettingsKeys.showThreadTags {
+        if note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String == AwfulSettingsKeys.showThreadTags.takeUnretainedValue() {
             if isViewLoaded() {
                 tableView.reloadData()
             }

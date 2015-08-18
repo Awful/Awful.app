@@ -38,8 +38,15 @@ final class AcknowledgementsViewController: AwfulViewController {
             "textColor": textColor.awful_hexCode
         ]
         let bundle = NSBundle(forClass: AcknowledgementsViewController.self)
-        var error: NSError?
-        let HTML = GRMustacheTemplate.renderObject(context, fromResource: "Acknowledgements", bundle: bundle, error: &error)
+        
+        var HTML : String = ""
+        do {
+            HTML = try GRMustacheTemplate.renderObject(context, fromResource: "Acknowledgements", bundle: bundle)
+        }
+        catch {
+            NSLog("Didn't load view")
+        }
+        
         webView.loadHTMLString(HTML, baseURL: nil)
     }
     
@@ -57,7 +64,7 @@ final class AcknowledgementsViewController: AwfulViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if navigationController?.viewControllers?.first as? UIViewController == self {
+        if navigationController?.viewControllers.first! == self {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "didTapDone")
         } else {
             navigationItem.rightBarButtonItem = nil

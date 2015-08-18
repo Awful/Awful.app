@@ -75,7 +75,7 @@ final class ReplyWorkspace: NSObject {
             
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
-            KVOController.observe(draft, keyPath: "thread.title", options: .Initial | .New) { [unowned self] _, _, change in
+            KVOController.observe(draft, keyPath: "thread.title", options: [.Initial, .New]) { [unowned self] _, _, change in
                 self.compositionViewController.title = change[NSKeyValueChangeNewKey] as? String
             }
             
@@ -86,7 +86,7 @@ final class ReplyWorkspace: NSObject {
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
             navigationItem.rightBarButtonItem = rightButtonItem
-            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts as String, options: .Initial) { [unowned self] _, _, change in
+            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts.takeUnretainedValue() as String, options: .Initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
             }
             
@@ -153,7 +153,7 @@ final class ReplyWorkspace: NSObject {
         progressView.stopBlock = { _ in
             submitProgress.cancel() }
         
-        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: nil) { [weak self] _, object, _ in
+        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: []) { [weak self] _, object, _ in
             if let progress = object as? NSProgress {
                 if progress.fractionCompleted >= 1 || progress.cancelled {
                     progressView.stopBlock = nil
@@ -193,10 +193,10 @@ final class ReplyWorkspace: NSObject {
                 let precedingOffset = max(-2, textView.offsetFromPosition(selectedRange.start, toPosition: textView.beginningOfDocument))
                 if precedingOffset < 0 {
                     let precedingStart = textView.positionFromPosition(selectedRange.start, offset: precedingOffset)
-                    let precedingRange = textView.textRangeFromPosition(precedingStart, toPosition: selectedRange.start)
-                    let preceding = textView.textInRange(precedingRange)
+                    let precedingRange = textView.textRangeFromPosition(precedingStart!, toPosition: selectedRange.start)
+                    let preceding = textView.textInRange(precedingRange!)
                     if preceding != "\n\n" {
-                        if preceding.hasSuffix("\n") {
+                        if preceding!.hasSuffix("\n") {
                             replacement = "\n" + replacement
                         } else {
                             replacement = "\n\n" + replacement
@@ -213,7 +213,7 @@ final class ReplyWorkspace: NSObject {
 }
 
 extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
-    var objectRestorationClass: AnyObject.Type {
+    var objectRestorationClass: AnyObject.Type? {
         return ReplyWorkspace.self
     }
     
@@ -224,10 +224,10 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
         coder.encodeObject(compositionViewController, forKey: Keys.compositionViewController)
     }
     
-    class func objectWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIStateRestoring? {
+    class func objectWithRestorationIdentifierPath(identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
         if let path = coder.decodeObjectForKey(Keys.draftPath) as! String? {
             if let draft = DraftStore.sharedStore().loadDraft(path) as! ReplyDraft? {
-                return self(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last as! String?)
+                return self.init(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last )
             }
         }
         
@@ -235,7 +235,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
         return nil
     }
     
-    func decodeRestorableStateWithCoder(coder: NSCoder!) {
+    func decodeRestorableStateWithCoder(coder: NSCoder) {
         // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
         compositionViewController = coder.decodeObjectForKey(Keys.compositionViewController) as! CompositionViewController
     }

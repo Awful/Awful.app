@@ -47,7 +47,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        for (i, theme) in enumerate(themes) {
+        for (i, theme) in themes.enumerate() {
             let color = theme.descriptiveColor
             color.accessibilityLabel = theme.descriptiveName
             themePicker.insertThemeWithColor(color, atIndex: i)
@@ -59,7 +59,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     }
     
     private func updateSelectedThemeInPicker() {
-        if let i = find(themes, theme) {
+        if let i = themes.indexOf(theme) {
             themePicker.selectedThemeIndex = i
         }
     }

@@ -47,7 +47,7 @@ class ThreadListViewController: AwfulTableViewController {
         
         settingsObserver = NSNotificationCenter.defaultCenter().addObserverForName(AwfulSettingsDidChangeNotification, object: nil, queue: nil) { [unowned self] note in
             if let key = note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
-                if key == AwfulSettingsKeys.showThreadTags {
+                if key == AwfulSettingsKeys.showThreadTags.takeUnretainedValue() {
                     if self.isViewLoaded() {
                         self.tableView.reloadData()
                     }
@@ -61,7 +61,7 @@ class ThreadListViewController: AwfulTableViewController {
     private var settingsObserver: AnyObject?
 }
 
-extension ThreadListViewController: UITableViewDelegate {
+extension ThreadListViewController {
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let cell = cell as? ThreadCell {
             let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
@@ -76,7 +76,7 @@ extension ThreadListViewController: UITableViewDelegate {
             cell.separator.backgroundColor = theme["listSeparatorColor"]
             
             cell.selectedBackgroundView = UIView()
-            cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
+            cell.selectedBackgroundView!.backgroundColor = theme["listSelectedBackgroundColor"]
             
             switch (thread.unreadPosts, thread.starCategory) {
             case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"]

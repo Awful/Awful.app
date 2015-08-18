@@ -82,7 +82,7 @@ final class CompositionViewController: AwfulViewController {
 
 extension CompositionViewController: UIViewControllerRestoration {
     class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-        let composition = self()
+        let composition = self.init()
         composition.restorationIdentifier = identifierComponents.last as! String?
         return composition
     }

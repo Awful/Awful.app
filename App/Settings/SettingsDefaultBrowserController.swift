@@ -41,7 +41,7 @@ final class SettingsDefaultBrowserController: AwfulTableViewController {
         if cell.selectedBackgroundView == nil {
             cell.selectedBackgroundView = UIView()
         }
-        cell.selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
+        cell.selectedBackgroundView!.backgroundColor = theme["listSelectedBackgroundColor"]
         
         return cell
     }
@@ -64,6 +64,6 @@ final class SettingsDefaultBrowserController: AwfulTableViewController {
 private let cellIdentifier = "Cell"
 
 private func selectedBrowserIndexPath() -> NSIndexPath {
-    let row = find(AwfulDefaultBrowsers() as! [String], AwfulSettings.sharedSettings().defaultBrowser)!
+    let row = (AwfulDefaultBrowsers() as! [String]).indexOf(AwfulSettings.sharedSettings().defaultBrowser)!
     return NSIndexPath(forRow: row, inSection: 0)
 }
