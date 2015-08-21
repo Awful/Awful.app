@@ -270,7 +270,7 @@ final class NewReplyDraft: NSObject, ReplyDraft {
         super.init()
     }
     
-    convenience init(coder: NSCoder) {
+    convenience init?(coder: NSCoder) {
         let threadKey = coder.decodeObjectForKey(Keys.threadKey) as! ThreadKey
         let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Thread
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
@@ -302,7 +302,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
         super.init()
     }
     
-    convenience init(coder: NSCoder) {
+    convenience init?(coder: NSCoder) {
         let postKey = coder.decodeObjectForKey(Keys.postKey) as! PostKey
         let post = Post.objectForKey(postKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Post
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString

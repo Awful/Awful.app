@@ -36,7 +36,7 @@ public final class ForumKey: AwfulObjectKey {
         super.init(entityName: Forum.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         forumID = coder.decodeObjectForKey(forumIDKey) as! String
         super.init(coder: coder)
     }
@@ -71,7 +71,7 @@ public final class ForumGroupKey: AwfulObjectKey {
         super.init(entityName: ForumGroup.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         groupID = coder.decodeObjectForKey(groupIDKey) as! String
         super.init(coder: coder)
     }

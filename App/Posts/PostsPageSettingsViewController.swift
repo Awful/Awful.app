@@ -95,7 +95,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
         fatalError("Selectotron needs a posts view controller")
     }
     
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("NSCoding is not supported")
     }
 }

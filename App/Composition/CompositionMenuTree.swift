@@ -113,7 +113,7 @@ final class CompositionMenuTree: NSObject {
 
 extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        if viewController == (navigationController.viewControllers as! [UIViewController]).first {
+        if viewController == navigationController.viewControllers.first {
             viewController.navigationItem.title = "Insert Image"
         }
     }
@@ -248,10 +248,10 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
         return URL
     case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && path.characters.count > 1:
         if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true) {
-            let videoID = URL.pathComponents![1] as! String
+            let videoID = URL.pathComponents![1] 
             components.host = "www.youtube.com"
             components.path = "/watch"
-            var queryItems = components.queryItems as! [NSURLQueryItem]? ?? [NSURLQueryItem]()
+            var queryItems = components.queryItems ?? []
             queryItems.insert(NSURLQueryItem(name: "v", value: videoID), atIndex: 0)
             components.queryItems = queryItems
             return components.URL
@@ -274,7 +274,7 @@ private func linkifySelection(tree: CompositionMenuTree) {
     let textView = tree.textView
     if let selectionRange = textView.selectedTextRange {
         let selection: NSString = textView.textInRange(selectionRange)!
-        let matches = detector.matchesInString(selection as String, options: [], range: NSRange(location: 0, length: selection.length)) as! [NSTextCheckingResult]
+        let matches = detector.matchesInString(selection as String, options: [], range: NSRange(location: 0, length: selection.length))
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
                 return wrapSelectionInTag("[url]")(tree: tree)

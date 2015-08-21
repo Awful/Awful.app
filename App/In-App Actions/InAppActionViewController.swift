@@ -29,8 +29,8 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
             * When the popover is first presented.
             * Whenever the popover is repositioned, such as after a size or orientation change.
     
-        :param: sourceRect On input, the suggested target rectangle for the popover (in the coordinate space of the sourceView). Put a new value in this parameter to change the target rectangle.
-        :param: sourceView On input, the suggested target view for the popover. Put a new view in this parameter to change the target view.
+        - parameter sourceRect: On input, the suggested target rectangle for the popover (in the coordinate space of the sourceView). Put a new value in this parameter to change the target rectangle.
+        - parameter sourceView: On input, the suggested target view for the popover. Put a new view in this parameter to change the target view.
     */
     var popoverPositioningBlock: ((sourceRect: UnsafeMutablePointer<CGRect>, sourceView: AutoreleasingUnsafeMutablePointer<UIView?>) -> Void)?
     
@@ -46,7 +46,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
         self.init(nibName: "InAppActionSheet", bundle: nil)
     }
     
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("NSCoding is not supported")
     }
     

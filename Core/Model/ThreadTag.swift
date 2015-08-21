@@ -44,7 +44,7 @@ public final class ThreadTagKey: AwfulObjectKey {
         self.init(imageName: imageNameFromURL(imageURL), threadTagID: threadTagID)
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         imageName = coder.decodeObjectForKey(imageNameKey) as! String?
         threadTagID = coder.decodeObjectForKey(threadTagIDKey) as! String?
         super.init(coder: coder)

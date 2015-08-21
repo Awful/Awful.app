@@ -18,7 +18,7 @@ final class ReportPostViewController: AwfulViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "didTapSubmit")
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -61,7 +61,7 @@ final class ReportPostViewController: AwfulViewController {
             addSubview(commentTextField)
         }
 
-        required init(coder: NSCoder) {
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         

@@ -29,7 +29,7 @@ final class SettingsDefaultBrowserController: AwfulTableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) 
         let browsers = AwfulDefaultBrowsers() as! [String]
         let thisBrowser = browsers[indexPath.row]
         cell.textLabel?.text = thisBrowser

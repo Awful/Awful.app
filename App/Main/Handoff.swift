@@ -96,7 +96,7 @@ private func modelIdentifier() -> String {
     }
     
     let bufferSize = Int(size) + 1
-    var buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
+    let buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
     if sysctlbyname("hw.machine", buffer, &size, nil, 0) != 0 {
         NSLog("%@ failed to get model identifier", __FUNCTION__)
         buffer.dealloc(bufferSize)

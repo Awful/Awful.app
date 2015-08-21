@@ -135,7 +135,7 @@ public final class ThreadKey: AwfulObjectKey {
         super.init(entityName: Thread.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         threadID = coder.decodeObjectForKey(threadIDKey) as! String
         super.init(coder: coder)
     }

@@ -52,7 +52,7 @@ public final class PrivateMessageKey: AwfulObjectKey {
         super.init(entityName: PrivateMessage.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         messageID = coder.decodeObjectForKey(messageIDKey) as! String
         super.init(coder: coder)
     }

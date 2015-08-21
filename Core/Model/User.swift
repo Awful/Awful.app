@@ -56,7 +56,7 @@ public final class UserKey: AwfulObjectKey {
         super.init(entityName: User.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         userID = coder.decodeObjectForKey(userIDKey) as! String
         username = coder.decodeObjectForKey(usernameKey) as! String?
         super.init(coder: coder)

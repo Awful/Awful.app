@@ -40,7 +40,7 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
         self.entityName = entityName
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         entityName = coder.decodeObjectForKey(entityNameKey) as! String
         super.init()
     }

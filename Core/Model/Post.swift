@@ -74,7 +74,7 @@ public final class PostKey: AwfulObjectKey {
         super.init(entityName: Post.entityName())
     }
     
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         postID = coder.decodeObjectForKey(postIDKey) as! String
         super.init(coder: coder)
     }

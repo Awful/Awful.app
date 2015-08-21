@@ -19,7 +19,7 @@ final class ImageViewController: UIViewController {
         downloadProgress = downloadImage(imageURL, completion: didDownloadImage)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -157,7 +157,7 @@ final class ImageViewController: UIViewController {
             addSubview(spinner)
         }
 
-        required init(coder: NSCoder) {
+        required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
