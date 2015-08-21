@@ -97,6 +97,24 @@
     return [self initWithThread:thread author:nil];
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    NSAssert(nil, @"Use -initWithThread:…");
+    return [self initWithThread:nil author:nil];
+}
+
+// TODO: Not sure why these warnings appear here.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"NSCoding is not supported");
+    return [super initWithCoder:coder];
+}
+
+#pragma clang diagnostic pop
+
 - (NSInteger)numberOfPages
 {
     if (self.author) {

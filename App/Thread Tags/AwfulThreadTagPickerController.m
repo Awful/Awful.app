@@ -42,6 +42,24 @@
     return self;
 }
 
+- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
+{
+    NSAssert(nil, @"Use -initWithPrivateMessage: instead");
+    return [self initWithImageNames:nil secondaryImageNames:nil];
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    NSAssert(nil, @"Use -initWithPrivateMessage: instead");
+    return [self initWithImageNames:nil secondaryImageNames:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"NSCoding is not supported");
+    return [self initWithImageNames:nil secondaryImageNames:nil];
+}
+
 - (UIBarButtonItem *)cancelButtonItem
 {
     if (_cancelButtonItem) return _cancelButtonItem;

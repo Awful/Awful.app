@@ -18,6 +18,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(NO, @"Use -initWithPrivateMessage: instead");
+    return [self initWithPrivateMessage:nil];
+}
+
 - (NSString *)userInterfaceIdiom
 {
     return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"ipad" : @"iphone";

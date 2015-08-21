@@ -16,6 +16,18 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    NSAssert(nil, @"Use -initWithThemeColor: instead");
+    return [self initWithThemeColor:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"Use -initWithThemeColor: instead");
+    return [self initWithThemeColor:nil];
+}
+
 - (CGSize)intrinsicContentSize
 {
     return CGSizeMake(32, 32);

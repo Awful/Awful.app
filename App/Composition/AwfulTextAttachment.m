@@ -24,6 +24,12 @@
     return self;
 }
 
+- (instancetype)initWithData:(NSData *)contentData ofType:(NSString *)UTI
+{
+    NSAssert(nil, @"Use -initWithImage:assertURL:");
+    return [self initWithImage:nil assetURL:nil];
+}
+
 - (UIImage *)image
 {
     UIImage *image = super.image;
@@ -112,6 +118,10 @@ static UIImage * ThumbnailImageForImage(UIImage *image, CGSize thumbnailSize)
 
 #pragma mark - NSCoding
 
+// -initWithCoder: doesn't seem to be recognized as a designated initializer for NSTextAttachment, so we quash the warnings.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     if ((self = [super initWithCoder:coder])) {
@@ -119,6 +129,8 @@ static UIImage * ThumbnailImageForImage(UIImage *image, CGSize thumbnailSize)
     }
     return self;
 }
+
+#pragma clang diagnostic pop
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {

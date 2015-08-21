@@ -54,6 +54,18 @@
     return self;
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    NSAssert(nil, @"Use -initWithPrivateMessage: instead");
+    return [self initWithPrivateMessage:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"Use -initWithPrivateMessage: instead");
+    return [self initWithPrivateMessage:nil];
+}
+
 - (void)setTitle:(NSString *)title
 {
     [super setTitle:title];

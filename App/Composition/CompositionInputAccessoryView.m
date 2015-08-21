@@ -65,6 +65,18 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame inputViewStyle:(UIInputViewStyle)inputViewStyle
+{
+    NSAssert(nil, @"Use -initWithTextView: instead");
+    return [self initWithTextView:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"NSCoding is not supported");
+    return [self initWithTextView:nil];
+}
+
 - (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
 {
     _keyboardAppearance = keyboardAppearance;

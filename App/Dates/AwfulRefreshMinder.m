@@ -12,7 +12,7 @@
     static AwfulRefreshMinder *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[self alloc] initWithUserDefaults:[NSUserDefaults standardUserDefaults]];
+        instance = [self new];
     });
     return instance;
 }
@@ -28,6 +28,11 @@
         _userDefaults = userDefaults;
     }
     return self;
+}
+
+- (instancetype)init
+{
+    return [self initWithUserDefaults:[NSUserDefaults standardUserDefaults]];
 }
 
 - (BOOL)shouldRefreshForum:(Forum *)forum

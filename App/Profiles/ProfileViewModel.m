@@ -22,6 +22,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithProfile: instead");
+    return [self initWithProfile:nil];
+}
+
 - (NSString *)stylesheet
 {
     NSURL *URL = [[NSBundle mainBundle] URLForResource:@"profile" withExtension:@"css"];

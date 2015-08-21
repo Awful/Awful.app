@@ -44,6 +44,18 @@
     return self;
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    NSAssert(nil, @"Use -initWithForum: instead");
+    return [self initWithForum:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    NSAssert(nil, @"Use -initWithForum: instead");
+    return [self initWithForum:nil];
+}
+
 static NSString * const DefaultTitle = @"New Thread";
 
 - (void)setTitle:(NSString *)title

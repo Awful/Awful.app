@@ -21,6 +21,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithTextView: instead");
+    return [self initWithTextView:nil];
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

@@ -19,6 +19,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithPost: instead");
+    return [self initWithPost:nil];
+}
+
 - (NSString *)HTMLContents
 {
     NSString *innerHTML = self.post.innerHTML;

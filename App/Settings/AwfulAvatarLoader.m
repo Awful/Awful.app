@@ -37,6 +37,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithCacheFolder: instead");
+    return [self initWithCacheFolder:nil];
+}
+
 - (void)createCacheFolderIfNecessary
 {
     NSError *error;

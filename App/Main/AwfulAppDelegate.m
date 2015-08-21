@@ -100,7 +100,7 @@ static id _instance;
         [self.window addSubview:snapshot];
         [self themeDidChange];
         [UIView transitionFromView:snapshot
-                            toView:nil
+                            toView:self.window
                           duration:0.2
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         completion:^(BOOL finished)

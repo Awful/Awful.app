@@ -26,6 +26,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithRootViewController:managedObjectContext: instead");
+    return [self initWithRootViewController:nil managedObjectContext:nil];
+}
+
 - (JLRoutes *)routes
 {
     if (_routes) return _routes;
@@ -145,7 +151,7 @@
     
     #pragma mark /bookmarks
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkListViewController class]];
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
     }];
     
     #pragma mark /settings

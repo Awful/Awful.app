@@ -31,6 +31,12 @@
     return self;
 }
 
+- (instancetype)init
+{
+    NSAssert(nil, @"Use -initWithImageName:downloadedBlock: instead");
+    return [self initWithImageName:nil downloadedBlock:nil];
+}
+
 - (void)newThreadTagDidDownload:(NSNotification *)notification
 {
     NSString *newImageName = notification.userInfo[AwfulThreadTagLoaderNewImageNameKey];
