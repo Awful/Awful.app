@@ -204,7 +204,6 @@ extension CompoundDataSource: DataSourceDelegate {
     }
     
     func dataSource(localDataSource: DataSource, didRefreshItemsAtIndexPaths localIndexPaths: [NSIndexPath]) {
-        let sectionCounts = (dataSources.array as! [DataSource]).map { $0.numberOfSections }
         delegate?.dataSource?(self, didRefreshItemsAtIndexPaths: globalize(localDataSource, localIndexPaths))
     }
 

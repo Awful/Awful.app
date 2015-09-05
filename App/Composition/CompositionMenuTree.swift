@@ -58,7 +58,7 @@ final class CompositionMenuTree: NSObject {
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
         UIMenuController.sharedMenuController().menuVisible = false
-        if let selection = textView.selectedTextRange {
+        if let _ = textView.selectedTextRange {
             UIMenuController.sharedMenuController().setTargetRect(targetRect, inView: textView)
         }
         UIMenuController.sharedMenuController().setMenuVisible(true, animated: true)

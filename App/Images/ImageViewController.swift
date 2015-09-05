@@ -167,7 +167,7 @@ final class ImageViewController: UIViewController {
                     switch image {
                     case let .Animated(animatedImage):
                         imageView.animatedImage = animatedImage
-                    case let .Static(image: image, data: data):
+                    case let .Static(image: image, data: _):
                         imageView.image = image
                     case .Error:
                         imageView.image = nil
@@ -336,7 +336,7 @@ final class ImageViewController: UIViewController {
             if scrollView.zoomScale == scrollView.minimumZoomScale {
                 let midpoint = sender.locationInView(scrollView)
                 let halfSize = CGSize(width: scrollView.contentSize.width / 2, height: scrollView.contentSize.height / 2)
-                let quarterImageCenteredAtMidpoint = CGRect(origin: midpoint, size: CGSizeZero).rectByInsetting(dx: -halfSize.width / 2, dy: -halfSize.height / 2)
+                let quarterImageCenteredAtMidpoint = CGRect(origin: midpoint, size: CGSizeZero).insetBy(dx: -halfSize.width / 2, dy: -halfSize.height / 2)
                 scrollView.zoomToRect(quarterImageCenteredAtMidpoint, animated: true)
             } else {
                 scrollView.setZoomScale(1, animated: true)

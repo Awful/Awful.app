@@ -12,7 +12,7 @@ final class SlopButton: UIButton {
             return view
         }
         
-        if bounds.rectByInsetting(dx: -horizontalSlop, dy: -verticalSlop).contains(point) {
+        if bounds.insetBy(dx: -horizontalSlop, dy: -verticalSlop).contains(point) {
             return self
         }
         

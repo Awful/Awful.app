@@ -120,7 +120,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
         updateJumpButtonTitle()
     }
     
-    func pickerView(pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String {
+    func pickerView(pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String? {
         return "Page \(component + 1)"
     }
 }

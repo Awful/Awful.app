@@ -66,7 +66,7 @@ final class ReportPostViewController: AwfulViewController {
         }
         
         override func layoutSubviews() {
-            let availableArea = bounds.rectByInsetting(dx: 8, dy: 8)
+            let availableArea = bounds.insetBy(dx: 8, dy: 8)
             instructionLabel.frame = availableArea
             instructionLabel.sizeToFit()
             commentTextField.frame = availableArea

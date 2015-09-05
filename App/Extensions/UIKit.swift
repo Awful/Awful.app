@@ -15,7 +15,7 @@ extension UITextView {
             if rects.isEmpty {
                 return nil
             } else {
-                return rects.reduce(CGRect.nullRect) { $0.rectByUnion($1) }
+                return rects.reduce(CGRect.null) { $0.union($1) }
             }
         case .None:
             return nil
