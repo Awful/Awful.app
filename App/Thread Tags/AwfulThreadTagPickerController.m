@@ -10,9 +10,8 @@
 #import "AwfulThreadTagPickerLayout.h"
 #import "Awful-Swift.h"
 
-@interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverControllerDelegate>
+@interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverPresentationControllerDelegate>
 
-@property (strong, nonatomic) UIPopoverController *popover;
 @property (weak, nonatomic) UIView *presentingView;
 
 @property (readonly, strong, nonatomic) NSMutableDictionary *threadTagObservers;
@@ -116,25 +115,26 @@
 
 - (void)presentFromView:(UIView *)view
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.popover = [[UIPopoverController alloc] initWithContentViewController:self];
-        self.popover.delegate = self;
-        self.presentingView = view;
-        UIPopoverArrowDirection arrowDirections = UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown;
-        [self.popover presentPopoverFromRect:view.bounds inView:view permittedArrowDirections:arrowDirections animated:YES];
-    } else {
-        [view.awful_viewController presentViewController:[self enclosingNavigationController] animated:YES completion:nil];
+    UIViewController *presentedViewController = self;
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        presentedViewController = [self enclosingNavigationController];
     }
+    
+    self.presentingView = view;
+    
+    presentedViewController.modalPresentationStyle = UIModalPresentationPopover;
+    [view.awful_viewController presentViewController:presentedViewController animated:YES completion:nil];
+
+    UIPopoverPresentationController *popover = presentedViewController.popoverPresentationController;
+    popover.delegate = self;
+    popover.permittedArrowDirections = UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown;
+    popover.sourceRect = view.bounds;
+    popover.sourceView = view;
 }
 
 - (void)dismiss
 {
-    if (self.popover) {
-        [self.popover dismissPopoverAnimated:YES];
-        self.popover = nil;
-    } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)selectImageName:(NSString *)imageName
@@ -178,17 +178,18 @@
     return self.secondaryImageNames.count > 0 && index == 0;
 }
 
-#pragma mark - UIPopoverControllerDelegate
+#pragma mark - UIPopoverPresentationControllerDelegate
 
-- (void)popoverController:(UIPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView **)view
+- (void)popoverPresentationController:(UIPopoverPresentationController *)popoverPresentationController
+          willRepositionPopoverToRect:(inout CGRect *)rect
+                               inView:(inout UIView *__autoreleasing  _Nonnull *)view
 {
     *view = self.presentingView;
     *rect = (*view).bounds;
 }
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController
 {
-    self.popover = nil;
     if ([self.delegate respondsToSelector:@selector(threadTagPickerDidDismiss:)]) {
         [self.delegate threadTagPickerDidDismiss:self];
     }
