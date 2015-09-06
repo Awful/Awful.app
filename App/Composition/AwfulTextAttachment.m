@@ -6,6 +6,7 @@
 #import "AwfulFrameworkCategories.h"
 #import "ComposeTextView.h"
 @import ImageIO;
+@import Photos;
 
 @interface AwfulTextAttachment ()
 
@@ -57,8 +58,8 @@
     }
     
     // Try to get a thumbnail from the assets library. It's super fast.
-    UIImage *thumbnail;
-    if (self.assetURL) {
+    __block UIImage *thumbnail;
+    /*if (self.assetURL) {
         ALAssetsLibrary *library = [ALAssetsLibrary new];
         NSError *error;
         ALAsset *asset = [library awful_assetForURL:self.assetURL error:&error];
@@ -66,6 +67,20 @@
             thumbnail = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
         } else {
             NSLog(@"%s could not find asset, using image instead: %@", __PRETTY_FUNCTION__, error);
+        }
+    }*/
+    if (self.assetURL) {
+        PHFetchResult *results = [PHAsset fetchAssetsWithALAssetURLs:@[self.assetURL] options:nil];
+        if (results.count > 0) {
+            PHAsset *asset = [results firstObject];
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.synchronous = YES;
+            
+            __block NSDictionary *requestInfo;
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^void(UIImage *image, NSDictionary *info) {
+                thumbnail = image;
+                requestInfo = info;
+            }];
         }
     }
     
