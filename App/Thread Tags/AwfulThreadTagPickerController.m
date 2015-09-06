@@ -43,7 +43,7 @@
 
 - (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
 {
-    NSAssert(nil, @"Use -initWithPrivateMessage: instead");
+    NSAssert(nil, @"Use -initWithImageNames:secondaryImageNames: instead");
     return [self initWithImageNames:nil secondaryImageNames:nil];
 }
 
