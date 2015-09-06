@@ -4,14 +4,13 @@
 
 #import "AwfulMinusFixURLProtocol.h"
 
-@interface AwfulMinusFixURLProtocol () <NSURLConnectionDataDelegate>
+@interface AwfulMinusFixURLProtocol ()
+
+@property (nonatomic) NSURLSessionDataTask *downloadTask;
 
 @end
 
 @implementation AwfulMinusFixURLProtocol
-{
-    NSURLConnection *_connection;
-}
 
 // SA: Minus checks the HTTP Referer for inlined images and redirects to an HTML page if it doesn't like what it finds. Threads on the Forums are allowed through, but in Awful the requests don't have the right referrer. This simple protocol fixes that oversight.
 
@@ -44,37 +43,31 @@ static NSString * const DidSetRefererForMinusKey = @"com.awfulapp.Awful.DidSetRe
     NSMutableURLRequest *request = [self.request mutableCopy];
     [request setValue:@"http://forums.somethingawful.com/" forHTTPHeaderField:@"Referer"];
     [NSURLProtocol setProperty:@YES forKey:DidSetRefererForMinusKey inRequest:request];
-    _connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (response) {
+            [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
+        }
+        
+        if (error) {
+            [self.client URLProtocol:self didFailWithError:error];
+        } else {
+            if (data) {
+                [self.client URLProtocol:self didLoadData:data];
+            }
+            
+            [self.client URLProtocolDidFinishLoading:self];
+        }
+        
+        self.downloadTask = nil;
+    }];
+    [task resume];
+    self.downloadTask = task;
 }
 
 - (void)stopLoading
 {
-    [_connection cancel];
-    _connection = nil;
-}
-
-#pragma mark NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [self.client URLProtocol:self didLoadData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    [self.client URLProtocol:self didFailWithError:error];
-    _connection = nil;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    [self.client URLProtocolDidFinishLoading:self];
-    _connection = nil;
+    [self.downloadTask cancel];
+    self.downloadTask = nil;
 }
 
 @end

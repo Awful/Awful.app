@@ -4,14 +4,13 @@
 
 #import "AwfulWaffleimagesURLProtocol.h"
 
-@interface AwfulWaffleimagesURLProtocol () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface AwfulWaffleimagesURLProtocol ()
+
+@property (nonatomic) NSURLSessionDataTask *downloadTask;
 
 @end
 
 @implementation AwfulWaffleimagesURLProtocol
-{
-    NSURLConnection *_connection;
-}
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request
 {
@@ -46,56 +45,31 @@
 - (void)startLoading
 {
     NSURLRequest *request = [[self class] canonicalRequestForRequest:self.request];
-    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (response) {
+            [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
+        }
+        
+        if (error) {
+            [self.client URLProtocol:self didFailWithError:error];
+        } else {
+            if (data) {
+                [self.client URLProtocol:self didLoadData:data];
+            }
+            
+            [self.client URLProtocolDidFinishLoading:self];
+        }
+        
+        self.downloadTask = nil;
+    }];
+    [task resume];
+    self.downloadTask = task;
 }
 
 - (void)stopLoading
 {
-    [_connection cancel];
-}
-
-#pragma mark - NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    [self.client URLProtocol:self didFailWithError:error];
-}
-
-- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection
-{
-    return YES;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-{
-    [self.client URLProtocol:self didReceiveAuthenticationChallenge:challenge];
-}
-
-- (void)connection:(NSURLConnection *)connection didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-{
-    [self.client URLProtocol:self didCancelAuthenticationChallenge:challenge];
-}
-
-#pragma mark - NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:(NSURLCacheStoragePolicy)self.request.cachePolicy];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [self.client URLProtocol:self didLoadData:data];
-}
-
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
-{
-    return cachedResponse;
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    [self.client URLProtocolDidFinishLoading:self];
+    [self.downloadTask cancel];
+    self.downloadTask = nil;
 }
 
 @end
