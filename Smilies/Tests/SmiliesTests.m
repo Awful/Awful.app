@@ -22,7 +22,7 @@
     if (![storeCoordinator addPersistentStoreWithType:NSInMemoryStoreType configuration:nil URL:nil options:nil error:&error]) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"could not start store coordinator" userInfo:nil];
     }
-    self.managedObjectContext = [NSManagedObjectContext new];
+    self.managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     self.managedObjectContext.persistentStoreCoordinator = storeCoordinator;
 }
 
