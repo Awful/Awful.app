@@ -3,9 +3,6 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulTextAttachment.h"
-#import "AwfulFrameworkCategories.h"
-#import "ComposeTextView.h"
-@import ImageIO;
 @import Photos;
 
 @interface AwfulTextAttachment ()
@@ -27,7 +24,7 @@
 
 - (instancetype)initWithData:(NSData *)contentData ofType:(NSString *)UTI
 {
-    NSAssert(nil, @"Use -initWithImage:assertURL:");
+    NSAssert(nil, @"Use -initWithImage:assetURL:");
     return [self initWithImage:nil assetURL:nil];
 }
 
@@ -57,29 +54,16 @@
         return image;
     }
     
-    // Try to get a thumbnail from the assets library. It's super fast.
     __block UIImage *thumbnail;
-    /*if (self.assetURL) {
-        ALAssetsLibrary *library = [ALAssetsLibrary new];
-        NSError *error;
-        ALAsset *asset = [library awful_assetForURL:self.assetURL error:&error];
-        if (asset) {
-            thumbnail = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
-        } else {
-            NSLog(@"%s could not find asset, using image instead: %@", __PRETTY_FUNCTION__, error);
-        }
-    }*/
+    
+    // Photos framework is the fastest, best way to get a thumbnail, so try that first.
     if (self.assetURL) {
-        PHFetchResult *results = [PHAsset fetchAssetsWithALAssetURLs:@[self.assetURL] options:nil];
-        if (results.count > 0) {
-            PHAsset *asset = [results firstObject];
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        PHAsset *asset = [PHAsset fetchAssetsWithALAssetURLs:@[self.assetURL] options:nil].firstObject;
+        if (asset) {
+            PHImageRequestOptions *options = [PHImageRequestOptions new];
             options.synchronous = YES;
-            
-            __block NSDictionary *requestInfo;
-            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(100, 100) contentMode:PHImageContentModeAspectFit options:nil resultHandler:^void(UIImage *image, NSDictionary *info) {
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:thumbnailSize contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage *image, NSDictionary *info) {
                 thumbnail = image;
-                requestInfo = info;
             }];
         }
     }
