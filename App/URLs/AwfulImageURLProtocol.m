@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImageURLProtocol.h"
-#import "AwfulFrameworkCategories.h"
+#import "ALAssetsLibrary+AwfulConvenient.h"
 @import MobileCoreServices;
 
 @implementation AwfulImageURLProtocol
