@@ -3,8 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulImageURLProtocol.h"
-#import "ALAssetsLibrary+AwfulConvenient.h"
 @import MobileCoreServices;
+@import Photos;
 
 @implementation AwfulImageURLProtocol
 
@@ -26,29 +26,24 @@ static NSMutableDictionary *g_imageDatas;
     NSParameterAssert(assetURL);
     NSParameterAssert(path.length > 0);
     
-    ALAssetsLibrary *library = [ALAssetsLibrary new];
-    NSError *error;
-    ALAsset *asset = [library awful_assetForURL:assetURL error:&error];
+    PHAsset *asset = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil].firstObject;
     if (!asset) {
-        NSLog(@"%s could not find asset: %@", __PRETTY_FUNCTION__, error);
+        NSLog(@"%s could not find asset", __PRETTY_FUNCTION__);
         return nil;
     }
     
-    ALAssetRepresentation *representation = asset.defaultRepresentation;
-    if (UTTypeConformsTo((__bridge CFStringRef)representation.UTI, kUTTypeGIF)) {
-        NSMutableData *imageData = [NSMutableData dataWithLength:representation.size];
-        NSError *error;
-        NSUInteger copied = [representation getBytes:imageData.mutableBytes fromOffset:0 length:representation.size error:&error];
-        if (copied > 0) {
-            return [self serveImageData:imageData atPath:path];
+    __block NSURL *servedURL;
+    PHImageRequestOptions *options = [PHImageRequestOptions new];
+    options.synchronous = YES;
+    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+        if (imageData) {
+            servedURL = [self serveImageData:imageData atPath:path];
         } else {
-            NSLog(@"%s could not find data for asset: %@", __PRETTY_FUNCTION__, error);
-            return nil;
+            NSLog(@"%s could not get image data", __PRETTY_FUNCTION__);
         }
-    } else {
-        UIImage *image = [UIImage imageWithCGImage:asset.aspectRatioThumbnail];
-        return [self serveImage:image atPath:path];
-    }
+    }];
+    
+    return servedURL;
 }
 
 + (NSURL *)serveImageData:(NSData *)imageData atPath:(NSString *)path

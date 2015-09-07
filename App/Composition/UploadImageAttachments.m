@@ -3,9 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UploadImageAttachments.h"
-#import "ALAssetsLibrary+AwfulConvenient.h"
 #import "AwfulTextAttachment.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
+@import Photos;
 
 @interface ImageTag : NSObject
 
@@ -49,24 +49,16 @@ static NSArray * AttachmentsInString(NSAttributedString *string)
 static NSArray * AssetURLsOrImagesForTags(NSArray *tags)
 {
     NSMutableArray *images = [NSMutableArray new];
-    ALAssetsLibrary *library = [ALAssetsLibrary new];
     for (ImageTag *tag in tags) {
-        // Images in the assets library can be uploaded directly from the library.
         if (tag.attachment.assetURL) {
-            NSError *error;
-            ALAsset *asset = [library awful_assetForURL:tag.attachment.assetURL error:&error];
-            if (!asset) NSLog(@"%s error loading asset at URL %@: %@", __PRETTY_FUNCTION__, tag.attachment.assetURL, error);
-            // However, images that have been edited on the device (e.g. cropped in the Photos app) should fall back to the UIImage object, which has those edits applied. The asset library will only give us the unadjusted image.
-            ALAssetRepresentation *rep = asset.defaultRepresentation;
-            if (rep && !rep.metadata[@"AdjustmentXMP"]) {
-                tag.imageSize = rep.dimensions;
-                [images addObject:tag.attachment.assetURL];
-                continue;
-            }
+            // Images in the assets library can be uploaded directly from the library. Just need to grab the size of the image for timg purposes.
+            PHAsset *asset = [PHAsset fetchAssetsWithALAssetURLs:@[tag.attachment.assetURL] options:nil].firstObject;
+            tag.imageSize = CGSizeMake(asset.pixelWidth, asset.pixelHeight);
+            [images addObject:tag.attachment.assetURL];
+        } else {
+            tag.imageSize = tag.attachment.image.size;
+            [images addObject:tag.attachment.image];
         }
-        
-        tag.imageSize = tag.attachment.image.size;
-        [images addObject:tag.attachment.image];
     }
     return images;
 }
