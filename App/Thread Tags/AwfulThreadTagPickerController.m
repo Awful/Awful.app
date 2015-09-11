@@ -10,7 +10,9 @@
 #import "AwfulThreadTagPickerLayout.h"
 #import "Awful-Swift.h"
 
-@interface AwfulThreadTagPickerController () <UICollectionViewDelegateFlowLayout, UIPopoverPresentationControllerDelegate>
+@interface AwfulThreadTagPickerController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIPopoverPresentationControllerDelegate>
+
+@property (nonatomic) UICollectionView *collectionView;
 
 @property (weak, nonatomic) UIView *presentingView;
 
@@ -26,25 +28,13 @@
 
 - (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames
 {
-    AwfulThreadTagPickerLayout *layout = [AwfulThreadTagPickerLayout new];
-    layout.itemSize = CGSizeMake(60, 60);
-    layout.minimumInteritemSpacing = 5;
-    layout.minimumLineSpacing = 5;
-    if ((self = [super initWithCollectionViewLayout:layout])) {
+    if ((self = [super initWithNibName:nil bundle:nil])) {
         _imageNames = [imageNames copy];
         _secondaryImageNames = [secondaryImageNames copy];
         
         self.title = @"Choose Post Icon";
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.collectionView.allowsMultipleSelection = secondaryImageNames.count > 0;
     }
     return self;
-}
-
-- (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
-{
-    NSAssert(nil, @"Use -initWithImageNames:secondaryImageNames: instead");
-    return [self initWithImageNames:nil secondaryImageNames:nil];
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -57,6 +47,14 @@
 {
     NSAssert(nil, @"NSCoding is not supported");
     return [self initWithImageNames:nil secondaryImageNames:nil];
+}
+
+- (UICollectionView *)collectionView
+{
+    if (![self isViewLoaded]) {
+        [self view];
+    }
+    return _collectionView;
 }
 
 - (UIBarButtonItem *)cancelButtonItem
@@ -97,9 +95,21 @@
 
 - (void)loadView
 {
-    [super loadView];
+    self.view = [UIView new];
+    
+    AwfulThreadTagPickerLayout *layout = [AwfulThreadTagPickerLayout new];
+    layout.itemSize = CGSizeMake(60, 60);
+    layout.minimumInteritemSpacing = 5;
+    layout.minimumLineSpacing = 5;
+    
+    self.collectionView = [[UICollectionView alloc] initWithFrame:(CGRect){.size = self.view.bounds.size} collectionViewLayout:layout];
+    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:self.collectionView];
     [self.collectionView registerClass:[AwfulThreadTagPickerCell class] forCellWithReuseIdentifier:CellIdentifier];
     [self.collectionView registerClass:[AwfulSecondaryTagPickerCell class] forCellWithReuseIdentifier:SecondaryCellIdentifier];
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+    self.collectionView.allowsMultipleSelection = self.secondaryImageNames.count > 0;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         const CGFloat popoverCornerRadius = 10;

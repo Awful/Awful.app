@@ -8,7 +8,7 @@
 /**
  * An AwfulThreadTagPickerController is used to choose a thread tag (and maybe a secondary thread tag too) from a list of choices.
  */
-@interface AwfulThreadTagPickerController : AwfulCollectionViewController
+@interface AwfulThreadTagPickerController : AwfulViewController
 
 - (instancetype)initWithImageNames:(NSArray *)imageNames secondaryImageNames:(NSArray *)secondaryImageNames NS_DESIGNATED_INITIALIZER;
 
