@@ -33,9 +33,6 @@ class ThreadCell: DynamicTypeTableViewCell {
         contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
         
         // Can't do this in IB.
-        addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
-        
-        // Can't do this in IB.
         contentView.addConstraint(NSLayoutConstraint(item: pageIcon, attribute: .Bottom, relatedBy: .Equal, toItem: numberOfPagesLabel, attribute: .Baseline, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
