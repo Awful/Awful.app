@@ -26,7 +26,6 @@ target :Awful do
   pod 'SVPullToRefresh', :head
   pod 'TUSafariActivity', '1.0.4'
   pod 'WebViewJavascriptBridge', '4.1.4'
-  pod 'YABrowserViewController', '0.1.1'
 end
 
 target :Core do

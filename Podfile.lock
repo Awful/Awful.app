@@ -53,7 +53,6 @@ PODS:
   - SVPullToRefresh (HEAD based on 0.4.1)
   - TUSafariActivity (1.0.4)
   - WebViewJavascriptBridge (4.1.4)
-  - YABrowserViewController (0.1.1)
 
 DEPENDENCIES:
   - AFNetworking (= 2.5.2)
@@ -69,7 +68,6 @@ DEPENDENCIES:
   - SVPullToRefresh (HEAD)
   - TUSafariActivity (= 1.0.4)
   - WebViewJavascriptBridge (= 4.1.4)
-  - YABrowserViewController (= 0.1.1)
 
 EXTERNAL SOURCES:
   PSMenuItem:
@@ -96,6 +94,5 @@ SPEC CHECKSUMS:
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
-  YABrowserViewController: d396a618c0a68e80ff2b182b02f74a56701283fc
 
 COCOAPODS: 0.38.2

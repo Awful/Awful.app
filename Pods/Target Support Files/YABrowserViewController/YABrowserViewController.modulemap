@@ -1,6 +1,0 @@
-framework module YABrowserViewController {
-  umbrella header "YABrowserViewController-umbrella.h"
-
-  export *
-  module * { export * }
-}

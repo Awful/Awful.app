@@ -66,7 +66,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'Pods-Awful/SVPullToRefresh.framework'
   install_framework 'Pods-Awful/TUSafariActivity.framework'
   install_framework 'Pods-Awful/WebViewJavascriptBridge.framework'
-  install_framework 'Pods-Awful/YABrowserViewController.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'Pods-Awful/AFNetworking.framework'
@@ -83,5 +82,4 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'Pods-Awful/SVPullToRefresh.framework'
   install_framework 'Pods-Awful/TUSafariActivity.framework'
   install_framework 'Pods-Awful/WebViewJavascriptBridge.framework'
-  install_framework 'Pods-Awful/YABrowserViewController.framework'
 fi

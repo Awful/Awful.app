@@ -25,7 +25,7 @@ private enum _URLMenuPresenter {
         let browser = AwfulSettings.sharedSettings().defaultBrowser
         switch browser {
         case AwfulDefaultBrowserAwful:
-            YABrowserViewController.presentBrowserForURL(URL, fromViewController: presenter)
+            AwfulBrowser.presentBrowserForURL(URL, fromViewController: presenter)
         case AwfulDefaultBrowserSafari:
             UIApplication.sharedApplication().openURL(URL)
         case AwfulDefaultBrowserChrome:
@@ -47,7 +47,7 @@ private enum _URLMenuPresenter {
                 switch browser {
                 case AwfulDefaultBrowserAwful:
                     alert.addAction(UIAlertAction(title: "Open in Awful", style: .Default, handler: { _ in
-                        YABrowserViewController.presentBrowserForURL(linkURL, fromViewController: presenter)
+                        AwfulBrowser.presentBrowserForURL(linkURL, fromViewController: presenter)
                         return
                     }))
                     
@@ -110,7 +110,7 @@ private enum _URLMenuPresenter {
             if let videoURL = VideoURL(rawURL) {
                 alert.title = videoURL.unembeddedURL.absoluteString
                 alert.addAction(UIAlertAction(title: "Open", style: .Default, handler: { _ in
-                    YABrowserViewController.presentBrowserForURL(videoURL.unembeddedURL, fromViewController: presenter)
+                    AwfulBrowser.presentBrowserForURL(videoURL.unembeddedURL, fromViewController: presenter)
                     return
                 }))
                 alert.addAction(UIAlertAction(title: videoURL.actionTitle, style: .Default, handler: { _ in
