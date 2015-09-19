@@ -55,6 +55,13 @@
 		<string>com.awfulapp.Awful.activity.listing-threads</string>
 		<string>com.awfulapp.Awful.activity.reading-message</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlechrome</string>
+		<string>org-appextension-feature-password-management</string>
+		<string>vimeo</string>
+		<string>youtube</string>
+	</array>
 	<key>UIInterfaceOrientation</key>
 	<string>UIInterfaceOrientationPortrait</string>
 	<key>UILaunchStoryboardName</key>
