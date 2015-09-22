@@ -39,9 +39,16 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>30700</string>
+	<string>30701</string>
 	<key>ImgurAnonymousAPIClientID</key>
 	<string>4db466addcb5cfc</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlechrome</string>
+		<string>org-appextension-feature-password-management</string>
+		<string>vimeo</string>
+		<string>youtube</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -54,13 +61,6 @@
 		<string>com.awfulapp.Awful.activity.browsing-posts</string>
 		<string>com.awfulapp.Awful.activity.listing-threads</string>
 		<string>com.awfulapp.Awful.activity.reading-message</string>
-	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>googlechrome</string>
-		<string>org-appextension-feature-password-management</string>
-		<string>vimeo</string>
-		<string>youtube</string>
 	</array>
 	<key>UIInterfaceOrientation</key>
 	<string>UIInterfaceOrientationPortrait</string>
