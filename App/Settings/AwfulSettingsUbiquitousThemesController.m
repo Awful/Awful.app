@@ -16,23 +16,33 @@
 
 @implementation AwfulSettingsUbiquitousThemesController
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (instancetype)init
 {
-    return [self initWithStyle:UITableViewStyleGrouped];
-}
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+    if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
         self.title = @"Forum-Specific Themes";
         [self loadData];
     }
     return self;
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
+- (instancetype)initWithStyle:(UITableViewStyle)style
+{
+    return [self init];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    return [self init];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadData

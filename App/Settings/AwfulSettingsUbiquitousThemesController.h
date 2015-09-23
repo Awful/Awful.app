@@ -7,4 +7,6 @@
 /// An AwfulSettingsUbiquitousThemesController handles selecting forum-specific themes that should be available in all forums.
 @interface AwfulSettingsUbiquitousThemesController : AwfulTableViewController
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end
