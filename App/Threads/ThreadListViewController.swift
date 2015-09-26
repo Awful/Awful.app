@@ -262,18 +262,6 @@ class ThreadDataSource: FetchedDataSource {
     }
 }
 
-extension Int {
-    func clamp<T: IntervalType where T.Bound == Int>(interval: T) -> Int {
-        if self < interval.start {
-            return interval.start
-        } else if self > interval.end {
-            return interval.end
-        } else {
-            return self
-        }
-    }
-}
-
 func nonempty(s: String?) -> String? {
     if let s = s {
         return s.isEmpty ? nil : s
