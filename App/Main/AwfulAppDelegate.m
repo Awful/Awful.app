@@ -102,7 +102,7 @@ static id _instance;
         [UIView transitionFromView:snapshot
                             toView:self.window
                           duration:0.2
-                           options:UIViewAnimationOptionTransitionCrossDissolve
+                           options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionShowHideTransitionViews
                         completion:^(BOOL finished)
          {
              [snapshot removeFromSuperview];
