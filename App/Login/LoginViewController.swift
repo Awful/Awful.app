@@ -170,6 +170,14 @@ extension LoginViewController: UITextFieldDelegate {
 extension LoginViewController {
     @objc private func keyboardWillChangeFrame(notification: NSNotification) {
         let userInfo = notification.userInfo as! [NSObject:NSObject]
+
+        // For whatever insane reason, iOS9 gives you keyboard events for things that happen in extensions.
+        // Check to make sure the keyboard is actually "ours", because `self.view.window` is apparently nil if 1Password is using the keyboard.
+        let isLocal = userInfo[UIKeyboardIsLocalUserInfoKey] as? Bool
+        if (isLocal != nil && isLocal == false) {
+            return;
+        }
+        
         let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
         let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
         let options = UIViewAnimationOptions(rawValue: UInt(curve.unsignedIntegerValue) << 16)
