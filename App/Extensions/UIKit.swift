@@ -4,6 +4,21 @@
 
 import UIKit
 
+extension UITableViewCell {
+    /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
+    var selectedBackgroundColor: UIColor? {
+        get {
+            return selectedBackgroundView?.backgroundColor
+        }
+        set {
+            if selectedBackgroundView == nil {
+                selectedBackgroundView = UIView()
+            }
+            selectedBackgroundView?.backgroundColor = newValue
+        }
+    }
+}
+
 extension UITextView {
     /// Returns a rectangle that encompasses the current selection in the text view, or nil if there is no selection.
     var selectedRect: CGRect? {
