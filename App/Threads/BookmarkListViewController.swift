@@ -207,4 +207,6 @@ final class BookmarkDataSource: ThreadDataSource {
             deletionDelegate?.setThread(thread, isBookmarked: false)
         }
     }
+    
+    // TODO: unconditionally hide sticky image for bookmarked thread cells.
 }

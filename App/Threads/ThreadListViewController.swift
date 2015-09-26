@@ -2,7 +2,6 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-/// Lists threads in ThreadCells.
 class ThreadListViewController: AwfulTableViewController {
     var dataSource: DataSource! {
         didSet {
@@ -42,7 +41,7 @@ class ThreadListViewController: AwfulTableViewController {
         
         tableView.estimatedRowHeight = 75
         tableView.separatorStyle = .None
-        tableView.registerNib(UINib(nibName: "ThreadCell", bundle: nil), forCellReuseIdentifier: "Thread")
+        tableView.registerNib(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
         tableView.dataSource = dataSource
         
         settingsObserver = NSNotificationCenter.defaultCenter().addObserverForName(AwfulSettingsDidChangeNotification, object: nil, queue: nil) { [unowned self] note in
@@ -63,29 +62,12 @@ class ThreadListViewController: AwfulTableViewController {
 
 extension ThreadListViewController {
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = cell as? ThreadCell {
-            let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
-
-            cell.backgroundColor = theme["listBackgroundColor"]
-            cell.titleLabel.textColor = theme["listTextColor"]
-            cell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"]
-            cell.pageIcon.borderColor = theme["listSecondaryTextColor"]!
-            cell.killedByLabel.textColor = theme["listSecondaryTextColor"]
-            cell.tintColor = theme["listSecondaryTextColor"]
-            cell.fontNameForLabels = theme["listFontName"]
-            cell.separator.backgroundColor = theme["listSeparatorColor"]
-            
-            cell.selectedBackgroundView = UIView()
-            cell.selectedBackgroundView!.backgroundColor = theme["listSelectedBackgroundColor"]
-            
-            switch (thread.unreadPosts, thread.starCategory) {
-            case (0, _): cell.unreadRepliesLabel.textColor = theme["unreadBadgeGrayColor"]
-            case (_, .Orange): cell.unreadRepliesLabel.textColor = theme["unreadBadgeOrangeColor"]
-            case (_, .Red): cell.unreadRepliesLabel.textColor = theme["unreadBadgeRedColor"]
-            case (_, .Yellow): cell.unreadRepliesLabel.textColor = theme["unreadBadgeYellowColor"]
-            case (_, .None): cell.unreadRepliesLabel.textColor = theme["unreadBadgeBlueColor"]
-            }
-        }
+        guard let
+            cell = cell as? ThreadTableViewCell,
+            thread = dataSource.itemAtIndexPath(indexPath) as? Thread
+        else { return }
+        
+        cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -104,87 +86,26 @@ class ThreadDataSource: FetchedDataSource {
     private var threadTagObservers = [String: AwfulNewThreadTagObserver]()
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Thread", forIndexPath: indexPath) as! ThreadCell
+        // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
+        let cell = tableView.dequeueReusableCellWithIdentifier(ThreadTableViewCell.identifier, forIndexPath: indexPath) as! ThreadTableViewCell
         let thread = itemAtIndexPath(indexPath) as! Thread
-        cell.setLongPressTarget(self, action: "showThreadActions:")
         
-        cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
-        if cell.showsTag {
-            if let imageName = nonempty(thread.threadTag?.imageName) {
-                if let image = AwfulThreadTagLoader.imageNamed(imageName) {
-                    cell.tagImageView.image = image
-                } else {
-                    cell.tagImageView.image = AwfulThreadTagLoader.emptyThreadTagImage()
-                    
-                    let threadID = thread.threadID
-                    threadTagObservers[threadID] = AwfulNewThreadTagObserver(imageName: imageName) { [unowned self] image in
-                        if let indexPath = tableView.indexPathForCell(cell) {
-                            let thread = self.itemAtIndexPath(indexPath) as! Thread
-                            if thread.threadID == threadID {
-                                cell.tagImageView.image = image
-                            }
-                        }
-                        self.threadTagObservers.removeValueForKey(threadID)
-                    }
-                }
-            } else {
-                cell.tagImageView.image = AwfulThreadTagLoader.emptyThreadTagImage()
-            }
-            
-            if let secondaryImageName = nonempty(thread.secondaryThreadTag?.imageName) {
-                cell.secondaryTagImageView.image = AwfulThreadTagLoader.imageNamed(secondaryImageName)
-                cell.secondaryTagImageView.hidden = false
-            } else {
-                cell.secondaryTagImageView.hidden = true
-            }
+        cell.longPress.removeTarget(self, action: nil)
+        cell.longPress.addTarget(self, action: "didLongPress:")
         
-            cell.showsRating = AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true
-            if cell.showsRating {
-                let rating = lroundf(thread.rating).clamp(0...5)
-                if rating == 0 {
-                    cell.showsRating = false
-                } else {
-                    cell.ratingImageView.image = UIImage(named: "rating\(rating)")
-                }
-            }
-        }
-        
-        cell.titleLabel.text = thread.title
-        
-        let faded = thread.closed && !thread.sticky
-        cell.tagAndRatingContainerView.alpha = faded ? 0.5 : 1
-        cell.titleLabel.enabled = !faded
-        
-        cell.numberOfPagesLabel.text = "\(thread.numberOfPages)"
-        
-        if thread.beenSeen {
-            cell.killedByLabel.text = "Killed by " + (thread.lastPostAuthorName ?? "")
-            cell.unreadRepliesLabel.text = "\(thread.unreadPosts)"
-        } else {
-            cell.killedByLabel.text = "Posted by " + (thread.author?.username ?? "")
-            cell.unreadRepliesLabel.text = nil
-        }
-        
-        var accessibilityLabel = thread.title ?? ""
-        if thread.beenSeen {
-            accessibilityLabel += ", \(thread.unreadPosts) unread post\(sifplural(thread.unreadPosts))"
-        }
-        if thread.sticky {
-            accessibilityLabel += ", sticky"
-        }
-        accessibilityLabel += ". \(thread.numberOfPages) page\(sifplural(thread.numberOfPages))"
-        accessibilityLabel += ", \(cell.killedByLabel.text)"
-        cell.accessibilityLabel = accessibilityLabel
+        cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags)
         
         return cell
     }
     
-    @objc private func showThreadActions(cell: ThreadCell) {
+    @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
+        let cell = sender.view as! UITableViewCell
+        // TODO: nearestSuperviewOfDeclaredType sucks, do something else
         let tableView: UITableView = cell.nearestSuperviewOfDeclaredType()
-        if let indexPath = tableView.indexPathForCell(cell) {
-            let thread = itemAtIndexPath(indexPath) as! Thread
-            showActionsForThread(thread, forTableView: tableView)
-        }
+        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+        let thread = itemAtIndexPath(indexPath) as! Thread
+        
+        showActionsForThread(thread, forTableView: tableView)
     }
     
     private func showActionsForThread(thread: Thread, forTableView tableView: UITableView) {
@@ -260,16 +181,4 @@ class ThreadDataSource: FetchedDataSource {
         }
         viewController.presentViewController(actionViewController, animated: true, completion: nil)
     }
-}
-
-func nonempty(s: String?) -> String? {
-    if let s = s {
-        return s.isEmpty ? nil : s
-    } else {
-        return s
-    }
-}
-
-func sifplural(i: Int32) -> String {
-    return i == 1 ? "" : "s"
 }

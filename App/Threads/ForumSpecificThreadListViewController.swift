@@ -348,13 +348,6 @@ final class ForumSpecificThreadDataSource: ThreadDataSource {
         fetchRequest.fetchBatchSize = 20
         super.init(fetchRequest: fetchRequest, managedObjectContext: forum.managedObjectContext!, sectionNameKeyPath: nil)
     }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath) as! ThreadCell
-        let thread = itemAtIndexPath(indexPath) as! Thread
-        cell.stickyImageView.hidden = !thread.sticky
-        return cell
-    }
 }
 
 private var KVOContext = 0

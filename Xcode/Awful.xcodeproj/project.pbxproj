@@ -322,6 +322,8 @@
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
+		1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */; settings = {ASSET_TAGS = (); }; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
@@ -869,6 +871,8 @@
 		1CF3A466180C768100EC2450 /* AwfulURLRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulURLRouter.m; sourceTree = "<group>"; };
 		1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Punishment.swift; sourceTree = "<group>"; };
 		1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulManagedObject.swift; sourceTree = "<group>"; };
+		1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTableViewCell.swift; sourceTree = "<group>"; };
+		1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadTableViewCell.xib; sourceTree = "<group>"; };
 		1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLResponseSerializer.h; sourceTree = "<group>"; };
 		1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLResponseSerializer.m; sourceTree = "<group>"; };
 		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
@@ -1745,6 +1749,8 @@
 			isa = PBXGroup;
 			children = (
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
+				1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */,
+				1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2188,6 +2194,7 @@
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
+				1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
@@ -2590,6 +2597,7 @@
 				1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
+				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,
 				1CE8FE011709E728006A3B84 /* AwfulSettingsAlternateServerController.m in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
