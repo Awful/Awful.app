@@ -1120,7 +1120,6 @@
 				1CE55A6F1A10552600E474A6 /* DataSource.swift */,
 				1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */,
 				1CE55A771A10675700E474A6 /* FetchedDataSource.swift */,
-				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */,
 			);
 			path = Tables;
@@ -1249,6 +1248,7 @@
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
+				1CF7FACB1BB60C2200A077F2 /* Views */,
 				1C7C60C018FCA4D7009BF4BB /* Web View Junk */,
 			);
 			name = App;
@@ -1739,6 +1739,14 @@
 				1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */,
 			);
 			path = Composition;
+			sourceTree = "<group>";
+		};
+		1CF7FACB1BB60C2200A077F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* Awful */ = {
