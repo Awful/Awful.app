@@ -56,6 +56,10 @@ class ThreadListViewController: AwfulTableViewController {
                 }
             }
         }
+        
+        if traitCollection.forceTouchCapability == .Available {
+            registerForPreviewingWithDelegate(self, sourceView: view)
+        }
     }
     
     private var settingsObserver: AnyObject?
