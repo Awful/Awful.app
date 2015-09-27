@@ -9,7 +9,7 @@ public class Thread: AwfulManagedObject {
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
-    @NSManaged var bookmarkListPage: Bool
+    @NSManaged var bookmarkListPage: Int32
     @NSManaged public var closed: Bool
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
