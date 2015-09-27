@@ -151,7 +151,7 @@
     
     #pragma mark /bookmarks
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarksViewController class]];
     }];
     
     #pragma mark /settings

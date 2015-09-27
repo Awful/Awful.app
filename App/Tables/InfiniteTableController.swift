@@ -5,7 +5,7 @@
 import UIKit
 
 /// Triggers loading more content and showing a spinner in a table view's tableFooterView when scrolling past the end of a table.
-final class InfiniteTableController {
+final class InfiniteTableController: NSObject {
     /// Called when more contents should be loaded into the table.
     typealias MoreLoader = () -> Void
     

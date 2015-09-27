@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import UIKit;
+@class InfiniteTableController;
 @class Theme;
 
 @interface UIViewController (ThemeSupport)
@@ -43,6 +44,15 @@
 
 /// Whether the view controller is currently visible (i.e. has received `viewDidAppear:` without having subsequently received `viewDidDisappear:`).
 @property (readonly, assign, nonatomic) BOOL visible;
+
+/// A block to call when the table is pulled down to refresh. If nil, no refresh control is shown.
+@property (copy, nonatomic) void (^pullToRefreshBlock)(void);
+
+/// A block to call when the table is pulled up to load more content. If nil, no load more control is shown.
+@property (copy, nonatomic) void (^scrollToLoadMoreBlock)(void);
+
+/// Returns the current infinite scroll controller, or nil if scrollToLoadMoreBlock is nil.
+@property (readonly, nonatomic) InfiniteTableController *infiniteScrollController;
 
 @end
 

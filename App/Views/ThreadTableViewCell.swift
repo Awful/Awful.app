@@ -8,6 +8,7 @@ import UIKit
 final class ThreadTableViewCell: UITableViewCell {
     static let identifier = "ThreadTableViewCell"
     static let nibName = "ThreadTableViewCell"
+    static let estimatedRowHeight: CGFloat = 75
     
     @IBOutlet private weak var tagAndRatingView: UIStackView!
     @IBOutlet private weak var tagView: UIImageView!
@@ -132,7 +133,7 @@ final class ThreadTableViewCell: UITableViewCell {
 }
 
 extension ThreadTableViewCell.ViewModel {
-    init(thread: Thread, showsTag: Bool) {
+    init(thread: Thread, showsTag: Bool, overrideSticky stickyOverride: Bool? = nil) {
         title = thread.title ?? ""
         let p = Int(thread.numberOfPages) == 1 ? "p" : "pp"
         numberOfPages = "\(thread.numberOfPages)\(p)"
@@ -181,7 +182,7 @@ extension ThreadTableViewCell.ViewModel {
         titleAlpha = alpha
         tagAndRatingAlpha = alpha
         
-        sticky = thread.sticky
+        self.sticky = stickyOverride ?? thread.sticky
     }
 }
 

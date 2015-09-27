@@ -353,6 +353,13 @@
                       success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         thread.bookmarked = isBookmarked;
+        if (isBookmarked && [[thread valueForKey:@"bookmarkListPage"] integerValue] <= 0) {
+            [thread setValue:@(1) forKey:@"bookmarkListPage"];
+        }
+        NSError *error;
+        if (![thread.managedObjectContext save:&error]) {
+            NSLog(@"%s error saving after (un)bookmarking thread: %@", __PRETTY_FUNCTION__, error);
+        }
         if (callback) callback(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if (callback) callback(error);
