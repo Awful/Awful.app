@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A6E2134366602D593993B263D3DBDCD59EEAAA4E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A6E2134366602D593993B263D3DBDCD59EEAAA4E" : 0,
+    "A563C6B0F1E6EB470BEDBBD2A36B40C1F3CC113D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "ACBED1E3-08B9-4AFB-B510-1808BAC09E9E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A6E2134366602D593993B263D3DBDCD59EEAAA4E" : "AwfulApp\/",
+    "A563C6B0F1E6EB470BEDBBD2A36B40C1F3CC113D" : "AwfulApp\/Resources\/Thread%20Tags\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Awful",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Awful.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Awful\/thread-tags",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A563C6B0F1E6EB470BEDBBD2A36B40C1F3CC113D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/drasticactions\/Awful.app.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A6E2134366602D593993B263D3DBDCD59EEAAA4E"
+    }
+  ]
+}

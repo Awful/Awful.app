@@ -40,6 +40,11 @@ class ThreadListViewController: AwfulTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Check for force touch feature, and add force touch/previewing capability.
+        if traitCollection.forceTouchCapability == .Available {
+            registerForPreviewingWithDelegate(self, sourceView: view)
+        }
+        
         tableView.estimatedRowHeight = 75
         tableView.separatorStyle = .None
         tableView.registerNib(UINib(nibName: "ThreadCell", bundle: nil), forCellReuseIdentifier: "Thread")
