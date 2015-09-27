@@ -35,7 +35,7 @@ final class Selectotron : AwfulViewController {
     }
     
     private func dismissAndLoadPage(page: Int) {
-        postsViewController.loadPage(page, updatingCache: true)
+        postsViewController.loadPage(page, updatingCache: true, noSeen: false)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
