@@ -95,7 +95,7 @@ extension ThreadListViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
-        let postsViewController = PostsPageViewController(thread: thread, noSeen: false)
+        let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
@@ -198,7 +198,7 @@ class ThreadDataSource: FetchedDataSource {
         
         func jumpToPageItem(itemType: AwfulIconActionItemType) -> AwfulIconActionItem {
             return AwfulIconActionItem(type: itemType) {
-                let postsViewController = PostsPageViewController(thread: thread, noSeen: false)
+                let postsViewController = PostsPageViewController(thread: thread)
                 postsViewController.restorationIdentifier = "Posts"
                 let page = itemType == .JumpToLastPage ? AwfulThreadPage.Last.rawValue : 1
                 postsViewController.loadPage(page, updatingCache: true)

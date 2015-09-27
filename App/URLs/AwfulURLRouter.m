@@ -71,7 +71,7 @@
         PostKey *key = [[PostKey alloc] initWithPostID:parameters[@"postID"]];
         Post *post = [Post existingObjectForKey:key inManagedObjectContext:self.managedObjectContext];
         if (post && post.page > 0) {
-            PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread noSeen:NO];
+            PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
             [postsViewController loadPage:post.page updatingCache:YES];
             [postsViewController scrollPostToVisible:post];
             return [self showPostsViewController:postsViewController];
@@ -93,7 +93,7 @@
                 });
             } else {
                 [overlay dismiss:YES completion:^{
-                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread noSeen: NO];
+                    PostsPageViewController *postsViewController = [[PostsPageViewController alloc] initWithThread:post.thread];
                     [postsViewController loadPage:page updatingCache:YES];
                     [postsViewController scrollPostToVisible:post];
                     [self showPostsViewController:postsViewController];
@@ -266,7 +266,7 @@
         User *user = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
         postsViewController = [[PostsPageViewController alloc] initWithThread:thread author:user];
     } else {
-        postsViewController = [[PostsPageViewController alloc] initWithThread:thread noSeen: NO];
+        postsViewController = [[PostsPageViewController alloc] initWithThread:thread];
     }
     NSError *error;
     if (![self.managedObjectContext save:&error]) {

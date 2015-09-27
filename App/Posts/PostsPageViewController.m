@@ -55,7 +55,6 @@
     NSString *_jumpToPostIDAfterLoading;
     CGFloat _scrollToFractionAfterLoading;
     BOOL _restoringState;
-    BOOL _noSeen;
 }
 
 - (void)dealloc
@@ -93,9 +92,8 @@
     return self;
 }
 
-- (instancetype)initWithThread:(Thread *)thread noSeen:(bool)noSeen
+- (instancetype)initWithThread:(Thread *)thread
 {
-    _noSeen = noSeen;
     return [self initWithThread:thread author:nil];
 }
 
@@ -166,7 +164,6 @@
     self.networkOperation = [[AwfulForumsClient client] listPostsInThread:self.thread
                                                                 writtenBy:self.author
                                                                    onPage:self.page
-                                                                   noSeen:_noSeen
                                                                   andThen:^(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML)
     {
         __typeof__(self) self = weakSelf;
@@ -217,12 +214,10 @@
         [self updateUserInterface];
         
         Post *lastPost = self.posts.lastObject;
-        if(!_noSeen)
-        {
-            if (self.thread.seenPosts < lastPost.threadIndex) {
-                self.thread.seenPosts = lastPost.threadIndex;
-            }
+        if (self.thread.seenPosts < lastPost.threadIndex) {
+            self.thread.seenPosts = lastPost.threadIndex;
         }
+        
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }

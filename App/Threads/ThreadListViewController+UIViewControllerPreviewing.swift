@@ -16,7 +16,7 @@ extension ThreadListViewController : UIViewControllerPreviewingDelegate
             cell = tableView.cellForRowAtIndexPath(indexPath) else { return nil }
         
         let thread = dataSource.itemAtIndexPath(indexPath) as! Thread
-        let postsViewController = PostsPageViewController(thread: thread, noSeen: true)
+        let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1

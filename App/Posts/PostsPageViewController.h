@@ -19,7 +19,7 @@
 /**
  * Calls -initWithThread:author: with a nil author.
  */
-- (instancetype)initWithThread:(Thread *)thread noSeen:(bool)noSeen;
+- (instancetype)initWithThread:(Thread *)thread;
 
 @property (readonly, strong, nonatomic) Thread *thread;
 
