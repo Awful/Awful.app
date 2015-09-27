@@ -227,7 +227,7 @@
 
 - (BOOL)jumpToForum:(Forum *)forum
 {
-    ForumSpecificThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumSpecificThreadListViewController class]];
+    ThreadsViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadsViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
