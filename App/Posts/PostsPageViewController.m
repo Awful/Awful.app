@@ -223,6 +223,9 @@
                 self.thread.seenPosts = lastPost.threadIndex;
             }
         }
+        // noSeen should only be respected for the first initial load (Ex. The Peek View Controller).
+        // after that, it will start marking all posts as seen.
+        _noSeen = NO;
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
     }];
 }
