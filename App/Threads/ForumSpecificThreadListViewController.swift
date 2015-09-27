@@ -245,7 +245,7 @@ extension ForumSpecificThreadListViewController: AwfulComposeTextViewControllerD
         dismissViewControllerAnimated(true) {
             if success {
                 if let thread = self.threadComposeViewController?.thread {
-                    let postsPage = PostsPageViewController(thread: thread)
+                    let postsPage = PostsPageViewController(thread: thread, noSeen: false)
                     postsPage.restorationIdentifier = "Posts"
                     postsPage.loadPage(1, updatingCache: true)
                     self.showDetailViewController(postsPage, sender: self)

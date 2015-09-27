@@ -175,6 +175,7 @@
 - (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
+                            noSeen:(bool)notSeen
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
 /**
