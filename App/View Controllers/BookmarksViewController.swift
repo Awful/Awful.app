@@ -5,10 +5,10 @@
 import CoreData
 
 // TODO: State preservation and restoration
-final class BookmarksViewController: AwfulTableViewController, BookmarksDataManagerDelegate {
+final class BookmarksViewController: AwfulTableViewController {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
-    private var dataManager: BookmarksDataManager {
+    private var dataManager: ThreadDataManager {
         didSet {
             dataManager.delegate = self
             
@@ -20,7 +20,7 @@ final class BookmarksViewController: AwfulTableViewController, BookmarksDataMana
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        dataManager = BookmarksDataManager(managedObjectContext: managedObjectContext)
+        dataManager = ThreadDataManager(managedObjectContext: managedObjectContext)
         
         super.init(style: .Plain)
         
@@ -150,7 +150,7 @@ final class BookmarksViewController: AwfulTableViewController, BookmarksDataMana
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue():
-            dataManager = BookmarksDataManager(managedObjectContext: managedObjectContext)
+            dataManager = ThreadDataManager(managedObjectContext: managedObjectContext)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
             prepareUserActivity()
@@ -238,98 +238,21 @@ final class BookmarksViewController: AwfulTableViewController, BookmarksDataMana
         let thread = dataManager.threads[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
     }
-    
-    // MARK: BookmarksDataManagerDelegate
-    
-    private func dataManagerWillChangeContent(dataManager: BookmarksDataManager) {
-        tableView.beginUpdates()
-    }
-    
-    private func dataManager(dataManager: BookmarksDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    private func dataManager(dataManager: BookmarksDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-
-    private func dataManager(dataManager: BookmarksDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath) {
-        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
-    }
-
-    private func dataManager(dataManager: BookmarksDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-
-    private func dataManagerDidChangeContent(dataManager: BookmarksDataManager) {
-        tableView.endUpdates()
-    }
 }
 
-private class BookmarksDataManager: NSObject, NSFetchedResultsControllerDelegate {
-    var threads: [Thread] {
-        return resultsController.fetchedObjects as! [Thread]
-    }
-    var delegate: BookmarksDataManagerDelegate?
-    
-    private let resultsController: NSFetchedResultsController
-    
-    init(managedObjectContext: NSManagedObjectContext, sortedByUnread: Bool) {
+private extension ThreadDataManager {
+    convenience init(managedObjectContext: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
         fetchRequest.fetchBatchSize = 20
         fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
         
         var sortDescriptors = [NSSortDescriptor(key: "bookmarkListPage", ascending: true)]
-        if sortedByUnread {
+        if AwfulSettings.sharedSettings().bookmarksSortedByUnread {
             sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
         }
         sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
-
-        resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         
-        super.init()
-        
-        resultsController.delegate = self
-        try! resultsController.performFetch()
+        self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
     }
-    
-    // MARK: NSFetchedResultsControllerDelegate
-    
-    @objc private func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        delegate?.dataManagerWillChangeContent(self)
-    }
-    
-    @objc private func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-        switch type {
-        case .Insert:
-            delegate?.dataManager(self, didInsertRowAtIndexPath: newIndexPath!)
-        case .Delete:
-            delegate?.dataManager(self, didDeleteRowAtIndexPath: indexPath!)
-        case .Move:
-            delegate?.dataManager(self, didMoveRowAtIndexPath: indexPath!, toRowAtIndexPath: newIndexPath!)
-        case .Update:
-            delegate?.dataManager(self, didUpdateRowAtIndexPath: indexPath!)
-        }
-    }
-    
-    @objc private func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        delegate?.dataManagerDidChangeContent(self)
-    }
-}
-
-/// Separates the dependency on AwfulSettings.sharedSettings.
-extension BookmarksDataManager {
-    convenience init(managedObjectContext: NSManagedObjectContext) {
-        self.init(managedObjectContext: managedObjectContext, sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
-    }
-}
-
-private protocol BookmarksDataManagerDelegate {
-    func dataManagerWillChangeContent(dataManager: BookmarksDataManager)
-    func dataManager(dataManager: BookmarksDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: BookmarksDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: BookmarksDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath)
-    func dataManager(dataManager: BookmarksDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath)
-    func dataManagerDidChangeContent(dataManager: BookmarksDataManager)
 }

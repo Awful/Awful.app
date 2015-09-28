@@ -6,7 +6,7 @@ import AwfulCore
 import CoreData
 
 // TODO: State preservation and restoration
-final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, ThreadDataManagerDelegate {
+final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate {
     let forum: Forum
     private var latestPage = 0
     private var filterThreadTag: ThreadTag?
@@ -273,32 +273,6 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         activity.webpageURL = NSURL(string: "http://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
     }
     
-    // MARK: ThreadDataManagerDelegate
-    
-    private func dataManagerWillChangeContent(dataManager: ThreadDataManager) {
-        tableView.beginUpdates()
-    }
-    
-    private func dataManager(dataManager: ThreadDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    private func dataManager(dataManager: ThreadDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    private func dataManager(dataManager: ThreadDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath) {
-        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
-    }
-    
-    private func dataManager(dataManager: ThreadDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    private func dataManagerDidChangeContent(dataManager: ThreadDataManager) {
-        tableView.endUpdates()
-    }
-    
     // MARK: UITableViewDataSource
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -339,14 +313,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     }
 }
 
-private final class ThreadDataManager: NSObject, NSFetchedResultsControllerDelegate {
-    private let resultsController: NSFetchedResultsController
-    var delegate: ThreadDataManagerDelegate?
-    var threads: [Thread] {
-        return resultsController.fetchedObjects as! [Thread]
-    }
-    
-    init(forum: Forum, filterThreadTag: ThreadTag?, sortedByUnread: Bool) {
+private extension ThreadDataManager {
+    convenience init(forum: Forum, filterThreadTag: ThreadTag?) {
         let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
         fetchRequest.fetchBatchSize = 20
         
@@ -367,50 +335,6 @@ private final class ThreadDataManager: NSObject, NSFetchedResultsControllerDeleg
         sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
         fetchRequest.sortDescriptors = sortDescriptors
         
-        resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: forum.managedObjectContext!, sectionNameKeyPath: nil, cacheName: nil)
-        
-        super.init()
-        
-        resultsController.delegate = self
-        try! resultsController.performFetch()
+        self.init(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
     }
-    
-    // MARK: NSFetchedResultsControllerDelegate
-    
-    @objc private func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        delegate?.dataManagerWillChangeContent(self)
-    }
-    
-    @objc private func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-        switch type {
-        case .Insert:
-            delegate?.dataManager(self, didInsertRowAtIndexPath: newIndexPath!)
-        case .Delete:
-            delegate?.dataManager(self, didDeleteRowAtIndexPath: indexPath!)
-        case .Move:
-            delegate?.dataManager(self, didMoveRowAtIndexPath: indexPath!, toRowAtIndexPath: newIndexPath!)
-        case .Update:
-            delegate?.dataManager(self, didUpdateRowAtIndexPath: indexPath!)
-        }
-    }
-    
-    @objc private func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        delegate?.dataManagerDidChangeContent(self)
-    }
-}
-
-/// Separates the dependency on AwfulSettings.sharedSettings.
-extension ThreadDataManager {
-    convenience init(forum: Forum, filterThreadTag: ThreadTag?) {
-        self.init(forum: forum, filterThreadTag: filterThreadTag, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread)
-    }
-}
-
-private protocol ThreadDataManagerDelegate {
-    func dataManagerWillChangeContent(dataManager: ThreadDataManager)
-    func dataManager(dataManager: ThreadDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath)
-    func dataManagerDidChangeContent(dataManager: ThreadDataManager)
 }
