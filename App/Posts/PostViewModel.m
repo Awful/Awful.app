@@ -32,6 +32,7 @@
     HTMLDocument *document = [HTMLDocument documentWithString:innerHTML];
     RemoveSpoilerStylingAndEvents(document);
     RemoveEmptyEditedByParagraphs(document);
+    StopGifAutoplay(document);
     UseHTML5VimeoPlayer(document);
     HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
     ProcessImgTags(document, ![AwfulSettings sharedSettings].showImages);

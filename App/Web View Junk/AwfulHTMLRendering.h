@@ -27,6 +27,11 @@ extern void RemoveEmptyEditedByParagraphs(HTMLDocument *document);
 extern void RemoveSpoilerStylingAndEvents(HTMLDocument *document);
 
 /**
+ * Modifies document in-place to stop imgur gifs from autoplaying.
+ */
+extern void StopGifAutoplay(HTMLDocument *document);
+
+/**
  * Modifies document in-place by replacing Flash-based Vimeo players with HTML5-based players.
  */
 extern void UseHTML5VimeoPlayer(HTMLDocument *document);
