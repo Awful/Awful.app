@@ -215,8 +215,11 @@
         [self updateUserInterface];
         
         Post *lastPost = self.posts.lastObject;
-        if (self.thread.seenPosts < lastPost.threadIndex) {
-            self.thread.seenPosts = lastPost.threadIndex;
+        if(!notSeen)
+        {
+            if (self.thread.seenPosts < lastPost.threadIndex) {
+                self.thread.seenPosts = lastPost.threadIndex;
+            }
         }
         
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
