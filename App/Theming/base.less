@@ -248,6 +248,27 @@ span.mention {
   text-decoration: underline;
 }
 
+.gifWrap {
+	position:relative;
+	&:before {
+	  content: "GIF";
+	  display: block;
+	  background-color: rgba(255,255,255,.5);
+	  color: #000;
+	  position: absolute;
+	  bottom: 10px;
+	  left: 5px;
+	  padding: .5em;
+	  border-radius: .125em;
+  }
+}
+.gifWrap.loading:before {
+  content: "Loading…";
+}
+
+.gifWrap + br, .gifWrap + br + br {
+	display: none;
+}
 blockquote {
   margin: 0;
   

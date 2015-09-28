@@ -58,7 +58,31 @@ $(function() {
     showLinkifiedImage(link);
     window.Awful.preventNextClickEvent();
   });
-});
+  $('body').on('tap', '.gifWrap', function(event) {
+		$gifwrap = $(event.target);
+		$img = $gifwrap.find('img');
+		if(!$gifwrap.hasClass('playing')) {
+			   
+			   $gifwrap.addClass('loading');
+			   $gifwrap.addClass('playing');
+			var link = $img.attr('src');
+			var newLink = link.replace('h.jpg','.gif');
+			   
+			var image = new Image();
+
+			image.onload = function() {
+			   $img.attr("src", newLink);
+			   $gifwrap.removeClass('loading');
+			}
+			image.src = newLink;
+		} else {
+			var link = $img.attr('src');
+			var newLink = link.replace('.gif','h.jpg');
+			$gifwrap.removeClass('playing');
+			$img.attr('src', newLink);
+		}
+   });
+  });
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
 function rectOfElement(elements) {
