@@ -49,11 +49,10 @@ void StopGifAutoplay(HTMLDocument *document)
 			
 			NSString *newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @"h.jpg"];
 			
-			HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"stoppedGif" }];
+			HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif" }];
 			
 			NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
-			HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div"
-															 attributes:@{@"class": @"gifWrap"}];
+			HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
 			[children insertObject:wrapper atIndex:[children indexOfObject:replacedImg]];
 			replacedImg.parentNode = wrapper;
 			

@@ -248,7 +248,7 @@ span.mention {
   text-decoration: underline;
 }
 
-.gifWrap {
+.gifWrap.overlay {
 	position:relative;
 	&:before {
 	  content: "GIF";
@@ -262,7 +262,7 @@ span.mention {
 	  border-radius: .125em;
   }
 }
-.gifWrap.loading:before {
+.gifWrap.overlay.loading:before {
   content: "Loading…";
 }
 

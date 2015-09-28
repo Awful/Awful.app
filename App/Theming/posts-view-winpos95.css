@@ -187,10 +187,10 @@ span.mention {
 [data-awful-linkified-image] {
   text-decoration: underline;
 }
-.gifWrap {
+.gifWrap.overlay {
   position: relative;
 }
-.gifWrap:before {
+.gifWrap.overlay:before {
   content: "GIF";
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
@@ -201,7 +201,7 @@ span.mention {
   padding: .5em;
   border-radius: .125em;
 }
-.gifWrap.loading:before {
+.gifWrap.overlay.loading:before {
   content: "Loading…";
 }
 .gifWrap + br,
