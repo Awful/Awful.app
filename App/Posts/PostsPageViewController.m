@@ -124,7 +124,7 @@
     }
 }
 
-- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache
+- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache noSeen:(BOOL)notSeen
 {
     [self.networkOperation cancel];
     self.networkOperation = nil;
@@ -164,6 +164,7 @@
     self.networkOperation = [[AwfulForumsClient client] listPostsInThread:self.thread
                                                                 writtenBy:self.author
                                                                    onPage:self.page
+                                                                   noSeen:notSeen
                                                                   andThen:^(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML)
     {
         __typeof__(self) self = weakSelf;
@@ -214,8 +215,11 @@
         [self updateUserInterface];
         
         Post *lastPost = self.posts.lastObject;
-        if (self.thread.seenPosts < lastPost.threadIndex) {
-            self.thread.seenPosts = lastPost.threadIndex;
+        if(!notSeen)
+        {
+            if (self.thread.seenPosts < lastPost.threadIndex) {
+                self.thread.seenPosts = lastPost.threadIndex;
+            }
         }
         
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
@@ -329,7 +333,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
             self.replyWorkspace = nil;
         }
         if (didSucceed) {
-            [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
+            [self loadPage:AwfulThreadPageNextUnread updatingCache:YES noSeen:NO];
         }
         [self dismissViewControllerAnimated:YES completion:nil];
     };
@@ -360,7 +364,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _backItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page > 1) {
-            [self loadPage:self.page - 1 updatingCache:YES];
+            [self loadPage:self.page - 1 updatingCache:YES noSeen:NO];
         }
     };
     return _backItem;
@@ -392,7 +396,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _forwardItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page < self.numberOfPages && self.page > 0) {
-            [self loadPage:self.page + 1 updatingCache:YES];
+            [self loadPage:self.page + 1 updatingCache:YES noSeen:NO];
         }
     };
     return _forwardItem;
@@ -647,7 +651,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         nextPage = self.page + 1;
     }
     
-    [self loadPage:nextPage updatingCache:YES];
+    [self loadPage:nextPage updatingCache:YES noSeen:NO];
 }
 
 - (void)goToParentForum
@@ -752,7 +756,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
             PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:self.thread author:user];
             postsView.restorationIdentifier = @"Just their posts";
-            [postsView loadPage:1 updatingCache:YES];
+            [postsView loadPage:1 updatingCache:YES noSeen:NO];
             [self.navigationController pushViewController:postsView animated:YES];
         }]];
 	}
@@ -1149,9 +1153,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     self.messageViewController.delegate = self;
     self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];
     self.page = [coder decodeIntegerForKey:PageKey];
-    [self loadPage:self.page updatingCache:NO];
+    [self loadPage:self.page updatingCache:NO noSeen:NO];
     if (self.posts.count == 0) {
-        [self loadPage:self.page updatingCache:YES];
+        [self loadPage:self.page updatingCache:YES noSeen:NO];
     }
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
     _scrollToFractionAfterLoading = [coder decodeFloatForKey:ScrolledFractionOfContentKey];
