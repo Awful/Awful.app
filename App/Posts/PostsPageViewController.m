@@ -1186,6 +1186,11 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         [UIPasteboard generalPasteboard].awful_URL = URL;
     }];
     
+    
+    UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"Mark Thread As Read" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        [self loadPage:self.numberOfPages updatingCache:YES noSeen:NO];
+    }];
+    
     NSString *title;
     UIPreviewActionStyle bookmarkStyle;
     if (self.thread.bookmarked) {
@@ -1196,7 +1201,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         bookmarkStyle = UIPreviewActionStyleDefault;
     }
     
-    UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:title style:bookmarkStyle handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+    UIPreviewAction *action3 = [UIPreviewAction actionWithTitle:title style:bookmarkStyle handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
         [[AwfulForumsClient client] setThread:self.thread
                                  isBookmarked:!self.thread.bookmarked
                                       andThen:^(NSError *error)
@@ -1223,7 +1228,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     }];
     
     // add them to an arrary
-    NSArray *actions = @[action1, action2];
+    NSArray *actions = @[action1, action2, action3];
     
     // and return them
     return actions;
