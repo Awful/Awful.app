@@ -70,7 +70,6 @@ $(function() {
 	if(!$gifwrap.hasClass('playing')) {
 		   
 	  $gifwrap.addClass('loading');
-	  $gifwrap.addClass('playing');
 	  var link = $img.attr('src');
 	  var newLink = link.replace('h.jpg','.gif');
 		   
@@ -79,6 +78,7 @@ $(function() {
 	  image.onload = function() {
 		$img.attr("src", newLink);
 		$gifwrap.removeClass('loading');
+		$gifwrap.addClass('playing');
 	  }
 	  image.src = newLink;
 	} else {

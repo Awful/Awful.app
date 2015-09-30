@@ -340,6 +340,9 @@
 		8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47A19AD7CA300B67AAA /* image-coder.png */; };
 		8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47B19AD7CA300B67AAA /* platinum-member.png */; };
 		8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47C19AD7CA300B67AAA /* redpill.png */; };
+		8C957F4E1BBB6DBC00202517 /* spinner-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C957F4B1BBB6DBC00202517 /* spinner-button.png */; settings = {ASSET_TAGS = (); }; };
+		8C957F4F1BBB6DBC00202517 /* play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C957F4C1BBB6DBC00202517 /* play-button.png */; settings = {ASSET_TAGS = (); }; };
+		8C957F501BBB6DBC00202517 /* stop-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C957F4D1BBB6DBC00202517 /* stop-button.png */; settings = {ASSET_TAGS = (); }; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
 		8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
@@ -900,6 +903,9 @@
 		8C8FA47A19AD7CA300B67AAA /* image-coder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "image-coder.png"; sourceTree = "<group>"; };
 		8C8FA47B19AD7CA300B67AAA /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		8C8FA47C19AD7CA300B67AAA /* redpill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redpill.png; sourceTree = "<group>"; };
+		8C957F4B1BBB6DBC00202517 /* spinner-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spinner-button.png"; sourceTree = "<group>"; };
+		8C957F4C1BBB6DBC00202517 /* play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-button.png"; sourceTree = "<group>"; };
+		8C957F4D1BBB6DBC00202517 /* stop-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop-button.png"; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
 		8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RapSheetViewController.h; sourceTree = "<group>"; };
 		8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1776,6 +1782,9 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8C957F4B1BBB6DBC00202517 /* spinner-button.png */,
+				8C957F4C1BBB6DBC00202517 /* play-button.png */,
+				8C957F4D1BBB6DBC00202517 /* stop-button.png */,
 				1C3DED751B6FD0AB00954CFC /* ARChromeActivity.png */,
 				1C3DED761B6FD0AB00954CFC /* ARChromeActivity@2x.png */,
 				1C3DED771B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png */,
@@ -2149,6 +2158,7 @@
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
 				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
+				8C957F4F1BBB6DBC00202517 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
 				1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
@@ -2166,6 +2176,7 @@
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
 				1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */,
 				1C8E10441914AA730010007B /* profile.css in Resources */,
+				8C957F501BBB6DBC00202517 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
@@ -2201,6 +2212,7 @@
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
+				8C957F4E1BBB6DBC00202517 /* spinner-button.png in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
