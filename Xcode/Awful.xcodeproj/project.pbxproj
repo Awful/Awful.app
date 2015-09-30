@@ -345,6 +345,9 @@
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
 		8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100518CAACF9002E92DA /* posts-view-byob.css */; };
 		8CE6100818CAAF74002E92DA /* cat.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100718CAAF74002E92DA /* cat.gif */; };
+		8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CE8F2DE1BBB754C00E81544 /* spinner-button.png */; settings = {ASSET_TAGS = (); }; };
+		8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CE8F2DF1BBB754C00E81544 /* play-button.png */; settings = {ASSET_TAGS = (); }; };
+		8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CE8F2E01BBB754C00E81544 /* stop-button.png */; settings = {ASSET_TAGS = (); }; };
 		8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */; };
 		8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */; };
 		8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CEB405D1687865300BFA9A8 /* hourglass.gif */; };
@@ -907,6 +910,9 @@
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CE6100518CAACF9002E92DA /* posts-view-byob.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-byob.css"; sourceTree = "<group>"; };
 		8CE6100718CAAF74002E92DA /* cat.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = cat.gif; sourceTree = "<group>"; };
+		8CE8F2DE1BBB754C00E81544 /* spinner-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spinner-button.png"; sourceTree = "<group>"; };
+		8CE8F2DF1BBB754C00E81544 /* play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-button.png"; sourceTree = "<group>"; };
+		8CE8F2E01BBB754C00E81544 /* stop-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop-button.png"; sourceTree = "<group>"; };
 		8CEB405816877D2A00BFA9A8 /* winpos95-heading-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-seen.png"; sourceTree = "<group>"; };
 		8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left-seen.png"; sourceTree = "<group>"; };
 		8CEB405D1687865300BFA9A8 /* hourglass.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hourglass.gif; sourceTree = "<group>"; };
@@ -1776,6 +1782,9 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				8CE8F2DE1BBB754C00E81544 /* spinner-button.png */,
+				8CE8F2DF1BBB754C00E81544 /* play-button.png */,
+				8CE8F2E01BBB754C00E81544 /* stop-button.png */,
 				1C3DED751B6FD0AB00954CFC /* ARChromeActivity.png */,
 				1C3DED761B6FD0AB00954CFC /* ARChromeActivity@2x.png */,
 				1C3DED771B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png */,
@@ -2149,6 +2158,7 @@
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
 				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
+				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
 				1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
@@ -2166,6 +2176,7 @@
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
 				1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */,
 				1C8E10441914AA730010007B /* profile.css in Resources */,
+				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
@@ -2201,6 +2212,7 @@
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
+				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
