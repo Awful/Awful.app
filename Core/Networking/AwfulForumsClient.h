@@ -25,9 +25,9 @@
 + (instancetype)sharedClient;
 
 /**
-    The Forums endpoint for the client. Typically http://forums.somethingawful.com
+ The Forums endpoint for the client. Typically http://forums.somethingawful.com
  
-    Setting a new baseURL cancels all in-flight requests.
+ Setting a new baseURL cancels all in-flight requests.
  */
 @property (strong, nonatomic) NSURL *baseURL;
 
@@ -175,6 +175,7 @@
 - (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
+                            noSeen:(bool)notSeen
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
 /**

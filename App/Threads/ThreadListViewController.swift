@@ -40,6 +40,11 @@ class ThreadListViewController: AwfulTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Check for force touch feature, and add force touch/previewing capability.
+        if traitCollection.forceTouchCapability == .Available {
+            registerForPreviewingWithDelegate(self, sourceView: view)
+        }
+        
         tableView.estimatedRowHeight = 75
         tableView.separatorStyle = .None
         tableView.registerNib(UINib(nibName: "ThreadCell", bundle: nil), forCellReuseIdentifier: "Thread")
@@ -94,7 +99,7 @@ extension ThreadListViewController {
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
-        postsViewController.loadPage(targetPage, updatingCache: true)
+        postsViewController.loadPage(targetPage, updatingCache: true, noSeen: false)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
@@ -196,7 +201,7 @@ class ThreadDataSource: FetchedDataSource {
                 let postsViewController = PostsPageViewController(thread: thread)
                 postsViewController.restorationIdentifier = "Posts"
                 let page = itemType == .JumpToLastPage ? AwfulThreadPage.Last.rawValue : 1
-                postsViewController.loadPage(page, updatingCache: true)
+                postsViewController.loadPage(page, updatingCache: true, noSeen: false)
                 viewController.showDetailViewController(postsViewController, sender: self)
             }
         }
