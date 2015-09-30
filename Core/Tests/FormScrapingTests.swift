@@ -32,8 +32,8 @@ final class FormScrapingTests: ScrapingTestCase {
         XCTAssertTrue((parameters["message"] as! String).rangeOfString("terrible") != nil)
         XCTAssertNotNil(parameters["parseurl"])
         XCTAssertNotNil(parameters["bookmark"])
-        XCTAssertNil(parameters["disablesmilies"])
-        XCTAssertNil(parameters["signature"])
+        XCTAssert(parameters["disablesmilies"] == nil)
+        XCTAssert(parameters["signature"] == nil)
     }
 
     func testReplyWithAmazonSearch() {
