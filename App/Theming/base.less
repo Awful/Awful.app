@@ -248,6 +248,38 @@ span.mention {
   text-decoration: underline;
 }
 
+.gifWrap.overlay {
+	position:relative;
+	&:before {
+	  content: " ";
+	  display: block;
+	  background-color: rgba(255,255,255,.5);
+	  background-image: url('awful-resource://play-button.png');
+	  background-size: 50%;
+	  background-repeat:no-repeat;
+	  background-position: center;
+	  color: #000;
+	  position: absolute;
+	  bottom: 10px;
+	  left: 5px;
+	  padding: .5em;
+	  border-radius: .125em;
+	  height: 20px;
+	  width: 20px;
+	  box-shadow: 0px 1px 2px rgba(0,0,0,.25)
+  }
+}
+.gifWrap.overlay.loading:before {
+	  background-image: url('awful-resource://spinner-button.png');
+}
+.gifWrap.overlay.playing:before {
+	  background-image: url('awful-resource://stop-button.png');
+}
+
+
+.gifWrap + br, .gifWrap + br + br {
+	display: none;
+}
 blockquote {
   margin: 0;
   

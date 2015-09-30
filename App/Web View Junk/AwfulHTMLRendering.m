@@ -38,6 +38,32 @@ void ProcessImgTags(HTMLDocument *document, BOOL linkifyNonSmiles)
     }
 }
 
+void StopGifAutoplay(HTMLDocument *document)
+{
+	for (HTMLElement *img in [document nodesMatchingSelector:@"img"]) {
+		NSURL *src = [NSURL URLWithString:img[@"src"]];
+		
+		NSString *host = src.host;
+		
+		if ([host caseInsensitiveCompare:@"i.imgur.com"] == NSOrderedSame && [src.pathExtension  isEqual: @"gif"]) {
+			
+			NSString *newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @"h.jpg"];
+			
+			HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif" }];
+			
+			NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
+			HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
+			[children insertObject:wrapper atIndex:[children indexOfObject:replacedImg]];
+			replacedImg.parentNode = wrapper;
+			
+			
+			
+			NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
+			[imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:wrapper];
+		}
+	}
+}
+
 void RemoveEmptyEditedByParagraphs(HTMLDocument *document)
 {
     for (HTMLElement *element in [document nodesMatchingSelector:@"p.editedby"]) {
