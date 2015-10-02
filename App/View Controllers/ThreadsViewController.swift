@@ -9,24 +9,28 @@ import CoreData
 final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate {
     let forum: Forum
     private var latestPage = 0
+    
     private var filterThreadTag: ThreadTag?
+    
     private var dataManager: ThreadDataManager {
         didSet {
-            dataManager.delegate = self
+            tableViewAdapter = nil
             
             if isViewLoaded() {
+                createTableViewAdapter()
+                
                 tableView.reloadData()
             }
         }
     }
+    
+    private var tableViewAdapter: ThreadDataManagerTableViewAdapter!
     
     init(forum: Forum) {
         self.forum = forum
         dataManager = ThreadDataManager(forum: forum, filterThreadTag: filterThreadTag)
         
         super.init(style: .Plain)
-        
-        dataManager.delegate = self
         
         title = forum.name
         
@@ -44,6 +48,20 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     
     override var theme: Theme {
         return Theme.currentThemeForForum(forum)
+    }
+    
+    private func createTableViewAdapter() {
+        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, cellConfigurationHandler: { cell, thread in
+            cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
+            
+            // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
+            
+            cell.longPress.removeTarget(self, action: nil)
+            cell.longPress.addTarget(self, action: "didLongPressCell:")
+        })
+        
+        dataManager.delegate = tableViewAdapter
+        tableView.dataSource = tableViewAdapter
     }
     
     private func loadPage(page: Int) {
@@ -83,6 +101,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
         tableView.separatorStyle = .None
+        
+        createTableViewAdapter()
         
         pullToRefreshBlock = self.refresh
         
@@ -271,26 +291,6 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         activity.title = forum.name
         activity.addUserInfoEntriesFromDictionary([Handoff.InfoForumIDKey: forum.forumID])
         activity.webpageURL = NSURL(string: "http://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
-    }
-    
-    // MARK: UITableViewDataSource
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataManager.threads.count
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(ThreadTableViewCell.identifier, forIndexPath: indexPath) as! ThreadTableViewCell
-        let thread = dataManager.threads[indexPath.row]
-        
-        cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
-        
-        // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
-        
-        cell.longPress.removeTarget(self, action: nil)
-        cell.longPress.addTarget(self, action: "didLongPressCell:")
-        
-        return cell;
     }
     
     // MARK: UITableViewDelegate

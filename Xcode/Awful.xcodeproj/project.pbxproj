@@ -160,6 +160,7 @@
 		1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */; settings = {ASSET_TAGS = (); }; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */; };
 		1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */; };
 		1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -595,6 +596,7 @@
 		1C479ECE1A615CF5000C01F7 /* InfiniteTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteTableController.swift; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDataManagerTableViewAdapter.swift; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeader.swift; sourceTree = "<group>"; };
 		1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadTests.m; sourceTree = "<group>"; };
 		1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboard.h; sourceTree = "<group>"; };
@@ -1639,6 +1641,7 @@
 			isa = PBXGroup;
 			children = (
 				1CD005D51BB8DA6400232FFD /* ThreadDataManager.swift */,
+				1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */,
 			);
 			path = "Data Managers";
 			sourceTree = "<group>";
@@ -2530,6 +2533,7 @@
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
+				1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */,
 				1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */,
 				1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */,
 				1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */,

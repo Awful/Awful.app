@@ -8,23 +8,26 @@ import CoreData
 final class BookmarksViewController: AwfulTableViewController {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
+    
     private var dataManager: ThreadDataManager {
         didSet {
-            dataManager.delegate = self
+            tableViewAdapter = nil
             
             if isViewLoaded() {
+                createTableViewAdapter()
+                
                 tableView.reloadData()
             }
         }
     }
+    
+    private var tableViewAdapter: ThreadDataManagerTableViewAdapter!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         dataManager = ThreadDataManager(managedObjectContext: managedObjectContext)
         
         super.init(style: .Plain)
-        
-        dataManager.delegate = self
         
         title = "Bookmarks"
         
@@ -38,6 +41,25 @@ final class BookmarksViewController: AwfulTableViewController {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    private func createTableViewAdapter() {
+        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, cellConfigurationHandler: { [weak self] cell, thread in
+            cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
+            
+            // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
+            
+            if let strongSelf = self {
+                cell.longPress.removeTarget(strongSelf, action: nil)
+                cell.longPress.addTarget(strongSelf, action: "didLongPressCell:")
+            }
+        })
+        tableViewAdapter.deletionHandler = { [weak self] thread in
+            self?.setThread(thread, isBookmarked: false)
+        }
+        
+        dataManager.delegate = tableViewAdapter
+        tableView.dataSource = tableViewAdapter
     }
     
     private func loadPage(page: Int) {
@@ -69,6 +91,8 @@ final class BookmarksViewController: AwfulTableViewController {
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
         tableView.separatorStyle = .None
+        
+        createTableViewAdapter()
         
         pullToRefreshBlock = refresh
         
@@ -194,31 +218,6 @@ final class BookmarksViewController: AwfulTableViewController {
         undoManager.levelsOfUndo = 1
         return undoManager
         }()
-    
-    // MARK: UITableViewDataSource
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataManager.threads.count
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(ThreadTableViewCell.identifier, forIndexPath: indexPath) as! ThreadTableViewCell
-        let thread = dataManager.threads[indexPath.row]
-        
-        cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
-        
-        // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
-        
-        cell.longPress.removeTarget(self, action: nil)
-        cell.longPress.addTarget(self, action: "didLongPressCell:")
-        
-        return cell;
-    }
-    
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataManager.threads[indexPath.row]
-        setThread(thread, isBookmarked: false)
-    }
     
     // MARK: UITableViewDelegate
     

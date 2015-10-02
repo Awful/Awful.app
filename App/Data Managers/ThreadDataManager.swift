@@ -53,29 +53,3 @@ protocol ThreadDataManagerDelegate {
     func dataManager(dataManager: ThreadDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath)
     func dataManagerDidChangeContent(dataManager: ThreadDataManager)
 }
-
-extension AwfulTableViewController: ThreadDataManagerDelegate {
-    func dataManagerWillChangeContent(dataManager: ThreadDataManager) {
-        tableView.beginUpdates()
-    }
-    
-    func dataManager(dataManager: ThreadDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    func dataManager(dataManager: ThreadDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    func dataManager(dataManager: ThreadDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath) {
-        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
-    }
-    
-    func dataManager(dataManager: ThreadDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-    
-    func dataManagerDidChangeContent(dataManager: ThreadDataManager) {
-        tableView.endUpdates()
-    }
-}
