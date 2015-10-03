@@ -167,6 +167,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
 
         switch key {
         case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() where isViewLoaded():
+            createTableViewAdapter()
             tableView.reloadData()
             
         case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue():

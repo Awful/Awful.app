@@ -165,6 +165,7 @@ final class BookmarksViewController: AwfulTableViewController {
         
         switch key {
         case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() where isViewLoaded():
+            createTableViewAdapter()
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue():
