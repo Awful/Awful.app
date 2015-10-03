@@ -135,7 +135,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         }
     }
     
-    // MARK: Actions and notifications
+    // MARK: Actions
     
     private func didLongPressCell(cell: ThreadTableViewCell) {
         guard let indexPath = tableView.indexPathForCell(cell) else { return }
@@ -162,6 +162,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         
         loadPage(1)
     }
+    
+    // MARK: Notifications
     
     @objc private func settingsDidChange(notification: NSNotification) {
         guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }

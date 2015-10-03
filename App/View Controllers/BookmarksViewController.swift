@@ -121,7 +121,7 @@ final class BookmarksViewController: AwfulTableViewController {
         resignFirstResponder()
     }
     
-    // MARK: Actions and notifications
+    // MARK: Actions
     
     private func didLongPressCell(cell: ThreadTableViewCell) {
         guard let indexPath = tableView.indexPathForCell(cell) else { return }
@@ -148,18 +148,7 @@ final class BookmarksViewController: AwfulTableViewController {
         loadPage(1)
     }
     
-    @objc private func setThread(thread: Thread, isBookmarked: Bool) {
-        undoManager.prepareWithInvocationTarget(self).setThread(thread, isBookmarked: !isBookmarked)
-        undoManager.setActionName("Delete")
-        
-        thread.bookmarked = false
-        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] error in
-            if let error = error {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
-            }
-        }
-    }
+    // MARK: Notifications
     
     @objc private func settingsDidChange(notification: NSNotification) {
         guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
@@ -215,6 +204,19 @@ final class BookmarksViewController: AwfulTableViewController {
         undoManager.levelsOfUndo = 1
         return undoManager
         }()
+    
+    @objc private func setThread(thread: Thread, isBookmarked: Bool) {
+        undoManager.prepareWithInvocationTarget(self).setThread(thread, isBookmarked: !isBookmarked)
+        undoManager.setActionName("Delete")
+        
+        thread.bookmarked = false
+        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] error in
+            if let error = error {
+                let alert = UIAlertController(networkError: error, handler: nil)
+                self?.presentViewController(alert, animated: true, completion: nil)
+            }
+        }
+    }
     
     // MARK: UITableViewDelegate
     
