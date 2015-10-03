@@ -10,6 +10,12 @@ final class ThreadTableViewCell: UITableViewCell {
     static let nibName = "ThreadTableViewCell"
     static let estimatedRowHeight: CGFloat = 75
     
+    var viewModel: ViewModel? {
+        didSet { applyViewModel(viewModel) }
+    }
+    var themeData: ThemeData? {
+        didSet { applyThemeData(themeData!) }
+    }
     var longPressAction: (ThreadTableViewCell -> Void)? {
         didSet { longPress.enabled = longPressAction != nil }
     }
@@ -35,6 +41,8 @@ final class ThreadTableViewCell: UITableViewCell {
     @objc private func didLongPress() {
         longPressAction?(self)
     }
+    
+    // MARK: Rendering
     
     struct ViewModel: Equatable {
         let title: String
@@ -79,10 +87,6 @@ final class ThreadTableViewCell: UITableViewCell {
         }
     }
     
-    var viewModel: ViewModel? {
-        didSet { applyViewModel(viewModel) }
-    }
-    
     private func applyViewModel(data: ViewModel?) {
         tagAndRatingView.hidden = !(data?.showsTagAndRating ?? false)
         tagAndRatingView.alpha = data?.tagAndRatingAlpha ?? 1
@@ -103,6 +107,8 @@ final class ThreadTableViewCell: UITableViewCell {
         accessibilityLabel = data?.accessibilityLabel
     }
     
+    // MARK: Theming
+    
     struct ThemeData {
         let titleColor: UIColor
         let titleFont: UIFont
@@ -119,10 +125,6 @@ final class ThreadTableViewCell: UITableViewCell {
         let separatorColor: UIColor
         let backgroundColor: UIColor
         let selectedBackgroundColor: UIColor
-    }
-    
-    var themeData: ThemeData? {
-        didSet { applyThemeData(themeData!) }
     }
     
     private func applyThemeData(theme: ThemeData) {
