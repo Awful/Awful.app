@@ -10,6 +10,10 @@ final class ThreadTableViewCell: UITableViewCell {
     static let nibName = "ThreadTableViewCell"
     static let estimatedRowHeight: CGFloat = 75
     
+    var longPressAction: (ThreadTableViewCell -> Void)? {
+        didSet { longPress.enabled = longPressAction != nil }
+    }
+    
     @IBOutlet private weak var tagAndRatingView: UIStackView!
     @IBOutlet private weak var tagView: UIImageView!
     @IBOutlet private weak var secondaryTagView: UIImageView!
@@ -20,12 +24,17 @@ final class ThreadTableViewCell: UITableViewCell {
     @IBOutlet private weak var unreadPostsLabel: UILabel!
     @IBOutlet private weak var stickyView: UIImageView!
     @IBOutlet private weak var separatorView: HairlineView!
-    
-    lazy var longPress: UILongPressGestureRecognizer = { [unowned self] in
-        let recognizer = UILongPressGestureRecognizer()
+    private lazy var longPress: UILongPressGestureRecognizer = { [unowned self] in
+        let recognizer = UILongPressGestureRecognizer(target: self, action: "didLongPress")
         self.addGestureRecognizer(recognizer)
         return recognizer
     }()
+    
+    // MARK: Actions
+    
+    @objc private func didLongPress() {
+        longPressAction?(self)
+    }
     
     struct ViewModel: Equatable {
         let title: String

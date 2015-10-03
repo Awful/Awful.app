@@ -51,13 +51,10 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     }
     
     private func createTableViewAdapter() {
-        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: false, cellConfigurationHandler: { cell, viewModel in
+        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: false, cellConfigurationHandler: { [weak self] cell, viewModel in
             cell.viewModel = viewModel
-            
+            cell.longPressAction = self?.didLongPressCell
             // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
-            
-            cell.longPress.removeTarget(self, action: nil)
-            cell.longPress.addTarget(self, action: "didLongPressCell:")
         })
         
         dataManager.delegate = tableViewAdapter
@@ -139,8 +136,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     
     // MARK: Actions and notifications
     
-    @objc private func didLongPressCell(sender: UILongPressGestureRecognizer) {
-        let cell = sender.view as! UITableViewCell
+    private func didLongPressCell(cell: ThreadTableViewCell) {
         guard let indexPath = tableView.indexPathForCell(cell) else { return }
         let thread = dataManager.threads[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)

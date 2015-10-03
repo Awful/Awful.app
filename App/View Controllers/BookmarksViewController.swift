@@ -46,13 +46,8 @@ final class BookmarksViewController: AwfulTableViewController {
     private func createTableViewAdapter() {
         tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: true, cellConfigurationHandler: { [weak self] cell, viewModel in
             cell.viewModel = viewModel
-            
+            cell.longPressAction = self?.didLongPressCell
             // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
-            
-            if let strongSelf = self {
-                cell.longPress.removeTarget(strongSelf, action: nil)
-                cell.longPress.addTarget(strongSelf, action: "didLongPressCell:")
-            }
         })
         tableViewAdapter.deletionHandler = { [weak self] thread in
             self?.setThread(thread, isBookmarked: false)
@@ -127,8 +122,7 @@ final class BookmarksViewController: AwfulTableViewController {
     
     // MARK: Actions and notifications
     
-    @objc private func didLongPressCell(sender: UILongPressGestureRecognizer) {
-        let cell = sender.view as! UITableViewCell
+    private func didLongPressCell(cell: ThreadTableViewCell) {
         guard let indexPath = tableView.indexPathForCell(cell) else { return }
         let thread = dataManager.threads[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
