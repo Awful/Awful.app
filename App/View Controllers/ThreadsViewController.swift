@@ -27,7 +27,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     
     init(forum: Forum) {
         self.forum = forum
-        dataManager = ThreadDataManager(forum: forum, filterThreadTag: filterThreadTag)
+        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         super.init(style: .Plain)
         
@@ -171,7 +172,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
             tableView.reloadData()
             
         case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue():
-            dataManager = ThreadDataManager(forum: forum, filterThreadTag: filterThreadTag)
+            let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+            dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
             prepareUserActivity()
@@ -266,7 +268,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         AwfulRefreshMinder.sharedMinder().forgetForum(forum)
         updateFilterButton()
         
-        dataManager = ThreadDataManager(forum: forum, filterThreadTag: filterThreadTag)
+        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         picker.dismiss()
     }
@@ -363,31 +366,5 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     private struct ObsoleteRestorationKeys {
         static let forumID = "AwfulForumID"
         static let filterThreadTagID = "AwfulFilterThreadTagID"
-    }
-}
-
-private extension ThreadDataManager {
-    convenience init(forum: Forum, filterThreadTag: ThreadTag?) {
-        let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
-        fetchRequest.fetchBatchSize = 20
-        
-        let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)
-        if let threadTag = filterThreadTag {
-            let morePredicate = NSPredicate(format: "threadTag == %@", threadTag)
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate, morePredicate])
-        } else {
-            fetchRequest.predicate = basePredicate
-        }
-        
-        var sortDescriptors = [
-            NSSortDescriptor(key: "stickyIndex", ascending: true),
-            NSSortDescriptor(key: "threadListPage", ascending: true)]
-        if AwfulSettings.sharedSettings().forumThreadsSortedByUnread {
-            sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
-        }
-        sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
-        fetchRequest.sortDescriptors = sortDescriptors
-        
-        self.init(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
     }
 }

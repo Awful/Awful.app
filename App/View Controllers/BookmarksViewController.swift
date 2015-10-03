@@ -24,7 +24,8 @@ final class BookmarksViewController: AwfulTableViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        dataManager = ThreadDataManager(managedObjectContext: managedObjectContext)
+        let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+        dataManager = ThreadDataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
         super.init(style: .Plain)
         
@@ -169,7 +170,8 @@ final class BookmarksViewController: AwfulTableViewController {
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue():
-            dataManager = ThreadDataManager(managedObjectContext: managedObjectContext)
+            let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+            dataManager = ThreadDataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
             prepareUserActivity()
@@ -231,22 +233,5 @@ final class BookmarksViewController: AwfulTableViewController {
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.threads[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
-    }
-}
-
-private extension ThreadDataManager {
-    convenience init(managedObjectContext: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest(entityName: Thread.entityName())
-        fetchRequest.fetchBatchSize = 20
-        fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
-        
-        var sortDescriptors = [NSSortDescriptor(key: "bookmarkListPage", ascending: true)]
-        if AwfulSettings.sharedSettings().bookmarksSortedByUnread {
-            sortDescriptors.append(NSSortDescriptor(key: "anyUnreadPosts", ascending: false))
-        }
-        sortDescriptors.append(NSSortDescriptor(key: "lastPostDate", ascending: false))
-        fetchRequest.sortDescriptors = sortDescriptors
-        
-        self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
     }
 }
