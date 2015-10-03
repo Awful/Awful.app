@@ -23,33 +23,11 @@ final class ThreadDataManager: NSObject, NSFetchedResultsControllerDelegate {
     
     // MARK: NSFetchedResultsControllerDelegate
     
-    @objc func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        delegate?.dataManagerWillChangeContent(self)
-    }
-    
-    @objc func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-        switch type {
-        case .Insert:
-            delegate?.dataManager(self, didInsertRowAtIndexPath: newIndexPath!)
-        case .Delete:
-            delegate?.dataManager(self, didDeleteRowAtIndexPath: indexPath!)
-        case .Move:
-            delegate?.dataManager(self, didMoveRowAtIndexPath: indexPath!, toRowAtIndexPath: newIndexPath!)
-        case .Update:
-            delegate?.dataManager(self, didUpdateRowAtIndexPath: indexPath!)
-        }
-    }
-    
     @objc func controllerDidChangeContent(controller: NSFetchedResultsController) {
         delegate?.dataManagerDidChangeContent(self)
     }
 }
 
 protocol ThreadDataManagerDelegate {
-    func dataManagerWillChangeContent(dataManager: ThreadDataManager)
-    func dataManager(dataManager: ThreadDataManager, didInsertRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didDeleteRowAtIndexPath indexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didMoveRowAtIndexPath fromIndexPath: NSIndexPath, toRowAtIndexPath toIndexPath: NSIndexPath)
-    func dataManager(dataManager: ThreadDataManager, didUpdateRowAtIndexPath indexPath: NSIndexPath)
     func dataManagerDidChangeContent(dataManager: ThreadDataManager)
 }

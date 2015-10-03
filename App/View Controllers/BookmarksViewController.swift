@@ -44,8 +44,8 @@ final class BookmarksViewController: AwfulTableViewController {
     }
     
     private func createTableViewAdapter() {
-        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, cellConfigurationHandler: { [weak self] cell, thread in
-            cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
+        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: true, cellConfigurationHandler: { [weak self] cell, viewModel in
+            cell.viewModel = viewModel
             
             // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
             

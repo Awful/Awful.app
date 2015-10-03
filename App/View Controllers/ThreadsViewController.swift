@@ -51,8 +51,8 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     }
     
     private func createTableViewAdapter() {
-        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, cellConfigurationHandler: { cell, thread in
-            cell.viewModel = ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, overrideSticky: false)
+        tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: false, cellConfigurationHandler: { cell, viewModel in
+            cell.viewModel = viewModel
             
             // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
             

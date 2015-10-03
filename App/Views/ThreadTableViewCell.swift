@@ -27,7 +27,7 @@ final class ThreadTableViewCell: UITableViewCell {
         return recognizer
     }()
     
-    struct ViewModel {
+    struct ViewModel: Equatable {
         let title: String
         let titleAlpha: CGFloat
         
@@ -39,8 +39,11 @@ final class ThreadTableViewCell: UITableViewCell {
         
         let showsTagAndRating: Bool
         let tag: UIImage
+        let tagImageName: String
         let secondaryTag: UIImage?
+        let secondaryTagImageName: String?
         let rating: UIImage?
+        let ratingImageName: String?
         let tagAndRatingAlpha: CGFloat
         
         var accessibilityLabel: String {
@@ -132,58 +135,18 @@ final class ThreadTableViewCell: UITableViewCell {
     }
 }
 
-extension ThreadTableViewCell.ViewModel {
-    init(thread: Thread, showsTag: Bool, overrideSticky stickyOverride: Bool? = nil) {
-        title = thread.title ?? ""
-        let p = Int(thread.numberOfPages) == 1 ? "p" : "pp"
-        numberOfPages = "\(thread.numberOfPages)\(p)"
-        
-        if thread.beenSeen {
-            let poster = thread.lastPostAuthorName ?? ""
-            killedPostedBy = "Killed by \(poster)"
-            unreadPosts = String(thread.unreadPosts)
-        } else {
-            let author = thread.author?.username ?? ""
-            killedPostedBy = "Posted by \(author)"
-            unreadPosts = ""
-        }
-        
-        showsTagAndRating = showsTag
-        if let
-            imageName = thread.threadTag?.imageName,
-            image = AwfulThreadTagLoader.imageNamed(imageName)
-        {
-            tag = image
-        } else {
-            tag = AwfulThreadTagLoader.emptyThreadTagImage()
-        }
-        
-        if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {
-            secondaryTag = UIImage(named: secondaryTagImageName)
-        } else {
-            secondaryTag = nil
-        }
-        
-        var rating: Int?
-        if AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true {
-            let rounded = lroundf(thread.rating).clamp(0...5)
-            if rounded != 0 {
-                rating = rounded
-            }
-        }
-        if let rating = rating {
-            self.rating = UIImage(named: "rating\(rating)")
-        } else {
-            self.rating = nil
-        }
-        
-        let faded = thread.closed && !thread.sticky
-        let alpha: CGFloat = faded ? 0.5 : 1
-        titleAlpha = alpha
-        tagAndRatingAlpha = alpha
-        
-        self.sticky = stickyOverride ?? thread.sticky
-    }
+func ==(lhs: ThreadTableViewCell.ViewModel, rhs: ThreadTableViewCell.ViewModel) -> Bool {
+    return
+        lhs.title == rhs.title &&
+        lhs.titleAlpha == rhs.titleAlpha &&
+        lhs.numberOfPages == rhs.numberOfPages &&
+        lhs.killedPostedBy == rhs.killedPostedBy &&
+        lhs.unreadPosts == rhs.unreadPosts &&
+        lhs.sticky == rhs.sticky &&
+        lhs.showsTagAndRating == rhs.showsTagAndRating &&
+        lhs.tagImageName == rhs.tagImageName &&
+        lhs.secondaryTagImageName == rhs.secondaryTagImageName &&
+        lhs.ratingImageName == rhs.ratingImageName
 }
 
 extension ThreadTableViewCell.ThemeData {
