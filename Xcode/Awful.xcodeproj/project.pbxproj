@@ -162,6 +162,7 @@
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */; settings = {ASSET_TAGS = (); }; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */; };
+		1C4EAD5C1BC052BE0008BE54 /* CollectionTypeDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */; settings = {ASSET_TAGS = (); }; };
 		1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */; };
 		1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C4EFEAB19ED59E900CD423E /* SmilieKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */; };
@@ -598,6 +599,7 @@
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDataManagerTableViewAdapter.swift; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeader.swift; sourceTree = "<group>"; };
+		1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionTypeDelta.swift; sourceTree = "<group>"; };
 		1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadTests.m; sourceTree = "<group>"; };
 		1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboard.h; sourceTree = "<group>"; };
 		1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboard.m; sourceTree = "<group>"; };
@@ -1640,6 +1642,7 @@
 		1CD005D41BB8DA4700232FFD /* Data Managers */ = {
 			isa = PBXGroup;
 			children = (
+				1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */,
 				1CD005D51BB8DA6400232FFD /* ThreadDataManager.swift */,
 				1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */,
 			);
@@ -2580,6 +2583,7 @@
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* PrivateMessageViewModel.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
+				1C4EAD5C1BC052BE0008BE54 /* CollectionTypeDelta.swift in Sources */,
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
