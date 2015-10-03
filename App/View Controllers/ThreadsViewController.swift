@@ -5,8 +5,7 @@
 import AwfulCore
 import CoreData
 
-// TODO: State preservation and restoration
-final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate {
+final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
     
@@ -97,6 +96,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         tableView.registerNib(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
+        tableView.restorationIdentifier = "Threads table view"
         tableView.separatorStyle = .None
         
         createTableViewAdapter()
@@ -306,6 +306,62 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.threads[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
+    }
+    
+    // MARK: UIViewControllerRestoration
+    
+    class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+        var forumKey = coder.decodeObjectForKey(RestorationKeys.forumKey) as! ForumKey!
+        if forumKey == nil {
+            guard let forumID = coder.decodeObjectForKey(ObsoleteRestorationKeys.forumID) as? String else { return nil }
+            forumKey = ForumKey(forumID: forumID)
+        }
+        let managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
+        let forum = Forum.objectForKey(forumKey, inManagedObjectContext: managedObjectContext) as! Forum
+        let viewController = self.init(forum: forum)
+        viewController.restorationIdentifier = identifierComponents.last as! String?
+        viewController.restorationClass = self
+        return viewController
+    }
+    
+    override func encodeRestorableStateWithCoder(coder: NSCoder) {
+        super.encodeRestorableStateWithCoder(coder)
+        
+        coder.encodeObject(forum.objectKey, forKey: RestorationKeys.forumKey)
+        coder.encodeObject(threadComposeViewController, forKey: RestorationKeys.newThreadViewController)
+        coder.encodeObject(filterThreadTag?.objectKey, forKey: RestorationKeys.filterThreadTagKey)
+    }
+    
+    override func decodeRestorableStateWithCoder(coder: NSCoder) {
+        super.decodeRestorableStateWithCoder(coder)
+        
+        if let compose = coder.decodeObjectForKey(RestorationKeys.newThreadViewController) as? ThreadComposeViewController {
+            compose.delegate = self
+            threadComposeViewController = compose
+        }
+        
+        var tagKey = coder.decodeObjectForKey(RestorationKeys.filterThreadTagKey) as! ThreadTagKey?
+        if tagKey == nil {
+            if let tagID = coder.decodeObjectForKey(ObsoleteRestorationKeys.filterThreadTagID) as? String {
+                tagKey = ThreadTagKey(imageName: nil, threadTagID: tagID)
+            }
+        }
+        if let tagKey = tagKey {
+            filterThreadTag = ThreadTag.objectForKey(tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+        }
+        
+        updateFilterButton()
+    }
+    
+    private struct RestorationKeys {
+        static let forumKey = "ForumKey"
+        static let newThreadViewController = "AwfulNewThreadViewController"
+        static let filterThreadTagKey = "FilterThreadTagKey"
+    }
+    
+    private struct ObsoleteRestorationKeys {
+        static let forumID = "AwfulForumID"
+        static let filterThreadTagID = "AwfulFilterThreadTagID"
     }
 }
 

@@ -4,7 +4,6 @@
 
 import CoreData
 
-// TODO: State preservation and restoration
 final class BookmarksViewController: AwfulTableViewController {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
@@ -85,6 +84,7 @@ final class BookmarksViewController: AwfulTableViewController {
         tableView.registerNib(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
+        tableView.restorationIdentifier = "Bookmarks table"
         tableView.separatorStyle = .None
         
         createTableViewAdapter()
