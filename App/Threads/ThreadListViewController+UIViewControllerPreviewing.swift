@@ -30,7 +30,12 @@ extension ThreadListViewController: UIViewControllerPreviewingDelegate {
     }
     
     func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-        // Reuse the "Peek" view controller for presentation.
+        // Reuse the posts view controller, but trigger a reload so we update the last-read post marker.
+        if let postsViewController = viewControllerToCommit as? PostsPageViewController {
+            // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
+            let targetPage = postsViewController.thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
+            postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
+        }
         showViewController(viewControllerToCommit, sender: self)
     }
 }
