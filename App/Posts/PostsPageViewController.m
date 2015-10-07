@@ -1188,7 +1188,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     
     
     UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"Mark Thread As Read" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        [self loadPage:self.numberOfPages updatingCache:YES noSeen:NO];
+        [self loadPage:self.numberOfPages updatingCache:YES updatingLastReadPost:YES];
     }];
     
     NSString *title;
