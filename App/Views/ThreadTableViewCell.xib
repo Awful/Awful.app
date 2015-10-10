@@ -71,6 +71,9 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="height" priority="250" constant="57" id="ByN-8m-oj5"/>
+                        </constraints>
                     </stackView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="14" placeholderIntrinsicHeight="14" translatesAutoresizingMaskIntoConstraints="NO" id="8E7-IU-SaJ" userLabel="Secondary tag">
                         <rect key="frame" x="39" y="67" width="14" height="14"/>
