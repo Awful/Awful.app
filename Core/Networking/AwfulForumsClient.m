@@ -548,6 +548,7 @@
 - (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
+                updateLastReadPost:(BOOL)updateLastReadPost
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback
 {
     NSMutableDictionary *parameters = [@{ @"threadid": thread.threadID,
@@ -558,6 +559,9 @@
         parameters[@"goto"] = @"lastpost";
     } else {
         parameters[@"pagenumber"] = @(page);
+    }
+    if(!updateLastReadPost) {
+        parameters[@"noseen"] = @"1";
     }
     if (author.userID) {
         parameters[@"userid"] = author.userID;

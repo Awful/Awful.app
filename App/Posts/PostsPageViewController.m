@@ -124,7 +124,7 @@
     }
 }
 
-- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache
+- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache updatingLastReadPost:(BOOL)updateLastReadPost
 {
     [self.networkOperation cancel];
     self.networkOperation = nil;
@@ -164,6 +164,7 @@
     self.networkOperation = [[AwfulForumsClient client] listPostsInThread:self.thread
                                                                 writtenBy:self.author
                                                                    onPage:self.page
+                                                       updateLastReadPost:updateLastReadPost
                                                                   andThen:^(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML)
     {
         __typeof__(self) self = weakSelf;
@@ -214,8 +215,10 @@
         [self updateUserInterface];
         
         Post *lastPost = self.posts.lastObject;
-        if (self.thread.seenPosts < lastPost.threadIndex) {
-            self.thread.seenPosts = lastPost.threadIndex;
+        if (updateLastReadPost) {
+            if (self.thread.seenPosts < lastPost.threadIndex) {
+                self.thread.seenPosts = lastPost.threadIndex;
+            }
         }
         
         [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
@@ -329,7 +332,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
             self.replyWorkspace = nil;
         }
         if (didSucceed) {
-            [self loadPage:AwfulThreadPageNextUnread updatingCache:YES];
+            [self loadPage:AwfulThreadPageNextUnread updatingCache:YES updatingLastReadPost:YES];
         }
         [self dismissViewControllerAnimated:YES completion:nil];
     };
@@ -360,7 +363,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _backItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page > 1) {
-            [self loadPage:self.page - 1 updatingCache:YES];
+            [self loadPage:self.page - 1 updatingCache:YES updatingLastReadPost:YES];
         }
     };
     return _backItem;
@@ -392,7 +395,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _forwardItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page < self.numberOfPages && self.page > 0) {
-            [self loadPage:self.page + 1 updatingCache:YES];
+            [self loadPage:self.page + 1 updatingCache:YES updatingLastReadPost:YES];
         }
     };
     return _forwardItem;
@@ -647,7 +650,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         nextPage = self.page + 1;
     }
     
-    [self loadPage:nextPage updatingCache:YES];
+    [self loadPage:nextPage updatingCache:YES updatingLastReadPost:YES];
 }
 
 - (void)goToParentForum
@@ -752,7 +755,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
             PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:self.thread author:user];
             postsView.restorationIdentifier = @"Just their posts";
-            [postsView loadPage:1 updatingCache:YES];
+            [postsView loadPage:1 updatingCache:YES updatingLastReadPost:YES];
             [self.navigationController pushViewController:postsView animated:YES];
         }]];
 	}
@@ -1149,9 +1152,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     self.messageViewController.delegate = self;
     self.hiddenPosts = [coder decodeIntegerForKey:HiddenPostsKey];
     self.page = [coder decodeIntegerForKey:PageKey];
-    [self loadPage:self.page updatingCache:NO];
+    [self loadPage:self.page updatingCache:NO updatingLastReadPost:YES];
     if (self.posts.count == 0) {
-        [self loadPage:self.page updatingCache:YES];
+        [self loadPage:self.page updatingCache:YES updatingLastReadPost:YES];
     }
     self.advertisementHTML = [coder decodeObjectForKey:AdvertisementHTMLKey];
     _scrollToFractionAfterLoading = [coder decodeFloatForKey:ScrolledFractionOfContentKey];
@@ -1162,6 +1165,73 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (void)applicationFinishedRestoringState
 {
     _restoringState = NO;
+}
+
+#pragma mark - Preview Actions
+
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
+    
+    // setup a list of preview actions
+    UIPreviewAction *action1 = [UIPreviewAction actionWithTitle:@"Copy URL" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        NSMutableArray *queryParts = [NSMutableArray new];
+        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
+        [queryParts addObject:@"perpage=40"];
+        if (self.page > 1) {
+            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
+        }
+        components.query = [queryParts componentsJoinedByString:@"&"];
+        NSURL *URL = components.URL;
+        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
+        [UIPasteboard generalPasteboard].awful_URL = URL;
+    }];
+    
+    
+    UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"Mark Thread As Read" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        [self loadPage:self.numberOfPages updatingCache:YES updatingLastReadPost:YES];
+    }];
+    
+    NSString *title;
+    UIPreviewActionStyle bookmarkStyle;
+    if (self.thread.bookmarked) {
+        title = @"Remove Bookmark";
+        bookmarkStyle = UIPreviewActionStyleDestructive;
+    } else {
+        title = @"Add Bookmark";
+        bookmarkStyle = UIPreviewActionStyleDefault;
+    }
+    
+    UIPreviewAction *action3 = [UIPreviewAction actionWithTitle:title style:bookmarkStyle handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        [[AwfulForumsClient client] setThread:self.thread
+                                 isBookmarked:!self.thread.bookmarked
+                                      andThen:^(NSError *error)
+         {
+             if (error) {
+                 NSLog(@"error %@bookmarking thread %@: %@",
+                       self.thread.bookmarked ? @"un" : @"", self.thread.threadID, error);
+             } else {
+                 NSString *status = @"Removed Bookmark";
+                 if (self.thread.bookmarked) {
+                     status = @"Added Bookmark";
+                 }
+                 MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
+                                                                                      title:status
+                                                                                       mode:MRProgressOverlayViewModeCheckmark
+                                                                                   animated:YES];
+                 //                 overlay.tintColor = self.theme[@"tintColor"];
+                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                     [overlay dismiss:YES];
+                 });
+             }
+         }];
+
+    }];
+    
+    // add them to an arrary
+    NSArray *actions = @[action1, action2, action3];
+    
+    // and return them
+    return actions;
 }
 
 static NSString * const ThreadKeyKey = @"ThreadKey";

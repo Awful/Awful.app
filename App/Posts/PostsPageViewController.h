@@ -43,8 +43,9 @@
  *
  * @param page        The page to load. Values of AwfulThreadPage are allowed here too (but it's typed NSInteger for Swift compatibility).
  * @param updateCache Whether to fetch posts from the client, or simply render any posts that are cached.
+ * @param updateLastReadPost Whether to advance the "last-read post" marker on the Forums.
  */
-- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache;
+- (void)loadPage:(NSInteger)page updatingCache:(BOOL)updateCache updatingLastReadPost:(BOOL)updateLastReadPost;
 
 /**
  * An array of AwfulPost objects of the currently-visible posts.

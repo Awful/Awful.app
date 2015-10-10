@@ -25,9 +25,9 @@
 + (instancetype)sharedClient;
 
 /**
-    The Forums endpoint for the client. Typically http://forums.somethingawful.com
+ The Forums endpoint for the client. Typically http://forums.somethingawful.com
  
-    Setting a new baseURL cancels all in-flight requests.
+ Setting a new baseURL cancels all in-flight requests.
  */
 @property (strong, nonatomic) NSURL *baseURL;
 
@@ -168,6 +168,7 @@
 
 /**
  * @param author   A User object whose posts are the only ones listed. If nil, posts from all authors are listed.
+ * @param updateLastReadPost If YES, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If NO, the next time the user asks for "next unread post" they'll get the same answer again.
  * @param callback A block to call after listing posts, which takes as parameters: an NSError object on failure, or nil on success; an array of AwfulPost objects on success, or nil on failure; the index of the first unread post in the posts array on success; and the banner ad HTML on success.
  *
  * @return An enqueued network operation.
@@ -175,6 +176,7 @@
 - (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
                             onPage:(AwfulThreadPage)page
+                updateLastReadPost:(BOOL)updateLastReadPost
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback;
 
 /**
