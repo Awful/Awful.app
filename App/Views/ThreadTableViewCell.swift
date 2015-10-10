@@ -48,9 +48,9 @@ final class ThreadTableViewCell: UITableViewCell {
         let title: String
         let titleAlpha: CGFloat
         
-        let numberOfPages: String
+        let numberOfPages: Int
         let killedPostedBy: String
-        let unreadPosts: String
+        let unreadPosts: Int?
         
         let sticky: Bool
         
@@ -66,9 +66,8 @@ final class ThreadTableViewCell: UITableViewCell {
         var accessibilityLabel: String {
             var components = [title]
             
-            if !unreadPosts.isEmpty {
-                // TODO: why convert from int to string to int??
-                let s = Int(unreadPosts) == 1 ? "" : "s"
+            if let unreadPosts = unreadPosts {
+                let s = unreadPosts == 1 ? "" : "s"
                 components.append(", \(unreadPosts) unread post\(s)")
             }
             
@@ -77,7 +76,7 @@ final class ThreadTableViewCell: UITableViewCell {
             }
             
             do {
-                let s = Int(numberOfPages) == 1 ? "" : "s"
+                let s = numberOfPages == 1 ? "" : "s"
                 components.append(". \(numberOfPages) page\(s)")
             }
             
@@ -97,12 +96,24 @@ final class ThreadTableViewCell: UITableViewCell {
         
         titleLabel.text = data?.title
         titleLabel.alpha = data?.titleAlpha ?? 1
-        pageCountLabel.text = data?.numberOfPages
+        
+        if let pages = data?.numberOfPages {
+            let p = pages == 1 ? "p" : "pp"
+            pageCountLabel.text = "\(pages)\(p)"
+        } else {
+            pageCountLabel.text = ""
+        }
+        
         killedPostedByLabel.text = data?.killedPostedBy
         
-        unreadPostsLabel.text = data?.unreadPosts
+        if let unreadPosts = data?.unreadPosts {
+            unreadPostsLabel.text = "\(unreadPosts)"
+        } else {
+            unreadPostsLabel.text = ""
+        }
         
-        stickyView.hidden = !(data?.sticky ?? false)
+        let sticky = data?.sticky ?? false
+        stickyView.hidden = !sticky
         
         accessibilityLabel = data?.accessibilityLabel
     }

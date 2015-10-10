@@ -81,17 +81,16 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
 private extension ThreadTableViewCell.ViewModel {
     init(thread: Thread, showsTag: Bool, ignoreSticky: Bool) {
         title = thread.title ?? ""
-        let p = Int(thread.numberOfPages) == 1 ? "p" : "pp"
-        numberOfPages = "\(thread.numberOfPages)\(p)"
+        numberOfPages = Int(thread.numberOfPages)
         
         if thread.beenSeen {
             let poster = thread.lastPostAuthorName ?? ""
             killedPostedBy = "Killed by \(poster)"
-            unreadPosts = String(thread.unreadPosts)
+            unreadPosts = Int(thread.unreadPosts)
         } else {
             let author = thread.author?.username ?? ""
             killedPostedBy = "Posted by \(author)"
-            unreadPosts = ""
+            unreadPosts = 0
         }
         
         showsTagAndRating = showsTag
