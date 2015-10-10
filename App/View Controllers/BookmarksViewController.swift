@@ -100,7 +100,9 @@ final class BookmarksViewController: AwfulTableViewController {
         
         prepareUserActivity()
         
-        // TODO: enable infinite scroll so long as the table is nonempty (people want this even though I think it's confusing).
+        if !dataManager.threads.isEmpty {
+            scrollToLoadMoreBlock = loadMore
+        }
         
         becomeFirstResponder()
         

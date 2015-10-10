@@ -116,14 +116,17 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        // TODO: enable infinite scroll so long as the table is nonempty (people want this even though I think it's confusing).
-        // TODO: show filter button if table is nonempty
+        if !dataManager.threads.isEmpty {
+            scrollToLoadMoreBlock = loadNextPage
+            
+            updateFilterButton()
+            tableView.tableHeaderView = filterButton
+        }
         
         prepareUserActivity()
         
         if AwfulForumsClient.sharedClient().reachable &&
-            // TODO: basically the next line
-            // (dataSource.numberOfSections > 0 && dataSource.tableView(tableView, numberOfRowsInSection: 0) > 0) &&
+            !dataManager.threads.isEmpty &&
             ((filterThreadTag == nil && AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum)) ||
                 (filterThreadTag != nil && AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum)))
         {
