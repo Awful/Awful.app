@@ -275,9 +275,12 @@
 		1CBC74B1181A4DC30076234E /* ComposeTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B0181A4DC30076234E /* ComposeTextView.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
+		1CBD0E901BC976B1004206B7 /* AwfulViews.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CBD0E8F1BC976B1004206B7 /* AwfulViews.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1CBD0E941BC976B1004206B7 /* AwfulViews.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD0E8D1BC976B1004206B7 /* AwfulViews.framework */; };
+		1CBD0E951BC976B1004206B7 /* AwfulViews.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD0E8D1BC976B1004206B7 /* AwfulViews.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1CBD0E991BC97739004206B7 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; settings = {ASSET_TAGS = (); }; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
-		1CC22AB519F972C200D5BABD /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
 		1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */; };
 		1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */; };
@@ -447,6 +450,13 @@
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
 		};
+		1CBD0E921BC976B1004206B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CBD0E8C1BC976B1004206B7;
+			remoteInfo = Views;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -469,6 +479,7 @@
 			files = (
 				1C66A9D519DD304F001B9A41 /* Smilies.framework in Embed Frameworks */,
 				1C3CF97E1A94B9B50065C964 /* AwfulCore.framework in Embed Frameworks */,
+				1CBD0E951BC976B1004206B7 /* AwfulViews.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -791,6 +802,9 @@
 		1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+AwfulStringyURLs.m"; sourceTree = "<group>"; };
 		1CBCDFDB17F3E794007B07D3 /* AwfulMinusFixURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulMinusFixURLProtocol.h; sourceTree = "<group>"; };
 		1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulMinusFixURLProtocol.m; sourceTree = "<group>"; };
+		1CBD0E8D1BC976B1004206B7 /* AwfulViews.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AwfulViews.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CBD0E8F1BC976B1004206B7 /* AwfulViews.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulViews.h; sourceTree = "<group>"; };
+		1CBD0E911BC976B1004206B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
@@ -991,11 +1005,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CBD0E891BC976B1004206B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
+				1CBD0E941BC976B1004206B7 /* AwfulViews.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 			);
@@ -1054,6 +1076,7 @@
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C3CF9661A94B9B40065C964 /* AwfulCore.framework */,
 				1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */,
+				1CBD0E8D1BC976B1004206B7 /* AwfulViews.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1527,6 +1550,17 @@
 			path = "Private Messages";
 			sourceTree = "<group>";
 		};
+		1CBD0E8E1BC976B1004206B7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1CBD0E8F1BC976B1004206B7 /* AwfulViews.h */,
+				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
+				1CBD0E911BC976B1004206B7 /* Info.plist */,
+			);
+			name = Views;
+			path = ../Views;
+			sourceTree = "<group>";
+		};
 		1CBE1B0719CA03F100510187 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1776,7 +1810,6 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */,
 				1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */,
 			);
@@ -1791,6 +1824,7 @@
 				8CCD498115B497A700E5893B /* Resources */,
 				1C66A9BA19DD3017001B9A41 /* Smilies */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
+				1CBD0E8E1BC976B1004206B7 /* Views */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				9D0762E16A2A66CEB1B627DC /* Pods */,
@@ -1906,6 +1940,14 @@
 				1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */,
 				1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */,
 				1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CBD0E8A1BC976B1004206B7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBD0E901BC976B1004206B7 /* AwfulViews.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2026,6 +2068,24 @@
 			productReference = 1C66A9EF19DD3939001B9A41 /* Smilie Keyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		1CBD0E8C1BC976B1004206B7 /* Views */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CBD0E981BC976B2004206B7 /* Build configuration list for PBXNativeTarget "Views" */;
+			buildPhases = (
+				1CBD0E881BC976B1004206B7 /* Sources */,
+				1CBD0E891BC976B1004206B7 /* Frameworks */,
+				1CBD0E8A1BC976B1004206B7 /* Headers */,
+				1CBD0E8B1BC976B1004206B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Views;
+			productName = Views;
+			productReference = 1CBD0E8D1BC976B1004206B7 /* AwfulViews.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -2049,6 +2109,7 @@
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 				1C66A9FB19DD393A001B9A41 /* PBXTargetDependency */,
+				1CBD0E931BC976B1004206B7 /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -2091,6 +2152,9 @@
 							};
 						};
 					};
+					1CBD0E8C1BC976B1004206B7 = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
 					1D6058900D05DD3D006BFB54 = {
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -2124,6 +2188,7 @@
 				1C66A9BF19DD304D001B9A41 /* Smilies */,
 				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
+				1CBD0E8C1BC976B1004206B7 /* Views */,
 			);
 		};
 /* End PBXProject section */
@@ -2178,6 +2243,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CBD0E8B1BC976B1004206B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2516,6 +2588,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CBD0E881BC976B1004206B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBD0E991BC97739004206B7 /* HairlineView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2552,7 +2632,6 @@
 				1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */,
 				1C03B52019C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m in Sources */,
 				1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */,
-				1CC22AB519F972C200D5BABD /* HairlineView.swift in Sources */,
 				1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -2718,6 +2797,11 @@
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
+		};
+		1CBD0E931BC976B1004206B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CBD0E8C1BC976B1004206B7 /* Views */;
+			targetProxy = 1CBD0E921BC976B1004206B7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3153,6 +3237,66 @@
 			};
 			name = Release;
 		};
+		1CBD0E961BC976B2004206B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				INFOPLIST_FILE = "$(SRCROOT)/../Views/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.Views;
+				PRODUCT_NAME = AwfulViews;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1CBD0E971BC976B2004206B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				INFOPLIST_FILE = "$(SRCROOT)/../Views/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.Views;
+				PRODUCT_NAME = AwfulViews;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */;
@@ -3164,6 +3308,7 @@
 				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -3191,6 +3336,7 @@
 				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -3359,6 +3505,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		1CBD0E981BC976B2004206B7 /* Build configuration list for PBXNativeTarget "Views" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CBD0E961BC976B2004206B7 /* Debug */,
+				1CBD0E971BC976B2004206B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;

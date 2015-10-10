@@ -81,7 +81,7 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sticky" translatesAutoresizingMaskIntoConstraints="NO" id="3Ss-AO-6lA" userLabel="Sticky">
                         <rect key="frame" x="296" y="0.0" width="24" height="24"/>
                     </imageView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zal-xH-E5J" userLabel="Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zal-xH-E5J" userLabel="Separator" customClass="HairlineView" customModule="AwfulViews">
                         <rect key="frame" x="59" y="128" width="261" height="1"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
