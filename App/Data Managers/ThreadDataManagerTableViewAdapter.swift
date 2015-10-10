@@ -93,6 +93,8 @@ private extension ThreadTableViewCell.ViewModel {
             unreadPosts = 0
         }
         
+        starCategory = thread.starCategory
+        
         showsTagAndRating = showsTag
         if let
             imageName = thread.threadTag?.imageName,

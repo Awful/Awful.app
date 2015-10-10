@@ -50,7 +50,11 @@ final class ThreadTableViewCell: UITableViewCell {
         
         let numberOfPages: Int
         let killedPostedBy: String
+        
         let unreadPosts: Int?
+        
+        // Included so updates happen; actual color applied in applyTheme.
+        let starCategory: AwfulStarCategory
         
         let sticky: Bool
         
@@ -164,6 +168,7 @@ func ==(lhs: ThreadTableViewCell.ViewModel, rhs: ThreadTableViewCell.ViewModel) 
         lhs.numberOfPages == rhs.numberOfPages &&
         lhs.killedPostedBy == rhs.killedPostedBy &&
         lhs.unreadPosts == rhs.unreadPosts &&
+        lhs.starCategory == rhs.starCategory &&
         lhs.sticky == rhs.sticky &&
         lhs.showsTagAndRating == rhs.showsTagAndRating &&
         lhs.tagImageName == rhs.tagImageName &&
