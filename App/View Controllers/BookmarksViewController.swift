@@ -47,7 +47,6 @@ final class BookmarksViewController: AwfulTableViewController {
         tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: true, cellConfigurationHandler: { [weak self] cell, viewModel in
             cell.viewModel = viewModel
             cell.longPressAction = self?.didLongPressCell
-            // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
         })
         tableViewAdapter.deletionHandler = { [weak self] thread in
             self?.setThread(thread, isBookmarked: false)

@@ -22,15 +22,19 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         super.init()
         
         viewModels = dataManager.threads.map(createViewModel)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "threadTagDidDownload:", name: AwfulThreadTagLoaderNewImageAvailableNotification, object: AwfulThreadTagLoader.sharedLoader())
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     private func createViewModel(thread: Thread) -> ThreadTableViewCell.ViewModel {
         return ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, ignoreSticky: ignoreSticky)
     }
     
-    // MARK: ThreadDataManagerDelegate
-    
-    func dataManagerDidChangeContent(dataManager: ThreadDataManager) {
+    private func reloadViewModels() {
         let oldViewModels = viewModels
         viewModels = dataManager.threads.map(createViewModel)
         let delta = oldViewModels.delta(viewModels)
@@ -53,6 +57,34 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         }
         
         tableView.endUpdates()
+    }
+    
+    // MARK: Notifications
+    
+    @objc private func threadTagDidDownload(notification: NSNotification) {
+        guard let newImageName = notification.userInfo?[AwfulThreadTagLoaderNewImageNameKey] as? String else {
+            return
+        }
+        
+        let shouldReload = viewModels.contains { viewModel in
+            switch viewModel.tag {
+            case let .Unavailable(_, desiredImageName: imageName) where imageName == newImageName:
+                return true
+                
+            default:
+                return false
+            }
+        }
+        
+        if shouldReload {
+            reloadViewModels()
+        }
+    }
+    
+    // MARK: ThreadDataManagerDelegate
+    
+    func dataManagerDidChangeContent(dataManager: ThreadDataManager) {
+        reloadViewModels()
     }
     
     // MARK: UITableViewDataSource
@@ -96,15 +128,15 @@ private extension ThreadTableViewCell.ViewModel {
         starCategory = thread.starCategory
         
         showsTagAndRating = showsTag
+        let imageName = thread.threadTag?.imageName
         if let
-            imageName = thread.threadTag?.imageName,
+            imageName = imageName,
             image = AwfulThreadTagLoader.imageNamed(imageName)
         {
-            tag = image
-            tagImageName = imageName
+            tag = Tag.Downloaded(image)
         } else {
-            tag = AwfulThreadTagLoader.emptyThreadTagImage()
-            tagImageName = AwfulThreadTagLoaderEmptyThreadTagImageName
+            let image = AwfulThreadTagLoader.emptyThreadTagImage()
+            tag = .Unavailable(fallbackImage: image, desiredImageName: imageName ?? "")
         }
         
         if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {

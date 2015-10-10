@@ -54,7 +54,6 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: false, cellConfigurationHandler: { [weak self] cell, viewModel in
             cell.viewModel = viewModel
             cell.longPressAction = self?.didLongPressCell
-            // TODO: Bring back thread tag update observation. (should probably do it as a reload and track it by thread)
         })
         
         dataManager.delegate = tableViewAdapter

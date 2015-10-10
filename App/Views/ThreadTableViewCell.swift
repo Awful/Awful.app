@@ -60,13 +60,24 @@ final class ThreadTableViewCell: UITableViewCell {
         let sticky: Bool
         
         let showsTagAndRating: Bool
-        let tag: UIImage
-        let tagImageName: String
+        let tag: Tag
         let secondaryTag: UIImage?
         let secondaryTagImageName: String?
         let rating: UIImage?
         let ratingImageName: String?
         let tagAndRatingAlpha: CGFloat
+        
+        enum Tag: Equatable {
+            case Downloaded(UIImage)
+            case Unavailable(fallbackImage: UIImage, desiredImageName: String)
+            
+            var image: UIImage {
+                switch self {
+                case let .Downloaded(image): return image
+                case let .Unavailable(image, _): return image
+                }
+            }
+        }
         
         var accessibilityLabel: String {
             var components = [title]
@@ -95,7 +106,7 @@ final class ThreadTableViewCell: UITableViewCell {
         tagAndRatingView.hidden = !(data?.showsTagAndRating ?? false)
         tagAndRatingView.alpha = data?.tagAndRatingAlpha ?? 1
         
-        tagView.image = data?.tag
+        tagView.image = data?.tag.image
         secondaryTagView.image = data?.secondaryTag
         ratingView.image = data?.rating
         
@@ -172,9 +183,22 @@ func ==(lhs: ThreadTableViewCell.ViewModel, rhs: ThreadTableViewCell.ViewModel) 
         lhs.starCategory == rhs.starCategory &&
         lhs.sticky == rhs.sticky &&
         lhs.showsTagAndRating == rhs.showsTagAndRating &&
-        lhs.tagImageName == rhs.tagImageName &&
+        lhs.tag == rhs.tag &&
         lhs.secondaryTagImageName == rhs.secondaryTagImageName &&
         lhs.ratingImageName == rhs.ratingImageName
+}
+
+func ==(lhs: ThreadTableViewCell.ViewModel.Tag, rhs: ThreadTableViewCell.ViewModel.Tag) -> Bool {
+    switch (lhs, rhs) {
+    case (.Downloaded, .Downloaded):
+        return true
+        
+    case let (.Unavailable(_, lhsName), .Unavailable(_, rhsName)):
+        return lhsName == rhsName
+        
+    default:
+        return false
+    }
 }
 
 extension ThreadTableViewCell.ThemeData {
