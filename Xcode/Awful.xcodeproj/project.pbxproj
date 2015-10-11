@@ -105,6 +105,7 @@
 		1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
+		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; settings = {ASSET_TAGS = (); }; };
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; settings = {ASSET_TAGS = (); }; };
 		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
 		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -332,7 +333,6 @@
 		1CF3A467180C768100EC2450 /* AwfulURLRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3A466180C768100EC2450 /* AwfulURLRouter.m */; };
 		1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
 		1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */; settings = {ASSET_TAGS = (); }; };
-		3A17B62C1BB83D73009D54E3 /* ThreadListViewController+UIViewControllerPreviewing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17B62B1BB83D73009D54E3 /* ThreadListViewController+UIViewControllerPreviewing.swift */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		837D67F11861C3D700464055 /* AwfulForumTweaks.m in Sources */ = {isa = PBXBuildFile; fileRef = 837D67F01861C3D700464055 /* AwfulForumTweaks.m */; };
@@ -561,6 +561,7 @@
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
+		1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPeekPopController.swift; sourceTree = "<group>"; };
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
@@ -908,7 +909,6 @@
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3A17B62B1BB83D73009D54E3 /* ThreadListViewController+UIViewControllerPreviewing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ThreadListViewController+UIViewControllerPreviewing.swift"; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7846FF6DDA37B81D34DE2AE5 /* Pods-Core.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Core.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Core/Pods-Core.release.xcconfig"; sourceTree = "<group>"; };
@@ -1266,6 +1266,7 @@
 			children = (
 				1C66AA0819DD3D14001B9A41 /* Awful.entitlements */,
 				1CF2462016DD957300C75E05 /* Composition */,
+				1C397C8C1BC9B11E00CA7FD5 /* Controllers */,
 				1CD005D41BB8DA4700232FFD /* Data Managers */,
 				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
 				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
@@ -1294,6 +1295,14 @@
 			);
 			name = App;
 			path = ../App;
+			sourceTree = "<group>";
+		};
+		1C397C8C1BC9B11E00CA7FD5 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		1C3A143419DFC5D10022C44C /* Extractor */ = {
@@ -1667,7 +1676,6 @@
 				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
 				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
 				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
-				3A17B62B1BB83D73009D54E3 /* ThreadListViewController+UIViewControllerPreviewing.swift */,
 			);
 			path = Threads;
 			sourceTree = "<group>";
@@ -2668,7 +2676,6 @@
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1C09963C16C0AECA00A62D5E /* AwfulPunishmentCell.m in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
-				3A17B62C1BB83D73009D54E3 /* ThreadListViewController+UIViewControllerPreviewing.swift in Sources */,
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C7C60BF18FCA01E009BF4BB /* PrivateMessageViewModel.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
@@ -2681,6 +2688,7 @@
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
+				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
@@ -3521,6 +3529,7 @@
 				1CBD0E971BC976B2004206B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */ = {
 			isa = XCConfigurationList;

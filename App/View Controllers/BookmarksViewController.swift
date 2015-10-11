@@ -4,9 +4,10 @@
 
 import CoreData
 
-final class BookmarksViewController: AwfulTableViewController {
+final class BookmarksViewController: AwfulTableViewController, ThreadPeekPopControllerDelegate {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
+    private var peekPopController: ThreadPeekPopController?
     
     private var dataManager: ThreadDataManager {
         didSet {
@@ -92,6 +93,10 @@ final class BookmarksViewController: AwfulTableViewController {
         pullToRefreshBlock = refresh
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
+        
+        if traitCollection.forceTouchCapability == .Available {
+            peekPopController = ThreadPeekPopController(previewingViewController: self)
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -188,6 +193,24 @@ final class BookmarksViewController: AwfulTableViewController {
         activity.title = "Bookmarked Threads"
         activity.addUserInfoEntriesFromDictionary([Handoff.InfoBookmarksKey: true])
         activity.webpageURL = NSURL(string: "/bookmarkthreads.php", relativeToURL: AwfulForumsClient.sharedClient().baseURL)
+    }
+    
+    // MARK: ThreadPeekPopControllerDelegate
+    
+    func threadForLocation(location: CGPoint) -> Thread? {
+        guard let row = tableView.indexPathForRowAtPoint(location)?.row else {
+            return nil
+        }
+        
+        return dataManager.threads[row]
+    }
+    
+    func viewForThread(thread: Thread) -> UIView? {
+        guard let row = dataManager.threads.indexOf(thread) else {
+            return nil
+        }
+        
+        return tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
     }
     
     // MARK: Undo

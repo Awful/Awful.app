@@ -5,9 +5,10 @@
 import AwfulCore
 import CoreData
 
-final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration {
+final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
+    private var peekPopController: ThreadPeekPopController?
     
     private var filterThreadTag: ThreadTag?
     
@@ -104,6 +105,10 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         pullToRefreshBlock = self.refresh
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
+        
+        if traitCollection.forceTouchCapability == .Available {
+            peekPopController = ThreadPeekPopController(previewingViewController: self)
+        }
     }
     
     override func themeDidChange() {
@@ -140,7 +145,10 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     // MARK: Actions
     
     private func didLongPressCell(cell: ThreadTableViewCell) {
-        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+        guard let indexPath = tableView.indexPathForCell(cell) else {
+            return
+        }
+        
         let thread = dataManager.threads[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
@@ -168,7 +176,9 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     // MARK: Notifications
     
     @objc private func settingsDidChange(notification: NSNotification) {
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
+        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else {
+            return
+        }
 
         switch key {
         case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() where isViewLoaded():
@@ -295,6 +305,24 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         activity.title = forum.name
         activity.addUserInfoEntriesFromDictionary([Handoff.InfoForumIDKey: forum.forumID])
         activity.webpageURL = NSURL(string: "http://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
+    }
+    
+    // MARK: ThreadPeekPopControllerDelegate
+    
+    func threadForLocation(location: CGPoint) -> Thread? {
+        guard let row = tableView.indexPathForRowAtPoint(location)?.row else {
+            return nil
+        }
+        
+        return dataManager.threads[row]
+    }
+    
+    func viewForThread(thread: Thread) -> UIView? {
+        guard let row = dataManager.threads.indexOf(thread) else {
+            return nil
+        }
+        
+        return tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
     }
     
     // MARK: UITableViewDelegate

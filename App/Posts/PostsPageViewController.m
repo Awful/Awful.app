@@ -1169,69 +1169,9 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 
 #pragma mark - Preview Actions
 
-- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
-    
-    // setup a list of preview actions
-    UIPreviewAction *action1 = [UIPreviewAction actionWithTitle:@"Copy URL" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
-        NSMutableArray *queryParts = [NSMutableArray new];
-        [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
-        [queryParts addObject:@"perpage=40"];
-        if (self.page > 1) {
-            [queryParts addObject:[NSString stringWithFormat:@"pagenumber=%@", @(self.page)]];
-        }
-        components.query = [queryParts componentsJoinedByString:@"&"];
-        NSURL *URL = components.URL;
-        [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
-        [UIPasteboard generalPasteboard].awful_URL = URL;
-    }];
-    
-    
-    UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"Mark Thread As Read" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        [self loadPage:self.numberOfPages updatingCache:YES updatingLastReadPost:YES];
-    }];
-    
-    NSString *title;
-    UIPreviewActionStyle bookmarkStyle;
-    if (self.thread.bookmarked) {
-        title = @"Remove Bookmark";
-        bookmarkStyle = UIPreviewActionStyleDestructive;
-    } else {
-        title = @"Add Bookmark";
-        bookmarkStyle = UIPreviewActionStyleDefault;
-    }
-    
-    UIPreviewAction *action3 = [UIPreviewAction actionWithTitle:title style:bookmarkStyle handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        [[AwfulForumsClient client] setThread:self.thread
-                                 isBookmarked:!self.thread.bookmarked
-                                      andThen:^(NSError *error)
-         {
-             if (error) {
-                 NSLog(@"error %@bookmarking thread %@: %@",
-                       self.thread.bookmarked ? @"un" : @"", self.thread.threadID, error);
-             } else {
-                 NSString *status = @"Removed Bookmark";
-                 if (self.thread.bookmarked) {
-                     status = @"Added Bookmark";
-                 }
-                 MRProgressOverlayView *overlay = [MRProgressOverlayView showOverlayAddedTo:self.view
-                                                                                      title:status
-                                                                                       mode:MRProgressOverlayViewModeCheckmark
-                                                                                   animated:YES];
-                 //                 overlay.tintColor = self.theme[@"tintColor"];
-                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                     [overlay dismiss:YES];
-                 });
-             }
-         }];
-
-    }];
-    
-    // add them to an arrary
-    NSArray *actions = @[action1, action2, action3];
-    
-    // and return them
-    return actions;
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems
+{
+    return self.previewActionItemProvider.previewActionItems;
 }
 
 static NSString * const ThreadKeyKey = @"ThreadKey";
