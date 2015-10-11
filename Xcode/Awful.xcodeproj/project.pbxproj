@@ -105,6 +105,7 @@
 		1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E6175DAAAD007377C5 /* ProfileViewModel.m */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
+		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; settings = {ASSET_TAGS = (); }; };
 		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
 		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13FB19DF78610022C44C /* SmilieMetadata.m */; };
@@ -560,6 +561,7 @@
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
+		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
 		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
@@ -1515,6 +1517,7 @@
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
+				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2720,6 +2723,7 @@
 				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
 				1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
+				1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */,
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
