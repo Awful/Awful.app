@@ -227,7 +227,7 @@ final class BookmarksViewController: AwfulTableViewController {
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
-        postsViewController.loadPage(targetPage, updatingCache: true)
+        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
