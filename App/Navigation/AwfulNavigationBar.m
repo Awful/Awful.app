@@ -23,12 +23,7 @@
         self.backIndicatorImage = [UIImage imageNamed:@"back"];
         self.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
         
-        // Introduced in iOS 8.2.
-        if ([UIFont respondsToSelector:@selector(systemFontOfSize:weight:)]) {
-            self.titleTextAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17 weight:UIFontWeightRegular]};
-        } else {
-            self.titleTextAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17]};
-        }
+        self.titleTextAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17 weight:UIFontWeightRegular]};
     }
     return self;
 }
