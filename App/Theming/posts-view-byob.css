@@ -287,10 +287,14 @@ footer:after {
   padding-bottom: 0;
 }
 #end {
-  font-weight: normal;
-  text-align: center;
-  line-height: 1;
   margin-bottom: 10px;
+}
+#end img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .voiceover-only {
   position: absolute;

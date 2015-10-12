@@ -269,7 +269,7 @@
         context[@"advertisementHTML"] = self.advertisementHTML;
     }
     if (postViewModels.count > 0 && self.page > 0 && self.page >= self.numberOfPages) {
-        context[@"endMessage"] = @"End of the thread";
+        context[@"endMessage"] = @YES;
     }
     int fontScalePercentage = [AwfulSettings sharedSettings].fontScale;
     if (fontScalePercentage != 100) {

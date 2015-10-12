@@ -287,10 +287,14 @@ footer:after {
   padding-bottom: 0;
 }
 #end {
-  font-weight: normal;
-  text-align: center;
-  line-height: 1;
   margin-bottom: 10px;
+}
+#end img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .voiceover-only {
   position: absolute;
@@ -383,6 +387,9 @@ post.seen {
 }
 .editedby .mention {
   color: #dd89ff;
+}
+#end img {
+  -webkit-filter: invert() sepia() saturate(10000%) hue-rotate(-10deg);
 }
 /*
  posts-view-dark-emoticons.css

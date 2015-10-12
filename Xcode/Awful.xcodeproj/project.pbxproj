@@ -108,6 +108,9 @@
 		1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA81BCC473A00CA7FD5 /* post-dots.png */; settings = {ASSET_TAGS = (); }; };
 		1C397CAC1BCC474C00CA7FD5 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CAA1BCC474C00CA7FD5 /* post-dots@2x.png */; settings = {ASSET_TAGS = (); }; };
 		1C397CAD1BCC474C00CA7FD5 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CAB1BCC474C00CA7FD5 /* post-dots@3x.png */; settings = {ASSET_TAGS = (); }; };
+		1C397CA51BCC470400CA7FD5 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA21BCC470400CA7FD5 /* cross.png */; settings = {ASSET_TAGS = (); }; };
+		1C397CA61BCC470400CA7FD5 /* cross@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA31BCC470400CA7FD5 /* cross@2x.png */; settings = {ASSET_TAGS = (); }; };
+		1C397CA71BCC470400CA7FD5 /* cross@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA41BCC470400CA7FD5 /* cross@3x.png */; settings = {ASSET_TAGS = (); }; };
 		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
 		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13FB19DF78610022C44C /* SmilieMetadata.m */; };
@@ -548,6 +551,9 @@
 		1C397CA81BCC473A00CA7FD5 /* post-dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots.png"; sourceTree = "<group>"; };
 		1C397CAA1BCC474C00CA7FD5 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@2x.png"; sourceTree = "<group>"; };
 		1C397CAB1BCC474C00CA7FD5 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@3x.png"; sourceTree = "<group>"; };
+		1C397CA21BCC470400CA7FD5 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
+		1C397CA31BCC470400CA7FD5 /* cross@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cross@2x.png"; sourceTree = "<group>"; };
+		1C397CA41BCC470400CA7FD5 /* cross@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cross@3x.png"; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
 		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
@@ -1631,6 +1637,9 @@
 			isa = PBXGroup;
 			children = (
 				8C8FA47719AD7CA300B67AAA /* award.png */,
+				1C397CA21BCC470400CA7FD5 /* cross.png */,
+				1C397CA31BCC470400CA7FD5 /* cross@2x.png */,
+				1C397CA41BCC470400CA7FD5 /* cross@3x.png */,
 				8C8FA47819AD7CA300B67AAA /* diamond-icon.png */,
 				8C8FA47919AD7CA300B67AAA /* ik.png */,
 				8C8FA47A19AD7CA300B67AAA /* image-coder.png */,
@@ -2171,6 +2180,7 @@
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
+				1C397CA71BCC470400CA7FD5 /* cross@3x.png in Resources */,
 				1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
@@ -2194,6 +2204,7 @@
 				1C397CAD1BCC474C00CA7FD5 /* post-dots@3x.png in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
+				1C397CA61BCC470400CA7FD5 /* cross@2x.png in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C3DED7D1B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png in Resources */,
@@ -2223,6 +2234,7 @@
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
+				1C397CA51BCC470400CA7FD5 /* cross.png in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
