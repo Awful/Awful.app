@@ -71,12 +71,14 @@ header {
   border-left-color: #dfdfdf;
   
   // Move the "ellipsis" off the screen.
-  text-indent: 100%;
-  white-space: nowrap;
+  img {
+    display: none;
+  }
   
   &:after {
     content: "Start";
     position: absolute;
+    top: 0.5em;
     right: 7px;
     padding-right: 2px;
     color: #000;

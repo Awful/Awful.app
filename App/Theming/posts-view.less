@@ -48,8 +48,11 @@ footer {
 }
 
 @postdate-color: #8e8e8e;
-.postdate, .action-button, .regdate {
+.postdate, .regdate {
   color: @postdate-color;
+}
+.action-button img {
+  .tint-black-template-image-gray(@postdate-color);
 }
 
 #end {

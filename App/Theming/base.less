@@ -29,8 +29,14 @@ body {
 .post-side-padding(@padding) {
   
   // Spelled out with -left and -right so padding can be individually overridden later.
-  header, .postbody, footer {
+  header, .postbody {
     padding-left: @padding;
+    padding-right: @padding;
+  }
+  footer {
+    padding-left: @padding;
+  }
+  .action-button {
     padding-right: @padding;
   }
 }
@@ -182,13 +188,27 @@ header {
 
 .action-button {
   margin: 0;
-  padding: 0;
+  padding: 0.6em;
   border: none;
   font-family: inherit; // UIWebView base style hardcodes Helvetica.
-  font-size: 2em;
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
-  line-height: 1em;  
+  
+  img {
+    width: 23px;
+    height: 9px;
+  } 
+}
+
+.tint-black-template-image-gray(@color) {
+  @brightness: lightness(@color);
+  -webkit-filter: invert() brightness(@brightness);
+}
+
+.tint-black-template-image-color(@color) {
+  @hue: hue(@color) - 60;
+  @hue-deg: ~"@{hue}deg";
+  -webkit-filter: invert() sepia() saturate(10000%) hue-rotate(@hue-deg);
 }
 
 // We don't generally control the markup in the post body, so tread carefully.

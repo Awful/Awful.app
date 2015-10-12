@@ -25,15 +25,25 @@ post {
   margin-top: 0.5em;
 }
 .iphone post header,
-.iphone post .postbody,
-.iphone post footer {
+.iphone post .postbody {
   padding-left: 0.6em;
   padding-right: 0.6em;
 }
+.iphone post footer {
+  padding-left: 0.6em;
+}
+.iphone post .action-button {
+  padding-right: 0.6em;
+}
 .ipad post header,
-.ipad post .postbody,
+.ipad post .postbody {
+  padding-left: 1.07em;
+  padding-right: 1.07em;
+}
 .ipad post footer {
   padding-left: 1.07em;
+}
+.ipad post .action-button {
   padding-right: 1.07em;
 }
 post:first-child {
@@ -46,7 +56,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -89,9 +98,7 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
   /*  Platinum users */
-
 }
 .username:before {
   margin-right: .25em;
@@ -139,13 +146,15 @@ header:after {
 }
 .action-button {
   margin: 0;
-  padding: 0;
+  padding: 0.6em;
   border: none;
   font-family: inherit;
-  font-size: 2em;
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
-  line-height: 1em;
+}
+.action-button img {
+  width: 23px;
+  height: 9px;
 }
 .postbody img {
   -webkit-user-select: none;
@@ -359,7 +368,6 @@ post.seen {
   width: 70px;
   height: 34px;
   padding-right: 6px;
-  font-size: 28px;
   text-align: right;
   background: top left no-repeat url('awful-resource://macinyos-postactions-bg.png') #ffffff;
   background-size: 31px;
