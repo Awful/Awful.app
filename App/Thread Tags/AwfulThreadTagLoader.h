@@ -43,7 +43,7 @@
 /**
  * Convenient singleton.
  */
-+ (instancetype)loader;
++ (instancetype)sharedLoader;
 
 /**
  * Designated initializer.

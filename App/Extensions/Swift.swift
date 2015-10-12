@@ -23,6 +23,18 @@ extension Array {
     }
 }
 
+extension Int {
+    func clamp<T: IntervalType where T.Bound == Int>(interval: T) -> Int {
+        if self < interval.start {
+            return interval.start
+        } else if self > interval.end {
+            return interval.end
+        } else {
+            return self
+        }
+    }
+}
+
 func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
     return first(sequence, includeElement: includeElement) != nil
 }

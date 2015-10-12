@@ -50,7 +50,7 @@
                             <constraint firstAttribute="width" constant="1" id="goM-kX-eS4"/>
                         </constraints>
                     </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l3X-xy-cpP" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
+                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l3X-xy-cpP" userLabel="Cell Separator" customClass="HairlineView" customModule="AwfulViews">
                         <rect key="frame" x="61" y="63" width="226" height="1"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

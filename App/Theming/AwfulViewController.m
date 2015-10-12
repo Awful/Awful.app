@@ -98,6 +98,8 @@ static void CommonInit(UIViewController *self)
 
 @property (assign, nonatomic) BOOL visible;
 
+@property (nonatomic) InfiniteTableController *infiniteScrollController;
+
 @end
 
 @implementation AwfulTableViewController
@@ -127,11 +129,44 @@ static void CommonInit(UIViewController *self)
     return self;
 }
 
+- (void)setPullToRefreshBlock:(void (^)(void))pullToRefreshBlock
+{
+    _pullToRefreshBlock = [pullToRefreshBlock copy];
+    
+    if (pullToRefreshBlock) {
+        ConfigureRefreshControl(self);
+    } else {
+        self.refreshControl = nil;
+    }
+}
+
+- (void)setScrollToLoadMoreBlock:(void (^)(void))scrollToLoadMoreBlock
+{
+    _scrollToLoadMoreBlock = [scrollToLoadMoreBlock copy];
+    
+    if (scrollToLoadMoreBlock) {
+        ConfigureInfiniteScroll(self);
+    } else {
+        self.infiniteScrollController = nil;
+    }
+}
+
 - (void)viewDidLoad
 {
     _viewIsLoading = YES;
+    
     [super viewDidLoad];
+    
+    if (self.pullToRefreshBlock) {
+        ConfigureRefreshControl(self);
+    }
+    
+    if (self.scrollToLoadMoreBlock) {
+        ConfigureInfiniteScroll(self);
+    }
+    
     [self themeDidChange];
+    
     _viewIsLoading = NO;
 }
 
@@ -143,6 +178,7 @@ static void CommonInit(UIViewController *self)
     self.view.backgroundColor = theme[@"backgroundColor"];
     
     self.refreshControl.tintColor = theme[@"listTextColor"];
+    self.infiniteScrollController.spinnerColor = theme[@"listTextColor"];
     
     self.tableView.indicatorStyle = theme.scrollIndicatorStyle;
     self.tableView.separatorColor = theme[@"listSeparatorColor"];
@@ -167,6 +203,29 @@ static void CommonInit(UIViewController *self)
 {
     [super viewDidDisappear:animated];
     self.visible = NO;
+}
+
+static void ConfigureRefreshControl(AwfulTableViewController *self)
+{
+    if (!self.refreshControl) {
+        self.refreshControl = [UIRefreshControl new];
+        [self.refreshControl addTarget:self action:@selector(_didPullToRefresh) forControlEvents:UIControlEventValueChanged];
+    }
+}
+
+- (void)_didPullToRefresh
+{
+    self.pullToRefreshBlock();
+}
+
+static void ConfigureInfiniteScroll(AwfulTableViewController *self)
+{
+    self.infiniteScrollController = [[InfiniteTableController alloc] initWithTableView:self.tableView loadMore:self.scrollToLoadMoreBlock];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.infiniteScrollController scrollViewDidScroll:scrollView];
 }
 
 @end

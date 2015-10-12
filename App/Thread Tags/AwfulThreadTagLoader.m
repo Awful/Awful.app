@@ -213,8 +213,7 @@ static UIImage * EnsureDoubleScaledImage(UIImage *image)
 
 #pragma mark - Conveniences
 
-+ (AwfulThreadTagLoader *)loader
-{
++ (instancetype)sharedLoader {
     static AwfulThreadTagLoader *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -227,7 +226,7 @@ static UIImage * EnsureDoubleScaledImage(UIImage *image)
 
 + (UIImage *)imageNamed:(NSString *)imageName
 {
-    return [[self loader] imageNamed:imageName];
+    return [[self sharedLoader] imageNamed:imageName];
 }
 
 + (UIImage *)emptyThreadTagImage

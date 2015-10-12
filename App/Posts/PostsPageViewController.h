@@ -4,6 +4,7 @@
 
 #import "AwfulViewController.h"
 @import AwfulCore;
+@protocol PreviewActionItemProvider;
 
 /**
  * A PostsPageViewController shows a list of posts in a thread.
@@ -56,5 +57,8 @@
  * Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
  */
 - (void)scrollPostToVisible:(Post *)post;
+
+/// If non-nil, the provider's -previewActionItems is returned by the posts view controller's -previewActionItems method.
+@property (weak, nonatomic) id<PreviewActionItemProvider> previewActionItemProvider;
 
 @end

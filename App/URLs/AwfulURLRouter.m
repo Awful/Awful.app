@@ -151,7 +151,7 @@
     
     #pragma mark /bookmarks
     [_routes addRoute:@"/bookmarks" handler:^BOOL(NSDictionary *parameters) {
-        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarkedThreadListViewController class]];
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[BookmarksViewController class]];
     }];
     
     #pragma mark /settings
@@ -227,7 +227,7 @@
 
 - (BOOL)jumpToForum:(Forum *)forum
 {
-    ForumSpecificThreadListViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumSpecificThreadListViewController class]];
+    ThreadsViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadsViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];

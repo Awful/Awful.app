@@ -51,7 +51,7 @@
                                                 <action selector="didToggleShowingChildren:" destination="3Nj-BO-15y" eventType="touchUpInside" id="QuZ-Ig-vAO"/>
                                             </connections>
                                         </button>
-                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="fQi-Ih-I5Z" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="fQi-Ih-I5Z" userLabel="Cell Separator" customClass="HairlineView" customModule="AwfulViews">
                                             <rect key="frame" x="40" y="44" width="560" height="0.0"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         </view>
@@ -111,7 +111,7 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Svp-W1-S0b" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Svp-W1-S0b" userLabel="Cell Separator" customClass="HairlineView" customModule="AwfulViews">
                                             <rect key="frame" x="40" y="43" width="560" height="1"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         </view>
