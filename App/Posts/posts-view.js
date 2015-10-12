@@ -71,10 +71,6 @@ startBridge(function(bridge) {
     callback(items);
   });
   
-  bridge.registerHandler('endMessage', function(message) {
-    $('#end').text(message || '');
-  });
-  
   $(function() {
     $('body').on('tap', 'header .avatar, header .nameanddate', function(event) {
       bridge.callHandler('didTapUserHeader', clickData(this));
