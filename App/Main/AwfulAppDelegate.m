@@ -12,7 +12,6 @@
 #import "AwfulImageURLProtocol.h"
 #import "AwfulMinusFixURLProtocol.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
-#import "AwfulResourceURLProtocol.h"
 #import "AwfulSettings.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
@@ -264,7 +263,7 @@ static void RemoveOldDataStores(void)
                                                                     diskPath:nil]];
     [NSURLProtocol registerClass:[AwfulImageURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
-    [NSURLProtocol registerClass:[AwfulResourceURLProtocol class]];
+    [NSURLProtocol registerClass:[ResourceURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

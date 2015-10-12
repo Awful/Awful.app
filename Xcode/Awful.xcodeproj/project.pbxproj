@@ -88,7 +88,6 @@
 		1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4DB1A94C7260045DDF7 /* Errors.swift */; };
 		1C14A4E91A94CCEA0045DDF7 /* NSURLQueryDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4EA1A94CCEA0045DDF7 /* NSURLQueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */; };
-		1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -106,6 +105,7 @@
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */; };
 		1C397C941BCC2C1C00CA7FD5 /* post-dots.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397C931BCC2C1C00CA7FD5 /* post-dots.png */; settings = {ASSET_TAGS = (); }; };
+		1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */; settings = {ASSET_TAGS = (); }; };
 		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
 		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13FB19DF78610022C44C /* SmilieMetadata.m */; };
@@ -511,8 +511,6 @@
 		1C14A4DB1A94C7260045DDF7 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURLQueryDictionary.h; sourceTree = "<group>"; };
 		1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionary.m; sourceTree = "<group>"; };
-		1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulResourceURLProtocol.h; sourceTree = "<group>"; };
-		1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulResourceURLProtocol.m; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -545,6 +543,7 @@
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
 		1C397C931BCC2C1C00CA7FD5 /* post-dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-dots.png"; path = "../../../../../Desktop/dots/post-dots.png"; sourceTree = "<group>"; };
+		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
 		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
@@ -1174,8 +1173,6 @@
 			children = (
 				1CD82F2B19428D0900B0C5BD /* AwfulImageURLProtocol.h */,
 				1CD82F2C19428D0900B0C5BD /* AwfulImageURLProtocol.m */,
-				1C1ADC2A18E3383400E865BF /* AwfulResourceURLProtocol.h */,
-				1C1ADC2B18E3383400E865BF /* AwfulResourceURLProtocol.m */,
 				1CF3A465180C768100EC2450 /* AwfulURLRouter.h */,
 				1CF3A466180C768100EC2450 /* AwfulURLRouter.m */,
 				1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */,
@@ -1185,6 +1182,7 @@
 				1C96D0AB1682B1140043B194 /* NSURL+Awful.m */,
 				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
 				1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */,
+				1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */,
 			);
 			path = URLs;
 			sourceTree = "<group>";
@@ -2595,7 +2593,6 @@
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
-				1C1ADC2C18E3383400E865BF /* AwfulResourceURLProtocol.m in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
@@ -2616,6 +2613,7 @@
 				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,
 				1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */,
+				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C3447EC175E5D78007377C5 /* AwfulLoadingView.m in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);

@@ -18,6 +18,7 @@
 #import "MessageViewController.h"
 #import "NewMessageChecker.h"
 #import "NSFileManager+UserDirectories.h"
+#import "NSURL+Punycode.h"
 #import "OnePasswordExtension.h"
 #import "PostPreviewViewController.h"
 #import "PostsPageViewController.h"
