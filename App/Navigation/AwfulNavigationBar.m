@@ -20,8 +20,8 @@
         [longPress addTarget:self action:@selector(longPress:)];
         [self addGestureRecognizer:longPress];
         
-        self.backIndicatorImage = [UIImage imageNamed:@"back"];
-        self.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back"];
+        self.backIndicatorImage = [UIImage imageNamed:@"back-padded"];
+        self.backIndicatorTransitionMaskImage = [UIImage imageNamed:@"back-padded"];
         
         self.titleTextAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17 weight:UIFontWeightRegular]};
     }

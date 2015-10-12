@@ -180,7 +180,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         if let detail = detailNavigationController?.viewControllers.first {
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
             if splitViewController.displayMode != .AllVisible {
-                detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+                detail.navigationItem.leftBarButtonItem = backBarButtonItem
             }
         }
     }
@@ -236,7 +236,7 @@ extension RootViewControllerStack {
         secondaryNavigationController.viewControllers = Array(secondaryStack.isEmpty ? [EmptyViewController()] : secondaryStack)
         
         if let detail = secondaryNavigationController.viewControllers.first {
-            detail.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+            detail.navigationItem.leftBarButtonItem = backBarButtonItem
         }
         
         // TODO bring along the swipe-from-right-edge-to-unpop stack too
@@ -255,7 +255,7 @@ extension RootViewControllerStack {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
             if splitViewController.displayMode != .AllVisible {
-                viewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+                viewController.navigationItem.leftBarButtonItem = backBarButtonItem
             }
             
             detailNavigationController!.setViewControllers([viewController], animated: false)
@@ -273,10 +273,19 @@ extension RootViewControllerStack {
         // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
         if let detailNav = detailNavigationController {
             if let root = detailNav.viewControllers.first {
-                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .AllVisible ? nil : splitViewController.displayModeButtonItem()
+                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .AllVisible ? nil : backBarButtonItem
             }
         }
         return .Automatic
+    }
+    
+    private var backBarButtonItem: UIBarButtonItem? {
+        guard !splitViewController.collapsed else {
+            return nil
+        }
+        
+        let realItem = splitViewController.displayModeButtonItem()
+        return UIBarButtonItem(image: UIImage(named: "back"), style: .Plain, target: realItem.target, action: realItem.action)
     }
 }
 
