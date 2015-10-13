@@ -50,9 +50,11 @@ final class ThreadTableViewCell: UITableViewCell {
         let titleAlpha: CGFloat
         
         let numberOfPages: Int
-        let killedPostedBy: String
+        let killedBy: String
+        let postedBy: String
         
-        let unreadPosts: Int?
+        let unreadPosts: Int
+        let beenSeen: Bool
         
         // Included so updates happen; actual color applied in applyTheme.
         let starCategory: AwfulStarCategory
@@ -79,10 +81,18 @@ final class ThreadTableViewCell: UITableViewCell {
             }
         }
         
+        var killedPostedBy: String {
+            if beenSeen {
+                return "Killed by \(killedBy)"
+            } else {
+                return "Posted by \(postedBy)"
+            }
+        }
+        
         var accessibilityLabel: String {
             var components = [title]
             
-            if let unreadPosts = unreadPosts {
+            if beenSeen {
                 let s = unreadPosts == 1 ? "" : "s"
                 components.append(", \(unreadPosts) unread post\(s)")
             }
@@ -127,6 +137,8 @@ final class ThreadTableViewCell: UITableViewCell {
         } else {
             unreadPostsLabel.text = ""
         }
+        let beenSeen = data?.beenSeen ?? false
+        unreadPostsLabel.hidden = !beenSeen
         
         let sticky = data?.sticky ?? false
         stickyView.hidden = !sticky
@@ -178,7 +190,9 @@ func ==(lhs: ThreadTableViewCell.ViewModel, rhs: ThreadTableViewCell.ViewModel) 
         lhs.title == rhs.title &&
         lhs.titleAlpha == rhs.titleAlpha &&
         lhs.numberOfPages == rhs.numberOfPages &&
-        lhs.killedPostedBy == rhs.killedPostedBy &&
+        lhs.killedBy == rhs.killedBy &&
+        lhs.postedBy == rhs.postedBy &&
+        lhs.beenSeen == rhs.beenSeen &&
         lhs.unreadPosts == rhs.unreadPosts &&
         lhs.starCategory == rhs.starCategory &&
         lhs.sticky == rhs.sticky &&

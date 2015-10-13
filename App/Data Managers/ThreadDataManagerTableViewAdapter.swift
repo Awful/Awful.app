@@ -115,16 +115,11 @@ private extension ThreadTableViewCell.ViewModel {
         title = thread.title ?? ""
         numberOfPages = Int(thread.numberOfPages)
         
-        if thread.beenSeen {
-            let poster = thread.lastPostAuthorName ?? ""
-            killedPostedBy = "Killed by \(poster)"
-            unreadPosts = Int(thread.unreadPosts)
-        } else {
-            let author = thread.author?.username ?? ""
-            killedPostedBy = "Posted by \(author)"
-            unreadPosts = 0
-        }
+        beenSeen = thread.beenSeen
+        killedBy = thread.lastPostAuthorName ?? ""
+        postedBy = thread.author?.username ?? ""
         
+        unreadPosts = Int(thread.unreadPosts)
         starCategory = thread.starCategory
         
         showsTagAndRating = showsTag
