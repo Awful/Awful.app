@@ -129,10 +129,14 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         
         prepareUserActivity()
         
+        let isTimeToRefresh: Bool
+        if filterThreadTag == nil {
+            isTimeToRefresh = AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum)
+        } else {
+            isTimeToRefresh = AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum)
+        }
         if AwfulForumsClient.sharedClient().reachable &&
-            !dataManager.threads.isEmpty &&
-            ((filterThreadTag == nil && AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum)) ||
-                (filterThreadTag != nil && AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum)))
+            (isTimeToRefresh || dataManager.threads.isEmpty)
         {
             refresh()
             

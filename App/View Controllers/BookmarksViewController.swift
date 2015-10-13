@@ -110,7 +110,9 @@ final class BookmarksViewController: AwfulTableViewController, ThreadPeekPopCont
         
         becomeFirstResponder()
         
-        if AwfulForumsClient.sharedClient().reachable && AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks() {
+        if AwfulForumsClient.sharedClient().reachable &&
+            (dataManager.threads.isEmpty || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks())
+        {
             refresh()
             
             if let refreshControl = refreshControl {
