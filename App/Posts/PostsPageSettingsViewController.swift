@@ -59,7 +59,8 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     }
     
     private func updateSelectedThemeInPicker() {
-        if let i = themes.indexOf(theme) {
+        let names = themes.map { $0.name }
+        if let i = names.indexOf(AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID)) {
             themePicker.selectedThemeIndex = i
         }
     }
