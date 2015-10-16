@@ -44,9 +44,7 @@
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC41A0DE8C0001BD898 /* Awful.xcdatamodeld */; };
 		1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */; };
-		1C14A4AF1A94C0AF0045DDF7 /* AwfulStarCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1E5151A0E2DB00076F0B5 /* AwfulStarCategory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C14A4B11A94C0AF0045DDF7 /* PunishmentSentence.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE694A6182FEF8D00B24928 /* PunishmentSentence.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4B21A94C0B50045DDF7 /* CachePruner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */; };
 		1C14A4B31A94C0B50045DDF7 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9B1A15EB7200F81EA2 /* DataStore.swift */; };
 		1C14A4B41A94C0B50045DDF7 /* Forum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6D1A0F77B800E474A6 /* Forum.swift */; };
@@ -780,7 +778,6 @@
 		1CA04BEB195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewExternalStylesheetLoader.m; sourceTree = "<group>"; };
 		1CA1857E17E3472300462F20 /* AwfulToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulToolbar.h; sourceTree = "<group>"; };
 		1CA1857F17E3472300462F20 /* AwfulToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulToolbar.m; sourceTree = "<group>"; };
-		1CA1E5151A0E2DB00076F0B5 /* AwfulStarCategory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulStarCategory.h; sourceTree = "<group>"; };
 		1CA1E5161A0F53130076F0B5 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostScraper.h; sourceTree = "<group>"; };
 		1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostScraper.m; sourceTree = "<group>"; };
@@ -888,7 +885,6 @@
 		1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Punycode.m"; sourceTree = "<group>"; };
 		1CE68BDA16F7C62B003D56C9 /* ONHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ONHost.h; sourceTree = "<group>"; };
 		1CE68BDB16F7C62B003D56C9 /* ONHost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ONHost.m; sourceTree = "<group>"; };
-		1CE694A6182FEF8D00B24928 /* PunishmentSentence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PunishmentSentence.h; sourceTree = "<group>"; };
 		1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LepersColonyPageScraper.h; sourceTree = "<group>"; };
 		1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LepersColonyPageScraper.m; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
@@ -1190,14 +1186,12 @@
 			children = (
 				1C442FC41A0DE8C0001BD898 /* Awful.xcdatamodeld */,
 				1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */,
-				1CA1E5151A0E2DB00076F0B5 /* AwfulStarCategory.h */,
 				1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */,
 				1CE55A6D1A0F77B800E474A6 /* Forum.swift */,
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
 				1C051C9F1A16F8D700F81EA2 /* Profile.swift */,
 				1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */,
-				1CE694A6182FEF8D00B24928 /* PunishmentSentence.h */,
 				1C442FCE1A0E27E2001BD898 /* Thread.swift */,
 				1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */,
 				1CA1E5161A0F53130076F0B5 /* User.swift */,
@@ -1926,7 +1920,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C14A4AF1A94C0AF0045DDF7 /* AwfulStarCategory.h in Headers */,
 				1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */,
 				1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */,
 				1C097A931A97AF0C00425EEF /* AwfulHTMLResponseSerializer.h in Headers */,
@@ -1934,7 +1927,6 @@
 				1C097A911A97AF0C00425EEF /* AwfulForumsClient.h in Headers */,
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
 				1C097A941A97AF0C00425EEF /* AwfulHTTPRequestOperationManager.h in Headers */,
-				1C14A4B11A94C0AF0045DDF7 /* PunishmentSentence.h in Headers */,
 				1C097A921A97AF0C00425EEF /* AwfulHTMLRequestSerializer.h in Headers */,
 				1C14A4E91A94CCEA0045DDF7 /* NSURLQueryDictionary.h in Headers */,
 				1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */,

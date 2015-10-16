@@ -4,6 +4,7 @@
 
 #import "LepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
+#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface LepersColonyPageScraper ()

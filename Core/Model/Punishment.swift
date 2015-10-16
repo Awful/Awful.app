@@ -31,3 +31,7 @@ public class Punishment: NSObject {
         return date.hash ^ subject.hash
     }
 }
+
+@objc public enum PunishmentSentence: Int {
+    case Unknown, Probation, Ban, Autoban, Permaban
+}

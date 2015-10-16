@@ -4,6 +4,7 @@
 
 #import "PrivateMessageFolderScraper.h"
 #import "AwfulCompoundDateParser.h"
+#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface PrivateMessageFolderScraper ()

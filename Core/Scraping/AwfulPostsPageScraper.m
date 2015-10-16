@@ -6,7 +6,7 @@
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulScanner.h"
-#import "AwfulStarCategory.h"
+#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface AwfulPostsPageScraper ()
@@ -104,10 +104,10 @@
     HTMLElement *bookmarkButton = [body firstNodeMatchingSelector:@"div.threadbar img.thread_bookmark"];
     if (bookmarkButton) {
         NSArray *bookmarkClasses = [bookmarkButton[@"class"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([bookmarkClasses containsObject:@"unbookmark"] && self.thread.starCategory == AwfulStarCategoryNone) {
-            self.thread.starCategory = AwfulStarCategoryOrange;
-        } else if ([bookmarkClasses containsObject:@"bookmark"] && self.thread.starCategory != AwfulStarCategoryNone) {
-            self.thread.starCategory = AwfulStarCategoryNone;
+        if ([bookmarkClasses containsObject:@"unbookmark"] && self.thread.starCategory == StarCategoryNone) {
+            self.thread.starCategory = StarCategoryOrange;
+        } else if ([bookmarkClasses containsObject:@"bookmark"] && self.thread.starCategory != StarCategoryNone) {
+            self.thread.starCategory = StarCategoryNone;
         }
     }
     

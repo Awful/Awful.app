@@ -34,6 +34,10 @@ public class Thread: AwfulManagedObject {
     @NSManaged public var threadTag: ThreadTag? /* via threads */
 }
 
+@objc public enum StarCategory: Int16 {
+    case Orange, Red, Yellow, None
+}
+
 extension Thread {
     public var beenSeen: Bool {
         return seenPosts > 0
@@ -80,12 +84,12 @@ extension Thread {
         }
     }
     
-    public var starCategory: AwfulStarCategory {
+    public var starCategory: StarCategory {
         get {
             willAccessValueForKey("starCategory")
             let starCategory = Int16(primitiveStarCategory.integerValue)
             didAccessValueForKey("starCategory")
-            return AwfulStarCategory(rawValue: starCategory) ?? .None
+            return StarCategory(rawValue: starCategory) ?? .None
         }
         set {
             willChangeValueForKey("starCategory")

@@ -57,7 +57,7 @@ final class ThreadTableViewCell: UITableViewCell {
         let beenSeen: Bool
         
         // Included so updates happen; actual color applied in applyTheme.
-        let starCategory: AwfulStarCategory
+        let starCategory: StarCategory
         
         let sticky: Bool
         

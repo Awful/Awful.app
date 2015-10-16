@@ -5,7 +5,7 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulScanner.h"
-#import "AwfulStarCategory.h"
+#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface AwfulThreadListScraper ()
@@ -194,13 +194,13 @@
         if (bookmarkStarCell) {
             NSArray *starClasses = [bookmarkStarCell[@"class"] componentsSeparatedByCharactersInSet:whitespace];
             if ([starClasses containsObject:@"bm0"]) {
-                thread.starCategory = AwfulStarCategoryOrange;
+                thread.starCategory = StarCategoryOrange;
             } else if ([starClasses containsObject:@"bm1"]) {
-                thread.starCategory = AwfulStarCategoryRed;
+                thread.starCategory = StarCategoryRed;
             } else if ([starClasses containsObject:@"bm2"]) {
-                thread.starCategory = AwfulStarCategoryYellow;
+                thread.starCategory = StarCategoryYellow;
             } else {
-                thread.starCategory = AwfulStarCategoryNone;
+                thread.starCategory = StarCategoryNone;
             }
         }
         
