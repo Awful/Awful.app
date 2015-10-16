@@ -13,6 +13,8 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         self.previewingViewController = previewingViewController
         
         super.init()
+        
+        previewingViewController.registerForPreviewingWithDelegate(self, sourceView: previewingViewController.view)
     }
     
     // MARK: PreviewActionItemProvider
