@@ -146,7 +146,7 @@ header:after {
 }
 .action-button {
   margin: 0;
-  padding: 0.6em 1em;
+  padding: 0.6em;
   border: none;
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
