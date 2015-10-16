@@ -146,15 +146,15 @@ header:after {
 }
 .action-button {
   margin: 0;
-  padding: 0.6em;
+  padding: 0.6em 1em;
   border: none;
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
 }
 .action-button img {
-  width: 23px;
-  height: 9px;
+  width: 24px;
+  height: 8px;
 }
 .postbody img {
   -webkit-user-select: none;
