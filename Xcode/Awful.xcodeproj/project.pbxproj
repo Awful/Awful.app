@@ -1528,9 +1528,9 @@
 			isa = PBXGroup;
 			children = (
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
+				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
-				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
