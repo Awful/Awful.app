@@ -308,6 +308,7 @@
 		1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F4D194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m */; };
 		1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */; };
 		1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */; };
+		1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2361BD2C13400ADC7DA /* KVOController.swift */; settings = {ASSET_TAGS = (); }; };
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
@@ -854,6 +855,7 @@
 		1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagPickerController.m; sourceTree = "<group>"; };
 		1CD82F52194D976D00B0C5BD /* UIView+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AwfulConvenient.h"; sourceTree = "<group>"; };
 		1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AwfulConvenient.m"; sourceTree = "<group>"; };
+		1CDBF2361BD2C13400ADC7DA /* KVOController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOController.swift; sourceTree = "<group>"; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
@@ -1529,6 +1531,7 @@
 			children = (
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
+				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
 			);
@@ -2737,6 +2740,7 @@
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CD82F451948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m in Sources */,
 				1C977C2919CD286200DD6459 /* CacheHeaderCalculations.m in Sources */,
+				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
