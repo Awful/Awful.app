@@ -42,17 +42,33 @@ void StopGifAutoplay(HTMLDocument *document)
 {
 	for (HTMLElement *img in [document nodesMatchingSelector:@"img"]) {
 		NSURL *src = [NSURL URLWithString:img[@"src"]];
-		if ([src.host caseInsensitiveCompare:@"i.imgur.com"] == NSOrderedSame && [src.pathExtension  isEqual: @"gif"]) {
-			NSString *newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @"h.jpg"];
-			HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif" }];
-			
-			NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
-			HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
-			[children insertObject:wrapper atIndex:[children indexOfObject:replacedImg]];
-			replacedImg.parentNode = wrapper;
-			
-			NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
-			[imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:wrapper];
+		if([src.pathExtension  isEqual: @"gif"]) {
+			NSString *newUrl = @"";
+			if ([src.host caseInsensitiveCompare:@"i.imgur.com"] == NSOrderedSame) {
+				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @"h.jpg"];
+			}
+			else if ([src.host caseInsensitiveCompare:@"i.kinja-img.com"] == NSOrderedSame) {
+				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @".jpg"];
+			}
+			else if ([src.host caseInsensitiveCompare:@"i.giphy.com"] == NSOrderedSame) {
+				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@"://i.giphy.com" withString: @"s://media.giphy.com/media"];
+				newUrl = [newUrl stringByReplacingOccurrencesOfString:@".gif" withString: @"/200_s.gif"];
+			}
+			else if ([src.host caseInsensitiveCompare:@"giant.gfycat.com"] == NSOrderedSame) {
+				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@"giant.gfycat.com" withString: @"thumbs.gfycat.com"];
+				newUrl = [newUrl stringByReplacingOccurrencesOfString:@".gif" withString: @"-poster.jpg"];
+			}
+			if(![newUrl isEqual: @""]) {
+ 				HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif" }];
+				
+				NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
+				HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
+				[children insertObject:wrapper atIndex:[children indexOfObject:replacedImg]];
+				replacedImg.parentNode = wrapper;
+				
+				NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
+				[imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:wrapper];
+			}
 		}
 	}
 }
