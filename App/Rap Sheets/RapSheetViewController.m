@@ -7,7 +7,6 @@
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulPunishmentCell.h"
-#import <SVPullToRefresh/SVPullToRefresh.h>
 #import "Awful-Swift.h"
 
 @interface RapSheetViewController ()
