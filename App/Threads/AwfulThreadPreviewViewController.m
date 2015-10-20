@@ -49,7 +49,6 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [self repositionCell];
 }
 
 - (Theme *)theme
