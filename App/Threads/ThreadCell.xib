@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -70,14 +70,14 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" text="2001" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gua-cA-OlD" userLabel="Page Count" customClass="TopCapAlignmentLabel" customModule="Awful" customModuleProvider="target">
-                        <rect key="frame" x="61" y="42" width="28" height="15"/>
+                        <rect key="frame" x="61" y="41.5" width="28" height="14.5"/>
                         <animations/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tXB-Cc-g3S" userLabel="Page Icon" customClass="PageIcon" customModule="Awful" customModuleProvider="target">
-                        <rect key="frame" x="90" y="45" width="6" height="8"/>
+                        <rect key="frame" x="90" y="44.5" width="5.5" height="7.5"/>
                         <animations/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="tXB-Cc-g3S" secondAttribute="height" multiplier="8.5:11" id="FVq-CB-3fV"/>
@@ -110,7 +110,7 @@
                         </constraints>
                     </view>
                     <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator" customClass="HairlineView" customModule="AwfulViews">
-                        <rect key="frame" x="61" y="73" width="259" height="1"/>
+                        <rect key="frame" x="61" y="75" width="259" height="0.5"/>
                         <animations/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -143,7 +143,7 @@
                     <constraint firstItem="tXB-Cc-g3S" firstAttribute="bottom" secondItem="gua-cA-OlD" secondAttribute="bottom" constant="-4" placeholder="YES" id="TIh-NN-4fp"/>
                     <constraint firstItem="fgr-Fq-s3K" firstAttribute="leading" secondItem="960-Hr-2KP" secondAttribute="trailing" constant="8" id="YyC-zi-gij"/>
                     <constraint firstAttribute="centerY" secondItem="HZh-ZU-eMp" secondAttribute="centerY" id="bq3-K0-Pff"/>
-                    <constraint firstItem="gev-Wv-hue" firstAttribute="bottom" secondItem="fyk-yR-Pfe" secondAttribute="bottom" id="cxc-Vs-hx3"/>
+                    <constraint firstItem="gev-Wv-hue" firstAttribute="bottom" secondItem="fyk-yR-Pfe" secondAttribute="bottom" constant="1" id="cxc-Vs-hx3"/>
                     <constraint firstItem="tXB-Cc-g3S" firstAttribute="top" secondItem="gua-cA-OlD" secondAttribute="top" id="dAr-jO-NpZ"/>
                     <constraint firstItem="gua-cA-OlD" firstAttribute="baseline" secondItem="xCF-fO-pFt" secondAttribute="baseline" id="eFs-ae-d5x"/>
                     <constraint firstItem="uvA-wX-8qH" firstAttribute="top" secondItem="xCF-fO-pFt" secondAttribute="bottom" id="gZB-jh-FoY"/>
