@@ -204,7 +204,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
     // MARK: Composition
     
     private lazy var composeBarButtonItem: UIBarButtonItem = { [unowned self] in
-        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapCompose:")
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapCompose")
         item.accessibilityLabel = "New thread"
         return item
         }()
@@ -220,7 +220,7 @@ final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextVie
         composeBarButtonItem.enabled = forum.canPost && forum.lastRefresh != nil
     }
     
-    private func didTapCompose() {
+    func didTapCompose() {
         presentViewController(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
