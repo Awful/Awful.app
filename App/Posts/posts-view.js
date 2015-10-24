@@ -36,6 +36,13 @@ startBridge(function(bridge) {
     $('#posts').prepend(html);
     var newHeight = document.documentElement.scrollHeight;
     window.scrollBy(0, newHeight - oldHeight);
+    $('.imgurGif').load(function(event){
+        $(event.target).parent().addClass('overlay');
+    }).each(function() {
+        if (this.complete) {
+            $(this).load();
+        }
+    });
   });
 
   bridge.registerHandler('postHTMLAtIndex', function(data) {
