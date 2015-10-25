@@ -44,7 +44,7 @@ void StopGifAutoplay(HTMLDocument *document)
 		NSURL *src = [NSURL URLWithString:img[@"src"]];
 		if([src.pathExtension  isEqual: @"gif"]) {
 			NSString *newUrl = @"";
-			if ([src.host caseInsensitiveCompare:@"i.imgur.com"] == NSOrderedSame) {
+            if([src.host rangeOfString:@"imgur.com"].location != NSNotFound) {
 				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@".gif" withString: @"h.jpg"];
 			}
 			else if ([src.host caseInsensitiveCompare:@"i.kinja-img.com"] == NSOrderedSame) {
