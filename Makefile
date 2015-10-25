@@ -10,5 +10,8 @@ beta:
 copyright:
 	Xcode/fix-copyright.rb
 
+minor:
+	Xcode/version-bump.rb minor
+
 test:
 	set -o pipefail && xcodebuild -scheme Awful -configuration Release -sdk iphonesimulator test | xcpretty -c
