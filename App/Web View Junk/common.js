@@ -182,7 +182,11 @@ function interestingElementsAtPoint(x, y) {
 
   var img = elementAtPoint.closest('img');
   if (img.length && isSpoiled(img)) {
-    items.spoiledImageURL = img.attr('src');
+    if(img.hasClass('imgurGif')) {
+      items.spoiledImageURL = img.data('originalurl');
+    } else {
+      items.spoiledImageURL = img.attr('src');
+    }
   }
 
   var a = elementAtPoint.closest('a');
