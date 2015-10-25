@@ -76,23 +76,7 @@ $(function() {
       $gifwrap.addClass('loading');
       
       var link = $img.attr('src');
-      var newLink;
-	   switch(extractDomain(link)) {
-			   case "i.imgur.com":
-				newLink = link.replace('h.jpg','.gif');
-			   break;
-			   case "i.kinja-img.com":
-				newLink = link.replace('.jpg','.gif');
-			   break;
-			   case "media.giphy.com":
-			   newLink = link.replace('media.giphy.com/media','i.giphy.com');
-			   newLink = newLink.replace('/200_s.gif','.gif');
-			   break;
-			   case "thumbs.gfycat.com":
-			   newLink = link.replace('thumbs.gfycat.com','giant.gfycat.com');
-			   newLink = newLink.replace('-poster.jpg','.gif');
-			   break;
-	   }
+      var newLink = $img.data('originalurl');
 		   
       var image = new Image();
       image.onload = function() {
@@ -103,44 +87,12 @@ $(function() {
       image.src = newLink;
     } else {
       var link = $img.attr('src');
-      var newLink;
-	  switch(extractDomain(link)) {
-		case "i.imgur.com":
-		newLink = link.replace('.gif','h.jpg');
-		break;
-		case "i.kinja-img.com":
-		newLink = link.replace('.gif','.jpg');
-	   break;
-	   case "i.giphy.com":
-	   newLink = link.replace('i.giphy.com','media.giphy.com/media');
-	   newLink = newLink.replace('.gif','/200_s.gif');
-	   break;
-	   case "giant.gfycat.com":
-	   newLink = link.replace('giant.gfycat.com','thumbs.gfycat.com');
-	   newLink = newLink.replace('.gif','-poster.jpg');
-	   break;
-	  }
+      var newLink = $img.data('posterurl');
       $gifwrap.removeClass('playing');
       $img.attr('src', newLink);
     }
    });
   });
-
-function extractDomain(url) {
-	var domain;
-	//find & remove protocol (http, ftp, etc.) and get domain
-	if (url.indexOf("://") > -1) {
-		domain = url.split('/')[2];
-	}
-	else {
-		domain = url.split('/')[0];
-	}
-	
-	//find & remove port number
-	domain = domain.split(':')[0];
-	
-	return domain;
-}
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
 function rectOfElement(elements) {

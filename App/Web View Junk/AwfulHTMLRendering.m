@@ -59,7 +59,7 @@ void StopGifAutoplay(HTMLDocument *document)
 				newUrl = [newUrl stringByReplacingOccurrencesOfString:@".gif" withString: @"-poster.jpg"];
 			}
 			if(![newUrl isEqual: @""]) {
- 				HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif" }];
+ 				HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif", @"data-originalurl": src.absoluteString, @"data-posterurl": newUrl }];
 				
 				NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
 				HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
