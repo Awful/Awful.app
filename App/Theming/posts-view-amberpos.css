@@ -350,6 +350,9 @@ post.seen {
   height: auto;
   width: auto;
 }
+.gifWrap.overlay:before {
+  width: 1.85em;
+}
 .action-button img {
   -webkit-filter: invert() sepia() saturate(10000%) hue-rotate(-10deg);
 }
