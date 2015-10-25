@@ -58,16 +58,24 @@ void StopGifAutoplay(HTMLDocument *document)
 				newUrl = [src.absoluteString stringByReplacingOccurrencesOfString:@"giant.gfycat.com" withString: @"thumbs.gfycat.com"];
 				newUrl = [newUrl stringByReplacingOccurrencesOfString:@".gif" withString: @"-poster.jpg"];
 			}
-			if(![newUrl isEqual: @""]) {
+            if(![newUrl isEqual: @""]) {
+                HTMLElement *imgParent = img.parentElement;
  				HTMLElement *replacedImg = [[HTMLElement alloc] initWithTagName:@"img" attributes:@{ @"src": newUrl, @"class": @"imgurGif", @"data-originalurl": src.absoluteString, @"data-posterurl": newUrl }];
 				
 				NSMutableOrderedSet *children = [replacedImg.parentNode mutableChildren];
 				HTMLElement *wrapper = [[HTMLElement alloc] initWithTagName:@"div" attributes:@{@"class": @"gifWrap"}];
 				[children insertObject:wrapper atIndex:[children indexOfObject:replacedImg]];
-				replacedImg.parentNode = wrapper;
-				
-				NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
-				[imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:wrapper];
+                replacedImg.parentNode = wrapper;
+                
+                NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
+                if ([imgParent.tagName isEqualToString:@"a"]) {
+                    NSURL *linkUrl = [NSURL URLWithString:imgParent[@"href"]];
+                    HTMLElement *externalLink = [[HTMLElement alloc] initWithTagName:@"a" attributes:@{@"href": linkUrl}];
+                    externalLink.textContent = linkUrl.absoluteString;
+                    [imgSiblings insertObject:externalLink atIndex:[imgSiblings indexOfObject:img]];
+                    
+                }
+                [imgSiblings replaceObjectAtIndex:[imgSiblings indexOfObject:img] withObject:wrapper];
 			}
 		}
 	}
