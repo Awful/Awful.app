@@ -407,6 +407,8 @@ footer,
 }
 .bbc-spoiler:not(.spoiled) img {
   opacity: 0;
+  height: 0;
+  width: 100%;
 }
 .bbc-spoiler:not(.spoiled) a:link,
 .bbc-spoiler:not(.spoiled) a:visited,

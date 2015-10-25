@@ -125,6 +125,8 @@ tr:last-child td {
 }
 .bbc-spoiler:not(.spoiled) img {
   opacity: 0;
+  height: 0;
+  width: 100%;
 }
 .bbc-spoiler:not(.spoiled) a:link,
 .bbc-spoiler:not(.spoiled) a:visited,
@@ -143,6 +145,8 @@ tr:last-child td {
 }
 .dark .bbc-spoiler:not(.spoiled) img {
   opacity: 0;
+  height: 0;
+  width: 100%;
 }
 .dark .bbc-spoiler:not(.spoiled) a:link,
 .dark .bbc-spoiler:not(.spoiled) a:visited,
