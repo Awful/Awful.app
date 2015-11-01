@@ -126,7 +126,7 @@
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         [self.refreshControl endRefreshing];
-        [self.tableView.infiniteScrollingView stopAnimating];
+        [self.infiniteScrollController stop];
     }];
 }
 
@@ -144,10 +144,10 @@
 - (void)setUpInfiniteScroll
 {
     __weak __typeof__(self) weakSelf = self;
-    [self.tableView addInfiniteScrollingWithActionHandler:^{
+    self.scrollToLoadMoreBlock = ^{
         __typeof__(self) self = weakSelf;
         [self loadPage:self.mostRecentlyLoadedPage + 1];
-    }];
+    };
 }
 
 #pragma mark - UITableViewDataSource
