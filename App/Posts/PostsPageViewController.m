@@ -540,6 +540,8 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     configureButton(topBar.scrollToBottomButton);
     
     [self.messageViewController themeDidChange];
+    
+    self.view.tintColor = theme[@"listTextColor"];
 }
 
 - (void)refetchPosts
@@ -588,8 +590,9 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     self.postsView.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.postsView.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     
-    PostsPageRefreshArrowRotation arrowRotation = self.numberOfPages > self.page ? PostsPageRefreshArrowRotationRight : PostsPageRefreshArrowRotationDown;
-    self.refreshControl.contentView = [[PostsPageRefreshArrowView alloc] initWithRotation:arrowRotation];
+    // TODO: switch to other refresh view as needed
+//    PostsPageRefreshArrowRotation arrowRotation = self.numberOfPages > self.page ? PostsPageRefreshArrowRotationRight : PostsPageRefreshArrowRotationDown;
+//    self.refreshControl.contentView = [[PostsPageRefreshArrowView alloc] initWithRotation:arrowRotation];
     
     self.backItem.enabled = self.page > 1;
     if (self.page > 0 && self.numberOfPages > 0) {
@@ -979,7 +982,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                                                  name:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification
                                                object:nil];
     
-    PostsPageRefreshArrowView *refreshArrow = [[PostsPageRefreshArrowView alloc] initWithRotation:PostsPageRefreshArrowRotationDown];
+    PostsPageRefreshArrowView *refreshArrow = [PostsPageRefreshArrowView new];
     self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:refreshArrow];
     self.refreshControl.handler = ^{
         [welf loadNextPageOrRefresh];

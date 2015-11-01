@@ -7,13 +7,15 @@ import UIKit
 final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     private let arrow: UIImageView
     private let spinner: UIActivityIndicatorView
-    private let triggeredAngle: CGFloat
+    private struct Angles {
+        static let triggered = CGFloat(0)
+        static let waiting = CGFloat(M_PI_2)
+    }
     
-    init(rotation: PostsPageRefreshArrowRotation) {
-        let image = UIImage(named: "pull-to-refresh-arrow")!
+    init() {
+        let image = UIImage(named: "arrowright")!
         arrow = UIImageView(image: image)
         spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        triggeredAngle = rotation.angle
         
         super.init(frame: CGRect(origin: CGPoint.zero, size: image.size))
         
@@ -29,6 +31,8 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         
         spinner.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
         spinner.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
+        
+        rotateArrow(Angles.waiting, animated: false)
     }
 
     required init?(coder: NSCoder) {
@@ -38,7 +42,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     private func transitionFromState(oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
         case (.Waiting, .Triggered):
-            animateRotation(triggeredAngle)
+            rotateArrow(Angles.triggered, animated: true)
             
         case (_, .Refreshing):
             arrow.hidden = true
@@ -46,7 +50,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
             
         case (_, .Waiting):
             arrow.hidden = false
-            animateRotation(0)
+            rotateArrow(Angles.waiting, animated: true)
             spinner.stopAnimating()
             
         default:
@@ -54,8 +58,9 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         }
     }
     
-    private func animateRotation(angle: CGFloat) {
-        UIView.animateWithDuration(0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
+    private func rotateArrow(angle: CGFloat, animated: Bool) {
+        let duration = animated ? 0.2 : 0
+        UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
             self.arrow.transform = angle == 0 ? CGAffineTransformIdentity : CGAffineTransformMakeRotation(angle)
             }, completion: nil)
     }
@@ -70,10 +75,11 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     override func intrinsicContentSize() -> CGSize {
         let arrowSize = arrow.intrinsicContentSize()
+        let longestArrowSize = max(arrowSize.width, arrowSize.height)
         let spinnerSize = spinner.intrinsicContentSize()
         return CGSize(
-            width: max(arrowSize.width, spinnerSize.width),
-            height: max(arrowSize.height, spinnerSize.height))
+            width: max(longestArrowSize, spinnerSize.width),
+            height: max(longestArrowSize, spinnerSize.height))
     }
     
     // MARK: PostsPageRefreshControlContent
@@ -83,20 +89,6 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
             if oldValue != state {
                 transitionFromState(oldValue, toState: state)
             }
-        }
-    }
-}
-
-@objc enum PostsPageRefreshArrowRotation: Int {
-    case Down, Right
-    
-    private var angle: CGFloat {
-        switch self {
-        case .Down:
-            return CGFloat(M_PI)
-            
-        case .Right:
-            return CGFloat(M_PI_2)
         }
     }
 }
