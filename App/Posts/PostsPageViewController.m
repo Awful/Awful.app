@@ -1020,7 +1020,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
     NSMutableString *relativeString = [NSMutableString new];
     [relativeString appendFormat:@"/showthread.php?threadid=%@&perpage=40", self.thread.threadID];
-    if (self.page > 1) {
+    if (self.page >= 1) {
         [relativeString appendFormat:@"&pagenumber=%@", @(self.page)];
     }
     if (self.author) {
