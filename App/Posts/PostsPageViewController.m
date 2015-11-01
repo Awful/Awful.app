@@ -590,9 +590,10 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     self.postsView.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.postsView.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     
-    // TODO: switch to other refresh view as needed
-//    PostsPageRefreshArrowRotation arrowRotation = self.numberOfPages > self.page ? PostsPageRefreshArrowRotationRight : PostsPageRefreshArrowRotationDown;
-//    self.refreshControl.contentView = [[PostsPageRefreshArrowView alloc] initWithRotation:arrowRotation];
+    Class refreshViewClass = self.numberOfPages > self.page ? [PostsPageRefreshArrowView class] : [PostsPageRefreshSpinnerView class];
+    if (![self.refreshControl.contentView isKindOfClass:refreshViewClass]) {
+        self.refreshControl.contentView = [refreshViewClass new];
+    }
     
     self.backItem.enabled = self.page > 1;
     if (self.page > 0 && self.numberOfPages > 0) {
@@ -982,8 +983,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                                                  name:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification
                                                object:nil];
     
-    PostsPageRefreshArrowView *refreshArrow = [PostsPageRefreshArrowView new];
-    self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:refreshArrow];
+    self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:[PostsPageRefreshSpinnerView new]];
     self.refreshControl.handler = ^{
         [welf loadNextPageOrRefresh];
     };

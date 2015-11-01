@@ -43,7 +43,7 @@ final class PostsPageRefreshControl: UIView {
     }
     
     func endRefreshing() {
-        state = .Waiting
+        state = .Waiting(triggeredFraction: 0)
     }
     
     private var content: PostsPageRefreshControlContent? {
@@ -65,10 +65,12 @@ final class PostsPageRefreshControl: UIView {
     // MARK: State machine
     
     enum State {
-        case Waiting, Triggered, Refreshing
+        case Waiting(triggeredFraction: CGFloat)
+        case Triggered
+        case Refreshing
     }
     
-    private var state: State = .Waiting {
+    private var state: State = .Waiting(triggeredFraction: 0) {
         didSet { content?.state = state }
     }
     
@@ -79,10 +81,16 @@ final class PostsPageRefreshControl: UIView {
         
         switch sender.state {
         case .Began, .Changed:
-            if state == .Waiting && maxVisibleY > frame.maxY {
+            switch state {
+            case .Waiting where maxVisibleY > frame.maxY:
                 state = .Triggered
-            } else if state == .Triggered && maxVisibleY <= frame.maxY {
-                state = .Waiting
+                
+            case (.Waiting), .Triggered where maxVisibleY <= frame.maxY:
+                let fraction = max((maxVisibleY - frame.minY) / frame.height, 0)
+                state = .Waiting(triggeredFraction: fraction)
+            
+            default:
+                break
             }
             
         case .Ended where maxVisibleY > frame.maxY:
@@ -99,7 +107,7 @@ final class PostsPageRefreshControl: UIView {
             handler?()
             
         case .Cancelled, .Ended:
-            state = .Waiting
+            state = .Waiting(triggeredFraction: 0)
             bottomInset = 0
             
         default:
@@ -113,7 +121,13 @@ final class PostsPageRefreshControl: UIView {
         let y = max(scrollView.contentSize.height, scrollView.bounds.height)
         frame = CGRect(x: 0, y: y, width: scrollView.bounds.width, height: height)
         
-        bottomInset = state == .Refreshing ? height : 0
+        switch state {
+        case .Refreshing:
+            bottomInset = height
+            
+        default:
+            bottomInset = 0
+        }
     }
     
     override func intrinsicContentSize() -> CGSize {
