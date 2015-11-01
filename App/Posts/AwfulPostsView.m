@@ -52,6 +52,8 @@ typedef enum : NSInteger {
 
 - (void)layoutSubviews
 {
+    CGFloat fractionalOffset = self.webView.awful_fractionalContentOffset;
+    
     CGRect topBarFrame = self.topBar.bounds;
     topBarFrame.origin.y = self.exposedTopBarSlice - CGRectGetHeight(topBarFrame);
     topBarFrame.size.width = CGRectGetWidth(self.bounds);
@@ -71,6 +73,9 @@ typedef enum : NSInteger {
     CGFloat integral = floor(width);
     CGFloat fractional = width - integral;
     self.webView.frame = CGRectMake(fractional, CGRectGetMaxY(topBarFrame), integral, CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
+    
+    // When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
+    self.webView.awful_fractionalContentOffset = fractionalOffset;
 }
 
 - (void)updateForVoiceOverAnimated:(BOOL)animated
