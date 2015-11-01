@@ -239,7 +239,7 @@
         NSInteger item = indexPath.item;
         NSString *imageName = self.imageNames[item];
         UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
-        cell.image = image;
+        cell.image = image ?: [AwfulThreadTagLoader emptyThreadTagImage];
         
         if (image) {
             cell.tagImageName = nil;
