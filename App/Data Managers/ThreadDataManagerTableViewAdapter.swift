@@ -135,7 +135,7 @@ private extension ThreadTableViewCell.ViewModel {
         }
         
         if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {
-            secondaryTag = UIImage(named: secondaryTagImageName)
+            secondaryTag = AwfulThreadTagLoader.imageNamed(secondaryTagImageName)
             self.secondaryTagImageName = secondaryTagImageName
         } else {
             secondaryTag = nil
