@@ -14,7 +14,6 @@
 @import MRProgress;
 #import "PostComposeViewController.h"
 #import "PostViewModel.h"
-@import SVPullToRefresh;
 @import TUSafariActivity;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
@@ -44,6 +43,8 @@
 @property (strong, nonatomic) MessageComposeViewController *messageViewController;
 
 @property (copy, nonatomic) NSArray *posts;
+
+@property (nonatomic) PostsPageRefreshControl *refreshControl;
 
 @end
 
@@ -138,7 +139,7 @@
     self.page = page;
     
     if (self.posts.count == 0 || !reloadingSamePage) {
-        [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
+        [self.refreshControl endRefreshing];
         [self updateUserInterface];
         if (!_restoringState) {
             self.hiddenPosts = 0;
@@ -221,7 +222,7 @@
             }
         }
         
-        [self.postsView.webView.scrollView.pullToRefreshView stopAnimating];
+        [self.refreshControl endRefreshing];
     }];
 }
 
@@ -587,16 +588,8 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     self.postsView.topBar.scrollToBottomButton.enabled = [self.posts count] > 0;
     self.postsView.topBar.previousPostsButton.enabled = self.hiddenPosts > 0;
     
-    SVPullToRefreshView *refresh = self.postsView.webView.scrollView.pullToRefreshView;
-    if (self.numberOfPages > self.page) {
-        [refresh setTitle:@"Pull for next page…" forState:SVPullToRefreshStateStopped];
-        [refresh setTitle:@"Release for next page…" forState:SVPullToRefreshStateTriggered];
-        [refresh setTitle:@"Loading next page…" forState:SVPullToRefreshStateLoading];
-    } else {
-        [refresh setTitle:@"Pull to refresh…" forState:SVPullToRefreshStateStopped];
-        [refresh setTitle:@"Release to refresh…" forState:SVPullToRefreshStateTriggered];
-        [refresh setTitle:@"Refreshing…" forState:SVPullToRefreshStateLoading];
-    }
+    PostsPageRefreshArrowRotation arrowRotation = self.numberOfPages > self.page ? PostsPageRefreshArrowRotationRight : PostsPageRefreshArrowRotationDown;
+    self.refreshControl.contentView = [[PostsPageRefreshArrowView alloc] initWithRotation:arrowRotation];
     
     self.backItem.enabled = self.page > 1;
     if (self.page > 0 && self.numberOfPages > 0) {
@@ -961,7 +954,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     [self.webView addGestureRecognizer:longPress];
     
     _webViewNetworkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
-    __weak __typeof__(self) weakSelf = self;
+    __weak __typeof__(self) welf = self;
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView
                                                          webViewDelegate:_webViewNetworkActivityIndicatorManager
                                                                  handler:^(id data, WVJBResponseCallback _)
@@ -969,13 +962,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
     [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
-        __typeof__(self) self = weakSelf;
+        __typeof__(self) self = welf;
         CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
         NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
         [self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
     }];
     [_webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
-        __typeof__(self) self = weakSelf;
+        __typeof__(self) self = welf;
         CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
         NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
         [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
@@ -985,18 +978,17 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                                              selector:@selector(externalStylesheetDidUpdate:)
                                                  name:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification
                                                object:nil];
+    
+    PostsPageRefreshArrowView *refreshArrow = [[PostsPageRefreshArrowView alloc] initWithRotation:PostsPageRefreshArrowRotationDown];
+    self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:refreshArrow];
+    self.refreshControl.handler = ^{
+        [welf loadNextPageOrRefresh];
+    };
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    // Doing this here avoids SVPullToRefresh's poor interaction with automaticallyAdjustsScrollViewInsets.
-    __weak __typeof__(self) weakSelf = self;
-    [self.postsView.webView.scrollView addPullToRefreshWithActionHandler:^{
-        __typeof__(self) self = weakSelf;
-        [self loadNextPageOrRefresh];
-    } position:SVPullToRefreshPositionBottom];
     
     [self configureUserActivityIfPossible];
 }
