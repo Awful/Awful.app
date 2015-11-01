@@ -541,7 +541,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
     [self.messageViewController themeDidChange];
     
-    self.view.tintColor = theme[@"listTextColor"];
+    self.refreshControl.tintColor = theme[@"postsPullForNextColor"];
 }
 
 - (void)refetchPosts
@@ -987,6 +987,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     self.refreshControl.handler = ^{
         [welf loadNextPageOrRefresh];
     };
+    self.refreshControl.tintColor = self.theme[@"postsPullForNextColor"];
 }
 
 - (void)viewDidAppear:(BOOL)animated

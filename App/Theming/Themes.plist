@@ -12,8 +12,6 @@
 		<string>#9999ff</string>
 		<key>backgroundColor</key>
 		<string>#9999ff</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-byob.css</string>
 		<key>Lists</key>
 		<dict>
 			<key>listFontName</key>
@@ -28,6 +26,11 @@
 			<string>#ccccff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#e7e7ff</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsViewCSS</key>
+			<string>posts-view-byob.css</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -100,12 +103,14 @@
 		<dict>
 			<key>postsLoadingViewTintColor</key>
 			<string>#f5f5f5</string>
-			<key>postsViewCSS</key>
-			<string>posts-view.css</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
 			<key>postsTopBarTextColor</key>
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#1773a1</string>
+			<key>postsViewCSS</key>
+			<string>posts-view.css</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -193,6 +198,8 @@
 		<dict>
 			<key>postsLoadingViewTintColor</key>
 			<string>#060606</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
 			<key>postsTopBarTextColor</key>
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
@@ -421,6 +428,8 @@
 			<string>YOSPOS</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#5ffc60</string>
+			<key>postsPullForNextColor</key>
+			<string>#57ff57</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#57FF57</string>
 			<key>postsTopBarTextColor</key>
@@ -497,6 +506,8 @@
 		<dict>
 			<key>postsLoadingViewTintColor</key>
 			<string>#eacf4b</string>
+			<key>postsPullForNextColor</key>
+			<string>#eacf4c</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#ebd04b</string>
 			<key>postsTopBarTextColor</key>
