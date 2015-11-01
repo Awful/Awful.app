@@ -372,9 +372,9 @@
 		8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */; };
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
-		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		BC9ECF5C508981ACAF1DC54D /* Pods_Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA065CF2C50CD212D10284E /* Pods_Core.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A40BB24850D9A942D1E270 /* Pods_Awful.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; };
+		BC9ECF5C508981ACAF1DC54D /* Pods_Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA065CF2C50CD212D10284E /* Pods_Core.framework */; };
+		D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A40BB24850D9A942D1E270 /* Pods_Awful.framework */; };
 		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */; };
