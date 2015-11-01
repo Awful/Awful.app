@@ -39,27 +39,27 @@ extension NSUserActivity {
         if let userInfo = userInfo {
             switch activityType {
             case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoFilteredThreadUserIDKey] != nil:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey])"
+                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
                 if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
                     URL += "/pages/\(page)"
                 }
-                URL += "?userid=\(userInfo[Handoff.InfoFilteredThreadUserIDKey])"
+                URL += "?userid=\(userInfo[Handoff.InfoFilteredThreadUserIDKey]!)"
                 if let postID: AnyObject = userInfo[Handoff.InfoPostIDKey] {
                     URL += "#post=\(postID)"
                 }
                 return NSURL(string: URL)
             case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoPostIDKey] != nil:
-                return NSURL(string: "awful://posts/\(userInfo[Handoff.InfoPostIDKey])")
+                return NSURL(string: "awful://posts/\(userInfo[Handoff.InfoPostIDKey]!)")
             case Handoff.ActivityTypeBrowsingPosts:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey])"
+                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
                 if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
                     URL += "/pages/\(page)"
                 }
                 return NSURL(string: URL)
             case Handoff.ActivityTypeListingThreads:
-                return NSURL(string: "awful://forums/\(userInfo[Handoff.InfoForumIDKey])")
+                return NSURL(string: "awful://forums/\(userInfo[Handoff.InfoForumIDKey]!)")
             case Handoff.ActivityTypeReadingMessage:
-                return NSURL(string: "awful://messages/\(userInfo[Handoff.InfoMessageIDKey])")
+                return NSURL(string: "awful://messages/\(userInfo[Handoff.InfoMessageIDKey]!)")
             default:
                 break
             }
