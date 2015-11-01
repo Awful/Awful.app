@@ -265,6 +265,8 @@ BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
     self[AwfulSettingsKeys.defaultBrowser] = defaultBrowser;
 }
 
+BOOL_PROPERTY(openYouTubeLinksInYouTube, setOpenYouTubeLinksInYouTube)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -347,6 +349,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .ubiquitousThemeNames = @"ubiquitous_theme_names",
     .handoffEnabled = @"handoff_enabled",
     .defaultBrowser = @"default_browser",
+    .openYouTubeLinksInYouTube = @"open_youtube_links_in_youtube",
 };
 
 NSArray * AwfulDefaultBrowsers(void)

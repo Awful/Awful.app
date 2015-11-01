@@ -151,7 +151,7 @@
 		</dict>
 		<dict>
 			<key>Explanation</key>
-			<string>Which browser to open when tapping a link. Long-press a link for more options.</string>
+			<string>What to open when tapping an external link. Long-press any link for more options.</string>
 			<key>Settings</key>
 			<array>
 				<dict>
@@ -165,6 +165,18 @@
 					<string>default_browser</string>
 					<key>ShowValue</key>
 					<true/>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Open YouTube in YouTube</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>open_youtube_links_in_youtube</string>
+					<key>CanOpenURL</key>
+					<string>youtube://</string>
 				</dict>
 			</array>
 		</dict>

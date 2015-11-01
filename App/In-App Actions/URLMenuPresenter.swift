@@ -9,7 +9,7 @@ private enum _URLMenuPresenter {
     case Video(URL: NSURL)
     
     func presentInDefaultBrowser(fromViewController presenter: UIViewController) {
-        var URL: NSURL
+        let URL: NSURL
         switch self {
         case .Link(let linkURL, _):
             URL = linkURL
@@ -19,6 +19,16 @@ private enum _URLMenuPresenter {
             } else {
                 URL = rawURL
             }
+        }
+        
+        if URL.host?.lowercaseString.hasSuffix("youtube.com") == true &&
+            URL.path?.lowercaseString.hasPrefix("/watch") == true &&
+            AwfulSettings.sharedSettings().openYouTubeLinksInYouTube &&
+            UIApplication.sharedApplication().canOpenURL(NSURL(string: "youtube://")!)
+        {
+            
+            UIApplication.sharedApplication().openURL(URL)
+            return
         }
         
         let browser = AwfulSettings.sharedSettings().defaultBrowser

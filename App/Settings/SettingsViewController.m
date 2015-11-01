@@ -69,9 +69,17 @@
             NSArray *settings = filteredSection[@"Settings"];
             NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *setting, id _) {
                 NSString *device = setting[@"Device"];
-                
                 // Again, check for prefix so that "iPad-like" also matches.
-                return !device || [device hasPrefix:currentDevice];
+                if (device && ![device hasPrefix:currentDevice]) {
+                    return NO;
+                }
+                
+                NSString *canOpenURL = setting[@"CanOpenURL"];
+                if (canOpenURL) {
+                    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:canOpenURL]];
+                }
+                
+                return YES;
             }];
             filteredSection[@"Settings"] = [settings filteredArrayUsingPredicate:predicate];
             [sections addObject:filteredSection];
