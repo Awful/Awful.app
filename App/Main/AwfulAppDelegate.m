@@ -305,6 +305,7 @@ static void RemoveOldDataStores(void)
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     SmilieKeyboardSetIsAwfulAppActive(NO);
+    [self updateShortcutItems];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -427,5 +428,53 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
 }
 
 static const NSInteger HandoffVersion = 1;
+
+#pragma mark Quick Actions
+
+- (void)updateShortcutItems {
+    if (self.URLRouter == nil) {
+        [[UIApplication sharedApplication] setShortcutItems:@[]];
+        return;
+    }
+    
+    NSMutableArray *shortcutItems = [NSMutableArray new];
+    
+    // Add a shortcut to quick-open to bookmarks.
+    // For whatever reason, the first shortcut item is the one closest to the bottom.
+    UIApplicationShortcutIcon *bookmarksImage = [UIApplicationShortcutIcon iconWithTemplateImageName:@"bookmarks"];
+    UIApplicationShortcutItem *bookmarksItem = [[UIApplicationShortcutItem alloc] initWithType:@"awful://bookmarks"
+                                                                                localizedTitle:@"Bookmarks"
+                                                                             localizedSubtitle:nil
+                                                                                          icon:bookmarksImage
+                                                                                      userInfo:nil];
+    [shortcutItems addObject:bookmarksItem];
+    
+    // Add a shortcut for favorited forums, in the order they appear in the list.
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[ForumMetadata entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"favorite = YES"];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"favoriteIndex" ascending:true]];
+    fetchRequest.fetchLimit = 3;
+    
+    NSError *error = nil;
+    NSArray *favorites = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    
+    UIApplicationShortcutIcon *favoritesIcon = [UIApplicationShortcutIcon iconWithTemplateImageName:@"star-off"];
+    for (ForumMetadata *forumMeta in favorites.reverseObjectEnumerator) {
+        NSString *urlString = [NSString stringWithFormat:@"awful://forums/%@", forumMeta.forum.forumID];
+        UIApplicationShortcutItem *forumItem = [[UIApplicationShortcutItem alloc] initWithType:urlString
+                                                                                localizedTitle:forumMeta.forum.name
+                                                                             localizedSubtitle:nil // I wish we could get the forum's alt-text sanely somehow :(
+                                                                                          icon:favoritesIcon
+                                                                                      userInfo:nil];
+        [shortcutItems addObject:forumItem];
+    }
+    
+    [[UIApplication sharedApplication] setShortcutItems:shortcutItems];
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    NSURL *url = [NSURL URLWithString:shortcutItem.type];
+    [self openAwfulURL:url];
+}
 
 @end
