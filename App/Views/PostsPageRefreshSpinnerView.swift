@@ -25,23 +25,17 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     
     private func transitionFromState(oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
-        case (.Triggered, .Triggered), (.Refreshing, .Refreshing):
+        case (.Waiting, .Waiting), (.Triggered, .Triggered), (.Refreshing, .Refreshing):
             break
             
-        case (.Waiting, .Waiting(let fraction)) where fraction == 0:
-            quicklyAnimateToRotation(0)
-            
-        case (.Waiting, .Waiting(let fraction)):
-            arrowsRotation = CGFloat(2 * M_PI) * fraction
-            
         case (.Waiting, .Triggered):
-            rotateArrowsForever()
+            rotateArrows(CGFloat(M_PI))
             
         case (_, .Refreshing):
             rotateArrowsForever()
             
-        case (_, .Waiting(let fraction)):
-            quicklyAnimateToRotation(CGFloat(2 * M_PI) * fraction)
+        case (_, .Waiting):
+            rotateArrows(0)
             stopRotatingForever()
             
         default:
@@ -49,24 +43,10 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         }
     }
     
-    private func quicklyAnimateToRotation(to: CGFloat) {
-        let currentRotation = arrows.layer.presentationLayer()?.valueForKeyPath("transform.rotation.z") as! CGFloat?
-        
-        arrowsRotation = to
-        
-        if var from = currentRotation {
-            
-            // Try to force counter-clockwise rotation. M_PI is sufficient because it's a 180º-symmetrical image.
-            if from < 0 {
-                from += CGFloat(M_PI)
-            }
-            
-            let animation = CABasicAnimation(keyPath: "transform.rotation.z")
-            animation.fromValue = from
-            animation.duration = 0.15
-            animation.removedOnCompletion = true
-            arrows.layer.addAnimation(animation, forKey: "cancelling indefinite rotation")
-        }
+    private func rotateArrows(angle: CGFloat) {
+        UIView.animateWithDuration(0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+            self.arrowsRotation = angle
+            }, completion: nil)
     }
     
     private var arrowsRotation: CGFloat = 0 {
