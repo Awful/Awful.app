@@ -75,7 +75,10 @@ typedef enum : NSInteger {
     self.webView.frame = CGRectMake(fractional, CGRectGetMaxY(topBarFrame), integral, CGRectGetHeight(self.bounds) - self.exposedTopBarSlice);
     
     // When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
-    self.webView.awful_fractionalContentOffset = fractionalOffset;
+    // That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
+    if (!self.webView.scrollView.dragging) {
+        self.webView.awful_fractionalContentOffset = fractionalOffset;
+    }
 }
 
 - (void)updateForVoiceOverAnimated:(BOOL)animated
