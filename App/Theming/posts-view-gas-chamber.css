@@ -56,7 +56,6 @@ header {
 .ipad header {
   padding-top: 1.22em;
   /*    padding-bottom: 0.7em;*/
-
 }
 header:after {
   content: "";
@@ -99,9 +98,7 @@ header:after {
   font-size: 1.1em;
   font-weight: 500;
   /* Peta's 3D username */
-
   /*  Platinum users */
-
 }
 .username:before {
   margin-right: .25em;
@@ -295,14 +292,19 @@ footer:after {
   padding-bottom: 0;
 }
 #end {
+  font-size: 0;
+  font-family: Helvetica;
+  text-align: center;
   margin-bottom: 10px;
 }
 #end img {
-  width: 20px;
-  height: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  height: 12px;
+}
+#end img[src$="line.png"] {
+  width: 100px;
+}
+.ipad #end img[src$="line.png"] {
+  width: 200px;
 }
 .voiceover-only {
   position: absolute;

@@ -380,15 +380,20 @@ footer {
 }
 
 #end {
+  font-size: 0; // remove inter-img spacing
+  font-family: Helvetica; // just needs to not be -apple-system-body or similar in order to remove inter-img spacing
+  text-align: center;
   margin-bottom: 10px;
   
   img {
-    width: 20px;
-    height: 20px;
+    height: 12px;
+  }
+  img[src $= "line.png"] {
+    width: 100px;
     
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    .ipad & {
+      width: 200px;
+    }
   }
 }
 
