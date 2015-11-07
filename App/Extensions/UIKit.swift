@@ -43,9 +43,7 @@ extension UITableViewCell {
             return selectedBackgroundView?.backgroundColor
         }
         set {
-            if selectedBackgroundView == nil {
-                selectedBackgroundView = UIView()
-            }
+            selectedBackgroundView = UIView()
             selectedBackgroundView?.backgroundColor = newValue
         }
     }
