@@ -62,7 +62,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     }
     
     private func rotateArrow(angle: CGFloat, animated: Bool) {
-        let duration = animated ? 0.2 : 0
+        let duration = animated ? 0.3 : 0
         UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
             self.arrow.transform = angle == 0 ? CGAffineTransformIdentity : CGAffineTransformMakeRotation(angle)
             }, completion: nil)

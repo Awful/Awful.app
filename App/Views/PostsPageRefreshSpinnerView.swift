@@ -29,7 +29,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
             break
             
         case (.Waiting, .Triggered):
-            rotateArrows(CGFloat(M_PI))
+            rotateArrows(CGFloat(M_PI_2))
             
         case (_, .Refreshing):
             rotateArrowsForever()
@@ -44,7 +44,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     }
     
     private func rotateArrows(angle: CGFloat) {
-        UIView.animateWithDuration(0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+        UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
             self.arrowsRotation = angle
             }, completion: nil)
     }
