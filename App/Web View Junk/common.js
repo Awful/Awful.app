@@ -180,7 +180,7 @@ function interestingElementsAtPoint(x, y) {
     return spoiler.length == 0 || spoiler.hasClass('spoiled');
   }
 
-  var img = elementAtPoint.closest('img');
+  var img = elementAtPoint.closest('img:not(button img)');
   if (img.length && isSpoiled(img)) {
     if(img.hasClass('imgurGif')) {
       items.spoiledImageURL = img.data('originalurl');
