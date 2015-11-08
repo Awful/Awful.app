@@ -292,19 +292,10 @@ footer:after {
   padding-bottom: 0;
 }
 #end {
-  font-size: 0;
-  font-family: Helvetica;
+  font-weight: normal;
   text-align: center;
+  line-height: 1;
   margin-bottom: 10px;
-}
-#end img {
-  height: 12px;
-}
-#end img[src$="line.png"] {
-  width: 100px;
-}
-.ipad #end img[src$="line.png"] {
-  width: 200px;
 }
 .voiceover-only {
   position: absolute;
@@ -399,4 +390,8 @@ header {
 .bbc-block h4,
 .bbc-block h5 {
   color: #555;
+}
+#end {
+  line-height: 3em;
+  color: black;
 }

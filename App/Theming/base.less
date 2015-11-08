@@ -380,21 +380,10 @@ footer {
 }
 
 #end {
-  font-size: 0; // remove inter-img spacing
-  font-family: Helvetica; // just needs to not be -apple-system-body or similar in order to remove inter-img spacing
+  font-weight: normal;
   text-align: center;
+  line-height: 1;
   margin-bottom: 10px;
-  
-  img {
-    height: 12px;
-  }
-  img[src $= "line.png"] {
-    width: 100px;
-    
-    .ipad & {
-      width: 200px;
-    }
-  }
 }
 
 .voiceover-only {
