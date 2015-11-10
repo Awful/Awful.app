@@ -129,7 +129,7 @@ To add a new thread tag you just made:
 Assembling the AwfulPostsView
 -----------------------------
 
-The posts view uses [zepto.js][]. Awful uses the *Touch* module which is not part of a standard build, so a custom build is required. (It also uses the *Core* and *Event* modules.)
+The posts view uses [zepto.js][]. Awful uses the *Touch* module which is not part of a standard build, so a custom build is required. (It also uses the *Core*, *Event*, and *Ajax* modules.)
 
 [zepto.js]: http://zeptojs.com/
 

@@ -100,6 +100,33 @@ $(function() {
   $('.postbody').each(function() { highlightMentions(this); });
 });
 
+$(function() {
+  if ($('body.forum-26').length !== 0) {
+    var timer = 0;
+    var fetchFlag = function() {
+      clearInterval(timer);
+      
+      $.getJSON("/flag.php?forumid=26", function(data) {
+        var img = $("<img>", {
+          title: "this flag proudly brought to you by " + data.username + " on " + data.created,
+          src: "http://fi.somethingawful.com/flags" + data.path + "?by=" + encodeURIComponent(data.username),
+        });
+        var div = $('#fyad-flag');
+        if (div.length > 0) {
+          div.empty();
+          div.append(img);
+        } else {
+          $(img).insertBefore('#posts').wrap('<div id="fyad-flag">');
+        }
+        
+        timer = setTimeout(fetchFlag, 60000);
+      });
+    };
+    
+    fetchFlag();
+  }
+});
+
 // Action sheet popovers need to get this information synchronously, so these functions are meant to be called directly from Objective-C. They each return a CGRectFromString-formatted bounding rect.
 function HeaderRectForPostAtIndex(postIndex) {
   var post = $('post').eq(postIndex);

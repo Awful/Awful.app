@@ -277,6 +277,17 @@ footer:after {
   display: block;
   clear: both;
 }
+#fyad-flag {
+  width: 100%;
+  height: 102px;
+}
+#fyad-flag img {
+  border: 1px solid black;
+}
+.ipad #fyad-flag img {
+  display: block;
+  margin: 0 auto;
+}
 #ad {
   text-align: center;
 }
