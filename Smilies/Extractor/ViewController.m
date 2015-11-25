@@ -140,7 +140,7 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
     
     NSMutableDictionary *newMetadata;
     NSError *error;
-    NSDictionary *oldMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
+    NSDictionary *oldMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL options:nil error:&error];
     NSAssert(oldMetadata, @"error loading metadata from %@: %@", destinationURL, error);
     NSInteger oldVersion = [oldMetadata[SmilieMetadataVersionKey] integerValue];
     
@@ -152,7 +152,7 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"replacing existing sqlite file failed" userInfo:nil];
     }
     
-    BOOL ok = [NSPersistentStoreCoordinator setMetadata:newMetadata forPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL error:&error];
+    BOOL ok = [NSPersistentStoreCoordinator setMetadata:newMetadata forPersistentStoreOfType:NSSQLiteStoreType URL:destinationURL options:nil error:&error];
     NSAssert(ok, @"error writing metadata %@ for store at %@: %@", newMetadata, destinationURL, error);
     
     [self.textView replaceRange:[self.textView textRangeFromPosition:self.textView.endOfDocument toPosition:self.textView.endOfDocument] withText:[NSString stringWithFormat:@"\n\n%@", destinationURL.path]];
