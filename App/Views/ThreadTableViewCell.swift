@@ -27,6 +27,7 @@ final class ThreadTableViewCell: UITableViewCell {
     @IBOutlet private weak var ratingView: UIImageView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var pageCountLabel: UILabel!
+    @IBOutlet private weak var pageIconView: UIImageView!
     @IBOutlet private weak var killedPostedByLabel: UILabel!
     @IBOutlet private weak var unreadPostsLabel: UILabel!
     @IBOutlet private weak var stickyView: UIImageView!
@@ -124,8 +125,7 @@ final class ThreadTableViewCell: UITableViewCell {
         titleLabel.alpha = data?.titleAlpha ?? 1
         
         if let pages = data?.numberOfPages {
-            let p = pages == 1 ? "p" : "pp"
-            pageCountLabel.text = "\(pages)\(p)"
+            pageCountLabel.text = "\(pages)"
         } else {
             pageCountLabel.text = ""
         }
@@ -155,6 +155,8 @@ final class ThreadTableViewCell: UITableViewCell {
         let pageCountColor: UIColor
         let pageCountFont: UIFont
         
+        let pageIconColor: UIColor
+        
         let killedPostedByColor: UIColor
         let killedPostedByFont: UIFont
         
@@ -172,6 +174,8 @@ final class ThreadTableViewCell: UITableViewCell {
         
         pageCountLabel.textColor = theme.pageCountColor
         pageCountLabel.font = theme.pageCountFont
+        
+        pageIconView.tintColor = theme.pageIconColor
         
         killedPostedByLabel.textColor = theme.killedPostedByColor
         killedPostedByLabel.font = theme.killedPostedByFont
@@ -220,6 +224,7 @@ extension ThreadTableViewCell.ThemeData {
         titleColor = theme["listTextColor"]!
         
         pageCountColor = theme["listSecondaryTextColor"]!
+        pageIconColor = pageCountColor
         killedPostedByColor = theme["listSecondaryTextColor"]!
         
         if thread.unreadPosts == 0 {
