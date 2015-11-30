@@ -136,10 +136,11 @@ class ForumListViewController: AwfulTableViewController {
     @IBAction private func didToggleShowingChildren(sender: UIButton) {
         sender.selected = !sender.selected
         let cell: UITableViewCell = sender.nearestSuperviewOfDeclaredType()
-        let indexPath = tableView.indexPathForCell(cell)!
-        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
-        metadata.showsChildrenInForumList = sender.selected
-        metadata.updateSubtreeVisibility()
+        if let indexPath = tableView.indexPathForCell(cell) {
+            let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
+            metadata.showsChildrenInForumList = sender.selected
+            metadata.updateSubtreeVisibility()
+        }
     }
     
     @IBAction private func didTapFavoriteStar(sender: UIButton) {
