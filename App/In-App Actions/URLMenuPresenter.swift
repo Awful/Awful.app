@@ -21,11 +21,8 @@ private enum _URLMenuPresenter {
             }
         }
         
-        if URL.host?.lowercaseString.hasSuffix("youtube.com") == true &&
-            URL.path?.lowercaseString.hasPrefix("/watch") == true &&
-            AwfulSettings.sharedSettings().openYouTubeLinksInYouTube &&
-            UIApplication.sharedApplication().canOpenURL(NSURL(string: "youtube://")!)
-        {
+        if canOpenInYouTube(URL) &&
+            AwfulSettings.sharedSettings().openYouTubeLinksInYouTube {
             
             UIApplication.sharedApplication().openURL(URL)
             return
@@ -157,6 +154,9 @@ private enum _URLMenuPresenter {
                 self = .YouTube(v: URL.lastPathComponent!)
             } else if host?.hasSuffix("youtube.com") == true && URL.path?.lowercaseString.hasPrefix("/embed/") == true {
                 self = .YouTube(v: URL.lastPathComponent!)
+            } else if host?.hasSuffix("youtu.be") == true {
+                // URL shortener for youtube, all of these links should be videos
+                self = .YouTube(v: URL.lastPathComponent!)
             } else {
                 return nil
             }
@@ -225,6 +225,10 @@ private func canOpenInYouTube(URL: NSURL) -> Bool {
         && query?.hasPrefix("v=") == true {
             
         return true
+    }
+    if installed == true
+        && host?.hasSuffix("youtu.be") == true {
+            return true
     }
     return false
 }
