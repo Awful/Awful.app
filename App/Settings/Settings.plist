@@ -206,23 +206,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Alternate Server</string>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Server</string>
-					<key>ViewController</key>
-					<string>AwfulSettingsAlternateServerController</string>
-					<key>Key</key>
-					<string>custom_base_URL</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulCustomBaseURLTransformer</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
 			<key>Explanation</key>
 			<string>Handoff allows you to continue reading threads on nearby devices.</string>
 			<key>DeviceCapability</key>
@@ -251,6 +234,25 @@
 					<string>Acknowledgements</string>
 					<key>ViewController</key>
 					<string>Awful.AcknowledgementsViewController</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Alternate Server</string>
+			<key>VisibleInSettingsTab</key>
+			<false/>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Server</string>
+					<key>ViewController</key>
+					<string>AwfulSettingsAlternateServerController</string>
+					<key>Key</key>
+					<string>custom_base_URL</string>
+					<key>DisplayTransformer</key>
+					<string>AwfulCustomBaseURLTransformer</string>
 				</dict>
 			</array>
 		</dict>

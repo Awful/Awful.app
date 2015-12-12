@@ -88,6 +88,9 @@ struct {
         self[AwfulSettingsKeys.hideSidebarInLandscape] = @YES;
     }
     self[OldSettingsKeys.keepSidebarOpen] = nil;
+    
+    // Forums migration to the cloud invalidated the IP option, so we need to revert back to the default hostname.
+    self.customBaseURL = nil;
 }
 
 @synthesize sections = _sections;
