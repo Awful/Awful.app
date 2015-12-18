@@ -1,12 +1,12 @@
 Awful
 =====
 
-[Awful][App Store] is an iOS 8 app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS 9 app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
 Development talk usually ends up in the [project.log][] thread, but we're not fussy.
 
 <p align="center">
-  <img src="screenshot.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
+  <img src="Screenshots/iPhone 4.7in retina.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
 </p>
 
 [App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
