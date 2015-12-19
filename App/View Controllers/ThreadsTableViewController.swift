@@ -12,7 +12,9 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     
     private var filterThreadTag: ThreadTag?
     
-    private var dataManager: ThreadDataManager {
+    private typealias DataManager = FetchedDataManager<Thread>
+    
+    private var dataManager: DataManager {
         didSet {
             tableViewAdapter = nil
             
@@ -29,7 +31,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     init(forum: Forum) {
         self.forum = forum
         let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
-        dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
+        dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         super.init(style: .Plain)
         
@@ -120,7 +122,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if !dataManager.threads.isEmpty {
+        if !dataManager.contents.isEmpty {
             scrollToLoadMoreBlock = loadNextPage
             
             updateFilterButton()
@@ -136,7 +138,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
             isTimeToRefresh = AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum)
         }
         if AwfulForumsClient.sharedClient().reachable &&
-            (isTimeToRefresh || dataManager.threads.isEmpty)
+            (isTimeToRefresh || dataManager.contents.isEmpty)
         {
             refresh()
             
@@ -153,11 +155,11 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
             return
         }
         
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
             if let
-                row = self?.dataManager.threads.indexOf(thread),
+                row = self?.dataManager.contents.indexOf(thread),
                 cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             {
                 sourceRect.memory = cell.bounds
@@ -191,7 +193,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
             
         case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue():
             let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
-            dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
+            dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
             prepareUserActivity()
@@ -287,7 +289,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         updateFilterButton()
         
         let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
-        dataManager = ThreadDataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
+        dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         picker.dismiss()
     }
@@ -318,11 +320,11 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
             return nil
         }
         
-        return dataManager.threads[row]
+        return dataManager.contents[row]
     }
     
     func viewForThread(thread: Thread) -> UIView? {
-        guard let row = dataManager.threads.indexOf(thread) else {
+        guard let row = dataManager.contents.indexOf(thread) else {
             return nil
         }
         
@@ -332,7 +334,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     // MARK: UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
@@ -344,7 +346,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let cell = cell as! ThreadTableViewCell
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
     }
     

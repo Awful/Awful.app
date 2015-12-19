@@ -9,7 +9,9 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
     private let managedObjectContext: NSManagedObjectContext
     private var peekPopController: ThreadPeekPopController?
     
-    private var dataManager: ThreadDataManager {
+    private typealias DataManager = FetchedDataManager<Thread>
+    
+    private var dataManager: DataManager {
         didSet {
             tableViewAdapter = nil
             
@@ -26,7 +28,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
-        dataManager = ThreadDataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
+        dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
         super.init(style: .Plain)
         
@@ -104,14 +106,14 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
         
         prepareUserActivity()
         
-        if !dataManager.threads.isEmpty {
+        if !dataManager.contents.isEmpty {
             scrollToLoadMoreBlock = loadMore
         }
         
         becomeFirstResponder()
         
         if AwfulForumsClient.sharedClient().reachable &&
-            (dataManager.threads.isEmpty || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks())
+            (dataManager.contents.isEmpty || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks())
         {
             refresh()
             
@@ -133,11 +135,11 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
     
     private func didLongPressCell(cell: ThreadTableViewCell) {
         guard let indexPath = tableView.indexPathForCell(cell) else { return }
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
             if let
-                row = self?.dataManager.threads.indexOf(thread),
+                row = self?.dataManager.contents.indexOf(thread),
                 cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             {
                 sourceRect.memory = cell.bounds
@@ -168,7 +170,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue():
             let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
-            dataManager = ThreadDataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
+            dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
             prepareUserActivity()
@@ -204,11 +206,11 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
             return nil
         }
         
-        return dataManager.threads[row]
+        return dataManager.contents[row]
     }
     
     func viewForThread(thread: Thread) -> UIView? {
-        guard let row = dataManager.threads.indexOf(thread) else {
+        guard let row = dataManager.contents.indexOf(thread) else {
             return nil
         }
         
@@ -247,7 +249,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
     // MARK: UITableViewDelegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
@@ -259,7 +261,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let cell = cell as! ThreadTableViewCell
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
     }
 }
