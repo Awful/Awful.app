@@ -1,9 +1,8 @@
-//  ForumListViewController.swift
+//  ForumsTableViewController.swift
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@objc(ForumListViewController)
-class ForumListViewController: AwfulTableViewController {
+final class ForumsTableViewController: AwfulTableViewController {
     let managedObjectContext: NSManagedObjectContext
     private let dataSource: DataSource
     private let favoriteDataSource: ForumFavoriteDataSource
@@ -41,8 +40,8 @@ class ForumListViewController: AwfulTableViewController {
         }
     }
     
-    class func newFromStoryboard() -> ForumListViewController {
-        return UIStoryboard(name: "ForumList", bundle: nil).instantiateInitialViewController() as! ForumListViewController
+    class func newFromStoryboard() -> ForumsTableViewController {
+        return UIStoryboard(name: "ForumList", bundle: nil).instantiateInitialViewController() as! ForumsTableViewController
     }
     
     private class ForumContextObserver: NSObject {
@@ -216,7 +215,7 @@ extension ForumMetadata {
     }
 }
 
-extension ForumListViewController {
+extension ForumsTableViewController {
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! ForumListSectionHeader
         header.sectionNameLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
@@ -270,7 +269,7 @@ extension ForumListViewController {
 
 private let headerIdentifier = "Header"
 
-extension ForumListViewController {
+extension ForumsTableViewController {
     override func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
         tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
     }

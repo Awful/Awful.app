@@ -52,7 +52,7 @@
     
     #pragma mark /forums
     [_routes addRoute:@"/forums" handler:^BOOL(NSDictionary *parameters) {
-        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumListViewController class]];
+        return !![weakSelf selectTopmostViewControllerContainingViewControllerOfClass:[ForumsTableViewController class]];
     }];
     
     #pragma mark /threads/:threadID/pages/:page
@@ -232,7 +232,7 @@
         [threadList.navigationController popToViewController:threadList animated:YES];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
-        ForumListViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumListViewController class]];
+        ForumsTableViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumsTableViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList openForum:forum animated:NO];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
