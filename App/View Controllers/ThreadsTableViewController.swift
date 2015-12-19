@@ -1,11 +1,11 @@
-//  ThreadsViewController.swift
+//  ThreadsTableViewController.swift
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
 import CoreData
 
-final class ThreadsViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
     private var peekPopController: ThreadPeekPopController?

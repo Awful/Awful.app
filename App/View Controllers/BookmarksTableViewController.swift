@@ -1,10 +1,10 @@
-//  BookmarksViewController.swift
+//  BookmarksTableViewController.swift
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
 
-final class BookmarksViewController: AwfulTableViewController, ThreadPeekPopControllerDelegate {
+final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPopControllerDelegate {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
     private var peekPopController: ThreadPeekPopController?

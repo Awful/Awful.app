@@ -295,8 +295,8 @@
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
-		1CD005CF1BB734E900232FFD /* BookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksViewController.swift */; };
-		1CD005D11BB8800800232FFD /* ThreadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsViewController.swift */; };
+		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
+		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD005D61BB8DA6400232FFD /* ThreadDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D51BB8DA6400232FFD /* ThreadDataManager.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
@@ -835,8 +835,8 @@
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
 		1CC780271612D9DE002AF958 /* PostsPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsPageViewController.h; sourceTree = "<group>"; };
 		1CC780281612D9DE002AF958 /* PostsPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageViewController.m; sourceTree = "<group>"; };
-		1CD005CE1BB734E900232FFD /* BookmarksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksViewController.swift; sourceTree = "<group>"; };
-		1CD005D01BB8800800232FFD /* ThreadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsViewController.swift; sourceTree = "<group>"; };
+		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
+		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
 		1CD005D51BB8DA6400232FFD /* ThreadDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDataManager.swift; sourceTree = "<group>"; };
 		1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshSpinnerView.swift; sourceTree = "<group>"; };
@@ -1690,9 +1690,9 @@
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1CD005CE1BB734E900232FFD /* BookmarksViewController.swift */,
+				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
-				1CD005D01BB8800800232FFD /* ThreadsViewController.swift */,
+				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -2630,7 +2630,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CD005CF1BB734E900232FFD /* BookmarksViewController.swift in Sources */,
+				1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */,
 				1190F75E13BE4EA900B9D271 /* AwfulAppDelegate.m in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
@@ -2642,7 +2642,7 @@
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
-				1CD005D11BB8800800232FFD /* ThreadsViewController.swift in Sources */,
+				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
