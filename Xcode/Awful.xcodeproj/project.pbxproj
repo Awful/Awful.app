@@ -230,7 +230,6 @@
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
-		1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D114C19AFECB9005D46CB /* ForumList.storyboard */; };
 		1C8D114F19AFF16D005D46CB /* ForumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114E19AFF16D005D46CB /* ForumCell.swift */; };
 		1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D116019B3F686005D46CB /* ThreadCell.xib */; };
 		1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D116219B3F69D005D46CB /* ThreadCell.swift */; };
@@ -245,6 +244,9 @@
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
+		1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */; };
+		1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */; };
+		1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */; };
 		1C96D0AC1682B1140043B194 /* NSURL+Awful.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AB1682B1140043B194 /* NSURL+Awful.m */; };
 		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -731,7 +733,6 @@
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+AwfulConvenient.swift"; sourceTree = "<group>"; };
-		1C8D114C19AFECB9005D46CB /* ForumList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ForumList.storyboard; sourceTree = "<group>"; };
 		1C8D114E19AFF16D005D46CB /* ForumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumCell.swift; sourceTree = "<group>"; };
 		1C8D116019B3F686005D46CB /* ThreadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadCell.xib; sourceTree = "<group>"; };
 		1C8D116219B3F69D005D46CB /* ThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
@@ -749,6 +750,9 @@
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
 		1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadFieldView.m; sourceTree = "<group>"; };
+		1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewDataSource.swift; sourceTree = "<group>"; };
+		1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewCell.swift; sourceTree = "<group>"; };
+		1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumTableViewCell.xib; sourceTree = "<group>"; };
 		1C96D0AA1682B1140043B194 /* NSURL+Awful.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Awful.h"; sourceTree = "<group>"; };
 		1C96D0AB1682B1140043B194 /* NSURL+Awful.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Awful.m"; sourceTree = "<group>"; };
 		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
@@ -1687,7 +1691,6 @@
 			isa = PBXGroup;
 			children = (
 				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
-				1C8D114C19AFECB9005D46CB /* ForumList.storyboard */,
 				1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
@@ -1700,6 +1703,7 @@
 			children = (
 				1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */,
 				1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */,
+				1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */,
 				1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */,
 			);
 			path = "Data Managers";
@@ -1834,6 +1838,8 @@
 			children = (
 				1C8D114E19AFF16D005D46CB /* ForumCell.swift */,
 				1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */,
+				1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */,
+				1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
@@ -2302,7 +2308,6 @@
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
-				1C8D114D19AFECB9005D46CB /* ForumList.storyboard in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
 				1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */,
@@ -2329,6 +2334,7 @@
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C3DED7D1B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png in Resources */,
+				1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
 				8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */,
@@ -2680,6 +2686,7 @@
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
 				1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
+				1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */,
 				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
 				1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
@@ -2712,6 +2719,7 @@
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
+				1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,

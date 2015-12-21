@@ -4,107 +4,28 @@
 
 final class ForumsTableViewController: AwfulTableViewController {
     let managedObjectContext: NSManagedObjectContext
-    private let dataSource: DataSource
-    private let favoriteDataSource: ForumFavoriteDataSource
-    private let treeDataSource: ForumTreeDataSource
-    private var contextObserver: ForumContextObserver!
+    private var dataSource: ForumTableViewDataSource!
+    
+    init(managedObjectContext: NSManagedObjectContext) {
+        self.managedObjectContext = managedObjectContext
+        super.init(style: .Plain)
+        
+        title = "Forums"
+        tabBarItem.image = UIImage(named: "forum-list")
+        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
+    }
 
     required init?(coder: NSCoder) {
-        managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
-        favoriteDataSource = ForumFavoriteDataSource(managedObjectContext: managedObjectContext)
-        treeDataSource = ForumTreeDataSource(managedObjectContext: managedObjectContext)
-        dataSource = CompoundDataSource(favoriteDataSource, treeDataSource)
-        super.init(coder: coder)
-        
-        dataSource.delegate = self
-        
-        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
-        
-        // Since the data sources work on ForumMetadata entities, it won't pick up any changes to the names of the forums. We'll handle that here.
-        contextObserver = ForumContextObserver(managedObjectContext: managedObjectContext) { [unowned self] forums in
-            if self.editing {
-                // Don't do anything if we're rearranging favorites. It's the same issue mentioned by the comment in dataSource(_:performBatchUpdates:completion:).
-                return
-            }
-            
-            if forums.count <= 4 {
-                self.tableView.beginUpdates()
-                for forum in forums {
-                    let indexPaths = self.dataSource.indexPathsForItem(forum.metadata)
-                    self.dataSource(self.dataSource, didRefreshItemsAtIndexPaths: indexPaths)
-                }
-                self.tableView.endUpdates()
-            } else {
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
-    class func newFromStoryboard() -> ForumsTableViewController {
-        return UIStoryboard(name: "ForumList", bundle: nil).instantiateInitialViewController() as! ForumsTableViewController
-    }
-    
-    private class ForumContextObserver: NSObject {
-        let managedObjectContext: NSManagedObjectContext
-        let entity: NSEntityDescription
-        let changeBlock: [Forum] -> Void
-        
-        init(managedObjectContext context: NSManagedObjectContext, changeBlock: [Forum] -> Void) {
-            managedObjectContext = context
-            entity = NSEntityDescription.entityForName(Forum.entityName(), inManagedObjectContext: context)!
-            self.changeBlock = changeBlock
-            super.init()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "objectsDidChange:", name: NSManagedObjectContextObjectsDidChangeNotification, object: context)
-        }
-        
-        deinit {
-            NSNotificationCenter.defaultCenter().removeObserver(self)
-        }
-        
-        @objc private func objectsDidChange(notification: NSNotification) {
-            let userInfo = notification.userInfo as! [String:AnyObject]
-            var changedObjects = Set<NSManagedObject>()
-            for key in [NSUpdatedObjectsKey, NSRefreshedObjectsKey] {
-                if let updated = userInfo[key] as! Set<NSManagedObject>? {
-                    changedObjects.unionInPlace(updated)
-                }
-            }
-            let forums = changedObjects.filter() { $0.entity == self.entity } as! [Forum]
-            if !forums.isEmpty {
-                changeBlock(forums)
-            }
-        }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Can only get down to 1 in IB. Pretend that means 0.
-        if tableView.sectionHeaderHeight == 1 {
-            tableView.sectionHeaderHeight = 0
-        }
-        if tableView.sectionFooterHeight == 1 {
-            tableView.sectionFooterHeight = 0
-        }
-
-        tableView.registerClass(ForumListSectionHeader.self, forHeaderFooterViewReuseIdentifier: headerIdentifier)
-        tableView.dataSource = dataSource
-        
-        updateEditButtonPresence(animated: false)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        refreshIfNecessary()
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func refreshIfNecessary() {
-        if AwfulRefreshMinder.sharedMinder().shouldRefreshForumList() || dataSource.numberOfSections == 0 {
+        if AwfulRefreshMinder.sharedMinder().shouldRefreshForumList() || dataSource.isEmpty {
             refresh()
         }
     }
     
-    @IBAction private func refresh() {
+    private func refresh() {
         AwfulForumsClient.sharedClient().taxonomizeForumsAndThen { error, forums in
             if error == nil {
                 AwfulRefreshMinder.sharedMinder().didFinishRefreshingForumList()
@@ -132,28 +53,6 @@ final class ForumsTableViewController: AwfulTableViewController {
         }
     }
     
-    @IBAction private func didToggleShowingChildren(sender: UIButton) {
-        sender.selected = !sender.selected
-        let cell: UITableViewCell = sender.nearestSuperviewOfDeclaredType()
-        if let indexPath = tableView.indexPathForCell(cell) {
-            let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
-            metadata.showsChildrenInForumList = sender.selected
-            metadata.updateSubtreeVisibility()
-        }
-    }
-    
-    @IBAction private func didTapFavoriteStar(sender: UIButton) {
-        let cell: UITableViewCell = sender.nearestSuperviewOfDeclaredType()
-        let indexPath = tableView.indexPathForCell(cell)!
-        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
-        metadata.favoriteIndex = Int32(favoriteDataSource.fetchedResultsController.fetchedObjects?.count ?? 0)
-        metadata.favorite = true
-        
-        // Trigger a refresh for just this cell.
-        metadata.willChangeValueForKey("visibleInForumList")
-        metadata.didChangeValueForKey("visibleInForumList")
-    }
-
     func openForum(forum: Forum, animated: Bool) {
         let threadList = ThreadsTableViewController(forum: forum)
         threadList.restorationClass = ThreadsTableViewController.self
@@ -161,146 +60,99 @@ final class ForumsTableViewController: AwfulTableViewController {
         navigationController?.pushViewController(threadList, animated: animated)
     }
     
-    override func setEditing(editing: Bool, animated: Bool) {
-        // Since animating table changes while we rearrange favorites causes problems, we'll just do a full reload when we stop rearranging favorites. If we're animating the end of editing, we'll do it after the animation. Otherwise we'll just do it at the end.
-        let reloadBlock = { self.tableView.reloadData() }
-        if animated && !editing {
-            CATransaction.begin()
-            CATransaction.setCompletionBlock(reloadBlock)
-        }
-        
-        super.setEditing(editing, animated: animated)
-        updateEditButtonPresence(animated: animated)
-        
-        if !editing {
-            if animated {
-                CATransaction.commit()
-            } else {
-                reloadBlock()
-            }
-        }
+    private func updateEditButtonPresence(animated animated: Bool) {
+        navigationItem.setRightBarButtonItem(dataSource.hasFavorites ? editButtonItem() : nil, animated: animated)
     }
     
-    private func updateEditButtonPresence(animated animated: Bool) {
-        navigationItem.setRightBarButtonItem(favoriteDataSource.numberOfSections > 0 ? editButtonItem() : nil, animated: animated)
-    }
-}
-
-extension UIView {
-    func nearestSuperviewOfDeclaredType<T: UIView>() -> T {
-        var currentView: UIView! = self
-        while currentView != nil {
-            // `if currentView is T` doesn't work here and I'm not sure why (T seems to get stuck as UIView somehow and self.superview is invariably returned).
-            if currentView.isKindOfClass(T) {
-                return currentView as! T
-            } else {
-                currentView = currentView.superview
+    // MARK: View lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.registerNib(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
+        
+        tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
+        tableView.separatorStyle = .None
+        
+        let cellConfigurator: (ForumTableViewCell, Forum, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, forum, viewModel in
+            cell.viewModel = viewModel
+            cell.starButtonAction = self?.didTapStarButton
+            cell.disclosureButtonAction = self?.didTapDisclosureButton
+            
+            guard let theme = self?.theme else { return }
+            cell.themeData = ForumTableViewCell.ThemeData(theme)
+        }
+        let headerThemer: UITableViewCell -> Void = { [weak self] cell in
+            guard let theme = self?.theme else { return }
+            cell.textLabel?.textColor = theme["listHeaderTextColor"]
+            cell.backgroundColor = theme["listHeaderBackgroundColor"]
+        }
+        dataSource = ForumTableViewDataSource(tableView: tableView, managedObjectContext: managedObjectContext, cellConfigurator: cellConfigurator, headerThemer: headerThemer)
+        tableView.dataSource = dataSource
+        
+        dataSource.didReload = { [weak self] in
+            self?.updateEditButtonPresence(animated: false)
+            
+            if self?.editing == true && self?.dataSource.hasFavorites == false {
+                dispatch_async(dispatch_get_main_queue()) {
+                    // The docs say not to call this from an implementation of UITableViewDataSource.tableView(_:commitEditingStyle:forRowAtIndexPath:), but if you must, do a delayed perform.
+                    self?.setEditing(false, animated: true)
+                }
             }
         }
-        fatalError("could not find superview of type \(T.self)")
+        
+        updateEditButtonPresence(animated: false)
+        
+        pullToRefreshBlock = { [weak self] in self?.refresh() }
     }
-}
-
-extension ForumMetadata {
-    func updateSubtreeVisibility() {
-        let childMetadatas = forum.childForums.map() { ($0 as! Forum).metadata }
-        for child in childMetadatas {
-            if showsChildrenInForumList {
-                child.visibleInForumList = visibleInForumList
-            } else {
-                child.visibleInForumList = false
-            }
-            child.updateSubtreeVisibility()
-        }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        refreshIfNecessary()
+    }
+    
+    // MARK: Actions
+    
+    private func didTapStarButton(cell: ForumTableViewCell) {
+        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped star button in header?") }
+        forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { $0 + 1 } ?? 0
+        forum.metadata.favorite = !forum.metadata.favorite
+        try! forum.managedObjectContext!.save()
+    }
+    
+    private func didTapDisclosureButton(cell: ForumTableViewCell) {
+        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped disclosure button in header?") }
+        forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
+        try! forum.managedObjectContext!.save()
     }
 }
 
 extension ForumsTableViewController {
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterViewWithIdentifier(headerIdentifier) as! ForumListSectionHeader
-        header.sectionNameLabel.text = dataSource.tableView?(tableView, titleForHeaderInSection: section)
-        return header
-    }
-    
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? ForumListSectionHeader {
-            header.sectionNameLabel.textColor = theme["listHeaderTextColor"]
-            header.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
-            header.sectionNameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-            header.textLabel!.text = ""
-        }
-    }
-    
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UIFont.preferredFontForTextStyle(UIFontTextStyleBody).pointSize * 2
-    }
-    
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        // This method is implemented not for scrolling efficiency but because a missing implementation wreaks havoc on cell heights when expanding or collapsing a forum's subforums.
-        return ForumCell.minimumHeight()
-    }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = cell as? ForumCell {
-            cell.nameLabel.textColor = theme["listTextColor"]
-            cell.backgroundColor = theme["listBackgroundColor"]
-            cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"]
-            if indexPath.row + 1 == tableView.numberOfRowsInSection(indexPath.section) {
-                cell.separator.backgroundColor = cell.backgroundColor
-            } else {
-                cell.separator.backgroundColor = theme["listSeparatorColor"]
-            }
-        }
+    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+        guard case .Some = dataSource.objectAtIndexPath(indexPath) else { return nil }
+        return indexPath
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let metadata = dataSource.itemAtIndexPath(indexPath) as! ForumMetadata
-        openForum(metadata.forum, animated: true)
+        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("shouldn't be selecting a header cell") }
+        openForum(forum, animated: true)
     }
     
-    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> (String!) {
-        return dataSource.tableView?(tableView, titleForDeleteConfirmationButtonForRowAtIndexPath: indexPath)
-    }
-    
-    override func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
-        return dataSource.tableView?(tableView, targetIndexPathForMoveFromRowAtIndexPath: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath) ?? proposedDestinationIndexPath
+    override func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath toIndexPath: NSIndexPath) -> NSIndexPath {
+        guard let lastFavoriteIndex = dataSource.lastFavoriteIndex else { fatalError("asking for target index path for non-favorite") }
+        let targetRow = min(toIndexPath.row, lastFavoriteIndex)
+        return NSIndexPath(forRow: targetRow, inSection: 0)
     }
 }
 
-private let headerIdentifier = "Header"
-
-extension ForumsTableViewController {
-    override func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
-    }
-    
-    override func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
-    }
-
-    override func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet) {
-        tableView.insertSections(sections, withRowAnimation: .Top)
-    }
-    
-    override func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet) {
-        tableView.reloadSections(sections, withRowAnimation: .None)
-    }
-    
-    override func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
-        if !visible { return }
-        
-        // Moving favorites around triggers updates to the tree part of the table. Unfortunately, if we perform those updates while the moved rows are animating, the rows involved in the move get horribly deformed. This is a pretty stupid workaround, but here we are: don't bother updating the table if we're editing. We'll reload the table once we're done rearranging favorites.
-        if !editing {
-            tableView.beginUpdates()
-            updates()
-            tableView.endUpdates()
-        }
-        completion?()
-        
-        if favoriteDataSource.numberOfSections == 0 {
-            setEditing(false, animated: true)
-        } else {
-            updateEditButtonPresence(animated: true)
-        }
+extension ForumTableViewCell.ThemeData {
+    init(_ theme: Theme) {
+        nameColor = theme["listTextColor"]!
+        backgroundColor = theme["listBackgroundColor"]!
+        selectedBackgroundColor = theme["listSelectedBackgroundColor"]!
+        separatorColor = theme["listSeparatorColor"]!
     }
 }
