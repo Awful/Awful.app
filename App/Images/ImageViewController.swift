@@ -69,12 +69,23 @@ final class ImageViewController: UIViewController {
         rootView.cancelHideOverlayAfterDelay()
         let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
-        let activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
+        var activityViewController: UIActivityViewController
+        if (image == nil) {
+            // Allow user to share the URL before the image has loaded fully, useful on slow connections
+            activityViewController = UIActivityViewController(activityItems: [imageURL, wrappedURL], applicationActivities: [CopyURLActivity()])
+            
+            // Only use our copy button so it's clear they're copying the URL, not the image
+            activityViewController.excludedActivityTypes = [UIActivityTypeCopyToPasteboard]
+        } else {
+            activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
+            
+        }
         presentViewController(activityViewController, animated: true, completion: nil)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
         }
+        
     }
     
     // MARK: View lifecycle
@@ -148,9 +159,6 @@ final class ImageViewController: UIViewController {
             actionButton.tintColor = overlaidForegroundColor
             actionButton.backgroundColor = overlaidBackgroundColor
             actionButton.layer.cornerRadius = buttonCornerRadius
-            // Wait until image loads before allowing actions.
-            actionButton.enabled = false
-            actionButton.hidden = true
             addSubview(actionButton)
             
             spinner.startAnimating()
