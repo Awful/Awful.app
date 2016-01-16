@@ -20,7 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.5.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ARChromeActivity (1.0.4)
+  - ARChromeActivity (1.0.6)
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
@@ -55,7 +55,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (= 2.5.2)
-  - ARChromeActivity (= 1.0.4)
+  - ARChromeActivity (= 1.0.6)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.2)
   - HTMLReader (= 0.8)
@@ -79,7 +79,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
-  ARChromeActivity: 9064d94803338d3377f3e1013a8e8f4821d7daf1
+  ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 352065d63a011faade774ca3b833237785a59854
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   HTMLReader: b4d19899a242c02e1ce4a2308584fe2a6bcb6f6b

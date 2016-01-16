@@ -13,7 +13,7 @@ def html_reader; pod 'HTMLReader', '0.8'; end
 
 target :Awful do
   afnetworking
-  pod 'ARChromeActivity', '1.0.4'
+  pod 'ARChromeActivity', '1.0.6'
   fl_animated_image
   pod 'GRMustache', '7.3.2'
   html_reader
