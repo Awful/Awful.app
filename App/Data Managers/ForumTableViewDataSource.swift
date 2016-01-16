@@ -151,10 +151,7 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
         let model = models[indexPath.row]
         if case let .Header(title) = model {
             let cell = tableView.dequeueReusableCellWithIdentifier(ForumTableViewDataSource.headerReuseIdentifier, forIndexPath: indexPath)
-            if let textLabel = cell.textLabel {
-                textLabel.text = title
-                textLabel.font = textLabel.font.fontWithSize(textLabel.font.pointSize - 2)
-            }
+            cell.textLabel?.text = title
             headerThemer(cell)
             return cell
         }

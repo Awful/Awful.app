@@ -26,10 +26,6 @@ import UIKit
     @IBOutlet private var nameLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private var nameTrailingConstraint: NSLayoutConstraint!
     
-    @IBInspectable var nameFontDelta: CGFloat = 0 {
-        didSet { updateNameLabelFontSize() }
-    }
-    
     private var baseNameLeadingConstant: CGFloat = 0
     private static let indentationLevelIncrease: CGFloat = 15
     var nameIndentationLevel: Int = 0 {
@@ -52,19 +48,6 @@ import UIKit
         baseNameLeadingConstant = nameLeadingConstraint.constant
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
-        
-        updateNameLabelFontSize()
-    }
-    
-    override func prepareForInterfaceBuilder() {
-        super.prepareForInterfaceBuilder()
-        
-        updateNameLabelFontSize()
-    }
-    
-    private func updateNameLabelFontSize() {
-        guard let font = nameLabel?.font else { return }
-        nameLabel.font = font.fontWithSize(font.pointSize + nameFontDelta)
     }
     
     // MARK: Actions
@@ -82,7 +65,6 @@ import UIKit
     @objc private func contentSizeCategoryDidChange(notification: NSNotification) {
         guard let style = nameLabel.font.fontDescriptor().objectForKey(UIFontDescriptorTextStyleAttribute) as? String else { return }
         nameLabel.font = UIFont.preferredFontForTextStyle(style)
-        updateNameLabelFontSize()
     }
     
     // MARK: Editing
