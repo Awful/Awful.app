@@ -86,7 +86,6 @@
             NSUInteger numberOfForumsToRemove = forumStack.count - depth + 1;
             [forumStack removeObjectsInRange:NSMakeRange(forumStack.count - numberOfForumsToRemove, numberOfForumsToRemove)];
             Forum *forum = forums[forumIndex];
-            forum.metadata.visibleInForumList = depth == 1;
             forum.name = itemName;
             forum.group = group;
             forum.parentForum = forumStack.lastObject;

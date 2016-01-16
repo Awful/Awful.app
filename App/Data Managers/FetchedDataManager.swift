@@ -1,12 +1,12 @@
-//  ThreadDataManager.swift
+//  FetchedDataManager.swift
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
 
-final class ThreadDataManager: NSObject, NSFetchedResultsControllerDelegate {
-    private(set) var threads: [Thread] = []
-    var delegate: ThreadDataManagerDelegate?
+final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
+    private(set) var contents: [Object] = []
+    var delegate: FetchedDataManagerDelegate?
     
     private let resultsController: NSFetchedResultsController
     
@@ -18,7 +18,7 @@ final class ThreadDataManager: NSObject, NSFetchedResultsControllerDelegate {
         resultsController.delegate = self
         try! resultsController.performFetch()
         
-        updateThreads()
+        updateContents()
     }
     
     /**
@@ -39,28 +39,28 @@ final class ThreadDataManager: NSObject, NSFetchedResultsControllerDelegate {
     
     The suggestion for this workaround comes from https://forums.developer.apple.com/thread/7628
     */
-    private func updateThreads() {
+    private func updateContents() {
         guard let fetchedObjects = resultsController.fetchedObjects else {
             return
         }
         
-        var threads: [Thread] = []
-        for object in fetchedObjects {
-            let thread = object as! Thread
-            threads.append(thread)
+        var newContents: [Object] = []
+        for anyObject in fetchedObjects {
+            let object = anyObject as! Object
+            newContents.append(object)
         }
         
-        self.threads = threads
+        self.contents = newContents
     }
     
     // MARK: NSFetchedResultsControllerDelegate
     
     @objc func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        updateThreads()
+        updateContents()
         delegate?.dataManagerDidChangeContent(self)
     }
 }
 
-protocol ThreadDataManagerDelegate {
-    func dataManagerDidChangeContent(dataManager: ThreadDataManager)
+protocol FetchedDataManagerDelegate {
+    func dataManagerDidChangeContent<Object: NSManagedObject>(dataManager: FetchedDataManager<Object>)
 }

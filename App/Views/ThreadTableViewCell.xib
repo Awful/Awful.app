@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -22,14 +22,11 @@
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" image="empty-thread-tag" translatesAutoresizingMaskIntoConstraints="NO" id="d4v-4A-Mo2" userLabel="Tag">
                                         <rect key="frame" x="0.0" y="0.0" width="45" height="45"/>
-                                        <animations/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" image="rating1" translatesAutoresizingMaskIntoConstraints="NO" id="YSO-yy-1fi" userLabel="Rating">
                                         <rect key="frame" x="0.0" y="47" width="45" height="10"/>
-                                        <animations/>
                                     </imageView>
                                 </subviews>
-                                <animations/>
                                 <constraints>
                                     <constraint firstItem="d4v-4A-Mo2" firstAttribute="leading" secondItem="MgQ-eH-I0Z" secondAttribute="leading" priority="260" identifier="TagStackWidth" id="1c0-iJ-lnD"/>
                                     <constraint firstAttribute="trailing" secondItem="d4v-4A-Mo2" secondAttribute="trailing" priority="260" identifier="TagStackWidth" id="WHn-WP-FPO"/>
@@ -43,7 +40,6 @@
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Ahoy there sailor, can you do the otter dance?" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onH-uB-2Ps" userLabel="Title">
                                                 <rect key="frame" x="0.0" y="0.0" width="198" height="41"/>
-                                                <animations/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -53,24 +49,20 @@
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="219" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7iV-wq-I87" userLabel="Page count">
                                                         <rect key="frame" x="0.0" y="0.0" width="28" height="21"/>
-                                                        <animations/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pages" translatesAutoresizingMaskIntoConstraints="NO" id="2mP-6x-6cd" userLabel="Icon">
                                                         <rect key="frame" x="30" y="7" width="7" height="9"/>
-                                                        <animations/>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Posted by SOME OBNOXIOUSLY LONG NAME" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KDo-WD-cZH" userLabel="Killed/posted by">
                                                         <rect key="frame" x="42" y="0.0" width="156" height="61"/>
-                                                        <animations/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
-                                                <animations/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstItem="KDo-WD-cZH" firstAttribute="leading" secondItem="2mP-6x-6cd" secondAttribute="trailing" constant="5" id="58C-zZ-13e"/>
@@ -91,39 +83,31 @@
                                                 </variation>
                                             </view>
                                         </subviews>
-                                        <animations/>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="212121" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ifR-zM-LeT" userLabel="Unread Posts">
                                         <rect key="frame" x="200" y="41" width="53" height="21"/>
-                                        <animations/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <animations/>
                             </stackView>
                         </subviews>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" priority="250" constant="57" identifier="MinimumCellHeight" id="ByN-8m-oj5"/>
                         </constraints>
                     </stackView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="14" placeholderIntrinsicHeight="14" translatesAutoresizingMaskIntoConstraints="NO" id="8E7-IU-SaJ" userLabel="Secondary tag">
                         <rect key="frame" x="39" y="67" width="14" height="14"/>
-                        <animations/>
                     </imageView>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sticky" translatesAutoresizingMaskIntoConstraints="NO" id="3Ss-AO-6lA" userLabel="Sticky">
                         <rect key="frame" x="296" y="0.0" width="24" height="24"/>
-                        <animations/>
                     </imageView>
                     <view contentMode="scaleToFill" placeholderIntrinsicWidth="infinite" placeholderIntrinsicHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="Zal-xH-E5J" userLabel="Separator" customClass="HairlineView" customModule="AwfulViews">
                         <rect key="frame" x="59" y="128" width="261" height="1"/>
-                        <animations/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </subviews>
-                <animations/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="Zal-xH-E5J" secondAttribute="bottom" identifier="Separator" id="AGe-qN-gRr"/>
                     <constraint firstItem="8E7-IU-SaJ" firstAttribute="bottom" secondItem="d4v-4A-Mo2" secondAttribute="bottom" identifier="SecondaryTag" id="BSJ-Ov-vpZ"/>
@@ -138,7 +122,6 @@
                     <constraint firstAttribute="bottomMargin" secondItem="0om-BB-5hZ" secondAttribute="bottom" identifier="RootStack" id="wcV-jH-RTZ"/>
                 </constraints>
             </tableViewCellContentView>
-            <animations/>
             <connections>
                 <outlet property="killedPostedByLabel" destination="KDo-WD-cZH" id="lhw-Tf-cwC"/>
                 <outlet property="pageCountLabel" destination="7iV-wq-I87" id="7r0-P6-SyY"/>

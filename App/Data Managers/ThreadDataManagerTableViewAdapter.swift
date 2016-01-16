@@ -5,15 +5,17 @@
 import AwfulCore
 import UIKit
 
-final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, ThreadDataManagerDelegate {
+final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, FetchedDataManagerDelegate {
+    typealias DataManager = FetchedDataManager<Thread>
+    
     private let tableView: UITableView
-    private let dataManager: ThreadDataManager
+    private let dataManager: DataManager
     private let ignoreSticky: Bool
     private let cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void
     private var viewModels: [ThreadTableViewCell.ViewModel]
     var deletionHandler: (Thread -> Void)?
     
-    init(tableView: UITableView, dataManager: ThreadDataManager, ignoreSticky: Bool, cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void) {
+    init(tableView: UITableView, dataManager: DataManager, ignoreSticky: Bool, cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void) {
         self.tableView = tableView
         self.dataManager = dataManager
         self.ignoreSticky = ignoreSticky
@@ -21,7 +23,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         viewModels = []
         super.init()
         
-        viewModels = dataManager.threads.map(createViewModel)
+        viewModels = dataManager.contents.map(createViewModel)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "threadTagDidDownload:", name: AwfulThreadTagLoaderNewImageAvailableNotification, object: AwfulThreadTagLoader.sharedLoader())
     }
@@ -36,7 +38,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
     
     private func reloadViewModels() {
         let oldViewModels = viewModels
-        viewModels = dataManager.threads.map(createViewModel)
+        viewModels = dataManager.contents.map(createViewModel)
         let delta = oldViewModels.delta(viewModels)
         guard !delta.isEmpty else { return }
         
@@ -81,9 +83,9 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         }
     }
     
-    // MARK: ThreadDataManagerDelegate
+    // MARK: FetchedDataManagerDelegate
     
-    func dataManagerDidChangeContent(dataManager: ThreadDataManager) {
+    func dataManagerDidChangeContent<Object>(dataManager: FetchedDataManager<Object>) {
         reloadViewModels()
     }
     
@@ -105,7 +107,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        let thread = dataManager.threads[indexPath.row]
+        let thread = dataManager.contents[indexPath.row]
         deletionHandler!(thread)
     }
 }

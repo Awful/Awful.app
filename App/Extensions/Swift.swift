@@ -35,6 +35,22 @@ extension Int {
     }
 }
 
+extension SequenceType {
+    func all(includeElement: Generator.Element -> Bool) -> Bool {
+        for element in self where !includeElement(element) {
+            return false
+        }
+        return true
+    }
+    
+    func any(includeElement: Generator.Element -> Bool) -> Bool {
+        for element in self where includeElement(element) {
+            return true
+        }
+        return false
+    }
+}
+
 func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
     return first(sequence, includeElement: includeElement) != nil
 }

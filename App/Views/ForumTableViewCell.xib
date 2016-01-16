@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ForumTableViewCell" rowHeight="60" id="ftf-cY-rfj" customClass="ForumTableViewCell" customModule="Awful" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ftf-cY-rfj" id="Teo-A6-kdK">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="59"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMF-7z-8bV" userLabel="Star Button">
+                        <rect key="frame" x="0.0" y="0.0" width="38" height="59"/>
+                        <accessibility key="accessibilityConfiguration" label="Add to favorites"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="38" id="H0Z-Yo-hjr"/>
+                        </constraints>
+                        <state key="normal" image="star-off"/>
+                        <state key="selected" image="star-on"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="caL-PX-Hfl" userLabel="Disclosure Button">
+                        <rect key="frame" x="276" y="0.0" width="44" height="59"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="44" id="zvY-Yi-wDN"/>
+                        </constraints>
+                        <state key="normal" image="forum-arrow-down"/>
+                        <state key="selected" image="forum-arrow-minus"/>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Name of Some Crappy Forum" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slj-LX-myV" userLabel="Forum Name">
+                        <rect key="frame" x="46" y="8" width="222" height="43"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bbd-kH-7PC" userLabel="Separator" customClass="HairlineView" customModule="AwfulViews">
+                        <rect key="frame" x="46" y="58" width="274" height="1"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="slj-LX-myV" firstAttribute="top" secondItem="Teo-A6-kdK" secondAttribute="topMargin" id="1vW-Wd-7lI"/>
+                    <constraint firstAttribute="trailing" secondItem="bbd-kH-7PC" secondAttribute="trailing" placeholder="YES" id="5QG-36-2s6"/>
+                    <constraint firstAttribute="trailing" secondItem="caL-PX-Hfl" secondAttribute="trailing" id="7EA-1s-5AD"/>
+                    <constraint firstItem="caL-PX-Hfl" firstAttribute="leading" secondItem="slj-LX-myV" secondAttribute="trailing" constant="8" id="BU4-Yl-bRe"/>
+                    <constraint firstItem="iMF-7z-8bV" firstAttribute="top" secondItem="Teo-A6-kdK" secondAttribute="top" id="E6M-0L-2IB"/>
+                    <constraint firstItem="slj-LX-myV" firstAttribute="leading" secondItem="Teo-A6-kdK" secondAttribute="leadingMargin" priority="800" id="H84-3B-0pI"/>
+                    <constraint firstAttribute="bottom" secondItem="caL-PX-Hfl" secondAttribute="bottom" id="HCz-M6-kll"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="slj-LX-myV" secondAttribute="trailing" priority="800" id="ILj-n7-hn2"/>
+                    <constraint firstItem="bbd-kH-7PC" firstAttribute="leading" secondItem="slj-LX-myV" secondAttribute="leading" id="NPc-cH-JzV"/>
+                    <constraint firstItem="iMF-7z-8bV" firstAttribute="leading" secondItem="Teo-A6-kdK" secondAttribute="leading" id="QfR-6n-5if"/>
+                    <constraint firstAttribute="bottom" secondItem="iMF-7z-8bV" secondAttribute="bottom" id="YDe-LM-6Xp"/>
+                    <constraint firstItem="caL-PX-Hfl" firstAttribute="top" secondItem="Teo-A6-kdK" secondAttribute="top" id="aK9-kK-c52"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="slj-LX-myV" secondAttribute="bottom" id="dt2-Xe-eee"/>
+                    <constraint firstAttribute="bottom" secondItem="bbd-kH-7PC" secondAttribute="bottom" id="fY0-Pv-aaj"/>
+                    <constraint firstItem="slj-LX-myV" firstAttribute="leading" secondItem="iMF-7z-8bV" secondAttribute="trailing" constant="8" id="hw6-j6-0gj"/>
+                </constraints>
+            </tableViewCellContentView>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="nameFontDelta">
+                    <real key="value" value="-5"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="disclosureButton" destination="caL-PX-Hfl" id="doQ-2B-b6h"/>
+                <outlet property="nameLabel" destination="slj-LX-myV" id="RrP-mc-uVl"/>
+                <outlet property="nameLeadingConstraint" destination="hw6-j6-0gj" id="lo5-Cl-EFY"/>
+                <outlet property="nameTrailingConstraint" destination="BU4-Yl-bRe" id="hrb-wR-7z7"/>
+                <outlet property="separator" destination="bbd-kH-7PC" id="3HQ-p0-sVJ"/>
+                <outlet property="starButton" destination="iMF-7z-8bV" id="K6s-9E-jhC"/>
+            </connections>
+            <point key="canvasLocation" x="166" y="223"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="forum-arrow-down" width="16" height="10"/>
+        <image name="forum-arrow-minus" width="17" height="9"/>
+        <image name="star-off" width="20" height="20"/>
+        <image name="star-on" width="20" height="19"/>
+    </resources>
+</document>

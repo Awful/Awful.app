@@ -22,10 +22,10 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         tabBarController = UITabBarController()
         super.init()
         
-        let forums = ForumListViewController.newFromStoryboard()
+        let forums = ForumsTableViewController(managedObjectContext: managedObjectContext)
         forums.restorationIdentifier = "Forum list"
         
-        let bookmarks = BookmarksViewController(managedObjectContext: managedObjectContext)
+        let bookmarks = BookmarksTableViewController(managedObjectContext: managedObjectContext)
         bookmarks.restorationIdentifier = "Bookmarks"
         
         let lepers = RapSheetViewController()
