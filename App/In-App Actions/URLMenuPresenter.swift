@@ -28,6 +28,12 @@ private enum _URLMenuPresenter {
             return
         }
         
+        if canOpenInVLC(URL) {
+            let vlcURL = NSURL(string: "vlc://\(URL.host!)\(URL.path!)")!
+            UIApplication.sharedApplication().openURL(vlcURL)
+            return
+        }
+        
         let browser = AwfulSettings.sharedSettings().defaultBrowser
         switch browser {
         case AwfulDefaultBrowserAwful:
@@ -228,6 +234,16 @@ private func canOpenInYouTube(URL: NSURL) -> Bool {
     }
     if installed == true
         && host?.hasSuffix("youtu.be") == true {
+            return true
+    }
+    return false
+}
+
+private func canOpenInVLC(URL: NSURL) -> Bool {
+    let installed = UIApplication.sharedApplication().canOpenURL(NSURL(string:"vlc://")!)
+    let path = URL.path?.lowercaseString
+    if installed == true
+        && path?.hasSuffix(".webm") == true {
             return true
     }
     return false
