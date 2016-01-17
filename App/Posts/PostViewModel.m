@@ -35,7 +35,7 @@
     UseHTML5VimeoPlayer(document);
     HighlightQuotesOfPostsByUserNamed(document, [AwfulSettings sharedSettings].username);
     ProcessImgTags(document, ![AwfulSettings sharedSettings].showImages);
-    StopGifAutoplay(document);
+    if(![AwfulSettings sharedSettings].autoplayGIFs) StopGifAutoplay(document);
     if (self.post.ignored) {
         MarkRevealIgnoredPostLink(document);
     }

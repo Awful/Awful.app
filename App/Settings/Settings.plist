@@ -89,6 +89,16 @@
 					<key>Key</key>
 					<string>confirm_before_replying</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Always Animate GIFs</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<string>NO</string>
+					<key>Key</key>
+					<string>autoplay_gifs</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
