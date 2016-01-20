@@ -71,28 +71,32 @@ $(function() {
   $('body').on('tap', '.gifWrap', function(event) {
     // .closest() because sometimes the img is the target for some reason.
     var $gifwrap = $(event.target).closest('.gifWrap');
-    var $img = $gifwrap.find('img');
-    if (!$gifwrap.hasClass('playing')) {
-      $gifwrap.addClass('loading');
-      
-      var link = $img.attr('src');
-      var newLink = $img.data('originalurl');
-		   
-      var image = new Image();
-      image.onload = function() {
-        $img.attr("src", newLink);
-		$gifwrap.addClass('playing');
-        $gifwrap.removeClass('loading');
-      };
-      image.src = newLink;
-    } else {
-      var link = $img.attr('src');
-      var newLink = $img.data('posterurl');
-      $gifwrap.removeClass('playing');
-      $img.attr('src', newLink);
-    }
+    toggleAnimation($gifwrap);
    });
   });
+
+function toggleAnimation($gifwrap) {
+    var $img = $gifwrap.find('img');
+    if (!$gifwrap.hasClass('playing')) {
+        $gifwrap.addClass('loading');
+        
+        var link = $img.attr('src');
+        var newLink = $img.data('originalurl');
+        
+        var image = new Image();
+        image.onload = function() {
+            $img.attr("src", newLink);
+            $gifwrap.addClass('playing');
+            $gifwrap.removeClass('loading');
+        };
+        image.src = newLink;
+    } else {
+        var link = $img.attr('src');
+        var newLink = $img.data('posterurl');
+        $gifwrap.removeClass('playing');
+        $img.attr('src', newLink);
+    }
+}
 
 // Returns the CGRectFromString-formatted bounding rect of an element or the union of the bounding rects of elements, suitable for passing back to Objective-C.
 function rectOfElement(elements) {

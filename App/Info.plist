@@ -44,6 +44,7 @@
 	<string>4db466addcb5cfc</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>vlc</string>
 		<string>googlechrome</string>
 		<string>org-appextension-feature-password-management</string>
 		<string>vimeo</string>
