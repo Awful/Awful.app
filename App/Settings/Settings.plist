@@ -248,25 +248,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Alternate Server</string>
-			<key>VisibleInSettingsTab</key>
-			<false/>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Server</string>
-					<key>ViewController</key>
-					<string>AwfulSettingsAlternateServerController</string>
-					<key>Key</key>
-					<string>custom_base_URL</string>
-					<key>DisplayTransformer</key>
-					<string>AwfulCustomBaseURLTransformer</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
 			<key>VisibleInSettingsTab</key>
 			<false/>
 			<key>Settings</key>
