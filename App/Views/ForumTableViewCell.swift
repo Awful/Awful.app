@@ -2,7 +2,6 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulViews
 import UIKit
 
 @IBDesignable final class ForumTableViewCell: UITableViewCell {

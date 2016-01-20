@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10089" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10072.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -12,12 +12,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="75"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Cej-mm-sZZ" id="fyk-yR-Pfe">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="74.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zeJ-Fa-EkM" userLabel="Top Spacer">
                         <rect key="frame" x="160" y="0.0" width="1" height="18"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="width" constant="1" id="1OE-ee-AYX"/>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="6" id="MeK-GW-Rjx"/>
@@ -25,18 +24,15 @@
                     </view>
                     <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sticky" translatesAutoresizingMaskIntoConstraints="NO" id="zuV-Ky-jz8" userLabel="Sticky">
                         <rect key="frame" x="296" y="0.0" width="24" height="24"/>
-                        <animations/>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="960-Hr-2KP" userLabel="Tag and Rating Container">
                         <rect key="frame" x="8" y="9" width="45" height="57"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="empty-thread-tag" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-2S-cEh" userLabel="Tag">
                                 <rect key="frame" x="0.0" y="0.0" width="45" height="45"/>
-                                <animations/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="xaO-nS-1bC" userLabel="Secondary Tag">
                                 <rect key="frame" x="30" y="30" width="14" height="14"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="14" id="7oJ-gB-8B7"/>
                                     <constraint firstAttribute="width" secondItem="xaO-nS-1bC" secondAttribute="height" multiplier="1:1" id="GVF-qR-xsv"/>
@@ -44,10 +40,8 @@
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="rating1" translatesAutoresizingMaskIntoConstraints="NO" id="xoz-qp-irW" userLabel="Rating">
                                 <rect key="frame" x="0.0" y="47" width="45" height="10"/>
-                                <animations/>
                             </imageView>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="xoz-qp-irW" firstAttribute="top" secondItem="L5k-2S-cEh" secondAttribute="bottom" constant="2" id="59e-gG-OEE"/>
@@ -62,23 +56,20 @@
                             <constraint firstItem="xoz-qp-irW" firstAttribute="leading" secondItem="960-Hr-2KP" secondAttribute="leading" id="laU-8k-BMx"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" misplaced="YES" text="Thread Title" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgr-Fq-s3K">
-                        <rect key="frame" x="61" y="18" width="220" height="20"/>
-                        <animations/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" text="Thread Title" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgr-Fq-s3K">
+                        <rect key="frame" x="61" y="18" width="217" height="20"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" text="2001" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gua-cA-OlD" userLabel="Page Count" customClass="TopCapAlignmentLabel" customModule="Awful" customModuleProvider="target">
-                        <rect key="frame" x="61" y="41.5" width="28" height="14.5"/>
-                        <animations/>
+                        <rect key="frame" x="61" y="42" width="28" height="15"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tXB-Cc-g3S" userLabel="Page Icon" customClass="PageIcon" customModule="Awful" customModuleProvider="target">
-                        <rect key="frame" x="90" y="44.5" width="5.5" height="7.5"/>
-                        <animations/>
+                        <rect key="frame" x="90" y="45" width="7" height="8"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="tXB-Cc-g3S" secondAttribute="height" multiplier="8.5:11" id="FVq-CB-3fV"/>
                         </constraints>
@@ -88,30 +79,26 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Killed by someone" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xCF-fO-pFt" userLabel="Killed/posted by">
-                        <rect key="frame" x="102" y="42" width="179" height="15"/>
-                        <animations/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Killed by someone" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xCF-fO-pFt" userLabel="Killed/posted by">
+                        <rect key="frame" x="103" y="42" width="175" height="15"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="8399" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZh-ZU-eMp" userLabel="Unread Reply Count">
-                        <rect key="frame" x="286" y="30" width="26" height="14"/>
-                        <animations/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="8399" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZh-ZU-eMp" userLabel="Unread Reply Count">
+                        <rect key="frame" x="283" y="30" width="29" height="14"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uvA-wX-8qH" userLabel="Bottom Spacer">
+                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uvA-wX-8qH" userLabel="Bottom Spacer">
                         <rect key="frame" x="160" y="57" width="1" height="17"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="width" constant="1" id="mKJ-Ae-jGS"/>
                         </constraints>
                     </view>
-                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator" customClass="HairlineView" customModule="AwfulViews">
-                        <rect key="frame" x="61" y="75" width="259" height="0.5"/>
-                        <animations/>
+                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gev-Wv-hue" userLabel="Cell Separator" customClass="HairlineView" customModule="Awful" customModuleProvider="target">
+                        <rect key="frame" x="61" y="74" width="259" height="1"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="259" id="wMe-av-lsM"/>
@@ -123,7 +110,6 @@
                         </variation>
                     </view>
                 </subviews>
-                <animations/>
                 <constraints>
                     <constraint firstItem="xCF-fO-pFt" firstAttribute="trailing" secondItem="fgr-Fq-s3K" secondAttribute="trailing" id="17c-7m-i4i"/>
                     <constraint firstItem="960-Hr-2KP" firstAttribute="leading" secondItem="fyk-yR-Pfe" secondAttribute="leading" constant="8" id="2Nk-uZ-CoH"/>
@@ -162,7 +148,6 @@
                     </mask>
                 </variation>
             </tableViewCellContentView>
-            <animations/>
             <accessibility key="accessibilityConfiguration">
                 <accessibilityTraits key="traits" none="YES"/>
                 <bool key="isElement" value="YES"/>
