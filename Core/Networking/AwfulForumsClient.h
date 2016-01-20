@@ -25,7 +25,7 @@
 + (instancetype)sharedClient;
 
 /**
- The Forums endpoint for the client. Typically http://forums.somethingawful.com
+ The Forums endpoint for the client. Typically https://forums.somethingawful.com
  
  Setting a new baseURL cancels all in-flight requests.
  */

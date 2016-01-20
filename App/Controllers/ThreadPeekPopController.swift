@@ -26,7 +26,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            let components = NSURLComponents(string: "http://forums.somethingawful.com/showthread.php")!
+            let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
             var queryItems: [NSURLQueryItem] = []
             queryItems.append(NSURLQueryItem(name: "threadid", value: thread?.threadID))
             queryItems.append(NSURLQueryItem(name: "perpage", value: "40"))

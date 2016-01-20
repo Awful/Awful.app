@@ -23,6 +23,6 @@
  Whether an image of the given size should be thumbnailed.
  
  "Keep all images smaller than 800 pixels horizontal and 600 pixels vertical."
- – http://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
+ – https://www.somethingawful.com/d/forum-rules/forum-rules.php?page=2
  */
 extern BOOL ImageSizeRequiresThumbnailing(CGSize imageSize);

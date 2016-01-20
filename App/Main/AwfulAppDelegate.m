@@ -20,6 +20,8 @@
 @import Smilies;
 #import "Awful-Swift.h"
 
+static NSString * const DefaultBaseURL = @"https://forums.somethingawful.com";
+
 @interface AwfulAppDelegate ()
 
 @property (strong, nonatomic) RootViewControllerStack *rootViewControllerStack;
@@ -113,7 +115,7 @@ static id _instance;
 
 - (void)updateClientBaseURL
 {
-    NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: @"http://forums.somethingawful.com";
+    NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: DefaultBaseURL;
     NSURLComponents *components = [NSURLComponents componentsWithString:URLString];
     if (components.scheme.length == 0) {
         components.scheme = @"http";

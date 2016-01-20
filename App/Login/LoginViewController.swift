@@ -108,7 +108,7 @@ class LoginViewController: AwfulViewController {
     @IBAction func didTapOnePassword(sender: AnyObject) {
         view.endEditing(true)
         
-        OnePasswordExtension.sharedExtension().findLoginForURLString("http://forums.somethingawful.com", forViewController: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
+        OnePasswordExtension.sharedExtension().findLoginForURLString("forums.somethingawful.com", forViewController: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
             if loginInfo == nil {
                 if error.code != AppExtensionErrorCodeCancelledByUser {
                     NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] 1Password extension failed: \(error)")
@@ -140,7 +140,7 @@ class LoginViewController: AwfulViewController {
     }
     
     @IBAction func didTapForgetPassword() {
-        let URL = NSURL(string: "http://forums.somethingawful.com/account.php?action=lostpw")!
+        let URL = NSURL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
         UIApplication.sharedApplication().openURL(URL)
     }
 }

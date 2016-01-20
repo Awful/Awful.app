@@ -413,7 +413,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         actionViewController.title = self.title;
         NSMutableArray *items = [NSMutableArray new];
         AwfulIconActionItem *copyURLItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-            NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+            NSURLComponents *components = [NSURLComponents componentsWithString:@"https://forums.somethingawful.com/showthread.php"];
             NSMutableArray *queryParts = [NSMutableArray new];
             [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
             [queryParts addObject:@"perpage=40"];
@@ -804,7 +804,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     __weak __typeof__(self) weakSelf = self;
     
     AwfulIconActionItem *shareItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
-        NSURLComponents *components = [NSURLComponents componentsWithString:@"http://forums.somethingawful.com/showthread.php"];
+        NSURLComponents *components = [NSURLComponents componentsWithString:@"https://forums.somethingawful.com/showthread.php"];
         NSMutableArray *queryParts = [NSMutableArray new];
         [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
         [queryParts addObject:@"perpage=40"];

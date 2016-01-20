@@ -310,7 +310,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     override func updateUserActivityState(activity: NSUserActivity) {
         activity.title = forum.name
         activity.addUserInfoEntriesFromDictionary([Handoff.InfoForumIDKey: forum.forumID])
-        activity.webpageURL = NSURL(string: "http://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
+        activity.webpageURL = NSURL(string: "https://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
     }
     
     // MARK: ThreadPeekPopControllerDelegate

@@ -72,7 +72,7 @@
     
     __weak __typeof__(self) weakSelf = self;
     NSURLSession *session = [NSURLSession sharedSession];
-    NSURL *URL = [NSURL URLWithString:@"http://forums.somethingawful.com/misc.php?action=showsmilies"];
+    NSURL *URL = [NSURL URLWithString:@"https://forums.somethingawful.com/misc.php?action=showsmilies"];
     self.task = [session dataTaskWithURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         __typeof__(self) self = weakSelf;
         SmilieScrapeAndInsertNewSmiliesOperation *scrapeOperation;
