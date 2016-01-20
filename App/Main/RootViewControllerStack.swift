@@ -46,6 +46,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         }
         
         let emptyNavigationController = createEmptyDetailNavigationController()
+        emptyNavigationController.pushViewController(EmptyViewController(), animated: false)
         
         splitViewController.viewControllers = [tabBarController, emptyNavigationController]
         splitViewController.delegate = self
@@ -65,7 +66,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = EmptyViewController().enclosingNavigationController
+        let emptyNavigationController = AwfulNavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.awful_clearRestorationClass()
         return emptyNavigationController
@@ -231,9 +232,15 @@ extension RootViewControllerStack {
         
         let viewControllers = primaryNavigationController.viewControllers 
         let (primaryStack, secondaryStack) = partition(viewControllers) { $0.prefersSecondaryViewController }
-        let secondaryNavigationController = createEmptyDetailNavigationController()
         primaryNavigationController.viewControllers = Array(primaryStack)
-        secondaryNavigationController.viewControllers = Array(secondaryStack.isEmpty ? [EmptyViewController()] : secondaryStack)
+        let secondaryNavigationController = createEmptyDetailNavigationController()
+        if secondaryStack.isEmpty {
+            secondaryNavigationController.pushViewController(EmptyViewController(), animated: false)
+        } else {
+            for vc in secondaryStack {
+                secondaryNavigationController.pushViewController(vc, animated: false)
+            }
+        }
         
         if let detail = secondaryNavigationController.viewControllers.first {
             detail.navigationItem.leftBarButtonItem = backBarButtonItem
