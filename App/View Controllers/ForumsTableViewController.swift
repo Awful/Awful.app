@@ -87,6 +87,7 @@ final class ForumsTableViewController: AwfulTableViewController {
             guard let theme = self?.theme else { return }
             cell.textLabel?.textColor = theme["listHeaderTextColor"]
             cell.backgroundColor = theme["listHeaderBackgroundColor"]
+            cell.selectedBackgroundColor = theme["listHeaderBackgroundColor"]
         }
         dataSource = ForumTableViewDataSource(tableView: tableView, managedObjectContext: managedObjectContext, cellConfigurator: cellConfigurator, headerThemer: headerThemer)
         tableView.dataSource = dataSource
