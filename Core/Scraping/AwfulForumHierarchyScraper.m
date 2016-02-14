@@ -69,6 +69,10 @@
         
         [infoDictionaries addObject:info];
     }
+    if (forumKeys.count == 0) {
+        self.error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{NSLocalizedDescriptionKey: @"Forums dropdown had no forums"}];
+        return;
+    }
     NSArray *groups = [ForumGroup objectsForKeys:groupKeys inManagedObjectContext:self.managedObjectContext];
     NSArray *forums = [Forum objectsForKeys:forumKeys inManagedObjectContext:self.managedObjectContext];
     NSMutableArray *forumStack = [NSMutableArray new];
