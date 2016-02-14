@@ -42,4 +42,12 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
         XCTAssert(traditionalGames.group == discussion)
         XCTAssert(gameRoom.group == discussion)
     }
+    
+    /// This is a thing that can happen sometimes, and it made the app go haywire.
+    func testDropdownOnlyHasSections() {
+        let _ = scrapeFixtureNamed("forumdisplay3") as! AwfulForumHierarchyScraper
+        let groups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
+        let groupNames = groups.map{$0.name!}.sort(<)
+        XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
+    }
 }
