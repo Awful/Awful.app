@@ -124,6 +124,8 @@ BOOL_PROPERTY(showImages, setShowImages)
 
 BOOL_PROPERTY(autoplayGIFs, setAutoplayGIFs)
 
+BOOL_PROPERTY(embedTweets, setEmbedTweets)
+
 BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
@@ -339,6 +341,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showAvatars = @"show_avatars",
     .showImages = @"show_images",
     .autoplayGIFs = @"autoplay_gifs",
+    .embedTweets = @"embed_tweets",
     .forumThreadsSortedByUnread = @"forum_threads_sorted_unread",
     .bookmarksSortedByUnread = @"bookmarks_sorted_unread",
     .confirmNewPosts = @"confirm_before_replying",

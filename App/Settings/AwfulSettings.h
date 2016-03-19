@@ -27,6 +27,8 @@
 
 @property (assign, nonatomic) BOOL autoplayGIFs;
 
+@property (assign, nonatomic) BOOL embedTweets;
+
 @property (assign, nonatomic) BOOL forumThreadsSortedByUnread;
 
 @property (assign, nonatomic) BOOL bookmarksSortedByUnread;
@@ -93,6 +95,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *showAvatars;
     __unsafe_unretained NSString *showImages;
     __unsafe_unretained NSString *autoplayGIFs;
+    __unsafe_unretained NSString *embedTweets;
     __unsafe_unretained NSString *confirmNewPosts;
     __unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *username;

@@ -27,6 +27,10 @@ startBridge(function(bridge) {
   bridge.registerHandler('loadLinkifiedImages', function() {
     $('[data-awful-linkified-image]').each(function() { showLinkifiedImage(this); });
   });
+            
+  bridge.registerHandler('embedTweets', function() {
+    $('a').each(function() { embedTweet(this);})
+  });
   
   bridge.registerHandler('showAvatars', function(show) {
     showAvatars(show);

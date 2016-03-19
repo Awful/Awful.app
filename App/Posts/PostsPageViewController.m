@@ -246,7 +246,7 @@
     
     NSMutableDictionary *context = [NSMutableDictionary new];
     NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"WebViewJavascriptBridge.js.txt", @"zepto.min.js", @"common.js", @"posts-view.js" ], &error);
+    NSString *script = LoadJavaScriptResources(@[ @"WebViewJavascriptBridge.js.txt", @"zepto.min.js", @"widgets.js", @"common.js", @"posts-view.js" ], &error);
     if (!script) {
         NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
         return;
@@ -510,6 +510,10 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     } else if ([settingKey isEqualToString:AwfulSettingsKeys.handoffEnabled]) {
         if (self.visible) {
             [self configureUserActivityIfPossible];
+        }
+    } else if ([settingKey isEqualToString:AwfulSettingsKeys.embedTweets]) {
+        if ([AwfulSettings sharedSettings].embedTweets) {
+            [_webViewJavaScriptBridge callHandler:@"embedTweets"];
         }
     }
 }
@@ -1096,6 +1100,10 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         _jumpToPostIDAfterLoading = nil;
         _scrollToFractionAfterLoading = 0;
         [self clearLoadingMessage];
+        
+        if ([AwfulSettings sharedSettings].embedTweets) {
+            [_webViewJavaScriptBridge callHandler:@"embedTweets"];
+        }
     }
 }
 

@@ -99,6 +99,16 @@
 					<key>Key</key>
 					<string>autoplay_gifs</string>
 				</dict>
+                <dict>
+                    <key>Title</key>
+                    <string>Embed Tweets</string>
+                    <key>Type</key>
+                    <string>Switch</string>
+                    <key>Default</key>
+                    <string>YES</string>
+                    <key>Key</key>
+                    <string>embed_tweets</string>
+                </dict>
 			</array>
 		</dict>
 		<dict>

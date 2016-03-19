@@ -156,6 +156,29 @@ function showLinkifiedImage(link) {
   link.replaceWith($('<img>', { border: 0, alt: '', src: link.text() }));
 }
 
+function embedTweet(link) {
+    var e = $(link).attr("href").match(/^(?:https|http):\/\/(?:mobile\.)?twitter.com\/[0-9a-zA-Z_]+\/(?:status|statuses)\/([0-9]+)/);
+    if (e == null) {
+        return
+    }
+    var j = e[1];
+    var h = link;
+    
+    $.ajax({
+        url: "https://api.twitter.com/1/statuses/oembed.json?id=" + j,
+        dataType: "jsonp",
+        success: function(l) {
+           h = $(h).wrap("<div class='tweet'>").parent();
+           $(h).html(l.html);
+           var scr = $(h).find("script")[1];
+           var src = $(scr).attr("src");
+           var newSrc = "https:" + src;
+           $(scr).attr("src", newSrc);
+           window.twttr.widgets.load();
+        }
+    });
+}
+
 // Updates (or removes if 100%) the font scale setting.
 function fontScale(scalePercentage) {
   var style = $('#awful-font-scale-style');

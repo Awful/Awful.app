@@ -334,6 +334,10 @@
         webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
         _didLoadOnce = YES;
     }
+    
+    if ([AwfulSettings sharedSettings].embedTweets) {
+        [_webViewJavaScriptBridge callHandler:@"embedTweets"];
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate
