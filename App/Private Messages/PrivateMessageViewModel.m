@@ -74,7 +74,7 @@
 - (NSString *)javascript
 {
     NSError *error;
-    NSString *script = LoadJavaScriptResources(@[ @"WebViewJavascriptBridge.js.txt", @"zepto.min.js", @"common.js", @"private-message.js", ], &error);
+    NSString *script = LoadJavaScriptResources(@[ @"WebViewJavascriptBridge.js.txt", @"zepto.min.js", @"widgets.js", @"common.js", @"private-message.js", ], &error);
     if (!script) {
         NSLog(@"%s error loading scripts: %@", __PRETTY_FUNCTION__, error);
     }
