@@ -133,18 +133,33 @@ static BOOL IsSmileyURL(NSURL *URL)
     // http://fi.somethingawful.com/images/smilies
     // http://fi.somethingawful.com/safs/smilies
     // http://fi.somethingawful.com/forums/posticons
+    // http://fi.somethingawful.com/customtitles{/eris}
     if ([host caseInsensitiveCompare:@"fi.somethingawful.com"] == NSOrderedSame) {
         NSArray *pathComponents = URL.pathComponents;
-        if ([pathComponents containsObject:@"smilies"] || [pathComponents containsObject:@"posticons"]) {
+        if ([pathComponents containsObject:@"smilies"] || [pathComponents containsObject:@"posticons"] ||
+            [pathComponents containsObject:@"customtitles"]) {
             return YES;
         }
     }
     
+    // http://i.somethingawful.com/images/*.gif
     // http://i.somethingawful.com/images/emot
     // http://i.somethingawful.com/forumsystem/emoticons
+    // http://i.somethingawful.com/mjolnir/images
+    // http://i.somethingawful.com/u/adminuploads/
+    // http://i.somethingawful.com/u/garbageday/
     else if ([host caseInsensitiveCompare:@"i.somethingawful.com"] == NSOrderedSame) {
         NSArray *pathComponents = URL.pathComponents;
         if ([pathComponents containsObject:@"emot"] || [pathComponents containsObject:@"emoticons"]) {
+            return YES;
+        }
+        if ([pathComponents containsObject:@"images"]) {
+            return YES;
+        }
+        if ([pathComponents containsObject:@"mjolnir"] && [pathComponents containsObject:@"images"]) {
+            return YES;
+        }
+        if ([pathComponents containsObject:@"u"] && ([pathComponents containsObject:@"adminuploads"] || [pathComponents containsObject:@"garbageday"])) {
             return YES;
         }
     }
