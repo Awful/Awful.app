@@ -150,7 +150,8 @@ func < (lhs: Theme, rhs: Theme) -> Bool {
 }
 
 private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
-    return dictionary.reduce([:]) { (var accum, kvpair) in
+    return dictionary.reduce([:]) { (accum, kvpair) in
+        var accum = accum
         if let nested = kvpair.1 as? [K: V] {
             for (k, v) in flatten(nested) {
                 accum[k] = v

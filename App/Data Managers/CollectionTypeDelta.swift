@@ -11,32 +11,47 @@ extension CollectionType where Index: Hashable, Generator.Element: Equatable {
     */
     func delta(other: Self) -> Delta<Index> {
         var unchanged: Set<Index> = []
-        for var i = startIndex; i != endIndex && i != other.endIndex; i = i.successor() {
-            if self[i] == other[i] {
-                unchanged.insert(i)
+        do {
+            var i = startIndex
+            while i != other.endIndex {
+                defer { i = i.successor() }
+                
+                if self[i] == other[i] {
+                    unchanged.insert(i)
+                }
             }
         }
         
         var insertions: [Index] = []
         var moves: [(from: Index, to: Index)] = []
-        for var i = other.startIndex; i != other.endIndex; i = i.successor() {
-            if unchanged.contains(i) { continue }
-            
-            let otherValue = other[i]
-            if let oldIndex = indexOf(otherValue) {
-                moves.append((from: oldIndex, to: i))
-            } else {
-                insertions.append(i)
+        do {
+            var i = other.startIndex
+            while i != other.endIndex {
+                defer { i = i.successor() }
+                
+                if unchanged.contains(i) { continue }
+                
+                let otherValue = other[i]
+                if let oldIndex = indexOf(otherValue) {
+                    moves.append((from: oldIndex, to: i))
+                } else {
+                    insertions.append(i)
+                }
             }
         }
         
         var deletions: [Index] = []
-        for var i = startIndex; i != endIndex; i = i.successor() {
-            if unchanged.contains(i) { continue }
-            
-            let value = self[i]
-            if !other.contains(value) {
-                deletions.append(i)
+        do {
+            var i = startIndex
+            while i != endIndex {
+                defer { i = i.successor() }
+                
+                if unchanged.contains(i) { continue }
+                
+                let value = self[i]
+                if !other.contains(value) {
+                    deletions.append(i)
+                }
             }
         }
         
