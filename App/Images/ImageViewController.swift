@@ -441,7 +441,7 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
     request.addValue("image/*", forHTTPHeaderField: "Accept")
     
     let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
-        ++progress.completedUnitCount
+        progress.completedUnitCount += 1
         
         if let error = error {
             return done(.Error(error))
@@ -460,7 +460,7 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
         if let data = data {
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
                 if let animatedImage = FLAnimatedImage(animatedGIFData: data) {
-                    ++progress.completedUnitCount
+                    progress.completedUnitCount += 1
                     
                     return done(.Animated(animatedImage))
                 }
@@ -483,7 +483,7 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
                     
                     UIGraphicsEndImageContext()
                     
-                    ++progress.completedUnitCount
+                    progress.completedUnitCount += 1
                     
                     return done(.Static(image: decodedImage, data: data))
                 }
