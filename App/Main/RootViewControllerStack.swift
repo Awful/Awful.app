@@ -55,7 +55,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
         
         updateMessagesTabPresence()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewControllerStack.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
         
         configureSplitViewControllerDisplayMode()
 		configureTabBarColor()
@@ -145,7 +145,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
-                } else if currentViewController.respondsToSelector("viewControllers") {
+                } else if currentViewController.respondsToSelector(Selector("viewControllers")) {
                     // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
                     let remainingPath = identifierComponents[1..<identifierComponents.count]
                     let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as! [UIViewController]

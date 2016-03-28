@@ -32,7 +32,7 @@ final class ThreadTableViewCell: UITableViewCell {
     @IBOutlet private weak var stickyView: UIImageView!
     @IBOutlet private weak var separatorView: HairlineView!
     private lazy var longPress: UILongPressGestureRecognizer = { [unowned self] in
-        let recognizer = UILongPressGestureRecognizer(target: self, action: "didLongPress")
+        let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(ThreadTableViewCell.didLongPress))
         self.addGestureRecognizer(recognizer)
         return recognizer
     }()

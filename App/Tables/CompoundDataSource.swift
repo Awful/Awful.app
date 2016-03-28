@@ -160,7 +160,7 @@ extension CompoundDataSource: UITableViewDataSource {
         if let canMove = dataSource.tableView?(tableView, canMoveRowAtIndexPath: localIndexPath) {
             return canMove
         } else {
-            return dataSource.respondsToSelector("tableView:moveRowAtIndexPath:toIndexPath:")
+            return dataSource.respondsToSelector(#selector(UITableViewDataSource.tableView(_:moveRowAtIndexPath:toIndexPath:)))
         }
     }
     

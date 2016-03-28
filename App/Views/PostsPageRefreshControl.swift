@@ -31,7 +31,7 @@ final class PostsPageRefreshControl: UIView {
             self.layoutScrollView()
         }
         
-        scrollView.panGestureRecognizer.addTarget(self, action: "didPan:")
+        scrollView.panGestureRecognizer.addTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
 
     required init?(coder: NSCoder) {
@@ -39,7 +39,7 @@ final class PostsPageRefreshControl: UIView {
     }
     
     deinit {
-        scrollView.panGestureRecognizer.removeTarget(self, action: "didPan:")
+        scrollView.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
     
     func endRefreshing() {

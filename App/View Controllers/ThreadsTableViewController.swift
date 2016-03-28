@@ -106,7 +106,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         
         pullToRefreshBlock = self.refresh
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadsTableViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
         
         if traitCollection.forceTouchCapability == .Available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
@@ -206,7 +206,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     // MARK: Composition
     
     private lazy var composeBarButtonItem: UIBarButtonItem = { [unowned self] in
-        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapCompose")
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: #selector(ThreadsTableViewController.didTapCompose))
         item.accessibilityLabel = "New thread"
         return item
         }()
@@ -248,7 +248,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     private lazy var filterButton: UIButton = { [unowned self] in
         let button = UIButton(type: .System)
         button.bounds.size.height = button.intrinsicContentSize().height + 8
-        button.addTarget(self, action: "didTapFilterButton:", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(ThreadsTableViewController.didTapFilterButton(_:)), forControlEvents: .TouchUpInside)
         return button
         }()
     

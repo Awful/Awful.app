@@ -293,7 +293,7 @@ private class CollapseExpandObserver {
         self.managedObjectContext = managedObjectContext
         self.changeBlock = changeBlock
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "objectsDidChange:", name: NSManagedObjectContextObjectsDidChangeNotification, object: managedObjectContext)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CollapseExpandObserver.objectsDidChange(_:)), name: NSManagedObjectContextObjectsDidChangeNotification, object: managedObjectContext)
     }
     
     @objc private func objectsDidChange(notification: NSNotification) {

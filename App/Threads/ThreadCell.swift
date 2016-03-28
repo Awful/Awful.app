@@ -26,7 +26,7 @@ class ThreadCell: DynamicTypeTableViewCell {
         super.awakeFromNib()
         
         // Can't put this in a nib used by UITableView ("must have exactly one top-level object hurf durf").
-        longPress = UILongPressGestureRecognizer(target: self, action: "didLongPress:")
+        longPress = UILongPressGestureRecognizer(target: self, action: #selector(ThreadCell.didLongPress(_:)))
         contentView.addGestureRecognizer(longPress)
         
         // Can't do this in IB.

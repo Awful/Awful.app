@@ -14,8 +14,8 @@ final class ReportPostViewController: AwfulViewController {
         title = "Report Post"
         modalPresentationStyle = .FormSheet
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "didTapSubmit")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: Selector("didTapCancel"))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: Selector("didTapSubmit"))
     }
 
     required init?(coder: NSCoder) {
@@ -85,7 +85,7 @@ final class ReportPostViewController: AwfulViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        rootView.commentTextField.addTarget(self, action: "commentTextFieldDidChange:", forControlEvents: .ValueChanged)
+        rootView.commentTextField.addTarget(self, action: Selector("commentTextFieldDidChange:"), forControlEvents: .ValueChanged)
     }
     
     override func themeDidChange() {

@@ -29,8 +29,8 @@ public final class DataStore: NSObject {
         
         loadPersistentStore()
         let noteCenter = NSNotificationCenter.defaultCenter()
-        noteCenter.addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        noteCenter.addObserver(self, selector: "applicationDidBecomeActive:", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     deinit {
@@ -51,7 +51,7 @@ public final class DataStore: NSObject {
     @objc private func applicationDidBecomeActive(notification: NSNotification) {
         invalidatePruneTimer()
         // Since pruning could potentially take a noticeable amount of time, and there's no real rush, let's schedule it for a little bit after becoming active.
-        pruneTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: "pruneTimerDidFire:", userInfo: nil, repeats: false)
+        pruneTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: #selector(DataStore.pruneTimerDidFire(_:)), userInfo: nil, repeats: false)
     }
     
     private var pruneTimer: NSTimer?
@@ -162,7 +162,7 @@ public final class LastModifiedContextObserver: NSObject {
         relevantEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contextWillSave:", name: NSManagedObjectContextWillSaveNotification, object: context)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LastModifiedContextObserver.contextWillSave(_:)), name: NSManagedObjectContextWillSaveNotification, object: context)
     }
     
     deinit {

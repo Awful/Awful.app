@@ -41,12 +41,12 @@ import UIKit
         contentView.heightAnchor.constraintGreaterThanOrEqualToConstant(44).active = true
         separator.trailingAnchor.constraintEqualToAnchor(trailingAnchor).active = true
         
-        starButton.addTarget(self, action: "didTapStarButton", forControlEvents: .TouchUpInside)
-        disclosureButton.addTarget(self, action: "didTapDisclosureButton", forControlEvents: .TouchUpInside)
+        starButton.addTarget(self, action: #selector(ForumTableViewCell.didTapStarButton), forControlEvents: .TouchUpInside)
+        disclosureButton.addTarget(self, action: #selector(ForumTableViewCell.didTapDisclosureButton), forControlEvents: .TouchUpInside)
         
         baseNameLeadingConstant = nameLeadingConstraint.constant
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ForumTableViewCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
     }
     
     // MARK: Actions

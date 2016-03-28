@@ -25,7 +25,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         
         viewModels = dataManager.contents.map(createViewModel)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "threadTagDidDownload:", name: AwfulThreadTagLoaderNewImageAvailableNotification, object: AwfulThreadTagLoader.sharedLoader())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadDataManagerTableViewAdapter.threadTagDidDownload(_:)), name: AwfulThreadTagLoaderNewImageAvailableNotification, object: AwfulThreadTagLoader.sharedLoader())
     }
     
     deinit {

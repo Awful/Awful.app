@@ -17,9 +17,9 @@ final class CompositionMenuTree: NSObject {
         
         PSMenuItem.installMenuHandlerForObject(textView)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "textViewDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: textView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "textViewDidEndEditing:", name: UITextViewTextDidEndEditingNotification, object: textView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "menuDidHide:", name: UIMenuControllerDidHideMenuNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextViewTextDidBeginEditingNotification, object: textView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: UITextViewTextDidEndEditingNotification, object: textView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: UIMenuControllerDidHideMenuNotification, object: nil)
     }
     
     deinit {

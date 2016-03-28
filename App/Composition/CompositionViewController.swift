@@ -63,7 +63,7 @@ final class CompositionViewController: AwfulViewController {
         
         // Leave an escape hatch in case we were restored without an associated workspace. This can happen when a crash leaves old state information behind.
         if navigationItem.leftBarButtonItem == nil {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel")
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(CompositionViewController.didTapCancel))
         }
     }
     

@@ -20,13 +20,13 @@ final class MessageListViewController: AwfulTableViewController {
         updateUnreadMessageCountBadge()
         
         navigationItem.leftBarButtonItem = editButtonItem()
-        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: "didTapComposeButtonItem:")
+        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = "Compose"
         navigationItem.rightBarButtonItem = composeItem
         
         let noteCenter = NSNotificationCenter.defaultCenter()
-        noteCenter.addObserver(self, selector: "unreadMessageCountDidChange:", name: NewMessageCheckerUnreadCountDidChangeNotification, object: nil)
-        noteCenter.addObserver(self, selector: "settingsDidChange:", name: AwfulSettingsDidChangeNotification, object: nil)
+        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NewMessageCheckerUnreadCountDidChangeNotification, object: nil)
+        noteCenter.addObserver(self, selector: #selector(MessageListViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
     }
 
     required init(coder: NSCoder) {
@@ -118,7 +118,7 @@ final class MessageListViewController: AwfulTableViewController {
         tableView.dataSource = dataSource
         
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: #selector(MessageListViewController.refresh), forControlEvents: .ValueChanged)
         self.refreshControl = refreshControl
     }
     

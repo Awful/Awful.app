@@ -84,7 +84,7 @@ final class ReplyWorkspace: NSObject {
             }
             
             let navigationItem = compositionViewController.navigationItem
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
             KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts.takeUnretainedValue() as String, options: .Initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
@@ -101,16 +101,16 @@ final class ReplyWorkspace: NSObject {
     private var textViewNotificationToken: AnyObject?
     
     private lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
-        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .Done, target: self, action: "didTapPost:")
+        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .Done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         }()
     
     private func updateRightButtonItem() {
         if AwfulSettings.sharedSettings().confirmNewPosts {
             rightButtonItem.title = "Preview"
-            rightButtonItem.action = "didTapPreview:"
+            rightButtonItem.action = #selector(ReplyWorkspace.didTapPreview(_:))
         } else {
             rightButtonItem.title = draft.submitButtonTitle
-            rightButtonItem.action = "didTapPost:"
+            rightButtonItem.action = #selector(ReplyWorkspace.didTapPost(_:))
         }
     }
     
@@ -123,7 +123,7 @@ final class ReplyWorkspace: NSObject {
         saveTextToDraft()
         
         let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text)
-        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .Done, target: self, action: "didTapPost:")
+        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .Done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     

@@ -109,11 +109,11 @@ final class ImageViewController: UIViewController {
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            tap.addTarget(self, action: "didTapImage:")
+            tap.addTarget(self, action: Selector("didTapImage:"))
             tap.requireGestureRecognizerToFail(doubleTap)
             addGestureRecognizer(tap)
             
-            panToDismiss.addTarget(self, action: "didPanToDismiss:")
+            panToDismiss.addTarget(self, action: Selector("didPanToDismiss:"))
             panToDismiss.delegate = self
             addGestureRecognizer(panToDismiss)
             
@@ -124,7 +124,7 @@ final class ImageViewController: UIViewController {
             addSubview(scrollView)
             
             doubleTap.numberOfTapsRequired = 2
-            doubleTap.addTarget(self, action: "didDoubleTap:")
+            doubleTap.addTarget(self, action: Selector("didDoubleTap:"))
             scrollView.addGestureRecognizer(doubleTap)
             
             // Many images include transparent regions that are assumed to reveal a vaguely white background.
@@ -289,7 +289,7 @@ final class ImageViewController: UIViewController {
         }
         
         func hideOverlayAfterDelay() {
-            hideOverlayTimer = NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: "hideOverlayTimerDidFire:", userInfo: nil, repeats: false)
+            hideOverlayTimer = NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(RootView.hideOverlayTimerDidFire(_:)), userInfo: nil, repeats: false)
         }
         
         @objc private func hideOverlayTimerDidFire(timer: NSTimer) {
@@ -380,8 +380,8 @@ final class ImageViewController: UIViewController {
     override func loadView() {
         view = RootView()
         
-        rootView.doneButton.addTarget(self, action: "didTapDone", forControlEvents: .TouchUpInside)
-        rootView.actionButton.addTarget(self, action: "didTapAction:", forControlEvents: .TouchUpInside)
+        rootView.doneButton.addTarget(self, action: Selector("didTapDone"), forControlEvents: .TouchUpInside)
+        rootView.actionButton.addTarget(self, action: Selector("didTapAction:"), forControlEvents: .TouchUpInside)
         
         rootView.panToDismissAction = { [weak self] in self?.dismiss(); return }
     }
