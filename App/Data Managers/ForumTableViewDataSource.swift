@@ -248,7 +248,7 @@ extension Forum {
     var ancestors: AnySequence<Forum> {
         var current = parentForum
         return AnySequence {
-            return anyGenerator {
+            return AnyGenerator {
                 let next = current
                 current = current?.parentForum
                 return next
