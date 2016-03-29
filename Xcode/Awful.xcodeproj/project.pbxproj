@@ -340,6 +340,7 @@
 		8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */; };
 		8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */; };
 		8C8813A218492AC80058009E /* mac-watch.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8813A118492AC70058009E /* mac-watch.png */; };
+		8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C89FAF31CAA0F4200640F3D /* widgets.js */; };
 		8C8FA47E19AD7CA300B67AAA /* award.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47719AD7CA300B67AAA /* award.png */; };
 		8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47819AD7CA300B67AAA /* diamond-icon.png */; };
 		8C8FA48019AD7CA300B67AAA /* ik.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47919AD7CA300B67AAA /* ik.png */; };
@@ -913,6 +914,7 @@
 		8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-loading@2x.png"; sourceTree = "<group>"; };
 		8C4F06B41686C1CB003CE53C /* macinyos-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-left.png"; sourceTree = "<group>"; };
 		8C8813A118492AC70058009E /* mac-watch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mac-watch.png"; sourceTree = "<group>"; };
+		8C89FAF31CAA0F4200640F3D /* widgets.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = widgets.js; sourceTree = "<group>"; };
 		8C8FA47719AD7CA300B67AAA /* award.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = award.png; sourceTree = "<group>"; };
 		8C8FA47819AD7CA300B67AAA /* diamond-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diamond-icon.png"; sourceTree = "<group>"; };
 		8C8FA47919AD7CA300B67AAA /* ik.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ik.png; sourceTree = "<group>"; };
@@ -1039,6 +1041,7 @@
 		1190F76913BE4ECB00B9D271 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				8C89FAF31CAA0F4200640F3D /* widgets.js */,
 				1C09BFE51A09B9A5007C11F5 /* 1Password */,
 				1CE68BDA16F7C62B003D56C9 /* ONHost.h */,
 				1CE68BDB16F7C62B003D56C9 /* ONHost.m */,
@@ -2231,6 +2234,7 @@
 				1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
+				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */,
