@@ -13,7 +13,7 @@ extension CollectionType where Index: Hashable, Generator.Element: Equatable {
         var unchanged: Set<Index> = []
         do {
             var i = startIndex
-            while i != other.endIndex {
+            while i != endIndex && i != other.endIndex {
                 defer { i = i.successor() }
                 
                 if self[i] == other[i] {
