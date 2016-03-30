@@ -405,7 +405,8 @@ static AwfulInterfaceVersion CurrentInterfaceVersion = AwfulInterfaceVersion3;
          annotation:(id)annotation
 {
     if (![AwfulForumsClient client].loggedIn) return NO;
-    if ([URL.scheme caseInsensitiveCompare:@"awfulhttp"] == NSOrderedSame) {
+    if ([URL.scheme caseInsensitiveCompare:@"awfulhttp"] == NSOrderedSame
+        || [URL.scheme caseInsensitiveCompare:@"awfulhttps"] == NSOrderedSame) {
         return [self openAwfulURL:URL.awfulURL];
     }
     return [self openAwfulURL:URL];

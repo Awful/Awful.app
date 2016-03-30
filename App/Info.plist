@@ -35,6 +35,7 @@
 			<array>
 				<string>awful</string>
 				<string>awfulhttp</string>
+                <string>awfulhttps</string>
 			</array>
 		</dict>
 	</array>
