@@ -29,7 +29,12 @@ extension User {
     public var avatarURL: NSURL? {
         if let HTML = customTitleHTML {
             if let element = avatarImageElement(customTitleHTML: HTML) {
-                return NSURL(string: element.objectForKeyedSubscript("src") as! String!)
+                if let url = element.objectForKeyedSubscript("data-cfsrc") as! String! {
+                    return NSURL(string: url)
+                } else if let url = element.objectForKeyedSubscript("src") as! String! {
+                    return NSURL(string: url)
+                }
+                return nil
             }
         }
         return nil
