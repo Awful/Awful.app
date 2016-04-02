@@ -41,6 +41,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>31202</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>ImgurAnonymousAPIClientID</key>
 	<string>4db466addcb5cfc</string>
 	<key>LSApplicationQueriesSchemes</key>
