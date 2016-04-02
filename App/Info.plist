@@ -35,12 +35,12 @@
 			<array>
 				<string>awful</string>
 				<string>awfulhttp</string>
-                <string>awfulhttps</string>
+				<string>awfulhttps</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>31201</string>
+	<string>31202</string>
 	<key>ImgurAnonymousAPIClientID</key>
 	<string>4db466addcb5cfc</string>
 	<key>LSApplicationQueriesSchemes</key>
