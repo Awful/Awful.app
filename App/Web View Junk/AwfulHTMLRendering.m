@@ -102,7 +102,7 @@ void RemoveSpoilerStylingAndEvents(HTMLDocument *document)
 
 void UseHTML5VimeoPlayer(HTMLDocument *document)
 {
-    for (HTMLElement *param in [document nodesMatchingSelector:@"div.bbcode_video object param[name='movie'][value^='http://vimeo.com/']"]) {
+    for (HTMLElement *param in [document nodesMatchingSelector:@"div.bbcode_video object param[name='movie'][value*='://vimeo.com/']"]) {
         NSURL *sourceURL = [NSURL URLWithString:param[@"value"]];
         NSString *clipID = sourceURL.queryDictionary[@"clip_id"];
         if (clipID.length == 0) continue;
@@ -111,7 +111,7 @@ void UseHTML5VimeoPlayer(HTMLDocument *document)
         HTMLElement *div = object.parentElement;
         if (![div.tagName isEqualToString:@"div"] || ![div hasClass:@"bbcode_video"]) continue;
         
-        NSURLComponents *iframeSource = [NSURLComponents componentsWithString:@"http://player.vimeo.com/video/"];
+        NSURLComponents *iframeSource = [NSURLComponents componentsWithString:@"https://player.vimeo.com/video/"];
         iframeSource.path = [iframeSource.path stringByAppendingPathComponent:clipID];
         iframeSource.query = @"byline=0&portrait=0";
         HTMLElement *iframe = [[HTMLElement alloc] initWithTagName:@"iframe" attributes:@{ @"src": iframeSource.URL.absoluteString,
