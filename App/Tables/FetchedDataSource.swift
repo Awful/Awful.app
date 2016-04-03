@@ -17,7 +17,7 @@ class FetchedDataSource: NSObject {
             try fetchedResultsController.performFetch()
         }
         catch {
-            NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] fetch did fail: \(error)")
+            NSLog("[\(Mirror(reflecting: self)) \(#function)] fetch did fail: \(error)")
         }
     }
     
@@ -95,7 +95,7 @@ extension FetchedDataSource: NSFetchedResultsControllerDelegate {
             case .Delete:
                 delegate.dataSource?(self, didRemoveSections: NSIndexSet(index: sectionIndex))
             case .Update, .Move:
-                NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] unexpected change type \(change.rawValue)")
+                NSLog("[\(Mirror(reflecting: self)) \(#function)] unexpected change type \(change.rawValue)")
             }
         }
     }

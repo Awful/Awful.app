@@ -268,7 +268,7 @@ private func linkifySelection(tree: CompositionMenuTree) {
         detector = try NSDataDetector(types: NSTextCheckingType.Link.rawValue)
     }
     catch {
-        return NSLog("[\(__FUNCTION__)] error creating link data detector: \(error)")
+        return NSLog("[\(#function)] error creating link data detector: \(error)")
     }
     
     let textView = tree.textView

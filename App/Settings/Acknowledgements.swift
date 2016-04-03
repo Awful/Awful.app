@@ -56,7 +56,7 @@ final class AcknowledgementsViewController: AwfulViewController {
         let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.awful_hexCode)'; s.color='\(textColor.awful_hexCode)'"
         webView.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
-                NSLog("%@ error running script `%@` in acknowledgements screen: %@", __FUNCTION__, js, error)
+                NSLog("%@ error running script `%@` in acknowledgements screen: %@", #function, js, error)
             }
         })
     }

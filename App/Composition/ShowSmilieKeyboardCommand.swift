@@ -72,7 +72,7 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
                 try smilie.managedObjectContext!.save()
             }
             catch {
-                NSLog("[\(Mirror(reflecting:self)) \(__FUNCTION__)] error saving: \(error)")
+                NSLog("[\(Mirror(reflecting:self)) \(#function)] error saving: \(error)")
             }
         }
     }

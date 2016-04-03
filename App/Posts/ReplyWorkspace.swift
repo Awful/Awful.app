@@ -231,7 +231,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
             }
         }
         
-        NSLog("[%@ %@] failing intentionally as no saved draft was found", self.description(), __FUNCTION__)
+        NSLog("[%@ %@] failing intentionally as no saved draft was found", self.description(), #function)
         return nil
     }
     

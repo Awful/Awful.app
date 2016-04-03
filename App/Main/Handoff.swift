@@ -91,14 +91,14 @@ extension UIDevice {
 private func modelIdentifier() -> String {
     var size: Int = 0
     if sysctlbyname("hw.machine", nil, &size, nil, 0) != 0 {
-        NSLog("%@ failed to get buffer size", __FUNCTION__)
+        NSLog("%@ failed to get buffer size", #function)
         return ""
     }
     
     let bufferSize = Int(size) + 1
     let buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
     if sysctlbyname("hw.machine", buffer, &size, nil, 0) != 0 {
-        NSLog("%@ failed to get model identifier", __FUNCTION__)
+        NSLog("%@ failed to get model identifier", #function)
         buffer.dealloc(bufferSize)
         return ""
     }

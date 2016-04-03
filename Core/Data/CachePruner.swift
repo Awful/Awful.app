@@ -34,7 +34,7 @@ final class CachePruner: NSOperation {
                     candidateObjectIDs += result
                 }
                 catch {
-                    NSLog("[\(Mirror(reflecting: self)) \(__FUNCTION__)] error fetching: \(error)")
+                    NSLog("[\(Mirror(reflecting: self)) \(#function)] error fetching: \(error)")
                 }
             }
             

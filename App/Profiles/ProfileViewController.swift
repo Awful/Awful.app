@@ -85,7 +85,7 @@ final class ProfileViewController: AwfulViewController {
         
         AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, profile) in
             if let error = error {
-                NSLog("[\(Mirror(reflecting:self)) \(__FUNCTION__)] error fetching user profile for \(profile.user.username) (ID \(profile.user.userID)): \(error)")
+                NSLog("[\(Mirror(reflecting:self)) \(#function)] error fetching user profile for \(profile.user.username) (ID \(profile.user.userID)): \(error)")
             } else {
                 self.renderProfile()
             }
@@ -99,7 +99,7 @@ final class ProfileViewController: AwfulViewController {
             HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
         }
         catch {
-            NSLog("[\(Mirror(reflecting:self)) \(__FUNCTION__)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
+            NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
         }
         webView.loadHTMLString(HTML, baseURL: baseURL)
     }
