@@ -286,7 +286,6 @@
 		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
-		1CCE01E91CAA0EEF004B59C5 /* widgets.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CCE01E81CAA0EEF004B59C5 /* widgets.js */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
 		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
@@ -816,7 +815,6 @@
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
 		1CC780271612D9DE002AF958 /* PostsPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsPageViewController.h; sourceTree = "<group>"; };
 		1CC780281612D9DE002AF958 /* PostsPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageViewController.m; sourceTree = "<group>"; };
-		1CCE01E81CAA0EEF004B59C5 /* widgets.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = widgets.js; path = ../../Vendor/widgets.js; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -1467,7 +1465,6 @@
 				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
 				1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */,
-				1CCE01E81CAA0EEF004B59C5 /* widgets.js */,
 			);
 			path = "Web View Junk";
 			sourceTree = "<group>";
@@ -2237,7 +2234,6 @@
 				1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
-				1CCE01E91CAA0EEF004B59C5 /* widgets.js in Resources */,
 				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
