@@ -6,7 +6,6 @@
 @import AssetsLibrary;
 #import "AwfulFrameworkCategories.h"
 #import "AwfulTextAttachment.h"
-#import "ComposeTextView.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 #import <MRProgress/MRProgressOverlayView.h>
 #import "UploadImageAttachments.h"
