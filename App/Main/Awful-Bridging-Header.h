@@ -3,6 +3,7 @@
 #import "AwfulForumTweaks.h"
 #import "AwfulIconActionCell.h"
 #import "AwfulIconActionItem.h"
+#import "AwfulImageURLProtocol.h"
 #import "AwfulNavigationController.h"
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulRefreshMinder.h"

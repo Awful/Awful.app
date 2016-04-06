@@ -4,7 +4,6 @@
 
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 
@@ -13,7 +12,7 @@
 @property (strong, nonatomic) ThreadCell *threadCell;
 
 @property (strong, nonatomic) NSOperation *networkOperation;
-@property (strong, nonatomic) AwfulSelfHostingAttachmentInterpolator *imageInterpolator;
+@property (strong, nonatomic) SelfHostingAttachmentInterpolator *imageInterpolator;
 
 @property (strong, nonatomic) Post *fakePost;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -60,7 +59,7 @@
 {
     if (self.fakePost || self.networkOperation) return;
     
-    self.imageInterpolator = [AwfulSelfHostingAttachmentInterpolator new];
+    self.imageInterpolator = [SelfHostingAttachmentInterpolator new];
     NSString *interpolatedBBcode = [self.imageInterpolator interpolateImagesInString:self.BBcode];
     __weak __typeof__(self) weakSelf = self;
     self.networkOperation = [[AwfulForumsClient client] previewOriginalPostForThreadInForum:self.forum withBBcode:interpolatedBBcode andThen:^(NSError *error, NSString *postHTML) {

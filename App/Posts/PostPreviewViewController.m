@@ -7,7 +7,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
-#import "AwfulSelfHostingAttachmentInterpolator.h"
 #import "AwfulSettings.h"
 #import "AwfulTextAttachment.h"
 #import "ComposeTextView.h"
@@ -23,7 +22,7 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (strong, nonatomic) AwfulSelfHostingAttachmentInterpolator *imageInterpolator;
+@property (strong, nonatomic) SelfHostingAttachmentInterpolator *imageInterpolator;
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) Post *fakePost;
@@ -111,7 +110,7 @@
 {
     if (self.fakePost || self.networkOperation) return;
     
-    self.imageInterpolator = [AwfulSelfHostingAttachmentInterpolator new];
+    self.imageInterpolator = [SelfHostingAttachmentInterpolator new];
     NSString *interpolatedBBcode = [self.imageInterpolator interpolateImagesInString:self.BBcode];
     __weak __typeof__(self) weakSelf = self;
     void (^callback)() = ^(NSError *error, NSString *postHTML) {
