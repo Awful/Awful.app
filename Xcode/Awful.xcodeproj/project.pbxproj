@@ -85,13 +85,13 @@
 		1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4DB1A94C7260045DDF7 /* Errors.swift */; };
 		1C14A4E91A94CCEA0045DDF7 /* NSURLQueryDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4EA1A94CCEA0045DDF7 /* NSURLQueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */; };
+		1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
-		1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C270ABD16E0773300883DAA /* AwfulComposeField.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
 		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
 		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
@@ -515,6 +515,7 @@
 		1C14A4DB1A94C7260045DDF7 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURLQueryDictionary.h; sourceTree = "<group>"; };
 		1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionary.m; sourceTree = "<group>"; };
+		1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeField.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -525,8 +526,6 @@
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
 		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
 		1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextViewController.m; sourceTree = "<group>"; };
-		1C270ABC16E0773300883DAA /* AwfulComposeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulComposeField.h; sourceTree = "<group>"; };
-		1C270ABD16E0773300883DAA /* AwfulComposeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulComposeField.m; sourceTree = "<group>"; };
 		1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionItem.h; sourceTree = "<group>"; };
 		1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulIconActionItem.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1C28B3571729F38400254EE7 /* AwfulIconActionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionCell.h; sourceTree = "<group>"; };
@@ -1753,18 +1752,17 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
-				1C270ABC16E0773300883DAA /* AwfulComposeField.h */,
-				1C270ABD16E0773300883DAA /* AwfulComposeField.m */,
 				1CD82F431948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.h */,
 				1CD82F441948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m */,
 				1C5B8BF118591C7600FDBCCE /* AwfulTextAttachment.h */,
 				1C5B8BF218591C7600FDBCCE /* AwfulTextAttachment.m */,
+				1CC256B81A3AA206003FA7A8 /* CloseBBcodeTagCommand.h */,
+				1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */,
+				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1CBC74AF181A4DC30076234E /* ComposeTextView.h */,
 				1CBC74B0181A4DC30076234E /* ComposeTextView.m */,
 				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
 				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
-				1CC256B81A3AA206003FA7A8 /* CloseBBcodeTagCommand.h */,
-				1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */,
 				1C7487EF16A88BAD0068B8A3 /* CompositionInputAccessoryView.h */,
 				1C7487F016A88BAD0068B8A3 /* CompositionInputAccessoryView.m */,
 				1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */,
@@ -2625,7 +2623,6 @@
 				1C414F33181F79F400813EE2 /* MessageComposeViewController.m in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C01B447197DA7120075AF5B /* AwfulSettingsUbiquitousThemesController.m in Sources */,
-				1C270ABE16E0773300883DAA /* AwfulComposeField.m in Sources */,
 				1C9FDAFF16E486A600C665B5 /* AwfulThreadTagPickerCell.m in Sources */,
 				1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
@@ -2636,6 +2633,7 @@
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
+				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CD82F451948230B00B0C5BD /* AwfulSelfHostingAttachmentInterpolator.m in Sources */,

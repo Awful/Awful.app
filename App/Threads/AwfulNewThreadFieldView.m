@@ -4,6 +4,8 @@
 
 #import "AwfulNewThreadFieldView.h"
 
+#import "Awful-Swift.h"
+
 @implementation AwfulNewThreadFieldView
 {
     UIView *_separator;
@@ -18,7 +20,7 @@
         _threadTagButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_threadTagButton];
         
-        _subjectField = [AwfulComposeField new];
+        _subjectField = [ComposeField new];
         _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_subjectField];
         

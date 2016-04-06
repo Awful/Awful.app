@@ -4,6 +4,8 @@
 
 #import "AwfulNewPrivateMessageFieldView.h"
 
+#import "Awful-Swift.h"
+
 @implementation AwfulNewPrivateMessageFieldView
 {
     UIView *_topSeparator;
@@ -19,7 +21,7 @@
     _threadTagButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_threadTagButton];
     
-    _toField = [AwfulComposeField new];
+    _toField = [ComposeField new];
     _toField.translatesAutoresizingMaskIntoConstraints = NO;
     _toField.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _toField.textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -30,7 +32,7 @@
     _topSeparator.backgroundColor = [UIColor lightGrayColor];
     [self addSubview:_topSeparator];
     
-    _subjectField = [AwfulComposeField new];
+    _subjectField = [ComposeField new];
     _subjectField.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_subjectField];
     
