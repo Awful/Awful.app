@@ -3,13 +3,14 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "UploadImageAttachments.h"
-#import "AwfulTextAttachment.h"
 #import <ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.h>
 @import Photos;
 
+#import "Awful-Swift.h"
+
 @interface ImageTag : NSObject
 
-@property (nonatomic) AwfulTextAttachment *attachment;
+@property (nonatomic) TextAttachment *attachment;
 @property (nonatomic) NSRange range;
 @property (nonatomic) CGSize imageSize;
 @property (nonatomic) NSURL *URL;
@@ -22,7 +23,9 @@
 
 - (NSString *)BBcode
 {
-    NSString *t = ImageSizeRequiresThumbnailing(self.imageSize) ? @"t" : @"";
+    CGSize maxSize = [TextAttachment requiresThumbnailImageSize];
+    BOOL requiresThumbnailing = self.imageSize.width > maxSize.width || self.imageSize.height > maxSize.height;
+    NSString *t = requiresThumbnailing ? @"t" : @"";
     return [NSString stringWithFormat:@"[%@img]%@[/%@img]", t, self.URL.absoluteString, t];
 }
 
@@ -36,9 +39,9 @@ static NSArray * AttachmentsInString(NSAttributedString *string)
                        options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
                     usingBlock:^(NSTextAttachment *attachment, NSRange range, BOOL *stop)
      {
-         if ([attachment isKindOfClass:[AwfulTextAttachment class]]) {
+         if ([attachment isKindOfClass:[TextAttachment class]]) {
              ImageTag *tag = [ImageTag new];
-             tag.attachment = (AwfulTextAttachment *)attachment;
+             tag.attachment = (TextAttachment *)attachment;
              tag.range = range;
              [attachments addObject:tag];
          }

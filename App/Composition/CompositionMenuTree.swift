@@ -89,7 +89,7 @@ final class CompositionMenuTree: NSObject {
         let font = textView.font
         let textColor = textView.textColor
         
-        let attachment = AwfulTextAttachment(image: image, assetURL: assetURL)
+        let attachment = TextAttachment(image: image, assetURL: assetURL)
         let string = NSAttributedString(attachment: attachment)
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
         textView.textStorage.replaceCharactersInRange(textView.selectedRange, withAttributedString: string)

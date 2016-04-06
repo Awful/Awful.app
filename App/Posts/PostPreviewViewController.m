@@ -8,7 +8,6 @@
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulSettings.h"
-#import "AwfulTextAttachment.h"
 #import <GRMustache/GRMustache.h>
 #import "PostViewModel.h"
 #import "Awful-Swift.h"
