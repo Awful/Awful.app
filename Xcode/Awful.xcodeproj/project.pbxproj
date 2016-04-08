@@ -93,6 +93,7 @@
 		1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */; };
 		1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */; };
 		1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */; };
+		1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -221,7 +222,6 @@
 		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
-		1C89A79418AF4DA500D75854 /* EmptyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79318AF4DA500D75854 /* EmptyViewController.m */; };
 		1C89A79E18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
@@ -523,6 +523,7 @@
 		1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshMinder.swift; sourceTree = "<group>"; };
 		1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionCell.swift; sourceTree = "<group>"; };
 		1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionItem.swift; sourceTree = "<group>"; };
+		1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -704,8 +705,6 @@
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
-		1C89A79218AF4DA500D75854 /* EmptyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmptyViewController.h; sourceTree = "<group>"; };
-		1C89A79318AF4DA500D75854 /* EmptyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmptyViewController.m; sourceTree = "<group>"; };
 		1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+AwfulConvenience.h"; sourceTree = "<group>"; };
 		1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+AwfulConvenience.m"; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
@@ -1020,8 +1019,7 @@
 				1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */,
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
-				1C89A79218AF4DA500D75854 /* EmptyViewController.h */,
-				1C89A79318AF4DA500D75854 /* EmptyViewController.m */,
+				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
 				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
 				1190F7F213BE4EDA00B9D271 /* main.m */,
@@ -2555,7 +2553,6 @@
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
 				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,
-				1C89A79418AF4DA500D75854 /* EmptyViewController.m in Sources */,
 				1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */,
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
@@ -2627,6 +2624,7 @@
 				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CE68BDC16F7C62B003D56C9 /* ONHost.m in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
+				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1CE8FDFE1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,

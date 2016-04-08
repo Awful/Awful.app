@@ -4,7 +4,6 @@
 
 #import "AwfulURLRouter.h"
 #import "AwfulForumsClient.h"
-#import "EmptyViewController.h"
 #import <JLRoutes/JLRoutes.h>
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostsPageViewController.h"

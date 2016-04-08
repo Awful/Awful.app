@@ -10,7 +10,6 @@
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulViewController.h"
 #import "CloseBBcodeTagCommand.h"
-#import "EmptyViewController.h"
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"
 #import "NewMessageChecker.h"
