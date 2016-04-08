@@ -143,7 +143,7 @@
     NSMutableArray *items = [NSMutableArray new];
     User *user = self.privateMessage.from;
     
-	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+	[items addObject:[IconActionItem itemWithAction:IconActionUserProfile block:^{
         ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
@@ -152,7 +152,7 @@
         }
 	}]];
     
-	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+	[items addObject:[IconActionItem itemWithAction:IconActionRapSheet block:^{
         RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];

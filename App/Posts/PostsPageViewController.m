@@ -412,7 +412,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         InAppActionViewController *actionViewController = [InAppActionViewController new];
         actionViewController.title = self.title;
         NSMutableArray *items = [NSMutableArray new];
-        AwfulIconActionItem *copyURLItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+        IconActionItem *copyURLItem = [IconActionItem itemWithAction:IconActionCopyURL block:^{
             NSURLComponents *components = [NSURLComponents componentsWithString:@"https://forums.somethingawful.com/showthread.php"];
             NSMutableArray *queryParts = [NSMutableArray new];
             [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
@@ -427,7 +427,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         }];
         copyURLItem.title = @"Copy URL";
         [items addObject:copyURLItem];
-        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeVote action:^{
+        [items addObject:[IconActionItem itemWithAction:IconActionVote block:^{
             UIAlertController *actionSheet = [UIAlertController actionSheet];
             for (int i = 5; i >= 1; i--) {
                 [actionSheet addActionWithTitle:[@(i) stringValue] handler:^{
@@ -454,13 +454,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
             actionSheet.popoverPresentationController.barButtonItem = sender;
         }]];
         
-        AwfulIconActionItemType bookmarkItemType;
+        IconAction bookmarkItemType;
         if (self.thread.bookmarked) {
-            bookmarkItemType = AwfulIconActionItemTypeRemoveBookmark;
+            bookmarkItemType = IconActionRemoveBookmark;
         } else {
-            bookmarkItemType = AwfulIconActionItemTypeAddBookmark;
+            bookmarkItemType = IconActionAddBookmark;
         }
-        [items addObject:[AwfulIconActionItem itemWithType:bookmarkItemType action:^{
+        [items addObject:[IconActionItem itemWithAction:bookmarkItemType block:^{
             [[AwfulForumsClient client] setThread:self.thread
                                      isBookmarked:!self.thread.bookmarked
                                           andThen:^(NSError *error)
@@ -747,13 +747,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     InAppActionViewController *actionViewController = [InAppActionViewController new];
     NSMutableArray *items = [NSMutableArray new];
     
-	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeUserProfile action:^{
+	[items addObject:[IconActionItem itemWithAction:IconActionUserProfile block:^{
         ProfileViewController *profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self presentViewController:[profileViewController enclosingNavigationController] animated:YES completion:nil];
 	}]];
     
 	if (!self.author) {
-		[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSingleUsersPosts action:^{
+		[items addObject:[IconActionItem itemWithAction:IconActionSingleUsersPosts block:^{
             PostsPageViewController *postsView = [[PostsPageViewController alloc] initWithThread:self.thread author:user];
             postsView.restorationIdentifier = @"Just their posts";
             [postsView loadPage:1 updatingCache:YES updatingLastReadPost:YES];
@@ -763,7 +763,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
 	if ([AwfulSettings sharedSettings].canSendPrivateMessages && user.canReceivePrivateMessages) {
         if (![user.userID isEqual:[AwfulSettings sharedSettings].userID]) {
-            [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeSendPrivateMessage action:^{
+            [items addObject:[IconActionItem itemWithAction:IconActionSendPrivateMessage block:^{
                 self.messageViewController = [[MessageComposeViewController alloc] initWithRecipient:user];
                 self.messageViewController.delegate = self;
                 self.messageViewController.restorationIdentifier = @"New PM from posts view";
@@ -772,7 +772,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         }
 	}
     
-	[items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeRapSheet action:^{
+	[items addObject:[IconActionItem itemWithAction:IconActionRapSheet block:^{
         RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
@@ -807,7 +807,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     NSMutableArray *items = [NSMutableArray new];
     __weak __typeof__(self) weakSelf = self;
     
-    AwfulIconActionItem *shareItem = [AwfulIconActionItem itemWithType:AwfulIconActionItemTypeCopyURL action:^{
+    IconActionItem *shareItem = [IconActionItem itemWithAction:IconActionCopyURL block:^{
         NSURLComponents *components = [NSURLComponents componentsWithString:@"https://forums.somethingawful.com/showthread.php"];
         NSMutableArray *queryParts = [NSMutableArray new];
         [queryParts addObject:[NSString stringWithFormat:@"threadid=%@", self.thread.threadID]];
@@ -836,7 +836,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     [items addObject:shareItem];
     
     if (!self.author) {
-        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeMarkReadUpToHere action:^{
+        [items addObject:[IconActionItem itemWithAction:IconActionMarkReadUpToHere block:^{
             [[AwfulForumsClient client] markThreadReadUpToPost:post andThen:^(NSError *error) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
@@ -857,7 +857,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     }
     
     if (post.editable) {
-        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeEditPost action:^{
+        [items addObject:[IconActionItem itemWithAction:IconActionEditPost block:^{
             [[AwfulForumsClient client] findBBcodeContentsWithPost:post andThen:^(NSError *error, NSString *text) {
                 __typeof__(self) self = weakSelf;
                 if (error) {
@@ -872,7 +872,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     }
     
     if (!self.thread.closed) {
-        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeQuotePost action:^{
+        [items addObject:[IconActionItem itemWithAction:IconActionQuotePost block:^{
             if (!self.replyWorkspace) {
                 self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
                 self.replyWorkspace.completion = self.replyCompletionBlock;
@@ -893,13 +893,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         }]];
     }
     
-    [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeReportPost action:^{
+    [items addObject:[IconActionItem itemWithAction:IconActionReportPost block:^{
         ReportPostViewController *report = [[ReportPostViewController alloc] initWithPost:post];
         [self presentViewController:[report enclosingNavigationController] animated:YES completion:nil];
     }]];
     
     if (self.author) {
-        [items addObject:[AwfulIconActionItem itemWithType:AwfulIconActionItemTypeShowInThread action:^{
+        [items addObject:[IconActionItem itemWithAction:IconActionShowInThread block:^{
             // This will add the thread to the navigation stack, giving us thread->author->thread.
             NSString *url = [NSString stringWithFormat:@"awful://posts/%@", post.postID];
             [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];

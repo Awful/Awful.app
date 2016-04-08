@@ -9,7 +9,7 @@ An InAppActionViewController is a modal view controller offering various actions
 */
 class InAppActionViewController: AwfulViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverPresentationControllerDelegate {
     
-    var items: [AwfulIconActionItem] = [] {
+    var items: [IconActionItem] = [] {
         didSet {
             if isViewLoaded() {
                 collectionView.reloadData()
@@ -136,7 +136,7 @@ extension InAppActionViewController {
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let item = items[indexPath.item]
-        dismissViewControllerAnimated(true, completion: item.action)
+        dismissViewControllerAnimated(true, completion: item.block)
     }
     
 }

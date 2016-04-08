@@ -9,10 +9,10 @@ extension InAppActionViewController {
     convenience init(thread: Thread, presentingViewController viewController: UIViewController) {
         self.init()
         
-        var items = [AwfulIconActionItem]()
+        var items = [IconActionItem]()
         
-        func jumpToPageItem(itemType: AwfulIconActionItemType) -> AwfulIconActionItem {
-            return AwfulIconActionItem(type: itemType) {
+        func jumpToPageItem(itemType: IconAction) -> IconActionItem {
+            return IconActionItem(itemType) {
                 let postsViewController = PostsPageViewController(thread: thread)
                 postsViewController.restorationIdentifier = "Posts"
                 let page = itemType == .JumpToLastPage ? AwfulThreadPage.Last.rawValue : 1
@@ -23,8 +23,8 @@ extension InAppActionViewController {
         items.append(jumpToPageItem(.JumpToFirstPage))
         items.append(jumpToPageItem(.JumpToLastPage))
         
-        let bookmarkItemType: AwfulIconActionItemType = thread.bookmarked ? .RemoveBookmark : .AddBookmark
-        items.append(AwfulIconActionItem(type: bookmarkItemType) { [weak viewController] in
+        let bookmarkItemType: IconAction = thread.bookmarked ? .RemoveBookmark : .AddBookmark
+        items.append(IconActionItem(bookmarkItemType) { [weak viewController] in
             AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: !thread.bookmarked) { error in
                 if let error = error {
                     let alert = UIAlertController(networkError: error, handler: nil)
@@ -35,7 +35,7 @@ extension InAppActionViewController {
             })
         
         if let author = thread.author {
-            items.append(AwfulIconActionItem(type: .UserProfile) {
+            items.append(IconActionItem(.UserProfile) {
                 let profile = ProfileViewController(user: author)
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     viewController.presentViewController(profile.enclosingNavigationController, animated: true, completion: nil)
@@ -45,7 +45,7 @@ extension InAppActionViewController {
                 })
         }
         
-        items.append(AwfulIconActionItem(type: .CopyURL) {
+        items.append(IconActionItem(.CopyURL) {
             if let URL = NSURL(string: "https://forums.somethingawful.com/showthread.php?threadid=\(thread.threadID)") {
                 AwfulSettings.sharedSettings().lastOfferedPasteboardURL = URL.absoluteString
                 UIPasteboard.generalPasteboard().awful_URL = URL
@@ -53,7 +53,7 @@ extension InAppActionViewController {
             })
         
         if thread.beenSeen {
-            items.append(AwfulIconActionItem(type: .MarkAsUnread) { [weak viewController] in
+            items.append(IconActionItem(.MarkAsUnread) { [weak viewController] in
                 let oldSeen = thread.seenPosts
                 thread.seenPosts = 0
                 AwfulForumsClient.sharedClient().markThreadUnread(thread) { error in
