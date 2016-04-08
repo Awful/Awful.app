@@ -61,7 +61,7 @@ class InAppActionViewController: AwfulViewController, UICollectionViewDataSource
     
     override func loadView() {
         super.loadView()
-        collectionView.registerClass(AwfulIconActionCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.registerClass(IconActionCell.self, forCellWithReuseIdentifier: cellIdentifier)
     }
     
     override func viewDidLoad() {
@@ -123,7 +123,7 @@ extension InAppActionViewController {
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let item = items[indexPath.item]
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as! AwfulIconActionCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as! IconActionCell
         cell.titleLabel.text = item.title
         cell.titleLabel.textColor = theme["sheetTextColor"]
         cell.iconImageView.image = item.icon

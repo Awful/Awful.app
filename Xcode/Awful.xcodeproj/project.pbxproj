@@ -91,6 +91,7 @@
 		1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */; };
 		1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */; };
 		1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */; };
+		1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -98,7 +99,6 @@
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */; };
-		1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */; };
 		1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */; };
 		1C3447D2174D9B01007377C5 /* AwfulThreadTagButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447D1174D9B01007377C5 /* AwfulThreadTagButton.m */; };
 		1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3447E0175D9991007377C5 /* PostViewModel.m */; };
@@ -521,6 +521,7 @@
 		1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextAttachment.swift; sourceTree = "<group>"; };
 		1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionInputAccessoryView.swift; sourceTree = "<group>"; };
 		1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshMinder.swift; sourceTree = "<group>"; };
+		1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionCell.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -533,8 +534,6 @@
 		1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextViewController.m; sourceTree = "<group>"; };
 		1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionItem.h; sourceTree = "<group>"; };
 		1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AwfulIconActionItem.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1C28B3571729F38400254EE7 /* AwfulIconActionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulIconActionCell.h; sourceTree = "<group>"; };
-		1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulIconActionCell.m; sourceTree = "<group>"; };
 		1C3447C6174D7284007377C5 /* AwfulThreadTagView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagView.h; sourceTree = "<group>"; };
 		1C3447C7174D7284007377C5 /* AwfulThreadTagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagView.m; sourceTree = "<group>"; };
 		1C3447D0174D9B01007377C5 /* AwfulThreadTagButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagButton.h; sourceTree = "<group>"; };
@@ -1197,10 +1196,9 @@
 		1C28B34A1729DC9700254EE7 /* In-App Actions */ = {
 			isa = PBXGroup;
 			children = (
-				1C28B3571729F38400254EE7 /* AwfulIconActionCell.h */,
-				1C28B3581729F38400254EE7 /* AwfulIconActionCell.m */,
 				1C28B34E1729DDDA00254EE7 /* AwfulIconActionItem.h */,
 				1C28B34F1729DDDA00254EE7 /* AwfulIconActionItem.m */,
+				1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */,
 				1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */,
 				1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */,
 				1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */,
@@ -2603,6 +2601,7 @@
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
 				1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */,
+				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
@@ -2642,7 +2641,6 @@
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
-				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
 				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
