@@ -78,9 +78,9 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
                 self?.tableView.tableHeaderView = self!.filterButton
                 
                 if let forum = self?.forum where self?.filterThreadTag == nil {
-                    AwfulRefreshMinder.sharedMinder().didFinishRefreshingForum(forum)
+                    RefreshMinder.sharedMinder.didRefreshForum(forum)
                 } else if let forum = self?.forum {
-                    AwfulRefreshMinder.sharedMinder().didFinishRefreshingFilteredForum(forum)
+                    RefreshMinder.sharedMinder.didRefreshFilteredForum(forum)
                 }
                     
                 self?.updateComposeBarButtonItem()
@@ -133,9 +133,9 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         
         let isTimeToRefresh: Bool
         if filterThreadTag == nil {
-            isTimeToRefresh = AwfulRefreshMinder.sharedMinder().shouldRefreshForum(forum)
+            isTimeToRefresh = RefreshMinder.sharedMinder.shouldRefreshForum(forum)
         } else {
-            isTimeToRefresh = AwfulRefreshMinder.sharedMinder().shouldRefreshFilteredForum(forum)
+            isTimeToRefresh = RefreshMinder.sharedMinder.shouldRefreshFilteredForum(forum)
         }
         if AwfulForumsClient.sharedClient().reachable &&
             (isTimeToRefresh || dataManager.contents.isEmpty)
@@ -285,7 +285,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
             filterThreadTag = forum.threadTags.array.first { ($0 as! ThreadTag).imageName == imageName } as! ThreadTag?
         }
         
-        AwfulRefreshMinder.sharedMinder().forgetForum(forum)
+        RefreshMinder.sharedMinder.forgetForum(forum)
         updateFilterButton()
         
         let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)

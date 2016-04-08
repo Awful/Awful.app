@@ -90,6 +90,7 @@
 		1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */; };
 		1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */; };
 		1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */; };
+		1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -267,7 +268,6 @@
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CB3CEBB19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
-		1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */; };
 		1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* MessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */; };
 		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
@@ -520,6 +520,7 @@
 		1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextView.swift; sourceTree = "<group>"; };
 		1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextAttachment.swift; sourceTree = "<group>"; };
 		1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionInputAccessoryView.swift; sourceTree = "<group>"; };
+		1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshMinder.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -778,8 +779,6 @@
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
 		1CB3CEB919098C8400C27942 /* AwfulWaffleimagesURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulWaffleimagesURLProtocol.h; sourceTree = "<group>"; };
 		1CB3CEBA19098C8400C27942 /* AwfulWaffleimagesURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulWaffleimagesURLProtocol.m; sourceTree = "<group>"; };
-		1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulRefreshMinder.h; sourceTree = "<group>"; };
-		1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulRefreshMinder.m; sourceTree = "<group>"; };
 		1CB6010916D826F000CBEE22 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		1CB6010A16D826F000CBEE22 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* NewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMessageChecker.h; sourceTree = "<group>"; };
@@ -1504,9 +1503,8 @@
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
 			isa = PBXGroup;
 			children = (
-				1CB5DB5018F1E27F008FBFA5 /* AwfulRefreshMinder.h */,
-				1CB5DB5118F1E27F008FBFA5 /* AwfulRefreshMinder.m */,
 				83410EF119A582B8002CD019 /* DateFormatters.swift */,
+				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 			);
 			path = Dates;
 			sourceTree = "<group>";
@@ -2535,7 +2533,6 @@
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
-				1CB5DB5218F1E27F008FBFA5 /* AwfulRefreshMinder.m in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
@@ -2643,6 +2640,7 @@
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C28B3501729DDDA00254EE7 /* AwfulIconActionItem.m in Sources */,
+				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				1C28B3591729F38400254EE7 /* AwfulIconActionCell.m in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,

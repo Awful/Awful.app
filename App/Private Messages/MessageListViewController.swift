@@ -79,7 +79,7 @@ final class MessageListViewController: AwfulTableViewController {
             return refresh()
         }
         
-        if AwfulRefreshMinder.sharedMinder().shouldRefreshPrivateMessagesInbox() {
+        if RefreshMinder.sharedMinder.shouldRefresh(.PrivateMessagesInbox) {
             return refresh()
         }
     }
@@ -94,7 +94,7 @@ final class MessageListViewController: AwfulTableViewController {
                     self?.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
-                AwfulRefreshMinder.sharedMinder().didFinishRefreshingPrivateMessagesInbox()
+                RefreshMinder.sharedMinder.didRefresh(.PrivateMessagesInbox)
             }
             self?.refreshControl?.endRefreshing()
         }

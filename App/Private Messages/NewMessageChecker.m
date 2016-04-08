@@ -4,8 +4,9 @@
 
 #import "NewMessageChecker.h"
 #import "AwfulForumsClient.h"
-#import "AwfulRefreshMinder.h"
 @import UIKit;
+
+#import "Awful-Swift.h"
 
 @interface NewMessageChecker ()
 
@@ -83,7 +84,7 @@ static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
 
 - (void)startTimer
 {
-    NSTimeInterval interval = [[[AwfulRefreshMinder minder] suggestedDateToRefreshNewPrivateMessages] timeIntervalSinceNow];
+    NSTimeInterval interval = [[[RefreshMinder sharedMinder] suggestedDateToRefreshNewPrivateMessages] timeIntervalSinceNow];
     _timer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(timerDidFire:) userInfo:nil repeats:NO];
 }
 
@@ -95,7 +96,7 @@ static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
 
 - (void)refreshIfNecessary
 {
-    if ([[AwfulRefreshMinder minder] shouldRefreshNewPrivateMessages]) {
+    if ([RefreshMinder sharedMinder].shouldRefreshNewPrivateMessages) {
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] countUnreadPrivateMessagesInInboxAndThen:^(NSError *error, NSInteger unreadCount) {
             __typeof__(self) self = weakSelf;
@@ -104,7 +105,7 @@ static NSString * const UnreadMessageCountKey = @"AwfulUnreadMessages";
                 return;
             }
             self.unreadCount = unreadCount;
-            [[AwfulRefreshMinder minder] didFinishRefreshingNewPrivateMessages];
+            [[RefreshMinder sharedMinder] didRefreshNewPrivateMessages];
         }];
     }
 }

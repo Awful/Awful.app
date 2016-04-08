@@ -20,7 +20,7 @@ final class ForumsTableViewController: AwfulTableViewController {
     }
     
     private func refreshIfNecessary() {
-        if AwfulRefreshMinder.sharedMinder().shouldRefreshForumList() || dataSource.isEmpty {
+        if RefreshMinder.sharedMinder.shouldRefresh(.ForumList) || dataSource.isEmpty {
             refresh()
         }
     }
@@ -28,7 +28,7 @@ final class ForumsTableViewController: AwfulTableViewController {
     private func refresh() {
         AwfulForumsClient.sharedClient().taxonomizeForumsAndThen { error, forums in
             if error == nil {
-                AwfulRefreshMinder.sharedMinder().didFinishRefreshingForumList()
+                RefreshMinder.sharedMinder.didRefresh(.ForumList)
                 self.migrateFavoriteForumsFromSettings()
             }
             self.refreshControl?.endRefreshing()

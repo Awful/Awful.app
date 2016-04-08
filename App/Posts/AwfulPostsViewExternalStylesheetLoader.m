@@ -5,8 +5,9 @@
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import <AFNetworking/AFNetworking.h>
 #import "AwfulFrameworkCategories.h"
-#import "AwfulRefreshMinder.h"
 #import "CacheHeaderCalculations.h"
+
+#import "Awful-Swift.h"
 
 @interface AwfulPostsViewExternalStylesheetLoader ()
 
@@ -73,7 +74,7 @@
 
 - (void)refreshIfNecessary
 {
-    if (![[AwfulRefreshMinder minder] shouldRefreshExternalStylesheet] || self.checkingForUpdate) return;
+    if (![RefreshMinder sharedMinder].shouldRefreshExternalStylesheet || self.checkingForUpdate) return;
     
     self.checkingForUpdate = YES;
     
@@ -95,14 +96,14 @@
         if (error) {
             NSHTTPURLResponse *response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
             if (response.statusCode == 304) {
-                [[AwfulRefreshMinder minder] didFinishRefreshingExternalStylesheet];
+                [[RefreshMinder sharedMinder] didRefreshExternalStylesheet];
             } else {
                 NSLog(@"%s error updating external stylesheet: %@", __PRETTY_FUNCTION__, error);
             }
         } else {
             [NSKeyedArchiver archiveRootObject:response toFile:self.cachedResponseURL.path];
             [self reloadCachedStylesheet];
-            [[AwfulRefreshMinder minder] didFinishRefreshingExternalStylesheet];
+            [[RefreshMinder sharedMinder] didRefreshExternalStylesheet];
             [[NSNotificationCenter defaultCenter] postNotificationName:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification object:self.stylesheet];
         }
     }];
@@ -144,7 +145,7 @@
 
 - (void)startTimer
 {
-    NSTimeInterval interval = [[[AwfulRefreshMinder minder] suggestedDateToRefreshExternalStylesheet] timeIntervalSinceNow];
+    NSTimeInterval interval = [RefreshMinder sharedMinder].suggestedDateToRefreshExternalStylesheet.timeIntervalSinceNow;
     self.updateTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(timerDidFire:) userInfo:nil repeats:NO];
 }
 

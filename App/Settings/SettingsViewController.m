@@ -7,7 +7,6 @@
 #import "AwfulAvatarLoader.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "SettingsBinding.h"
 #import "Awful-Swift.h"
@@ -103,7 +102,7 @@
 
 - (void)refreshIfNecessary
 {
-    if ([[AwfulRefreshMinder minder] shouldRefreshLoggedInUser]) {
+    if ([RefreshMinder sharedMinder].shouldRefreshLoggedInUser) {
         __weak UITableView *tableView = self.tableView;
         [[AwfulForumsClient client] learnLoggedInUserInfoAndThen:^(NSError *error, User *user) {
             if (error) {
@@ -113,7 +112,7 @@
                 [AwfulSettings sharedSettings].username = user.username;
                 [AwfulSettings sharedSettings].canSendPrivateMessages = user.canReceivePrivateMessages;
                 [tableView reloadData];
-                [[AwfulRefreshMinder minder] didFinishRefreshingLoggedInUser];
+                [[RefreshMinder sharedMinder] didRefreshLoggedInUser];
             }
         }];
     }

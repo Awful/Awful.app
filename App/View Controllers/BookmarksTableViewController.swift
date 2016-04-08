@@ -69,7 +69,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
             if error == .None {
                 self?.latestPage = page
                 
-                AwfulRefreshMinder.sharedMinder().didFinishRefreshingBookmarks()
+                RefreshMinder.sharedMinder.didRefresh(.Bookmarks)
             }
             
             self?.refreshControl?.endRefreshing()
@@ -113,7 +113,7 @@ final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPo
         becomeFirstResponder()
         
         if AwfulForumsClient.sharedClient().reachable &&
-            (dataManager.contents.isEmpty || AwfulRefreshMinder.sharedMinder().shouldRefreshBookmarks())
+            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.Bookmarks))
         {
             refresh()
             

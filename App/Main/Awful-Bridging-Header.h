@@ -6,7 +6,6 @@
 #import "AwfulImageURLProtocol.h"
 #import "AwfulNavigationController.h"
 #import "AwfulNewThreadTagObserver.h"
-#import "AwfulRefreshMinder.h"
 #import "AwfulSettings.h"
 #import "AwfulThemePicker.h"
 #import "AwfulThreadTagLoader.h"
