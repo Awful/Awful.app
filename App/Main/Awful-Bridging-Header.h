@@ -12,7 +12,7 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulViewController.h"
-#import "CompositionInputAccessoryView.h"
+#import "CloseBBcodeTagCommand.h"
 #import "EmptyViewController.h"
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"
