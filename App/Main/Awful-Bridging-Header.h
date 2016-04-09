@@ -2,7 +2,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulForumTweaks.h"
 #import "AwfulHTMLRendering.h"
-#import "AwfulImageURLProtocol.h"
 #import "AwfulJavaScript.h"
 #import "AwfulNavigationController.h"
 #import "AwfulNewThreadTagObserver.h"

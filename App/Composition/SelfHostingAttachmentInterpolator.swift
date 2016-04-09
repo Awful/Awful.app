@@ -16,7 +16,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
         string.enumerateAttribute(NSAttachmentAttributeName, inRange: NSRange(0..<string.length), options: [.LongestEffectiveRangeNotRequired, .Reverse]) { (attachment, range, stop) in
             guard let attachment = attachment as? NSTextAttachment else { return }
             let path = basePath.stringByAppendingPathComponent("\(self.URLs.count)")
-            let URL = serve(attachment: attachment, fromPath: path)
+            guard let URL = serve(attachment: attachment, fromPath: path) else { return }
             self.URLs.append(URL)
             
             let imageSize = attachment.image?.size ?? .zero
@@ -32,18 +32,21 @@ final class SelfHostingAttachmentInterpolator: NSObject {
     }
     
     deinit {
-        URLs.forEach(AwfulImageURLProtocol.stopServingImageAtURL)
+        URLs.forEach(ImageURLProtocol.stopServingImageAtURL)
     }
 }
 
-private func serve(attachment attachment: NSTextAttachment, fromPath path: String) -> NSURL {
+private func serve(attachment attachment: NSTextAttachment, fromPath path: String) -> NSURL? {
     if let attachment = attachment as? TextAttachment {
         if let assetURL = attachment.assetURL {
-            return AwfulImageURLProtocol.serveAsset(assetURL, atPath: path)
+            return ImageURLProtocol.serveAsset(assetURL, atPath: path)
         }
         
-        return AwfulImageURLProtocol.serveImage(attachment.thumbnailImage, atPath: path)
+        if let image = attachment.thumbnailImage {
+            return ImageURLProtocol.serveImage(image, atPath: path)
+        }
     }
     
-    return AwfulImageURLProtocol.serveImage(attachment.image, atPath: path)
+    guard let image = attachment.image else { return nil }
+    return ImageURLProtocol.serveImage(image, atPath: path)
 }
