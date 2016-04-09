@@ -9,7 +9,6 @@
 @import AwfulCore;
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulMinusFixURLProtocol.h"
 #import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulSettings.h"
 #import "AwfulURLRouter.h"
@@ -263,7 +262,7 @@ static void RemoveOldDataStores(void)
                                                                 diskCapacity:50 * 1024 * 1024
                                                                     diskPath:nil]];
     [NSURLProtocol registerClass:[ImageURLProtocol class]];
-    [NSURLProtocol registerClass:[AwfulMinusFixURLProtocol class]];
+    [NSURLProtocol registerClass:[MinusFixURLProtocol class]];
     [NSURLProtocol registerClass:[ResourceURLProtocol class]];
     [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
     
