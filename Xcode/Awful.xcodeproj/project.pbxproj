@@ -94,6 +94,7 @@
 		1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */; };
 		1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */; };
 		1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */; };
+		1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -270,7 +271,6 @@
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* MessageViewController.m */; };
 		1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */; };
-		1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */; };
 		1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* PostComposeViewController.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBCDFDC17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m */; };
@@ -524,6 +524,7 @@
 		1C16FBAD1CB85F8400C88BD1 /* IconActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionCell.swift; sourceTree = "<group>"; };
 		1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionItem.swift; sourceTree = "<group>"; };
 		1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
+		1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPrivateMessageFieldView.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -780,8 +781,6 @@
 		1CB6010A16D826F000CBEE22 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
 		1CB6011316D8376A00CBEE22 /* NewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMessageChecker.h; sourceTree = "<group>"; };
 		1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMessageChecker.m; sourceTree = "<group>"; };
-		1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewPrivateMessageFieldView.h; sourceTree = "<group>"; };
-		1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewPrivateMessageFieldView.m; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* PostComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostComposeViewController.h; sourceTree = "<group>"; };
 		1CBC74AD181A16040076234E /* PostComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostComposeViewController.m; sourceTree = "<group>"; };
 		1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+AwfulStringyURLs.h"; sourceTree = "<group>"; };
@@ -1506,8 +1505,6 @@
 		1CB6010616D826DA00CBEE22 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				1CB7C252181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.h */,
-				1CB7C253181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m */,
 				1C8D116619B4EEC6005D46CB /* MessageCell.swift */,
 				1C098AE819C77B430031C12A /* MessageCell.xib */,
 				1C414F31181F79F400813EE2 /* MessageComposeViewController.h */,
@@ -1517,6 +1514,7 @@
 				1CB6010A16D826F000CBEE22 /* MessageViewController.m */,
 				1CB6011316D8376A00CBEE22 /* NewMessageChecker.h */,
 				1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */,
+				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
 				1C8E10471914D1010010007B /* private-message.js */,
 				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
 				1C7C60BD18FCA01E009BF4BB /* PrivateMessageViewModel.h */,
@@ -2610,7 +2608,6 @@
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1CA1F04519109C0100E85DB2 /* UIWebView+AwfulConvenience.m in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
-				1CB7C254181F7E7100CF2B76 /* AwfulNewPrivateMessageFieldView.m in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
 				F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */,
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
@@ -2631,6 +2628,7 @@
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
+				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */,
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,

@@ -6,14 +6,13 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulNewPrivateMessageFieldView.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
 
 @interface MessageComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
 
-@property (strong, nonatomic) AwfulNewPrivateMessageFieldView *fieldView;
+@property (strong, nonatomic) NewPrivateMessageFieldView *fieldView;
 
 @property (strong, nonatomic) ThreadTag *threadTag;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
@@ -140,10 +139,10 @@
     }];
 }
 
-- (AwfulNewPrivateMessageFieldView *)fieldView
+- (NewPrivateMessageFieldView *)fieldView
 {
     if (_fieldView) return _fieldView;
-    _fieldView = [[AwfulNewPrivateMessageFieldView alloc] initWithFrame:CGRectMake(0, 0, 0, 88)];
+    _fieldView = [[NewPrivateMessageFieldView alloc] initWithFrame:CGRectMake(0, 0, 0, 88)];
     _fieldView.toField.label.textColor = [UIColor grayColor];
     _fieldView.subjectField.label.textColor = [UIColor grayColor];
     [_fieldView.threadTagButton addTarget:self
