@@ -7,7 +7,6 @@
 #import "AwfulNewThreadTagObserver.h"
 #import "AwfulSettings.h"
 #import "AwfulThemePicker.h"
-#import "AwfulThreadTagButton.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulViewController.h"

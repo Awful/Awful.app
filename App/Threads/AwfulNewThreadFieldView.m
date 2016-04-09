@@ -16,7 +16,7 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame])) {
-        _threadTagButton = [AwfulThreadTagButton new];
+        _threadTagButton = [ThreadTagButton new];
         _threadTagButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_threadTagButton];
         

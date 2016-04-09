@@ -168,7 +168,7 @@
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
 }
 
-- (void)didTapThreadTagButton:(AwfulThreadTagButton *)button
+- (void)didTapThreadTagButton:(ThreadTagButton *)button
 {
     // TODO better handle waiting for available thread tags to download.
     if (self.availableThreadTags.count == 0) return;
