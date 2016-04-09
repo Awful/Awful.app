@@ -9,6 +9,7 @@
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulViewController.h"
+#import "CacheHeaderCalculations.h"
 #import "CloseBBcodeTagCommand.h"
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"

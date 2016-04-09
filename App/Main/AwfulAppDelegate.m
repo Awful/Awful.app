@@ -5,7 +5,6 @@
 #import "AwfulAppDelegate.h"
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 @import AVFoundation;
-#import "AwfulAvatarLoader.h"
 @import AwfulCore;
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
@@ -180,7 +179,7 @@ static const NSTimeInterval kCookieExpiryPromptFrequency = 60 * 60 * 24 * 2; // 
     }
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [[AwfulSettings sharedSettings] reset];
-    [[AwfulAvatarLoader loader] emptyCache];
+    [[AvatarLoader sharedLoader] emptyCache];
     
     // Do this after resetting settings so that it gets the default baseURL.
     [self updateClientBaseURL];

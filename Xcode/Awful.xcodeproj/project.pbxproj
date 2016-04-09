@@ -103,7 +103,7 @@
 		1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */; };
 		1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */; };
 		1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */; };
-		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
+		1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -532,8 +532,7 @@
 		1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagView.swift; sourceTree = "<group>"; };
 		1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadTagObserver.swift; sourceTree = "<group>"; };
 		1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinusFixURLProtocol.swift; sourceTree = "<group>"; };
-		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
-		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
+		1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarLoader.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -1445,8 +1444,7 @@
 			children = (
 				1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */,
 				1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */,
-				1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */,
-				1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */,
+				1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */,
 				1CE8FDFC1709E534006A3B84 /* AwfulCustomBaseURLTransformer.h */,
 				1CE8FDFD1709E535006A3B84 /* AwfulCustomBaseURLTransformer.m */,
 				1CDD5197154294D400326C7B /* AwfulSettings.h */,
@@ -2606,6 +2604,7 @@
 				1CE8FE471717B981006A3B84 /* AwfulThemePicker.m in Sources */,
 				1CE8FE4A1717C372006A3B84 /* AwfulThemeButton.m in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
+				1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */,
 				1CA04BEC195DDDAC001BC2B7 /* AwfulPostsViewExternalStylesheetLoader.m in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
@@ -2616,7 +2615,6 @@
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
-				1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */,
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,

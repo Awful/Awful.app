@@ -4,7 +4,6 @@
 
 #import "SettingsViewController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulAvatarLoader.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
@@ -340,8 +339,8 @@ typedef NS_ENUM(NSUInteger, SettingType)
         if ([settingSection[@"Action"] isEqualToString:@"ShowProfile"]) {
             [header setTarget:self action:NSStringFromSelector(@selector(showProfile))];
         }
-        [header setAvatarImage:[[AwfulAvatarLoader loader] cachedAvatarImageForUser:self.loggedInUser]];
-        [[AwfulAvatarLoader loader] fetchAvatarImageForUser:self.loggedInUser completionBlock:^(BOOL modified, id image, NSError *error) {
+        [header setAvatarImage:[[AvatarLoader sharedLoader] cachedAvatarImageForUser:self.loggedInUser]];
+        [[AvatarLoader sharedLoader] fetchAvatarImageForUser:self.loggedInUser completionBlock:^(BOOL modified, id image, NSError *error) {
             if (modified) {
                 [header setAvatarImage:image];
             }
