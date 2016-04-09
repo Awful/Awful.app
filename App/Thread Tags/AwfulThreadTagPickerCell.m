@@ -4,11 +4,11 @@
 
 #import "AwfulThreadTagPickerCell.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulThreadTagView.h"
+#import "Awful-Swift.h"
 
 @interface AwfulThreadTagPickerCell ()
 
-@property (strong, nonatomic) AwfulThreadTagView *tagView;
+@property (strong, nonatomic) ThreadTagView *tagView;
 @property (strong, nonatomic) UILabel *imageNameLabel;
 @property (strong, nonatomic) UIImageView *selectedIcon;
 
@@ -25,7 +25,7 @@
         self.imageNameLabel.lineBreakMode = NSLineBreakByCharWrapping;
         [self.contentView addSubview:self.imageNameLabel];
         
-        self.tagView = [AwfulThreadTagView new];
+        self.tagView = [ThreadTagView new];
         self.tagView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self.contentView addSubview:self.tagView];
         
