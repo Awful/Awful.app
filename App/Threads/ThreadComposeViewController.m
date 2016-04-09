@@ -6,7 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulForumTweaks.h"
-#import "AwfulNewThreadFieldView.h"
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
@@ -17,7 +16,7 @@
 
 @property (strong, nonatomic) Thread *thread;
 
-@property (strong, nonatomic) AwfulNewThreadFieldView *fieldView;
+@property (strong, nonatomic) NewThreadFieldView *fieldView;
 @property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
 @property (strong, nonatomic) ThreadTag *threadTag;
 @property (strong, nonatomic) ThreadTag *secondaryThreadTag;
@@ -149,10 +148,10 @@ static NSString * const DefaultTitle = @"New Thread";
     self.textView.spellCheckingType = tweaks.spellCheckingType;
 }
 
-- (AwfulNewThreadFieldView *)fieldView
+- (NewThreadFieldView *)fieldView
 {
     if (_fieldView) return _fieldView;
-    _fieldView = [[AwfulNewThreadFieldView alloc] initWithFrame:CGRectMake(0, 0, 0, 45)];
+    _fieldView = [[NewThreadFieldView alloc] initWithFrame:CGRectMake(0, 0, 0, 45)];
     _fieldView.subjectField.label.textColor = [UIColor grayColor];
     [_fieldView.threadTagButton addTarget:self
                                    action:@selector(didTapThreadTagButton:)

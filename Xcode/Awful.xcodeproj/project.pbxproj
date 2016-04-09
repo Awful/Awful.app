@@ -99,6 +99,7 @@
 		1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */; };
 		1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */; };
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
+		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -241,7 +242,6 @@
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
-		1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */; };
 		1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */; };
 		1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */; };
 		1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */; };
@@ -528,6 +528,7 @@
 		1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerLayout.swift; sourceTree = "<group>"; };
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
+		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -722,8 +723,6 @@
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
 		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
 		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
-		1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadFieldView.h; sourceTree = "<group>"; };
-		1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadFieldView.m; sourceTree = "<group>"; };
 		1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewDataSource.swift; sourceTree = "<group>"; };
 		1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewCell.swift; sourceTree = "<group>"; };
 		1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumTableViewCell.xib; sourceTree = "<group>"; };
@@ -1592,10 +1591,9 @@
 		1CC780471612DA8D002AF958 /* Threads */ = {
 			isa = PBXGroup;
 			children = (
-				1C9381C7181A97BF00258191 /* AwfulNewThreadFieldView.h */,
-				1C9381C8181A97BF00258191 /* AwfulNewThreadFieldView.m */,
 				1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */,
 				1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */,
+				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
 				1C8D116219B3F69D005D46CB /* ThreadCell.swift */,
 				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
 				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
@@ -2514,7 +2512,6 @@
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
-				1C9381C9181A97BF00258191 /* AwfulNewThreadFieldView.m in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBB61CB891D400C88BD1 /* PrivateMessageViewModel.swift in Sources */,
 				1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */,
@@ -2632,6 +2629,7 @@
 				1C3447C9174D728B007377C5 /* AwfulThreadTagView.m in Sources */,
 				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */,
+				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,
 				1C3447E1175D9991007377C5 /* PostViewModel.m in Sources */,
 				1C3447E7175DAAAD007377C5 /* ProfileViewModel.m in Sources */,
