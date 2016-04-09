@@ -28,11 +28,9 @@
 		1C03B52019C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C03B51F19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.m */; };
 		1C097A8D1A97AF0600425EEF /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1C097A8E1A97AF0600425EEF /* AwfulHTMLRequestSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */; };
-		1C097A8F1A97AF0600425EEF /* AwfulHTMLResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */; };
 		1C097A901A97AF0600425EEF /* AwfulHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */; };
 		1C097A911A97AF0C00425EEF /* AwfulForumsClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CC780201612D989002AF958 /* AwfulForumsClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C097A921A97AF0C00425EEF /* AwfulHTMLRequestSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */; };
-		1C097A931A97AF0C00425EEF /* AwfulHTMLResponseSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */; };
 		1C097A941A97AF0C00425EEF /* AwfulHTTPRequestOperationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
@@ -105,6 +103,7 @@
 		1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */; };
 		1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */; };
 		1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */; };
+		1C16FBCF1CB978B800C88BD1 /* HTMLResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCD1CB9768800C88BD1 /* HTMLResponseSerializer.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -533,6 +532,7 @@
 		1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinusFixURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarLoader.swift; sourceTree = "<group>"; };
 		1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTweaks.swift; sourceTree = "<group>"; };
+		1C16FBCD1CB9768800C88BD1 /* HTMLResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLResponseSerializer.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -862,8 +862,6 @@
 		1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTableViewCell.swift; sourceTree = "<group>"; };
 		1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadTableViewCell.xib; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
-		1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLResponseSerializer.h; sourceTree = "<group>"; };
-		1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLResponseSerializer.m; sourceTree = "<group>"; };
 		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
 		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
 		1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadListScrapingTests.swift; sourceTree = "<group>"; };
@@ -1097,10 +1095,9 @@
 				1CC780211612D989002AF958 /* AwfulForumsClient.m */,
 				1C6D2E9D182D24DE00785766 /* AwfulHTMLRequestSerializer.h */,
 				1C6D2E9E182D24DE00785766 /* AwfulHTMLRequestSerializer.m */,
-				1CFE983F1827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.h */,
-				1CFE98401827EDF7003DBBC2 /* AwfulHTMLResponseSerializer.m */,
 				1C9804E218D332A5006CCC78 /* AwfulHTTPRequestOperationManager.h */,
 				1C9804E318D332A5006CCC78 /* AwfulHTTPRequestOperationManager.m */,
+				1C16FBCD1CB9768800C88BD1 /* HTMLResponseSerializer.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -1825,7 +1822,6 @@
 			files = (
 				1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */,
 				1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */,
-				1C097A931A97AF0C00425EEF /* AwfulHTMLResponseSerializer.h in Headers */,
 				1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */,
 				1C097A911A97AF0C00425EEF /* AwfulForumsClient.h in Headers */,
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
@@ -2382,7 +2378,6 @@
 				1C14A4D91A94C4BF0045DDF7 /* PrivateMessageScraper.m in Sources */,
 				1C097A8D1A97AF0600425EEF /* AwfulForumsClient.m in Sources */,
 				1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */,
-				1C097A8F1A97AF0600425EEF /* AwfulHTMLResponseSerializer.m in Sources */,
 				1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */,
 				1C14A4D21A94C4BF0045DDF7 /* AwfulPostScraper.m in Sources */,
 				1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */,
@@ -2399,6 +2394,7 @@
 				1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */,
 				1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */,
 				1C097A901A97AF0600425EEF /* AwfulHTTPRequestOperationManager.m in Sources */,
+				1C16FBCF1CB978B800C88BD1 /* HTMLResponseSerializer.swift in Sources */,
 				1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */,
 				1C14A4D71A94C4BF0045DDF7 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */,
 				1C14A4CE1A94C4BF0045DDF7 /* AuthorScraper.m in Sources */,

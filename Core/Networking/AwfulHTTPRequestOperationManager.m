@@ -4,7 +4,7 @@
 
 #import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulHTMLRequestSerializer.h"
-#import "AwfulHTMLResponseSerializer.h"
+#import <AwfulCore/AwfulCore-Swift.h>
 
 @implementation AwfulHTTPRequestOperationManager
 
@@ -14,11 +14,9 @@
         self.requestSerializer = [AwfulHTMLRequestSerializer new];
         self.requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
         
-        AwfulHTMLResponseSerializer *HTMLResponseSerializer = [AwfulHTMLResponseSerializer new];
-        HTMLResponseSerializer.stringEncoding = NSWindowsCP1252StringEncoding;
-        HTMLResponseSerializer.fallbackEncoding = NSISOLatin1StringEncoding;
+        HTMLResponseSerializer *responseSerializer = [HTMLResponseSerializer new];
         NSArray *responseSerializers = @[ [AFJSONResponseSerializer new],
-                                          HTMLResponseSerializer ];
+                                          responseSerializer ];
         self.responseSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:responseSerializers];
         
         [self.reachabilityManager startMonitoring];
