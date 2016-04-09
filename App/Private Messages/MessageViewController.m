@@ -7,7 +7,6 @@
 #import "AwfulLoadingView.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 @import GRMustache;
-#import "PrivateMessageViewModel.h"
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
 
