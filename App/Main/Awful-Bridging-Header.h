@@ -1,6 +1,5 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulErrorDomain.h"
-#import "AwfulForumTweaks.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulJavaScript.h"
 #import "AwfulNavigationController.h"

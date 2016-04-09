@@ -144,8 +144,15 @@ private extension ThreadTableViewCell.ViewModel {
             secondaryTagImageName = nil
         }
         
+        var showRatings = true
+        if let
+            forumID = thread.forum?.forumID,
+            tweaks = ForumTweaks(forumID: forumID)
+        {
+            showRatings = tweaks.showRatings
+        }
         var rating: Int?
-        if AwfulForumTweaks(forumID: thread.forum?.forumID)?.showRatings ?? true {
+        if showRatings {
             let rounded = lroundf(thread.rating).clamp(0...5)
             if rounded != 0 {
                 rating = rounded

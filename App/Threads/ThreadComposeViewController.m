@@ -5,7 +5,6 @@
 #import "ThreadComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulForumTweaks.h"
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
@@ -135,7 +134,8 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)updateTweaks
 {
-	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksWithForumID:self.forum.forumID];
+    if (!self.forum.forumID) { return; }
+	ForumTweaks *tweaks = [[ForumTweaks alloc] initWithForumID:self.forum.forumID];
 	
 	//Apply autocorrection tweaks to subject field
 	self.fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType;

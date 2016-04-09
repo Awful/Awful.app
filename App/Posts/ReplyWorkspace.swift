@@ -90,7 +90,10 @@ final class ReplyWorkspace: NSObject {
                 self.updateRightButtonItem()
             }
             
-            if let tweaks = AwfulForumTweaks(forumID: draft.thread.forum?.forumID) {
+            if let
+                forumID = draft.thread.forum?.forumID,
+                tweaks = ForumTweaks(forumID: forumID)
+            {
                 textView.autocapitalizationType = tweaks.autocapitalizationType
                 textView.autocorrectionType = tweaks.autocorrectionType
                 textView.spellCheckingType = tweaks.spellCheckingType

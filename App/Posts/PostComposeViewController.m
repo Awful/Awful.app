@@ -4,7 +4,6 @@
 
 #import "PostComposeViewController.h"
 #import "AwfulAppDelegate.h"
-#import "AwfulForumTweaks.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
@@ -56,7 +55,9 @@
 
 - (void)updateTweaks
 {
-	AwfulForumTweaks *tweaks = [AwfulForumTweaks tweaksWithForumID:self.forum.forumID];
+    if (!self.forum.forumID) { return; }
+    
+	ForumTweaks *tweaks = [[ForumTweaks alloc] initWithForumID:self.forum.forumID];
 	self.textView.autocapitalizationType = tweaks.autocapitalizationType;
     self.textView.autocorrectionType = tweaks.autocorrectionType;
     self.textView.spellCheckingType = tweaks.spellCheckingType;
