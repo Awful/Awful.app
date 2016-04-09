@@ -212,7 +212,7 @@ final class MessagesDataSource: FetchedDataSource {
         super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil)
     }
     
-    private var threadTagObservers = [String: AwfulNewThreadTagObserver]()
+    private var threadTagObservers = [String: NewThreadTagObserver]()
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let message = itemAtIndexPath(indexPath) as! PrivateMessage
@@ -227,7 +227,7 @@ final class MessagesDataSource: FetchedDataSource {
                     cell.tagImageView.image = AwfulThreadTagLoader.emptyPrivateMessageImage()
                     
                     let messageID = message.messageID
-                    threadTagObservers[messageID] = AwfulNewThreadTagObserver(imageName: imageName) { [unowned self] image in
+                    threadTagObservers[messageID] = NewThreadTagObserver(imageName: imageName) { [unowned self] image in
                         if let indexPath = tableView.indexPathForCell(cell) {
                             let message = self.itemAtIndexPath(indexPath) as! PrivateMessage
                             if message.messageID == messageID {

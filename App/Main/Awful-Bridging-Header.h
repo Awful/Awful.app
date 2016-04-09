@@ -4,7 +4,6 @@
 #import "AwfulHTMLRendering.h"
 #import "AwfulJavaScript.h"
 #import "AwfulNavigationController.h"
-#import "AwfulNewThreadTagObserver.h"
 #import "AwfulSettings.h"
 #import "AwfulThemePicker.h"
 #import "AwfulThreadTagLoader.h"

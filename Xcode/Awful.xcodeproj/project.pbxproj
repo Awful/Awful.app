@@ -101,6 +101,7 @@
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
 		1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */; };
+		1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */; };
 		1C1ADC3218E36F3C00E865BF /* AwfulAvatarLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
@@ -293,7 +294,6 @@
 		1CD005D61BB8DA6400232FFD /* FetchedDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
 		1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */; };
-		1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F4D194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m */; };
 		1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */; };
 		1CD82F54194D976D00B0C5BD /* UIView+AwfulConvenient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */; };
 		1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */; };
@@ -530,6 +530,7 @@
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
 		1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagView.swift; sourceTree = "<group>"; };
+		1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadTagObserver.swift; sourceTree = "<group>"; };
 		1C1ADC3018E36F3C00E865BF /* AwfulAvatarLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulAvatarLoader.h; sourceTree = "<group>"; };
 		1C1ADC3118E36F3C00E865BF /* AwfulAvatarLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulAvatarLoader.m; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
@@ -808,8 +809,6 @@
 		1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionaryTests.m; sourceTree = "<group>"; };
 		1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPreviewViewController.h; sourceTree = "<group>"; };
 		1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadPreviewViewController.m; sourceTree = "<group>"; };
-		1CD82F4C194C19EE00B0C5BD /* AwfulNewThreadTagObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNewThreadTagObserver.h; sourceTree = "<group>"; };
-		1CD82F4D194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNewThreadTagObserver.m; sourceTree = "<group>"; };
 		1CD82F4F194D92FE00B0C5BD /* AwfulThreadTagPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagPickerController.h; sourceTree = "<group>"; };
 		1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadTagPickerController.m; sourceTree = "<group>"; };
 		1CD82F52194D976D00B0C5BD /* UIView+AwfulConvenient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AwfulConvenient.h"; sourceTree = "<group>"; };
@@ -1196,14 +1195,13 @@
 		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
-				1CD82F4C194C19EE00B0C5BD /* AwfulNewThreadTagObserver.h */,
-				1CD82F4D194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m */,
 				1CAED9D916373F91001F5F04 /* AwfulThreadTagLoader.h */,
 				1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */,
 				1C9FDAFD16E486A600C665B5 /* AwfulThreadTagPickerCell.h */,
 				1C9FDAFE16E486A600C665B5 /* AwfulThreadTagPickerCell.m */,
 				1CD82F4F194D92FE00B0C5BD /* AwfulThreadTagPickerController.h */,
 				1CD82F50194D92FE00B0C5BD /* AwfulThreadTagPickerController.m */,
+				1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */,
 				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
 				1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */,
@@ -2558,10 +2556,10 @@
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C4EAD5C1BC052BE0008BE54 /* CollectionTypeDelta.swift in Sources */,
+				1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */,
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
-				1CD82F4E194C19EE00B0C5BD /* AwfulNewThreadTagObserver.m in Sources */,
 				1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CBCDFDD17F3E794007B07D3 /* AwfulMinusFixURLProtocol.m in Sources */,

@@ -4,7 +4,6 @@
 
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulNewThreadTagObserver.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerCell.h"
 #import "Awful-Swift.h"
@@ -244,7 +243,7 @@
             cell.tagImageName = nil;
         } else {
             cell.tagImageName = [imageName stringByDeletingPathExtension];
-            self.threadTagObservers[@(item)] = [[AwfulNewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
+            self.threadTagObservers[@(item)] = [[NewThreadTagObserver alloc] initWithImageName:imageName downloadedBlock:^(UIImage *image) {
                 
                 // Make sure the cell still refers to the same tag before changing its image.
                 NSIndexPath *currentIndexPath = [collectionView indexPathForCell:cell];
