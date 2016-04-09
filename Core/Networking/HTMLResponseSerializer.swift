@@ -4,23 +4,19 @@
 
 import AFNetworking
 
-/**
-    Turns HTTP responses into HTML documents.
- 
-    TODO: Only public so it appears in AwfulCore-Swift.h. Make internal once AwfulHTTPRequestOperationManager no longer needs an objc import.
- */
-public final class HTMLResponseSerializer: AFHTTPResponseSerializer {
+/// Turns HTTP responses into HTML documents.
+final class HTMLResponseSerializer: AFHTTPResponseSerializer {
     override init() {
         super.init()
         
         acceptableContentTypes = ["text/html", "application/xhtml+xml"]
     }
     
-    required public init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    override public func responseObjectForResponse(response: NSURLResponse?, data unvalidatedData: NSData?) throws -> AnyObject {
+    override func responseObjectForResponse(response: NSURLResponse?, data unvalidatedData: NSData?) throws -> AnyObject {
         guard let data = try super.responseObjectForResponse(response, data: unvalidatedData) as? NSData else { return HTMLDocument() }
         return HTMLDocument(data: data, contentTypeHeader: contentType(withResponse: response))
     }

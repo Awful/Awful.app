@@ -16,3 +16,6 @@ FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 
 // Networking
 #import <AwfulCore/AwfulForumsClient.h>
+
+// Swift bridging
+#import <AwfulCore/AwfulHTMLRequestSerializer.h>

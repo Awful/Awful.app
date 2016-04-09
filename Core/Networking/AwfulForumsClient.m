@@ -4,7 +4,6 @@
 
 #import "AwfulForumsClient.h"
 #import "AwfulForumHierarchyScraper.h"
-#import "AwfulHTTPRequestOperationManager.h"
 #import "AwfulPostScraper.h"
 #import "AwfulPostsPageScraper.h"
 #import "AwfulScanner.h"
@@ -29,7 +28,7 @@
 
 @implementation AwfulForumsClient
 {
-    AwfulHTTPRequestOperationManager *_HTTPManager;
+    HTTPRequestOperationManager *_HTTPManager;
     NSManagedObjectContext *_backgroundManagedObjectContext;
     LastModifiedContextObserver *_lastModifiedObserver;
 }
@@ -79,7 +78,7 @@
     }
     
     [_HTTPManager.operationQueue cancelAllOperations];
-    _HTTPManager = [[AwfulHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+    _HTTPManager = [[HTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
 }
 
 - (void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
