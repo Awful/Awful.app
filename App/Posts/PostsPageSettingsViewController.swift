@@ -35,8 +35,8 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     @IBOutlet var labels: [UILabel]!
     @IBOutlet var switches: [UISwitch]!
     
-    @IBOutlet weak var themePicker: AwfulThemePicker!
-    @IBAction func changeSelectedTheme(sender: AwfulThemePicker) {
+    @IBOutlet weak var themePicker: ThemePicker!
+    @IBAction func changeSelectedTheme(sender: ThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
         AwfulSettings.sharedSettings().setThemeName(selectedTheme.name, forForumID: forum.forumID)
         if selectedTheme.forumID == nil {

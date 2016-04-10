@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -28,7 +28,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="36"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Formatting" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nRF-Tv-dRt" userLabel="Header">
-                            <rect key="frame" x="121" y="8" width="79" height="20"/>
+                            <rect key="frame" x="120" y="8" width="80" height="20"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
@@ -42,7 +42,7 @@
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avatars" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rif-rC-wd0">
-                    <rect key="frame" x="8" y="56" width="55" height="20"/>
+                    <rect key="frame" x="8" y="56" width="54" height="20"/>
                     <accessibility key="accessibilityConfiguration">
                         <bool key="isElement" value="NO"/>
                     </accessibility>
@@ -51,7 +51,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l4w-sl-F1e" userLabel="Avatars Switch">
-                    <rect key="frame" x="71" y="51" width="51" height="31"/>
+                    <rect key="frame" x="70" y="51" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Show avatars"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="show_avatars"/>
@@ -90,13 +90,13 @@
                     </userDefinedRuntimeAttributes>
                 </stepper>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
-                    <rect key="frame" x="8" y="156" width="50" height="20"/>
+                    <rect key="frame" x="8" y="156" width="51" height="20"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="AwfulThemePicker">
-                    <rect key="frame" x="66" y="147" width="246" height="39"/>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="ThemePicker" customModule="Awful" customModuleProvider="target">
+                    <rect key="frame" x="67" y="147" width="245" height="39"/>
                     <color key="backgroundColor" white="0.95657655419999998" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <action selector="changeSelectedTheme:" destination="-1" eventType="valueChanged" id="2DZ-Ar-SHV"/>
