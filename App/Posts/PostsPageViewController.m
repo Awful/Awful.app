@@ -8,7 +8,6 @@
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
-#import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulWebViewNetworkActivityIndicatorManager.h"
 @import GRMustache;
 @import MRProgress;
@@ -279,7 +278,7 @@
     if ([AwfulSettings sharedSettings].username.length > 0) {
         context[@"loggedInUsername"] = [AwfulSettings sharedSettings].username;
     }
-    context[@"externalStylesheet"] = [AwfulPostsViewExternalStylesheetLoader loader].stylesheet;
+    context[@"externalStylesheet"] = [PostsViewExternalStylesheetLoader sharedLoader].stylesheet;
     if (self.thread.threadID.length > 0) {
         context[@"threadID"] = self.thread.threadID;
     }
@@ -984,7 +983,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(externalStylesheetDidUpdate:)
-                                                 name:AwfulPostsViewExternalStylesheetLoaderDidUpdateNotification
+                                                 name:[PostsViewExternalStylesheetLoader didUpdateNotification]
                                                object:nil];
     
     self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:[PostsPageRefreshSpinnerView new]];

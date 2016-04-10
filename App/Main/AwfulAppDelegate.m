@@ -8,7 +8,6 @@
 @import AwfulCore;
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulPostsViewExternalStylesheetLoader.h"
 #import "AwfulSettings.h"
 #import "AwfulURLRouter.h"
 #import "AwfulWaffleimagesURLProtocol.h"
@@ -287,7 +286,7 @@ static void RemoveOldDataStores(void)
     
     [[NewMessageChecker sharedChecker] refreshIfNecessary];
     
-    [[AwfulPostsViewExternalStylesheetLoader loader] refreshIfNecessary];
+    [[PostsViewExternalStylesheetLoader sharedLoader] refreshIfNecessary];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(settingsDidChange:)

@@ -117,16 +117,6 @@ final class RefreshMinder: NSObject {
     var suggestedDateToRefreshNewPrivateMessages: NSDate {
         return suggestedRefreshDate(.NewPrivateMessages)
     }
-    
-    var shouldRefreshExternalStylesheet: Bool {
-        return shouldRefresh(.ExternalStylesheet)
-    }
-    func didRefreshExternalStylesheet() {
-        didRefresh(.ExternalStylesheet)
-    }
-    var suggestedDateToRefreshExternalStylesheet: NSDate {
-        return suggestedRefreshDate(.ExternalStylesheet)
-    }
 }
 
 private let forumTimeBetweenRefreshes: NSTimeInterval = 60 * 15
