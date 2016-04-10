@@ -531,7 +531,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         [self.view addSubview:self.loadingView];
     }
     
-    AwfulPostsViewTopBar *topBar = self.postsView.topBar;
+    PostsViewTopBar *topBar = self.postsView.topBar;
     topBar.backgroundColor = theme[@"postsTopBarBackgroundColor"];
     void (^configureButton)(UIButton *) = ^(UIButton *button){
         [button setTitleColor:theme[@"postsTopBarTextColor"] forState:UIControlStateNormal];
@@ -945,7 +945,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 {
     self.view = [AwfulPostsView new];
     
-    AwfulPostsViewTopBar *topBar = self.postsView.topBar;
+    PostsViewTopBar *topBar = self.postsView.topBar;
     [topBar.parentForumButton addTarget:self action:@selector(goToParentForum) forControlEvents:UIControlEventTouchUpInside];
     [topBar.previousPostsButton addTarget:self action:@selector(showHiddenSeenPosts) forControlEvents:UIControlEventTouchUpInside];
     topBar.previousPostsButton.enabled = self.hiddenPosts > 0;

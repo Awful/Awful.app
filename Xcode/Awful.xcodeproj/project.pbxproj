@@ -104,6 +104,7 @@
 		1C16FBCF1CB978B800C88BD1 /* HTMLResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCD1CB9768800C88BD1 /* HTMLResponseSerializer.swift */; };
 		1C16FBD11CB97BBE00C88BD1 /* HTTPRequestOperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD01CB97BBE00C88BD1 /* HTTPRequestOperationManager.swift */; };
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
+		1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -196,7 +197,6 @@
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */; };
-		1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -534,6 +534,7 @@
 		1C16FBCD1CB9768800C88BD1 /* HTMLResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLResponseSerializer.swift; sourceTree = "<group>"; };
 		1C16FBD01CB97BBE00C88BD1 /* HTTPRequestOperationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequestOperationManager.swift; sourceTree = "<group>"; };
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
+		1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewTopBar.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -640,8 +641,6 @@
 		1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationController.h; sourceTree = "<group>"; };
 		1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationController.m; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPage.h; sourceTree = "<group>"; };
-		1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsViewTopBar.h; sourceTree = "<group>"; };
-		1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsViewTopBar.m; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1537,8 +1536,6 @@
 				1C3447EB175E5D78007377C5 /* AwfulLoadingView.m */,
 				1C7D8956192E954B00003576 /* AwfulPostsView.h */,
 				1C7D8957192E954B00003576 /* AwfulPostsView.m */,
-				1C5BA3E516CA4D9400375A72 /* AwfulPostsViewTopBar.h */,
-				1C5BA3E616CA4D9400375A72 /* AwfulPostsViewTopBar.m */,
 				1CE8FE481717C371006A3B84 /* AwfulThemeButton.h */,
 				1CE8FE491717C372006A3B84 /* AwfulThemeButton.m */,
 				1CE8FE451717B97F006A3B84 /* AwfulThemePicker.h */,
@@ -1556,6 +1553,7 @@
 				1CC780281612D9DE002AF958 /* PostsPageViewController.m */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
+				1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */,
 				1C3447DF175D9991007377C5 /* PostViewModel.h */,
 				1C3447E0175D9991007377C5 /* PostViewModel.m */,
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
@@ -2540,7 +2538,6 @@
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
-				1C5BA3E716CA4D9400375A72 /* AwfulPostsViewTopBar.m in Sources */,
 				1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
@@ -2595,6 +2592,7 @@
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
+				1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
 				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,

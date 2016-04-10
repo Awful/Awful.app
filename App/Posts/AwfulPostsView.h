@@ -2,8 +2,8 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@class PostsViewTopBar;
 @import UIKit;
-#import "AwfulPostsViewTopBar.h"
 
 /**
  An AwfulPostsView wraps a UIWebView and emulates a top contentInset, to which UIWebView reacts poorly.
@@ -16,6 +16,6 @@
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
-@property (readonly, strong, nonatomic) AwfulPostsViewTopBar *topBar;
+@property (readonly, strong, nonatomic) PostsViewTopBar *topBar;
 
 @end

@@ -4,6 +4,7 @@
 
 #import "AwfulPostsView.h"
 #import "AwfulFrameworkCategories.h"
+#import "Awful-Swift.h"
 
 typedef enum : NSInteger {
     TopBarHidden,
@@ -39,7 +40,7 @@ typedef enum : NSInteger {
         [self addSubview:_webView];
         _webView.scrollView.delegate = self;
         
-        _topBar = [AwfulPostsViewTopBar new];
+        _topBar = [PostsViewTopBar new];
         [self addSubview:_topBar];
         
         self.maintainTopBarState = YES;
