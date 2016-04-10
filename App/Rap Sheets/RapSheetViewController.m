@@ -6,7 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulFrameworkCategories.h"
-#import "AwfulPunishmentCell.h"
 #import "Awful-Swift.h"
 
 @interface RapSheetViewController ()
@@ -58,7 +57,7 @@
 - (void)loadView
 {
     [super loadView];
-    [self.tableView registerClass:[AwfulPunishmentCell class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[PunishmentCell class] forCellReuseIdentifier:CellIdentifier];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
@@ -159,7 +158,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    AwfulPunishmentCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    PunishmentCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     Punishment *punishment = self.punishments[indexPath.row];
     
     {{
@@ -228,7 +227,7 @@ static NSString * const CellIdentifier = @"Infraction Cell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Punishment *punishment = self.punishments[indexPath.row];
-    return [AwfulPunishmentCell rowHeightWithBanReason:punishment.reasonHTML width:CGRectGetWidth(tableView.bounds)];
+    return [PunishmentCell rowHeightWithBanReason:punishment.reasonHTML width:CGRectGetWidth(tableView.bounds)];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
