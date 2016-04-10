@@ -3,7 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThemePicker.h"
-#import "AwfulThemeButton.h"
+#import "Awful-Swift.h"
 
 @implementation AwfulThemePicker
 {
@@ -48,7 +48,7 @@ static void CommonInit(AwfulThemePicker *self)
 
 - (void)insertThemeWithColor:(UIColor *)color atIndex:(NSInteger)index
 {
-    AwfulThemeButton *button = [[AwfulThemeButton alloc] initWithThemeColor:color];
+    ThemeButton *button = [[ThemeButton alloc] initWithThemeColor:color];
     [button addTarget:self action:@selector(didTapThemeButton:) forControlEvents:UIControlEventTouchUpInside];
     if (index > (NSInteger)self.subviews.count) {
         index = self.subviews.count;
