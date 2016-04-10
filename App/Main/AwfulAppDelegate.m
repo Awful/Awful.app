@@ -10,7 +10,6 @@
 #import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 #import "AwfulURLRouter.h"
-#import "AwfulWaffleimagesURLProtocol.h"
 #import <GRMustache/GRMustache.h>
 #import "NewMessageChecker.h"
 @import Smilies;
@@ -262,7 +261,7 @@ static void RemoveOldDataStores(void)
     [NSURLProtocol registerClass:[ImageURLProtocol class]];
     [NSURLProtocol registerClass:[MinusFixURLProtocol class]];
     [NSURLProtocol registerClass:[ResourceURLProtocol class]];
-    [NSURLProtocol registerClass:[AwfulWaffleimagesURLProtocol class]];
+    [NSURLProtocol registerClass:[WaffleimagesURLProtocol class]];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.tintColor = [Theme currentTheme][@"tintColor"];
