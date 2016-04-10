@@ -99,16 +99,16 @@
 					<key>Key</key>
 					<string>autoplay_gifs</string>
 				</dict>
-                <dict>
-                    <key>Title</key>
-                    <string>Embed Tweets</string>
-                    <key>Type</key>
-                    <string>Switch</string>
-                    <key>Default</key>
-                    <string>YES</string>
-                    <key>Key</key>
-                    <string>embed_tweets</string>
-                </dict>
+				<dict>
+					<key>Title</key>
+					<string>Embed Tweets</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<string>YES</string>
+					<key>Key</key>
+					<string>embed_tweets</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -219,7 +219,7 @@
 					<key>Title</key>
 					<string>Forum-Specific Themes</string>
 					<key>ViewController</key>
-					<string>AwfulSettingsUbiquitousThemesController</string>
+					<string>Awful.SettingsUbiquitousThemesController</string>
 					<key>Key</key>
 					<string>ubiquitous_theme_names</string>
 				</dict>
