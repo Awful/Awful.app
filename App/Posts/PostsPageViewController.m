@@ -12,7 +12,6 @@
 @import GRMustache;
 @import MRProgress;
 #import "PostComposeViewController.h"
-#import "PostViewModel.h"
 @import TUSafariActivity;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"

@@ -9,7 +9,6 @@
 #import "AwfulLoadingView.h"
 #import "AwfulSettings.h"
 #import <GRMustache/GRMustache.h>
-#import "PostViewModel.h"
 #import "Awful-Swift.h"
 
 @interface PostPreviewViewController () <UIWebViewDelegate>
