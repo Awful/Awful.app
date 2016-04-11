@@ -38,7 +38,7 @@ final class AvatarLoader: NSObject {
             oldResponse = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as? NSHTTPURLResponse
             where oldResponse.URL == avatarURL
         {
-            SetCacheHeadersForRequest(request, oldResponse)
+            request.setCacheHeadersWithResponse(oldResponse)
         }
         
         sessionManager.downloadTaskWithRequest(request, progress: nil, destination: { (targetPath, URLResponse) -> NSURL! in

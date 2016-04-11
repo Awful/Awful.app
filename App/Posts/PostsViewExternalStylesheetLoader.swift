@@ -49,7 +49,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
             oldURL = oldResponse.URL
             where oldURL.absoluteURL == stylesheetURL.absoluteURL
         {
-            SetCacheHeadersForRequest(request, oldResponse)
+            request.setCacheHeadersWithResponse(oldResponse)
         }
         
         session.downloadTaskWithRequest(request, progress: nil, destination: { (targetPath, response) -> NSURL! in
