@@ -3,8 +3,7 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "NSURL+Awful.h"
-#import "NSURL+QueryDictionary.h"
-#import "AwfulForumsClient.h"
+@import AwfulCore;
 
 @implementation NSURL (Awful)
 
@@ -22,7 +21,7 @@
         return nil;
     }
     
-    NSDictionary *query = self.queryDictionary;
+    NSDictionary *query = self.awful_queryDictionary;
     
     // Thread or post.
     if ([self.path caseInsensitiveCompare:@"/showthread.php"] == NSOrderedSame) {

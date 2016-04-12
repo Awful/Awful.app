@@ -5,7 +5,6 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulScanner.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface AwfulThreadListScraper ()
@@ -42,7 +41,7 @@
     if (hierarchyLinks.count > 0) {
         HTMLElement *groupLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
-        NSString *groupID = AwfulCoreQueryDictionaryWithURL(URL)[@"forumid"];
+        NSString *groupID = URL.awful_queryDictionary[@"forumid"];
         ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:groupID];
         ForumGroup *group = [ForumGroup objectForKey:groupKey inManagedObjectContext:self.managedObjectContext];
         group.name = groupLink.textContent;
@@ -50,7 +49,7 @@
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
-            ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:AwfulCoreQueryDictionaryWithURL(URL)[@"forumid"]];
+            ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.awful_queryDictionary[@"forumid"]];
             Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
@@ -66,7 +65,7 @@
         NSMutableArray *threadTagKeys = [NSMutableArray new];
         for (HTMLElement *link in [threadTagsDiv nodesMatchingSelector:@"a[href*='posticon']"]) {
             NSURL *URL = [NSURL URLWithString:link[@"href"]];
-            NSString *threadTagID = AwfulCoreQueryDictionaryWithURL(URL)[@"posticon"];
+            NSString *threadTagID = URL.awful_queryDictionary[@"posticon"];
             HTMLElement *image = [link firstNodeMatchingSelector:@"img"];
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
             [threadTagKeys addObject:[[ThreadTagKey alloc] initWithImageURL:imageURL threadTagID:threadTagID]];
@@ -107,7 +106,7 @@
         HTMLElement *authorProfileLink = [row firstNodeMatchingSelector:@"td.author a"];
         if (authorProfileLink) {
             NSURL *profileURL = [NSURL URLWithString:authorProfileLink[@"href"]];
-            NSString *authorUserID = AwfulCoreQueryDictionaryWithURL(profileURL)[@"userid"];
+            NSString *authorUserID = profileURL.awful_queryDictionary[@"userid"];
             NSString *authorUsername = authorProfileLink.textContent;
             if (authorUserID.length > 0 || authorUsername.length > 0) {
                 UserKey *authorKey = [[UserKey alloc] initWithUserID:authorUserID username:authorUsername];

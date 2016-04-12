@@ -4,7 +4,6 @@
 
 #import "LepersColonyPageScraper.h"
 #import "AwfulCompoundDateParser.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface LepersColonyPageScraper ()
@@ -41,7 +40,7 @@
         {{
             HTMLElement *typeLink = [typeCell firstNodeMatchingSelector:@"a"];
             NSURL *URL = [NSURL URLWithString:typeLink[@"href"]];
-            NSString *postID = AwfulCoreQueryDictionaryWithURL(URL)[@"postid"];
+            NSString *postID = URL.awful_queryDictionary[@"postid"];
             if (postID.length > 0) {
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
                 info[@"postKey"] = postKey;
@@ -63,7 +62,7 @@
         {{
             HTMLElement *userLink = [row firstNodeMatchingSelector:@"td:nth-of-type(3) a"];
             NSURL *URL = [NSURL URLWithString:userLink[@"href"]];
-            NSString *userID = AwfulCoreQueryDictionaryWithURL(URL)[@"userid"];
+            NSString *userID = URL.awful_queryDictionary[@"userid"];
             NSString *username = userLink.textContent;
             if (userID.length > 0 || username.length > 0) {
                 UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
@@ -75,7 +74,7 @@
         {{
             HTMLElement *requesterLink = [row firstNodeMatchingSelector:@"td:nth-of-type(5) a"];
             NSURL *URL = [NSURL URLWithString:requesterLink[@"href"]];
-            NSString *userID = AwfulCoreQueryDictionaryWithURL(URL)[@"userid"];
+            NSString *userID = URL.awful_queryDictionary[@"userid"];
             NSString *username = requesterLink.textContent;
             if (userID.length > 0 || username.length > 0) {
                 UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];
@@ -87,7 +86,7 @@
         {{
             HTMLElement *approverLink = [row firstNodeMatchingSelector:@"td:nth-of-type(6) a"];
             NSURL *URL = [NSURL URLWithString:approverLink[@"href"]];
-            NSString *userID = AwfulCoreQueryDictionaryWithURL(URL)[@"userid"];
+            NSString *userID = URL.awful_queryDictionary[@"userid"];
             NSString *username = approverLink.textContent;
             if (userID.length > 0 || username.length > 0) {
                 UserKey *userKey = [[UserKey alloc] initWithUserID:userID username:username];

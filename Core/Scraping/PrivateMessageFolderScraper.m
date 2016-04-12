@@ -4,7 +4,6 @@
 
 #import "PrivateMessageFolderScraper.h"
 #import "AwfulCompoundDateParser.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface PrivateMessageFolderScraper ()
@@ -26,7 +25,7 @@
         HTMLElement *titleLink = [row firstNodeMatchingSelector:@"td.title a"];
         NSString *messageID; {
             NSURL *URL = [NSURL URLWithString:titleLink[@"href"]];
-            messageID = AwfulCoreQueryDictionaryWithURL(URL)[@"privatemessageid"];
+            messageID = URL.awful_queryDictionary[@"privatemessageid"];
         }
         if (messageID.length == 0) {
             NSString *message = @"Failed to parse message in folder; could not find message ID";

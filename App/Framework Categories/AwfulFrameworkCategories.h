@@ -7,7 +7,6 @@
 #import "NSURL+Awful.h"
 #import "NSURL+OpensInBrowser.h"
 #import "NSURL+Punycode.h"
-#import "NSURL+QueryDictionary.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UIColor+AwfulConvenience.h"
 #import "UIGestureRecognizer+AwfulConvenience.h"

@@ -12,7 +12,6 @@ FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 
 // Scraping
 #import <AwfulCore/AwfulForm.h>
-#import <AwfulCore/NSURLQueryDictionary.h>
 
 // Networking
 #import <AwfulCore/AwfulForumsClient.h>

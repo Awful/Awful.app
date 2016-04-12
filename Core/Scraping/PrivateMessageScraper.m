@@ -6,7 +6,6 @@
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulScanner.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface PrivateMessageScraper ()
@@ -25,7 +24,7 @@
     NSString *messageID;
     HTMLElement *replyLink = [self.node firstNodeMatchingSelector:@"div.buttons a"];
     NSURL *replyLinkURL = [NSURL URLWithString:replyLink[@"href"]];
-    messageID = AwfulCoreQueryDictionaryWithURL(replyLinkURL)[@"privatemessageid"];
+    messageID = replyLinkURL.awful_queryDictionary[@"privatemessageid"];
     if (messageID.length == 0) {
         NSString *message = @"Failed parsing private message; could not find messageID";
         self.error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{ NSLocalizedDescriptionKey: message }];

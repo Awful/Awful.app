@@ -77,8 +77,6 @@
 		1C14A4D91A94C4BF0045DDF7 /* PrivateMessageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA7182E81B000785766 /* PrivateMessageScraper.m */; };
 		1C14A4DA1A94C4BF0045DDF7 /* ProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* ProfileScraper.m */; };
 		1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4DB1A94C7260045DDF7 /* Errors.swift */; };
-		1C14A4E91A94CCEA0045DDF7 /* NSURLQueryDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C14A4EA1A94CCEA0045DDF7 /* NSURLQueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */; };
 		1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */; };
 		1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */; };
 		1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */; };
@@ -111,6 +109,8 @@
 		1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
 		1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */; };
+		1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */; };
+		1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -310,7 +310,6 @@
 		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
 		1CE2D9DC166ABD0D0024AC1C /* NSFileManager+UserDirectories.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */; };
 		1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */; };
-		1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */; };
 		1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */; };
 		1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */; };
 		1CE55A701A10552600E474A6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6F1A10552600E474A6 /* DataSource.swift */; };
@@ -505,8 +504,6 @@
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C14A4DB1A94C7260045DDF7 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURLQueryDictionary.h; sourceTree = "<group>"; };
-		1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionary.m; sourceTree = "<group>"; };
 		1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeField.swift; sourceTree = "<group>"; };
 		1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfHostingAttachmentInterpolator.swift; sourceTree = "<group>"; };
 		1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextView.swift; sourceTree = "<group>"; };
@@ -539,6 +536,8 @@
 		1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaffleimagesURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-QueryDictionary.swift"; sourceTree = "<group>"; };
+		1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLQueryDictionaryTests.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -796,7 +795,6 @@
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
 		1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataManager.swift; sourceTree = "<group>"; };
 		1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshSpinnerView.swift; sourceTree = "<group>"; };
-		1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLQueryDictionaryTests.m; sourceTree = "<group>"; };
 		1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPreviewViewController.h; sourceTree = "<group>"; };
 		1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadPreviewViewController.m; sourceTree = "<group>"; };
 		1CD82F4F194D92FE00B0C5BD /* AwfulThreadTagPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadTagPickerController.h; sourceTree = "<group>"; };
@@ -821,8 +819,6 @@
 		1CE2D9CD166ABD0D0024AC1C /* NSFileManager+UserDirectories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+UserDirectories.m"; sourceTree = "<group>"; };
 		1CE2D9CE166ABD0D0024AC1C /* NSString+CollapseWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CollapseWhitespace.h"; sourceTree = "<group>"; };
 		1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CollapseWhitespace.m"; sourceTree = "<group>"; };
-		1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+QueryDictionary.h"; sourceTree = "<group>"; };
-		1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+QueryDictionary.m"; sourceTree = "<group>"; };
 		1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+TwoLineTitle.h"; sourceTree = "<group>"; };
 		1CE2D9D3166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+TwoLineTitle.m"; sourceTree = "<group>"; };
 		1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+NavigationEnclosure.h"; sourceTree = "<group>"; };
@@ -1064,8 +1060,7 @@
 				1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */,
 				1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */,
 				1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */,
-				1C14A4E71A94CCEA0045DDF7 /* NSURLQueryDictionary.h */,
-				1C14A4E81A94CCEA0045DDF7 /* NSURLQueryDictionary.m */,
+				1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */,
 				1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */,
 				1C6D2EB1182FDCBC00785766 /* PrivateMessageFolderScraper.m */,
 				1C6D2EA6182E81B000785766 /* PrivateMessageScraper.h */,
@@ -1283,7 +1278,7 @@
 				1C3CF9781A94B9B50065C964 /* Info.plist */,
 				1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */,
 				1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.swift */,
-				1CD82F3B19479A1500B0C5BD /* NSURLQueryDictionaryTests.m */,
+				1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */,
 				1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */,
 				1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */,
 				1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */,
@@ -1648,8 +1643,6 @@
 				1CE2D9CF166ABD0D0024AC1C /* NSString+CollapseWhitespace.m */,
 				1CE68BD716F7C18E003D56C9 /* NSURL+Punycode.h */,
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
-				1CE2D9D0166ABD0D0024AC1C /* NSURL+QueryDictionary.h */,
-				1CE2D9D1166ABD0D0024AC1C /* NSURL+QueryDictionary.m */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1C9F3AAD180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.h */,
 				1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */,
@@ -1803,7 +1796,6 @@
 				1C097A911A97AF0C00425EEF /* AwfulForumsClient.h in Headers */,
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
 				1C097A921A97AF0C00425EEF /* AwfulHTMLRequestSerializer.h in Headers */,
-				1C14A4E91A94CCEA0045DDF7 /* NSURLQueryDictionary.h in Headers */,
 				1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */,
 				1C14A4CC1A94C4A60045DDF7 /* ProfileScraper.h in Headers */,
 				1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */,
@@ -2377,7 +2369,7 @@
 				1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */,
 				1C14A4D81A94C4BF0045DDF7 /* PrivateMessageFolderScraper.m in Sources */,
 				1C14A4D31A94C4BF0045DDF7 /* AwfulPostsPageScraper.m in Sources */,
-				1C14A4EA1A94CCEA0045DDF7 /* NSURLQueryDictionary.m in Sources */,
+				1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */,
 				1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */,
 				1C097A8E1A97AF0600425EEF /* AwfulHTMLRequestSerializer.m in Sources */,
 				1C14A4B41A94C0B50045DDF7 /* Forum.swift in Sources */,
@@ -2397,6 +2389,7 @@
 				1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */,
 				1C3CF9A01A94BE190065C964 /* PostScrapingTests.swift in Sources */,
 				1C3CF9A21A94BE190065C964 /* PrivateMessageScrapingTests.swift in Sources */,
+				1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */,
 				1C3CF99E1A94BE190065C964 /* LepersColonyPageScrapingTests.swift in Sources */,
 				1C3CF9A31A94BE190065C964 /* ProfileScrapingTests.swift in Sources */,
 				1C3CF9A11A94BE190065C964 /* PostsPageScrapingTests.swift in Sources */,
@@ -2495,7 +2488,6 @@
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1CE2D9DD166ABD0D0024AC1C /* NSString+CollapseWhitespace.m in Sources */,
-				1CE2D9DE166ABD0D0024AC1C /* NSURL+QueryDictionary.m in Sources */,
 				1CE2D9DF166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.m in Sources */,
 				1CE2D9E0166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,

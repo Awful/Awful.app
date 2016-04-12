@@ -4,7 +4,6 @@
 
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface AuthorScraper ()
@@ -30,7 +29,7 @@
     HTMLElement *profileLink = [self.node firstNodeMatchingSelector:@"ul.profilelinks a[href *= 'userid']"];
     if (profileLink) {
         NSURL *URL = [NSURL URLWithString:profileLink[@"href"]];
-        self.userID = AwfulCoreQueryDictionaryWithURL(URL)[@"userid"];
+        self.userID = URL.awful_queryDictionary[@"userid"];
     } else {
         // Ignored posts still put the userid in the td.userinfo.
         NSString *userInfoClass = [self.node firstNodeMatchingSelector:@"td.userinfo"][@"class"];

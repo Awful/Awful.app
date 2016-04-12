@@ -4,6 +4,7 @@
 
 #import "AwfulHTMLRendering.h"
 #import "AwfulFrameworkCategories.h"
+@import AwfulCore;
 
 void HighlightQuotesOfPostsByUserNamed(HTMLDocument *document, NSString *username)
 {
@@ -104,7 +105,7 @@ void UseHTML5VimeoPlayer(HTMLDocument *document)
 {
     for (HTMLElement *param in [document nodesMatchingSelector:@"div.bbcode_video object param[name='movie'][value*='://vimeo.com/']"]) {
         NSURL *sourceURL = [NSURL URLWithString:param[@"value"]];
-        NSString *clipID = sourceURL.queryDictionary[@"clip_id"];
+        NSString *clipID = sourceURL.awful_queryDictionary[@"clip_id"];
         if (clipID.length == 0) continue;
         HTMLElement *object = param.parentElement;
         if (![object.tagName isEqualToString:@"object"]) continue;

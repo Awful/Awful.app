@@ -10,7 +10,6 @@
 #import "AwfulThreadListScraper.h"
 #import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "LepersColonyPageScraper.h"
-#import "NSURLQueryDictionary.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
 #import "ProfileScraper.h"
@@ -496,7 +495,7 @@
              {
                  HTMLElement *link = [document firstNodeMatchingSelector:@"a[href *= 'showthread']"];
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                 NSString *threadID = AwfulCoreQueryDictionaryWithURL(URL)[@"threadid"];
+                 NSString *threadID = URL.awful_queryDictionary[@"threadid"];
                  NSError *error;
                  Thread *thread;
                  if (threadID.length > 0) {
@@ -617,7 +616,7 @@
     // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
     [operation setRedirectResponseBlock:^(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         NSURL *URL = request.URL;
-        NSMutableDictionary *queryDictionary = [AwfulCoreQueryDictionaryWithURL(URL) mutableCopy];
+        NSMutableDictionary *queryDictionary = [URL.awful_queryDictionary mutableCopy];
         queryDictionary[@"perpage"] = @"40";
         NSMutableArray *queryParts = [NSMutableArray new];
         for (id key in queryDictionary) {
@@ -700,7 +699,7 @@
                  HTMLElement *link = ([document firstNodeMatchingSelector:@"a[href *= 'goto=post']"] ?:
                                       [document firstNodeMatchingSelector:@"a[href *= 'goto=lastpost']"]);
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
-                 NSDictionary *queryDictionary = AwfulCoreQueryDictionaryWithURL(URL);
+                 NSDictionary *queryDictionary = URL.awful_queryDictionary;
                  if ([queryDictionary[@"goto"] isEqual:@"post"]) {
                      NSString *postID = queryDictionary[@"postid"];
                      if (postID.length > 0) {
@@ -936,7 +935,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         didSucceed = YES;
         if (!response) return request;
         [op cancel];
-        NSDictionary *query = AwfulCoreQueryDictionaryWithURL(request.URL);
+        NSDictionary *query = request.URL.awful_queryDictionary;
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             [managedObjectContext performBlock:^{
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];

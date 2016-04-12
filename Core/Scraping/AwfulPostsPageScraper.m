@@ -6,7 +6,6 @@
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
 #import "AwfulScanner.h"
-#import "NSURLQueryDictionary.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface AwfulPostsPageScraper ()
@@ -62,14 +61,14 @@
     if (hierarchyLinks.count > 1) {
         HTMLElement *groupLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
-        ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:AwfulCoreQueryDictionaryWithURL(URL)[@"forumid"]];
+        ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:URL.awful_queryDictionary[@"forumid"]];
         ForumGroup *group = [ForumGroup objectForKey:groupKey inManagedObjectContext:self.managedObjectContext];
         group.name = groupLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
-            ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:AwfulCoreQueryDictionaryWithURL(URL)[@"forumid"]];
+            ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.awful_queryDictionary[@"forumid"]];
             Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
