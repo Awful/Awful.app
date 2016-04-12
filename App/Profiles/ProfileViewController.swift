@@ -93,13 +93,15 @@ final class ProfileViewController: AwfulViewController {
     }
     
     private func renderProfile() {
-        let viewModel = ProfileViewModel(profile: user.profile)
         var HTML = ""
-        do {
-            HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
-        }
-        catch {
-            NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
+        if let profile = user.profile {
+            let viewModel = ProfileViewModel(profile: profile)
+            do {
+                HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
+            }
+            catch {
+                NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
+            }
         }
         webView.loadHTMLString(HTML, baseURL: baseURL)
     }

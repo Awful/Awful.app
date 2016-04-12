@@ -16,7 +16,6 @@
 #import "OnePasswordExtension.h"
 #import "PostPreviewViewController.h"
 #import "PostsPageViewController.h"
-#import "ProfileViewModel.h"
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadComposeViewController.h"
