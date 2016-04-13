@@ -112,6 +112,8 @@
 		1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */; };
 		1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */; };
 		1C16FBF11CBDBEB600C88BD1 /* NSURL-Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF01CBDBEB600C88BD1 /* NSURL-Awful.swift */; };
+		1C16FBF31CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift */; };
+		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -252,7 +254,6 @@
 		1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */; };
 		1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */; };
 		1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */; };
-		1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */; };
 		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
 		1C9F3AAF180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F3AAE180CAB2D00B3BCBA /* UIBarButtonItem+AwfulConvenience.m */; };
@@ -539,6 +540,8 @@
 		1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-QueryDictionary.swift"; sourceTree = "<group>"; };
 		1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLQueryDictionaryTests.swift; sourceTree = "<group>"; };
 		1C16FBF01CBDBEB600C88BD1 /* NSURL-Awful.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-Awful.swift"; sourceTree = "<group>"; };
+		1C16FBF21CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-OpensInBrowser.swift"; sourceTree = "<group>"; };
+		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -726,8 +729,6 @@
 		1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewDataSource.swift; sourceTree = "<group>"; };
 		1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewCell.swift; sourceTree = "<group>"; };
 		1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumTableViewCell.xib; sourceTree = "<group>"; };
-		1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+OpensInBrowser.h"; sourceTree = "<group>"; };
-		1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+OpensInBrowser.m"; sourceTree = "<group>"; };
 		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
 		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnreadPrivateMessageCountScraper.h; sourceTree = "<group>"; };
@@ -1132,6 +1133,14 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		1C16FBF41CBDC62F00C88BD1 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
 			isa = PBXGroup;
 			children = (
@@ -1140,8 +1149,7 @@
 				1C4079691A228DA6004A082F /* CopyURLActivity.swift */,
 				1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */,
 				1C16FBF01CBDBEB600C88BD1 /* NSURL-Awful.swift */,
-				1C96D0AD1682B25A0043B194 /* NSURL+OpensInBrowser.h */,
-				1C96D0AE1682B25A0043B194 /* NSURL+OpensInBrowser.m */,
+				1C16FBF21CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift */,
 				1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */,
 				1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */,
 			);
@@ -1207,6 +1215,7 @@
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
 				1CC780471612DA8D002AF958 /* Threads */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
+				1C16FBF41CBDC62F00C88BD1 /* Utilities */,
 				1CD005CD1BB734C900232FFD /* View Controllers */,
 				1CF7FACB1BB60C2200A077F2 /* Views */,
 				1C7C60C018FCA4D7009BF4BB /* Web View Junk */,
@@ -2447,12 +2456,14 @@
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
+				1C16FBF31CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeader.swift in Sources */,
 				1C8E10521918DA230010007B /* AwfulWebViewNetworkActivityIndicatorManager.m in Sources */,
 				1190F7F313BE4EDA00B9D271 /* main.m in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
+				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
 				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
@@ -2501,7 +2512,6 @@
 				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
-				1C96D0AF1682B25A0043B194 /* NSURL+OpensInBrowser.m in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,

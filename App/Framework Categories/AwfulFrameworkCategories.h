@@ -4,7 +4,6 @@
 
 #import "NSFileManager+UserDirectories.h"
 #import "NSString+CollapseWhitespace.h"
-#import "NSURL+OpensInBrowser.h"
 #import "NSURL+Punycode.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UIColor+AwfulConvenience.h"

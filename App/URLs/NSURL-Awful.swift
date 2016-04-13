@@ -76,14 +76,3 @@ private func verifyHost(URL: NSURL) -> Bool {
         return false
     }
 }
-
-private struct CaseInsensitive {
-    let string: String
-    init(_ string: String) {
-        self.string = string
-    }
-}
-
-private func ~=(pattern: String?, predicate: CaseInsensitive) -> Bool {
-    return pattern?.caseInsensitiveCompare(predicate.string) == .OrderedSame
-}
