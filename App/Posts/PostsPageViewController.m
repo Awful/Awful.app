@@ -8,7 +8,6 @@
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
-#import "AwfulWebViewNetworkActivityIndicatorManager.h"
 @import GRMustache;
 @import MRProgress;
 #import "PostComposeViewController.h"
@@ -48,7 +47,7 @@
 
 @implementation PostsPageViewController
 {
-    AwfulWebViewNetworkActivityIndicatorManager *_webViewNetworkActivityIndicatorManager;
+    WebViewNetworkActivityIndicatorManager *_webViewNetworkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
     BOOL _webViewDidLoadOnce;
     NSString *_jumpToPostIDAfterLoading;
@@ -959,7 +958,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     longPress.delegate = self;
     [self.webView addGestureRecognizer:longPress];
     
-    _webViewNetworkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
+    _webViewNetworkActivityIndicatorManager = [[WebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
     __weak __typeof__(self) welf = self;
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView
                                                          webViewDelegate:_webViewNetworkActivityIndicatorManager

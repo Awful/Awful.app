@@ -5,7 +5,6 @@
 #import "MessageViewController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
-#import "AwfulWebViewNetworkActivityIndicatorManager.h"
 @import GRMustache;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
@@ -24,7 +23,7 @@
 
 @implementation MessageViewController
 {
-    AwfulWebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
+    WebViewNetworkActivityIndicatorManager *_networkActivityIndicatorManager;
     WebViewJavascriptBridge *_webViewJavaScriptBridge;
     MessageComposeViewController *_composeViewController;
     BOOL _didRender;
@@ -243,7 +242,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _networkActivityIndicatorManager = [[AwfulWebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
+    _networkActivityIndicatorManager = [[WebViewNetworkActivityIndicatorManager alloc] initWithNextDelegate:self];
     _webViewJavaScriptBridge = [WebViewJavascriptBridge bridgeForWebView:self.webView webViewDelegate:_networkActivityIndicatorManager handler:^(id data, WVJBResponseCallback _) {
         NSLog(@"%s %@", __PRETTY_FUNCTION__, data);
     }];
