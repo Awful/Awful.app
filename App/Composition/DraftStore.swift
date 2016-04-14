@@ -17,7 +17,8 @@ final class DraftStore {
     class func sharedStore() -> DraftStore {
         struct Singleton {
             static var defaultDirectory: NSURL {
-                return NSFileManager.defaultManager().applicationSupportDirectory.URLByAppendingPathComponent("Drafts", isDirectory: true)
+                let appSupport = try! NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+                return appSupport.URLByAppendingPathComponent("Drafts", isDirectory: true)
             }
             
             static let instance = DraftStore(rootDirectory: defaultDirectory)

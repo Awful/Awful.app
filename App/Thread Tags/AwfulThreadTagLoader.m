@@ -218,7 +218,8 @@ static UIImage * EnsureDoubleScaledImage(UIImage *image)
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSURL *tagListURL = [NSURL URLWithString:[NSBundle mainBundle].infoDictionary[@"AwfulNewThreadTagListURL"]];
-        NSURL *cacheFolder = [[[NSFileManager defaultManager] cachesDirectory] URLByAppendingPathComponent:@"Thread Tags"];
+        NSURL *caches = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+        NSURL *cacheFolder = [caches URLByAppendingPathComponent:@"Thread Tags" isDirectory:YES];
         instance = [[self alloc] initWithTagListURL:tagListURL cacheFolder:cacheFolder];
     });
     return instance;

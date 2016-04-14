@@ -199,7 +199,9 @@ static void RemoveOldDataStores(void)
     // The Documents directory is pre-Awful 3.0. It was unsuitable because it was not user-managed data.
     // The Caches directory was used through Awful 3.1. It was unsuitable once user data was stored in addition to cached presentation data.
     // Both stores were under the same filename.
-    NSArray *directories = @[fileManager.documentDirectory, fileManager.cachesDirectory];
+    NSURL *documentDirectory = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    NSURL *cachesDirectory = [fileManager URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    NSArray *directories = @[documentDirectory, cachesDirectory];
     NSString *oldStoreFilename = @"AwfulData.sqlite";
     
     for (NSURL *directory in directories) {
@@ -236,7 +238,8 @@ static void RemoveOldDataStores(void)
     [[AwfulSettings sharedSettings] registerDefaults];
     [[AwfulSettings sharedSettings] migrateOldSettings];
     
-    NSURL *storeURL = [[[NSFileManager defaultManager] applicationSupportDirectory] URLByAppendingPathComponent:@"CachedForumData"
+    NSURL *appSupport = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    NSURL *storeURL = [appSupport URLByAppendingPathComponent:@"CachedForumData"
                                                                                                     isDirectory:YES];
     NSURL *modelURL = [[NSBundle bundleForClass:[DataStore class]] URLForResource:@"Awful" withExtension:@"momd"];
     _dataStore = [[DataStore alloc] initWithStoreDirectoryURL:storeURL modelURL:modelURL];
