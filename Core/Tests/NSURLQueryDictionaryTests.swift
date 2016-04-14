@@ -2,7 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-@testable import AwfulCore
+import AwfulCore
 import XCTest
 
 final class NSURLQueryDictionaryTests: XCTestCase {
