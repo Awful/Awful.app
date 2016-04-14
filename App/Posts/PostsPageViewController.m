@@ -73,13 +73,13 @@
         
         const CGFloat spacerWidth = 12;
         self.toolbarItems = @[ self.settingsItem,
-                               [UIBarButtonItem awful_flexibleSpace],
+                               [UIBarButtonItem flexibleSpace],
                                self.backItem,
-                               [UIBarButtonItem awful_fixedSpace:spacerWidth],
+                               [UIBarButtonItem fixedSpace:spacerWidth],
                                self.currentPageItem,
-                               [UIBarButtonItem awful_fixedSpace:spacerWidth],
+                               [UIBarButtonItem fixedSpace:spacerWidth],
                                self.forwardItem,
-                               [UIBarButtonItem awful_flexibleSpace],
+                               [UIBarButtonItem flexibleSpace],
                                self.actionsItem ];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -308,7 +308,7 @@
     _composeItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"compose"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _composeItem.accessibilityLabel = @"Reply to thread";
     __weak __typeof__(self) weakSelf = self;
-    _composeItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _composeItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (!self.replyWorkspace) {
             self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
@@ -342,7 +342,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _settingsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"page-settings"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _settingsItem.accessibilityLabel = @"Settings";
     __weak __typeof__(self) weakSelf = self;
-    _settingsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _settingsItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         PostsPageSettingsViewController *settings = [[PostsPageSettingsViewController alloc] initWithForum:self.thread.forum];
         settings.selectedTheme = self.theme;
@@ -358,7 +358,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _backItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowleft"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _backItem.accessibilityLabel = @"Previous page";
     __weak __typeof__(self) weakSelf = self;
-    _backItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _backItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page > 1) {
             [self loadPage:self.page - 1 updatingCache:YES updatingLastReadPost:YES];
@@ -374,7 +374,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _currentPageItem.possibleTitles = [NSSet setWithObject:@"2345 / 2345"];
     _currentPageItem.accessibilityHint = @"Opens page picker";
     __weak __typeof__(self) weakSelf = self;
-    _currentPageItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _currentPageItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.loadingView) return;
         Selectotron *selectotron = [[Selectotron alloc] initWithPostsViewController:self];
@@ -390,7 +390,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     _forwardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrowright"] style:UIBarButtonItemStylePlain target:nil action:nil];
     _forwardItem.accessibilityLabel = @"Next page";
     __weak __typeof__(self) weakSelf = self;
-    _forwardItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _forwardItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         if (self.page < self.numberOfPages && self.page > 0) {
             [self loadPage:self.page + 1 updatingCache:YES updatingLastReadPost:YES];
@@ -404,7 +404,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     if (_actionsItem) return _actionsItem;
     _actionsItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action"] style:UIBarButtonItemStylePlain target:nil action:nil];
     __weak __typeof__(self) weakSelf = self;
-    _actionsItem.awful_actionBlock = ^(UIBarButtonItem *sender) {
+    _actionsItem.actionBlock = ^(UIBarButtonItem *sender) {
         __typeof__(self) self = weakSelf;
         InAppActionViewController *actionViewController = [InAppActionViewController new];
         actionViewController.title = self.title;

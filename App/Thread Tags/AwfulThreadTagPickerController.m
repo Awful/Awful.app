@@ -59,7 +59,7 @@
     if (_cancelButtonItem) return _cancelButtonItem;
     _cancelButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:nil action:nil];
     __weak __typeof__(self) weakSelf = self;
-    _cancelButtonItem.awful_actionBlock = ^(UIBarButtonItem *item) {
+    _cancelButtonItem.actionBlock = ^(UIBarButtonItem *item) {
         __typeof__(self) self = weakSelf;
         [self dismiss];
         if ([self.delegate respondsToSelector:@selector(threadTagPickerDidDismiss:)]) {
@@ -74,7 +74,7 @@
     if (_doneButtonItem) return _doneButtonItem;
     _doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:nil action:nil];
     __weak __typeof__(self) weakSelf = self;
-    _doneButtonItem.awful_actionBlock = ^(UIBarButtonItem *item) {
+    _doneButtonItem.actionBlock = ^(UIBarButtonItem *item) {
         __typeof__(self) self = weakSelf;
         [self dismiss];
         if ([self.delegate respondsToSelector:@selector(threadTagPickerDidDismiss:)]) {

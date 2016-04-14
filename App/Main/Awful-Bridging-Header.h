@@ -17,7 +17,6 @@
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadComposeViewController.h"
-#import "UIBarButtonItem+AwfulConvenience.h"
 #import "UIColor+AwfulConvenience.h"
 #import "UINavigationItem+TwoLineTitle.h"
 #import "UIPasteboard+AwfulStringyURLs.h"

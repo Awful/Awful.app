@@ -71,7 +71,7 @@ final class ProfileViewController: AwfulViewController {
         
         if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
             let doneItem = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: nil)
-            doneItem.awful_actionBlock = { _ in
+            doneItem.actionBlock = { _ in
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
             navigationItem.leftBarButtonItem = doneItem
