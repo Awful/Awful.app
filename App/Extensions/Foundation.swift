@@ -21,6 +21,14 @@ extension NSMutableURLRequest {
     }
 }
 
+extension NSString {
+    var stringByCollapsingWhitespace: String {
+        // Literal regex; should crash loudly if it can't be used.
+        let regex = try! NSRegularExpression(pattern: "\\s+", options: [])
+        return regex.stringByReplacingMatchesInString(self as String, options: [], range: NSRange(0..<length), withTemplate: " ")
+    }
+}
+
 extension NSTimer {
     class func scheduledTimerWithTimeInterval(timeInterval: NSTimeInterval, handler: NSTimer -> Void) -> NSTimer {
         return CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + timeInterval, 0, 0, 0) { timer in

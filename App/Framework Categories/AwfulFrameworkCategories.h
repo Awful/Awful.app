@@ -2,7 +2,6 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "NSString+CollapseWhitespace.h"
 #import "NSURL+Punycode.h"
 #import "UIBarButtonItem+AwfulConvenience.h"
 #import "UIColor+AwfulConvenience.h"
