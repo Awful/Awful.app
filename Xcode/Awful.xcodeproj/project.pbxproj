@@ -116,6 +116,7 @@
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
 		1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */; };
+		1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -274,7 +275,6 @@
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CB52A6E1637B21700032AD3 /* AwfulThreadTagLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CAED9DA16373F91001F5F04 /* AwfulThreadTagLoader.m */; };
 		1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* MessageViewController.m */; };
-		1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */; };
 		1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74AD181A16040076234E /* PostComposeViewController.m */; };
 		1CBC74B4181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CBC74B3181A57E00076234E /* UIPasteboard+AwfulStringyURLs.m */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
@@ -544,6 +544,7 @@
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
 		1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerCell.swift; sourceTree = "<group>"; };
+		1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageChecker.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -762,8 +763,6 @@
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
 		1CB6010916D826F000CBEE22 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		1CB6010A16D826F000CBEE22 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
-		1CB6011316D8376A00CBEE22 /* NewMessageChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMessageChecker.h; sourceTree = "<group>"; };
-		1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMessageChecker.m; sourceTree = "<group>"; };
 		1CBC74AC181A16040076234E /* PostComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostComposeViewController.h; sourceTree = "<group>"; };
 		1CBC74AD181A16040076234E /* PostComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostComposeViewController.m; sourceTree = "<group>"; };
 		1CBC74B2181A57E00076234E /* UIPasteboard+AwfulStringyURLs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+AwfulStringyURLs.h"; sourceTree = "<group>"; };
@@ -1467,8 +1466,7 @@
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
 				1CB6010916D826F000CBEE22 /* MessageViewController.h */,
 				1CB6010A16D826F000CBEE22 /* MessageViewController.m */,
-				1CB6011316D8376A00CBEE22 /* NewMessageChecker.h */,
-				1CB6011416D8376A00CBEE22 /* NewMessageChecker.m */,
+				1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */,
 				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
 				1C8E10471914D1010010007B /* private-message.js */,
 				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
@@ -2527,6 +2525,7 @@
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
+				1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
@@ -2536,7 +2535,6 @@
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
 				F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */,
 				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
-				1CB6011516D8376A00CBEE22 /* NewMessageChecker.m in Sources */,
 				1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CC256BA1A3AA206003FA7A8 /* CloseBBcodeTagCommand.m in Sources */,

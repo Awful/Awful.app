@@ -25,7 +25,7 @@ final class MessageListViewController: AwfulTableViewController {
         navigationItem.rightBarButtonItem = composeItem
         
         let noteCenter = NSNotificationCenter.defaultCenter()
-        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NewMessageCheckerUnreadCountDidChangeNotification, object: nil)
+        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NewMessageChecker.didChangeNotification, object: nil)
         noteCenter.addObserver(self, selector: #selector(MessageListViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
     }
 
@@ -60,7 +60,7 @@ final class MessageListViewController: AwfulTableViewController {
     }
     
     private func updateUnreadMessageCountBadge() {
-        let unreadCount = NewMessageChecker.sharedChecker().unreadCount
+        let unreadCount = NewMessageChecker.sharedChecker.unreadCount
         if unreadCount > 0 {
             tabBarItem.badgeValue = "\(unreadCount)"
         } else {
@@ -190,7 +190,7 @@ extension MessageListViewController: DeletesMessages {
     private func deleteMessage(message: PrivateMessage) {
         message.managedObjectContext!.deleteObject(message)
         if !message.seen {
-            NewMessageChecker.sharedChecker().decrementUnreadCount()
+            NewMessageChecker.sharedChecker.decrementUnreadCount()
         }
         AwfulForumsClient.sharedClient().deletePrivateMessage(message) { [weak self] error in
             if let error = error {

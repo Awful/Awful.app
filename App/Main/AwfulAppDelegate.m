@@ -11,7 +11,6 @@
 #import "AwfulSettings.h"
 #import "AwfulURLRouter.h"
 #import <GRMustache/GRMustache.h>
-#import "NewMessageChecker.h"
 @import Smilies;
 #import "Awful-Swift.h"
 

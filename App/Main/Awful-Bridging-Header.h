@@ -10,7 +10,6 @@
 #import "CloseBBcodeTagCommand.h"
 #import "MessageComposeViewController.h"
 #import "MessageViewController.h"
-#import "NewMessageChecker.h"
 #import "NSFileManager+UserDirectories.h"
 #import "NSURL+Punycode.h"
 #import "OnePasswordExtension.h"
