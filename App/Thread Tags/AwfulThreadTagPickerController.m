@@ -5,7 +5,6 @@
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulFrameworkCategories.h"
 #import "AwfulThreadTagLoader.h"
-#import "AwfulThreadTagPickerCell.h"
 #import "Awful-Swift.h"
 
 @interface AwfulThreadTagPickerController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIPopoverPresentationControllerDelegate>
@@ -103,8 +102,8 @@
     self.collectionView = [[UICollectionView alloc] initWithFrame:(CGRect){.size = self.view.bounds.size} collectionViewLayout:layout];
     self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.collectionView];
-    [self.collectionView registerClass:[AwfulThreadTagPickerCell class] forCellWithReuseIdentifier:CellIdentifier];
-    [self.collectionView registerClass:[AwfulSecondaryTagPickerCell class] forCellWithReuseIdentifier:SecondaryCellIdentifier];
+    [self.collectionView registerClass:[ThreadTagPickerCell class] forCellWithReuseIdentifier:CellIdentifier];
+    [self.collectionView registerClass:[SecondaryTagPickerCell class] forCellWithReuseIdentifier:SecondaryCellIdentifier];
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
     self.collectionView.allowsMultipleSelection = self.secondaryImageNames.count > 0;
@@ -226,14 +225,14 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self sectionIsForSecondaryThreadTags:indexPath.section]) {
-        AwfulSecondaryTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SecondaryCellIdentifier forIndexPath:indexPath];
+        SecondaryTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SecondaryCellIdentifier forIndexPath:indexPath];
         
         cell.titleTextColor = self.theme[@"tagPickerTextColor"];
         cell.tagImageName = self.secondaryImageNames[indexPath.item];
         
         return cell;
     } else {
-        AwfulThreadTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+        ThreadTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
         NSInteger item = indexPath.item;
         NSString *imageName = self.imageNames[item];
         UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
