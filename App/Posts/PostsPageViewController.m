@@ -5,7 +5,6 @@
 #import "PostsPageViewController.h"
 @import ARChromeActivity;
 #import "AwfulJavaScript.h"
-#import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
 @import GRMustache;
 @import MRProgress;
@@ -33,7 +32,7 @@
 
 @property (nonatomic) NSInteger hiddenPosts;
 @property (copy, nonatomic) NSString *advertisementHTML;
-@property (nonatomic) AwfulLoadingView *loadingView;
+@property (nonatomic) LoadingView *loadingView;
 
 @property (strong, nonatomic) ReplyWorkspace *replyWorkspace;
 @property (strong, nonatomic) MessageComposeViewController *messageViewController;
@@ -524,7 +523,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
     if (self.loadingView) {
         [self.loadingView removeFromSuperview];
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:theme];
+        self.loadingView = [LoadingView loadingViewWithTheme:theme];
         [self.view addSubview:self.loadingView];
     }
     
@@ -609,7 +608,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 - (void)showLoadingView
 {
     if (!self.loadingView) {
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
+        self.loadingView = [LoadingView loadingViewWithTheme:self.theme];
     }
     [self.view addSubview:self.loadingView];
 }

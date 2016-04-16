@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageViewController.h"
-#import "AwfulLoadingView.h"
 @import GRMustache;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
@@ -14,7 +13,7 @@
 
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
-@property (strong, nonatomic) AwfulLoadingView *loadingView;
+@property (strong, nonatomic) LoadingView *loadingView;
 
 @property (strong, nonatomic) UIBarButtonItem *replyButtonItem;
 
@@ -257,7 +256,7 @@
     [self.webView addGestureRecognizer:longPress];
     
     if (self.privateMessage.innerHTML.length == 0 || self.privateMessage.from == nil) {
-        self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
+        self.loadingView = [LoadingView loadingViewWithTheme:self.theme];
         [self.view addSubview:self.loadingView];
         __weak __typeof__(self) weakSelf = self;
         [[AwfulForumsClient client] readPrivateMessageWithKey:self.privateMessage.objectKey andThen:^(NSError *error, PrivateMessage *message) {

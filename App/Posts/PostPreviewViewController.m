@@ -5,7 +5,6 @@
 #import "PostPreviewViewController.h"
 #import "AwfulForumsClient.h"
 #import "AwfulJavaScript.h"
-#import "AwfulLoadingView.h"
 #import "AwfulSettings.h"
 #import <GRMustache/GRMustache.h>
 #import "Awful-Swift.h"
@@ -14,7 +13,7 @@
 
 @property (strong, nonatomic) UIBarButtonItem *postButtonItem;
 
-@property (strong, nonatomic) AwfulLoadingView *loadingView;
+@property (strong, nonatomic) LoadingView *loadingView;
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
@@ -86,7 +85,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.loadingView = [AwfulLoadingView loadingViewForTheme:self.theme];
+    self.loadingView = [LoadingView loadingViewWithTheme:self.theme];
 }
 
 - (Theme *)theme
