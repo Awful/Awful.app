@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "MessageViewController.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulLoadingView.h"
 @import GRMustache;
 @import WebViewJavascriptBridge;
@@ -82,7 +81,7 @@
     NSURL *baseURL = [AwfulForumsClient client].baseURL;
     [self.webView loadHTMLString:HTML baseURL:baseURL];
     _didRender = YES;
-    self.webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
+    self.webView.fractionalContentOffset = _fractionalContentOffsetOnLoad;
 }
 
 - (UIBarButtonItem *)replyButtonItem
@@ -161,8 +160,8 @@
     
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
-        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRect()"];
-        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        NSString *rectString = [self.webView stringByEvaluatingJavaScriptFromString:@"HeaderRect()"];
+        *sourceRect = [self.webView rectForElementBoundingRect:rectString];
         *sourceView = self.webView;
     };
     [self presentViewController:actionViewController animated:YES completion:nil];
@@ -180,7 +179,7 @@
         __weak __typeof__(self) weakSelf = self;
         [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *response) {
             __typeof__(self) self = weakSelf;
-            [self.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
+            [self.webView stringByEvaluatingJavaScriptFromString:@"Awful.preventNextClickEvent()"];
             
             if (response.count == 0) return;
             
@@ -236,7 +235,7 @@
 
 - (void)loadView
 {
-    self.view = [UIWebView awful_nativeFeelingWebView];
+    self.view = [UIWebView nativeFeelingWebView];
 }
 
 - (void)viewDidLoad
@@ -249,7 +248,7 @@
     __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSString *rectString, WVJBResponseCallback responseCallback) {
         __typeof__(self) self = weakSelf;
-        CGRect rect = [self.webView awful_rectForElementBoundingRect:rectString];
+        CGRect rect = [self.webView rectForElementBoundingRect:rectString];
         [self showUserActionsFromRect:rect];
     }];
     
@@ -329,7 +328,7 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     if (!_didLoadOnce) {
-        webView.awful_fractionalContentOffset = _fractionalContentOffsetOnLoad;
+        webView.fractionalContentOffset = _fractionalContentOffsetOnLoad;
         _didLoadOnce = YES;
     }
     
@@ -376,7 +375,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [super encodeRestorableStateWithCoder:coder];
     [coder encodeObject:self.privateMessage.objectKey forKey:MessageKeyKey];
     [coder encodeObject:_composeViewController forKey:ComposeViewControllerKey];
-    [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrollFractionKey];
+    [coder encodeFloat:self.webView.fractionalContentOffset forKey:ScrollFractionKey];
 }
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder

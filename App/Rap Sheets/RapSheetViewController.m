@@ -5,7 +5,6 @@
 #import "RapSheetViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulFrameworkCategories.h"
 #import "Awful-Swift.h"
 
 @interface RapSheetViewController ()

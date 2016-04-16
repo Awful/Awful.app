@@ -5,7 +5,6 @@
 #import "SettingsViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 #import "SettingsBinding.h"
 #import "Awful-Swift.h"

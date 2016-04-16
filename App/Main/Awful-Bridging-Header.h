@@ -16,5 +16,4 @@
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadComposeViewController.h"
-#import "UIWebView+AwfulConvenience.h"
 #import "UploadImageAttachments.h"

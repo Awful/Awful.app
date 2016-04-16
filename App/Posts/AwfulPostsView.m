@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulPostsView.h"
-#import "AwfulFrameworkCategories.h"
 #import "Awful-Swift.h"
 
 typedef enum : NSInteger {
@@ -35,7 +34,7 @@ typedef enum : NSInteger {
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame])) {
-        _webView = [UIWebView awful_nativeFeelingWebView];
+        _webView = [UIWebView nativeFeelingWebView];
         _webView.backgroundColor = nil;
         [self addSubview:_webView];
         _webView.scrollView.delegate = self;
@@ -53,7 +52,7 @@ typedef enum : NSInteger {
 
 - (void)layoutSubviews
 {
-    CGFloat fractionalOffset = self.webView.awful_fractionalContentOffset;
+    CGFloat fractionalOffset = self.webView.fractionalContentOffset;
     
     CGRect topBarFrame = self.topBar.bounds;
     topBarFrame.origin.y = self.exposedTopBarSlice - CGRectGetHeight(topBarFrame);
@@ -78,7 +77,7 @@ typedef enum : NSInteger {
     // When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
     // That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
     if (!self.webView.scrollView.dragging) {
-        self.webView.awful_fractionalContentOffset = fractionalOffset;
+        self.webView.fractionalContentOffset = fractionalOffset;
     }
 }
 

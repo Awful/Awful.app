@@ -5,7 +5,6 @@
 #import "MessageComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"

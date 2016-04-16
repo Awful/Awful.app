@@ -12,7 +12,7 @@ extension URLMenuPresenter {
         if let linkInfo = info["spoiledLink"] as! [String: AnyObject]? {
             let linkURL = NSURL(string: linkInfo["URL"] as! String, relativeToURL: AwfulForumsClient.sharedClient().baseURL)!
             let presenter = URLMenuPresenter(linkURL: linkURL, imageURL: imageURL)
-            let sourceRect = webView.awful_rectForElementBoundingRect(linkInfo["rect"] as! String)
+            let sourceRect = webView.rectForElementBoundingRect(linkInfo["rect"] as! String)
             presenter.present(fromViewController: presentingViewController, fromRect: sourceRect, inView: webView)
             return true
         }
@@ -27,7 +27,7 @@ extension URLMenuPresenter {
         if let videoInfo = info["spoiledVideo"] as! [String: AnyObject]? {
             let videoURL = NSURL(string: videoInfo["URL"] as! String, relativeToURL: AwfulForumsClient.sharedClient().baseURL)!
             let presenter = URLMenuPresenter(videoURL: videoURL)
-            let sourceRect = webView.awful_rectForElementBoundingRect(videoInfo["rect"] as! String)
+            let sourceRect = webView.rectForElementBoundingRect(videoInfo["rect"] as! String)
             presenter.present(fromViewController: presentingViewController, fromRect: sourceRect, inView: webView)
             return true
         }

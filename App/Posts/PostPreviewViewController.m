@@ -4,7 +4,6 @@
 
 #import "PostPreviewViewController.h"
 #import "AwfulForumsClient.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulSettings.h"
@@ -79,7 +78,7 @@
 
 - (void)loadView
 {
-    UIWebView *webView = [UIWebView awful_nativeFeelingWebView];
+    UIWebView *webView = [UIWebView nativeFeelingWebView];
     webView.delegate = self;
     self.view = webView;
 }

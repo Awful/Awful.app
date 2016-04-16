@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTagPickerController.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 

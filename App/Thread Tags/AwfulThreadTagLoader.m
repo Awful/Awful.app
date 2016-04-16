@@ -4,7 +4,6 @@
 
 #import "AwfulThreadTagLoader.h"
 #import <AFNetworking/AFNetworking.h>
-#import "AwfulFrameworkCategories.h"
 
 @interface AwfulThreadTagLoader ()
 

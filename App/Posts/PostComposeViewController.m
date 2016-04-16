@@ -5,7 +5,6 @@
 #import "PostComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulFrameworkCategories.h"
 #import "AwfulSettings.h"
 #import "PostPreviewViewController.h"
 #import "Awful-Swift.h"

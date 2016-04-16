@@ -4,7 +4,6 @@
 
 #import "PostsPageViewController.h"
 @import ARChromeActivity;
-#import "AwfulFrameworkCategories.h"
 #import "AwfulJavaScript.h"
 #import "AwfulLoadingView.h"
 #import "AwfulPostsView.h"
@@ -205,7 +204,7 @@
         }
         
         if (reloadingSamePage || renderedCachedPosts) {
-            _scrollToFractionAfterLoading = self.webView.awful_fractionalContentOffset;
+            _scrollToFractionAfterLoading = self.webView.fractionalContentOffset;
         }
         
         [self renderPosts];
@@ -691,7 +690,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     __weak __typeof__(self) weakSelf = self;
     [_webViewJavaScriptBridge callHandler:@"interestingElementsAtPoint" data:data responseCallback:^(NSDictionary *elementInfo) {
         __typeof__(self) self = weakSelf;
-        [self.postsView.webView awful_evalJavaScript:@"Awful.preventNextClickEvent()"];
+        [self.postsView.webView stringByEvaluatingJavaScriptFromString:@"Awful.preventNextClickEvent()"];
         
         if (elementInfo.count == 0) return;
         
@@ -780,8 +779,8 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
-        NSString *rectString = [self.webView awful_evalJavaScript:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-        *sourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        NSString *rectString = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"HeaderRectForPostAtIndex(%lu)", (unsigned long)postIndex]];
+        *sourceRect = [self.webView rectForElementBoundingRect:rectString];
         *sourceView = self.webView;
     };
     [self presentViewController:actionViewController animated:YES completion:nil];
@@ -907,8 +906,8 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     actionViewController.title = [NSString stringWithFormat:@"%@ Post", possessiveUsername];
     actionViewController.items = items;
     actionViewController.popoverPositioningBlock = ^(CGRect *sourceRect, UIView * __autoreleasing *sourceView) {
-        NSString *rectString = [self.webView awful_evalJavaScript:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex];
-        popoverSourceRect = [self.webView awful_rectForElementBoundingRect:rectString];
+        NSString *rectString = [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"ActionButtonRectForPostAtIndex(%lu)", (unsigned long)postIndex]];
+        popoverSourceRect = [self.webView rectForElementBoundingRect:rectString];
         *sourceRect = popoverSourceRect;
         popoverSourceView = self.webView;
         *sourceView = popoverSourceView;
@@ -968,13 +967,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     }];
     [_webViewJavaScriptBridge registerHandler:@"didTapUserHeader" handler:^(NSDictionary *data, WVJBResponseCallback _) {
         __typeof__(self) self = welf;
-        CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        CGRect rect = [self.webView rectForElementBoundingRect:data[@"rect"]];
         NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
         [self didTapUserHeaderWithRect:rect forPostAtIndex:postIndex];
     }];
     [_webViewJavaScriptBridge registerHandler:@"didTapActionButton" handler:^(NSDictionary *data, WVJBResponseCallback _) {
         __typeof__(self) self = welf;
-        CGRect rect = [self.webView awful_rectForElementBoundingRect:data[@"rect"]];
+        CGRect rect = [self.webView rectForElementBoundingRect:data[@"rect"]];
         NSUInteger postIndex = [data[@"postIndex"] unsignedIntegerValue];
         [self didTapActionButtonWithRect:rect forPostAtIndex:postIndex];
     }];
@@ -1092,7 +1091,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
         if (_jumpToPostIDAfterLoading) {
             [_webViewJavaScriptBridge callHandler:@"jumpToPostWithID" data:_jumpToPostIDAfterLoading];
         } else if (_scrollToFractionAfterLoading > 0) {
-            webView.awful_fractionalContentOffset = _scrollToFractionAfterLoading;
+            webView.fractionalContentOffset = _scrollToFractionAfterLoading;
         }
         _jumpToPostIDAfterLoading = nil;
         _scrollToFractionAfterLoading = 0;
@@ -1141,7 +1140,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
     [coder encodeInteger:self.hiddenPosts forKey:HiddenPostsKey];
     [coder encodeObject:self.messageViewController forKey:MessageViewControllerKey];
     [coder encodeObject:self.advertisementHTML forKey:AdvertisementHTMLKey];
-    [coder encodeFloat:self.webView.awful_fractionalContentOffset forKey:ScrolledFractionOfContentKey];
+    [coder encodeFloat:self.webView.fractionalContentOffset forKey:ScrolledFractionOfContentKey];
     [coder encodeObject:self.replyWorkspace forKey:ReplyWorkspaceKey];
 }
 

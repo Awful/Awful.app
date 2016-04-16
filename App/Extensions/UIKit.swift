@@ -275,3 +275,38 @@ extension UIViewController {
         return firstDescendantOfType(cls)
     }
 }
+
+extension UIWebView {
+    /// The percentage of the web view that's been scrolled down. Potentially more helpful than contentOffset when aiming for orientation indepdence.
+    var fractionalContentOffset: CGFloat {
+        get {
+            guard let
+                result = stringByEvaluatingJavaScriptFromString("document.body.scrollTop / document.body.scrollHeight"),
+                offset = Double(result)
+                else { return 0 }
+            return CGFloat(offset)
+        }
+        set {
+            stringByEvaluatingJavaScriptFromString("window.scroll(0, document.body.scrollHeight * \(newValue)")
+        }
+    }
+    
+    /// Creates and returns a UIWebView suitable for displaying native content.
+    class func nativeFeelingWebView() -> Self {
+        let webView = self.init()
+        webView.scalesPageToFit = true
+        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        webView.dataDetectorTypes = .None
+        webView.opaque = false
+        return webView
+    }
+    
+    /**
+        - parameter rectString: A string, formatted appropriately for CGRectFromString, representing the element's client bounding rect.
+     
+        - returns: A rect in the web view's coordinate system corresponding to an element's offset.
+     */
+    func rectForElementBoundingRect(rectString: String) -> CGRect {
+        return CGRectFromString(rectString).insetBy(dx: scrollView.contentInset.left, dy: scrollView.contentInset.top)
+    }
+}
