@@ -21,6 +21,24 @@ extension NSMutableURLRequest {
     }
 }
 
+extension NSScanner {
+    func scan(fromSet characterSet: NSCharacterSet) -> String? {
+        var scanned: NSString?
+        guard scanCharactersFromSet(characterSet, intoString: &scanned) else { return nil }
+        return scanned as String?
+    }
+    
+    func scan(string string: String) -> Bool {
+        return scanString(string, intoString: nil)
+    }
+    
+    func scanHex() -> UInt64? {
+        var int: UInt64 = 0
+        guard scanHexLongLong(&int) else { return nil }
+        return int
+    }
+}
+
 extension NSString {
     var stringByCollapsingWhitespace: String {
         // Literal regex; should crash loudly if it can't be used.

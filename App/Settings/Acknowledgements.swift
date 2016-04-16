@@ -34,8 +34,8 @@ final class AcknowledgementsViewController: AwfulViewController {
         view.backgroundColor = UIColor.clearColor()
         
         let context = [
-            "backgroundColor": backgroundColor.awful_hexCode,
-            "textColor": textColor.awful_hexCode
+            "backgroundColor": backgroundColor.hexCode,
+            "textColor": textColor.hexCode
         ]
         let bundle = NSBundle(forClass: AcknowledgementsViewController.self)
         
@@ -53,7 +53,7 @@ final class AcknowledgementsViewController: AwfulViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.awful_hexCode)'; s.color='\(textColor.awful_hexCode)'"
+        let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.hexCode)'; s.color='\(textColor.hexCode)'"
         webView.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
                 NSLog("%@ error running script `%@` in acknowledgements screen: %@", #function, js, error)

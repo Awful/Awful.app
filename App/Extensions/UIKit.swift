@@ -44,6 +44,56 @@ private class BlockWrapper {
 
 private var actionBlockKey = 0
 
+extension UIColor {
+    convenience init?(hexCode: String) {
+        let scanner = NSScanner(string: hexCode)
+        scanner.scan(string: "#")
+        let start = scanner.scanLocation
+        guard let hex = scanner.scanHex() else { return nil }
+        let length = scanner.scanLocation - start
+        switch length {
+        case 3:
+            self.init(
+                red: CGFloat((hex & 0xF00) >> 8) / 15,
+                green: CGFloat((hex & 0x0F0) >> 4) / 15,
+                blue: CGFloat((hex & 0x00F) >> 0) / 15,
+                alpha: 1)
+        case 4:
+            self.init(
+                red: CGFloat((hex & 0xF000) >> 12) / 15,
+                green: CGFloat((hex & 0x0F00) >> 8) / 15,
+                blue: CGFloat((hex & 0x00F0) >> 4) / 15,
+                alpha: CGFloat((hex & 0x000F) >> 0) / 15)
+        case 6:
+            self.init(
+                red: CGFloat((hex & 0xFF0000) >> 16) / 255,
+                green: CGFloat((hex & 0x00FF00) >> 8) / 255,
+                blue: CGFloat((hex & 0x0000FF) >> 0) / 255,
+                alpha: 1)
+        case 8:
+            self.init(
+                red: CGFloat((hex & 0xFF000000) >> 24) / 255,
+                green: CGFloat((hex & 0x00FF0000) >> 16) / 255,
+                blue: CGFloat((hex & 0x0000FF00) >> 8) / 255,
+                alpha: CGFloat((hex & 0x000000FF) >> 0) / 255)
+        default:
+            return nil
+        }
+    }
+    
+    var hexCode: String {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return "" }
+        func hexy(f: CGFloat) -> String {
+            return String(lround(Double(f) * 255), radix: 16, uppercase: false)
+        }
+        return "#" + [red, green, blue].map(hexy).joinWithSeparator("")
+    }
+}
+
 extension UIFont {
     /// Typed versions of the `UIFontTextStyle*` constants.
     enum TextStyle {

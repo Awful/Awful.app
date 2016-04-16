@@ -66,8 +66,8 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         didSet {
             guard let name = tagImageName, info = tagInfo[name] else { return }
             titleText = info["title"] ?? "?????"
-            if let hexColor = info["color"] {
-                drawColor = UIColor.awful_colorWithHexCode(hexColor)
+            if let hexColor = info["color"], color = UIColor(hexCode: hexColor) {
+                drawColor = color
             } else {
                 drawColor = .redColor()
             }

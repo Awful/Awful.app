@@ -357,7 +357,6 @@
 		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; };
 		BC9ECF5C508981ACAF1DC54D /* Pods_Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA065CF2C50CD212D10284E /* Pods_Core.framework */; };
 		D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A40BB24850D9A942D1E270 /* Pods_Awful.framework */; };
-		F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F44773E4197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
@@ -884,8 +883,6 @@
 		AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
 		BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA065CF2C50CD212D10284E /* Pods_Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AwfulConvenience.h"; sourceTree = "<group>"; };
-		F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AwfulConvenience.m"; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F44773E2197E931D00A28CC9 /* AwfulUnpoppingViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnpoppingViewHandler.h; sourceTree = "<group>"; };
 		F44773E3197E931D00A28CC9 /* AwfulUnpoppingViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnpoppingViewHandler.m; sourceTree = "<group>"; };
@@ -1632,8 +1629,6 @@
 				1CE68BD716F7C18E003D56C9 /* NSURL+Punycode.h */,
 				1CE68BD816F7C18E003D56C9 /* NSURL+Punycode.m */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
-				F4233C531917BD1900482BD0 /* UIColor+AwfulConvenience.h */,
-				F4233C541917BD1900482BD0 /* UIColor+AwfulConvenience.m */,
 				1C89A79C18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.h */,
 				1C89A79D18B8C73D00D75854 /* UIGestureRecognizer+AwfulConvenience.m */,
 				1CE2D9D2166ABD0D0024AC1C /* UINavigationItem+TwoLineTitle.h */,
@@ -2531,7 +2526,6 @@
 				1CA1F04519109C0100E85DB2 /* UIWebView+AwfulConvenience.m in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
-				F4233C551917BD1900482BD0 /* UIColor+AwfulConvenience.m in Sources */,
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
 				1CE68BD916F7C18E003D56C9 /* NSURL+Punycode.m in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
