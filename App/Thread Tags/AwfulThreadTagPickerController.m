@@ -130,7 +130,7 @@
     self.presentingView = view;
     
     presentedViewController.modalPresentationStyle = UIModalPresentationPopover;
-    [view.awful_viewController presentViewController:presentedViewController animated:YES completion:nil];
+    [view.nearestViewController presentViewController:presentedViewController animated:YES completion:nil];
 
     UIPopoverPresentationController *popover = presentedViewController.popoverPresentationController;
     popover.delegate = self;

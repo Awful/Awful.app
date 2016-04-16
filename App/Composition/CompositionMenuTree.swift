@@ -81,7 +81,7 @@ final class CompositionMenuTree: NSObject {
                 popover.delegate = self
             }
         }
-        textView.awful_viewController.presentViewController(picker, animated: true, completion: nil)
+        textView.nearestViewController?.presentViewController(picker, animated: true, completion: nil)
     }
     
     private func insertImage(image: UIImage, withAssetURL assetURL: NSURL? = nil) {

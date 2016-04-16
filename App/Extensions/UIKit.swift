@@ -232,3 +232,14 @@ extension UITextView {
         }
     }
 }
+
+extension UIView {
+    var nearestViewController: UIViewController? {
+        var responder: UIResponder? = self
+        while responder != nil {
+            responder = responder?.nextResponder()
+            if let vc = responder as? UIViewController { return vc }
+        }
+        return nil
+    }
+}

@@ -16,7 +16,6 @@
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadComposeViewController.h"
-#import "UIView+AwfulConvenient.h"
 #import "UIViewController+AwfulAnnoyingSwift.h"
 #import "UIViewController+HierarchySearch.h"
 #import "UIViewController+NavigationEnclosure.h"
