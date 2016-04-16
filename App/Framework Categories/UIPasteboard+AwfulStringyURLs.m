@@ -4,13 +4,12 @@
 
 #import "UIPasteboard+AwfulStringyURLs.h"
 @import MobileCoreServices;
-#import "NSURL+Punycode.h"
 
 @implementation UIPasteboard (AwfulStringyURLs)
 
 - (NSURL *)awful_URL
 {
-    return self.URL ?: [NSURL awful_URLWithString:self.string];
+    return self.URL ?: [NSURL URLWithString:self.string];
 }
 
 - (void)awful_setURL:(NSURL *)URL

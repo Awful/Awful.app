@@ -329,7 +329,7 @@ static void RemoveOldDataStores(void)
     }
     [AwfulSettings sharedSettings].lastOfferedPasteboardURL = URL.absoluteString;
     
-    NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", URL.awful_absoluteUnicodeString];
+    NSString *message = [NSString stringWithFormat:@"Would you like to open this URL in Awful?\n\n%@", URL.absoluteString];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open in Awful" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Open" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {

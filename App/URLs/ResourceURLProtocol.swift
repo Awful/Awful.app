@@ -69,7 +69,7 @@ private struct Resource {
     
     init(_ resourceURL: NSURL) {
         // Can't really use NSURLComponents here since awful-resource:// URLs have annoying bits like "@2x" in images. Easier to parse ourselves.
-        let scanner = NSScanner(string: resourceURL.awful_absoluteUnicodeString())
+        let scanner = NSScanner(string: resourceURL.absoluteString)
         scanner.charactersToBeSkipped = nil
         scanner.scanString(scheme, intoString: nil)
         scanner.scanString(":", intoString: nil)
