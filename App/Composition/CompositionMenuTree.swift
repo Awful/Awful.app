@@ -222,7 +222,10 @@ private let formattingItems = [
 private let videoSubmenuItems = [
     MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
-        if let URL = videoTagURLForURL(UIPasteboard.generalPasteboard().awful_URL) {
+        if let
+            copiedURL = UIPasteboard.generalPasteboard().awful_URL,
+            URL = videoTagURLForURL(copiedURL)
+        {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
                 let tag = "[video]\(URL.absoluteString)[/video]"

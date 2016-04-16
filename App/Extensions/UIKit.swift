@@ -147,6 +147,24 @@ extension UINavigationItem {
     }
 }
 
+extension UIPasteboard {
+    /// Some (system) apps seem to put actual NSURLs on the pasteboard, while others deal in strings that happen to resemble URLs. This property handles both.
+    var awful_URL: NSURL? {
+        get {
+            if let URL = URL { return URL }
+            if let string = string { return NSURL(string: string) }
+            return nil
+        }
+        set {
+            items = []
+            guard let newURL = newValue else { return }
+            items = [[
+                kUTTypeURL as String: newURL,
+                kUTTypePlainText as String: newURL.absoluteString]]
+        }
+    }
+}
+
 extension UITableViewCell {
     /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
     var selectedBackgroundColor: UIColor? {
