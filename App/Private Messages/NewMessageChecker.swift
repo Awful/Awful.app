@@ -33,7 +33,7 @@ final class NewMessageChecker: NSObject {
     private func startTimer() {
         timer?.invalidate()
         let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.NewPrivateMessages).timeIntervalSinceNow
-        timer = NSTimer.scheduledTimerWithTimeInterval(interval, handler: { [weak self] timer in
+        timer = NSTimer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
             self?.refreshIfNecessary()
         })
     }

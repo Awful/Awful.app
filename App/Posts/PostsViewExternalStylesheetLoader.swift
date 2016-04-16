@@ -108,7 +108,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
     
     private func startTimer() {
         let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.ExternalStylesheet).timeIntervalSinceNow
-        updateTimer = NSTimer.scheduledTimerWithTimeInterval(interval, handler: { [weak self] timer in
+        updateTimer = NSTimer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
             if self?.updateTimer === timer {
                 self?.updateTimer = nil
             }

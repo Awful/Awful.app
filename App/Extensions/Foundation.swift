@@ -48,9 +48,11 @@ extension NSString {
 }
 
 extension NSTimer {
-    class func scheduledTimerWithTimeInterval(timeInterval: NSTimeInterval, handler: NSTimer -> Void) -> NSTimer {
-        return CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + timeInterval, 0, 0, 0) { timer in
+    class func scheduledTimerWithInterval(interval: NSTimeInterval, repeats: Bool = false, handler: NSTimer -> Void) -> NSTimer {
+        let timer = CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + interval, repeats ? interval : 0, 0, 0) { timer in
             handler(timer)
         }
+        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes)
+        return timer
     }
 }

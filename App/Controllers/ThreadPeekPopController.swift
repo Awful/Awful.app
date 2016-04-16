@@ -79,7 +79,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                     let title = thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
                     let overlay = MRProgressOverlayView.showOverlayAddedTo(presentingViewController.view, title: title, mode: .Checkmark, animated: true)
                     
-                    NSTimer.scheduledTimerWithTimeInterval(0.7) { timer in
+                    NSTimer.scheduledTimerWithInterval(0.7) { timer in
                         overlay.dismiss(true)
                     }
                 }
