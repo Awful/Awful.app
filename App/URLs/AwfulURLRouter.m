@@ -246,7 +246,7 @@
         UIViewController *match = [topmost awful_firstDescendantViewControllerOfClass:class];
         if (match) {
             tabBarController.selectedViewController = topmost;
-            [splitViewController awful_showPrimaryViewController];
+            [splitViewController showPrimaryViewController];
             return match;
         }
     }

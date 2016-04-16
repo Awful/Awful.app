@@ -270,7 +270,7 @@ extension RootViewControllerStack {
             // Laying out the split view now prevents it from getting caught up in the animation block that hides the primary view controller. Otherwise we get to see an ugly animated resizing of the new secondary view from a 0-rect up to full screen.
             splitViewController.view.layoutIfNeeded()
             
-            splitViewController.awful_hidePrimaryViewController()
+            splitViewController.hidePrimaryViewController()
         }
         
         return true

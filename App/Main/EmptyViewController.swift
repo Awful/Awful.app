@@ -7,6 +7,6 @@ final class EmptyViewController: AwfulViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        splitViewController?.awful_showPrimaryViewController()
+        splitViewController?.showPrimaryViewController()
     }
 }

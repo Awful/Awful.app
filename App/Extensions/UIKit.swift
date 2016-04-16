@@ -165,6 +165,28 @@ extension UIPasteboard {
     }
 }
 
+extension UISplitViewController {
+    /// Animates the primary view controller into view if it is not already visible.
+    func showPrimaryViewController() {
+        // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
+        guard !collapsed else { return }
+        guard displayMode == .PrimaryHidden else { return }
+        let button = displayModeButtonItem()
+        guard let target = button.target as? NSObject else { return }
+        target.performSelector(button.action, withObject: nil)
+    }
+    
+    /// Animates the primary view controller out of view if it is currently visible in an overlay.
+    func hidePrimaryViewController() {
+        // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
+        guard collapsed else { return }
+        guard displayMode == .PrimaryOverlay else { return }
+        let button = displayModeButtonItem()
+        guard let target = button.target as? NSObject else { return }
+        target.performSelector(button.action, withObject: nil)
+    }
+}
+
 extension UITableViewCell {
     /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
     var selectedBackgroundColor: UIColor? {
