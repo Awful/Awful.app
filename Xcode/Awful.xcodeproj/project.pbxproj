@@ -283,7 +283,6 @@
 		1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */; };
 		1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */; };
 		1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
-		1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
@@ -761,8 +760,6 @@
 		1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowSmilieKeyboardCommand.swift; sourceTree = "<group>"; };
 		1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionMenuTree.swift; sourceTree = "<group>"; };
 		1CC256C01A3B154A003FA7A8 /* Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swift.swift; sourceTree = "<group>"; };
-		1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+HideStuff.h"; sourceTree = "<group>"; };
-		1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+HideStuff.m"; sourceTree = "<group>"; };
 		1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulFrameworkCategories.h; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
@@ -1607,8 +1604,6 @@
 			children = (
 				1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
-				1CC4525F180B3D3A00F5F043 /* UITableView+HideStuff.h */,
-				1CC45260180B3D3A00F5F043 /* UITableView+HideStuff.m */,
 				1CD82F52194D976D00B0C5BD /* UIView+AwfulConvenient.h */,
 				1CD82F53194D976D00B0C5BD /* UIView+AwfulConvenient.m */,
 				1C03B51E19C28A100045609C /* UIViewController+AwfulAnnoyingSwift.h */,
@@ -2499,7 +2494,6 @@
 				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
-				1CC45261180B3D3A00F5F043 /* UITableView+HideStuff.m in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,

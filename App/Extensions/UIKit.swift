@@ -187,6 +187,20 @@ extension UISplitViewController {
     }
 }
 
+extension UITableView {
+    /// Stops the table view from showing any cell separators after the last cell.
+    func hideExtraneousSeparators() {
+        tableFooterView = UIView()
+    }
+    
+    /// Causes the section headers not to stick to the top of a table view.
+    func unstickSectionHeaders() {
+        let headerFrame = CGRectMake(0, 0, 0, sectionHeaderHeight * 2)
+        tableHeaderView = UIView(frame: headerFrame)
+        contentInset.top -= headerFrame.height
+    }
+}
+
 extension UITableViewCell {
     /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
     var selectedBackgroundColor: UIColor? {
