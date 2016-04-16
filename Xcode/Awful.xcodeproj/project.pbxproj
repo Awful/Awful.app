@@ -224,7 +224,6 @@
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */; };
-		1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -678,8 +677,6 @@
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
 		1C76C66A1A49E87F00E81286 /* UploadImageAttachments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadImageAttachments.h; sourceTree = "<group>"; };
 		1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadImageAttachments.m; sourceTree = "<group>"; };
-		1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HierarchySearch.h"; sourceTree = "<group>"; };
-		1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HierarchySearch.m"; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -1598,8 +1595,6 @@
 			children = (
 				1CC45262180B54B600F5F043 /* AwfulFrameworkCategories.h */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
-				1C797D63199B679A00468056 /* UIViewController+HierarchySearch.h */,
-				1C797D64199B679A00468056 /* UIViewController+HierarchySearch.m */,
 				1CE2D9D4166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.h */,
 				1CE2D9D5166ABD0D0024AC1C /* UIViewController+NavigationEnclosure.m */,
 				1CA1F04319109C0100E85DB2 /* UIWebView+AwfulConvenience.h */,
@@ -2499,7 +2494,6 @@
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
-				1C797D65199B679A00468056 /* UIViewController+HierarchySearch.m in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */,

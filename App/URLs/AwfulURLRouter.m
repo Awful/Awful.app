@@ -226,12 +226,12 @@
 
 - (BOOL)jumpToForum:(Forum *)forum
 {
-    ThreadsTableViewController *threadList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ThreadsTableViewController class]];
+    ThreadsTableViewController *threadList = [self.rootViewController firstDescendantOfClass:[ThreadsTableViewController class]];
     if ([threadList.forum isEqual:forum]) {
         [threadList.navigationController popToViewController:threadList animated:YES];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:threadList.class];
     } else {
-        ForumsTableViewController *forumsList = [self.rootViewController awful_firstDescendantViewControllerOfClass:[ForumsTableViewController class]];
+        ForumsTableViewController *forumsList = [self.rootViewController firstDescendantOfClass:[ForumsTableViewController class]];
         [forumsList.navigationController popToViewController:forumsList animated:NO];
         [forumsList openForum:forum animated:NO];
         return !![self selectTopmostViewControllerContainingViewControllerOfClass:forumsList.class];
@@ -243,7 +243,7 @@
     UISplitViewController *splitViewController = (UISplitViewController *)self.rootViewController;
     UITabBarController *tabBarController = splitViewController.viewControllers.firstObject;
     for (UIViewController *topmost in tabBarController.viewControllers) {
-        UIViewController *match = [topmost awful_firstDescendantViewControllerOfClass:class];
+        UIViewController *match = [topmost firstDescendantOfClass:class];
         if (match) {
             tabBarController.selectedViewController = topmost;
             [splitViewController showPrimaryViewController];

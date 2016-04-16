@@ -243,3 +243,22 @@ extension UIView {
         return nil
     }
 }
+
+extension UIViewController {
+    func firstDescendantOfType<VC: UIViewController>(type: VC.Type) -> VC? {
+        if let found = self as? VC { return found }
+        if respondsToSelector(Selector("viewControllers")) {
+            for child in valueForKey("viewControllers") as! [UIViewController] {
+                if let found = child.firstDescendantOfType(type) {
+                    return found
+                }
+            }
+        }
+        return nil
+    }
+    
+    func firstDescendantOfClass(cls: AnyClass) -> AnyObject? {
+        guard let cls = cls as? UIViewController.Type else { return nil }
+        return firstDescendantOfType(cls)
+    }
+}
