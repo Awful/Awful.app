@@ -245,6 +245,19 @@ extension UIView {
 }
 
 extension UIViewController {
+    /// Returns the view controller's navigation controller, lazily creating an AwfulNavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
+    var enclosingNavigationController: UINavigationController {
+        if let nav = navigationController { return nav }
+        let nav = AwfulNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        if let identifier = restorationIdentifier {
+            nav.restorationIdentifier = "\(identifier) navigation"
+        }
+        return nav
+    }
+}
+
+extension UIViewController {
     func firstDescendantOfType<VC: UIViewController>(type: VC.Type) -> VC? {
         if let found = self as? VC { return found }
         if respondsToSelector(Selector("viewControllers")) {
