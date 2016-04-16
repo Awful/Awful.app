@@ -82,7 +82,7 @@ import UIKit
         @objc(colorNamed:) get {
             let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
             if let value = dictionary[key] as? String {
-                if let hexColor = UIColor(hexCode: value) {
+                if let hexColor = UIColor.fromHex(value) {
                     return hexColor
                 } else if let patternImage = UIImage(named: value) {
                     return UIColor(patternImage: patternImage)

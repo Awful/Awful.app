@@ -45,7 +45,8 @@ private class BlockWrapper {
 private var actionBlockKey = 0
 
 extension UIColor {
-    convenience init?(hexCode: String) {
+    // Making this a failable convenience initializer causes a crash in Xcode 7.3 (Swift 2.2, iOS 9.3) when bailing out early (i.e. when scanHex() fails).
+    class func fromHex(hexCode: String) -> UIColor? {
         let scanner = NSScanner(string: hexCode)
         scanner.scan(string: "#")
         let start = scanner.scanLocation
@@ -53,25 +54,25 @@ extension UIColor {
         let length = scanner.scanLocation - start
         switch length {
         case 3:
-            self.init(
+            return UIColor(
                 red: CGFloat((hex & 0xF00) >> 8) / 15,
                 green: CGFloat((hex & 0x0F0) >> 4) / 15,
                 blue: CGFloat((hex & 0x00F) >> 0) / 15,
                 alpha: 1)
         case 4:
-            self.init(
+            return UIColor(
                 red: CGFloat((hex & 0xF000) >> 12) / 15,
                 green: CGFloat((hex & 0x0F00) >> 8) / 15,
                 blue: CGFloat((hex & 0x00F0) >> 4) / 15,
                 alpha: CGFloat((hex & 0x000F) >> 0) / 15)
         case 6:
-            self.init(
+            return UIColor(
                 red: CGFloat((hex & 0xFF0000) >> 16) / 255,
                 green: CGFloat((hex & 0x00FF00) >> 8) / 255,
                 blue: CGFloat((hex & 0x0000FF) >> 0) / 255,
                 alpha: 1)
         case 8:
-            self.init(
+            return UIColor(
                 red: CGFloat((hex & 0xFF000000) >> 24) / 255,
                 green: CGFloat((hex & 0x00FF0000) >> 16) / 255,
                 blue: CGFloat((hex & 0x0000FF00) >> 8) / 255,
