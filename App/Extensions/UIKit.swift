@@ -126,6 +126,27 @@ extension UIFont {
     }
 }
 
+extension UINavigationItem {
+    /// A replacement label for the title that shows two lines on iPhone.
+    var titleLabel: UILabel {
+        if let label = titleView as? UILabel { return label }
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
+        label.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        label.textAlignment = .Center
+        label.textColor = .whiteColor()
+        label.accessibilityTraits |= UIAccessibilityTraitHeader
+        switch UIDevice.currentDevice().userInterfaceIdiom {
+        case .Pad:
+            label.font = UIFont.systemFontOfSize(17)
+        default:
+            label.font = UIFont.systemFontOfSize(13)
+            label.numberOfLines = 2
+        }
+        titleView = label
+        return label
+    }
+}
+
 extension UITableViewCell {
     /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
     var selectedBackgroundColor: UIColor? {

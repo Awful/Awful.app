@@ -16,7 +16,6 @@
 #import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "ThreadComposeViewController.h"
-#import "UINavigationItem+TwoLineTitle.h"
 #import "UIPasteboard+AwfulStringyURLs.h"
 #import "UISplitViewController+AwfulConvenient.h"
 #import "UITableView+HideStuff.h"

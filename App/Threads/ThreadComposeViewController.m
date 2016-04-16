@@ -8,7 +8,6 @@
 #import "AwfulThreadPreviewViewController.h"
 #import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
-#import "UINavigationItem+TwoLineTitle.h"
 #import "Awful-Swift.h"
 
 @interface ThreadComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
