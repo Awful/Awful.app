@@ -19,19 +19,19 @@ extension UIBarButtonItem {
     
     var actionBlock: (UIBarButtonItem -> Void)? {
         get {
-            guard let wrapper = objc_getAssociatedObject(self, actionBlockKey) as? BlockWrapper else { return nil }
+            guard let wrapper = objc_getAssociatedObject(self, &actionBlockKey) as? BlockWrapper else { return nil }
             return wrapper.block
         }
         set {
             guard let block = newValue else {
                 target = nil
                 action = nil
-                return objc_setAssociatedObject(self, actionBlockKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                return objc_setAssociatedObject(self, &actionBlockKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             }
             let wrapper = BlockWrapper(block)
             target = wrapper
             action = #selector(BlockWrapper.invoke(_:))
-            objc_setAssociatedObject(self, actionBlockKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &actionBlockKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
@@ -42,7 +42,7 @@ private class BlockWrapper {
     @objc func invoke(sender: UIBarButtonItem) { block(sender) }
 }
 
-private let actionBlockKey = UnsafePointer<Void>()
+private var actionBlockKey = 0
 
 extension UIFont {
     /// Typed versions of the `UIFontTextStyle*` constants.
