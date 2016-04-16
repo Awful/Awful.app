@@ -179,7 +179,7 @@ extension UISplitViewController {
     /// Animates the primary view controller out of view if it is currently visible in an overlay.
     func hidePrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
-        guard collapsed else { return }
+        guard !collapsed else { return }
         guard displayMode == .PrimaryOverlay else { return }
         let button = displayModeButtonItem()
         guard let target = button.target as? NSObject else { return }
