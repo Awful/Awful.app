@@ -39,7 +39,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             let navigationController = $0.enclosingNavigationController
             
             // We want the root navigation controllers to preserve their state, but we want to provide the restored instance ourselves.
-            navigationController.awful_clearRestorationClass()
+            navigationController.restorationClass = nil
             navigationController.restorationIdentifier = navigationIdentifier($0.restorationIdentifier)
             
             return navigationController
@@ -68,7 +68,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     private func createEmptyDetailNavigationController() -> UINavigationController {
         let emptyNavigationController = AwfulNavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
-        emptyNavigationController.awful_clearRestorationClass()
+        emptyNavigationController.restorationClass = nil
         return emptyNavigationController
     }
     
@@ -91,7 +91,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 messages.restorationIdentifier = messagesRestorationIdentifier
                 let navigationController = messages.enclosingNavigationController
                 navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)
-                navigationController.awful_clearRestorationClass()
+                navigationController.restorationClass = nil
                 roots.insertObject(navigationController, atIndex: 2)
             }
         } else {
