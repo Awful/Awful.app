@@ -55,3 +55,17 @@ extension CGContext {
         CGContextRestoreGState(self)
     }
 }
+
+extension CGFloat {
+    func clamp(low: CGFloat, _ high: CGFloat) -> CGFloat {
+        return Awful.max(Awful.min(self, high), low)
+    }
+}
+
+func max(lhs: CGFloat, _ rhs: CGFloat) -> CGFloat {
+    return lhs > rhs ? lhs : rhs
+}
+
+func min(lhs: CGFloat, _ rhs: CGFloat) -> CGFloat {
+    return lhs < rhs ? lhs: rhs
+}

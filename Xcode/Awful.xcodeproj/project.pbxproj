@@ -117,6 +117,7 @@
 		1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */; };
 		1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */; };
 		1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */; };
+		1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC031CC3D84500C88BD1 /* PostsView.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -231,7 +232,6 @@
 		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */; };
 		1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */; };
-		1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7D8957192E954B00003576 /* AwfulPostsView.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
@@ -528,6 +528,7 @@
 		1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerCell.swift; sourceTree = "<group>"; };
 		1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageChecker.swift; sourceTree = "<group>"; };
 		1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		1C16FC031CC3D84500C88BD1 /* PostsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -682,8 +683,6 @@
 		1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivateMessage.mustache; sourceTree = "<group>"; };
 		1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLRendering.h; sourceTree = "<group>"; };
 		1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRendering.m; sourceTree = "<group>"; };
-		1C7D8956192E954B00003576 /* AwfulPostsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsView.h; sourceTree = "<group>"; };
-		1C7D8957192E954B00003576 /* AwfulPostsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsView.m; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -1463,8 +1462,6 @@
 		1CC780241612D9DD002AF958 /* Posts */ = {
 			isa = PBXGroup;
 			children = (
-				1C7D8956192E954B00003576 /* AwfulPostsView.h */,
-				1C7D8957192E954B00003576 /* AwfulPostsView.m */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
 				1C3447E3175D9CCE007377C5 /* Post.mustache */,
 				1CBC74AC181A16040076234E /* PostComposeViewController.h */,
@@ -1478,6 +1475,7 @@
 				1CC780271612D9DE002AF958 /* PostsPageViewController.h */,
 				1CC780281612D9DE002AF958 /* PostsPageViewController.m */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
+				1C16FC031CC3D84500C88BD1 /* PostsView.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
 				1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */,
@@ -2379,7 +2377,6 @@
 				1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */,
 				1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */,
 				1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */,
-				1C7D8958192E954B00003576 /* AwfulPostsView.m in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1CD005D61BB8DA6400232FFD /* FetchedDataManager.swift in Sources */,
@@ -2451,6 +2448,7 @@
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
 				1CD82F51194D92FE00B0C5BD /* AwfulThreadTagPickerController.m in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
+				1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,

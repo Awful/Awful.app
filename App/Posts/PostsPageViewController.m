@@ -5,7 +5,6 @@
 #import "PostsPageViewController.h"
 @import ARChromeActivity;
 #import "AwfulJavaScript.h"
-#import "AwfulPostsView.h"
 @import GRMustache;
 @import MRProgress;
 #import "PostComposeViewController.h"
@@ -19,7 +18,7 @@
 
 @property (weak, nonatomic) NSOperation *networkOperation;
 
-@property (readonly, strong, nonatomic) AwfulPostsView *postsView;
+@property (readonly, strong, nonatomic) PostsView *postsView;
 @property (readonly, strong, nonatomic) UIWebView *webView;
 
 @property (nonatomic) UIBarButtonItem *composeItem;
@@ -919,9 +918,9 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     [_webViewJavaScriptBridge callHandler:@"changeExternalStylesheet" data:notification.object];
 }
 
-- (AwfulPostsView *)postsView
+- (PostsView *)postsView
 {
-    return (AwfulPostsView *)self.view;
+    return (PostsView *)self.view;
 }
 
 - (UIWebView *)webView
@@ -939,7 +938,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 
 - (void)loadView
 {
-    self.view = [AwfulPostsView new];
+    self.view = [PostsView new];
     
     PostsViewTopBar *topBar = self.postsView.topBar;
     [topBar.parentForumButton addTarget:self action:@selector(goToParentForum) forControlEvents:UIControlEventTouchUpInside];
