@@ -119,6 +119,7 @@
 		1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */; };
 		1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC031CC3D84500C88BD1 /* PostsView.swift */; };
 		1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */; };
+		1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -330,7 +331,6 @@
 		8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47B19AD7CA300B67AAA /* platinum-member.png */; };
 		8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C8FA47C19AD7CA300B67AAA /* redpill.png */; };
 		8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C9834E1169091CE009F0CD6 /* fyad-bubble.png */; };
-		8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */; };
 		8CCD500615B497A900E5893B /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CCD4CC315B497A800E5893B /* Settings.plist */; };
 		8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100518CAACF9002E92DA /* posts-view-byob.css */; };
 		8CE6100818CAAF74002E92DA /* cat.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8CE6100718CAAF74002E92DA /* cat.gif */; };
@@ -530,6 +530,7 @@
 		1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		1C16FC031CC3D84500C88BD1 /* PostsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnpoppingViewHandler.swift; sourceTree = "<group>"; };
+		1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapSheetViewController.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -827,8 +828,6 @@
 		8C8FA47B19AD7CA300B67AAA /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		8C8FA47C19AD7CA300B67AAA /* redpill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redpill.png; sourceTree = "<group>"; };
 		8C9834E1169091CE009F0CD6 /* fyad-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fyad-bubble.png"; sourceTree = "<group>"; };
-		8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RapSheetViewController.h; sourceTree = "<group>"; };
-		8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = RapSheetViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8CCD498215B497A700E5893B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CCD4CC315B497A800E5893B /* Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		8CE6100518CAACF9002E92DA /* posts-view-byob.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-byob.css"; sourceTree = "<group>"; };
@@ -1241,8 +1240,7 @@
 			isa = PBXGroup;
 			children = (
 				1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */,
-				8CCA272B16B8C1EF00A4952A /* RapSheetViewController.h */,
-				8CCA272C16B8C1EF00A4952A /* RapSheetViewController.m */,
+				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
 			);
 			path = "Rap Sheets";
 			sourceTree = "<group>";
@@ -2393,6 +2391,7 @@
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
 				1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */,
+				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
 				1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */,
@@ -2404,7 +2403,6 @@
 				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
-				8CCA272D16B8C1EF00A4952A /* RapSheetViewController.m in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,

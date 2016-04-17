@@ -7,7 +7,6 @@
 #import <JLRoutes/JLRoutes.h>
 #import <MRProgress/MRProgressOverlayView.h>
 #import "PostsPageViewController.h"
-#import "RapSheetViewController.h"
 #import "SettingsViewController.h"
 #import "Awful-Swift.h"
 
