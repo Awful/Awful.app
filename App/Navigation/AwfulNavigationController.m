@@ -3,12 +3,11 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulNavigationController.h"
-#import "AwfulUnpoppingViewHandler.h"
 #import "Awful-Swift.h"
 
 @interface AwfulNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate, UIViewControllerRestoration>
 
-@property (strong, nonatomic) AwfulUnpoppingViewHandler *unpopHandler;
+@property (strong, nonatomic) UnpoppingViewHandler *unpopHandler;
 @property (assign, nonatomic) BOOL pushAnimationInProgress;
 
 @property (weak, nonatomic) id <UINavigationControllerDelegate> realDelegate;
@@ -81,10 +80,10 @@ static NSString * const FutureViewControllersKey = @"AwfulFutureViewControllers"
 
 #pragma mark - Swipe to unpop
 
-- (AwfulUnpoppingViewHandler *)unpopHandler
+- (UnpoppingViewHandler *)unpopHandler
 {
     if (!_unpopHandler && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        _unpopHandler = [[AwfulUnpoppingViewHandler alloc] initWithNavigationController:self];
+        _unpopHandler = [[UnpoppingViewHandler alloc] initWithNavigationController:self];
     }
     return _unpopHandler;
 }
