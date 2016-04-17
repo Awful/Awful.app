@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 
 @interface AwfulThreadPreviewViewController ()
@@ -98,13 +97,13 @@
 		// Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use
 		// the empty thread tag for anyone lame enough to pick the same tag twice.
 		if (self.threadTag.imageName.length > 0 && ![self.threadTag isEqual:self.secondaryThreadTag]) {
-			UIImage *threadTag = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
+			UIImage *threadTag = [ThreadTagLoader imageNamed:self.threadTag.imageName];
             self.threadCell.tagImageView.image = threadTag;
 		} else {
-            self.threadCell.tagImageView.image = [AwfulThreadTagLoader emptyThreadTagImage];
+            self.threadCell.tagImageView.image = [ThreadTagLoader emptyThreadTagImage];
 		}
 		if (self.secondaryThreadTag) {
-			UIImage *secondaryThreadTag = [AwfulThreadTagLoader imageNamed:self.secondaryThreadTag.imageName];
+			UIImage *secondaryThreadTag = [ThreadTagLoader imageNamed:self.secondaryThreadTag.imageName];
             self.threadCell.secondaryTagImageView.image = secondaryThreadTag;
 		} else {
             self.threadCell.secondaryTagImageView.image = nil;

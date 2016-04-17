@@ -25,7 +25,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         
         viewModels = dataManager.contents.map(createViewModel)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadDataManagerTableViewAdapter.threadTagDidDownload(_:)), name: AwfulThreadTagLoaderNewImageAvailableNotification, object: AwfulThreadTagLoader.sharedLoader())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadDataManagerTableViewAdapter.threadTagDidDownload(_:)), name: ThreadTagLoader.newImageAvailableNotification, object: ThreadTagLoader.sharedLoader)
     }
     
     deinit {
@@ -64,7 +64,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
     // MARK: Notifications
     
     @objc private func threadTagDidDownload(notification: NSNotification) {
-        guard let newImageName = notification.userInfo?[AwfulThreadTagLoaderNewImageNameKey] as? String else {
+        guard let newImageName = notification.userInfo?[ThreadTagLoader.newImageNameKey] as? String else {
             return
         }
         
@@ -128,16 +128,16 @@ private extension ThreadTableViewCell.ViewModel {
         let imageName = thread.threadTag?.imageName
         if let
             imageName = imageName,
-            image = AwfulThreadTagLoader.imageNamed(imageName)
+            image = ThreadTagLoader.imageNamed(imageName)
         {
             tag = Tag.Downloaded(image)
         } else {
-            let image = AwfulThreadTagLoader.emptyThreadTagImage()
+            let image = ThreadTagLoader.emptyThreadTagImage
             tag = .Unavailable(fallbackImage: image, desiredImageName: imageName ?? "")
         }
         
         if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {
-            secondaryTag = AwfulThreadTagLoader.imageNamed(secondaryTagImageName)
+            secondaryTag = ThreadTagLoader.imageNamed(secondaryTagImageName)
             self.secondaryTagImageName = secondaryTagImageName
         } else {
             secondaryTag = nil

@@ -256,7 +256,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
             .map { ($0 as! ThreadTag).imageName! }
-        let picker = AwfulThreadTagPickerController(imageNames: [AwfulThreadTagLoaderNoFilterImageName] + imageNames, secondaryImageNames: nil)
+        let picker = AwfulThreadTagPickerController(imageNames: [ThreadTagLoader.noFilterImageName] + imageNames, secondaryImageNames: nil)
         picker.delegate = self
         picker.title = "Filter Threads"
         picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
@@ -264,7 +264,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         }()
     
     @objc private func didTapFilterButton(sender: UIButton) {
-        let imageName = filterThreadTag?.imageName ?? AwfulThreadTagLoaderNoFilterImageName
+        let imageName = filterThreadTag?.imageName ?? ThreadTagLoader.noFilterImageName
         threadTagPicker.selectImageName(imageName)
         threadTagPicker.presentFromView(sender)
     }
@@ -279,7 +279,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     // MARK: AwfulThreadTagPickerControllerDelegate
     
     func threadTagPicker(picker: AwfulThreadTagPickerController, didSelectImageName imageName: String) {
-        if imageName == AwfulThreadTagLoaderNoFilterImageName {
+        if imageName == ThreadTagLoader.noFilterImageName {
             filterThreadTag = nil
         } else {
             filterThreadTag = forum.threadTags.array.first { ($0 as! ThreadTag).imageName == imageName } as! ThreadTag?

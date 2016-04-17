@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulThreadTagPickerController.h"
-#import "AwfulThreadTagLoader.h"
 #import "Awful-Swift.h"
 
 @interface AwfulThreadTagPickerController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIPopoverPresentationControllerDelegate>
@@ -234,8 +233,8 @@
         ThreadTagPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
         NSInteger item = indexPath.item;
         NSString *imageName = self.imageNames[item];
-        UIImage *image = [AwfulThreadTagLoader imageNamed:imageName];
-        cell.image = image ?: [AwfulThreadTagLoader emptyThreadTagImage];
+        UIImage *image = [ThreadTagLoader imageNamed:imageName];
+        cell.image = image ?: [ThreadTagLoader emptyThreadTagImage];
         
         if (image) {
             cell.tagImageName = nil;

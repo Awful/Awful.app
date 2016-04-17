@@ -5,7 +5,6 @@
 #import "MessageComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
 
@@ -160,9 +159,9 @@
 {
     UIImage *image;
     if (self.threadTag.imageName) {
-        image = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
+        image = [ThreadTagLoader imageNamed:self.threadTag.imageName];
     } else {
-        image = [AwfulThreadTagLoader unsetThreadTagImage];
+        image = [ThreadTagLoader unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
 }
@@ -172,7 +171,7 @@
     // TODO better handle waiting for available thread tags to download.
     if (self.availableThreadTags.count == 0) return;
     
-    NSString *selectedImageName = self.threadTag.imageName ?: AwfulThreadTagLoaderEmptyPrivateMessageImageName;
+    NSString *selectedImageName = self.threadTag.imageName ?: ThreadTagLoader.emptyPrivateMessageImageName;
     [self.threadTagPicker selectImageName:selectedImageName];
     [self.threadTagPicker presentFromView:button];
     
@@ -186,7 +185,7 @@
     if (_threadTagPicker) return _threadTagPicker;
     if (self.availableThreadTags.count == 0) return nil;
     
-    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderEmptyPrivateMessageImageName];
+    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:ThreadTagLoader.emptyPrivateMessageImageName];
     [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
     _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:nil];
     _threadTagPicker.delegate = self;
@@ -241,7 +240,7 @@
 
 - (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
 {
-    if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyPrivateMessageImageName]) {
+    if ([imageName isEqualToString:ThreadTagLoader.emptyPrivateMessageImageName]) {
         self.threadTag = nil;
     } else {
         [self.availableThreadTags enumerateObjectsUsingBlock:^(ThreadTag *threadTag, NSUInteger i, BOOL *stop) {

@@ -4,7 +4,6 @@
 #import "AwfulJavaScript.h"
 #import "AwfulNavigationController.h"
 #import "AwfulSettings.h"
-#import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "AwfulViewController.h"
 #import "CloseBBcodeTagCommand.h"

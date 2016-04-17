@@ -15,7 +15,7 @@ final class NewThreadTagObserver: NSObject {
         self.downloadedBlock = downloadedBlock
         super.init()
         
-        observerToken = NSNotificationCenter.defaultCenter().addObserverForName(AwfulThreadTagLoaderNewImageAvailableNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (notification) in
+        observerToken = NSNotificationCenter.defaultCenter().addObserverForName(ThreadTagLoader.newImageAvailableNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (notification) in
             guard let note = NewImageAvailableNotification(notification) else { return }
             self?.newThreadTagDidDownload(note)
         })
@@ -41,14 +41,14 @@ final class NewThreadTagObserver: NSObject {
 }
 
 private struct NewImageAvailableNotification {
-    let loader: AwfulThreadTagLoader
+    let loader: ThreadTagLoader
     let imageName: String
     
     init?(_ notification: NSNotification) {
-        guard notification.name == AwfulThreadTagLoaderNewImageAvailableNotification else { return nil }
+        guard notification.name == ThreadTagLoader.newImageAvailableNotification else { return nil }
         guard let
-            loader = notification.object as? AwfulThreadTagLoader,
-            imageName = notification.userInfo?[AwfulThreadTagLoaderNewImageNameKey] as? String else { return nil }
+            loader = notification.object as? ThreadTagLoader,
+            imageName = notification.userInfo?[ThreadTagLoader.newImageNameKey] as? String else { return nil }
         self.loader = loader
         self.imageName = imageName
     }

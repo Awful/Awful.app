@@ -221,10 +221,10 @@ final class MessagesDataSource: FetchedDataSource {
         cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
         if cell.showsTag {
             if let imageName = message.threadTag?.imageName {
-                if let image = AwfulThreadTagLoader.imageNamed(imageName) {
+                if let image = ThreadTagLoader.imageNamed(imageName) {
                     cell.tagImageView.image = image
                 } else {
-                    cell.tagImageView.image = AwfulThreadTagLoader.emptyPrivateMessageImage()
+                    cell.tagImageView.image = ThreadTagLoader.emptyPrivateMessageImage
                     
                     let messageID = message.messageID
                     threadTagObservers[messageID] = NewThreadTagObserver(imageName: imageName) { [unowned self] image in
@@ -238,7 +238,7 @@ final class MessagesDataSource: FetchedDataSource {
                     }
                 }
             } else {
-                cell.tagImageView.image = AwfulThreadTagLoader.emptyPrivateMessageImage()
+                cell.tagImageView.image = ThreadTagLoader.emptyPrivateMessageImage
             }
         }
         

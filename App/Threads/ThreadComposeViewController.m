@@ -6,7 +6,6 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulThreadTagLoader.h"
 #import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
 
@@ -165,14 +164,14 @@ static NSString * const DefaultTitle = @"New Thread";
 {
     UIImage *image;
     if (self.threadTag) {
-        image = [AwfulThreadTagLoader imageNamed:self.threadTag.imageName];
+        image = [ThreadTagLoader imageNamed:self.threadTag.imageName];
     } else {
-        image = [AwfulThreadTagLoader unsetThreadTagImage];
+        image = [ThreadTagLoader unsetThreadTagImage];
     }
     [self.fieldView.threadTagButton setImage:image forState:UIControlStateNormal];
     if (self.secondaryThreadTag) {
         ThreadTag *tag = self.secondaryThreadTag;
-        image = [AwfulThreadTagLoader imageNamed:tag.imageName];
+        image = [ThreadTagLoader imageNamed:tag.imageName];
     } else {
         image = nil;
     }
@@ -184,7 +183,7 @@ static NSString * const DefaultTitle = @"New Thread";
     // TODO better handle waiting for the available thread tags to download
     if (self.availableThreadTags.count == 0) return;
     
-    NSString *selectedImageName = self.threadTag.imageName ?: AwfulThreadTagLoaderEmptyThreadTagImageName;
+    NSString *selectedImageName = self.threadTag.imageName ?: ThreadTagLoader.emptyThreadTagImageName;
     [self.threadTagPicker selectImageName:selectedImageName];
     if (self.availableSecondaryThreadTags.count > 0) {
         NSString *selectedSecondaryImageName = self.secondaryThreadTag.imageName ?: [self.availableSecondaryThreadTags[0] imageName];
@@ -202,7 +201,7 @@ static NSString * const DefaultTitle = @"New Thread";
     if (_threadTagPicker) return _threadTagPicker;
     if (self.availableThreadTags.count == 0) return nil;
     
-    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:AwfulThreadTagLoaderEmptyThreadTagImageName];
+    NSMutableArray *imageNames = [NSMutableArray arrayWithObject:ThreadTagLoader.emptyThreadTagImageName];
     [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
     NSArray *secondaryImageNames = [self.availableSecondaryThreadTags valueForKey:@"imageName"];
     _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:secondaryImageNames];
@@ -271,7 +270,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
 {
-    if ([imageName isEqualToString:AwfulThreadTagLoaderEmptyThreadTagImageName]) {
+    if ([imageName isEqualToString:ThreadTagLoader.emptyThreadTagImageName]) {
         self.threadTag = nil;
     } else {
         [self.availableThreadTags enumerateObjectsUsingBlock:^(ThreadTag *threadTag, NSUInteger i, BOOL *stop) {
