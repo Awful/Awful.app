@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, AwfulThreadTagPickerControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
     private var peekPopController: ThreadPeekPopController?
@@ -252,11 +252,11 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         return button
         }()
     
-    private lazy var threadTagPicker: AwfulThreadTagPickerController = { [unowned self] in
+    private lazy var threadTagPicker: ThreadTagPickerViewController = { [unowned self] in
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
             .map { ($0 as! ThreadTag).imageName! }
-        let picker = AwfulThreadTagPickerController(imageNames: [ThreadTagLoader.noFilterImageName] + imageNames, secondaryImageNames: nil)
+        let picker = ThreadTagPickerViewController(imageNames: [ThreadTagLoader.noFilterImageName] + imageNames, secondaryImageNames: nil)
         picker.delegate = self
         picker.title = "Filter Threads"
         picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
@@ -266,7 +266,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
     @objc private func didTapFilterButton(sender: UIButton) {
         let imageName = filterThreadTag?.imageName ?? ThreadTagLoader.noFilterImageName
         threadTagPicker.selectImageName(imageName)
-        threadTagPicker.presentFromView(sender)
+        threadTagPicker.present(fromView: sender)
     }
     
     private func updateFilterButton() {
@@ -276,9 +276,9 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         filterButton.tintColor = theme["tintColor"]
     }
     
-    // MARK: AwfulThreadTagPickerControllerDelegate
+    // MARK: ThreadTagPickerViewControllerDelegate
     
-    func threadTagPicker(picker: AwfulThreadTagPickerController, didSelectImageName imageName: String) {
+    func threadTagPicker(picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
         if imageName == ThreadTagLoader.noFilterImageName {
             filterThreadTag = nil
         } else {

@@ -5,15 +5,14 @@
 #import "MessageComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
 
-@interface MessageComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
+@interface MessageComposeViewController () <ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) NewPrivateMessageFieldView *fieldView;
 
 @property (strong, nonatomic) ThreadTag *threadTag;
-@property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
+@property (strong, nonatomic) ThreadTagPickerViewController *threadTagPicker;
 
 @property (assign, nonatomic) BOOL updatingThreadTags;
 @property (copy, nonatomic) NSArray *availableThreadTags;
@@ -180,14 +179,14 @@
     [self.view endEditing:YES];
 }
 
-- (AwfulThreadTagPickerController *)threadTagPicker
+- (ThreadTagPickerViewController *)threadTagPicker
 {
     if (_threadTagPicker) return _threadTagPicker;
     if (self.availableThreadTags.count == 0) return nil;
     
     NSMutableArray *imageNames = [NSMutableArray arrayWithObject:ThreadTagLoader.emptyPrivateMessageImageName];
     [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
-    _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:nil];
+    _threadTagPicker = [[ThreadTagPickerViewController alloc] initWithImageNames:imageNames secondaryImageNames:nil];
     _threadTagPicker.delegate = self;
     _threadTagPicker.navigationItem.leftBarButtonItem = _threadTagPicker.cancelButtonItem;
     return _threadTagPicker;
@@ -236,9 +235,9 @@
     }];
 }
 
-#pragma mark - AwfulThreadTagPickerControllerDelegate
+#pragma mark - ThreadTagPickerViewControllerDelegate
 
-- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
+- (void)threadTagPicker:(ThreadTagPickerViewController *)picker didSelectImageName:(NSString *)imageName
 {
     if ([imageName isEqualToString:ThreadTagLoader.emptyPrivateMessageImageName]) {
         self.threadTag = nil;

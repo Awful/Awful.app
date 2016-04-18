@@ -6,15 +6,14 @@
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulThreadPreviewViewController.h"
-#import "AwfulThreadTagPickerController.h"
 #import "Awful-Swift.h"
 
-@interface ThreadComposeViewController () <AwfulThreadTagPickerControllerDelegate, UIViewControllerRestoration>
+@interface ThreadComposeViewController () <ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) Thread *thread;
 
 @property (strong, nonatomic) NewThreadFieldView *fieldView;
-@property (strong, nonatomic) AwfulThreadTagPickerController *threadTagPicker;
+@property (strong, nonatomic) ThreadTagPickerViewController *threadTagPicker;
 @property (strong, nonatomic) ThreadTag *threadTag;
 @property (strong, nonatomic) ThreadTag *secondaryThreadTag;
 
@@ -196,7 +195,7 @@ static NSString * const DefaultTitle = @"New Thread";
     [self.view endEditing:YES];
 }
 
-- (AwfulThreadTagPickerController *)threadTagPicker
+- (ThreadTagPickerViewController *)threadTagPicker
 {
     if (_threadTagPicker) return _threadTagPicker;
     if (self.availableThreadTags.count == 0) return nil;
@@ -204,7 +203,7 @@ static NSString * const DefaultTitle = @"New Thread";
     NSMutableArray *imageNames = [NSMutableArray arrayWithObject:ThreadTagLoader.emptyThreadTagImageName];
     [imageNames addObjectsFromArray:[self.availableThreadTags valueForKey:@"imageName"]];
     NSArray *secondaryImageNames = [self.availableSecondaryThreadTags valueForKey:@"imageName"];
-    _threadTagPicker = [[AwfulThreadTagPickerController alloc] initWithImageNames:imageNames secondaryImageNames:secondaryImageNames];
+    _threadTagPicker = [[ThreadTagPickerViewController alloc] initWithImageNames:imageNames secondaryImageNames:secondaryImageNames];
     _threadTagPicker.delegate = self;
     _threadTagPicker.title = @"Choose Thread Tag";
     if (self.availableSecondaryThreadTags.count > 0) {
@@ -266,9 +265,9 @@ static NSString * const DefaultTitle = @"New Thread";
     }];
 }
 
-#pragma mark - AwfulThreadTagPickerControllerDelegate
+#pragma mark - ThreadTagPickerViewControllerDelegate
 
-- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectImageName:(NSString *)imageName
+- (void)threadTagPicker:(ThreadTagPickerViewController *)picker didSelectImageName:(NSString *)imageName
 {
     if ([imageName isEqualToString:ThreadTagLoader.emptyThreadTagImageName]) {
         self.threadTag = nil;
@@ -286,7 +285,7 @@ static NSString * const DefaultTitle = @"New Thread";
     }
 }
 
-- (void)threadTagPicker:(AwfulThreadTagPickerController *)picker didSelectSecondaryImageName:(NSString *)secondaryImageName
+- (void)threadTagPicker:(ThreadTagPickerViewController *)picker didSelectSecondaryImageName:(NSString *)secondaryImageName
 {
     [self.availableSecondaryThreadTags enumerateObjectsUsingBlock:^(ThreadTag *secondaryThreadTag, NSUInteger i, BOOL *stop) {
         if ([secondaryThreadTag.imageName isEqualToString:secondaryImageName]) {
@@ -296,7 +295,7 @@ static NSString * const DefaultTitle = @"New Thread";
     }];
 }
 
-- (void)threadTagPickerDidDismiss:(AwfulThreadTagPickerController *)picker
+- (void)threadTagPickerDidDismiss:(ThreadTagPickerViewController *)picker
 {
     [self focusInitialFirstResponder];
 }
