@@ -271,9 +271,17 @@ extension UIViewController {
         return nil
     }
     
+    // objc version
     func firstDescendantOfClass(cls: AnyClass) -> AnyObject? {
-        guard let cls = cls as? UIViewController.Type else { return nil }
-        return firstDescendantOfType(cls)
+        if isKindOfClass(cls) { return self }
+        if respondsToSelector(Selector("viewControllers")) {
+            for child in valueForKey("viewControllers") as! [UIViewController] {
+                if let found = child.firstDescendantOfClass(cls) {
+                    return found
+                }
+            }
+        }
+        return nil
     }
 }
 
