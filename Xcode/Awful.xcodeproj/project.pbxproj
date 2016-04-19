@@ -122,6 +122,7 @@
 		1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */; };
 		1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */; };
 		1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */; };
+		1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -290,7 +291,6 @@
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD005D61BB8DA6400232FFD /* FetchedDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
-		1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */; };
 		1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */; };
 		1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2361BD2C13400ADC7DA /* KVOController.swift */; };
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
@@ -533,6 +533,7 @@
 		1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RapSheetViewController.swift; sourceTree = "<group>"; };
 		1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagLoader.swift; sourceTree = "<group>"; };
 		1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerViewController.swift; sourceTree = "<group>"; };
+		1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPreviewViewController.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -759,8 +760,6 @@
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
 		1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataManager.swift; sourceTree = "<group>"; };
 		1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshSpinnerView.swift; sourceTree = "<group>"; };
-		1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPreviewViewController.h; sourceTree = "<group>"; };
-		1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadPreviewViewController.m; sourceTree = "<group>"; };
 		1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshControl.swift; sourceTree = "<group>"; };
 		1CDBF2361BD2C13400ADC7DA /* KVOController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOController.swift; sourceTree = "<group>"; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -1484,13 +1483,12 @@
 		1CC780471612DA8D002AF958 /* Threads */ = {
 			isa = PBXGroup;
 			children = (
-				1CD82F49194834D000B0C5BD /* AwfulThreadPreviewViewController.h */,
-				1CD82F4A194834D000B0C5BD /* AwfulThreadPreviewViewController.m */,
 				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
 				1C8D116219B3F69D005D46CB /* ThreadCell.swift */,
 				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
 				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
 				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
+				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 			);
 			path = Threads;
 			sourceTree = "<group>";
@@ -2412,6 +2410,7 @@
 				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */,
+				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
@@ -2451,7 +2450,6 @@
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
-				1CD82F4B194834D000B0C5BD /* AwfulThreadPreviewViewController.m in Sources */,
 				1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */,
 				1CBC74AE181A16040076234E /* PostComposeViewController.m in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,

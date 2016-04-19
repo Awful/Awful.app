@@ -5,7 +5,6 @@
 #import "ThreadComposeViewController.h"
 #import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
-#import "AwfulThreadPreviewViewController.h"
 #import "Awful-Swift.h"
 
 @interface ThreadComposeViewController () <ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration>
@@ -227,7 +226,7 @@ static NSString * const DefaultTitle = @"New Thread";
 
 - (void)shouldSubmitHandler:(void(^)(BOOL ok))handler
 {
-    AwfulThreadPreviewViewController *preview = [[AwfulThreadPreviewViewController alloc] initWithForum:self.forum
+    ThreadPreviewViewController *preview = [[ThreadPreviewViewController alloc] initWithForum:self.forum
                                                                                                 subject:self.fieldView.subjectField.textField.text
                                                                                               threadTag:self.threadTag
                                                                                      secondaryThreadTag:self.secondaryThreadTag
