@@ -123,6 +123,7 @@
 		1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */; };
 		1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */; };
 		1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */; };
+		1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -253,7 +254,6 @@
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
-		1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */; };
 		1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */; };
 		1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */; };
 		1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */; };
@@ -534,6 +534,7 @@
 		1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagLoader.swift; sourceTree = "<group>"; };
 		1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerViewController.swift; sourceTree = "<group>"; };
 		1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPreviewViewController.swift; sourceTree = "<group>"; };
+		1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadComposeViewController.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
@@ -704,8 +705,6 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
-		1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadComposeViewController.h; sourceTree = "<group>"; };
-		1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadComposeViewController.m; sourceTree = "<group>"; };
 		1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewDataSource.swift; sourceTree = "<group>"; };
 		1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTableViewCell.swift; sourceTree = "<group>"; };
 		1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumTableViewCell.xib; sourceTree = "<group>"; };
@@ -1486,8 +1485,7 @@
 				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
 				1C8D116219B3F69D005D46CB /* ThreadCell.swift */,
 				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
-				1C9381C4181A95EC00258191 /* ThreadComposeViewController.h */,
-				1C9381C5181A95EC00258191 /* ThreadComposeViewController.m */,
+				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
 				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 			);
 			path = Threads;
@@ -2444,6 +2442,7 @@
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
+				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
@@ -2463,7 +2462,6 @@
 				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
 				1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
-				1C9381C6181A95EC00258191 /* ThreadComposeViewController.m in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);

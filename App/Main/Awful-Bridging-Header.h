@@ -12,5 +12,4 @@
 #import "PostPreviewViewController.h"
 #import "PostsPageViewController.h"
 #import "SettingsViewController.h"
-#import "ThreadComposeViewController.h"
 #import "UploadImageAttachments.h"

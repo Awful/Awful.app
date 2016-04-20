@@ -21,7 +21,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     }
     private var _fakePost: Post?
     
-    init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag, BBcode: NSAttributedString) {
+    init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
         self.forum = forum
         self.subject = subject
         self.threadTag = threadTag
