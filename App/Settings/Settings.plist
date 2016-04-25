@@ -192,7 +192,7 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<false/>
+					<true/>
 					<key>Key</key>
 					<string>open_youtube_links_in_youtube</string>
 					<key>CanOpenURL</key>
