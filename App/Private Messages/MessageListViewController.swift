@@ -49,7 +49,7 @@ final class MessageListViewController: AwfulTableViewController {
     
     @objc private func didTapComposeButtonItem(sender: UIBarButtonItem) {
         if composeViewController == nil {
-            let compose = MessageComposeViewController(recipient: nil)
+            let compose = MessageComposeViewController()
             compose.restorationIdentifier = "New message"
             compose.delegate = self
             composeViewController = compose
