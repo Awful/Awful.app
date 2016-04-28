@@ -146,6 +146,16 @@
 					<key>Key</key>
 					<string>forum_threads_sorted_unread</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Pull For Next Page</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>pull_for_next</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>

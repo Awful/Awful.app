@@ -37,6 +37,8 @@
 
 @property (assign, nonatomic) BOOL darkTheme;
 
+@property (assign, nonatomic) BOOL pullForNext;
+
 @property (copy, nonatomic) NSString *username;
 
 @property (copy, nonatomic) NSString *userID;
@@ -98,6 +100,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *embedTweets;
     __unsafe_unretained NSString *confirmNewPosts;
     __unsafe_unretained NSString *darkTheme;
+    __unsafe_unretained NSString *pullForNext;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *forumThreadsSortedByUnread;
