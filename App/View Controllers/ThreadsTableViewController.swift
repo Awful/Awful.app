@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: AwfulTableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
     private var peekPopController: ThreadPeekPopController?
@@ -226,9 +226,9 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
         presentViewController(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
-    // MARK: AwfulComposeTextViewControllerDelegate
+    // MARK: ComposeTextViewControllerDelegate
     
-    func composeTextViewController(composeTextViewController: ComposeTextViewController!, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft keepDraft: Bool) {
+    func composeTextViewController(composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
         dismissViewControllerAnimated(true) {
             if let thread = self.threadComposeViewController.thread where success {
                 let postsPage = PostsPageViewController(thread: thread)
@@ -237,7 +237,7 @@ final class ThreadsTableViewController: AwfulTableViewController, AwfulComposeTe
                 self.showDetailViewController(postsPage, sender: self)
             }
             
-            if !keepDraft {
+            if !shouldKeepDraft {
                 self.threadComposeViewController = nil
             }
         }

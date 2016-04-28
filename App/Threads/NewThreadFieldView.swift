@@ -4,7 +4,7 @@
 
 import UIKit
 
-final class NewThreadFieldView: UIView, AwfulComposeCustomView {
+final class NewThreadFieldView: UIView, ComposeCustomView {
     let threadTagButton = ThreadTagButton()
     let subjectField = ComposeField()
     private let separator = UIView()

@@ -125,11 +125,11 @@
 		1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */; };
 		1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */; };
 		1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */; };
+		1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
-		1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
@@ -535,14 +535,13 @@
 		1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPreviewViewController.swift; sourceTree = "<group>"; };
 		1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadComposeViewController.swift; sourceTree = "<group>"; };
 		1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposeViewController.swift; sourceTree = "<group>"; };
+		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
 		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
-		1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeTextViewController.h; sourceTree = "<group>"; };
-		1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeTextViewController.m; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
@@ -1567,8 +1566,7 @@
 				1CC256B91A3AA206003FA7A8 /* CloseBBcodeTagCommand.m */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
-				1C26BFDE1818E56F00E55887 /* ComposeTextViewController.h */,
-				1C26BFDF1818E56F00E55887 /* ComposeTextViewController.m */,
+				1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */,
 				1C16FBA91CB5D38700C88BD1 /* CompositionInputAccessoryView.swift */,
 				1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */,
 				1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */,
@@ -2392,13 +2390,13 @@
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
-				1C26BFE01818E56F00E55887 /* ComposeTextViewController.m in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
 				1C4EAD5C1BC052BE0008BE54 /* CollectionTypeDelta.swift in Sources */,
 				1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
 				1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */,
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
+				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1CB060791936C7B4005263EA /* PostPreviewViewController.m in Sources */,

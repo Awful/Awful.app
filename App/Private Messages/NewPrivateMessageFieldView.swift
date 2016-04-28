@@ -4,7 +4,7 @@
 
 import UIKit
 
-final class NewPrivateMessageFieldView: UIView, AwfulComposeCustomView {
+final class NewPrivateMessageFieldView: UIView, ComposeCustomView {
     let threadTagButton = ThreadTagButton()
     let toField = ComposeField()
     let subjectField = ComposeField()

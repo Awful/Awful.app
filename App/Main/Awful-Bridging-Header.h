@@ -6,7 +6,6 @@
 #import "AwfulSettings.h"
 #import "AwfulViewController.h"
 #import "CloseBBcodeTagCommand.h"
-#import "ComposeTextViewController.h"
 #import "MessageViewController.h"
 #import "OnePasswordExtension.h"
 #import "PostPreviewViewController.h"

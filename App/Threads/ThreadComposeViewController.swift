@@ -171,7 +171,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         return threadTag != nil
     }
     
-    override func shouldSubmitHandler(handler: ((Bool) -> Void)!) {
+    override func shouldSubmit(handler: (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
             threadTag = threadTag
@@ -182,26 +182,26 @@ final class ThreadComposeViewController: ComposeTextViewController {
         navigationController?.pushViewController(preview, animated: true)
     }
     
-    override var submissionInProgressTitle: String! {
+    override var submissionInProgressTitle: String {
         return "Posting…"
     }
     
-    override func submitComposition(composition: String!, completionHandler: ((Bool) -> Void)!) {
+    override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
             threadTag = threadTag
-            else { return completionHandler(false) }
+            else { return completion(false) }
         AwfulForumsClient.sharedClient().postThreadInForum(forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, BBcode: composition) { [weak self] (error, thread) in
             if let error = error {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
-                    completionHandler(false)
+                    completion(false)
                 })
                 self?.presentViewController(alert, animated: true, completion: nil)
                 return
             }
             
             self?.thread = thread
-            completionHandler(true)
+            completion(true)
         }
     }
     

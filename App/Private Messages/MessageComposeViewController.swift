@@ -114,7 +114,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         return "Sending…"
     }
     
-    override func submitComposition(composition: String!, completionHandler: ((Bool) -> Void)!) {
+    override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             to = fieldView.toField.textField.text,
             subject = fieldView.subjectField.textField.text,
@@ -122,10 +122,10 @@ final class MessageComposeViewController: ComposeTextViewController {
             else { return }
         AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error) in
             if let error = error {
-                completionHandler(false)
+                completion(false)
                 self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
             } else {
-                completionHandler(true)
+                completion(true)
             }
         }
     }

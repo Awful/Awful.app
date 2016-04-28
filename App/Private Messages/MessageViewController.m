@@ -7,7 +7,7 @@
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
 
-@interface MessageViewController () <UIWebViewDelegate, AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
+@interface MessageViewController () <UIWebViewDelegate, ComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
 @property (strong, nonatomic) PrivateMessage *privateMessage;
 
@@ -343,7 +343,7 @@
     return YES;
 }
 
-#pragma mark - AwfulComposeTextViewControllerDelegate
+#pragma mark - ComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success

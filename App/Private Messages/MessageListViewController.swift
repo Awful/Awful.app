@@ -156,10 +156,10 @@ extension MessageListViewController {
     }
 }
 
-extension MessageListViewController: AwfulComposeTextViewControllerDelegate {
-    func composeTextViewController(composeTextViewController: ComposeTextViewController!, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft keepDraft: Bool) {
+extension MessageListViewController: ComposeTextViewControllerDelegate {
+    func composeTextViewController(composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
         dismissViewControllerAnimated(true, completion: nil)
-        if !keepDraft {
+        if !shouldKeepDraft {
             self.composeViewController = nil
         }
     }

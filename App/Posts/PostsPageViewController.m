@@ -11,7 +11,7 @@
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
 
-@interface PostsPageViewController () <AwfulComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
+@interface PostsPageViewController () <ComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
 
 @property (assign, nonatomic) NSInteger page;
 
@@ -1032,7 +1032,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     self.userActivity = nil;
 }
 
-#pragma mark - AwfulComposeTextViewControllerDelegate
+#pragma mark - ComposeTextViewControllerDelegate
 
 - (void)composeTextViewController:(ComposeTextViewController *)composeTextViewController
 didFinishWithSuccessfulSubmission:(BOOL)success
