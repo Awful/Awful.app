@@ -10,6 +10,7 @@
 @import TUSafariActivity;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
+#import "AwfulSettings.h"
 
 @interface PostsPageViewController () <ComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration, UIWebViewDelegate>
 
@@ -980,11 +981,13 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
                                                  name:[PostsViewExternalStylesheetLoader didUpdateNotification]
                                                object:nil];
     
-    self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:[PostsPageRefreshSpinnerView new]];
-    self.refreshControl.handler = ^{
-        [welf loadNextPageOrRefresh];
-    };
-    self.refreshControl.tintColor = self.theme[@"postsPullForNextColor"];
+    if([AwfulSettings sharedSettings].pullForNext){
+        self.refreshControl = [[PostsPageRefreshControl alloc] initWithScrollView:self.webView.scrollView contentView:[PostsPageRefreshSpinnerView new]];
+        self.refreshControl.handler = ^{
+            [welf loadNextPageOrRefresh];
+        };
+        self.refreshControl.tintColor = self.theme[@"postsPullForNextColor"];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
