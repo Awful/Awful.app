@@ -15,11 +15,6 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     }()
     private var networkOperation: NSOperation?
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
-    override var fakePost: Post? {
-        get { return _fakePost }
-        set { _fakePost = newValue }
-    }
-    private var _fakePost: Post?
     
     init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
         self.forum = forum
@@ -43,7 +38,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         webView.scrollView.addSubview(threadCell)
     }
     
-    override var theme: Theme! {
+    override var theme: Theme {
         return Theme.currentThemeForForum(forum)
     }
     
