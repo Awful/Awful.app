@@ -190,6 +190,10 @@ extension Theme {
         return bundledThemes["default"]!
     }
     
+    class var darkTheme: Theme {
+        return bundledThemes["dark"]!
+    }
+    
     class var currentTheme: Theme {
         if AwfulSettings.sharedSettings().darkTheme {
             return bundledThemes["dark"]!
@@ -204,6 +208,9 @@ extension Theme {
     
     class func currentThemeForForum(forum: Forum) -> Theme {
         if let name = AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID) {
+            if name == "default" || name == "dark" {
+                return currentTheme
+            }
             return bundledThemes[name]!
         } else {
             return currentTheme

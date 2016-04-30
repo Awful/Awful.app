@@ -38,6 +38,7 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     @IBOutlet weak var themePicker: ThemePicker!
     @IBAction func changeSelectedTheme(sender: ThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
+        print("Setting \(selectedTheme.name) for \(forum.forumID)")
         AwfulSettings.sharedSettings().setThemeName(selectedTheme.name, forForumID: forum.forumID)
         if selectedTheme.forumID == nil {
             AwfulSettings.sharedSettings().darkTheme = selectedTheme != Theme.defaultTheme
@@ -60,18 +61,17 @@ final class PostsPageSettingsViewController: AwfulViewController, UIPopoverPrese
     
     private func updateSelectedThemeInPicker() {
         let names = themes.map { $0.name }
-        if let themeName = AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID) {
-            if let i = names.indexOf(themeName) {
-                themePicker.selectedThemeIndex = i
+        if var themeName = AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID) {
+            if themeName == "default" || themeName == "dark" {
+                themeName = Theme.currentTheme.name
+                if let i = names.indexOf(themeName) {
+                    themePicker.selectedThemeIndex = i
+                }
             }
+            
         }
         else {
-            if AwfulSettings.sharedSettings().darkTheme {
-                themePicker.selectedThemeIndex = names.indexOf("dark")!
-            }
-            else {
-                themePicker.selectedThemeIndex = names.indexOf("default")!
-            }
+            themePicker.selectedThemeIndex = names.indexOf(Theme.currentTheme.name)!
         }
     }
     

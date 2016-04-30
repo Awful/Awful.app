@@ -106,6 +106,17 @@ static id _instance;
     }
 }
 
+- (void)brightnessDidChange:(NSNotification *)note
+{
+    UIScreen *screen = (UIScreen *)note.object;
+    AwfulSettings *settings = [AwfulSettings sharedSettings];
+    if (screen.brightness > 0.4 && settings.darkTheme) {
+        settings.darkTheme = NO;
+    } else if (screen.brightness <= 0.4 && !settings.darkTheme) {
+        settings.darkTheme = YES;
+    }
+}
+
 - (void)updateClientBaseURL
 {
     NSString *URLString = [AwfulSettings sharedSettings].customBaseURL ?: DefaultBaseURL;
@@ -297,6 +308,15 @@ static void RemoveOldDataStores(void)
                                              selector:@selector(preferredContentSizeDidChange:)
                                                  name:UIContentSizeCategoryDidChangeNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector:@selector(brightnessDidChange:)
+                                                 name:UIScreenBrightnessDidChangeNotification
+                                               object:nil];
+    
+    // Brightness may have changed while app was shut down
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIScreenBrightnessDidChangeNotification object:[UIScreen mainScreen]];
+    
     return YES;
 }
 
@@ -335,6 +355,10 @@ static void RemoveOldDataStores(void)
         [self openAwfulURL:URL.awfulURL];
     }]];
     [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
+    
+    // Brightness may have changed while app was inactive
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIScreenBrightnessDidChangeNotification object:[UIScreen mainScreen]];
+    
 }
 
 #pragma mark State preservation and restoration
