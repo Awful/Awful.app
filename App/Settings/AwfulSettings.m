@@ -130,6 +130,8 @@ BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
 BOOL_PROPERTY(darkTheme, setDarkTheme)
 
+BOOL_PROPERTY(autoDarkTheme, setAutoDarkTheme)
+
 BOOL_PROPERTY(pullForNext, setPullForNext)
 
 struct {
@@ -348,6 +350,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .bookmarksSortedByUnread = @"bookmarks_sorted_unread",
     .confirmNewPosts = @"confirm_before_replying",
     .darkTheme = @"dark_theme",
+    .autoDarkTheme = @"auto_dark_theme",
     .pullForNext = @"pull_for_next",
     .username = @"username",
     .userID = @"userID",

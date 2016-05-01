@@ -215,6 +215,16 @@
 			<string>Themes</string>
 			<key>Settings</key>
 			<array>
+                <dict>
+                    <key>Title</key>
+                    <string>Automatic Dark Mode</string>
+                    <key>Type</key>
+                    <string>Switch</string>
+                    <key>Default</key>
+                    <false/>
+                    <key>Key</key>
+                    <string>auto_dark_theme</string>
+                </dict>
 				<dict>
 					<key>Title</key>
 					<string>Dark Mode</string>

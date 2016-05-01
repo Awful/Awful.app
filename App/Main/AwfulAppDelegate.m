@@ -103,17 +103,21 @@ static id _instance;
          }];
     } else if ([setting isEqualToString:AwfulSettingsKeys.customBaseURL]) {
         [self updateClientBaseURL];
+    } else if ([setting isEqualToString:AwfulSettingsKeys.autoDarkTheme]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UIScreenBrightnessDidChangeNotification object:[UIScreen mainScreen]];
     }
 }
 
 - (void)brightnessDidChange:(NSNotification *)note
 {
-    UIScreen *screen = (UIScreen *)note.object;
-    AwfulSettings *settings = [AwfulSettings sharedSettings];
-    if (screen.brightness > 0.4 && settings.darkTheme) {
-        settings.darkTheme = NO;
-    } else if (screen.brightness <= 0.4 && !settings.darkTheme) {
-        settings.darkTheme = YES;
+    if ([AwfulSettings sharedSettings].autoDarkTheme) {
+        UIScreen *screen = (UIScreen *)note.object;
+        AwfulSettings *settings = [AwfulSettings sharedSettings];
+        if (screen.brightness > 0.4 && settings.darkTheme) {
+            settings.darkTheme = NO;
+        } else if (screen.brightness <= 0.4 && !settings.darkTheme) {
+            settings.darkTheme = YES;
+        }
     }
 }
 

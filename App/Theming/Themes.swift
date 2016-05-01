@@ -220,8 +220,17 @@ extension Theme {
     class func themesForForum(forum: Forum) -> [Theme] {
         let ubiquitousNames = AwfulSettings.sharedSettings().ubiquitousThemeNames as! [String]? ?? []
         let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID || $0.forumID == nil || ubiquitousNames.contains($0.name)
+            $0.forumID == forum.forumID || ($0.forumID == nil && appThemeMatchesTheme($0.name)) || ubiquitousNames.contains($0.name)
         }
+        
         return themes.sort()
+    }
+    
+    class func appThemeMatchesTheme(themeName: String) -> Bool {
+        if (themeName == "default" && AwfulSettings.sharedSettings().darkTheme)
+            || (themeName == "dark" && !AwfulSettings.sharedSettings().darkTheme) {
+            return false
+        }
+        return true
     }
 }

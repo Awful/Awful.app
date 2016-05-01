@@ -19,6 +19,7 @@ final class ThemePicker: UIControl {
     }
     
     private var buttons: [UIButton] = []
+    var isLoaded: Bool = false
     
     /**
         Insert a new theme.
@@ -31,10 +32,16 @@ final class ThemePicker: UIControl {
         button.addTarget(self, action: #selector(didTapThemeButton), forControlEvents: .TouchUpInside)
         let index = min(index, subviews.count)
         insertSubview(button, atIndex: index)
-        buttons.append(button)
+        buttons.insert(button, atIndex: index)
         
         invalidateIntrinsicContentSize()
         setNeedsLayout()
+    }
+
+    func setDefaultThemeColor(color: UIColor) {
+        subviews[0].removeFromSuperview()
+        buttons.removeAtIndex(0)
+        insertThemeWithColor(color, atIndex: 0)
     }
     
     @objc private func didTapThemeButton(button: UIButton) {
