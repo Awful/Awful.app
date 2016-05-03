@@ -82,7 +82,7 @@
                     </userDefinedRuntimeAttributes>
                 </switch>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scale Text 100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
-                    <rect key="frame" x="8" y="102" width="202" height="20"/>
+                    <rect key="frame" x="8" y="105" width="202" height="20"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
@@ -92,26 +92,29 @@
                     </userDefinedRuntimeAttributes>
                 </label>
                 <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="100" minimumValue="50" maximumValue="200" stepValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Xho-0N-tKL" userLabel="Font Scale Stepper">
-                    <rect key="frame" x="218" y="98" width="94" height="29"/>
+                    <rect key="frame" x="218" y="100" width="94" height="29"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="font_scale"/>
                     </userDefinedRuntimeAttributes>
                 </stepper>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Style" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
-                    <rect key="frame" x="8" y="244" width="37" height="20"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="ThemePicker" customModule="Awful" customModuleProvider="target">
-                    <rect key="frame" x="67" y="235" width="245" height="37"/>
+                    <rect key="frame" x="67" y="239" width="245" height="33"/>
                     <color key="backgroundColor" white="0.95657655419999998" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <action selector="changeSelectedTheme:" destination="-1" eventType="valueChanged" id="2DZ-Ar-SHV"/>
                     </connections>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Dark Theme In Low Light" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="CyB-GB-e47">
+                    <rect key="frame" x="8" y="151" width="213" height="20"/>
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xMB-Ac-jjY" userLabel="Auto Theme Switch">
-                    <rect key="frame" x="263" y="140" width="51" height="31"/>
+                    <rect key="frame" x="263" y="145" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Automatically switch theme with brightness"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="auto_dark_theme"/>
@@ -121,7 +124,7 @@
                     </connections>
                 </switch>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dark Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PtM-NY-3PO">
-                    <rect key="frame" x="8" y="193" width="89" height="20"/>
+                    <rect key="frame" x="8" y="198" width="89" height="20"/>
                     <accessibility key="accessibilityConfiguration">
                         <bool key="isElement" value="NO"/>
                     </accessibility>
@@ -130,17 +133,14 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tqs-Zr-NaN" userLabel="Dark Theme Switch">
-                    <rect key="frame" x="263" y="187" width="51" height="31"/>
+                    <rect key="frame" x="263" y="192" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Use a dark theme"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="dark_theme"/>
                     </userDefinedRuntimeAttributes>
                 </switch>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Dark Theme In Low Light" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="CyB-GB-e47">
-                    <rect key="frame" x="8" y="146" width="213" height="20"/>
-                    <accessibility key="accessibilityConfiguration">
-                        <bool key="isElement" value="NO"/>
-                    </accessibility>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Style" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
+                    <rect key="frame" x="8" y="246" width="37" height="20"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
@@ -151,16 +151,16 @@
                 <constraint firstItem="jBq-go-frF" firstAttribute="centerY" secondItem="mYe-FY-VF2" secondAttribute="centerY" id="3AW-n2-DSs"/>
                 <constraint firstItem="mYe-FY-VF2" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="trailing" constant="22" id="5I8-Kx-bLi"/>
                 <constraint firstItem="Tqs-Zr-NaN" firstAttribute="top" secondItem="xMB-Ac-jjY" secondAttribute="bottom" constant="16" id="6RL-69-9A9"/>
-                <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Tqs-Zr-NaN" secondAttribute="bottom" constant="17" id="6qF-yQ-5HR"/>
+                <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Tqs-Zr-NaN" secondAttribute="bottom" constant="16" id="6qF-yQ-5HR"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="79o-Fw-uc2"/>
                 <constraint firstAttribute="trailing" secondItem="kv2-c9-5sj" secondAttribute="trailing" constant="8" id="7t1-Mx-pP2"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="8hj-Ve-cu5"/>
-                <constraint firstItem="Tqs-Zr-NaN" firstAttribute="leading" secondItem="PtM-NY-3PO" secondAttribute="trailing" constant="166" id="Dlg-le-4sA"/>
+                <constraint firstAttribute="trailing" secondItem="xMB-Ac-jjY" secondAttribute="trailing" constant="8" id="CIm-QY-Gsd"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="EER-iy-1xh"/>
+                <constraint firstAttribute="trailing" secondItem="Tqs-Zr-NaN" secondAttribute="trailing" constant="8" id="EdS-Dz-7NA"/>
                 <constraint firstAttribute="bottom" secondItem="mYe-FY-VF2" secondAttribute="bottom" constant="20" id="Kae-og-gOZ"/>
                 <constraint firstAttribute="trailing" secondItem="PWM-Qs-8gj" secondAttribute="trailing" id="LDb-Ns-qD6"/>
-                <constraint firstItem="xMB-Ac-jjY" firstAttribute="leading" secondItem="CyB-GB-e47" secondAttribute="trailing" constant="42" id="MNB-4q-DVR"/>
-                <constraint firstItem="09i-VH-Faf" firstAttribute="top" secondItem="l4w-sl-F1e" secondAttribute="bottom" constant="20" id="NmB-Aw-UoW"/>
+                <constraint firstItem="09i-VH-Faf" firstAttribute="top" secondItem="l4w-sl-F1e" secondAttribute="bottom" constant="23" id="NmB-Aw-UoW"/>
                 <constraint firstItem="jBq-go-frF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Xcw-hW-Cb2"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="l4w-sl-F1e" secondAttribute="centerY" id="Y94-YE-Utn"/>
                 <constraint firstItem="PtM-NY-3PO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="c2q-Da-jwm"/>
@@ -170,10 +170,11 @@
                 <constraint firstItem="l4w-sl-F1e" firstAttribute="leading" secondItem="rif-rC-wd0" secondAttribute="trailing" constant="8" id="gId-cF-Y2h"/>
                 <constraint firstItem="Xho-0N-tKL" firstAttribute="leading" secondItem="09i-VH-Faf" secondAttribute="trailing" constant="8" id="gqy-2M-cs7"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="kv2-c9-5sj" secondAttribute="centerY" id="jaC-Sd-nj6"/>
+                <constraint firstItem="xMB-Ac-jjY" firstAttribute="top" secondItem="Xho-0N-tKL" secondAttribute="bottom" constant="16" id="jnR-a0-vyv"/>
                 <constraint firstItem="09i-VH-Faf" firstAttribute="centerY" secondItem="Xho-0N-tKL" secondAttribute="centerY" id="kWd-al-EKk"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="xqX-OM-5FZ" secondAttribute="centerY" id="kib-cp-qOn"/>
                 <constraint firstAttribute="trailing" secondItem="Xho-0N-tKL" secondAttribute="trailing" constant="8" id="ljC-op-rew"/>
-                <constraint firstItem="CyB-GB-e47" firstAttribute="top" secondItem="09i-VH-Faf" secondAttribute="bottom" constant="24" id="n0t-61-8ds"/>
+                <constraint firstItem="CyB-GB-e47" firstAttribute="top" secondItem="09i-VH-Faf" secondAttribute="bottom" constant="26" id="n0t-61-8ds"/>
                 <constraint firstItem="CyB-GB-e47" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="leading" id="rAO-Qu-QWH"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="raR-G9-Bjq"/>
                 <constraint firstItem="PtM-NY-3PO" firstAttribute="top" secondItem="CyB-GB-e47" secondAttribute="bottom" constant="27" id="rbd-zE-gVU"/>
@@ -182,7 +183,7 @@
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="67" y="74"/>
+            <point key="canvasLocation" x="241" y="71"/>
         </view>
     </objects>
 </document>
