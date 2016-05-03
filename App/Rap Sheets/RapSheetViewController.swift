@@ -66,7 +66,9 @@ final class RapSheetViewController: AwfulTableViewController {
                 }
             } else {
                 let oldCount = self?.punishments.count ?? 0
-                self?.punishments.addObjectsFromArray(newPunishments)
+                if newPunishments != nil {
+                    self?.punishments.addObjectsFromArray(newPunishments)
+                }
                 let newCount = self?.punishments.count ?? 0
                 let indexPaths = (oldCount..<newCount).map { NSIndexPath(forRow: $0, inSection: 0) }
                 self?.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
