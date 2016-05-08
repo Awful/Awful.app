@@ -54,13 +54,13 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableOrderedSet *children = [self mutableChildren];
     if (oldDocumentType && documentType) {
         NSUInteger i = [children indexOfObject:oldDocumentType];
-        [children replaceObjectAtIndex:i withObject:documentType];
+        [children replaceObjectAtIndex:i withObject:(HTMLDocumentType * __nonnull)documentType];
     } else if (documentType) {
         HTMLElement *rootElement = self.rootElement;
         if (rootElement) {
-            [children insertObject:documentType atIndex:[children indexOfObject:rootElement]];
+            [children insertObject:(HTMLDocumentType * __nonnull)documentType atIndex:[children indexOfObject:rootElement]];
         } else {
-            [children addObject:documentType];
+            [children addObject:(HTMLDocumentType * __nonnull)documentType];
         }
     } else if (oldDocumentType) {
         [children removeObject:oldDocumentType];
@@ -77,12 +77,25 @@ NS_ASSUME_NONNULL_BEGIN
     HTMLElement *oldRootElement = self.rootElement;
     NSMutableOrderedSet *children = [self mutableChildren];
     if (oldRootElement && rootElement) {
-        [children replaceObjectAtIndex:[children indexOfObject:oldRootElement] withObject:rootElement];
+        [children replaceObjectAtIndex:[children indexOfObject:oldRootElement] withObject:(HTMLElement * __nonnull)rootElement];
     } else if (rootElement) {
-        [children addObject:rootElement];
+        [children addObject:(HTMLElement * __nonnull)rootElement];
     } else if (oldRootElement) {
         [children removeObject:oldRootElement];
     }
+}
+
+- (HTMLElement * __nullable)bodyElement
+{
+	for (id child in self.rootElement.children) {
+		if ([child isKindOfClass:[HTMLElement class]]) {
+			HTMLElement *elem = child;
+			if ([elem.tagName isEqualToString:@"body"]) {
+				return elem;
+			}
+		}
+	}
+	return nil;
 }
 
 static id FirstNodeOfType(id <NSFastEnumeration> collection, Class type)

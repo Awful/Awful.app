@@ -5,6 +5,8 @@
 #import "HTMLTreeEnumerator.h"
 #import "HTMLNode.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 // For performance we'll cache the number of nodes at each level of the tree.
 typedef struct {
     NSUInteger i;
@@ -31,6 +33,8 @@ typedef struct {
 
 - (instancetype)initWithNode:(HTMLNode *)node reversed:(BOOL)reversed
 {
+    NSParameterAssert(node);
+    
     if ((self = [super init])) {
         _nextNode = node;
         _reversed = reversed;
@@ -38,14 +42,17 @@ typedef struct {
     return self;
 }
 
-- (instancetype)init {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class HTMLTreeEnumerator"
-                                 userInfo:nil];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+- (instancetype)init
+{
+    NSAssert(NO, @"send -initWithNode:reversed:");
     return nil;
 }
+#pragma clang diagnostic pop
 
-- (id)nextObject
+- (id __nullable)nextObject
 {
     // This enumerator works by storing the *next* node we intend to emit, and the index path that points to that next node.
     HTMLNode *currentNode = _nextNode;
@@ -93,3 +100,5 @@ typedef struct {
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

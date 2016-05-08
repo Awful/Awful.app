@@ -9,7 +9,7 @@ use_frameworks!
 
 def afnetworking; pod 'AFNetworking', '2.5.2'; end
 def fl_animated_image; pod 'FLAnimatedImage', '1.0.2'; end
-def html_reader; pod 'HTMLReader', '0.8'; end
+def html_reader; pod 'HTMLReader', '0.9.6'; end
 
 target :Awful do
   afnetworking

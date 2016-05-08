@@ -22,11 +22,9 @@
     return self;
 }
 
-- (instancetype)init {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class HTMLPreprocessedInputStream"
-                                 userInfo:nil];
-    return nil;
+- (instancetype)init
+{
+    return [self initWithString:@""];
 }
 
 - (BOOL)consumeString:(NSString *)string matchingCase:(BOOL)caseSensitive

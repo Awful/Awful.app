@@ -2,11 +2,11 @@
 //
 //  Public domain. https://github.com/nolanw/HTMLReader
 
-#import <HTMLReader/HTMLDocumentType.h>
-#import <HTMLReader/HTMLElement.h>
-#import <HTMLReader/HTMLNode.h>
-#import <HTMLReader/HTMLQuirksMode.h>
-#import <HTMLReader/HTMLSupport.h>
+#import "HTMLDocumentType.h"
+#import "HTMLElement.h"
+#import "HTMLNode.h"
+#import "HTMLQuirksMode.h"
+#import "HTMLSupport.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -53,6 +53,11 @@ NS_ASSUME_NONNULL_BEGIN
     The setter replaces the existing rootElement, if there is one; otherwise, the new rootElement is added as the last child.
  */
 @property (strong, nonatomic) HTMLElement * __nullable rootElement;
+
+/**
+    The first child element of the root with the tag name `body`. Typically the `<body>` element.
+ */
+@property (readonly, nonatomic) HTMLElement * __nullable bodyElement;
 
 @end
 
