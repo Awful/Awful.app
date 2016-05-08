@@ -15,7 +15,7 @@ extension NSURL {
         
         switch CaseInsensitive(path) {
         case "/showthread.php":
-            if let postID = query["postID"] where query["goto"] == "post" || query["action"] == "showpost" {
+            if let postID = query["postid"] where query["goto"] == "post" || query["action"] == "showpost" {
                 return NSURL(string: "awful://posts/\(postID)")
                 
             } else if let fragment = fragment where fragment.hasPrefix("post") && fragment.characters.count > 4 {
@@ -23,14 +23,14 @@ extension NSURL {
                 let postID = String(fragment.characters[start..<fragment.characters.endIndex])
                 return NSURL(string: "awful://posts/\(postID)")
                 
-            } else if let threadID = query["threadID"], pageNumber = query["pagenumber"] {
+            } else if let threadID = query["threadid"], pageNumber = query["pagenumber"] {
                 guard let components = NSURLComponents(string: "awful://threads/\(threadID)/pages/\(pageNumber)") else { return nil }
                 if let userID = query["userid"] where userID != "0" {
                     components.queryItems = [NSURLQueryItem(name: "userid", value: userID)]
                 }
                 return components.URL
                 
-            } else if let threadID = query["threadID"] {
+            } else if let threadID = query["threadid"] {
                 guard let components = NSURLComponents(string: "awful://threads/\(threadID)/pages/1") else { return nil }
                 if let userID = query["userid"] where userID != "0" {
                     components.queryItems = [NSURLQueryItem(name: "userid", value: userID)]
@@ -41,7 +41,7 @@ extension NSURL {
             }
             
         case "/forumdisplay.php":
-            if let forumID = query["forumID"] {
+            if let forumID = query["forumid"] {
                 return NSURL(string: "awful://forums/\(forumID)")
             } else {
                 return nil
