@@ -117,8 +117,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             to = fieldView.toField.textField.text,
-            subject = fieldView.subjectField.textField.text,
-            threadTag = threadTag
+            subject = fieldView.subjectField.textField.text
             else { return }
         AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error) in
             if let error = error {
