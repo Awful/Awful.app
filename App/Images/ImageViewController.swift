@@ -61,11 +61,11 @@ final class ImageViewController: UIViewController {
         return .LightContent
     }
     
-    @IBAction private func didTapDone() {
+    @IBAction @objc private func didTapDone() {
         dismiss()
     }
     
-    @IBAction private func didTapAction(sender: UIButton) {
+    @IBAction @objc private func didTapAction(sender: UIButton) {
         rootView.cancelHideOverlayAfterDelay()
         let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
@@ -109,11 +109,11 @@ final class ImageViewController: UIViewController {
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            tap.addTarget(self, action: Selector("didTapImage:"))
+            tap.addTarget(self, action: #selector(didTapImage))
             tap.requireGestureRecognizerToFail(doubleTap)
             addGestureRecognizer(tap)
             
-            panToDismiss.addTarget(self, action: Selector("didPanToDismiss:"))
+            panToDismiss.addTarget(self, action: #selector(didPanToDismiss))
             panToDismiss.delegate = self
             addGestureRecognizer(panToDismiss)
             
@@ -124,7 +124,7 @@ final class ImageViewController: UIViewController {
             addSubview(scrollView)
             
             doubleTap.numberOfTapsRequired = 2
-            doubleTap.addTarget(self, action: Selector("didDoubleTap:"))
+            doubleTap.addTarget(self, action: #selector(didDoubleTap))
             scrollView.addGestureRecognizer(doubleTap)
             
             // Many images include transparent regions that are assumed to reveal a vaguely white background.
@@ -303,7 +303,7 @@ final class ImageViewController: UIViewController {
         
         // MARK: Gesture recognizers
         
-        @IBAction private func didTapImage(sender: UITapGestureRecognizer) {
+        @IBAction @objc private func didTapImage(sender: UITapGestureRecognizer) {
             if sender.state == .Ended {
                 setOverlayHidden(!overlayHidden, animated: true)
             }
@@ -311,7 +311,7 @@ final class ImageViewController: UIViewController {
         
         private var panStart: NSTimeInterval = 0
         
-        @IBAction private func didPanToDismiss(sender: UIPanGestureRecognizer) {
+        @IBAction @objc private func didPanToDismiss(sender: UIPanGestureRecognizer) {
             switch sender.state {
             case .Began:
                 panStart = NSProcessInfo.processInfo().systemUptime
@@ -338,7 +338,7 @@ final class ImageViewController: UIViewController {
             }
         }
         
-        @IBAction private func didDoubleTap(sender: UITapGestureRecognizer) {
+        @IBAction @objc private func didDoubleTap(sender: UITapGestureRecognizer) {
             cancelHideOverlayAfterDelay()
             
             if scrollView.zoomScale == scrollView.minimumZoomScale {
@@ -380,8 +380,8 @@ final class ImageViewController: UIViewController {
     override func loadView() {
         view = RootView()
         
-        rootView.doneButton.addTarget(self, action: Selector("didTapDone"), forControlEvents: .TouchUpInside)
-        rootView.actionButton.addTarget(self, action: Selector("didTapAction:"), forControlEvents: .TouchUpInside)
+        rootView.doneButton.addTarget(self, action: #selector(didTapDone), forControlEvents: .TouchUpInside)
+        rootView.actionButton.addTarget(self, action: #selector(didTapAction), forControlEvents: .TouchUpInside)
         
         rootView.panToDismissAction = { [weak self] in self?.dismiss(); return }
     }

@@ -14,19 +14,19 @@ final class ReportPostViewController: AwfulViewController {
         title = "Report Post"
         modalPresentationStyle = .FormSheet
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: Selector("didTapCancel"))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: Selector("didTapSubmit"))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(didTapCancel))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: #selector(didTapSubmit))
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @IBAction private func didTapCancel() {
+    @IBAction @objc private func didTapCancel() {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction private func didTapSubmit() {
+    @IBAction @objc private func didTapSubmit() {
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAddedTo(view.window, title: "Reporting…", mode: .Indeterminate, animated: true)
@@ -42,7 +42,7 @@ final class ReportPostViewController: AwfulViewController {
         }
     }
     
-    @IBAction private func commentTextFieldDidChange(textField: UITextField) {
+    @IBAction @objc private func commentTextFieldDidChange(textField: UITextField) {
         navigationItem.rightBarButtonItem?.enabled = (textField.text ?? "").characters.count <= 60
     }
     
@@ -85,7 +85,7 @@ final class ReportPostViewController: AwfulViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        rootView.commentTextField.addTarget(self, action: Selector("commentTextFieldDidChange:"), forControlEvents: .ValueChanged)
+        rootView.commentTextField.addTarget(self, action: #selector(commentTextFieldDidChange), forControlEvents: .ValueChanged)
     }
     
     override func themeDidChange() {

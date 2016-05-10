@@ -21,7 +21,7 @@ final class AcknowledgementsViewController: AwfulViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @IBAction private func didTapDone() {
+    @IBAction @objc private func didTapDone() {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -65,7 +65,7 @@ final class AcknowledgementsViewController: AwfulViewController {
         super.viewWillAppear(animated)
         
         if navigationController?.viewControllers.first! == self {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: Selector("didTapDone"))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(didTapDone))
         } else {
             navigationItem.rightBarButtonItem = nil
         }
