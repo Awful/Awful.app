@@ -334,7 +334,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
 
 extension NewReplyDraft: SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress {
-        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
@@ -348,7 +348,7 @@ extension NewReplyDraft: SubmittableDraft {
 
 extension EditReplyDraft: SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress {
-        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {

@@ -131,6 +131,7 @@
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C2C1F0C1CE033B200CD27DD /* HTMLRequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0B1CE033B200CD27DD /* HTMLRequestSerializer.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
+		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
@@ -231,7 +232,6 @@
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -544,6 +544,7 @@
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
 		1C2C1F0B1CE033B200CD27DD /* HTMLRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLRequestSerializer.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
+		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
@@ -676,8 +677,6 @@
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
-		1C76C66A1A49E87F00E81286 /* UploadImageAttachments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadImageAttachments.h; sourceTree = "<group>"; };
-		1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadImageAttachments.m; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -1568,8 +1567,7 @@
 				1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */,
 				1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */,
 				1C16FBA71CB5C62C00C88BD1 /* TextAttachment.swift */,
-				1C76C66A1A49E87F00E81286 /* UploadImageAttachments.h */,
-				1C76C66B1A49E87F00E81286 /* UploadImageAttachments.m */,
+				1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */,
 			);
 			path = Composition;
 			sourceTree = "<group>";
@@ -2358,6 +2356,7 @@
 				1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
+				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
@@ -2368,7 +2367,6 @@
 				1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
-				1C76C66C1A49E87F00E81286 /* UploadImageAttachments.m in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
