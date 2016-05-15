@@ -52,6 +52,10 @@
     BOOL _restoringState;
 }
 
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -314,6 +318,14 @@
         [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
     };
     return _composeItem;
+}
+
+- (void)newReply:(UIKeyCommand *)sender {
+    if (!self.replyWorkspace) {
+        self.replyWorkspace = [[ReplyWorkspace alloc] initWithThread:self.thread];
+        self.replyWorkspace.completion = self.replyCompletionBlock;
+    }
+    [self presentViewController:self.replyWorkspace.viewController animated:YES completion:nil];
 }
 
 typedef void (^ReplyCompletion)(BOOL, BOOL);
@@ -648,6 +660,20 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
     [self loadPage:nextPage updatingCache:YES updatingLastReadPost:YES];
 }
 
+- (void)loadNextPage:(UIKeyCommand *)sender {
+    
+    AwfulThreadPage nextPage = self.page + 1;
+    
+    [self loadPage:nextPage updatingCache:YES updatingLastReadPost:YES];
+}
+
+- (void)loadPreviousPage:(UIKeyCommand *)sender {
+    
+    AwfulThreadPage previousPage = self.page - 1;
+    
+    [self loadPage:previousPage updatingCache:YES updatingLastReadPost:YES];
+}
+
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
@@ -671,6 +697,63 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 {
     UIScrollView *scrollView = self.postsView.webView.scrollView;
     [scrollView scrollRectToVisible:CGRectMake(0, scrollView.contentSize.height - 1, 1, 1) animated:YES];
+}
+- (void)scrollToBottom: (UIKeyCommand *)sender
+{
+    [self scrollToBottom];
+}
+- (void)scrollToTop: (UIKeyCommand *)sender
+{
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+}
+- (void)scrollUp: (UIKeyCommand *)sender
+{
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat newOffset = currentOffset - 80;
+    if(newOffset < 0) {
+        newOffset = 0;
+    }
+    [scrollView setContentOffset:CGPointMake(0, newOffset) animated:YES];
+}
+- (void)scrollDown: (UIKeyCommand *)sender
+{
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat contentHeight = scrollView.contentSize.height;
+    CGFloat pageHeight = scrollView.bounds.size.height;
+    CGFloat newOffset = currentOffset + 80;
+    if(contentHeight - pageHeight <= newOffset) {
+        [self scrollToBottom];
+    } else {
+        [scrollView setContentOffset:CGPointMake(0, newOffset) animated:YES];
+    }
+}
+
+- (void)pageUp: (UIKeyCommand *)sender
+{
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat pageHeight = scrollView.bounds.size.height;
+    CGFloat newOffset = currentOffset - (pageHeight - 80);
+    if(newOffset < 0) {
+        newOffset = 0;
+    }
+    [scrollView setContentOffset:CGPointMake(0, newOffset) animated:YES];
+}
+- (void)pageDown: (UIKeyCommand *)sender
+{
+    UIScrollView *scrollView = self.postsView.webView.scrollView;
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat pageHeight = scrollView.bounds.size.height;
+    CGFloat contentHeight = scrollView.contentSize.height;
+    CGFloat newOffset = currentOffset + (pageHeight - 80);
+    if(contentHeight - pageHeight <= newOffset) {
+        [self scrollToBottom];
+    } else {
+        [scrollView setContentOffset:CGPointMake(0, newOffset) animated:YES];
+    }
 }
 
 - (void)didLongPressOnPostsView:(UILongPressGestureRecognizer *)sender
@@ -1172,6 +1255,30 @@ didFinishWithSuccessfulSubmission:(BOOL)success
 - (NSArray<id<UIPreviewActionItem>> *)previewActionItems
 {
     return self.previewActionItemProvider.previewActionItems;
+}
+
+- (NSArray<UIKeyCommand *>*)keyCommands {
+    
+    NSMutableArray<UIKeyCommand *> *keyCommands = [[NSMutableArray<UIKeyCommand *>  alloc]init];
+    
+    
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:0 action:@selector(scrollUp:) discoverabilityTitle:@"Up"]];
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:0 action:@selector(scrollDown:) discoverabilityTitle:@"Down"]];
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:@" " modifierFlags:UIKeyModifierShift action:@selector(pageUp:) discoverabilityTitle:@"Page Up"]];
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:@" " modifierFlags:0 action:@selector(pageDown:) discoverabilityTitle:@"Page Down"]];
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:UIKeyModifierCommand action:@selector(scrollToTop:) discoverabilityTitle:@"Scroll to Top"]];
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:UIKeyModifierCommand action:@selector(scrollToBottom:) discoverabilityTitle:@"Scroll to Bottom"]];
+    
+    if(self.page > 1) {
+        [keyCommands addObject:[UIKeyCommand keyCommandWithInput:@"[" modifierFlags:UIKeyModifierCommand action:@selector(loadPreviousPage:) discoverabilityTitle:@"Previous Page"]];
+    }
+    if(self.page < self.numberOfPages) {
+        [keyCommands addObject:[UIKeyCommand keyCommandWithInput:@"]" modifierFlags:UIKeyModifierCommand action:@selector(loadNextPage:) discoverabilityTitle:@"Next Page"]];
+    }
+    
+    [keyCommands addObject:[UIKeyCommand keyCommandWithInput:@"N" modifierFlags:UIKeyModifierCommand action:@selector(newReply:) discoverabilityTitle:@"New Reply"]];
+
+    return keyCommands;
 }
 
 static NSString * const ThreadKeyKey = @"ThreadKey";

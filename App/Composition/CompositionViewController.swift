@@ -23,6 +23,10 @@ final class CompositionViewController: AwfulViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func cancel(sender: UIKeyCommand) {
+        self.didTapCancel()
+    }
+    
     var textView: UITextView {
         return view as! UITextView
     }
@@ -77,6 +81,12 @@ final class CompositionViewController: AwfulViewController {
         super.viewWillDisappear(animated)
         
         view.endEditing(true)
+    }
+    
+    override var keyCommands: [UIKeyCommand]? {
+        return [
+            UIKeyCommand(input: UIKeyInputEscape, modifierFlags: [], action: #selector(CompositionViewController.cancel(_:)), discoverabilityTitle: "Cancel"),
+        ]
     }
 }
 
