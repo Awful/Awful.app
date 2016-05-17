@@ -5,7 +5,6 @@
 #import "AwfulNavigationController.h"
 #import "AwfulSettings.h"
 #import "AwfulViewController.h"
-#import "MessageViewController.h"
 #import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
 #import "SettingsViewController.h"

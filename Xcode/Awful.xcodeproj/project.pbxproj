@@ -132,6 +132,7 @@
 		1C2C1F0C1CE033B200CD27DD /* HTMLRequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0B1CE033B200CD27DD /* HTMLRequestSerializer.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
+		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
@@ -272,7 +273,6 @@
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
-		1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6010A16D826F000CBEE22 /* MessageViewController.m */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
@@ -545,6 +545,7 @@
 		1C2C1F0B1CE033B200CD27DD /* HTMLRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLRequestSerializer.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
+		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
@@ -727,8 +728,6 @@
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
 		1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLMenuPresenter+WebViewJunk.swift"; sourceTree = "<group>"; };
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
-		1CB6010916D826F000CBEE22 /* MessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
-		1CB6010A16D826F000CBEE22 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
@@ -1389,8 +1388,7 @@
 				1C098AE819C77B430031C12A /* MessageCell.xib */,
 				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
-				1CB6010916D826F000CBEE22 /* MessageViewController.h */,
-				1CB6010A16D826F000CBEE22 /* MessageViewController.m */,
+				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
 				1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */,
 				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
 				1C8E10471914D1010010007B /* private-message.js */,
@@ -2404,7 +2402,6 @@
 				1C9438691C2875610029DFB1 /* ForumTableViewCell.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
-				1CB6010C16D826F000CBEE22 /* MessageViewController.m in Sources */,
 				1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
@@ -2429,6 +2426,7 @@
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */,
+				1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
