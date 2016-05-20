@@ -3,7 +3,6 @@
 //  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SettingsViewController.h"
-#import "AwfulAppDelegate.h"
 #import "AwfulForumsClient.h"
 #import "AwfulSettings.h"
 #import "SettingsBinding.h"
@@ -286,12 +285,12 @@ typedef NS_ENUM(NSUInteger, SettingType)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [alert addAction:[UIAlertAction actionWithTitle:@"Log Out" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [[AwfulAppDelegate instance] logOut];
+            [[AppDelegate instance] logOut];
         }]];
         [self presentViewController:alert animated:YES completion:nil];
     } else if ([action isEqualToString:@"GoToAwfulThread"]) {
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"awful://threads/%@", setting[@"ThreadID"]]];
-        [[AwfulAppDelegate instance] openAwfulURL:URL];
+        [[AppDelegate instance] openAwfulURL:URL];
     } else if (setting[@"ViewController"]) {
         UIViewController *viewController = [NSClassFromString(setting[@"ViewController"]) new];
         if (viewController.modalPresentationStyle == UIModalPresentationFormSheet && [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {

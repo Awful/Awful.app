@@ -358,7 +358,7 @@ final class ThreadsTableViewController: AwfulTableViewController, ComposeTextVie
             guard let forumID = coder.decodeObjectForKey(ObsoleteRestorationKeys.forumID) as? String else { return nil }
             forumKey = ForumKey(forumID: forumID)
         }
-        let managedObjectContext = AwfulAppDelegate.instance().managedObjectContext
+        let managedObjectContext = AppDelegate.instance.managedObjectContext
         let forum = Forum.objectForKey(forumKey, inManagedObjectContext: managedObjectContext) as! Forum
         let viewController = self.init(forum: forum)
         viewController.restorationIdentifier = identifierComponents.last as! String?

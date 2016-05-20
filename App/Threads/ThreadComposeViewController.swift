@@ -264,7 +264,7 @@ extension ThreadComposeViewController: UIViewControllerRestoration {
     static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         guard let
             forumKey = coder.decodeObjectForKey(Keys.ForumKey.rawValue) as? ForumKey,
-            forum = Forum.objectForKey(forumKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as? Forum
+            forum = Forum.objectForKey(forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
             else { return nil }
         
         let composeViewController = ThreadComposeViewController(forum: forum)

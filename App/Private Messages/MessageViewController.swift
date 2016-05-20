@@ -300,7 +300,7 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 extension MessageViewController: UIViewControllerRestoration {
     static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         guard let messageKey = coder.decodeObjectForKey(Keys.MessageKey.rawValue) as? PrivateMessageKey else { return nil }
-        let context = AwfulAppDelegate.instance().managedObjectContext
+        let context = AppDelegate.instance.managedObjectContext
         guard let privateMessage = PrivateMessage.objectForKey(messageKey, inManagedObjectContext: context) as? PrivateMessage else { return nil }
         let messageVC = self.init(privateMessage: privateMessage)
         messageVC.restorationIdentifier = identifierComponents.last as? String
@@ -326,7 +326,7 @@ extension MessageViewController: UIWebViewDelegate {
         
         guard navigationType == .LinkClicked else { return true }
         if let awfulURL = url.awfulURL {
-            AwfulAppDelegate.instance().openAwfulURL(awfulURL)
+            AppDelegate.instance.openAwfulURL(awfulURL)
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         } else {

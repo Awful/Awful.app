@@ -677,7 +677,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
 - (void)goToParentForum
 {
     NSString *url = [NSString stringWithFormat:@"awful://forums/%@", self.thread.forum.forumID];
-    [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
+    [[AppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
 }
 
 - (void)showHiddenSeenPosts
@@ -979,7 +979,7 @@ typedef void (^ReplyCompletion)(BOOL, BOOL);
         [items addObject:[IconActionItem itemWithAction:IconActionShowInThread block:^{
             // This will add the thread to the navigation stack, giving us thread->author->thread.
             NSString *url = [NSString stringWithFormat:@"awful://posts/%@", post.postID];
-            [[AwfulAppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
+            [[AppDelegate instance] openAwfulURL:[NSURL URLWithString:url]];
         }]];
     }
     
@@ -1154,7 +1154,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
                     [self readIgnoredPostAtIndex:index];
                 }
             } else {
-                [[AwfulAppDelegate instance] openAwfulURL:[URL awfulURL]];
+                [[AppDelegate instance] openAwfulURL:[URL awfulURL]];
             }
         } else if ([URL opensInBrowser]) {
             [[[URLMenuPresenter alloc] initWithLinkURL:URL imageURL:nil] presentInDefaultBrowserFromViewController:self];
@@ -1203,7 +1203,7 @@ didFinishWithSuccessfulSubmission:(BOOL)success
             userKey = [[UserKey alloc] initWithUserID:userID username:nil];
         }
     }
-    NSManagedObjectContext *managedObjectContext = [AwfulAppDelegate instance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [AppDelegate instance].managedObjectContext;
     Thread *thread = [Thread objectForKey:threadKey inManagedObjectContext:managedObjectContext];
     User *author;
     if (userKey) {
