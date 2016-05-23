@@ -152,7 +152,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             awfulURL = userActivity.awfulURL,
             router = urlRouter
             else { return false }
-        router.routeURL(awfulURL)
+        router.route(awfulURL)
         return true
     }
     
@@ -185,7 +185,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
      */
     func openAwfulURL(url: NSURL) -> Bool {
         guard let router = urlRouter else { return false }
-        return router.routeURL(url)
+        return router.route(url)
     }
     
     private func updateShortcutItems() {

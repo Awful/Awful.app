@@ -3,7 +3,6 @@
 #import "AwfulJavaScript.h"
 #import "AwfulNavigationController.h"
 #import "AwfulSettings.h"
-#import "AwfulURLRouter.h"
 #import "AwfulViewController.h"
 #import "OnePasswordExtension.h"
 #import "PostsPageViewController.h"
