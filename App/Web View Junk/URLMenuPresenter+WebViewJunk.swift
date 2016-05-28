@@ -2,6 +2,8 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+
 extension URLMenuPresenter {
     class func presentInterestingElements(info: [String: AnyObject], fromViewController presentingViewController: UIViewController, fromWebView webView: UIWebView) -> Bool {
         var imageURL: NSURL? = nil

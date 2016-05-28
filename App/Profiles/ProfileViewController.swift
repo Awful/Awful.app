@@ -4,6 +4,7 @@
 
 import AFNetworking
 import ARChromeActivity
+import AwfulCore
 import GRMustache
 import TUSafariActivity
 import UIKit

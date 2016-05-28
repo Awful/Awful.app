@@ -2,6 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import MRProgress
 import UIKit
 
@@ -28,7 +29,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             
             let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
             var queryItems: [NSURLQueryItem] = []
-            queryItems.append(NSURLQueryItem(name: "threadid", value: thread?.threadID))
+            queryItems.append(NSURLQueryItem(name: "threadid", value: thread.threadID))
             queryItems.append(NSURLQueryItem(name: "perpage", value: "40"))
             if (postsViewController.page > 1) {
                 queryItems.append(NSURLQueryItem(name:"pagenumber", value: "\(postsViewController.page)"))
@@ -46,7 +47,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: nil, onPage: .Last, updateLastReadPost: true, andThen: { (error, _, _, _) -> Void in
+            AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: nil, onPage: AwfulThreadPage.Last.rawValue, updateLastReadPost: true, andThen: { (error, _, _, _) -> Void in
                 guard let
                     error = error,
                     previewingViewController = postsViewController.parentViewController

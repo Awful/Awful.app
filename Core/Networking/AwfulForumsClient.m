@@ -545,7 +545,7 @@
 
 - (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
-                            onPage:(AwfulThreadPage)page
+                            onPage:(NSInteger)page
                 updateLastReadPost:(BOOL)updateLastReadPost
                            andThen:(void (^)(NSError *error, NSArray *posts, NSUInteger firstUnreadPost, NSString *advertisementHTML))callback
 {

@@ -5,5 +5,4 @@
 #import "AwfulSettings.h"
 #import "AwfulViewController.h"
 #import "OnePasswordExtension.h"
-#import "PostsPageViewController.h"
 #import "SettingsViewController.h"
