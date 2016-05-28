@@ -7,7 +7,7 @@ import GRMustache
 import WebViewJavascriptBridge
 
 /// Displays a single private message.
-final class MessageViewController: AwfulViewController {
+final class MessageViewController: ViewController {
     private let privateMessage: PrivateMessage
     private var didRender = false
     private var fractionalContentOffsetOnLoad: CGFloat = 0

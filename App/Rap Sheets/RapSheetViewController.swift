@@ -6,7 +6,7 @@ import AwfulCore
 import UIKit
 
 /// Displays a list of probations and bans.
-final class RapSheetViewController: AwfulTableViewController {
+final class RapSheetViewController: TableViewController {
     private let user: User?
     private let punishments = NSMutableOrderedSet()
     private var mostRecentlyLoadedPage = 0
@@ -75,7 +75,7 @@ final class RapSheetViewController: AwfulTableViewController {
             }
             
             self?.refreshControl?.endRefreshing()
-            self?.infiniteScrollController.stop()
+            self?.infiniteScrollController?.stop()
         }
     }
     

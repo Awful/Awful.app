@@ -5,7 +5,7 @@
 import AwfulCore
 
 @objc(MessageListViewController)
-final class MessageListViewController: AwfulTableViewController {
+final class MessageListViewController: TableViewController {
     private let managedObjectContext: NSManagedObjectContext
     private var dataSource: MessagesDataSource!
     

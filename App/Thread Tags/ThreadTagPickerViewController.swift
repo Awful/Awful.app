@@ -2,7 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-final class ThreadTagPickerViewController: AwfulViewController {
+final class ThreadTagPickerViewController: ViewController {
     weak var delegate: ThreadTagPickerViewControllerDelegate?
     private let imageNames: [String]
     private let secondaryImageNames: [String]?

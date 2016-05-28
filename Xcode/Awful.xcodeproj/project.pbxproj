@@ -35,6 +35,7 @@
 		1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */; };
 		1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */; };
 		1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */; };
+		1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */; };
 		1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC41A0DE8C0001BD898 /* Awful.xcdatamodeld */; };
 		1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */; };
 		1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -295,7 +296,6 @@
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
-		1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
@@ -484,6 +484,7 @@
 		1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1C14A4DB1A94C7260045DDF7 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeField.swift; sourceTree = "<group>"; };
 		1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfHostingAttachmentInterpolator.swift; sourceTree = "<group>"; };
@@ -748,8 +749,6 @@
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
-		1CDD48C917EE8FB400E4DAE3 /* AwfulViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulViewController.h; sourceTree = "<group>"; };
-		1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulViewController.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDefaultBrowserController.swift; sourceTree = "<group>"; };
@@ -1514,8 +1513,6 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
-				1CDD48C917EE8FB400E4DAE3 /* AwfulViewController.h */,
-				1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */,
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
@@ -1529,6 +1526,7 @@
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CB15BCE1A9CEB8800176E73 /* Themes.swift */,
+				1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */,
 			);
 			path = Theming;
 			sourceTree = "<group>";
@@ -2403,6 +2401,7 @@
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
+				1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
@@ -2420,7 +2419,6 @@
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
-				1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,

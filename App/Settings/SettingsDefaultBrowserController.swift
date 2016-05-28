@@ -2,7 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-final class SettingsDefaultBrowserController: AwfulTableViewController {
+final class SettingsDefaultBrowserController: TableViewController {
     private var selectedIndexPath: NSIndexPath = selectedBrowserIndexPath()
     
     init() {

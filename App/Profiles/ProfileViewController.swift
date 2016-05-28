@@ -11,7 +11,7 @@ import UIKit
 import WebKit
 
 /// Shows detailed information about a particular user.
-final class ProfileViewController: AwfulViewController {
+final class ProfileViewController: ViewController {
     let user: User
     
     init(user: User) {

@@ -10,7 +10,7 @@ import TUSafariActivity
 import WebViewJavascriptBridge
 
 /// Shows a list of posts in a thread.
-final class PostsPageViewController: AwfulViewController {
+final class PostsPageViewController: ViewController {
     let thread: Thread
     private let author: User?
     private(set) var page = 0

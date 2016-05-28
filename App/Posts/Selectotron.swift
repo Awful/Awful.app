@@ -8,7 +8,7 @@ import UIKit
 /**
 A modal view controller for picking a particular page of a thread. By default it presents in a popover on all devices.
 */
-final class Selectotron : AwfulViewController {
+final class Selectotron : ViewController {
     let postsViewController: PostsPageViewController
     
     @IBOutlet weak var jumpButton: UIButton!

@@ -58,7 +58,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updateAvailableThreadTagsIfNecessary()
     }
     
-    override var theme: Theme! {
+    override var theme: Theme {
         return Theme.currentThemeForForum(forum)
     }
     

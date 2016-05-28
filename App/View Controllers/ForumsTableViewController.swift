@@ -4,7 +4,7 @@
 
 import AwfulCore
 
-final class ForumsTableViewController: AwfulTableViewController {
+final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
     private var dataSource: ForumTableViewDataSource!
     

@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-final class BookmarksTableViewController: AwfulTableViewController, ThreadPeekPopControllerDelegate {
+final class BookmarksTableViewController: TableViewController, ThreadPeekPopControllerDelegate {
     private var latestPage = 0
     private let managedObjectContext: NSManagedObjectContext
     private var peekPopController: ThreadPeekPopController?

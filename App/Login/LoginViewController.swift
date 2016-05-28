@@ -5,7 +5,7 @@
 import AwfulCore
 import UIKit
 
-class LoginViewController: AwfulViewController {
+class LoginViewController: ViewController {
     var completionBlock: ((LoginViewController) -> Void)?
     
     @IBOutlet weak var scrollView: UIScrollView!

@@ -6,7 +6,7 @@ import AwfulCore
 import GRMustache
 
 /// Previews a post (new or edited).
-class PostPreviewViewController: AwfulViewController {
+class PostPreviewViewController: ViewController {
     let editingPost: Post?
     let thread: Thread?
     let BBcode: NSAttributedString

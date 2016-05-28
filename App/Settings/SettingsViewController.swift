@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-final class SettingsViewController: AwfulTableViewController {
+final class SettingsViewController: TableViewController {
     private let managedObjectContext: NSManagedObjectContext
     
     init(managedObjectContext: NSManagedObjectContext) {

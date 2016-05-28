@@ -5,7 +5,7 @@
 import AwfulCore
 import MRProgress
 
-final class ReportPostViewController: AwfulViewController {
+final class ReportPostViewController: ViewController {
     private let post: Post
     
     init(post: Post) {

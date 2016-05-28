@@ -29,7 +29,7 @@ import UIKit
     optional func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?)
 }
 
-extension AwfulTableViewController: DataSourceDelegate {
+extension TableViewController: DataSourceDelegate {
     func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
         tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
     }

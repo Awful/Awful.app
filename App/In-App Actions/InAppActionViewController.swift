@@ -7,7 +7,7 @@ import UIKit
 /**
 An InAppActionViewController is a modal view controller offering various actions that can be performed on a selected item. By default, it displays in a popover on all devices.
 */
-class InAppActionViewController: AwfulViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverPresentationControllerDelegate {
+class InAppActionViewController: ViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIPopoverPresentationControllerDelegate {
     
     var items: [IconActionItem] = [] {
         didSet {
