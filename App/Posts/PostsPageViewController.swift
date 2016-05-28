@@ -383,7 +383,7 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .Plain, target: nil, action: nil)
         item.accessibilityLabel = "Next page"
         item.actionBlock = { [unowned self] (sender) in
-            guard self.page > self.numberOfPages && self.page > 0 else { return }
+            guard self.page < self.numberOfPages && self.page > 0 else { return }
             self.loadPage(self.page + 1, updatingCache: true, updatingLastReadPost: true)
         }
         return item
