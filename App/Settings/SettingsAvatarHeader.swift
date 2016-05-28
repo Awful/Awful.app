@@ -70,13 +70,13 @@ class SettingsAvatarHeader: UIView {
     // MARK: Target-action
     
     @IBOutlet private weak var tapGestureRecognizer: UITapGestureRecognizer!
-    private var target: AnyObject!
+    private var target: AnyObject?
     private var action: Selector?
     
-    func setTarget(target: AnyObject!, action: String?) {
+    func setTarget(target: AnyObject?, action: Selector?) {
         if let action = action {
             self.target = target
-            self.action = Selector(action)
+            self.action = action
             tapGestureRecognizer.enabled = true
         } else {
             self.target = nil

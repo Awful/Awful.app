@@ -4,4 +4,4 @@
 #import "AwfulSettings.h"
 #import "AwfulViewController.h"
 #import "OnePasswordExtension.h"
-#import "SettingsViewController.h"
+#import "SettingsBinding.h"
