@@ -96,6 +96,8 @@ class ViewController: UIViewController {
     Implements `UIScrollViewDelegate.scrollViewDidScroll(_:)`. If your subclass also implements this method, please call its superclass implementation at some point.
  */
 class TableViewController: UITableViewController {
+    private var viewIsLoading = false
+    
     override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
@@ -165,6 +167,53 @@ class TableViewController: UITableViewController {
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         infiniteScrollController?.scrollViewDidScroll(scrollView)
+    }
+    
+    // MARK: View lifecycle
+    
+    override func viewDidLoad() {
+        viewIsLoading = true
+        
+        super.viewDidLoad()
+        
+        if let _ = pullToRefreshBlock {
+            createRefreshControl()
+        }
+        if let _ = scrollToLoadMoreBlock {
+            createInfiniteScroll()
+        }
+        
+        themeDidChange()
+        
+        viewIsLoading = false
+    }
+    
+    override func themeDidChange() {
+        super.themeDidChange()
+        
+        view.backgroundColor = theme["backgroundColor"]
+        
+        refreshControl?.tintColor = theme["listTextColor"]
+        infiniteScrollController?.spinnerColor = theme["listTextColor"]
+        
+        tableView.indicatorStyle = theme.scrollIndicatorStyle
+        tableView.separatorColor = theme["listSeparatorColor"]
+        
+        if !viewIsLoading {
+            tableView.reloadData()
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        visible = true
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        visible = false
     }
 }
 
