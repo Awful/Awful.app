@@ -105,11 +105,9 @@ typedef NS_ENUM(NSInteger, HTMLInsertionMode)
     return self;
 }
 
-- (instancetype)init {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class HTMLParser"
-                                 userInfo:nil];
-    return nil;
+- (instancetype)init
+{
+    return [self initWithString:@"" encoding:(HTMLStringEncoding){.encoding = NSUTF8StringEncoding, .confidence = Tentative} context:nil];
 }
 
 - (NSString *)string
@@ -203,7 +201,7 @@ typedef NS_ENUM(NSInteger, HTMLInsertionMode)
     {
         [self addParseError:@"Invalid DOCTYPE"];
     }
-    _document.documentType = [[HTMLDocumentType alloc] initWithName:token.name
+    _document.documentType = [[HTMLDocumentType alloc] initWithName:(token.name ?: @"html")
                                                    publicIdentifier:token.publicIdentifier
                                                    systemIdentifier:token.systemIdentifier];
     _document.quirksMode = ^{
@@ -659,7 +657,7 @@ typedef NS_ENUM(NSInteger, HTMLInsertionMode)
         NSDictionary *attributes = token.attributes;
         for (NSString *attributeName in attributes) {
             if (!element[attributeName]) {
-                element[attributeName] = attributes[attributeName];
+                element[attributeName] = (NSString * __nonnull)attributes[attributeName];
             }
         }
     } else if (StringIsEqualToAnyOf(token.tagName, @"base", @"basefont", @"bgsound", @"link", @"meta", @"noframes", @"script", @"style", @"title")) {
@@ -676,7 +674,7 @@ typedef NS_ENUM(NSInteger, HTMLInsertionMode)
         NSDictionary *attributes = token.attributes;
         for (NSString *attributeName in attributes) {
             if (!body[attributeName]) {
-                body[attributeName] = attributes[attributeName];
+                body[attributeName] = (NSString * __nonnull)attributes[attributeName];
             }
         }
     } else if ([token.tagName isEqualToString:@"frameset"]) {
@@ -3087,7 +3085,7 @@ static inline NSDictionary * ElementTypesForSpecificScope(NSArray *additionalHTM
 {
     if (_activeFormattingElements.count == 0) return;
     if ([_activeFormattingElements.lastObject isEqual:[HTMLMarker marker]]) return;
-    if ([_stackOfOpenElements containsObject:_activeFormattingElements.lastObject]) return;
+    if ([_stackOfOpenElements containsObject:(id __nonnull)_activeFormattingElements.lastObject]) return;
     NSUInteger entryIndex = _activeFormattingElements.count - 1;
 rewind:
     if (entryIndex == 0) goto create;
@@ -3185,11 +3183,6 @@ static HTMLMarker *instance = nil;
     return instance;
 }
 
-- (id)init
-{
-    return self;
-}
-
 #pragma mark NSCopying
 
 - (id)copyWithZone:(NSZone *)zone
@@ -3214,13 +3207,17 @@ static HTMLMarker *instance = nil;
 
 HTMLParser * ParserWithDataAndContentType(NSData *data, NSString *contentType)
 {
-    HTMLStringEncoding initialEncoding = DeterminedStringEncodingForData(data, contentType);
-    NSString *initialString = [[NSString alloc] initWithData:data encoding:initialEncoding.encoding];
+    NSString *initialString;
+    HTMLStringEncoding initialEncoding = DeterminedStringEncodingForData(data, contentType, &initialString);
     HTMLParser *initialParser = [[HTMLParser alloc] initWithString:initialString encoding:initialEncoding context:nil];
     __block HTMLParser *parser = initialParser;
     initialParser.changeEncoding = ^(HTMLStringEncoding newEncoding) {
         NSString *correctedString = [[NSString alloc] initWithData:data encoding:newEncoding.encoding];
-        parser = [[HTMLParser alloc] initWithString:correctedString encoding:newEncoding context:nil];
+        if (correctedString) {
+            parser = [[HTMLParser alloc] initWithString:correctedString encoding:newEncoding context:nil];
+        } else {
+            parser = [[HTMLParser alloc] initWithString:initialString encoding:initialEncoding context:nil];
+        }
     };
     [initialParser document];
     return parser;

@@ -17,7 +17,7 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
     override init(baseURL: NSURL?) {
         super.init(baseURL: baseURL)
         
-        requestSerializer = AwfulHTMLRequestSerializer()
+        requestSerializer = HTMLRequestSerializer()
         requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding
         
         responseSerializer = AFCompoundResponseSerializer.compoundSerializerWithResponseSerializers([AFJSONRequestSerializer(), HTMLResponseSerializer()])

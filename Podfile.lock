@@ -24,7 +24,7 @@ PODS:
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.8)
+  - HTMLReader (0.9.6)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - ARChromeActivity (= 1.0.6)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.2)
-  - HTMLReader (= 0.8)
+  - HTMLReader (= 0.9.6)
   - ImgurAnonymousAPIClient (= 0.3.2)
   - JLRoutes (= 1.5.1)
   - KVOController (= 1.0.3)
@@ -82,7 +82,7 @@ SPEC CHECKSUMS:
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 352065d63a011faade774ca3b833237785a59854
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
-  HTMLReader: b4d19899a242c02e1ce4a2308584fe2a6bcb6f6b
+  HTMLReader: 7e21488ee378afc56ccade8af35840c4e03e434c
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: eececedd8c3f1f040209520f783e12049674416e
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3

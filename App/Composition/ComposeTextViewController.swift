@@ -192,7 +192,7 @@ class ComposeTextViewController: AwfulViewController {
         let overlay = MRProgressOverlayView.showOverlayAddedTo(viewToOverlay, title: submissionInProgressTitle, mode: .Indeterminate, animated: true)
         overlay.tintColor = theme["tintColor"]
         
-        imageUploadProgress = UploadImageAttachments(textView.attributedText, { [weak self] (plainText, error) in
+        imageUploadProgress = uploadImages(attachedTo: textView.attributedText, completion: { [weak self] (plainText, error) in
             if let error = error {
                 overlay.dismiss(false)
                 
@@ -209,6 +209,7 @@ class ComposeTextViewController: AwfulViewController {
                 return
             }
             
+            guard let plainText = plainText else { fatalError("no error should mean yes plain text") }
             self?.submit(plainText, completion: { [weak self] (success) in
                 if success {
                     if let delegate = self?.delegate {

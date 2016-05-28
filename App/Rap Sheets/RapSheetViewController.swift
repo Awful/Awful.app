@@ -195,7 +195,7 @@ final class RapSheetViewController: AwfulTableViewController {
             postID = punishment.post?.postID,
             URL = NSURL(string: "awful://posts/\(postID)")
             else { return }
-        AwfulAppDelegate.instance().openAwfulURL(URL)
+        AppDelegate.instance.openAwfulURL(URL)
         if presentingViewController != nil {
             dismissViewControllerAnimated(true, completion: nil)
         }

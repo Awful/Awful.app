@@ -7,7 +7,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if !__has_feature(objc_generic)
+#if !__has_feature(objc_generics)
     #define KeyType id
     #define ObjectType id
 #endif
@@ -28,14 +28,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (ObjectType)objectAtIndexedSubscript:(NSUInteger)index;
 
 /// Returns the key at index 0 in the dictionary, or nil if the dictionary is empty.
-@property (readonly, nonatomic) KeyType firstKey;
+@property (readonly, nonatomic) KeyType __nullable firstKey;
 
 /// Returns the key at index (count - 1) in the dictionary, or nil if the dictionary is empty.
-@property (readonly, nonatomic) KeyType lastKey;
+@property (readonly, nonatomic) KeyType __nullable lastKey;
 
 @end
 
-#if !__has_feature(objc_generic)
+#if !__has_feature(objc_generics)
     #undef KeyType
     #undef ObjectType
 #endif

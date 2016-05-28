@@ -117,8 +117,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             to = fieldView.toField.textField.text,
-            subject = fieldView.subjectField.textField.text,
-            threadTag = threadTag
+            subject = fieldView.subjectField.textField.text
             else { return }
         AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error) in
             if let error = error {
@@ -227,7 +226,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     }
     
     override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        let context = AwfulAppDelegate.instance().managedObjectContext
+        let context = AppDelegate.instance.managedObjectContext
         if let threadTagKey = coder.decodeObjectForKey(Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
             threadTag = ThreadTag.objectForKey(threadTagKey, inManagedObjectContext: context) as? ThreadTag
         }
@@ -259,7 +258,7 @@ extension MessageComposeViewController: UIViewControllerRestoration {
         let regardingKey = coder.decodeObjectForKey(Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
         let forwardingKey = coder.decodeObjectForKey(Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
         let initialContents = coder.decodeObjectForKey(Keys.InitialContents.rawValue) as? String
-        let context = AwfulAppDelegate.instance().managedObjectContext
+        let context = AppDelegate.instance.managedObjectContext
         
         let composeViewController: MessageComposeViewController
         if let

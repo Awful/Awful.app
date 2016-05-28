@@ -275,7 +275,7 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     
     convenience init?(coder: NSCoder) {
         let threadKey = coder.decodeObjectForKey(Keys.threadKey) as! ThreadKey
-        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Thread
+        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! Thread
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
     }
@@ -307,7 +307,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     
     convenience init?(coder: NSCoder) {
         let postKey = coder.decodeObjectForKey(Keys.postKey) as! PostKey
-        let post = Post.objectForKey(postKey, inManagedObjectContext: AwfulAppDelegate.instance().managedObjectContext) as! Post
+        let post = Post.objectForKey(postKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! Post
         let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
         self.init(post: post, text: text)
     }
@@ -334,7 +334,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
 
 extension NewReplyDraft: SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress {
-        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
@@ -348,7 +348,7 @@ extension NewReplyDraft: SubmittableDraft {
 
 extension EditReplyDraft: SubmittableDraft {
     func submit(completion: NSError? -> Void) -> NSProgress {
-        return UploadImageAttachments(text!) { [unowned self] plainText, error in
+        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
