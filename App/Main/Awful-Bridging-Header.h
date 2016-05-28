@@ -1,7 +1,6 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulHTMLRendering.h"
 #import "AwfulJavaScript.h"
-#import "AwfulNavigationController.h"
 #import "AwfulSettings.h"
 #import "AwfulViewController.h"
 #import "OnePasswordExtension.h"

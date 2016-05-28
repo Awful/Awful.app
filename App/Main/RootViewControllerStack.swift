@@ -66,7 +66,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = AwfulNavigationController()
+        let emptyNavigationController = NavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController
