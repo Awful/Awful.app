@@ -994,8 +994,7 @@ final class PostsPageViewController: ViewController {
                 data = data as? [String: AnyObject],
                 rectString = data["rect"] as? String,
                 rect = self?.webView.rectForElementBoundingRect(rectString),
-                postIndexString = data["postIndex"] as? String,
-                postIndex = Int(postIndexString)
+                postIndex = data["postIndex"] as? Int
                 else { return }
             self?.didTapUserHeaderWithRect(rect, forPostAtIndex: postIndex)
         })
@@ -1005,8 +1004,7 @@ final class PostsPageViewController: ViewController {
                 data = data as? [String: AnyObject],
                 rectString = data["rect"] as? String,
                 rect = self?.webView.rectForElementBoundingRect(rectString),
-                postIndexString = data["postIndex"] as? String,
-                postIndex = Int(postIndexString)
+                postIndex = data["postIndex"] as? Int
                 else { return }
             self?.didTapActionButtonWithRect(rect, forPostAtIndex: postIndex)
         })
