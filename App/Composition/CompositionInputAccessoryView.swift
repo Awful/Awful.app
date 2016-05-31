@@ -49,7 +49,7 @@ final class CompositionInputAccessoryView: UIInputView {
         smilieCommand = ShowSmilieKeyboardCommand(textView: textView)
         autocloseCommand = CloseBBcodeTagCommand(textView: textView)
         
-        let height = textView.traitCollection.userInterfaceIdiom == .Pad ? 66 : 38
+        let height = UIDevice.currentDevice().userInterfaceIdiom == .Pad ? 66 : 38
         let frame = CGRect(x: 0, y: 0, width: 0, height: height)
         super.init(frame: frame, inputViewStyle: .Default)
         
