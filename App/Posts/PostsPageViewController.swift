@@ -435,12 +435,12 @@ final class PostsPageViewController: ViewController {
                             }
                         })
                     })
-                    actionSheet.addCancelActionWithHandler(nil)
-                    self.presentViewController(actionSheet, animated: false, completion: nil)
-                    
-                    if let popover = actionSheet.popoverPresentationController {
-                        popover.barButtonItem = sender
-                    }
+                }
+                actionSheet.addCancelActionWithHandler(nil)
+                self.presentViewController(actionSheet, animated: false, completion: nil)
+                
+                if let popover = actionSheet.popoverPresentationController {
+                    popover.barButtonItem = sender
                 }
             })
             
