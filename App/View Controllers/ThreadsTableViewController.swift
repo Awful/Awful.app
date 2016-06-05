@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-final class ThreadsTableViewController: AwfulTableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
     private var latestPage = 0
     private var peekPopController: ThreadPeekPopController?
@@ -87,7 +87,7 @@ final class ThreadsTableViewController: AwfulTableViewController, ComposeTextVie
             }
             
             self?.refreshControl?.endRefreshing()
-            self?.infiniteScrollController.stop()
+            self?.infiniteScrollController?.stop()
         }
     }
     

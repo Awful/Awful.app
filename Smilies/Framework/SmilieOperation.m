@@ -37,6 +37,10 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
         fetchRequest.resultType = NSDictionaryResultType;
         fetchRequest.propertiesToFetch = @[@"text"];
+        if (!self.dataStore.appContainerSmilieStore) {
+            NSLog(@"%s no container smilie store, so nothing to do", __PRETTY_FUNCTION__);
+            return;
+        }
         fetchRequest.affectedStores = @[self.dataStore.appContainerSmilieStore];
         NSError *error;
         NSArray *results = [self.dataStore.managedObjectContext executeFetchRequest:fetchRequest error:&error];

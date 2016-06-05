@@ -2,6 +2,8 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+
 final class ThreadPreviewViewController: PostPreviewViewController {
     private let forum: Forum
     private let subject: String

@@ -2,6 +2,8 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+
 /// For writing the OP of a new thread.
 final class ThreadComposeViewController: ComposeTextViewController {
     /// The newly-posted thread.
@@ -56,7 +58,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updateAvailableThreadTagsIfNecessary()
     }
     
-    override var theme: Theme! {
+    override var theme: Theme {
         return Theme.currentThemeForForum(forum)
     }
     

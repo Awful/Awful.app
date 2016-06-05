@@ -5,7 +5,7 @@
 import GRMustache
 import UIKit
 
-final class AcknowledgementsViewController: AwfulViewController {
+final class AcknowledgementsViewController: ViewController {
     private var webView: WKWebView { return view as! WKWebView }
     private var backgroundColor: UIColor { return theme["backgroundColor"]! }
     private var textColor: UIColor { return theme["listTextColor"]! }

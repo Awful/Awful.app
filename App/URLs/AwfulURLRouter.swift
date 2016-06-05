@@ -78,7 +78,8 @@ final class AwfulURLRouter: NSObject {
                 }
                 
                 overlay.dismiss(true, completion: {
-                    let postsVC = PostsPageViewController(thread: post.thread)
+                    guard let thread = post.thread else { return }
+                    let postsVC = PostsPageViewController(thread: thread)
                     postsVC.loadPage(page.rawValue, updatingCache: true, updatingLastReadPost: true)
                     postsVC.scrollPostToVisible(post)
                     self?.showPostsViewController(postsVC)

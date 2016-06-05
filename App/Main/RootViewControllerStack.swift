@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import CoreData
 import UIKit
 
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
@@ -66,7 +67,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = AwfulNavigationController()
+        let emptyNavigationController = NavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController

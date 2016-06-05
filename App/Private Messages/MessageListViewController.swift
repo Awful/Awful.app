@@ -2,8 +2,10 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+
 @objc(MessageListViewController)
-final class MessageListViewController: AwfulTableViewController {
+final class MessageListViewController: TableViewController {
     private let managedObjectContext: NSManagedObjectContext
     private var dataSource: MessagesDataSource!
     

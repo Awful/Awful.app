@@ -2,7 +2,9 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-final class ForumsTableViewController: AwfulTableViewController {
+import AwfulCore
+
+final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
     private var dataSource: ForumTableViewDataSource!
     

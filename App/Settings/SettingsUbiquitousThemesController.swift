@@ -4,7 +4,7 @@
 
 import UIKit
 
-final class SettingsUbiquitousThemesController: AwfulTableViewController {
+final class SettingsUbiquitousThemesController: TableViewController {
     private var themes: [Theme] = []
     private var selectedThemeNames: Set<String> = []
     private var ignoreSettingsChanges = false

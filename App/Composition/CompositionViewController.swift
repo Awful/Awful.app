@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-final class CompositionViewController: AwfulViewController {
+final class CompositionViewController: ViewController {
     override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nil, bundle: nil)
         restorationClass = self.dynamicType

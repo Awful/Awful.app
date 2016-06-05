@@ -4,7 +4,7 @@
 
 import MRProgress
 
-class ComposeTextViewController: AwfulViewController {
+class ComposeTextViewController: ViewController {
     override init(nibName: String?, bundle: NSBundle?) {
         super.init(nibName: nibName, bundle: bundle)
         navigationItem.leftBarButtonItem = cancelButtonItem

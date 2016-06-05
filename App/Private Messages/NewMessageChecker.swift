@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import Foundation
 
 /// Periodically checks for new private messages in the logged-in user's inbox and posts notifications.

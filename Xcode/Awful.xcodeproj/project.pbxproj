@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		11FDA296151018600014FDCD /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11FDA295151018600014FDCD /* SettingsViewController.m */; };
 		1C097A8D1A97AF0600425EEF /* AwfulForumsClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780211612D989002AF958 /* AwfulForumsClient.m */; };
 		1C097A911A97AF0C00425EEF /* AwfulForumsClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CC780201612D989002AF958 /* AwfulForumsClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
@@ -31,6 +30,12 @@
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
+		1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */; };
+		1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */; };
+		1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */; };
+		1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */; };
+		1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */; };
+		1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */; };
 		1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC41A0DE8C0001BD898 /* Awful.xcdatamodeld */; };
 		1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */; };
 		1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -215,7 +220,6 @@
 		1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */; };
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
-		1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -265,7 +269,6 @@
 		1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE5F16EA030700C665B5 /* newpm.gif */; };
 		1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6016EA030700C665B5 /* pmforwarded.gif */; };
 		1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6116EA030700C665B5 /* pmreplied.gif */; };
-		1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1857F17E3472300462F20 /* AwfulToolbar.m */; };
 		1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0461910AEBA00E85DB2 /* zepto.min.js */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
@@ -283,7 +286,6 @@
 		1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */; };
 		1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
-		1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC780281612D9DE002AF958 /* PostsPageViewController.m */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
 		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
@@ -294,12 +296,10 @@
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
-		1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */; };
 		1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD5198154294D400326C7B /* AwfulSettings.m */; };
 		1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
 		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
-		1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */; };
 		1CE55A701A10552600E474A6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6F1A10552600E474A6 /* DataSource.swift */; };
 		1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */; };
 		1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A771A10675700E474A6 /* FetchedDataSource.swift */; };
@@ -465,8 +465,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		11FDA294151018600014FDCD /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		11FDA295151018600014FDCD /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
@@ -481,6 +479,12 @@
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulURLRouter.swift; sourceTree = "<group>"; };
+		1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageViewController.swift; sourceTree = "<group>"; };
+		1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
+		1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1C14A4DB1A94C7260045DDF7 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeField.swift; sourceTree = "<group>"; };
 		1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfHostingAttachmentInterpolator.swift; sourceTree = "<group>"; };
@@ -631,8 +635,6 @@
 		1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-winpos95.css"; sourceTree = "<group>"; };
 		1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-yospos.css"; sourceTree = "<group>"; };
 		1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-dark.css"; sourceTree = "<group>"; };
-		1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationController.h; sourceTree = "<group>"; };
-		1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationController.m; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* AwfulThreadPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulThreadPage.h; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
@@ -712,8 +714,6 @@
 		1C9FDE5F16EA030700C665B5 /* newpm.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newpm.gif; sourceTree = "<group>"; };
 		1C9FDE6016EA030700C665B5 /* pmforwarded.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmforwarded.gif; sourceTree = "<group>"; };
 		1C9FDE6116EA030700C665B5 /* pmreplied.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmreplied.gif; sourceTree = "<group>"; };
-		1CA1857E17E3472300462F20 /* AwfulToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulToolbar.h; sourceTree = "<group>"; };
-		1CA1857F17E3472300462F20 /* AwfulToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulToolbar.m; sourceTree = "<group>"; };
 		1CA1E5161A0F53130076F0B5 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostScraper.h; sourceTree = "<group>"; };
 		1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostScraper.m; sourceTree = "<group>"; };
@@ -739,8 +739,6 @@
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
-		1CC780271612D9DE002AF958 /* PostsPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostsPageViewController.h; sourceTree = "<group>"; };
-		1CC780281612D9DE002AF958 /* PostsPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostsPageViewController.m; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -751,15 +749,11 @@
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
-		1CDD48C917EE8FB400E4DAE3 /* AwfulViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulViewController.h; sourceTree = "<group>"; };
-		1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulViewController.m; sourceTree = "<group>"; };
 		1CDD5197154294D400326C7B /* AwfulSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulSettings.h; sourceTree = "<group>"; };
 		1CDD5198154294D400326C7B /* AwfulSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulSettings.m; sourceTree = "<group>"; };
 		1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsDefaultBrowserController.swift; sourceTree = "<group>"; };
 		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
-		1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulNavigationBar.h; sourceTree = "<group>"; };
-		1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulNavigationBar.m; sourceTree = "<group>"; };
 		1CE55A6D1A0F77B800E474A6 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
 		1CE55A6F1A10552600E474A6 /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 		1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundDataSource.swift; sourceTree = "<group>"; };
@@ -944,12 +938,9 @@
 		1C00E0AB173A006B008895E7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				1CE2D9C6166ABD0D0024AC1C /* AwfulNavigationBar.h */,
-				1CE2D9C7166ABD0D0024AC1C /* AwfulNavigationBar.m */,
-				1C5B9C4017F22F8800D4981D /* AwfulNavigationController.h */,
-				1C5B9C4117F22F8800D4981D /* AwfulNavigationController.m */,
-				1CA1857E17E3472300462F20 /* AwfulToolbar.h */,
-				1CA1857F17E3472300462F20 /* AwfulToolbar.m */,
+				1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */,
+				1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */,
+				1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */,
 				1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */,
 			);
 			path = Navigation;
@@ -1345,8 +1336,7 @@
 				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
 				1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */,
 				1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */,
-				11FDA294151018600014FDCD /* SettingsViewController.h */,
-				11FDA295151018600014FDCD /* SettingsViewController.m */,
+				1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1438,8 +1428,7 @@
 				1C4191901763C8BD00EADE07 /* posts-view.js */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
-				1CC780271612D9DE002AF958 /* PostsPageViewController.h */,
-				1CC780281612D9DE002AF958 /* PostsPageViewController.m */,
+				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
 				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 				1C16FC031CC3D84500C88BD1 /* PostsView.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
@@ -1524,8 +1513,6 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
-				1CDD48C917EE8FB400E4DAE3 /* AwfulViewController.h */,
-				1CDD48CA17EE8FB400E4DAE3 /* AwfulViewController.m */,
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
@@ -1539,6 +1526,7 @@
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CB15BCE1A9CEB8800176E73 /* Themes.swift */,
+				1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */,
 			);
 			path = Theming;
 			sourceTree = "<group>";
@@ -2315,14 +2303,12 @@
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
-				1CA1858017E3472300462F20 /* AwfulToolbar.m in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* NSURL-OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeader.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
 				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
-				11FDA296151018600014FDCD /* SettingsViewController.m in Sources */,
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */,
 				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
@@ -2336,12 +2322,12 @@
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
 				1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */,
 				1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */,
-				1CC780321612D9DE002AF958 /* PostsPageViewController.m in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1CD005D61BB8DA6400232FFD /* FetchedDataManager.swift in Sources */,
 				1C16FBDB1CBAA5A900C88BD1 /* CoreGraphics.swift in Sources */,
 				1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */,
+				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
@@ -2350,12 +2336,10 @@
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
-				1CE2D9D9166ABD0D0024AC1C /* AwfulNavigationBar.m in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
-				1C5B9C4217F22F8800D4981D /* AwfulNavigationController.m in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
@@ -2365,6 +2349,7 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
+				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
 				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
@@ -2379,6 +2364,7 @@
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
+				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
@@ -2400,6 +2386,7 @@
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
+				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				1C16FBF11CBDBEB600C88BD1 /* NSURL-Awful.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
@@ -2412,7 +2399,9 @@
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
+				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */,
+				1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
@@ -2430,7 +2419,6 @@
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1C479ECF1A615CF5000C01F7 /* InfiniteTableController.swift in Sources */,
-				1CDD48CB17EE8FB400E4DAE3 /* AwfulViewController.m in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
