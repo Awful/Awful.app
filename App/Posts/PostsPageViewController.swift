@@ -155,7 +155,7 @@ final class PostsPageViewController: ViewController {
             return
         }
         
-        networkOperation = AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: author, onPage: rawPage, updateLastReadPost: updateLastReadPost, andThen: { [weak self] (error, posts, firstUnreadPost, advertisementHTML) in
+        networkOperation = AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: author, onPage: rawPage, updateLastReadPost: updateLastReadPost, andThen: { [weak self] (error: NSError?, posts: [AnyObject]?, firstUnreadPost, advertisementHTML: String?) in
             guard let strongSelf = self else { return }
             
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -176,8 +176,8 @@ final class PostsPageViewController: ViewController {
                 }
             }
             
-            if !posts.isEmpty {
-                strongSelf.posts = posts as? [Post] ?? []
+            if let posts = posts as? [Post] where !posts.isEmpty {
+                strongSelf.posts = posts
                 
                 let anyPost = posts[0]
                 if strongSelf.author != nil {
