@@ -419,7 +419,7 @@ final class PostsPageViewController: ViewController {
                         let overlay = MRProgressOverlayView.showOverlayAddedTo(self.view, title: "Voting \(i)", mode: .Indeterminate, animated: true)
                         overlay.tintColor = self.theme["tintColor"]
                         
-                        AwfulForumsClient.sharedClient().rateThread(self.thread, i, andThen: { [weak self] (error) in
+                        AwfulForumsClient.sharedClient().rateThread(self.thread, i, andThen: { [weak self] (error: NSError?) in
                             if let error = error {
                                 overlay.dismiss(false)
                                 
@@ -446,7 +446,7 @@ final class PostsPageViewController: ViewController {
             
             let bookmarkType: IconAction = self.thread.bookmarked ? .RemoveBookmark : .AddBookmark
             let bookmarkItem = IconActionItem(bookmarkType, block: {
-                AwfulForumsClient.sharedClient().setThread(self.thread, isBookmarked: !self.thread.bookmarked, andThen: { [weak self] (error) in
+                AwfulForumsClient.sharedClient().setThread(self.thread, isBookmarked: !self.thread.bookmarked, andThen: { [weak self] (error: NSError?) in
                     if let error = error {
                         print("\(#function) error marking thread: \(error)")
                         return
@@ -702,7 +702,7 @@ final class PostsPageViewController: ViewController {
     
     private func readIgnoredPostAtIndex(i: Int) {
         let post = posts[i]
-        AwfulForumsClient.sharedClient().readIgnoredPost(post) { [weak self] (error) in
+        AwfulForumsClient.sharedClient().readIgnoredPost(post) { [weak self] (error: NSError?) in
             if let error = error {
                 let alert = UIAlertController.alertWithNetworkError(error)
                 self?.presentViewController(alert, animated: true, completion: nil)
@@ -822,7 +822,7 @@ final class PostsPageViewController: ViewController {
         
         if author == nil {
             items.append(IconActionItem(.MarkReadUpToHere, block: {
-                AwfulForumsClient.sharedClient().markThreadReadUpToPost(post, andThen: { [weak self] (error) in
+                AwfulForumsClient.sharedClient().markThreadReadUpToPost(post, andThen: { [weak self] (error: NSError?) in
                     if let error = error {
                         let alert = UIAlertController(title: "Could Not Mark Read", error: error)
                         self?.presentViewController(alert, animated: true, completion: nil)
@@ -844,7 +844,7 @@ final class PostsPageViewController: ViewController {
         
         if post.editable {
             items.append(IconActionItem(.EditPost, block: {
-                AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post, andThen: { [weak self] (error, text) in
+                AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post, andThen: { [weak self] (error: NSError?, text: String?) in
                     if let error = error {
                         let alert = UIAlertController(title: "Could Not Edit Post", error: error)
                         self?.presentViewController(alert, animated: true, completion: nil)

@@ -192,7 +192,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
             subject = fieldView.subjectField.textField.text,
             threadTag = threadTag
             else { return completion(false) }
-        AwfulForumsClient.sharedClient().postThreadInForum(forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, BBcode: composition) { [weak self] (error, thread) in
+        AwfulForumsClient.sharedClient().postThreadInForum(forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, BBcode: composition) { [weak self] (error: NSError?, thread: Thread?) in
             if let error = error {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
                     completion(false)

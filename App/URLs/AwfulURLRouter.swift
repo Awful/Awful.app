@@ -67,7 +67,7 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAddedTo(rootView, title: "Locating Post", mode: .Indeterminate, animated: true)
             overlay.tintColor = Theme.currentTheme["tintColor"]
             
-            AwfulForumsClient.sharedClient().locatePostWithID(key.postID, andThen: { [weak self] (error, post, page) in
+            AwfulForumsClient.sharedClient().locatePostWithID(key.postID, andThen: { [weak self] (error: NSError?, post: Post?, page) in
                 if let error = error {
                     overlay.titleLabelText = "Post Not Found"
                     overlay.mode = .Cross
@@ -78,7 +78,7 @@ final class AwfulURLRouter: NSObject {
                 }
                 
                 overlay.dismiss(true, completion: {
-                    guard let thread = post.thread else { return }
+                    guard let post = post, thread = post.thread else { return }
                     let postsVC = PostsPageViewController(thread: thread)
                     postsVC.loadPage(page.rawValue, updatingCache: true, updatingLastReadPost: true)
                     postsVC.scrollPostToVisible(post)
@@ -106,7 +106,7 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAddedTo(rootView, title: "Locating Message", mode: .Indeterminate, animated: true)
             overlay.tintColor = Theme.currentTheme["tintColor"]
             
-            AwfulForumsClient.sharedClient().readPrivateMessageWithKey(key, andThen: { [weak self] (error, message) in
+            AwfulForumsClient.sharedClient().readPrivateMessageWithKey(key, andThen: { [weak self] (error: NSError?, message: PrivateMessage?) in
                 if let error = error {
                     overlay.titleLabelText = "Message Not Found"
                     overlay.mode = .Cross
@@ -117,6 +117,7 @@ final class AwfulURLRouter: NSObject {
                     return
                 }
                 
+                guard let message = message else { fatalError("no error should mean yes message") }
                 overlay.dismiss(true, completion: {
                     inbox.showMessage(message)
                 })
@@ -305,8 +306,8 @@ final class AwfulURLRouter: NSObject {
             return
         }
         
-        AwfulForumsClient.sharedClient().profileUserWithID(userID, username: nil, andThen: { (error, profile) in
-            completion(error, profile.user)
+        AwfulForumsClient.sharedClient().profileUserWithID(userID, username: nil, andThen: { (error: NSError?, profile: Profile?) in
+            completion(error, profile?.user)
         })
     }
 }

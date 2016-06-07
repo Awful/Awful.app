@@ -46,11 +46,13 @@ final class RapSheetViewController: TableViewController {
     }
     
     private func load(page page: Int) {
-        AwfulForumsClient.sharedClient().listPunishmentsOnPage(page, forUser: user) { [weak self] (error, newPunishments) in
+        AwfulForumsClient.sharedClient().listPunishmentsOnPage(page, forUser: user) { [weak self] (error: NSError?, newPunishments: [AnyObject]?) in
             if let error = error {
                 self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return
             }
+            
+            guard let newPunishments = newPunishments as? [Punishment] else { fatalError("no error should mean yes punishments") }
             
             self?.mostRecentlyLoadedPage = page
             
@@ -66,9 +68,7 @@ final class RapSheetViewController: TableViewController {
                 }
             } else {
                 let oldCount = self?.punishments.count ?? 0
-                if newPunishments != nil {
-                    self?.punishments.addObjectsFromArray(newPunishments)
-                }
+                self?.punishments.addObjectsFromArray(newPunishments)
                 let newCount = self?.punishments.count ?? 0
                 let indexPaths = (oldCount..<newCount).map { NSIndexPath(forRow: $0, inSection: 0) }
                 self?.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)

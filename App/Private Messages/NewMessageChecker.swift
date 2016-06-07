@@ -41,7 +41,7 @@ final class NewMessageChecker: NSObject {
     
     func refreshIfNecessary() {
         guard RefreshMinder.sharedMinder.shouldRefresh(.NewPrivateMessages) else { return }
-        AwfulForumsClient.sharedClient().countUnreadPrivateMessagesInInboxAndThen { [weak self] (error, unreadCount) in
+        AwfulForumsClient.sharedClient().countUnreadPrivateMessagesInInboxAndThen { [weak self] (error: NSError?, unreadCount) in
             if let error = error {
                 print("\(#function) error checking for new private messages: \(error)")
                 return

@@ -50,7 +50,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
-        networkOperation = AwfulForumsClient.sharedClient().previewOriginalPostForThreadInForum(forum, withBBcode: interpolatedBBcode, andThen: { [weak self] (error, postHTML) in
+        networkOperation = AwfulForumsClient.sharedClient().previewOriginalPostForThreadInForum(forum, withBBcode: interpolatedBBcode, andThen: { [weak self] (error: NSError?, postHTML: String?) in
             if let error = error {
                 self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return
