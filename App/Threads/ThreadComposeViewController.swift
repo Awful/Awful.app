@@ -147,22 +147,21 @@ final class ThreadComposeViewController: ComposeTextViewController {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        AwfulForumsClient.sharedClient().listAvailablePostIconsForForumWithID(forum.forumID) { [weak self] (error, form) in
+        AwfulForumsClient.sharedClient().listAvailablePostIconsForForumWithID(forum.forumID) { [weak self] (error: NSError?, form: AwfulForm?) in
             self?.updatingThreadTags = false
-            self?.availableThreadTags = form.threadTags as! [ThreadTag]?
-            self?.availableSecondaryThreadTags = form.secondaryThreadTags as! [ThreadTag]?
-            if let tags = self?.availableThreadTags {
-                let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
-                let secondaryImageNames = self?.availableSecondaryThreadTags?.flatMap { $0.imageName }
-                let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
-                self?.threadTagPicker = picker
-                picker.delegate = self
-                picker.title = "Choose Thread Tag"
-                if secondaryImageNames?.isEmpty == false {
-                    picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
-                } else {
-                    picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
-                }
+            self?.availableThreadTags = form?.threadTags as! [ThreadTag]?
+            self?.availableSecondaryThreadTags = form?.secondaryThreadTags as! [ThreadTag]?
+            guard let tags = self?.availableThreadTags else { return }
+            let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
+            let secondaryImageNames = self?.availableSecondaryThreadTags?.flatMap { $0.imageName }
+            let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
+            self?.threadTagPicker = picker
+            picker.delegate = self
+            picker.title = "Choose Thread Tag"
+            if secondaryImageNames?.isEmpty == false {
+                picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
+            } else {
+                picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
             }
         }
     }
