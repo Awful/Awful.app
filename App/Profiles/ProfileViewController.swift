@@ -84,11 +84,12 @@ final class ProfileViewController: ViewController {
         
         webView.scrollView.flashScrollIndicators()
         
-        AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [unowned self] (error, profile) in
+        let (userID, username) = (user.userID, user.username)
+        AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [weak self] (error: NSError?, profile: Profile?) in
             if let error = error {
-                NSLog("[\(Mirror(reflecting:self)) \(#function)] error fetching user profile for \(profile.user.username) (ID \(profile.user.userID)): \(error)")
+                NSLog("[\(Mirror(reflecting:self)) \(#function)] error fetching user profile for \(username) (ID \(userID)): \(error)")
             } else {
-                self.renderProfile()
+                self?.renderProfile()
             }
         }
     }

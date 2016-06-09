@@ -36,7 +36,7 @@ final class ReplyWorkspace: NSObject {
         let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: false)
         progressView.titleLabelText = "Reading post…"
         
-        AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post) { [weak self] error, BBcode in
+        AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post) { [weak self] (error: NSError?, BBcode: String?) in
             progressView.dismiss(true)
             
             if let error = error {
@@ -189,7 +189,7 @@ final class ReplyWorkspace: NSObject {
     func quotePost(post: Post, completion: NSError? -> Void) {
         createCompositionViewController()
 
-        AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] error, BBcode in
+        AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] (error: NSError?, BBcode: String?) in
             if let textView = self?.compositionViewController.textView, var replacement = BBcode {
                 let selectedRange = textView.selectedTextRange ?? textView.textRangeFromPosition(textView.endOfDocument, toPosition: textView.endOfDocument)!
                 
@@ -339,7 +339,7 @@ extension NewReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { error, post in
+                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { (error: NSError?, post: Post?) in
                     completion(error)
                 }
             }

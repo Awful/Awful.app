@@ -296,45 +296,49 @@ tagspec specifies which tag to insert, with optional newlines and attribute inse
 - [quote=]\n does the above plus inserts an = sign within the opening tag and, after wrapping, places the cursor after it.
 - [url=http://example.com] puts an opening and closing tag around the selection with the attribute intact in the opening tag and, after wrapping, places the cursor after the closing tag.
 */
-private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
-    let textView = tree.textView
-    
-    var equalsPart = tagspec.rangeOfString("=")
-    let end = tagspec.rangeOfString("]")
-    if equalsPart.location != NSNotFound {
-        equalsPart.length = end.location - equalsPart.location
+private func wrapSelectionInTag(tagspec: NSString) -> (tree: CompositionMenuTree) -> Void {
+    return { tree in
+        let textView = tree.textView
+        
+        var equalsPart = tagspec.rangeOfString("=")
+        let end = tagspec.rangeOfString("]")
+        if equalsPart.location != NSNotFound {
+            equalsPart.length = end.location - equalsPart.location
+        }
+        
+        let closingTag = NSMutableString(string: tagspec)
+        if equalsPart.location != NSNotFound {
+            closingTag.deleteCharactersInRange(equalsPart)
+        }
+        closingTag.insertString("/", atIndex: 1)
+        if tagspec.hasSuffix("\n") {
+            closingTag.insertString("\n", atIndex: 0)
+        }
+        
+        var selectedRange = textView.selectedRange
+        
+        if let selection = textView.selectedTextRange {
+            textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end)!, withText: closingTag as String)
+            textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start)!, withText: tagspec as String)
+        }
+        
+        if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {
+            selectedRange.location += tagspec.length
+        } else if equalsPart.length == 1 {
+            selectedRange.location += NSMaxRange(equalsPart)
+        } else if selectedRange.length == 0 {
+            selectedRange.location += NSMaxRange(equalsPart) + 1
+        } else {
+            selectedRange.location += selectedRange.length + tagspec.length + closingTag.length
+            selectedRange.length = 0
+        }
+        textView.selectedRange = selectedRange
+        textView.becomeFirstResponder()
     }
-    
-    let closingTag = NSMutableString(string: tagspec)
-    if equalsPart.location != NSNotFound {
-        closingTag.deleteCharactersInRange(equalsPart)
-    }
-    closingTag.insertString("/", atIndex: 1)
-    if tagspec.hasSuffix("\n") {
-        closingTag.insertString("\n", atIndex: 0)
-    }
-    
-    var selectedRange = textView.selectedRange
-    
-    if let selection = textView.selectedTextRange {
-        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end)!, withText: closingTag as String)
-        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start)!, withText: tagspec as String)
-    }
-    
-    if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {
-        selectedRange.location += tagspec.length
-    } else if equalsPart.length == 1 {
-        selectedRange.location += NSMaxRange(equalsPart)
-    } else if selectedRange.length == 0 {
-        selectedRange.location += NSMaxRange(equalsPart) + 1
-    } else {
-        selectedRange.location += selectedRange.length + tagspec.length + closingTag.length
-        selectedRange.length = 0
-    }
-    textView.selectedRange = selectedRange
-    textView.becomeFirstResponder()
 }
 
-private func isPickerAvailable(sourceType: UIImagePickerControllerSourceType)() -> Bool {
-    return UIImagePickerController.isSourceTypeAvailable(sourceType)
+private func isPickerAvailable(sourceType: UIImagePickerControllerSourceType) -> Void -> Bool {
+    return {
+        return UIImagePickerController.isSourceTypeAvailable(sourceType)
+    }
 }

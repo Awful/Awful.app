@@ -64,7 +64,7 @@ final class MessageViewController: ViewController {
         let actionSheet = UIAlertController.actionSheet()
         
         actionSheet.addActionWithTitle("Reply") {
-            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error, BBcode) in
+            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
                 if let error = error {
                     self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
@@ -81,7 +81,7 @@ final class MessageViewController: ViewController {
         }
         
         actionSheet.addActionWithTitle("Forward") { 
-            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error, BBcode) in
+            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
                 if let error = error {
                     self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
@@ -223,8 +223,8 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
             
-            AwfulForumsClient.sharedClient().readPrivateMessageWithKey(privateMessage.objectKey, andThen: { [weak self] (error, message) in
-                self?.title = message.subject
+            AwfulForumsClient.sharedClient().readPrivateMessageWithKey(privateMessage.objectKey, andThen: { [weak self] (error: NSError?, message: PrivateMessage?) in
+                self?.title = message?.subject
                 
                 self?.renderMessage()
                 
@@ -233,9 +233,9 @@ final class MessageViewController: ViewController {
                 
                 self?.userActivity?.needsSave = true
                 
-                if !message.seen {
+                if message?.seen == false {
                     NewMessageChecker.sharedChecker.decrementUnreadCount()
-                    message.seen = true
+                    message?.seen = true
                 }
             })
         } else {

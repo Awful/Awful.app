@@ -89,7 +89,7 @@ final class MessageListViewController: TableViewController {
     @objc private func refresh() {
         refreshControl?.beginRefreshing()
         
-        AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] error, messages in
+        AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] (error: NSError?, messages: [AnyObject]?) in
             if let error = error {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 if self?.visible == true {
@@ -194,7 +194,7 @@ extension MessageListViewController: DeletesMessages {
         if !message.seen {
             NewMessageChecker.sharedChecker.decrementUnreadCount()
         }
-        AwfulForumsClient.sharedClient().deletePrivateMessage(message) { [weak self] error in
+        AwfulForumsClient.sharedClient().deletePrivateMessage(message) { [weak self] (error: NSError?) in
             if let error = error {
                 let alert = UIAlertController(title: "Could Not Delete Message", error: error)
                 if self?.visible == true {

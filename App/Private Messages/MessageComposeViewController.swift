@@ -89,7 +89,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     private func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
-        AwfulForumsClient.sharedClient().listAvailablePrivateMessageThreadTagsAndThen { [weak self] (error, threadTags) in
+        AwfulForumsClient.sharedClient().listAvailablePrivateMessageThreadTagsAndThen { [weak self] (error: NSError?, threadTags: [AnyObject]?) in
             self?.updatingThreadTags = false
             
             if let threadTags = threadTags as? [ThreadTag] {
@@ -119,7 +119,7 @@ final class MessageComposeViewController: ComposeTextViewController {
             to = fieldView.toField.textField.text,
             subject = fieldView.subjectField.textField.text
             else { return }
-        AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error) in
+        AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error: NSError?) in
             if let error = error {
                 completion(false)
                 self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)

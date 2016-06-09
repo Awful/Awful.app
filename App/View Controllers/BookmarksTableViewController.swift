@@ -61,7 +61,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func loadPage(page: Int) {
-        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] error, threads in
+        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
             if let error = error where self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.presentViewController(alert, animated: true, completion: nil)
@@ -239,7 +239,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] error in
+        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: NSError?) in
             if let error = error {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.presentViewController(alert, animated: true, completion: nil)

@@ -31,7 +31,7 @@ final class ReportPostViewController: ViewController {
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAddedTo(view.window, title: "Reporting…", mode: .Indeterminate, animated: true)
-        AwfulForumsClient.sharedClient().reportPost(post, withReason: rootView.commentTextField.text) { [weak self] error in
+        AwfulForumsClient.sharedClient().reportPost(post, withReason: rootView.commentTextField.text) { [weak self] (error: NSError?) in
             progressView.dismiss(true)
             
             if let error = error {

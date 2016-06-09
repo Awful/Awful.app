@@ -75,7 +75,7 @@ final class SettingsViewController: TableViewController {
     
     private func refreshIfNecessary() {
         guard RefreshMinder.sharedMinder.shouldRefreshLoggedInUser else { return }
-        AwfulForumsClient.sharedClient().learnLoggedInUserInfoAndThen { [weak self] (error, user) in
+        AwfulForumsClient.sharedClient().learnLoggedInUserInfoAndThen { [weak self] (error: NSError?, user: User?) in
             if let error = error {
                 print("\(#function) failed refreshing user info: \(error)")
                 return
