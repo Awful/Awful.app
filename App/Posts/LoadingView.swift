@@ -48,8 +48,9 @@ class LoadingView: UIView {
 }
 
 private class DefaultLoadingView: LoadingView {
-    lazy var spinner: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+    lazy var spinner: UIImageView = {
+        let image = UIImage.animatedImageNamed("v-throbber", duration: 1.53)
+        let spinner = UIImageView(image: image)
         spinner.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(spinner)
         
@@ -65,12 +66,6 @@ private class DefaultLoadingView: LoadingView {
         let tint = theme?["postsLoadingViewTintColor"] as UIColor?
         backgroundColor = tint
         spinner.backgroundColor = tint
-        
-        var whiteness: CGFloat = 0
-        if tint?.getWhite(&whiteness, alpha: nil) == false {
-            tint?.getRed(&whiteness, green: nil, blue: nil, alpha: nil)
-        }
-        spinner.color = whiteness < 0.5 ? .whiteColor() : .grayColor()
     }
     
     private override func willMoveToSuperview(newSuperview: UIView?) {
