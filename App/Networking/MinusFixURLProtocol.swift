@@ -30,23 +30,23 @@ final class MinusFixURLProtocol: NSURLProtocol {
         let mutableRequest = request.mutableCopy() as! NSMutableURLRequest
         mutableRequest.setValue(validReferer, forHTTPHeaderField: "Referer")
         NSURLProtocol.setProperty(true, forKey: didSetRefererForMinusKey, inRequest: mutableRequest)
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest) { [unowned self] (data, response, error) in
-            defer { self.downloadTask = nil }
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest) { [weak self] (data: NSData?, response: NSURLResponse?, error: NSError?) in
+            defer { self?.downloadTask = nil }
             
             if let response = response {
-                self.client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .Allowed)
+                self?.client?.URLProtocol(self!, didReceiveResponse: response, cacheStoragePolicy: .Allowed)
             }
             
             if let error = error {
-                self.client?.URLProtocol(self, didFailWithError: error)
+                self?.client?.URLProtocol(self!, didFailWithError: error)
                 return
             }
             
             if let data = data {
-                self.client?.URLProtocol(self, didLoadData: data)
+                self?.client?.URLProtocol(self!, didLoadData: data)
             }
             
-            self.client?.URLProtocolDidFinishLoading(self)
+            self?.client?.URLProtocolDidFinishLoading(self!)
         }
         downloadTask = task
         task.resume()
