@@ -52,7 +52,7 @@ final class RapSheetViewController: TableViewController {
                 return
             }
             
-            guard let newPunishments = newPunishments as? [Punishment] else { fatalError("no error should mean yes punishments") }
+            let newPunishments = newPunishments as? [Punishment] ?? []
             
             self?.mostRecentlyLoadedPage = page
             
