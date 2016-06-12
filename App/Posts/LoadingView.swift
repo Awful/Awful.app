@@ -55,7 +55,7 @@ private class DefaultLoadingView: LoadingView {
         self.addSubview(spinner)
         
         self.centerXAnchor.constraintEqualToAnchor(spinner.centerXAnchor).active = true
-        self.centerYAnchor.constraintEqualToAnchor(spinner.centerYAnchor).active = true
+        self.centerYAnchor.constraintEqualToAnchor(spinner.bottomAnchor).active = true
         
         return spinner
     }()
