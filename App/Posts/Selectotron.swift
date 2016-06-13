@@ -32,7 +32,8 @@ final class Selectotron : ViewController {
     }
     
     @IBAction func lastPostButtonTapped() {
-        dismissAndLoadPage(AwfulThreadPage.Last.rawValue)
+        postsViewController.goToLastPost()
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     private func dismissAndLoadPage(page: Int) {

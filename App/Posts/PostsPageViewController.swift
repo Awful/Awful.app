@@ -35,6 +35,7 @@ final class PostsPageViewController: ViewController {
     private var replyWorkspace: ReplyWorkspace?
     private var messageViewController: MessageComposeViewController?
     private var jumpToPostIDAfterLoading: String?
+    private var jumpToLastPost = false
     private var scrollToFractionAfterLoading: CGFloat?
     private var restoringState = false
     weak var previewActionItemProvider: PreviewActionItemProvider?
@@ -232,6 +233,11 @@ final class PostsPageViewController: ViewController {
             
             webViewJavascriptBridge?.callHandler("jumpToPostWithID", data: post.postID)
         }
+    }
+    
+    func goToLastPost() {
+        loadPage(AwfulThreadPage.Last.rawValue, updatingCache: true, updatingLastReadPost: true)
+        jumpToLastPost = true
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -1127,12 +1133,24 @@ extension PostsPageViewController: UIWebViewDelegate {
         guard !webViewDidLoadOnce && webView.request?.URL?.absoluteString != "about:blank" else { return }
         webViewDidLoadOnce = true
         
+        if jumpToLastPost {
+            if posts.count > 0 {
+                let lastPost = posts.maxElement({ (a, b) -> Bool in
+                    return a.threadIndex < b.threadIndex
+                })
+                if let lastPost = lastPost {
+                    jumpToPostIDAfterLoading = lastPost.postID
+                }
+            }
+        }
+        
         if let postID = jumpToPostIDAfterLoading {
             webViewJavascriptBridge?.callHandler("jumpToPostWithID", data: postID)
         } else if let fractionalOffset = scrollToFractionAfterLoading {
             webView.fractionalContentOffset = fractionalOffset
         }
         
+        jumpToLastPost = false
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
         
