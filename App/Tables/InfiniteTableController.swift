@@ -15,8 +15,8 @@ final class InfiniteTableController: NSObject {
     var enabled = true
     
     var spinnerColor: UIColor? {
-        get { return footerView.spinner.color }
-        set { footerView.spinner.color = newValue }
+        get { return footerView.tintColor }
+        set { footerView.tintColor = newValue }
     }
     
     init(tableView: UITableView, loadMore: MoreLoader) {
@@ -89,11 +89,7 @@ final class InfiniteTableController: NSObject {
     }
     
     private final class TableFooterView: UIView {
-        let spinner: UIActivityIndicatorView = {
-            let spinner = UIActivityIndicatorView()
-            spinner.hidesWhenStopped = true
-            return spinner
-            }()
+        let spinner = UIImageView(image: NigglyRefreshView.image)
         
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -115,10 +111,12 @@ final class InfiniteTableController: NSObject {
         }
         
         func startAnimating() {
+            spinner.hidden = false
             spinner.startAnimating()
         }
         
         func stopAnimating() {
+            spinner.hidden = true
             spinner.stopAnimating()
         }
     }

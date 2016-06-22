@@ -73,7 +73,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
                 RefreshMinder.sharedMinder.didRefresh(.Bookmarks)
             }
             
-            self?.refreshControl?.endRefreshing()
+            self?.stopAnimatingPullToRefresh()
             self?.infiniteScrollController?.stop()
             
             self?.scrollToLoadMoreBlock = threads?.count >= 40 ? self!.loadMore : nil
@@ -118,8 +118,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         {
             refresh()
             
-            if let refreshControl = refreshControl {
-                tableView.setContentOffset(CGPoint(x: 0, y: -refreshControl.bounds.height), animated: true)
+            if let pullToRefreshView = tableView.pullToRefreshView {
+                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
             }
         }
     }
@@ -155,7 +155,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func refresh() {
-        refreshControl?.beginRefreshing()
+        tableView.startPullToRefresh()
         loadPage(1)
     }
     

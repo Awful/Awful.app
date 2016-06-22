@@ -87,7 +87,7 @@ final class MessageListViewController: TableViewController {
     }
     
     @objc private func refresh() {
-        refreshControl?.beginRefreshing()
+        tableView.startPullToRefresh()
         
         AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] (error: NSError?, messages: [AnyObject]?) in
             if let error = error {
@@ -98,7 +98,7 @@ final class MessageListViewController: TableViewController {
             } else {
                 RefreshMinder.sharedMinder.didRefresh(.PrivateMessagesInbox)
             }
-            self?.refreshControl?.endRefreshing()
+            self?.stopAnimatingPullToRefresh()
         }
     }
     
@@ -119,9 +119,9 @@ final class MessageListViewController: TableViewController {
         dataSource.deletionDelegate = self
         tableView.dataSource = dataSource
         
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(MessageListViewController.refresh), forControlEvents: .ValueChanged)
-        self.refreshControl = refreshControl
+        pullToRefreshBlock = { [unowned self] in
+            self.refresh()
+        }
     }
     
     override func themeDidChange() {

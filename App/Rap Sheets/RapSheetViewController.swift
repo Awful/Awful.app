@@ -74,7 +74,7 @@ final class RapSheetViewController: TableViewController {
                 self?.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
             }
             
-            self?.refreshControl?.endRefreshing()
+            self?.stopAnimatingPullToRefresh()
             self?.infiniteScrollController?.stop()
         }
     }
@@ -106,7 +106,7 @@ final class RapSheetViewController: TableViewController {
     }
     
     @objc private func refresh() {
-        refreshControl?.beginRefreshing()
+        tableView.startPullToRefresh()
         load(page: 1)
     }
     
@@ -119,8 +119,9 @@ final class RapSheetViewController: TableViewController {
         tableView.separatorStyle = .None
         tableView.hideExtraneousSeparators()
         
-        refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(refresh), forControlEvents: .ValueChanged)
+        pullToRefreshBlock = { [unowned self] in
+            self.refresh()
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
