@@ -95,6 +95,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Awful/KVOController.framework"
   install_framework "Pods-Awful/MRProgress.framework"
   install_framework "Pods-Awful/PSMenuItem.framework"
+  install_framework "Pods-Awful/Refresher.framework"
   install_framework "Pods-Awful/TUSafariActivity.framework"
   install_framework "Pods-Awful/WebViewJavascriptBridge.framework"
 fi
@@ -110,6 +111,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Awful/KVOController.framework"
   install_framework "Pods-Awful/MRProgress.framework"
   install_framework "Pods-Awful/PSMenuItem.framework"
+  install_framework "Pods-Awful/Refresher.framework"
   install_framework "Pods-Awful/TUSafariActivity.framework"
   install_framework "Pods-Awful/WebViewJavascriptBridge.framework"
 fi

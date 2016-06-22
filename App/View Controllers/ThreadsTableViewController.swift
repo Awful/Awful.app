@@ -86,7 +86,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                 self?.updateComposeBarButtonItem()
             }
             
-            self?.refreshControl?.endRefreshing()
+            self?.stopAnimatingPullToRefresh()
             self?.infiniteScrollController?.stop()
         }
     }
@@ -142,8 +142,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         {
             refresh()
             
-            if let refreshControl = refreshControl {
-                tableView.setContentOffset(CGPoint(x: 0, y: -refreshControl.bounds.height), animated: true)
+            if let pullToRefreshView = tableView.pullToRefreshView {
+                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
             }
         }
     }
@@ -174,7 +174,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     private func refresh() {
-        refreshControl?.beginRefreshing()
+        tableView.startPullToRefresh()
         
         loadPage(1)
     }

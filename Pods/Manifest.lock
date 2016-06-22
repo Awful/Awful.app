@@ -50,6 +50,7 @@ PODS:
   - MRProgress/Stopable (0.8.0):
     - MRProgress/Helper
   - PSMenuItem (1.0.0)
+  - Refresher (0.5.0)
   - TUSafariActivity (1.0.4)
   - WebViewJavascriptBridge (4.1.4)
 
@@ -64,6 +65,7 @@ DEPENDENCIES:
   - KVOController (= 1.0.3)
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
+  - Refresher (= 0.5.0)
   - TUSafariActivity (= 1.0.4)
   - WebViewJavascriptBridge (= 4.1.4)
 
@@ -89,6 +91,7 @@ SPEC CHECKSUMS:
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
   MRProgress: 43bed03f7a1919add87aa583678c8ea244c1cd0d
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
+  Refresher: 485f5990e6315add7f3470db5a4ca106451b11d3
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 

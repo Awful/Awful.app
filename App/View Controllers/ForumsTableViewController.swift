@@ -33,7 +33,7 @@ final class ForumsTableViewController: TableViewController {
                 RefreshMinder.sharedMinder.didRefresh(.ForumList)
                 self.migrateFavoriteForumsFromSettings()
             }
-            self.refreshControl?.endRefreshing()
+            self.stopAnimatingPullToRefresh()
         }
     }
     
@@ -107,7 +107,12 @@ final class ForumsTableViewController: TableViewController {
         
         updateEditButtonPresence(animated: false)
         
-        pullToRefreshBlock = { [weak self] in self?.refresh() }
+        pullToRefreshBlock = { [weak self] in
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * Int64(NSEC_PER_SEC)), dispatch_get_main_queue(), {
+                self?.refresh()
+            })
+//            self?.refresh()
+        }
     }
     
     override func viewDidAppear(animated: Bool) {

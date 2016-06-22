@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Refresher
 import UIKit
 
 extension UIViewController {
@@ -130,20 +131,30 @@ class TableViewController: UITableViewController {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
             } else {
-                refreshControl = nil
+                if isViewLoaded() {
+                    tableView.pullToRefreshView?.removeFromSuperview()
+                }
             }
         }
     }
     
     private func createRefreshControl() {
-        guard self.refreshControl == nil else { return }
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(didPullToRefresh), forControlEvents: .ValueChanged)
-        self.refreshControl = refreshControl
+        guard tableView.pullToRefreshView == nil else { return }
+        tableView.addPullToRefreshWithAction({ [unowned self] in
+            self.pullToRefreshBlock?()
+            }, withAnimator: NigglyRefreshView())
+        tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
     }
     
-    @objc(_didPullToRefresh) private func didPullToRefresh() {
-        pullToRefreshBlock?()
+    func stopAnimatingPullToRefresh() {
+        guard isViewLoaded() else { return }
+        tableView.stopPullToRefresh()
+    }
+    
+    override var refreshControl: UIRefreshControl? {
+        // These were here to help migrate away from UIRefreshControl. Might as well leave them in to make sure we don't accidentally try something.
+        get { fatalError("use pullToRefreshView") }
+        set { fatalError("use pullToRefreshView") }
     }
     
     /// A block to call when the table is pulled up to load more content. If nil, no load more control is shown.
@@ -160,6 +171,7 @@ class TableViewController: UITableViewController {
     private func createInfiniteScroll() {
         guard let block = scrollToLoadMoreBlock else { return }
         infiniteScrollController = InfiniteTableController(tableView: tableView, loadMore: block)
+        infiniteScrollController?.spinnerColor = theme["listSeparatorColor"]
     }
     
     /// Returns the current infinite scroll controller, or nil if scrollToLoadMoreBlock is nil.
@@ -193,8 +205,8 @@ class TableViewController: UITableViewController {
         
         view.backgroundColor = theme["backgroundColor"]
         
-        refreshControl?.tintColor = theme["listTextColor"]
-        infiniteScrollController?.spinnerColor = theme["listTextColor"]
+        tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
+        infiniteScrollController?.spinnerColor = theme["listSeparatorColor"]
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle
         tableView.separatorColor = theme["listSeparatorColor"]
