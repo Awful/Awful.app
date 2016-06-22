@@ -113,6 +113,12 @@ final class PostsPageViewController: ViewController {
         networkOperation?.cancel()
         networkOperation = nil
         
+        // Clear the post or fractional offset to scroll to. It's assumed that whatever calls this will
+        // take care of re-establishing where to scroll to after calling loadPage().
+        jumpToPostIDAfterLoading = nil
+        scrollToFractionAfterLoading = nil
+        jumpToLastPost = false
+        
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var rawPage = rawPage
         if let
@@ -1015,6 +1021,17 @@ final class PostsPageViewController: ViewController {
             self?.didTapActionButtonWithRect(rect, forPostAtIndex: postIndex)
         })
         
+        webViewJavascriptBridge?.registerHandler("didFinishLoadingTweets", handler: { [weak self] (data, callback) in
+            if let postID = self?.jumpToPostIDAfterLoading {
+                print("jumping to post from tweet load handler")
+                self?.webViewJavascriptBridge?.callHandler("jumpToPostWithID", data: postID)
+            }
+            
+            else if (self?.scrollToFractionAfterLoading > 0) {
+                self?.webView.fractionalContentOffset = (self?.scrollToFractionAfterLoading!)!
+            }
+        })
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.didUpdateNotification, object: nil)
         
         if AwfulSettings.sharedSettings().pullForNext {
@@ -1131,6 +1148,10 @@ extension PostsPageViewController: UIWebViewDelegate {
     
     func webViewDidFinishLoad(webView: UIWebView) {
         guard !webViewDidLoadOnce && webView.request?.URL?.absoluteString != "about:blank" else { return }
+        if AwfulSettings.sharedSettings().embedTweets {
+            webViewJavascriptBridge?.callHandler("embedTweets")
+        }
+        
         webViewDidLoadOnce = true
         
         if jumpToLastPost {
@@ -1150,15 +1171,9 @@ extension PostsPageViewController: UIWebViewDelegate {
             webView.fractionalContentOffset = fractionalOffset
         }
         
-        jumpToLastPost = false
-        jumpToPostIDAfterLoading = nil
-        scrollToFractionAfterLoading = nil
-        
         clearLoadingMessage()
         
-        if AwfulSettings.sharedSettings().embedTweets {
-            webViewJavascriptBridge?.callHandler("embedTweets")
-        }
+        
     }
 }
 
