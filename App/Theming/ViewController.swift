@@ -140,9 +140,11 @@ class TableViewController: UITableViewController {
     
     private func createRefreshControl() {
         guard tableView.pullToRefreshView == nil else { return }
+        let niggly = NigglyRefreshView()
+        niggly.autoresizingMask = .FlexibleWidth
         tableView.addPullToRefreshWithAction({ [unowned self] in
             self.pullToRefreshBlock?()
-            }, withAnimator: NigglyRefreshView())
+            }, withAnimator: niggly)
         tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
     }
     
