@@ -44,7 +44,9 @@ final class NigglyRefreshView: UIView {
 extension NigglyRefreshView: PullToRefreshViewDelegate {
     func pullToRefresh(view: PullToRefreshView, progressDidChange progress: CGFloat) {
         // Progress is based on our height, but there's a bit of margin before we can see :niggly:, so let's delay a little bit before we start advancing the animation.
-        let progress = max(progress - 0.2, 0) / 0.8
+        var progress = max(progress - 0.2, 0) / 0.8
+        // And then it's a bit too quick for my liking.
+        progress /= 2
         imageView.layer.timeOffset = NigglyRefreshView.duration * NSTimeInterval(progress)
     }
     
