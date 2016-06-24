@@ -94,7 +94,7 @@ class ViewController: UIViewController {
 /**
     A thin customization of UITableViewController that extends Theme support and adds some block-based refreshing/load more abilities.
  
-    Implements `UIScrollViewDelegate.scrollViewDidScroll(_:)`. If your subclass also implements this method, please call its superclass implementation at some point.
+    Implements `UITableViewDelegate.tableView(_:willDisplayCell:forRowAtIndexPath:)`. If your subclass also implements this method, please call its superclass implementation at some point.
  */
 class TableViewController: UITableViewController {
     private var viewIsLoading = false
@@ -162,25 +162,24 @@ class TableViewController: UITableViewController {
     /// A block to call when the table is pulled up to load more content. If nil, no load more control is shown.
     var scrollToLoadMoreBlock: (() -> Void)? {
         didSet {
-            if scrollToLoadMoreBlock != nil {
-                createInfiniteScroll()
-            } else {
-                infiniteScrollController = nil
+            if scrollToLoadMoreBlock == nil {
+                stopAnimatingInfiniteScroll()
             }
         }
     }
     
-    private func createInfiniteScroll() {
-        guard let block = scrollToLoadMoreBlock else { return }
-        infiniteScrollController = InfiniteTableController(tableView: tableView, loadMore: block)
-        infiniteScrollController?.spinnerColor = theme["listSeparatorColor"]
+    private enum InfiniteScrollState {
+        case Ready
+        case LoadingMore
     }
+    private var infiniteScrollState: InfiniteScrollState = .Ready
     
-    /// Returns the current infinite scroll controller, or nil if scrollToLoadMoreBlock is nil.
-    private(set) var infiniteScrollController: InfiniteTableController?
-    
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
-        infiniteScrollController?.scrollViewDidScroll(scrollView)
+    func stopAnimatingInfiniteScroll() {
+        infiniteScrollState = .Ready
+        
+        guard let footer = tableView.tableFooterView else { return }
+        tableView.contentInset.bottom -= footer.bounds.height
+        tableView.tableFooterView = nil
     }
     
     // MARK: View lifecycle
@@ -190,11 +189,8 @@ class TableViewController: UITableViewController {
         
         super.viewDidLoad()
         
-        if let _ = pullToRefreshBlock {
+        if pullToRefreshBlock != nil {
             createRefreshControl()
-        }
-        if let _ = scrollToLoadMoreBlock {
-            createInfiniteScroll()
         }
         
         themeDidChange()
@@ -208,7 +204,7 @@ class TableViewController: UITableViewController {
         view.backgroundColor = theme["backgroundColor"]
         
         tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
-        infiniteScrollController?.spinnerColor = theme["listSeparatorColor"]
+        tableView.tableFooterView?.backgroundColor = view.backgroundColor
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle
         tableView.separatorColor = theme["listSeparatorColor"]
@@ -228,6 +224,26 @@ class TableViewController: UITableViewController {
         super.viewDidDisappear(animated)
         
         visible = false
+    }
+    
+    // MARK: UITableViewDelegate
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        guard infiniteScrollState == .Ready, let block = scrollToLoadMoreBlock else { return }
+        guard indexPath.row + 1 == tableView.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) else { return }
+        guard tableView.contentSize.height >= tableView.bounds.height else { return }
+        
+        infiniteScrollState = .LoadingMore
+        block()
+        
+        let imageView = UIImageView(image: NigglyRefreshView.image)
+        imageView.bounds.size.height += 12
+        imageView.contentMode = .Center
+        imageView.backgroundColor = tableView.backgroundColor
+        tableView.tableFooterView = imageView
+        imageView.startAnimating()
+        
+        tableView.contentInset.bottom += imageView.bounds.height
     }
 }
 

@@ -75,7 +75,7 @@ final class RapSheetViewController: TableViewController {
             }
             
             self?.stopAnimatingPullToRefresh()
-            self?.infiniteScrollController?.stop()
+            self?.stopAnimatingInfiniteScroll()
         }
     }
     
