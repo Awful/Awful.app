@@ -108,10 +108,7 @@ final class ForumsTableViewController: TableViewController {
         updateEditButtonPresence(animated: false)
         
         pullToRefreshBlock = { [weak self] in
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * Int64(NSEC_PER_SEC)), dispatch_get_main_queue(), {
-                self?.refresh()
-            })
-//            self?.refresh()
+            self?.refresh()
         }
     }
     
