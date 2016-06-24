@@ -106,7 +106,7 @@ final class RapSheetViewController: TableViewController {
     }
     
     @objc private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         load(page: 1)
     }
     

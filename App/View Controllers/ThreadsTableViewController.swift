@@ -141,10 +141,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             (isTimeToRefresh || dataManager.contents.isEmpty)
         {
             refresh()
-            
-            if let pullToRefreshView = tableView.pullToRefreshView {
-                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
-            }
         }
     }
     
@@ -174,7 +170,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         
         loadPage(1)
     }

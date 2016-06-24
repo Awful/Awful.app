@@ -117,10 +117,6 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.Bookmarks))
         {
             refresh()
-            
-            if let pullToRefreshView = tableView.pullToRefreshView {
-                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
-            }
         }
     }
     
@@ -155,7 +151,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         loadPage(1)
     }
     

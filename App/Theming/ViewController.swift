@@ -2,7 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Refresher
+import MJRefresh
 import UIKit
 
 extension UIViewController {
@@ -132,25 +132,29 @@ class TableViewController: UITableViewController {
                 createRefreshControl()
             } else {
                 if isViewLoaded() {
-                    tableView.pullToRefreshView?.removeFromSuperview()
+                    tableView.mj_header = nil
                 }
             }
         }
     }
     
     private func createRefreshControl() {
-        guard tableView.pullToRefreshView == nil else { return }
-        let niggly = NigglyRefreshView()
-        niggly.autoresizingMask = .FlexibleWidth
-        tableView.addPullToRefreshWithAction({ [unowned self] in
+        guard tableView.mj_header == nil else { return }
+        let niggly = NigglyRefreshView(refreshingBlock: { [unowned self] in
             self.pullToRefreshBlock?()
-            }, withAnimator: niggly)
-        tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
+            })
+        niggly.autoresizingMask = .FlexibleWidth
+        tableView.mj_header = niggly
+    }
+    
+    func startAnimatingPullToRefresh() {
+        guard isViewLoaded() else { return }
+        tableView.mj_header?.beginRefreshing()
     }
     
     func stopAnimatingPullToRefresh() {
         guard isViewLoaded() else { return }
-        tableView.stopPullToRefresh()
+        tableView.mj_header?.endRefreshing()
     }
     
     override var refreshControl: UIRefreshControl? {
@@ -203,7 +207,7 @@ class TableViewController: UITableViewController {
         
         view.backgroundColor = theme["backgroundColor"]
         
-        tableView.pullToRefreshView?.tintColor = theme["listSeparatorColor"]
+        tableView.mj_header?.backgroundColor = view.backgroundColor
         tableView.tableFooterView?.backgroundColor = view.backgroundColor
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle

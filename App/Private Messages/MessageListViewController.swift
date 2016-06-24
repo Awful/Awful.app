@@ -87,7 +87,7 @@ final class MessageListViewController: TableViewController {
     }
     
     @objc private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         
         AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] (error: NSError?, messages: [AnyObject]?) in
             if let error = error {
