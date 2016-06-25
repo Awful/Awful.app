@@ -9,24 +9,30 @@
 import MJRefresh
 import UIKit
 
-private let duration: NSTimeInterval = 1.240
 private let verticalMargin: CGFloat = 10
 
 final class NigglyRefreshView: MJRefreshHeader {
-    static let image = UIImage.animatedImageNamed("niggly-throbber", duration: duration)
-    static let duration: NSTimeInterval = 1.240
-    
-    private let imageView: UIImageView = {
-        let imageView = UIImageView(image: NigglyRefreshView.image)
-        imageView.layer.speed = 0
-        imageView.startAnimating()
+    static func makeImageView() -> UIImageView {
+        let image = UIImage.animatedImageNamed("niggly-throbber", duration: 1.240)!
+        let rawImages = image.images!
+        let symmetricalFrame = 14
+        let animationImages = rawImages.suffixFrom(symmetricalFrame) + rawImages.prefixUpTo(symmetricalFrame)
+        let imageView = UIImageView()
+        imageView.animationImages = Array(animationImages)
+        imageView.animationDuration = image.duration
+        imageView.sizeToFit()
         return imageView
-    }()
+    }
+    
+    private let imageView = NigglyRefreshView.makeImageView()
     
     override init(frame: CGRect) {
         var frame = frame
         frame.size.height = max(frame.height, imageView.bounds.height + verticalMargin * 2)
         super.init(frame: frame)
+        
+        imageView.startAnimating()
+        imageView.layer.speed = 0
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
@@ -40,16 +46,13 @@ final class NigglyRefreshView: MJRefreshHeader {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// MJRefresh sets its pullingPercent while in the state setter, which is kinda unhelpful for keeping the animation going while we disappear after refreshing is complete.
+    private var stateAccordingToMostRecentDidSet: MJRefreshState = .Idle
+    
     override var state: MJRefreshState {
         didSet {
+            stateAccordingToMostRecentDidSet = state
             switch state {
-            case .Idle:
-                imageView.layer.speed = 0
-                imageView.layer.timeOffset = 0
-                
-            case .Pulling:
-                imageView.layer.speed = 0
-                
             case .Refreshing, .WillRefresh:
                 let pausedTime = imageView.layer.timeOffset
                 imageView.layer.speed = 1
@@ -58,7 +61,7 @@ final class NigglyRefreshView: MJRefreshHeader {
                 let timeSincePause = imageView.layer.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
                 layer.beginTime = timeSincePause
                 
-            case .NoMoreData:
+            case .Idle, .Pulling, .NoMoreData:
                 break
             }
         }
@@ -66,10 +69,15 @@ final class NigglyRefreshView: MJRefreshHeader {
     
     override var pullingPercent: CGFloat {
         didSet {
-            switch state {
+            switch stateAccordingToMostRecentDidSet {
+            case .Idle:
+                imageView.layer.speed = 0
+                imageView.layer.timeOffset = 0
+                
             case .Pulling where scrollView.dragging:
-                imageView.layer.timeOffset = NigglyRefreshView.duration * NSTimeInterval(pullingPercent)
-            case .Idle, .Pulling, .Refreshing, .WillRefresh, .NoMoreData:
+                imageView.layer.timeOffset = imageView.animationDuration * NSTimeInterval(pullingPercent)
+                
+            case .Pulling, .Refreshing, .WillRefresh, .NoMoreData:
                 break
             }
         }
