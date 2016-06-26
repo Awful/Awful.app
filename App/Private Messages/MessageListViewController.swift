@@ -87,7 +87,7 @@ final class MessageListViewController: TableViewController {
     }
     
     @objc private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         
         AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] (error: NSError?, messages: [AnyObject]?) in
             if let error = error {
@@ -144,6 +144,7 @@ extension MessageListViewController {
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
         let cell = cell as! MessageCell
         cell.backgroundColor = theme["listBackgroundColor"]
         cell.senderLabel.textColor = theme["listTextColor"]

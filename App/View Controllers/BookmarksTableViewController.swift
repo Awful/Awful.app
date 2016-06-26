@@ -74,7 +74,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             }
             
             self?.stopAnimatingPullToRefresh()
-            self?.infiniteScrollController?.stop()
+            self?.stopAnimatingInfiniteScroll()
             
             self?.scrollToLoadMoreBlock = threads?.count >= 40 ? self!.loadMore : nil
         }
@@ -117,10 +117,6 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.Bookmarks))
         {
             refresh()
-            
-            if let pullToRefreshView = tableView.pullToRefreshView {
-                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
-            }
         }
     }
     
@@ -155,7 +151,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         loadPage(1)
     }
     
@@ -261,6 +257,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)

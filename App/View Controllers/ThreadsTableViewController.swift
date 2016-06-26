@@ -87,7 +87,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             }
             
             self?.stopAnimatingPullToRefresh()
-            self?.infiniteScrollController?.stop()
+            self?.stopAnimatingInfiniteScroll()
         }
     }
     
@@ -141,10 +141,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             (isTimeToRefresh || dataManager.contents.isEmpty)
         {
             refresh()
-            
-            if let pullToRefreshView = tableView.pullToRefreshView {
-                tableView.setContentOffset(CGPoint(x: 0, y: -pullToRefreshView.bounds.height), animated: true)
-            }
         }
     }
     
@@ -174,7 +170,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     private func refresh() {
-        tableView.startPullToRefresh()
+        startAnimatingPullToRefresh()
         
         loadPage(1)
     }
@@ -345,6 +341,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
