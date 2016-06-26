@@ -14,14 +14,7 @@ private let verticalMargin: CGFloat = 10
 final class NigglyRefreshView: MJRefreshHeader {
     static func makeImageView() -> UIImageView {
         let image = UIImage.animatedImageNamed("niggly-throbber", duration: 1.240)!
-        let rawImages = image.images!
-        let symmetricalFrame = 14
-        let animationImages = rawImages.suffixFrom(symmetricalFrame) + rawImages.prefixUpTo(symmetricalFrame)
-        let imageView = UIImageView()
-        imageView.animationImages = Array(animationImages)
-        imageView.animationDuration = image.duration
-        imageView.sizeToFit()
-        return imageView
+        return UIImageView(image: image)
     }
     
     private let imageView = NigglyRefreshView.makeImageView()
@@ -32,7 +25,7 @@ final class NigglyRefreshView: MJRefreshHeader {
         super.init(frame: frame)
         
         imageView.startAnimating()
-        imageView.layer.speed = 0
+        imageView.layer.pause()
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
@@ -46,40 +39,40 @@ final class NigglyRefreshView: MJRefreshHeader {
         fatalError("init(coder:) has not been implemented")
     }
     
-    /// MJRefresh sets its pullingPercent while in the state setter, which is kinda unhelpful for keeping the animation going while we disappear after refreshing is complete.
-    private var stateAccordingToMostRecentDidSet: MJRefreshState = .Idle
-    
     override var state: MJRefreshState {
         didSet {
-            stateAccordingToMostRecentDidSet = state
             switch state {
-            case .Refreshing, .WillRefresh:
-                let pausedTime = imageView.layer.timeOffset
-                imageView.layer.speed = 1
-                imageView.layer.timeOffset = 0
-                imageView.layer.beginTime = 0
-                let timeSincePause = imageView.layer.convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
-                layer.beginTime = timeSincePause
+            case .Idle:
+                imageView.layer.pause()
                 
-            case .Idle, .Pulling, .NoMoreData:
+            case .Pulling:
+                imageView.layer.resume()
+                
+            case .Refreshing, .WillRefresh:
+                imageView.layer.resume()
+                
+            case .NoMoreData:
                 break
             }
         }
     }
+}
+
+private extension CALayer {
+    func pause() {
+        guard speed != 0 else { return }
+        let pausedTime = convertTime(CACurrentMediaTime(), fromLayer: nil)
+        speed = 0.0
+        timeOffset = pausedTime
+    }
     
-    override var pullingPercent: CGFloat {
-        didSet {
-            switch stateAccordingToMostRecentDidSet {
-            case .Idle:
-                imageView.layer.speed = 0
-                imageView.layer.timeOffset = 0
-                
-            case .Pulling where scrollView.dragging:
-                imageView.layer.timeOffset = imageView.animationDuration * NSTimeInterval(pullingPercent)
-                
-            case .Pulling, .Refreshing, .WillRefresh, .NoMoreData:
-                break
-            }
-        }
+    func resume() {
+        guard speed == 0 else { return }
+        let pausedTime = timeOffset
+        speed = 1.0
+        timeOffset = 0.0
+        beginTime = 0.0
+        let timeSincePause = convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
+        beginTime = timeSincePause
     }
 }
