@@ -240,7 +240,7 @@ class TableViewController: UITableViewController {
         infiniteScrollState = .LoadingMore
         block()
         
-        let imageView = NigglyRefreshView.makeImageView()
+        let imageView = UIImageView(image: NigglyRefreshView.makeImage())
         imageView.bounds.size.height += 12
         imageView.contentMode = .Center
         imageView.backgroundColor = tableView.backgroundColor
