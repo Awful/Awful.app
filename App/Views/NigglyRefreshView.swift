@@ -22,9 +22,6 @@ final class NigglyRefreshView: MJRefreshHeader {
         super.init(frame: frame)
         
         layer.contentsGravity = kCAGravityCenter
-        addAnimation()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationWillEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -32,25 +29,18 @@ final class NigglyRefreshView: MJRefreshHeader {
     }
     
     private func addAnimation() {
-        layer.timeOffset = 0 // so we can reset later by setting timeOffset = 0
+        guard layer.animationForKey("sprite") == nil else { return }
         layer.addAnimation(makeSpriteAnimation(for: NigglyRefreshView.makeImage()), forKey: "sprite")
     }
     
-    @objc private func applicationWillEnterForeground(notification: NSNotification) {
-        addAnimation()
-        
-        switch state {
-        case .Idle, .NoMoreData:
-            layer.pause()
-        case .Pulling, .Refreshing, .WillRefresh:
-            break
-        }
-    }
-    
     private var resetAnimationNextPercentAdjustmentWhenIdle = false
+    private var realState: MJRefreshState = .Idle
     
     override var state: MJRefreshState {
         didSet {
+            // percentProgress changes in the state setter, so we keep the last completed state change handy.
+            realState = state
+            
             switch state {
             case .Idle where oldValue == .Refreshing:
                 resetAnimationNextPercentAdjustmentWhenIdle = true
@@ -72,10 +62,11 @@ final class NigglyRefreshView: MJRefreshHeader {
     
     override var pullingPercent: CGFloat {
         didSet {
-            if case .Idle = state where resetAnimationNextPercentAdjustmentWhenIdle {
+            if pullingPercent > 0 {
+                addAnimation()
+            } else if realState == .Idle && pullingPercent <= 0 {
+                layer.removeAnimationForKey("sprite")
                 layer.pause()
-                layer.timeOffset = 0
-                resetAnimationNextPercentAdjustmentWhenIdle = false
             }
         }
     }
