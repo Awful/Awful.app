@@ -24,7 +24,7 @@ public class AwfulManagedObject: NSManagedObject {
     }
     
     // Adds `required` so that insertIntoManagedObjectContext(:) works.
-    required override public init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+    required override public init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
 }
@@ -56,7 +56,7 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
         return self
     }
     
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: AnyObject?) -> Bool {
         if let other = object as? AwfulObjectKey {
             if other.entityName != entityName {
                 return false
