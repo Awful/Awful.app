@@ -7,15 +7,16 @@ import Foundation
 
 /// Ensures parameter values are within its string encoding by turning any outside characters into decimal HTML entities.
 final class HTMLRequestSerializer: AFHTTPRequestSerializer {
-    override func requestBySerializingRequest(request: NSURLRequest, withParameters parameters: AnyObject?) throws -> NSURLRequest {
-        if let method = request.HTTPMethod where HTTPMethodsEncodingParametersInURI.contains(method) { return try super.requestBySerializingRequest(request, withParameters: parameters) }
-        guard stringEncoding == NSWindowsCP1252StringEncoding else { fatalError("only works with win1252") }
-        guard var dict = parameters as? [NSObject: AnyObject] else { return try super.requestBySerializingRequest(request, withParameters: parameters) }
+    override func request(bySerializingRequest request: URLRequest!, withParameters parameters: AnyObject?) throws -> URLRequest {
+        if let method = request.httpMethod where httpMethodsEncodingParametersInURI.contains(method) { return try super.request(bySerializingRequest: request, withParameters: parameters) }
+        
+        guard stringEncoding == String.Encoding.windowsCP1252.rawValue else { fatalError("only works with win1252") }
+        guard var dict = parameters as? [NSObject: AnyObject] else { return try super.request(bySerializingRequest:request, withParameters: parameters) }
         for key in dict.keys {
-            guard let value = dict[key] as? String where !value.canBeConvertedToEncoding(stringEncoding) else { continue }
-            dict[key] = escape(value)
+            guard let value = dict[key] as? String where !value.canBeConverted(to: String.Encoding(rawValue: stringEncoding)) else { continue }
+            dict[key] = escape(s: value)
         }
-        return try super.requestBySerializingRequest(request, withParameters: dict)
+        return try super.request(bySerializingRequest:request, withParameters: dict)
     }
 }
 
@@ -31,7 +32,7 @@ private func iswin1252(c: UnicodeScalar) -> Bool {
 
 private func escape(s: String) -> String {
     let scalars = s.unicodeScalars.flatMap { (c: UnicodeScalar) -> [UnicodeScalar] in
-        if iswin1252(c) {
+        if iswin1252(c: c) {
             return [c]
         } else {
             return Array("&#\(c.value);".unicodeScalars)

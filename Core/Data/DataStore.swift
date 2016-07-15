@@ -20,21 +20,21 @@ public final class DataStore: NSObject {
     */
     public init(storeDirectoryURL: NSURL, modelURL: NSURL) {
         self.storeDirectoryURL = storeDirectoryURL
-        mainManagedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        let model = NSManagedObjectModel(contentsOfURL: modelURL)!
+        mainManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        let model = NSManagedObjectModel(contentsOf: modelURL as URL)!
         storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
         mainManagedObjectContext.persistentStoreCoordinator = storeCoordinator
         lastModifiedObserver = LastModifiedContextObserver(managedObjectContext: mainManagedObjectContext)
         super.init()
         
         loadPersistentStore()
-        let noteCenter = NSNotificationCenter.defaultCenter()
-        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        let noteCenter = NotificationCenter.default
+        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidBecomeActive(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     @objc private func applicationDidEnterBackground(notification: NSNotification) {
@@ -51,17 +51,17 @@ public final class DataStore: NSObject {
     @objc private func applicationDidBecomeActive(notification: NSNotification) {
         invalidatePruneTimer()
         // Since pruning could potentially take a noticeable amount of time, and there's no real rush, let's schedule it for a little bit after becoming active.
-        pruneTimer = NSTimer.scheduledTimerWithTimeInterval(30, target: self, selector: #selector(DataStore.pruneTimerDidFire(_:)), userInfo: nil, repeats: false)
+        pruneTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(DataStore.pruneTimerDidFire(timer:)), userInfo: nil, repeats: false)
     }
     
-    private var pruneTimer: NSTimer?
+    private var pruneTimer: Timer?
     
     private func invalidatePruneTimer() {
         pruneTimer?.invalidate()
         pruneTimer = nil
     }
     
-    @objc private func pruneTimerDidFire(timer: NSTimer) {
+    @objc private func pruneTimerDidFire(timer: Timer) {
         pruneTimer = nil
         prune()
     }
@@ -71,30 +71,30 @@ public final class DataStore: NSObject {
     private func loadPersistentStore() {
         assert(persistentStore == nil, "persistent store already loaded")
         
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
 
         do {
-            try fileManager.createDirectoryAtURL(storeDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(at:storeDirectoryURL as URL, withIntermediateDirectories: true, attributes: nil)
         }
         catch {
             fatalError("could not create directory at \(storeDirectoryURL): \(error)")
         }
         
         do {
-            try storeDirectoryURL.setResourceValue(true, forKey: NSURLIsExcludedFromBackupKey)
+            try storeDirectoryURL.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
         }
         catch {
             NSLog("[\(Mirror(reflecting: self)) \(#function)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
         }
         
-        let storeURL = storeDirectoryURL.URLByAppendingPathComponent("AwfulCache.sqlite")
+        let storeURL = storeDirectoryURL.appendingPathComponent("AwfulCache.sqlite")
         let options = [
             NSMigratePersistentStoresAutomaticallyOption: true,
             NSInferMappingModelAutomaticallyOption: true
         ]
         
         do {
-            persistentStore = try storeCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options)
+            persistentStore = try storeCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
         }
         catch let error as NSError {
             if error.domain == NSCocoaErrorDomain {
@@ -109,8 +109,8 @@ public final class DataStore: NSObject {
         }
     }
     
-    private var operationQueue: NSOperationQueue = {
-        let queue = NSOperationQueue()
+    private var operationQueue: OperationQueue = {
+        let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         return queue
         }()
@@ -124,22 +124,22 @@ public final class DataStore: NSObject {
         invalidatePruneTimer()
         operationQueue.cancelAllOperations()
         
-        NSNotificationCenter.defaultCenter().postNotificationName(DataStoreWillResetNotification, object: self)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: DataStoreWillResetNotification), object: self)
         
         mainManagedObjectContext.reset()
         if let persistentStore = persistentStore {
             do {
-                try storeCoordinator.removePersistentStore(persistentStore)
+                try storeCoordinator.remove(persistentStore)
             }
             catch {
-                NSLog("[\(Mirror(reflecting: self)) \(#function)] error removing store at \(persistentStore.URL!): \(error)")
+                NSLog("[\(Mirror(reflecting: self)) \(#function)] error removing store at \(persistentStore.url!): \(error)")
             }
             self.persistentStore = nil
         }
         assert(storeCoordinator.persistentStores.isEmpty, "unexpected persistent stores remain after reset")
         
         do {
-            try NSFileManager.defaultManager().removeItemAtURL(storeDirectoryURL)
+            try FileManager.default.removeItem(at: storeDirectoryURL as URL)
         }
         catch {
             NSLog("[\(Mirror(reflecting: self)) \(#function)] error deleting store directory \(storeDirectoryURL): \(error)")
@@ -147,7 +147,7 @@ public final class DataStore: NSObject {
         
         loadPersistentStore()
         
-        NSNotificationCenter.defaultCenter().postNotificationName(DataStoreDidResetNotification, object: self)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: DataStoreDidResetNotification), object: self)
     }
 }
 
@@ -162,18 +162,18 @@ public final class LastModifiedContextObserver: NSObject {
         relevantEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LastModifiedContextObserver.contextWillSave(_:)), name: NSManagedObjectContextWillSaveNotification, object: context)
+        NotificationCenter.default.addObserver(self, selector: #selector(LastModifiedContextObserver.contextWillSave(notification:)), name: NSNotification.Name.NSManagedObjectContextWillSave, object: context)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     @objc private func contextWillSave(notification: NSNotification) {
         let context = notification.object as! NSManagedObjectContext
         let lastModifiedDate = NSDate()
         let insertedOrUpdated = context.insertedObjects.union(context.updatedObjects)
-        context.performBlockAndWait {
+        context.performAndWait {
             let relevantObjects = insertedOrUpdated.filter() { self.relevantEntities.contains(($0 as NSManagedObject).entity) }
             (relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
         }
