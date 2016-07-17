@@ -10,8 +10,8 @@ class ScrapingTestCase: XCTestCase {
     var managedObjectContext: NSManagedObjectContext!
     
     private var storeCoordinator: NSPersistentStoreCoordinator = {
-        let modelURL = NSBundle(forClass: AwfulManagedObject.self).URLForResource("Awful", withExtension: "momd")!
-        let model = NSManagedObjectModel(contentsOfURL: modelURL)!
+        let modelURL = Bundle(for: AwfulManagedObject.self).urlForResource("Awful", withExtension: "momd")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
         return NSPersistentStoreCoordinator(managedObjectModel: model)
         }()
     private var memoryStore: NSPersistentStore!
@@ -24,23 +24,23 @@ class ScrapingTestCase: XCTestCase {
         super.setUp()
         
         // The scraper uses the default time zone. To make the test repeatable, we set a known time zone.
-        NSTimeZone.setDefaultTimeZone(NSTimeZone(forSecondsFromGMT: 0))
+        TimeZone.default = TimeZone(forSecondsFromGMT: 0)
         
         do {
-            memoryStore = try storeCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
+            memoryStore = try storeCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
         }
         catch {
             fatalError("error adding memory store: \(error)")
         }
         
-        managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = storeCoordinator
     }
     
     override func tearDown() {
         managedObjectContext = nil
         do {
-            try storeCoordinator.removePersistentStore(memoryStore)
+            try storeCoordinator.remove(memoryStore)
         }
         catch {
             fatalError("error removing store: \(error)")
@@ -50,10 +50,10 @@ class ScrapingTestCase: XCTestCase {
     }
     
     func scrapeFixtureNamed(fixtureName: String) -> AwfulScraper {
-        let document = fixtureNamed(fixtureName)
+        let document = fixtureNamed(basename: fixtureName)
         let scraperClass = self.dynamicType.scraperClass() as! AwfulScraper.Type
-        let scraper = scraperClass.scrapeNode(document, intoManagedObjectContext: managedObjectContext)
-        assert(scraper.error == nil, "error scraping \(scraperClass): \(scraper.error)")
-        return scraper
+        let scraper = scraperClass.scrape(document, into: managedObjectContext)
+        assert(scraper?.error == nil, "error scraping \(scraperClass): \(scraper?.error)")
+        return scraper!
     }
 }

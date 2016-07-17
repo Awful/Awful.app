@@ -11,9 +11,9 @@ final class PostScrapingTests: ScrapingTestCase {
     }
     
     func testIgnoredPost() {
-        let scraper = scrapeFixtureNamed("showpost") as! AwfulPostScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "showpost") as! AwfulPostScraper
         let post = scraper.post
-        XCTAssert(post.innerHTML!.rangeOfString("Which command?") != nil)
-        XCTAssert(post.author!.username == "The Dave")
+        XCTAssert(post?.innerHTML!.range(of: "Which command?") != nil)
+        XCTAssert(post?.author!.username == "The Dave")
     }
 }

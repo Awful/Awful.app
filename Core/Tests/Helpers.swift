@@ -7,12 +7,12 @@ import AwfulCore
 // Without import UIKit somewhere in this test bundle, it refuses to load. Nothing here actually needs UIKit.
 import UIKit
 
-func fetchAll<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: NSPredicate? = nil) -> [T] {
-    let fetchRequest = NSFetchRequest(entityName: T.entityName())
+func fetchAll<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: Predicate? = nil) -> [T] {
+    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: T.entityName())
     fetchRequest.predicate = predicate
     var results : [T] = []
     do {
-        results = try context.executeFetchRequest(fetchRequest) as! [T]
+        results = try context.fetch(fetchRequest) as! [T]
     }
     catch {
         fatalError("error fetching: \(error)")
@@ -20,13 +20,13 @@ func fetchAll<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedO
     return results
 }
 
-func fetchOne<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: NSPredicate? = nil) -> T? {
-    let fetchRequest = NSFetchRequest(entityName: T.entityName())
+func fetchOne<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedObjectContext, matchingPredicate predicate: Predicate? = nil) -> T? {
+    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: T.entityName())
     fetchRequest.predicate = predicate
     fetchRequest.fetchLimit = 1
     var results : [T] = []
     do {
-        results = try context.executeFetchRequest(fetchRequest) as! [T]
+        results = try context.fetch(fetchRequest) as! [T]
     }
     catch {
         fatalError("error fetching: \(error)")
@@ -36,10 +36,10 @@ func fetchOne<T: AwfulManagedObject>(type: T.Type, inContext context: NSManagedO
 }
 
 func fixtureNamed(basename: String) -> HTMLDocument {
-    let fixtureURL = NSBundle(forClass: ScrapingTestCase.self).URLForResource(basename, withExtension: "html", subdirectory: "Fixtures")!
+    let fixtureURL = Bundle(for: ScrapingTestCase.self).urlForResource(basename, withExtension: "html", subdirectory: "Fixtures")!
     var fixtureHTML : NSString = NSString()
     do {
-        fixtureHTML = try NSString(contentsOfURL: fixtureURL, encoding: NSWindowsCP1252StringEncoding)
+        fixtureHTML = try NSString(contentsOf: fixtureURL, encoding: String.Encoding.windowsCP1252.rawValue)
     }
     catch {
         fatalError("error loading fixture from \(fixtureURL): \(error)")

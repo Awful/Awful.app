@@ -11,25 +11,25 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     }
     
     func testCanadianPoliticsThread() {
-        let scraper = scrapeFixtureNamed("showthread") as! AwfulPostsPageScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "showthread") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
-        let allThreads = fetchAll(Thread.self, inContext: managedObjectContext)
+        let allThreads = fetchAll(type: Thread.self, inContext: managedObjectContext)
         XCTAssert(allThreads.count == 1)
         let canpoliThread = allThreads.first!
         XCTAssert(canpoliThread.threadID == "3507451")
         XCTAssert(canpoliThread.title == "Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe")
         XCTAssertFalse(canpoliThread.closed)
-        XCTAssert(fetchAll(Forum.self, inContext: managedObjectContext).count == 1)
+        XCTAssert(fetchAll(type: Forum.self, inContext: managedObjectContext).count == 1)
         XCTAssert(canpoliThread.forum!.name == "Debate & Discussion")
-        let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
+        let allGroups = fetchAll(type: ForumGroup.self, inContext: managedObjectContext)
         XCTAssert(allGroups.count == 1)
         let group = allGroups[0]
         XCTAssert(group.name == "Discussion")
         
         let firstPost = posts[0]
         XCTAssert(firstPost.postID == "407741839")
-        XCTAssert(firstPost.innerHTML!.rangeOfString("more I think about it") != nil)
+        XCTAssert(firstPost.innerHTML!.range(of: "more I think about it") != nil)
         XCTAssert(firstPost.threadIndex == 161)
         XCTAssert(firstPost.postDate!.timeIntervalSince1970 == 1348139760)
         XCTAssert(firstPost.beenSeen)
@@ -40,11 +40,11 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssert(majuju.userID == "108110")
         XCTAssert(majuju.canReceivePrivateMessages)
         XCTAssert(majuju.regdate!.timeIntervalSince1970 == 1167350400)
-        XCTAssert(majuju.customTitleHTML!.rangeOfString("AAA") != nil)
+        XCTAssert(majuju.customTitleHTML!.range(of: "AAA") != nil)
         
         let accentAiguPost = posts[10]
         XCTAssert(accentAiguPost.postID == "407751664")
-        XCTAssert(accentAiguPost.innerHTML!.rangeOfString("Québec") != nil)
+        XCTAssert(accentAiguPost.innerHTML!.range(of: "Québec") != nil)
         
         let opPost = posts[12]
         XCTAssert(opPost.postID == "407751956")
@@ -67,18 +67,18 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     
     func testWeirdSizeTags() {
         // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
-        let scraper = scrapeFixtureNamed("showthread2") as! AwfulPostsPageScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "showthread2") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
         let ganker = posts[24]
         XCTAssert(ganker.author!.username == "Ganker")
-        XCTAssert(ganker.author!.customTitleHTML!.rangeOfString("forced meme") != nil)
+        XCTAssert(ganker.author!.customTitleHTML!.range(of: "forced meme") != nil)
         let brylcreem = posts[25]
         XCTAssert(brylcreem.author!.username == "brylcreem")
     }
     
     func testFYADThreadIndex() {
-        let scraper = scrapeFixtureNamed("showthread-fyad") as! AwfulPostsPageScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "showthread-fyad") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 10)
         let last = posts.last!
@@ -86,35 +86,35 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     }
     
     func testFYADThreadPageOne() {
-        let scraper = scrapeFixtureNamed("showthread-fyad2") as! AwfulPostsPageScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "showthread-fyad2") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
         let first = posts[0]
         XCTAssert(first.author!.username == "BiG TrUcKs !!!")
         XCTAssert(first.postDate!.timeIntervalSince1970 == 1388525460)
-        XCTAssert(first.innerHTML!.rangeOfString("twitter assholes") != nil)
+        XCTAssert(first.innerHTML!.range(of: "twitter assholes") != nil)
         XCTAssert(first.threadIndex ==  1)
         let second = posts[1]
         XCTAssert(second.author!.username == "syxxcowz")
         XCTAssert(second.postDate!.timeIntervalSince1970 == 1388525580)
-        XCTAssert(second.innerHTML!.rangeOfString("hate twiter") != nil)
+        XCTAssert(second.innerHTML!.range(of: "hate twiter") != nil)
         XCTAssert(second.threadIndex == 2)
     }
     
     func testLastPage() {
-        scrapeFixtureNamed("showthread-last")
-        let thread = fetchAll(Thread.self, inContext: managedObjectContext)[0]
+        scrapeFixtureNamed(fixtureName: "showthread-last")
+        let thread = fetchAll(type: Thread.self, inContext: managedObjectContext)[0]
         XCTAssert(thread.lastPostAuthorName == "Ashmole")
         XCTAssert(thread.lastPostDate!.timeIntervalSince1970 == 1357586460)
     }
     
     func testIgnoredPost() {
-        scrapeFixtureNamed("showthread2")
-        let post = fetchOne(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID = %@", "428957756"))!
+        scrapeFixtureNamed(fixtureName: "showthread2")
+        let post = fetchOne(type: Post.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "postID = %@", "428957756"))!
         XCTAssert(post.ignored)
-        let others = fetchAll(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
+        let others = fetchAll(type: Post.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "postID != %@", "428957756"))
         XCTAssert(others.count > 0)
-        let ignored = (others as NSArray).valueForKeyPath("@distinctUnionOfObjects.ignored") as! [Bool]
+        let ignored = (others as NSArray).value(forKeyPath: "@distinctUnionOfObjects.ignored") as! [Bool]
         XCTAssert(ignored.count == 1);
         XCTAssert(ignored[0] == false)
     }

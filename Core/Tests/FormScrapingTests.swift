@@ -7,10 +7,10 @@ import AwfulCore
 
 final class FormScrapingTests: ScrapingTestCase {
     private func scrapeFormFixtureNamed(fixtureName: String) -> AwfulForm {
-        let document = fixtureNamed(fixtureName)
-        let formElement = document.firstNodeMatchingSelector("form[name='vbform']")
+        let document = fixtureNamed(basename: fixtureName)
+        let formElement = document.firstNode(matchingSelector: "form[name='vbform']")
         let form = AwfulForm(element: formElement)
-        form.scrapeThreadTagsIntoManagedObjectContext(managedObjectContext)
+        form?.scrapeThreadTags(into: managedObjectContext)
         do {
             try managedObjectContext.save()
         }
@@ -18,66 +18,66 @@ final class FormScrapingTests: ScrapingTestCase {
             fatalError("error saving context after scraping thread tags: \(error)")
         }
         
-        return form
+        return form!
     }
 
     func testReply() {
-        let form = scrapeFormFixtureNamed("newreply")
+        let form = scrapeFormFixtureNamed(fixtureName: "newreply")
         XCTAssertTrue(form.threadTags == nil)
         let parameters = form.recommendedParameters()
-        XCTAssertEqual((parameters["action"] as! String), "postreply")
-        XCTAssertEqual((parameters["threadid"] as! String), "3507451")
-        XCTAssertEqual((parameters["formkey"] as! String), "0253d85a945b60daa0165f718df82b8a")
-        XCTAssertEqual((parameters["form_cookie"] as! String), "80c74b48f557")
-        XCTAssertTrue((parameters["message"] as! String).rangeOfString("terrible") != nil)
-        XCTAssertNotNil(parameters["parseurl"])
-        XCTAssertNotNil(parameters["bookmark"])
-        XCTAssert(parameters["disablesmilies"] == nil)
-        XCTAssert(parameters["signature"] == nil)
+        XCTAssertEqual((parameters?["action"] as! String), "postreply")
+        XCTAssertEqual((parameters?["threadid"] as! String), "3507451")
+        XCTAssertEqual((parameters?["formkey"] as! String), "0253d85a945b60daa0165f718df82b8a")
+        XCTAssertEqual((parameters?["form_cookie"] as! String), "80c74b48f557")
+        XCTAssertTrue((parameters?["message"] as! String).range(of: "terrible") != nil)
+        XCTAssertNotNil(parameters?["parseurl"])
+        XCTAssertNotNil(parameters?["bookmark"])
+        XCTAssert(parameters?["disablesmilies"] == nil)
+        XCTAssert(parameters?["signature"] == nil)
     }
 
     func testReplyWithAmazonSearch() {
-        let form = scrapeFormFixtureNamed("newreply-amazon-form")
+        let form = scrapeFormFixtureNamed(fixtureName: "newreply-amazon-form")
         XCTAssertNotNil(form.recommendedParameters()["threadid"])
     }
 
     func testThread() {
-        let form = scrapeFormFixtureNamed("newthread")
+        let form = scrapeFormFixtureNamed(fixtureName: "newthread")
         XCTAssertTrue(form.threadTags.count == 51)
-        XCTAssertEqual(fetchAll(ThreadTag.self, inContext: managedObjectContext).count, form.threadTags.count)
+        XCTAssertEqual(fetchAll(type: ThreadTag.self, inContext: managedObjectContext).count, form.threadTags.count)
         XCTAssertTrue(form.secondaryThreadTags == nil)
         let parameters = form.allParameters
-        XCTAssertNotNil(parameters["subject"])
-        XCTAssertNotNil(parameters["message"])
-        XCTAssertEqual((parameters["forumid"] as! String), "1")
-        XCTAssertEqual((parameters["action"] as! String), "postthread")
-        XCTAssertEqual((parameters["formkey"] as! String), "0253d85a945b60daa0165f718df82b8a")
-        XCTAssertEqual((parameters["form_cookie"] as! String), "e29a15add831")
-        XCTAssertEqual((parameters["parseurl"] as! String), "yes")
-        XCTAssertEqual((parameters["bookmark"] as! String), "yes")
+        XCTAssertNotNil(parameters?["subject"])
+        XCTAssertNotNil(parameters?["message"])
+        XCTAssertEqual((parameters?["forumid"] as! String), "1")
+        XCTAssertEqual((parameters?["action"] as! String), "postthread")
+        XCTAssertEqual((parameters?["formkey"] as! String), "0253d85a945b60daa0165f718df82b8a")
+        XCTAssertEqual((parameters?["form_cookie"] as! String), "e29a15add831")
+        XCTAssertEqual((parameters?["parseurl"] as! String), "yes")
+        XCTAssertEqual((parameters?["bookmark"] as! String), "yes")
     }
     
     func testAskTellThread() {
-        let form = scrapeFormFixtureNamed("newthread-at")
+        let form = scrapeFormFixtureNamed(fixtureName: "newthread-at")
         XCTAssertTrue(form.threadTags.count == 55)
         XCTAssertTrue(form.secondaryThreadTags.count == 2)
-        let secondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
+        let secondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "imageName IN { 'ama', 'tma' }"))
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
     }
     
     func testSAMartThread() {
-        let form = scrapeFormFixtureNamed("newthread-samart")
+        let form = scrapeFormFixtureNamed(fixtureName: "newthread-samart")
         XCTAssertTrue(form.threadTags.count == 69)
         XCTAssertTrue(form.secondaryThreadTags.count == 4)
-        let possibleSecondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
+        let possibleSecondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "imageName LIKE 'icon*ing'"))
         let secondaryTags = possibleSecondaryTags.filter { Int($0.threadTagID!) < 5 }
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count)
     }
     
     func testMessage() {
-        let form = scrapeFormFixtureNamed("private-reply")
+        let form = scrapeFormFixtureNamed(fixtureName: "private-reply")
         let parameters = form.allParameters
-        XCTAssertNotNil(parameters["message"])
-        XCTAssertTrue((parameters["message"] as! String).rangeOfString("InFlames235 wrote") != nil)
+        XCTAssertNotNil(parameters?["message"])
+        XCTAssertTrue((parameters?["message"] as! String).range(of: "InFlames235 wrote") != nil)
     }
 }

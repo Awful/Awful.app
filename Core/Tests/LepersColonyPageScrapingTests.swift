@@ -11,11 +11,11 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
     }
     
     func testFirstPage() {
-        let scraper = scrapeFixtureNamed("banlist") as! LepersColonyPageScraper
+        let scraper = scrapeFixtureNamed(fixtureName: "banlist") as! LepersColonyPageScraper
         let punishments = scraper.punishments as! [Punishment]
         XCTAssert(punishments.count == 50)
-        XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 71)
-        XCTAssert(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
+        XCTAssert(fetchAll(type: User.self, inContext: managedObjectContext).count == 71)
+        XCTAssert(fetchAll(type: Post.self, inContext: managedObjectContext).count == 46)
         
         let first = punishments[0]
         XCTAssert(first.sentence == PunishmentSentence.Probation)
@@ -23,7 +23,7 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
         XCTAssert(first.date.timeIntervalSince1970 == 1384078200)
         XCTAssert(first.subject.username == "Kheldragar")
         XCTAssert(first.subject.userID == "202925")
-        XCTAssert(first.reasonHTML!.rangeOfString("shitty as you") != nil)
+        XCTAssert(first.reasonHTML!.range(of: "shitty as you") != nil)
         XCTAssert(first.requester!.username == "Ralp")
         XCTAssert(first.requester!.userID == "61644")
         XCTAssert(first.approver! == first.requester!)
