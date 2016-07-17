@@ -12,8 +12,8 @@ public class AwfulManagedObject: NSManagedObject {
     
     /// Convenience factory method for creating managed objects and calling their awakeFromInitialInsert() method.
     public class func insertIntoManagedObjectContext(context: NSManagedObjectContext) -> Self {
-        let entity = NSEntityDescription.entityForName(entityName(), inManagedObjectContext: context)!
-        let object = self.init(entity: entity, insertIntoManagedObjectContext: context)
+        let entity = NSEntityDescription.entity(forEntityName: entityName(), in: context)!
+        let object = self.init(entity: entity, insertInto: context)
         object.awakeFromInitialInsert()
         return object
     }
@@ -25,7 +25,7 @@ public class AwfulManagedObject: NSManagedObject {
     
     // Adds `required` so that insertIntoManagedObjectContext(:) works.
     required override public init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        super.init(entity: entity, insertInto: context)
     }
 }
 
@@ -41,18 +41,18 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
     }
     
     public required init?(coder: NSCoder) {
-        entityName = coder.decodeObjectForKey(entityNameKey) as! String
+        entityName = coder.decodeObject(forKey: entityNameKey) as! String
         super.init()
     }
     
-    public func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(entityName, forKey: entityNameKey)
+    public func encode(with coder: NSCoder) {
+        coder.encode(entityName, forKey: entityNameKey)
         for key in keys {
-            coder.encodeObject(valueForKey(key), forKey: key)
+            coder.encode(value(forKey: key), forKey: key)
         }
     }
     
-    public func copyWithZone(zone: NSZone) -> AnyObject {
+    public func copy(with: NSZone?) -> AnyObject {
         return self
     }
     
@@ -62,8 +62,8 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
                 return false
             }
             for key in keys {
-                let otherValue = other.valueForKey(key) as! NSObject!
-                let value = valueForKey(key) as! NSObject!
+                let otherValue = other.value(forKey: key) as! NSObject!
+                let value = self.value(forKey: key) as! NSObject!
                 if otherValue != nil && value != nil && otherValue != value {
                     return false
                 }
@@ -76,8 +76,8 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
     public override var hash: Int {
         var hash = entityName.hash
         if keys.count == 1 {
-            let value = valueForKey(keys[0]) as! NSObject!
-            hash ^= value.hash
+            let value = self.value(forKey: keys[0]) as! NSObject!
+            hash ^= (value?.hash)!
         }
         return hash
     }
@@ -86,10 +86,10 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
 private let entityNameKey = "entityName"
 
 private extension AwfulObjectKey {
-    var predicate: NSPredicate {
-        let subpredicates: [NSPredicate] = keys.reduce([]) { accum, key in
-            if let value = self.valueForKey(key) as? NSObject {
-                return accum + [NSPredicate(format: "%K == %@", key, value)]
+    var predicate: Predicate {
+        let subpredicates: [Predicate] = keys.reduce([]) { accum, key in
+            if let value = self.value(forKey: key) as? NSObject {
+                return accum + [Predicate(format: "%K == %@", key, value)]
             } else {
                 return accum
             }
@@ -97,7 +97,7 @@ private extension AwfulObjectKey {
         if subpredicates.count == 1 {
             return subpredicates[0]
         } else {
-            return NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
+            return CompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
     }
     
@@ -112,7 +112,7 @@ private extension AwfulObjectKey {
         }
         for objectKey in objectKeys {
             for key in keys {
-                if let value: AnyObject = objectKey.valueForKey(key) {
+                if let value: AnyObject = objectKey.value(forKey: key) {
                     accum[key]!.append(value)
                 }
             }
@@ -127,12 +127,12 @@ extension AwfulManagedObject {
     }
     
     public class func existingObjectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject? {
-        let request = NSFetchRequest(entityName: objectKey.entityName)
+        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: objectKey.entityName)
         request.predicate = objectKey.predicate
         request.fetchLimit = 1
         var results : [AwfulManagedObject] = []
         do {
-            results = try context.executeFetchRequest(request) as! [AwfulManagedObject]
+            results = try context.fetch(request) as! [AwfulManagedObject]
         }
         catch {
             print("error fetching: \(error)")
@@ -142,17 +142,17 @@ extension AwfulManagedObject {
     }
     
     public class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
-        var object = existingObjectForKey(objectKey, inManagedObjectContext: context) as! AwfulManagedObject!
+        var object = existingObjectForKey(objectKey: objectKey, inManagedObjectContext: context) as! AwfulManagedObject!
         if object == nil {
-            object = insertIntoManagedObjectContext(context)
+            object = insertIntoManagedObjectContext(context: context)
         }
-        object.applyObjectKey(objectKey)
-        return object
+        object?.applyObjectKey(objectKey: objectKey)
+        return object!
     }
     
     func applyObjectKey(objectKey: AwfulObjectKey) {
         for key in objectKey.keys {
-            if let value: AnyObject = objectKey.valueForKey(key) {
+            if let value: AnyObject = objectKey.value(forKey: key) {
                 setValue(value, forKey: key)
             }
         }
@@ -166,21 +166,21 @@ extension AwfulManagedObject {
     public class func objectsForKeys(objectKeys: [AwfulObjectKey], inManagedObjectContext context: NSManagedObjectContext) -> [AwfulManagedObject] {
         guard !objectKeys.isEmpty else { return [] }
         
-        let request = NSFetchRequest(entityName: entityName())
-        let aggregateValues = objectKeys[0].dynamicType.valuesForKeysInObjectKeys(objectKeys)
-        var subpredicates = [NSPredicate]()
+        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
+        let aggregateValues = objectKeys[0].dynamicType.valuesForKeysInObjectKeys(objectKeys: objectKeys)
+        var subpredicates = [Predicate]()
         for (key, values) in aggregateValues {
-            subpredicates.append(NSPredicate(format: "%K IN %@", key, values))
+            subpredicates.append(Predicate(format: "%K IN %@", key, values))
         }
         if subpredicates.count == 1 {
             request.predicate = subpredicates[0]
         } else {
-            request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
+            request.predicate = CompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
         
         var results : [AwfulManagedObject] = []
         do {
-            results = try context.executeFetchRequest(request) as! [AwfulManagedObject]
+            results = try context.fetch(request) as! [AwfulManagedObject]
         }
         catch {
             print("error fetching \(error)")
@@ -197,8 +197,8 @@ extension AwfulManagedObject {
             if let existing = existingByKey[objectKey] {
                 return existing
             } else {
-                let object = self.insertIntoManagedObjectContext(context)
-                object.applyObjectKey(objectKey)
+                let object = self.insertIntoManagedObjectContext(context: context)
+                object.applyObjectKey(objectKey: objectKey)
                 existingByKey[object.objectKey] = object
                 return object
             }

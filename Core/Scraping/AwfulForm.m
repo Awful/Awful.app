@@ -189,10 +189,10 @@
     [self scrapeIfNecessary];
     
     if (_threadTagKeys.count > 0) {
-        self.threadTags = [ThreadTag objectsForKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
+        self.threadTags = [ThreadTag objectsForKeysWithObjectKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
     }
     if (_secondaryThreadTagKeys.count > 0) {
-        self.secondaryThreadTags = [ThreadTag objectsForKeys:_secondaryThreadTagKeys inManagedObjectContext:managedObjectContext];
+        self.secondaryThreadTags = [ThreadTag objectsForKeysWithObjectKeys:_secondaryThreadTagKeys inManagedObjectContext:managedObjectContext];
     }
 }
 

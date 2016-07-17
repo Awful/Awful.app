@@ -73,8 +73,8 @@
         self.error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{NSLocalizedDescriptionKey: @"Forums dropdown had no forums"}];
         return;
     }
-    NSArray *groups = [ForumGroup objectsForKeys:groupKeys inManagedObjectContext:self.managedObjectContext];
-    NSArray *forums = [Forum objectsForKeys:forumKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *groups = [ForumGroup objectsForKeysWithObjectKeys:groupKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *forums = [Forum objectsForKeysWithObjectKeys:forumKeys inManagedObjectContext:self.managedObjectContext];
     NSMutableArray *forumStack = [NSMutableArray new];
     int32_t groupIndex = 0;
     int32_t forumIndex = 0;

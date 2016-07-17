@@ -16,13 +16,13 @@ final class HTMLResponseSerializer: AFHTTPResponseSerializer {
         super.init(coder: coder)
     }
     
-    override func responseObjectForResponse(response: NSURLResponse?, data unvalidatedData: NSData?) throws -> AnyObject {
-        guard let data = try super.responseObjectForResponse(response, data: unvalidatedData) as? NSData else { return HTMLDocument() }
+    override func responseObject(for response: URLResponse?, data: Data?) throws -> AnyObject {
+        guard let data = try super.responseObject(for: response, data: data) as? Data else { return HTMLDocument() }
         return HTMLDocument(data: data, contentTypeHeader: contentType(withResponse: response))
     }
 }
 
-private func contentType(withResponse rawResponse: NSURLResponse?) -> String? {
-    guard let response = rawResponse as? NSHTTPURLResponse else { return nil }
+private func contentType(withResponse rawResponse: URLResponse?) -> String? {
+    guard let response = rawResponse as? HTTPURLResponse else { return nil }
     return response.allHeaderFields["Content-Type"] as? String
 }

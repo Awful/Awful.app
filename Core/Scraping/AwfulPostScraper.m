@@ -37,7 +37,7 @@
             return;
         }
         PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
-        self.post = [Post objectForKey:postKey inManagedObjectContext:self.managedObjectContext];
+        self.post = [Post objectForKeyWithObjectKey:postKey inManagedObjectContext:self.managedObjectContext];
     }}
     
     {{

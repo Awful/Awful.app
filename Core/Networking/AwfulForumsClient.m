@@ -500,7 +500,7 @@
                  Thread *thread;
                  if (threadID.length > 0) {
                      ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
-                     thread = [Thread objectForKey:threadKey inManagedObjectContext:mainManagedObjectContext];
+                     thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];
                  } else {
                      error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
                  }
@@ -704,7 +704,7 @@
                      NSString *postID = queryDictionary[@"postid"];
                      if (postID.length > 0) {
                          PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
-                         post = [Post objectForKey:postKey inManagedObjectContext:mainManagedObjectContext];
+                         post = [Post objectForKeyWithObjectKey:postKey inManagedObjectContext:mainManagedObjectContext];
                      }
                  }
                  if (callback) callback(nil, post);
@@ -939,9 +939,9 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
         if ([query[@"threadid"] length] > 0 && [query[@"pagenumber"] integerValue] != 0) {
             [managedObjectContext performBlock:^{
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
-                Post *post = [Post objectForKey:postKey inManagedObjectContext:managedObjectContext];
+                Post *post = [Post objectForKeyWithObjectKey:postKey inManagedObjectContext:managedObjectContext];
                 ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:query[@"threadid"]];
-                post.thread = [Thread objectForKey:threadKey inManagedObjectContext:managedObjectContext];
+                post.thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:managedObjectContext];
                 NSError *error;
                 BOOL ok = [managedObjectContext save:&error];
                 if (callback) {

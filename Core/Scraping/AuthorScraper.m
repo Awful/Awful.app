@@ -79,7 +79,7 @@
 {
     if (_author || self.error) return _author;
     UserKey *userKey = [[UserKey alloc] initWithUserID:self.userID username:self.username];
-    self.author = [User objectForKey:userKey inManagedObjectContext:self.managedObjectContext];
+    self.author = [User objectForKeyWithObjectKey:userKey inManagedObjectContext:self.managedObjectContext];
     return _author;
 }
 

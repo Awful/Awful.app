@@ -7,7 +7,7 @@ import Foundation
 public extension NSURL {
     var awful_queryDictionary: [String: String] {
         guard let
-            components = NSURLComponents(URL: self, resolvingAgainstBaseURL: true),
+            components = NSURLComponents(url: self as URL, resolvingAgainstBaseURL: true),
             queryItems = components.queryItems
             else { return [:] }
         return queryItems.reduce([:]) { acc, item in

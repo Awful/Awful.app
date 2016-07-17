@@ -43,9 +43,9 @@ extension User {
 
 private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
     let document = HTMLDocument(string: HTML)
-    return document.firstNodeMatchingSelector("div > img:first-child") ??
-        document.firstNodeMatchingSelector("body > img:first-child") ??
-        document.firstNodeMatchingSelector("a > img:first-child")
+    return document.firstNode(matchingSelector: "div > img:first-child") ??
+        document.firstNode(matchingSelector: "body > img:first-child") ??
+        document.firstNode(matchingSelector: "a > img:first-child")
 }
 
 @objc(UserKey)
@@ -62,8 +62,8 @@ public final class UserKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        userID = coder.decodeObjectForKey(userIDKey) as! String
-        username = coder.decodeObjectForKey(usernameKey) as! String?
+        userID = coder.decodeObject(forKey: userIDKey) as! String
+        username = coder.decodeObject(forKey: usernameKey) as! String?
         super.init(coder: coder)
     }
     
@@ -71,7 +71,7 @@ public final class UserKey: AwfulObjectKey {
         return [userIDKey, usernameKey]
     }
     
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: AnyObject?) -> Bool {
         if let other = object as? UserKey {
             return other.userID == userID
         }

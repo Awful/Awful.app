@@ -22,7 +22,7 @@ public class Forum: AwfulManagedObject {
     @NSManaged public private(set) var metadata: ForumMetadata
     
     override public func awakeFromInitialInsert() {
-        metadata = ForumMetadata.insertIntoManagedObjectContext(managedObjectContext!)
+        metadata = ForumMetadata.insertIntoManagedObjectContext(context: managedObjectContext!)
     }
 }
 
@@ -37,7 +37,7 @@ public final class ForumKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        forumID = coder.decodeObjectForKey(forumIDKey) as! String
+        forumID = coder.decodeObject(forKey: forumIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -72,7 +72,7 @@ public final class ForumGroupKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        groupID = coder.decodeObjectForKey(groupIDKey) as! String
+        groupID = coder.decodeObject(forKey: groupIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -99,12 +99,12 @@ public class ForumMetadata: AwfulManagedObject {
 
 extension ForumMetadata {
     public class func metadataForForumsWithIDs(forumIDs: [String], inManagedObjectContext context: NSManagedObjectContext) -> [ForumMetadata] {
-        let request = NSFetchRequest(entityName: entityName())
-        request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
+        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
+        request.predicate = Predicate(format: "forum.forumID IN %@", forumIDs)
         var results : [ForumMetadata] = []
         var success : Bool = false
         do {
-            results = try context.executeFetchRequest(request) as! [ForumMetadata]
+            results = try context.fetch(request) as! [ForumMetadata]
             success = true;
         }
         catch {

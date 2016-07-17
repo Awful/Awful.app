@@ -34,7 +34,7 @@
         }
         
         PrivateMessageKey *messageKey = [[PrivateMessageKey alloc] initWithMessageID:messageID];
-        PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
+        PrivateMessage *message = [PrivateMessage objectForKeyWithObjectKey:messageKey inManagedObjectContext:self.managedObjectContext];
         message.subject = titleLink.textContent;
         
         {{
@@ -50,7 +50,7 @@
             NSURL *URL = [NSURL URLWithString:threadTagImage[@"src"]];
             if (URL) {
                 ThreadTagKey *tagKey = [[ThreadTagKey alloc] initWithImageURL:URL threadTagID:nil];
-                message.threadTag = [ThreadTag objectForKey:tagKey inManagedObjectContext:self.managedObjectContext];
+                message.threadTag = [ThreadTag objectForKeyWithObjectKey:tagKey inManagedObjectContext:self.managedObjectContext];
             } else {
                 message.threadTag = nil;
             }

@@ -47,12 +47,12 @@ extension Post {
     
     /// Which 40-post page the post is located on.
     public var page: Int {
-        return pageForIndex(threadIndex)
+        return pageForIndex(index: threadIndex)
     }
     
     /// Which 40-post page the post is located on in a thread filtered by the post's author.
     public var singleUserPage: Int {
-        return pageForIndex(filteredThreadIndex)
+        return pageForIndex(index: filteredThreadIndex)
     }
 }
 
@@ -60,7 +60,7 @@ private func pageForIndex(index: Int32) -> Int {
     if index <= 0 {
         return 0
     } else {
-        return (index - 1) / 40 + 1
+        return Int(index - 1) / 40 + 1
     }
 }
 
@@ -75,7 +75,7 @@ public final class PostKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        postID = coder.decodeObjectForKey(postIDKey) as! String
+        postID = coder.decodeObject(forKey: postIDKey) as! String
         super.init(coder: coder)
     }
     
