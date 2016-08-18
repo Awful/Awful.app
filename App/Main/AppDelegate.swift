@@ -89,7 +89,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         guard AwfulForumsClient.sharedClient().loggedIn else { return }
         guard let
             url = UIPasteboard.generalPasteboard().awful_URL,
-            awfulURL = url.awfulURL
+            let awfulURL = url.awfulURL
             else { return }
         for urlTypes in NSBundle.mainBundle().infoDictionary?["CFBundleURLTypes"] as? [[String: AnyObject]] ?? [] {
             for urlScheme in urlTypes["CFBundleURLSchemes"] as? [String] ?? [] {
@@ -150,7 +150,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
         guard let
             awfulURL = userActivity.awfulURL,
-            router = urlRouter
+            let router = urlRouter
             else { return false }
         router.route(awfulURL)
         return true
@@ -305,8 +305,7 @@ private extension AppDelegate {
     }
     
     private func showPromptIfLoginCookieExpiresSoon() {
-        guard let expiryDate = AwfulForumsClient.sharedClient().loginCookieExpiryDate
-            where expiryDate.timeIntervalSinceNow < loginCookieExpiringSoonThreshold
+        guard let expiryDate = AwfulForumsClient.sharedClient().loginCookieExpiryDate, expiryDate.timeIntervalSinceNow < loginCookieExpiringSoonThreshold
             else { return }
         let lastPromptDate = NSUserDefaults.standardUserDefaults().objectForKey(loginCookieLastExpiryPromptDateKey) as? NSDate ?? .distantFuture()
         guard lastPromptDate.timeIntervalSinceNow < -loginCookieExpiryPromptFrequency else { return }
@@ -341,8 +340,7 @@ private func removeOldDataStores() {
             // Check for prefix, not equality, as there could be associated files (SQLite indexes or logs) that should also disappear.
             if let
                 url = url as? NSURL,
-                filename = url.lastPathComponent
-                where filename.hasPrefix("AwfulData.sqlite")
+                let filename = url.lastPathComponent, filename.hasPrefix("AwfulData.sqlite")
             {
                 pendingDeletions.append(url)
             }

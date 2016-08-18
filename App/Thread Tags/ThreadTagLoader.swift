@@ -40,7 +40,7 @@ final class ThreadTagLoader: NSObject {
     static let sharedLoader: ThreadTagLoader = {
         guard let
             tagListURLString = NSBundle(forClass: ThreadTagLoader.self).infoDictionary?["AwfulNewThreadTagListURL"] as? String,
-            tagListURL = NSURL(string: tagListURLString)
+            let tagListURL = NSURL(string: tagListURLString)
             else { fatalError("missing AwfulNewThreadTagListURL in Info.plist") }
         let caches = try! NSFileManager.defaultManager().URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
         let cacheFolder = caches.URLByAppendingPathComponent("Thread Tags", isDirectory: true)
@@ -96,7 +96,7 @@ final class ThreadTagLoader: NSObject {
     
     private func cachedImageNamed(imageName: String) -> UIImage? {
         let URL = cacheFolder.URLByAppendingPathComponent(imageName, isDirectory: false).URLByAppendingPathExtension("png")
-        guard let path = URL.path, image = UIImage(contentsOfFile: path) else { return nil }
+        guard let path = URL.path, let image = UIImage(contentsOfFile: path) else { return nil }
         guard image.scale >= 2 else {
             guard let cgimage = image.CGImage else { fatalError("missing CGImage from cached thread tag") }
             return UIImage(CGImage: cgimage, scale: 2, orientation: image.imageOrientation)
@@ -116,7 +116,7 @@ final class ThreadTagLoader: NSObject {
         session.GET("tags.txt", parameters: nil, success: { [weak self] (task, textData) in
             guard let
                 data = textData as? NSData,
-                tagsFile = String(data: data, encoding: NSUTF8StringEncoding)
+                let tagsFile = String(data: data, encoding: NSUTF8StringEncoding)
                 else {
                     print("thread tag list decoding failed")
                     self?.downloadingNewTags = false
@@ -167,7 +167,7 @@ final class ThreadTagLoader: NSObject {
         return cacheFolder.URLByAppendingPathComponent("tags.txt", isDirectory: false)
     }
     
-    private func downloadNewThreadTags<S: SequenceType where S.Generator.Element == String>(allThreadTags: S, fromRelativePath relativePath: String, completion: () -> Void) {
+    private func downloadNewThreadTags<S: SequenceType>(allThreadTags: S, fromRelativePath relativePath: String, completion: () -> Void) where S.Generator.Element == String {
         var threadTags = Set(allThreadTags)
         threadTags.subtractInPlace(shippedThreadTagImageNames)
         threadTags.subtractInPlace(cachedThreadTagImageNames)

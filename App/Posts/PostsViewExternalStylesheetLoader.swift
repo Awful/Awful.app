@@ -46,8 +46,8 @@ final class PostsViewExternalStylesheetLoader: NSObject {
         
         if let
             oldResponse = NSKeyedUnarchiver.unarchiveObjectWithFile(cachedResponseURL.path!) as? NSHTTPURLResponse,
-            oldURL = oldResponse.URL
-            where oldURL.absoluteURL == stylesheetURL.absoluteURL
+            let oldURL = oldResponse.URL,
+            oldURL.absoluteURL == stylesheetURL.absoluteURL
         {
             request.setCacheHeadersWithResponse(oldResponse)
         }
@@ -61,7 +61,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                 
                 if let
                     HTTPResponse = error?.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse
-                    where HTTPResponse.statusCode == 304
+                    , HTTPResponse.statusCode == 304
                 {
                     RefreshMinder.sharedMinder.didRefresh(.ExternalStylesheet)
                     return

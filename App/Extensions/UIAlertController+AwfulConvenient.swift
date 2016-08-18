@@ -8,7 +8,7 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
+    convenience init(title: String, error: NSError, handler: ((_ action: UIAlertAction!) -> Void)!) {
         self.init(title: title, message: messageForError(error), handler: handler)
     }
 
@@ -20,7 +20,7 @@ extension UIAlertController {
         return UIAlertController(title: title, error: error)
     }
 
-    convenience init(networkError error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
+    convenience init(networkError error: NSError, handler: ((_ action: UIAlertAction!) -> Void)!) {
         self.init(title: "Network Error", error: error, handler: handler)
     }
     
@@ -29,7 +29,7 @@ extension UIAlertController {
     }
 
     @objc(initAlertWithTitle:message:handler:)
-    convenience init(title: String, message: String, handler: ((action: UIAlertAction!) -> Void)!) {
+    convenience init(title: String, message: String, handler: ((_ action: UIAlertAction!) -> Void)!) {
         self.init(title: title, message: message, preferredStyle: .Alert)
         addAction(UIAlertAction(title: "OK", style: .Default, handler: handler))
     }

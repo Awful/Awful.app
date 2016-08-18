@@ -109,7 +109,7 @@ final class PunishmentCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
-        guard let imageView = imageView, textLabel = textLabel, detailTextLabel = detailTextLabel else { return }
+        guard let imageView = imageView, let textLabel = textLabel, let detailTextLabel = detailTextLabel else { return }
         
         let cellMargin = UIEdgeInsets(top: 5, left: 10, bottom: 10, right: 10)
         

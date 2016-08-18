@@ -13,7 +13,7 @@ import Photos
  
     - returns: A progress object that can cancel the image upload.
  */
-func uploadImages(attachedTo richText: NSAttributedString, completion: (plainText: String?, error: NSError?) -> Void) -> NSProgress {
+func uploadImages(attachedTo richText: NSAttributedString, completion: (_ plainText: String?, _ error: NSError?) -> Void) -> NSProgress {
     let progress = NSProgress(totalUnitCount: 1)
     
     let localCopy = richText.mutableCopy() as! NSMutableAttributedString
@@ -47,7 +47,7 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: (plainTex
     return progress
 }
 
-private func uploadImages(fromSources sources: [ImageTag.Source], completion: (urls: [NSURL]?, error: NSError?) -> Void) -> NSProgress {
+private func uploadImages(fromSources sources: [ImageTag.Source], completion: (_ urls: [NSURL]?, _ error: NSError?) -> Void) -> NSProgress {
     let progress = NSProgress(totalUnitCount: Int64(sources.count))
     
     let group = dispatch_group_create()
@@ -108,7 +108,7 @@ private struct ImageTag {
         
         if let
             assetURL = attachment.assetURL,
-            asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
+            let asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
         {
             source = .Asset(assetURL)
             size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)

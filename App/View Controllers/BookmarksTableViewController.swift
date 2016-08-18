@@ -62,7 +62,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     
     private func loadPage(page: Int) {
         AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
-            if let error = error where self?.visible == true {
+            if let error = error, self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.presentViewController(alert, animated: true, completion: nil)
             }
@@ -137,7 +137,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
             if let
                 row = self?.dataManager.contents.indexOf(thread),
-                cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+                let cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             {
                 sourceRect.memory = cell.bounds
                 sourceView.memory = cell

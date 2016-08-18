@@ -65,7 +65,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     private func loadPage(page: Int) {
         AwfulForumsClient.sharedClient().listThreadsInForum(forum, withThreadTag: filterThreadTag, onPage: page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
-            if let error = error where self?.visible == true {
+            if let error = error , self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.presentViewController(alert, animated: true, completion: nil)
             }
@@ -77,7 +77,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                 
                 self?.tableView.tableHeaderView = self!.filterButton
                 
-                if let forum = self?.forum where self?.filterThreadTag == nil {
+                if let forum = self?.forum , self?.filterThreadTag == nil {
                     RefreshMinder.sharedMinder.didRefreshForum(forum)
                 } else if let forum = self?.forum {
                     RefreshMinder.sharedMinder.didRefreshFilteredForum(forum)
@@ -156,7 +156,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
             if let
                 row = self?.dataManager.contents.indexOf(thread),
-                cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+                let cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             {
                 sourceRect.memory = cell.bounds
                 sourceView.memory = cell
@@ -226,7 +226,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     func composeTextViewController(composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
         dismissViewControllerAnimated(true) {
-            if let thread = self.threadComposeViewController.thread where success {
+            if let thread = self.threadComposeViewController.thread , success {
                 let postsPage = PostsPageViewController(thread: thread)
                 postsPage.restorationIdentifier = "Posts"
                 postsPage.loadPage(1, updatingCache: true, updatingLastReadPost: true)

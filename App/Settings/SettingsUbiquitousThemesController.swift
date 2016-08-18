@@ -28,8 +28,8 @@ final class SettingsUbiquitousThemesController: TableViewController {
     @objc private func settingsDidChange(notification: NSNotification) {
         guard !ignoreSettingsChanges else { return }
         guard let
-            key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String
-            where key == AwfulSettingsKeys.ubiquitousThemeNames.takeUnretainedValue()
+            key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String,
+            key == AwfulSettingsKeys.ubiquitousThemeNames.takeUnretainedValue()
             else { return }
         loadData()
         

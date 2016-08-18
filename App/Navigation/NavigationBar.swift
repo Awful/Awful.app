@@ -35,8 +35,8 @@ final class NavigationBar: UINavigationBar {
         // Try to find the back button's view without accessing its private `_view` ivar.
         guard let leftmost = subviews.lazy
             .filter({$0.bounds.width < self.bounds.width / 2})
-            .minElement({$0.frame.minX < $1.frame.minX || $0.bounds.width > $1.bounds.width})
-            where leftmost.bounds.contains(sender.locationInView(leftmost))
+            .minElement({$0.frame.minX < $1.frame.minX || $0.bounds.width > $1.bounds.width}),
+            leftmost.bounds.contains(sender.locationInView(leftmost))
             else { return }
         nav.popToRootViewControllerAnimated(true)
     }

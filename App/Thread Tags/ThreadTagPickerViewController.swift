@@ -52,7 +52,7 @@ final class ThreadTagPickerViewController: ViewController {
     }
     
     func selectSecondaryImageName(imageName: String) {
-        guard let secondaryImageNames = secondaryImageNames where !secondaryImageNames.isEmpty else { fatalError("thread tag picker isn't showing secondary tags") }
+        guard let secondaryImageNames = secondaryImageNames , !secondaryImageNames.isEmpty else { fatalError("thread tag picker isn't showing secondary tags") }
         guard let item = secondaryImageNames.indexOf(imageName) else { return }
         collectionView.performBatchUpdates({ 
             let indexPath = NSIndexPath(forItem: item, inSection: 0)
@@ -163,8 +163,8 @@ extension ThreadTagPickerViewController: UICollectionViewDataSource, UICollectio
             threadTagObservers[indexPath.item] = NewThreadTagObserver(imageName: imageName, downloadedBlock: { [weak self] (image) in
                 if let
                     collectionView = self?.collectionView,
-                    currentIndexPath = collectionView.indexPathForCell(cell)
-                    where currentIndexPath.item == indexPath.item
+                    let currentIndexPath = collectionView.indexPathForCell(cell),
+                    currentIndexPath.item == indexPath.item
                 {
                     cell.image = image
                     cell.tagImageName = nil

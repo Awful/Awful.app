@@ -16,8 +16,8 @@ final class ThreadTagPickerLayout: UICollectionViewFlowLayout {
             guard _centeringOffset == 0 && pickerHasSecondaryTags else { return _centeringOffset }
             guard let
                 collectionView = collectionView,
-                firstAttributes = super.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)),
-                lastAttributes = super.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: collectionView.numberOfItemsInSection(0) - 1, inSection: 0))
+                let firstAttributes = super.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)),
+                let lastAttributes = super.layoutAttributesForItemAtIndexPath(NSIndexPath(forItem: collectionView.numberOfItemsInSection(0) - 1, inSection: 0))
                 else { return _centeringOffset }
             let sectionWidth = firstAttributes.frame.union(lastAttributes.frame).width
             _centeringOffset = (collectionViewContentSize().width - sectionWidth) / 2

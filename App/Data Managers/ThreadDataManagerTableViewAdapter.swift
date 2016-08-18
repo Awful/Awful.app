@@ -128,7 +128,7 @@ private extension ThreadTableViewCell.ViewModel {
         let imageName = thread.threadTag?.imageName
         if let
             imageName = imageName,
-            image = ThreadTagLoader.imageNamed(imageName)
+            let image = ThreadTagLoader.imageNamed(imageName)
         {
             tag = Tag.Downloaded(image)
         } else {
@@ -147,7 +147,7 @@ private extension ThreadTableViewCell.ViewModel {
         var showRatings = true
         if let
             forumID = thread.forum?.forumID,
-            tweaks = ForumTweaks(forumID: forumID)
+            let tweaks = ForumTweaks(forumID: forumID)
         {
             showRatings = tweaks.showRatings
         }
