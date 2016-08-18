@@ -52,11 +52,11 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
         }
     }
     
-    public func copy(with: NSZone?) -> AnyObject {
+    public func copy(with: NSZone?) -> Any {
         return self
     }
     
-    public override func isEqual(_ object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         if let other = object as? AwfulObjectKey {
             if other.entityName != entityName {
                 return false
@@ -86,10 +86,10 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
 private let entityNameKey = "entityName"
 
 private extension AwfulObjectKey {
-    var predicate: Predicate {
-        let subpredicates: [Predicate] = keys.reduce([]) { accum, key in
+    var predicate: NSPredicate {
+        let subpredicates: [NSPredicate] = keys.reduce([]) { accum, key in
             if let value = self.value(forKey: key) as? NSObject {
-                return accum + [Predicate(format: "%K == %@", key, value)]
+                return accum + [NSPredicate(format: "%K == %@", key, value)]
             } else {
                 return accum
             }
@@ -97,7 +97,7 @@ private extension AwfulObjectKey {
         if subpredicates.count == 1 {
             return subpredicates[0]
         } else {
-            return CompoundPredicate(orPredicateWithSubpredicates:subpredicates)
+            return NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
     }
     
@@ -112,7 +112,7 @@ private extension AwfulObjectKey {
         }
         for objectKey in objectKeys {
             for key in keys {
-                if let value: AnyObject = objectKey.value(forKey: key) {
+                if let value: AnyObject = objectKey.value(forKey: key) as AnyObject? {
                     accum[key]!.append(value)
                 }
             }
@@ -152,7 +152,7 @@ extension AwfulManagedObject {
     
     func applyObjectKey(objectKey: AwfulObjectKey) {
         for key in objectKey.keys {
-            if let value: AnyObject = objectKey.value(forKey: key) {
+            if let value: AnyObject = objectKey.value(forKey: key) as AnyObject? {
                 setValue(value, forKey: key)
             }
         }
@@ -167,15 +167,15 @@ extension AwfulManagedObject {
         guard !objectKeys.isEmpty else { return [] }
         
         let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
-        let aggregateValues = objectKeys[0].dynamicType.valuesForKeysInObjectKeys(objectKeys: objectKeys)
-        var subpredicates = [Predicate]()
+        let aggregateValues = type(of: objectKeys[0]).valuesForKeysInObjectKeys(objectKeys: objectKeys)
+        var subpredicates = [NSPredicate]()
         for (key, values) in aggregateValues {
-            subpredicates.append(Predicate(format: "%K IN %@", key, values))
+            subpredicates.append(NSPredicate(format: "%K IN %@", key, values))
         }
         if subpredicates.count == 1 {
             request.predicate = subpredicates[0]
         } else {
-            request.predicate = CompoundPredicate(orPredicateWithSubpredicates:subpredicates)
+            request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
         
         var results : [AwfulManagedObject] = []

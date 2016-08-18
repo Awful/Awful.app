@@ -17,7 +17,7 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
         XCTAssertTrue(fetchAll(type: Forum.self, inContext: managedObjectContext).count == 66)
         
-        let EN = fetchOne(type: Forum.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "name BEGINSWITH 'E/N'"))!
+        let EN = fetchOne(type: Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name BEGINSWITH 'E/N'"))!
         XCTAssert(EN.forumID == "214")
         XCTAssert(EN.name == "E/N Bullshit")
         let GBS = EN.parentForum!
@@ -28,7 +28,7 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
         XCTAssert(main.name == "Main")
         XCTAssert(EN.group == main)
         
-        let gameRoom = fetchOne(type: Forum.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "forumID = '103'"))!
+        let gameRoom = fetchOne(type: Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '103'"))!
         XCTAssert(gameRoom.name == "The Game Room")
         let traditionalGames = gameRoom.parentForum!
         XCTAssert(traditionalGames.forumID == "234")

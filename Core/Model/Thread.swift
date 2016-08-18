@@ -14,17 +14,17 @@ public class Thread: AwfulManagedObject {
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
     @NSManaged public var lastPostDate: NSDate?
-    @NSManaged private var primitiveNumberOfPages: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveNumberOfPages: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     @NSManaged public var numberOfVotes: Int32
     @NSManaged public var rating: Float32
-    @NSManaged private var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
-    @NSManaged private var primitiveStarCategory: NSNumber
+    @NSManaged internal var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveStarCategory: NSNumber
     @NSManaged public var sticky: Bool
     @NSManaged public var stickyIndex: Int32
     @NSManaged public var threadID: String
     @NSManaged public var threadListPage: Int32
     @NSManaged public var title: String?
-    @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     
     @NSManaged public var author: User?
     @NSManaged public var forum: Forum?
@@ -93,7 +93,7 @@ extension Thread {
         }
         set {
             willChangeValue(forKey: "starCategory")
-            primitiveStarCategory = Int(newValue.rawValue)
+            primitiveStarCategory = NSNumber(value: newValue.rawValue)
             didChangeValue(forKey: "starCategory")
         }
     }
@@ -185,7 +185,7 @@ extension Thread {
     
     private func fetchFilter(author: User) -> ThreadFilter? {
         let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: ThreadFilter.entityName())
-        request.predicate = Predicate(format: "thread = %@ AND author = %@", self, author)
+        request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
         var results: [ThreadFilter] = []
         var success: Bool = false

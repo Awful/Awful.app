@@ -100,7 +100,7 @@ public class ForumMetadata: AwfulManagedObject {
 extension ForumMetadata {
     public class func metadataForForumsWithIDs(forumIDs: [String], inManagedObjectContext context: NSManagedObjectContext) -> [ForumMetadata] {
         let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
-        request.predicate = Predicate(format: "forum.forumID IN %@", forumIDs)
+        request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
         var results : [ForumMetadata] = []
         var success : Bool = false
         do {

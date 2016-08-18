@@ -29,7 +29,7 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
         super.init(coder: coder)
     }
     
-    override public func httpRequestOperation(with request: URLRequest!, success: ((AFHTTPRequestOperation?, AnyObject?) -> Void)!, failure: ((AFHTTPRequestOperation?, NSError?) -> Void)!) -> AFHTTPRequestOperation! {
+    override public func httpRequestOperation(with request: URLRequest!, success: ((AFHTTPRequestOperation?, Any?) -> Swift.Void)!, failure: ((AFHTTPRequestOperation?, Error?) -> Swift.Void)!) -> AFHTTPRequestOperation! {
         let operation = super.httpRequestOperation(with: request as URLRequest!, success: success, failure: failure)
         
         /*

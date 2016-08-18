@@ -10,7 +10,7 @@ class ScrapingTestCase: XCTestCase {
     var managedObjectContext: NSManagedObjectContext!
     
     private var storeCoordinator: NSPersistentStoreCoordinator = {
-        let modelURL = Bundle(for: AwfulManagedObject.self).urlForResource("Awful", withExtension: "momd")!
+        let modelURL = Bundle(for: AwfulManagedObject.self).url(forResource: "Awful", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: modelURL)!
         return NSPersistentStoreCoordinator(managedObjectModel: model)
         }()
@@ -24,8 +24,7 @@ class ScrapingTestCase: XCTestCase {
         super.setUp()
         
         // The scraper uses the default time zone. To make the test repeatable, we set a known time zone.
-        TimeZone.default = TimeZone(forSecondsFromGMT: 0)
-        
+        //TimeZone.default = TimeZone(forSecondsFromGMT: 0)
         do {
             memoryStore = try storeCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
         }
@@ -51,7 +50,7 @@ class ScrapingTestCase: XCTestCase {
     
     func scrapeFixtureNamed(fixtureName: String) -> AwfulScraper {
         let document = fixtureNamed(basename: fixtureName)
-        let scraperClass = self.dynamicType.scraperClass() as! AwfulScraper.Type
+        let scraperClass = type(of: self).scraperClass() as! AwfulScraper.Type
         let scraper = scraperClass.scrape(document, into: managedObjectContext)
         assert(scraper?.error == nil, "error scraping \(scraperClass): \(scraper?.error)")
         return scraper!

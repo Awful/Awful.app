@@ -110,9 +110,9 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     
     func testIgnoredPost() {
         scrapeFixtureNamed(fixtureName: "showthread2")
-        let post = fetchOne(type: Post.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "postID = %@", "428957756"))!
+        let post = fetchOne(type: Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID = %@", "428957756"))!
         XCTAssert(post.ignored)
-        let others = fetchAll(type: Post.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "postID != %@", "428957756"))
+        let others = fetchAll(type: Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
         XCTAssert(others.count > 0)
         let ignored = (others as NSArray).value(forKeyPath: "@distinctUnionOfObjects.ignored") as! [Bool]
         XCTAssert(ignored.count == 1);

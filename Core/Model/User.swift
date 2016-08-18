@@ -71,7 +71,7 @@ public final class UserKey: AwfulObjectKey {
         return [userIDKey, usernameKey]
     }
     
-    public override func isEqual(_ object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         if let other = object as? UserKey {
             return other.userID == userID
         }

@@ -15,7 +15,7 @@ public class PrivateMessage: AwfulManagedObject {
     @NSManaged public var sentDate: NSDate?
     @NSManaged public var subject: String?
     
-    @NSManaged private var primitiveFrom: User? /* via sentPrivateMessages */
+    @NSManaged internal var primitiveFrom: User? /* via sentPrivateMessages */
     @NSManaged public var threadTag: ThreadTag?
     @NSManaged var to: User? /* via receivedPrivateMessages */
 }

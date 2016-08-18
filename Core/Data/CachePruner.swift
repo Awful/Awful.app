@@ -21,10 +21,10 @@ final class CachePruner: Operation {
             var candidateObjectIDs = [NSManagedObjectID]()
             let components = NSDateComponents()
             components.day = -7
-            let calendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
-            let oneWeekAgo = calendar.date(byAdding: components as DateComponents, to: NSDate() as Date, options: [])!
+            let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+            let oneWeekAgo = calendar.date(byAdding: components as DateComponents, to: NSDate() as Date)!
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
-            fetchRequest.predicate = Predicate(format: "lastModifiedDate < %@", oneWeekAgo)
+            fetchRequest.predicate = NSPredicate(format: "lastModifiedDate < %@", oneWeekAgo as CVarArg)
             fetchRequest.resultType = .managedObjectIDResultType
             for entity in prunableEntities {
                 fetchRequest.entity = entity

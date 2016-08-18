@@ -61,7 +61,7 @@ final class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed(fixtureName: "newthread-at")
         XCTAssertTrue(form.threadTags.count == 55)
         XCTAssertTrue(form.secondaryThreadTags.count == 2)
-        let secondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "imageName IN { 'ama', 'tma' }"))
+        let secondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
     }
     
@@ -69,8 +69,8 @@ final class FormScrapingTests: ScrapingTestCase {
         let form = scrapeFormFixtureNamed(fixtureName: "newthread-samart")
         XCTAssertTrue(form.threadTags.count == 69)
         XCTAssertTrue(form.secondaryThreadTags.count == 4)
-        let possibleSecondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: Predicate(format: "imageName LIKE 'icon*ing'"))
-        let secondaryTags = possibleSecondaryTags.filter { Int($0.threadTagID!) < 5 }
+        let possibleSecondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
+        let secondaryTags = possibleSecondaryTags.filter { Int($0.threadTagID!)! < 5 }
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count)
     }
     

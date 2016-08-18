@@ -16,7 +16,7 @@ final class HTMLResponseSerializer: AFHTTPResponseSerializer {
         super.init(coder: coder)
     }
     
-    override func responseObject(for response: URLResponse?, data: Data?) throws -> AnyObject {
+    override func responseObject(for response: URLResponse?, data: Data?) throws -> Any {
         guard let data = try super.responseObject(for: response, data: data) as? Data else { return HTMLDocument() }
         return HTMLDocument(data: data, contentTypeHeader: contentType(withResponse: response))
     }

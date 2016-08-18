@@ -7,13 +7,13 @@ import Foundation
 
 /// Ensures parameter values are within its string encoding by turning any outside characters into decimal HTML entities.
 final class HTMLRequestSerializer: AFHTTPRequestSerializer {
-    override func request(bySerializingRequest request: URLRequest!, withParameters parameters: AnyObject?) throws -> URLRequest {
-        if let method = request.httpMethod where httpMethodsEncodingParametersInURI.contains(method) { return try super.request(bySerializingRequest: request, withParameters: parameters) }
+    override func request(bySerializingRequest request: URLRequest!, withParameters parameters: Any?) throws -> URLRequest {
+        if let method = request.httpMethod, httpMethodsEncodingParametersInURI.contains(method) { return try super.request(bySerializingRequest: request, withParameters: parameters) }
         
         guard stringEncoding == String.Encoding.windowsCP1252.rawValue else { fatalError("only works with win1252") }
-        guard var dict = parameters as? [NSObject: AnyObject] else { return try super.request(bySerializingRequest:request, withParameters: parameters) }
+        guard var dict = parameters as? [NSObject: Any] else { return try super.request(bySerializingRequest:request, withParameters: parameters) }
         for key in dict.keys {
-            guard let value = dict[key] as? String where !value.canBeConverted(to: String.Encoding(rawValue: stringEncoding)) else { continue }
+            guard let value = dict[key] as? String, !value.canBeConverted(to: String.Encoding(rawValue: stringEncoding)) else { continue }
             dict[key] = escape(s: value)
         }
         return try super.request(bySerializingRequest:request, withParameters: dict)
