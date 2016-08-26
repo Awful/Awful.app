@@ -76,7 +76,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             self?.stopAnimatingPullToRefresh()
             self?.stopAnimatingInfiniteScroll()
             
-            self?.scrollToLoadMoreBlock = threads?.count >= 40 ? self!.loadMore : nil
+            self?.scrollToLoadMoreBlock = threads?.count >= 40 ? { self?.loadMore() } : nil
         }
     }
     
@@ -93,7 +93,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         
         createTableViewAdapter()
         
-        pullToRefreshBlock = refresh
+        pullToRefreshBlock = { [weak self] in self?.refresh() }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BookmarksTableViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
         
@@ -108,7 +108,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         prepareUserActivity()
         
         if !dataManager.contents.isEmpty {
-            scrollToLoadMoreBlock = loadMore
+            scrollToLoadMoreBlock = { [weak self] in self?.loadMore() }
         }
         
         becomeFirstResponder()
