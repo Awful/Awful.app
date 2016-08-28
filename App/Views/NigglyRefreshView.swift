@@ -6,22 +6,25 @@
 //  Copyright © 2016 Awful Contributors. All rights reserved.
 //
 
-import MJRefresh
+import PullToRefresh
 import UIKit
 
 private let verticalMargin: CGFloat = 10
 
-final class NigglyRefreshView: MJRefreshHeader {
+final class NigglyRefreshView: UIView, RefreshViewAnimator {
     static func makeImage() -> UIImage {
         return UIImage.animatedImageNamed("niggly-throbber", duration: 1.240)!
     }
     
     override init(frame: CGRect) {
+        let image = NigglyRefreshView.makeImage()
+        
         var frame = frame
-        frame.size.height = max(frame.height, NigglyRefreshView.makeImage().size.height + verticalMargin * 2)
+        frame.size.height = max(frame.height, image.size.height + verticalMargin * 2)
         super.init(frame: frame)
         
         layer.contentsGravity = kCAGravityCenter
+        layer.contentsScale = image.scale
     }
     
     required init?(coder: NSCoder) {
@@ -33,41 +36,24 @@ final class NigglyRefreshView: MJRefreshHeader {
         layer.addAnimation(makeSpriteAnimation(for: NigglyRefreshView.makeImage()), forKey: "sprite")
     }
     
-    private var resetAnimationNextPercentAdjustmentWhenIdle = false
-    private var realState: MJRefreshState = .Idle
-    
-    override var state: MJRefreshState {
-        didSet {
-            // percentProgress changes in the state setter, so we keep the last completed state change handy.
-            realState = state
-            
-            switch state {
-            case .Idle where oldValue == .Refreshing:
-                resetAnimationNextPercentAdjustmentWhenIdle = true
-                
-            case .Idle:
-                layer.pause()
-                
-            case .Pulling:
-                layer.resume()
-                
-            case .Refreshing, .WillRefresh:
-                layer.resume()
-                
-            case .NoMoreData:
-                break
-            }
-        }
+    private func removeAnimation() {
+        layer.removeAnimationForKey("sprite")
     }
     
-    override var pullingPercent: CGFloat {
-        didSet {
-            if pullingPercent > 0 {
-                addAnimation()
-            } else if realState == .Idle && pullingPercent <= 0 {
-                layer.removeAnimationForKey("sprite")
-                layer.pause()
-            }
+    func animateState(state: State) {
+        switch state {
+        case .Initial:
+            removeAnimation()
+            
+        case .Releasing(let progress) where progress < 1:
+            addAnimation()
+            layer.pause()
+            
+        case .Loading, .Releasing:
+            layer.resume()
+            
+        case .Finished:
+            layer.pause()
         }
     }
 }

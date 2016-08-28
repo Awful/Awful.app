@@ -6,7 +6,7 @@ import CoreData
 
 final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
     private(set) var contents: [Object] = []
-    var delegate: FetchedDataManagerDelegate?
+    weak var delegate: FetchedDataManagerDelegate?
     
     private let resultsController: NSFetchedResultsController
     
@@ -61,6 +61,6 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
     }
 }
 
-protocol FetchedDataManagerDelegate {
+protocol FetchedDataManagerDelegate: class {
     func dataManagerDidChangeContent<Object: NSManagedObject>(dataManager: FetchedDataManager<Object>)
 }

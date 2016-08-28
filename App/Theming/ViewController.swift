@@ -2,7 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import MJRefresh
+import PullToRefresh
 import UIKit
 
 extension UIViewController {
@@ -117,6 +117,12 @@ class TableViewController: UITableViewController {
         CommonInit(self)
     }
     
+    deinit {
+        if isViewLoaded(), let pullToRefresh = tableView.topPullToRefresh {
+            tableView.removePullToRefresh(pullToRefresh)
+        }
+    }
+    
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
     var theme: Theme {
         return Theme.currentTheme
@@ -131,30 +137,35 @@ class TableViewController: UITableViewController {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
             } else {
-                if isViewLoaded() {
-                    tableView.mj_header = nil
+                if isViewLoaded(), let pullToRefresh = tableView.topPullToRefresh {
+                    tableView.removePullToRefresh(pullToRefresh)
                 }
             }
         }
     }
     
     private func createRefreshControl() {
-        guard tableView.mj_header == nil else { return }
-        let niggly = NigglyRefreshView(refreshingBlock: { [unowned self] in
-            self.pullToRefreshBlock?()
-            })
+        guard tableView.topPullToRefresh == nil else { return }
+        let niggly = NigglyRefreshView()
         niggly.autoresizingMask = .FlexibleWidth
-        tableView.mj_header = niggly
+        pullToRefreshView = niggly
+        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .Top)
+        pullToRefresh.animationDuration = 0.3
+        pullToRefresh.initialSpringVelocity = 0
+        pullToRefresh.springDamping = 1
+        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
     }
+    
+    private weak var pullToRefreshView: UIView?
     
     func startAnimatingPullToRefresh() {
         guard isViewLoaded() else { return }
-        tableView.mj_header?.beginRefreshing()
+        tableView.startRefreshing(at: .Top)
     }
     
     func stopAnimatingPullToRefresh() {
         guard isViewLoaded() else { return }
-        tableView.mj_header?.endRefreshing()
+        tableView.endRefreshing(at: .Top)
     }
     
     override var refreshControl: UIRefreshControl? {
@@ -207,7 +218,7 @@ class TableViewController: UITableViewController {
         
         view.backgroundColor = theme["backgroundColor"]
         
-        tableView.mj_header?.backgroundColor = view.backgroundColor
+        pullToRefreshView?.backgroundColor = view.backgroundColor
         tableView.tableFooterView?.backgroundColor = view.backgroundColor
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle

@@ -73,7 +73,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             if error == .None {
                 self?.latestPage = page
                 
-                self?.scrollToLoadMoreBlock = self!.loadNextPage
+                self?.scrollToLoadMoreBlock = { self?.loadNextPage() }
                 
                 self?.tableView.tableHeaderView = self!.filterButton
                 
@@ -104,7 +104,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         createTableViewAdapter()
         
-        pullToRefreshBlock = self.refresh
+        pullToRefreshBlock = { [weak self] in self?.refresh() }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadsTableViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
         
@@ -123,7 +123,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         super.viewDidAppear(animated)
         
         if !dataManager.contents.isEmpty {
-            scrollToLoadMoreBlock = loadNextPage
+            scrollToLoadMoreBlock = { [weak self] in self?.loadNextPage() }
             
             updateFilterButton()
             tableView.tableHeaderView = filterButton

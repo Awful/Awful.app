@@ -1,0 +1,6 @@
+framework module PullToRefresh {
+  umbrella header "PullToRefresher-umbrella.h"
+
+  export *
+  module * { export * }
+}
