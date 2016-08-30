@@ -34,10 +34,10 @@ final class SettingsViewController: TableViewController {
         
         guard let sections = AwfulSettings.sharedSettings().sections as? [[String: AnyObject]] else { fatalError("can't interpret settings sections") }
         func validSection(section: [String: AnyObject]) -> Bool {
-            if let device = section["Device"] as? String where !device.hasPrefix(currentDevice) {
+            if let device = section["Device"] as? String , !device.hasPrefix(currentDevice) {
                 return false
             }
-            if let capability = section["DeviceCapability"] as? String where capability == "Handoff" && !UIDevice.currentDevice().isHandoffCapable {
+            if let capability = section["DeviceCapability"] as? String , capability == "Handoff" && !UIDevice.currentDevice().isHandoffCapable {
                 return false
             }
             if let visible = section["VisibleInSettingsTab"] as? Bool {
@@ -52,12 +52,12 @@ final class SettingsViewController: TableViewController {
                 var section = section
                 
                 func validSetting(setting: [String: AnyObject]) -> Bool {
-                    if let device = setting["Device"] as? String where !device.hasPrefix(currentDevice) {
+                    if let device = setting["Device"] as? String , !device.hasPrefix(currentDevice) {
                         return false
                     }
                     if let
                         urlString = setting["CanOpenURL"] as? String,
-                        url = NSURL(string: urlString)
+                        let url = NSURL(string: urlString)
                     {
                         return UIApplication.sharedApplication().canOpenURL(url)
                     }
@@ -161,11 +161,11 @@ final class SettingsViewController: TableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let setting = self.setting(at: indexPath)
         let settingType: SettingType
-        if let typeString = setting["Type"] as? String where typeString == "Switch" {
+        if let typeString = setting["Type"] as? String , typeString == "Switch" {
             settingType = .OnOff
-        } else if let action = setting["Action"] as? String where action != "ShowProfile" {
+        } else if let action = setting["Action"] as? String , action != "ShowProfile" {
             settingType = .Button
-        } else if let typeString = setting["Type"] as? String where typeString == "Stepper" {
+        } else if let typeString = setting["Type"] as? String , typeString == "Stepper" {
             settingType = .Stepper
         } else if setting["ViewController"] != nil {
             if setting["DisplayTransformer"] != nil || setting["ShowValue"] as? Bool == true {
@@ -228,7 +228,7 @@ final class SettingsViewController: TableViewController {
             cell.textLabel?.text = setting["Title"] as? String
         }
         
-        if settingType == .Immutable, let valueID = setting["ValueIdentifier"] as? String where valueID == "Username" {
+        if settingType == .Immutable, let valueID = setting["ValueIdentifier"] as? String , valueID == "Username" {
             cell.detailTextLabel?.text = AwfulSettings.sharedSettings().username
         }
         

@@ -14,7 +14,7 @@ import AFNetworking
     TODO: Only public so it appears in AwfulCore-Swift.h. Make internal once AwfulHTTPRequestOperationManager no longer needs an objc import.
  */
 public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
-    override init(baseURL: URL?) {
+    override public init(baseURL: URL?) {
         super.init(baseURL: baseURL)
         
         requestSerializer = HTMLRequestSerializer()

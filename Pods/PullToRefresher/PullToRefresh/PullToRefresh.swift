@@ -17,11 +17,11 @@ public class PullToRefresh: NSObject {
     
     public var position: Position = .Top
     
-    public var animationDuration: NSTimeInterval = 1
-    public var hideDelay: NSTimeInterval = 0
+    public var animationDuration: TimeInterval = 1
+    public var hideDelay: TimeInterval = 0
     public var springDamping: CGFloat = 0.4
     public var initialSpringVelocity: CGFloat = 0.8
-    public var animationOptions: UIViewAnimationOptions = [.CurveLinear]
+    public var animationOptions: UIViewAnimationOptions = [.curveLinear]
 
     let refreshView: UIView
     var action: (() -> ())?
@@ -32,7 +32,7 @@ public class PullToRefresh: NSObject {
     
     // MARK: - ScrollView & Observing
 
-    private var scrollViewDefaultInsets = UIEdgeInsetsZero
+    public var scrollViewDefaultInsets = UIEdgeInsets.zero
     weak var scrollView: UIScrollView? {
         willSet {
             removeScrollViewObserving()
@@ -49,7 +49,7 @@ public class PullToRefresh: NSObject {
     
     var state: State = .Initial {
         didSet {
-            animator.animateState(state)
+            animator.animateState(state: state)
             switch state {
             case .Loading:
                 if oldValue != .Loading {
@@ -93,9 +93,9 @@ public class PullToRefresh: NSObject {
     private let contentOffsetKeyPath = "contentOffset"
     private let contentInsetKeyPath = "contentInset"
     private let contentSizeKeyPath = "contentSize"
-    private var previousScrollViewOffset: CGPoint = CGPointZero
+    public var previousScrollViewOffset: CGPoint = CGPoint.zero
     
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<()>) {
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if (context == &KVOContext && keyPath == contentOffsetKeyPath && object as? UIScrollView == scrollView) {
             var offset: CGFloat
             switch position {
@@ -117,7 +117,7 @@ public class PullToRefresh: NSObject {
                 state = .Releasing(progress: -offset / refreshViewHeight)
                 
             case -1000...(-refreshViewHeight):
-                if state == .Releasing(progress: 1) && scrollView?.dragging == false {
+                if state == .Releasing(progress: 1) && scrollView?.isDragging == false {
                     state = .Loading
                 } else if state != .Loading && state != .Finished {
                     state = .Releasing(progress: 1)
@@ -134,26 +134,26 @@ public class PullToRefresh: NSObject {
             }
           
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change as! [NSKeyValueChangeKey : Any]?, context: context)
         }
         
         previousScrollViewOffset.y = scrollView?.contentOffset.y ?? 0
     }
     
-    private func addScrollViewObserving() {
-        guard let scrollView = scrollView where !isObserving else {
+    public func addScrollViewObserving() {
+        guard let scrollView = scrollView , !isObserving else {
             return
         }
         
-        scrollView.addObserver(self, forKeyPath: contentOffsetKeyPath, options: .Initial, context: &KVOContext)
-        scrollView.addObserver(self, forKeyPath: contentSizeKeyPath, options: .Initial, context: &KVOContext)
-        scrollView.addObserver(self, forKeyPath: contentInsetKeyPath, options: .New, context: &KVOContext)
+        scrollView.addObserver(self, forKeyPath: contentOffsetKeyPath, options: .initial, context: &KVOContext)
+        scrollView.addObserver(self, forKeyPath: contentSizeKeyPath, options: .initial, context: &KVOContext)
+        scrollView.addObserver(self, forKeyPath: contentInsetKeyPath, options: .new, context: &KVOContext)
       
         isObserving = true
     }
     
-    private func removeScrollViewObserving() {
-        guard let scrollView = scrollView where isObserving else {
+    public func removeScrollViewObserving() {
+        guard let scrollView = scrollView , isObserving else {
             return
         }
         
@@ -183,10 +183,11 @@ extension PullToRefresh {
         }
         
         scrollView?.setContentOffset(CGPoint(x: 0, y: offsetY), animated: true)
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(0.27 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] in
+        let delayTime = DispatchTime.now()
+        let workItem = DispatchWorkItem { [weak self] in
             self?.state = .Loading
         }
+        DispatchQueue.main.asyncAfter(deadline: delayTime, execute: workItem)
     }
     
     func endRefreshing() {
@@ -206,12 +207,12 @@ private extension PullToRefresh {
         
         scrollView.contentOffset = previousScrollViewOffset
         scrollView.bounces = false
-        UIView.animateWithDuration(0.3, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             switch self.position {
             case .Top:
                 let insets = self.refreshView.frame.height + self.scrollViewDefaultInsets.top
                 scrollView.contentInset.top = insets
-                scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, -insets)
+                scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: -insets)
                 
             case .Bottom:
                 let insets = self.refreshView.frame.height + self.scrollViewDefaultInsets.bottom
@@ -226,8 +227,8 @@ private extension PullToRefresh {
     
     func animateFinishedState() {
         removeScrollViewObserving()
-        UIView.animateWithDuration(
-            animationDuration,
+        UIView.animate(
+            withDuration: animationDuration,
             delay: hideDelay,
             usingSpringWithDamping: springDamping,
             initialSpringVelocity: initialSpringVelocity,
@@ -248,6 +249,6 @@ private extension PullToRefresh {
 private extension PullToRefresh {
     
     func isCurrentlyVisible() -> Bool {
-        return self.scrollView?.contentOffset.y <= -self.scrollViewDefaultInsets.top
+        return (self.scrollView?.contentOffset.y)! <= -self.scrollViewDefaultInsets.top
     }
 }

@@ -22,11 +22,11 @@ class DefaultViewAnimator: RefreshViewAnimator {
             refreshView.activityIndicator?.stopAnimating()
             
         case .Releasing(let progress):
-            refreshView.activityIndicator?.hidden = false
+            refreshView.activityIndicator?.isHidden = false
             
-            var transform = CGAffineTransformIdentity
-            transform = CGAffineTransformScale(transform, progress, progress)
-            transform = CGAffineTransformRotate(transform, CGFloat(M_PI) * progress * 2)
+            var transform = CGAffineTransform.identity
+            transform = transform.scaledBy(x: progress, y: progress)
+            transform = transform.rotated(by: CGFloat(M_PI) * progress * 2)
             refreshView.activityIndicator?.transform = transform
             
         case .Loading:

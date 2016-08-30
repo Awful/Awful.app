@@ -42,9 +42,9 @@ final class ProfileViewModel: NSObject {
     
     var anyContactInfo: Bool {
         if privateMessagesWork { return true }
-        if let AIM = profile.aimName where !AIM.isEmpty { return true }
-        if let ICQ = profile.icqName where !ICQ.isEmpty { return true }
-        if let yahoo = profile.yahooName where !yahoo.isEmpty { return true }
+        if let AIM = profile.aimName , !AIM.isEmpty { return true }
+        if let ICQ = profile.icqName , !ICQ.isEmpty { return true }
+        if let yahoo = profile.yahooName , !yahoo.isEmpty { return true }
         if profile.homepageURL != nil { return true }
         return false
     }
@@ -55,7 +55,7 @@ final class ProfileViewModel: NSObject {
     }
     
     var customTitleHTML: String? {
-        guard let HTML = profile.user.customTitleHTML where HTML != "<br/>" else { return nil }
+        guard let HTML = profile.user.customTitleHTML , HTML != "<br/>" else { return nil }
         return HTML
     }
     

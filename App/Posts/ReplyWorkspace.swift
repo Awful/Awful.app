@@ -20,7 +20,7 @@ final class ReplyWorkspace: NSObject {
     
     The closure obviously can't be saved as part of UIKit state preservation, so be sure to set something after restoring state.
     */
-    var completion: ((saveDraft: Bool, didSucceed: Bool) -> Void)?
+    var completion: ((_ saveDraft: Bool, _ didSucceed: Bool) -> Void)?
     
     /// Constructs a workspace for a new reply to a thread.
     convenience init(thread: Thread) {
@@ -93,7 +93,7 @@ final class ReplyWorkspace: NSObject {
             
             if let
                 forumID = draft.thread.forum?.forumID,
-                tweaks = ForumTweaks(forumID: forumID)
+                let tweaks = ForumTweaks(forumID: forumID)
             {
                 textView.autocapitalizationType = tweaks.autocapitalizationType
                 textView.autocorrectionType = tweaks.autocorrectionType

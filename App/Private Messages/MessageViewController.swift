@@ -24,8 +24,8 @@ final class MessageViewController: ViewController {
         title = privateMessage.subject
         navigationItem.rightBarButtonItem = replyButtonItem
         hidesBottomBarWhenPushed = true
-        restorationClass = self.dynamicType
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(settingsDidChange), name: AwfulSettingsDidChangeNotification, object: nil)
+        restorationClass = type(of: self)
+        NotificationCenter.defaultCenter.addObserver(self, selector: #selector(settingsDidChange), name: AwfulSettingsDidChangeNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -33,7 +33,7 @@ final class MessageViewController: ViewController {
     }
     
     private lazy var replyButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Reply, target: self, action: #selector(didTapReplyButtonItem))
+        return UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(didTapReplyButtonItem))
     }()
     
     override var title: String? {
@@ -54,7 +54,7 @@ final class MessageViewController: ViewController {
             print("\(#function) error rendering private message: \(error)")
             html = ""
         }
-        webView.loadHTMLString(html, baseURL: AwfulForumsClient.sharedClient().baseURL)
+        webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
         didRender = true
         
         webView.fractionalContentOffset = fractionalContentOffsetOnLoad
@@ -63,7 +63,7 @@ final class MessageViewController: ViewController {
     @objc private func didTapReplyButtonItem(sender: UIBarButtonItem?) {
         let actionSheet = UIAlertController.actionSheet()
         
-        actionSheet.addActionWithTitle("Reply") {
+        actionSheet.addActionWithTitle(title: "Reply") {
             AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
                 if let error = error {
                     self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
@@ -80,7 +80,7 @@ final class MessageViewController: ViewController {
             })
         }
         
-        actionSheet.addActionWithTitle("Forward") { 
+        actionSheet.addActionWithTitle(title: "Forward") {
             AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
                 if let error = error {
                     self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
@@ -97,8 +97,8 @@ final class MessageViewController: ViewController {
             })
         }
         
-        actionSheet.addCancelActionWithHandler(nil)
-        presentViewController(actionSheet, animated: true, completion: nil)
+        actionSheet.addCancelActionWithHandler(handler: nil)
+        present(actionSheet, animated: true, completion: nil)
         
         if let popover = actionSheet.popoverPresentationController {
             popover.barButtonItem = sender
@@ -106,22 +106,22 @@ final class MessageViewController: ViewController {
     }
     
     @objc private func didLongPressWebView(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .Began else { return }
-        var location = sender.locationInView(webView)
+        guard sender.state == .began else { return }
+        var location = sender.location(in: webView)
         let offsetY = webView.scrollView.contentOffset.y
         if offsetY < 0 {
             location.y += offsetY
         }
         let data = ["x": location.x, "y": location.y]
         webViewJavascriptBridge?.callHandler("interestingElementsAtPoint", data: data) { [weak self] (response) in
-            self?.webView.stringByEvaluatingJavaScriptFromString("Awful.preventNextClickEvent()")
+            self?.webView.stringByEvaluatingJavaScript(from: "Awful.preventNextClickEvent()")
             
             guard
-                let response = response as? [String: AnyObject] where !response.isEmpty,
+                let response = response as? [String: AnyObject] , !response.isEmpty,
                 let presenter = self
                 else { return }
             
-            let ok = URLMenuPresenter.presentInterestingElements(response, fromViewController: presenter, fromWebView: presenter.webView)
+            let ok = URLMenuPresenter.presentInterestingElements(info: response, fromViewController: presenter, fromWebView: presenter.webView)
             if !ok && response["unspoiledLink"] == nil {
                 print("\(#function) unexpected interesting elements for data: \(data), response: \(response)")
             }
@@ -132,8 +132,8 @@ final class MessageViewController: ViewController {
         guard let user = privateMessage.from else { return }
         
         func present(viewController: UIViewController) {
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                self.presentViewController(viewController.enclosingNavigationController, animated: true, completion: nil)
+            if UIDevice.currentDevice.userInterfaceIdiom == .pad {
+                self.present(viewController.enclosingNavigationController, animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(viewController, animated: true)
             }
@@ -157,18 +157,18 @@ final class MessageViewController: ViewController {
     }
     
     @objc private func settingsDidChange(notification: NSNotification) {
-        guard isViewLoaded() else { return }
+        guard isViewLoaded else { return }
         switch notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
-        case AwfulSettingsKeys.showAvatars.takeUnretainedValue()?:
-            webViewJavascriptBridge?.callHandler("showAvatars", data: AwfulSettings.sharedSettings().showAvatars)
+        case AwfulSettingsKeys.showAvatars.takeUnretainedValue() as String as String?:
+            webViewJavascriptBridge?.callHandler("showAvatars", data: AwfulSettings.shared().showAvatars)
             
-        case AwfulSettingsKeys.showImages.takeUnretainedValue()?:
+        case AwfulSettingsKeys.showImages.takeUnretainedValue() as String as String?:
             webViewJavascriptBridge?.callHandler("loadLinkifiedImages")
             
-        case AwfulSettingsKeys.fontScale.takeUnretainedValue()?:
-            webViewJavascriptBridge?.callHandler("fontScale", data: Int(AwfulSettings.sharedSettings().fontScale))
+        case AwfulSettingsKeys.fontScale.takeUnretainedValue() as String as String?:
+            webViewJavascriptBridge?.callHandler("fontScale", data: Int(AwfulSettings.shared().fontScale))
             
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue()? where visible:
+        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String? where visible:
             configureUserActivity()
             
         default:
@@ -177,14 +177,14 @@ final class MessageViewController: ViewController {
     }
     
     private func configureUserActivity() {
-        guard AwfulSettings.sharedSettings().handoffEnabled else { return }
+        guard AwfulSettings.shared().handoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityTypeReadingMessage)
         userActivity?.needsSave = true
     }
     
-    override func updateUserActivityState(activity: NSUserActivity) {
-        activity.addUserInfoEntriesFromDictionary([Handoff.InfoMessageIDKey: privateMessage.messageID])
-        if let subject = privateMessage.subject where !subject.isEmpty {
+    override func updateUserActivityState(_ activity: NSUserActivity) {
+        activity.addUserInfoEntries(from: [Handoff.InfoMessageIDKey: privateMessage.messageID])
+        if let subject = privateMessage.subject , !subject.isEmpty {
             activity.title = subject
         } else {
             activity.title = "Private Message"
@@ -209,7 +209,7 @@ final class MessageViewController: ViewController {
         webViewJavascriptBridge?.registerHandler("didTapUserHeader", handler: { [weak self] (rectString, responseCallback) in
             guard let
                 rectString = rectString as? String,
-                rect = self?.webView.rectForElementBoundingRect(rectString)
+                let rect = self?.webView.rectForElementBoundingRect(rectString: rectString)
                 else { return }
             self?.showUserActions(from: rect)
         })
@@ -219,7 +219,7 @@ final class MessageViewController: ViewController {
         webView.addGestureRecognizer(longPress)
         
         if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
-            let loadingView = LoadingView.loadingViewWithTheme(theme)
+            let loadingView = LoadingView.loadingViewWithTheme(theme: theme)
             self.loadingView = loadingView
             view.addSubview(loadingView)
             
@@ -254,32 +254,32 @@ final class MessageViewController: ViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated: animated)
         
         configureUserActivity()
     }
     
     override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewDidDisappear(animated: animated)
         
         userActivity = nil
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(privateMessage.objectKey, forKey: Keys.MessageKey.rawValue)
-        coder.encodeObject(composeVC, forKey: Keys.ComposeViewController.rawValue)
-        coder.encodeFloat(Float(webView.fractionalContentOffset), forKey: Keys.ScrollFraction.rawValue)
+        coder.encode(privateMessage.objectKey, forKey: Keys.MessageKey.rawValue)
+        coder.encode(composeVC, forKey: Keys.ComposeViewController.rawValue)
+        coder.encode(Float(webView.fractionalContentOffset), forKey: Keys.ScrollFraction.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        composeVC = coder.decodeObjectForKey(Keys.ComposeViewController.rawValue) as? MessageComposeViewController
+        composeVC = coder.decodeObject(forKey: Keys.ComposeViewController.rawValue) as? MessageComposeViewController
         composeVC?.delegate = self
         
-        fractionalContentOffsetOnLoad = CGFloat(coder.decodeFloatForKey(Keys.ScrollFraction.rawValue))
+        fractionalContentOffsetOnLoad = CGFloat(coder.decodeFloat(forKey: Keys.ScrollFraction.rawValue))
     }
 }
 
@@ -316,33 +316,33 @@ private enum Keys: String {
 
 extension MessageViewController: UIWebViewDelegate {
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        guard let url = request.URL else { return true }
+        guard let url = request.url else { return true }
         
         var navigationType = navigationType
         // Tapping the title of an embedded YouTube video doesn't come through as a click. It'll just take over the web view if we're not careful.
-        if url.host?.lowercaseString.hasSuffix("www.youtube.com") == true && url.path?.lowercaseString.hasPrefix("/watch") == true {
-            navigationType = .LinkClicked
+        if url.host?.lowercaseString.hasSuffix("www.youtube.com") == true && url.path.lowercaseString.hasPrefix("/watch") == true {
+            navigationType = .linkClicked
         }
         
-        guard navigationType == .LinkClicked else { return true }
+        guard navigationType == .linkClicked else { return true }
         if let awfulURL = url.awfulURL {
             AppDelegate.instance.openAwfulURL(awfulURL)
         } else if url.opensInBrowser {
-            URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
+            URLMenuPresenter(linkURL: url as NSURL).presentInDefaultBrowser(fromViewController: self)
         } else {
-            UIApplication.sharedApplication().openURL(url)
+            UIApplication.sharedApplication.openURL(url)
         }
         return false
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webViewDidFinishLoad(_ webView: UIWebView) {
         if !didLoadOnce {
             didLoadOnce = true
             
             webView.fractionalContentOffset = fractionalContentOffsetOnLoad
         }
         
-        if AwfulSettings.sharedSettings().embedTweets {
+        if AwfulSettings.shared().embedTweets {
             webViewJavascriptBridge?.callHandler("embedTweets")
         }
     }

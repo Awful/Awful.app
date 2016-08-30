@@ -2,7 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-extension CollectionType where Index: Hashable, Generator.Element: Equatable {
+extension Collection where Index: Hashable, Generator.Element: Equatable {
     
     /**
     Returns the difference between `self` and another collection, expressed as a series of deletions, insertions, and moves.

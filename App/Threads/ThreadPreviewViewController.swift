@@ -86,14 +86,14 @@ final class ThreadPreviewViewController: PostPreviewViewController {
                 Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use the empty thread tag for anyone lame enough to pick the same tag twice.
              */
             if threadTag != secondaryThreadTag,
-                let imageName = threadTag.imageName where !imageName.isEmpty
+                let imageName = threadTag.imageName , !imageName.isEmpty
             {
                 threadCell.tagImageView.image = ThreadTagLoader.imageNamed(imageName)
             } else {
                 threadCell.tagImageView.image = ThreadTagLoader.emptyThreadTagImage
             }
             
-            if let imageName = secondaryThreadTag?.imageName where !imageName.isEmpty {
+            if let imageName = secondaryThreadTag?.imageName , !imageName.isEmpty {
                 threadCell.secondaryTagImageView.image = ThreadTagLoader.imageNamed(imageName)
             } else {
                 threadCell.secondaryTagImageView.image = nil

@@ -4,8 +4,8 @@
 
 import CoreData
 
-@objc(Thread)
-public class Thread: AwfulManagedObject {
+@objc(AwfulThread)
+public class AwfulThread: AwfulManagedObject {
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
@@ -38,7 +38,7 @@ public class Thread: AwfulManagedObject {
     case Orange, Red, Yellow, None
 }
 
-extension Thread {
+extension AwfulThread {
     public var beenSeen: Bool {
         return seenPosts > 0
     }
@@ -136,7 +136,7 @@ public final class ThreadKey: AwfulObjectKey {
     public init(threadID: String) {
         assert(!threadID.isEmpty)
         self.threadID = threadID
-        super.init(entityName: Thread.entityName())
+        super.init(entityName: AwfulThread.entityName())
     }
     
     public required init?(coder: NSCoder) {
@@ -150,7 +150,7 @@ public final class ThreadKey: AwfulObjectKey {
 }
 private let threadIDKey = "threadID"
 
-extension Thread {
+extension AwfulThread {
     public override var objectKey: ThreadKey {
         return ThreadKey(threadID: threadID)
     }
@@ -161,10 +161,10 @@ class ThreadFilter: AwfulManagedObject {
     @NSManaged var numberOfPages: Int32
     
     @NSManaged var author: User
-    @NSManaged var thread: Thread
+    @NSManaged var thread: AwfulThread
 }
 
-extension Thread {
+extension AwfulThread {
     public func filteredNumberOfPagesForAuthor(author: User) -> Int32 {
         if let filter = fetchFilter(author: author) {
             return filter.numberOfPages

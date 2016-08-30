@@ -224,7 +224,7 @@ private let videoSubmenuItems = [
     MenuItem(title: "Paste", action: { tree in
         if let
             copiedURL = UIPasteboard.generalPasteboard().awful_URL,
-            URL = videoTagURLForURL(copiedURL)
+            let URL = videoTagURLForURL(copiedURL)
         {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
@@ -296,7 +296,7 @@ tagspec specifies which tag to insert, with optional newlines and attribute inse
 - [quote=]\n does the above plus inserts an = sign within the opening tag and, after wrapping, places the cursor after it.
 - [url=http://example.com] puts an opening and closing tag around the selection with the attribute intact in the opening tag and, after wrapping, places the cursor after the closing tag.
 */
-private func wrapSelectionInTag(tagspec: NSString) -> (tree: CompositionMenuTree) -> Void {
+private func wrapSelectionInTag(tagspec: NSString) -> (_ tree: CompositionMenuTree) -> Void {
     return { tree in
         let textView = tree.textView
         

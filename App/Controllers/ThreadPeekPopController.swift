@@ -10,7 +10,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
     private weak var previewingViewController: UIViewController?
     private var thread: Thread?
     
-    init<ViewController: UIViewController where ViewController: ThreadPeekPopControllerDelegate>(previewingViewController: ViewController) {
+    init<ViewController: UIViewController>(previewingViewController: ViewController) where ViewController: ThreadPeekPopControllerDelegate {
         self.previewingViewController = previewingViewController
         
         super.init()
@@ -50,7 +50,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: nil, onPage: AwfulThreadPage.Last.rawValue, updateLastReadPost: true, andThen: { (error: NSError?, _, _, _) -> Void in
                 guard let
                     error = error,
-                    previewingViewController = postsViewController.parentViewController
+                    let previewingViewController = postsViewController.parentViewController
                 else {
                     return
                 }
@@ -95,7 +95,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
     func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
         guard let
             delegate = previewingViewController as? ThreadPeekPopControllerDelegate,
-            thread = delegate.threadForLocation(location)
+            let thread = delegate.threadForLocation(location)
         else {
             return nil
         }

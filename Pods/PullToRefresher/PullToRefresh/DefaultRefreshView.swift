@@ -15,20 +15,20 @@ class DefaultRefreshView: UIView {
     override func layoutSubviews() {
         if activityIndicator == nil {
             activityIndicator = {
-                let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+                let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
                 activityIndicator.hidesWhenStopped = true
                 addSubview(activityIndicator)
                 return activityIndicator
             }()
         }
         centerActivityIndicator()
-        setupFrameInSuperview(superview)
+        setupFrameInSuperview(newSuperview: superview)
         super.layoutSubviews()
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
-        setupFrameInSuperview(superview)
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        setupFrameInSuperview(newSuperview: superview)
     }
 }
 
@@ -36,13 +36,13 @@ private extension DefaultRefreshView {
     
     func setupFrameInSuperview(newSuperview: UIView?) {
         if let superview = newSuperview {
-            frame = CGRectMake(frame.origin.x, frame.origin.y, superview.frame.width, frame.height)
+            frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: superview.frame.width, height: frame.height)
         }
     }
     
      func centerActivityIndicator() {
         if let activityIndicator = activityIndicator {
-            activityIndicator.center = convertPoint(center, fromView: superview)
+            activityIndicator.center = convert(center, from: superview)
         }
     }
 }

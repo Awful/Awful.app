@@ -14,7 +14,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         let scraper = scrapeFixtureNamed(fixtureName: "showthread") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]
         XCTAssert(posts.count == 40)
-        let allThreads = fetchAll(type: Thread.self, inContext: managedObjectContext)
+        let allThreads = fetchAll(type: AwfulThread.self, inContext: managedObjectContext)
         XCTAssert(allThreads.count == 1)
         let canpoliThread = allThreads.first!
         XCTAssert(canpoliThread.threadID == "3507451")
@@ -103,7 +103,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
     
     func testLastPage() {
         scrapeFixtureNamed(fixtureName: "showthread-last")
-        let thread = fetchAll(type: Thread.self, inContext: managedObjectContext)[0]
+        let thread = fetchAll(type: AwfulThread.self, inContext: managedObjectContext)[0]
         XCTAssert(thread.lastPostAuthorName == "Ashmole")
         XCTAssert(thread.lastPostDate!.timeIntervalSince1970 == 1357586460)
     }

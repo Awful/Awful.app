@@ -45,7 +45,7 @@ final class RapSheetViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func load(page page: Int) {
+    private func load(page: Int) {
         AwfulForumsClient.sharedClient().listPunishmentsOnPage(page, forUser: user) { [weak self] (error: NSError?, newPunishments: [AnyObject]?) in
             if let error = error {
                 self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
@@ -194,7 +194,7 @@ final class RapSheetViewController: TableViewController {
         guard punishment.post?.postID.isEmpty == false else { return }
         guard let
             postID = punishment.post?.postID,
-            URL = NSURL(string: "awful://posts/\(postID)")
+            let URL = NSURL(string: "awful://posts/\(postID)")
             else { return }
         AppDelegate.instance.openAwfulURL(URL)
         if presentingViewController != nil {

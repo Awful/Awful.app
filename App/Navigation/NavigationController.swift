@@ -21,7 +21,7 @@ final class NavigationController: UINavigationController {
     
     init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
         delegate = self
     }
     
@@ -120,7 +120,7 @@ final class NavigationController: UINavigationController {
     }
     
     override func forwardingTargetForSelector(selector: Selector) -> AnyObject? {
-        if let realDelegate = realDelegate where realDelegate.respondsToSelector(selector) {
+        if let realDelegate = realDelegate , realDelegate.respondsToSelector(selector) {
             return realDelegate
         }
         return nil
@@ -153,7 +153,7 @@ extension NavigationController: UINavigationControllerDelegate {
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
         setToolbarHidden(viewController.toolbarItems?.count ?? 0 == 0, animated: animated)
         
-        if let unpopHandler = unpopHandler where animated {
+        if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             
             // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
@@ -200,7 +200,7 @@ extension NavigationController: UINavigationControllerDelegate {
     }
     
     func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let unpopHandler = unpopHandler where unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
+        if let unpopHandler = unpopHandler , unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
             return unpopHandler
         }
         

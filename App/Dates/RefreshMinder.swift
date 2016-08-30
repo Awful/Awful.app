@@ -6,17 +6,17 @@ import AwfulCore
 import Foundation
 
 final class RefreshMinder: NSObject {
-    private let userDefaults: NSUserDefaults
+    private let userDefaults: UserDefaults
     
-    init(userDefaults: NSUserDefaults) {
+    init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
     }
     
-    static let sharedMinder = RefreshMinder(userDefaults: NSUserDefaults.standardUserDefaults())
+    static let sharedMinder = RefreshMinder(userDefaults: UserDefaults.standard)
     
     func shouldRefreshForum(forum: Forum) -> Bool {
         guard let lastRefresh = forum.lastRefresh else { return true }
-        return NSDate().timeIntervalSinceDate(lastRefresh) > forumTimeBetweenRefreshes
+        return NSDate().timeIntervalSince(lastRefresh as Date) > forumTimeBetweenRefreshes
     }
     
     func didRefreshForum(forum: Forum) {
@@ -25,7 +25,7 @@ final class RefreshMinder: NSObject {
     
     func shouldRefreshFilteredForum(forum: Forum) -> Bool {
         guard let lastRefresh = forum.lastFilteredRefresh else { return true }
-        return NSDate().timeIntervalSinceDate(lastRefresh) > forumTimeBetweenRefreshes
+        return NSDate().timeIntervalSince(lastRefresh as Date) > forumTimeBetweenRefreshes
     }
     
     func didRefreshFilteredForum(forum: Forum) {
@@ -62,7 +62,7 @@ final class RefreshMinder: NSObject {
             }
         }
         
-        private var timeBetweenRefreshes: NSTimeInterval {
+        private var timeBetweenRefreshes: TimeInterval {
             switch self {
             case .Avatar: return 60 * 10
             case .Bookmarks: return 60 * 10
@@ -102,11 +102,11 @@ final class RefreshMinder: NSObject {
     // MARK: Objective-C bridging
     
     var shouldRefreshLoggedInUser: Bool {
-        return shouldRefresh(.LoggedInUser)
+        return shouldRefresh(r: .LoggedInUser)
     }
     func didRefreshLoggedInUser() {
-        didRefresh(.LoggedInUser)
+        didRefresh(r: .LoggedInUser)
     }
 }
 
-private let forumTimeBetweenRefreshes: NSTimeInterval = 60 * 15
+private let forumTimeBetweenRefreshes: TimeInterval = 60 * 15

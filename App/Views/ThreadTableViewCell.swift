@@ -11,13 +11,13 @@ final class ThreadTableViewCell: UITableViewCell {
     static let estimatedRowHeight: CGFloat = 75
     
     var viewModel: ViewModel? {
-        didSet { applyViewModel(viewModel) }
+        didSet { applyViewModel(data: viewModel) }
     }
     var themeData: ThemeData? {
-        didSet { applyThemeData(themeData!) }
+        didSet { applyThemeData(theme: themeData!) }
     }
-    var longPressAction: (ThreadTableViewCell -> Void)? {
-        didSet { longPress.enabled = longPressAction != nil }
+    var longPressAction: ((ThreadTableViewCell) -> Void)? {
+        didSet { longPress.isEnabled = longPressAction != nil }
     }
     
     @IBOutlet private weak var tagAndRatingView: UIStackView!
@@ -108,12 +108,12 @@ final class ThreadTableViewCell: UITableViewCell {
             
             components.append(", \(killedPostedBy)")
             
-            return components.joinWithSeparator("")
+            return components.joined(separator: "")
         }
     }
     
     private func applyViewModel(data: ViewModel?) {
-        tagAndRatingView.hidden = !(data?.showsTagAndRating ?? false)
+        tagAndRatingView.isHidden = !(data?.showsTagAndRating ?? false)
         tagAndRatingView.alpha = data?.tagAndRatingAlpha ?? 1
         
         tagView.image = data?.tag.image
@@ -137,10 +137,10 @@ final class ThreadTableViewCell: UITableViewCell {
             unreadPostsLabel.text = ""
         }
         let beenSeen = data?.beenSeen ?? false
-        unreadPostsLabel.hidden = !beenSeen
+        unreadPostsLabel.isHidden = !beenSeen
         
         let sticky = data?.sticky ?? false
-        stickyView.hidden = !sticky
+        stickyView.isHidden = !sticky
         
         accessibilityLabel = data?.accessibilityLabel
     }
@@ -219,7 +219,7 @@ func ==(lhs: ThreadTableViewCell.ViewModel.Tag, rhs: ThreadTableViewCell.ViewMod
 }
 
 extension ThreadTableViewCell.ThemeData {
-    init(theme: Theme, thread: Thread) {
+    init(theme: Theme, thread: AwfulThread) {
         titleColor = theme["listTextColor"]!
         
         pageCountColor = theme["listSecondaryTextColor"]!
@@ -238,10 +238,10 @@ extension ThreadTableViewCell.ThemeData {
         }
         
         let fontName: String? = theme["listFontName"]
-        titleFont = UIFont.preferredFontForTextStyle(.Body, fontName: fontName)
-        pageCountFont = UIFont.preferredFontForTextStyle(.Footnote, fontName: fontName)
+        titleFont = UIFont.preferredFontForTextStyle(textStyle: .Body, fontName: fontName)
+        pageCountFont = UIFont.preferredFontForTextStyle(textStyle: .Footnote, fontName: fontName)
         killedPostedByFont = pageCountFont
-        unreadPostsFont = UIFont.preferredFontForTextStyle(.Caption1, fontName: fontName, sizeAdjustment: 2)
+        unreadPostsFont = UIFont.preferredFontForTextStyle(textStyle: .Caption1, fontName: fontName, sizeAdjustment: 2)
         
         separatorColor = theme["listSeparatorColor"]!
         backgroundColor = theme["listBackgroundColor"]!

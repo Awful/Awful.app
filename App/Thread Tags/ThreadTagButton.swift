@@ -11,7 +11,7 @@ final class ThreadTagButton: UIButton {
         set {
             if let
                 image = newValue,
-                cgimage = image.CGImage
+                let cgimage = image.CGImage
             {
                 secondaryTagImageView.image = UIImage(CGImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
             } else {

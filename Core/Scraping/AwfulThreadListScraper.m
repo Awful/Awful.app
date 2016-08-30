@@ -147,7 +147,7 @@
         return;
     }
     
-    NSArray *threads = [Thread objectsForKeysWithObjectKeys:threadKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *threads = [AwfulThread objectsForKeysWithObjectKeys:threadKeys inManagedObjectContext:self.managedObjectContext];
     NSArray *users = [User objectsForKeysWithObjectKeys:userKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     NSArray *threadTags = [ThreadTag objectsForKeysWithObjectKeys:threadTagKeys inManagedObjectContext:self.managedObjectContext];
@@ -160,7 +160,7 @@
             // probably an announcement
             return;
         }
-        Thread *thread = threads[threadIndex++];
+        AwfulThread *thread = threads[threadIndex++];
         
         HTMLElement *stickyCell = [row firstNodeMatchingSelector:@"td.title_sticky"];
         thread.sticky = !!stickyCell;

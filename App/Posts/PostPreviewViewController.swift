@@ -77,7 +77,7 @@ class PostPreviewViewController: ViewController {
             
             guard let
                 postHTML = postHTML,
-                context = self?.managedObjectContext
+                let context = self?.managedObjectContext
                 else { return }
             let postKey = PostKey(postID: "fake")
             self?.fakePost = Post.objectForKey(postKey, inManagedObjectContext: context) as? Post
@@ -92,7 +92,7 @@ class PostPreviewViewController: ViewController {
                         self?.fakePost?.setValue(actualValue, forKey: attribute.name)
                     } else if let
                         relationship = property as? NSRelationshipDescription,
-                        actualValue = editingPost.valueForKey(relationship.name) as? NSManagedObject
+                        let actualValue = editingPost.valueForKey(relationship.name) as? NSManagedObject
                     {
                         self?.fakePost?.setValue(context.objectWithID(actualValue.objectID), forKey: relationship.name)
                     }
@@ -167,7 +167,7 @@ class PostPreviewViewController: ViewController {
     override var theme: Theme {
         guard let
             thread = thread ?? editingPost?.thread,
-            forum = thread.forum
+            let forum = thread.forum
             else { return Theme.defaultTheme }
         return Theme.currentThemeForForum(forum)
     }

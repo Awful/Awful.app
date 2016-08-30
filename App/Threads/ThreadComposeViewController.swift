@@ -29,7 +29,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         
         title = defaultTitle
         submitButtonItem.title = "Preview"
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
     }
     
     required init?(coder: NSCoder) {
@@ -121,7 +121,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         
         if let
             secondaryTags = availableSecondaryThreadTags,
-            secondaryImageName = secondaryThreadTag?.imageName ?? secondaryTags.first?.imageName
+            let secondaryImageName = secondaryThreadTag?.imageName ?? secondaryTags.first?.imageName
         {
             picker.selectSecondaryImageName(secondaryImageName)
         }
@@ -134,7 +134,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     @objc private func subjectFieldDidChange(sender: UITextField) {
-        if let text = sender.text where !text.isEmpty {
+        if let text = sender.text , !text.isEmpty {
             title = text
         } else {
             title = defaultTitle
@@ -175,7 +175,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     override func shouldSubmit(handler: (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
-            threadTag = threadTag
+            let threadTag = threadTag
             else { return handler(false) }
         let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, BBcode: textView.attributedText)
         preview.submitBlock = { handler(true) }
@@ -190,7 +190,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
-            threadTag = threadTag
+            let threadTag = threadTag
             else { return completion(false) }
         AwfulForumsClient.sharedClient().postThreadInForum(forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, BBcode: composition) { [weak self] (error: NSError?, thread: Thread?) in
             if let error = error {
@@ -236,7 +236,7 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
             threadTag = nil
         } else if let
             threadTags = availableThreadTags,
-            i = threadTags.indexOf({ $0.imageName == imageName})
+            let i = threadTags.indexOf({ $0.imageName == imageName})
         {
             threadTag = threadTags[i]
         }
@@ -250,7 +250,7 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
     func threadTagPicker(picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String) {
         if let
             tags = availableSecondaryThreadTags,
-            i = tags.indexOf({ $0.imageName == imageName })
+            let i = tags.indexOf({ $0.imageName == imageName })
         {
             secondaryThreadTag = tags[i]
         }
@@ -265,7 +265,7 @@ extension ThreadComposeViewController: UIViewControllerRestoration {
     static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         guard let
             forumKey = coder.decodeObjectForKey(Keys.ForumKey.rawValue) as? ForumKey,
-            forum = Forum.objectForKey(forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
+            let forum = Forum.objectForKey(forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
             else { return nil }
         
         let composeViewController = ThreadComposeViewController(forum: forum)

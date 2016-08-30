@@ -4,7 +4,7 @@
 
 extension Array {
     /// Returns the first element for which the predicate returns true.
-    func first(predicate: Element -> Bool) -> Element? {
+    func first(predicate: (Element) -> Bool) -> Element? {
         for item in self {
             if predicate(item) {
                 return item
@@ -16,7 +16,7 @@ extension Array {
     /// Same as reduce() but with the first element used as the initial accumulated value.
     func reduce(combine: (Element, Element) -> Element) -> Element? {
         if let initial = first {
-            return self.dropFirst().reduce(initial, combine: combine)
+            return self.dropFirst().reduce(initial, combine)
         } else {
             return nil
         }
@@ -24,7 +24,7 @@ extension Array {
 }
 
 extension Int {
-    func clamp<T: IntervalType where T.Bound == Int>(interval: T) -> Int {
+    func clamp<T: IntervalType>(interval: T) -> Int where T.Bound == Int {
         if self < interval.start {
             return interval.start
         } else if self > interval.end {
@@ -35,7 +35,7 @@ extension Int {
     }
 }
 
-extension SequenceType {
+extension Sequence {
     func all(includeElement: Generator.Element -> Bool) -> Bool {
         for element in self where !includeElement(element) {
             return false
@@ -51,11 +51,11 @@ extension SequenceType {
     }
 }
 
-func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
-    return first(sequence, includeElement: includeElement) != nil
+func any<S: Sequence, T>(sequence: S, includeElement: (T) -> Bool) -> Bool where T == S.Iterator.Element {
+    return first(sequence: sequence, includeElement: includeElement) != nil
 }
 
-func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> T? {
+func first<S: Sequence, T>(sequence: S, includeElement: (T) -> Bool) -> T? where T == S.Iterator.Element {
     for element in sequence {
         if includeElement(element) {
             return element

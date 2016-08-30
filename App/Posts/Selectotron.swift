@@ -18,32 +18,32 @@ final class Selectotron : ViewController {
     init(postsViewController: PostsPageViewController) {
         self.postsViewController = postsViewController
         super.init(nibName: "Selectotron", bundle: nil)
-        modalPresentationStyle = .Popover
+        modalPresentationStyle = .popover
         popoverPresentationController!.delegate = self
     }
     
     @IBAction func firstPostButtonTapped() {
-        dismissAndLoadPage(1)
+        dismissAndLoadPage(page: 1)
     }
     
     @IBAction func jumpButtonTapped() {
-        let page = picker.selectedRowInComponent(0) + 1
-        dismissAndLoadPage(page)
+        let page = picker.selectedRow(inComponent: 0) + 1
+        dismissAndLoadPage(page: page)
     }
     
     @IBAction func lastPostButtonTapped() {
         postsViewController.goToLastPost()
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     private func dismissAndLoadPage(page: Int) {
-        postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        dismissViewControllerAnimated(true, completion: nil)
+        postsViewController.loadPage(rawPage: page, updatingCache: true, updatingLastReadPost: true)
+        dismiss(animated: true, completion: nil)
     }
     
     var selectedPage: Int {
         get {
-            return picker.selectedRowInComponent(0) + 1
+            return picker.selectedRow(inComponent: 0) + 1
         } set {
             picker.selectRow(newValue - 1, inComponent: 0, animated: false)
             updateJumpButtonTitle()
@@ -53,7 +53,7 @@ final class Selectotron : ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let preferredHeight = view.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+        let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     
@@ -67,26 +67,26 @@ final class Selectotron : ViewController {
         picker.reloadAllComponents()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let page = postsViewController.page
         switch page {
-        case AwfulThreadPage.Last.rawValue:
-            selectedPage = picker.numberOfRowsInComponent(0)
-        case AwfulThreadPage.NextUnread.rawValue, AwfulThreadPage.None.rawValue:
+        case AwfulThreadPage.last.rawValue:
+            selectedPage = picker.numberOfRows(inComponent: 0)
+        case AwfulThreadPage.nextUnread.rawValue, AwfulThreadPage.none.rawValue:
             break
         default:
             selectedPage = page
         }
     }
     
-    private func updateJumpButtonTitle() {
+    public func updateJumpButtonTitle() {
         let title = selectedPage == postsViewController.page ? "Reload" : "Jump"
-        jumpButton.setTitle(title, forState: .Normal)
+        jumpButton.setTitle(title, for: .normal)
     }
     
-    private override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
+    private override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError("Selectotron needs a posts view controller")
     }
     
@@ -97,32 +97,32 @@ final class Selectotron : ViewController {
 
 extension Selectotron: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+        return .none
     }
 }
 
 extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate {
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return Int(postsViewController.numberOfPages)
     }
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
             NSForegroundColorAttributeName: theme["sheetTextColor"]!,
-            NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+            NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         updateJumpButtonTitle()
     }
     
-    func pickerView(pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String? {
         return "Page \(component + 1)"
     }
 }

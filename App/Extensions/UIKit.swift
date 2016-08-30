@@ -291,7 +291,7 @@ extension UIWebView {
         get {
             guard let
                 result = stringByEvaluatingJavaScriptFromString("document.body.scrollTop / document.body.scrollHeight"),
-                offset = Double(result)
+                let offset = Double(result)
                 else { return 0 }
             return CGFloat(offset)
         }

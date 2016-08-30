@@ -48,7 +48,7 @@ private struct NewImageAvailableNotification {
         guard notification.name == ThreadTagLoader.newImageAvailableNotification else { return nil }
         guard let
             loader = notification.object as? ThreadTagLoader,
-            imageName = notification.userInfo?[ThreadTagLoader.newImageNameKey] as? String else { return nil }
+            let imageName = notification.userInfo?[ThreadTagLoader.newImageNameKey] as? String else { return nil }
         self.loader = loader
         self.imageName = imageName
     }

@@ -120,7 +120,7 @@ private struct Resource {
     var MIMEType: String {
         if let
             UTI = UTI,
-            MIMEType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType)?.takeRetainedValue()
+            let MIMEType = UTTypeCopyPreferredTagWithClass(UTI, kUTTagClassMIMEType)?.takeRetainedValue()
         {
             return MIMEType as String
         } else {

@@ -79,7 +79,7 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
         
         currentGroup = nil
         for forum in forumsData.contents {
-            if let group = forum.group where group != currentGroup,
+            if let group = forum.group , group != currentGroup,
                 let name = group.name
             {
                 currentGroup = group

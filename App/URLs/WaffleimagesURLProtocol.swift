@@ -14,14 +14,14 @@ final class WaffleimagesURLProtocol: NSURLProtocol {
     }
     
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-        guard let URL = request.URL, randomwaffleURL = randomwaffleURLForWaffleimagesURL(URL) else { return request }
+        guard let URL = request.URL, let randomwaffleURL = randomwaffleURLForWaffleimagesURL(URL) else { return request }
         let mutableRequest = request.mutableCopy() as! NSMutableURLRequest
         mutableRequest.URL = randomwaffleURL
         return mutableRequest
     }
     
     override func startLoading() {
-        let request = self.dynamicType.canonicalRequestForRequest(self.request)
+        let request = type(of: self).canonicalRequestForRequest(self.request)
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
             defer { self.downloadTask = nil }
             
@@ -61,9 +61,9 @@ final class WaffleimagesURLProtocol: NSURLProtocol {
  */
 private func randomwaffleURLForWaffleimagesURL(URL: NSURL) -> NSURL? {
     guard URL.scheme.lowercaseString.hasPrefix("http") else { return nil }
-    guard let host = URL.host where host.lowercaseString.hasSuffix("waffleimages.com") else { return nil }
-    guard let pathComponents = URL.pathComponents where pathComponents.count >= 2 else { return nil }
-    guard var pathExtension = URL.pathExtension where !pathExtension.isEmpty else { return nil }
+    guard let host = URL.host , host.lowercaseString.hasSuffix("waffleimages.com") else { return nil }
+    guard let pathComponents = URL.pathComponents , pathComponents.count >= 2 else { return nil }
+    guard var pathExtension = URL.pathExtension , !pathExtension.isEmpty else { return nil }
     let hash: String
     if pathComponents.count == 4 && pathComponents[1].lowercaseString == "images" {
         hash = (pathComponents[3] as NSString).stringByDeletingPathExtension

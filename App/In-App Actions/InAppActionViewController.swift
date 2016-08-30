@@ -11,7 +11,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     
     var items: [IconActionItem] = [] {
         didSet {
-            if isViewLoaded() {
+            if isViewLoaded {
                 collectionView.reloadData()
             }
         }
@@ -32,13 +32,13 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
         - parameter sourceRect: On input, the suggested target rectangle for the popover (in the coordinate space of the sourceView). Put a new value in this parameter to change the target rectangle.
         - parameter sourceView: On input, the suggested target view for the popover. Put a new view in this parameter to change the target view.
     */
-    var popoverPositioningBlock: ((sourceRect: UnsafeMutablePointer<CGRect>, sourceView: AutoreleasingUnsafeMutablePointer<UIView?>) -> Void)?
+    var popoverPositioningBlock: ((_ sourceRect: UnsafeMutablePointer<CGRect>, _ sourceView: AutoreleasingUnsafeMutablePointer<UIView?>) -> Void)?
     
     private var headerHeightConstraint: NSLayoutConstraint?
     
-    override init(nibName: String!, bundle: NSBundle!) {
+    override init(nibName: String!, bundle: Bundle!) {
         super.init(nibName: nibName, bundle: bundle)
-        modalPresentationStyle = .Popover
+        modalPresentationStyle = .popover
         popoverPresentationController!.delegate = self
     }
     
@@ -52,7 +52,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     
     override var title: String! {
         didSet {
-            if isViewLoaded() {
+            if isViewLoaded {
                 headerLabel.text = title
                 titleDidChange()
             }
@@ -61,7 +61,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     
     override func loadView() {
         super.loadView()
-        collectionView.registerClass(IconActionCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        collectionView.register(IconActionCell.self, forCellWithReuseIdentifier: cellIdentifier)
     }
     
     override func viewDidLoad() {
@@ -74,7 +74,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     private func titleDidChange() {
         if (title ?? "").characters.count == 0 {
             if headerHeightConstraint == nil {
-                let constraint = NSLayoutConstraint(item: headerBackground, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0)
+                let constraint = NSLayoutConstraint(item: headerBackground, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
                 headerBackground.addConstraint(constraint)
                 headerHeightConstraint = constraint
             }
@@ -88,7 +88,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     }
     
     private func recalculatePreferredContentSize() {
-        let preferredHeight = view.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+        let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     
@@ -99,7 +99,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
         collectionView.backgroundColor = theme["sheetBackgroundColor"]
         headerLabel.textColor = theme["sheetTitleColor"]
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"]
-        collectionView.reloadItemsAtIndexPaths(collectionView.indexPathsForVisibleItems())
+        collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
         collectionView.indicatorStyle = theme.scrollIndicatorStyle
         popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
     }
@@ -117,13 +117,13 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
 
 extension InAppActionViewController {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    @objc(collectionView:cellForItemAtIndexPath:) func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = items[indexPath.item]
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellIdentifier, forIndexPath: indexPath) as! IconActionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath as IndexPath) as! IconActionCell
         cell.titleLabel.text = item.title
         cell.titleLabel.textColor = theme["sheetTextColor"]
         cell.iconImageView.image = item.icon
@@ -134,9 +134,9 @@ extension InAppActionViewController {
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
         let item = items[indexPath.item]
-        dismissViewControllerAnimated(true, completion: item.block)
+        dismiss(animated: true, completion: item.block)
     }
     
 }
@@ -146,14 +146,14 @@ private let cellIdentifier = "Cell"
 extension InAppActionViewController {
     
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+        return .none
     }
     
     func prepareForPopoverPresentation(popover: UIPopoverPresentationController) {
         if let block = popoverPositioningBlock {
             var sourceRect = popover.sourceRect
             var sourceView: UIView? = popover.sourceView
-            block(sourceRect: &sourceRect, sourceView: &sourceView)
+            block(&sourceRect, &sourceView)
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
         }
@@ -161,7 +161,7 @@ extension InAppActionViewController {
     
     func popoverPresentationController(popover: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
         if let block = popoverPositioningBlock {
-            block(sourceRect: rect, sourceView: view)
+            block(rect, view)
         }
     }
     

@@ -11,7 +11,7 @@ final class MinusFixURLProtocol: NSURLProtocol {
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         guard let
             URL = request.URL,
-            host = URL.host
+            let host = URL.host
             else { return false }
         guard
             URL.scheme.lowercaseString == "http" &&

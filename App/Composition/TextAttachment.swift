@@ -59,7 +59,7 @@ final class TextAttachment: NSTextAttachment {
         
         if let
             assetURL = assetURL,
-            asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
+            let asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
         {
             let options = PHImageRequestOptions()
             options.synchronous = true
@@ -86,7 +86,7 @@ final class TextAttachment: NSTextAttachment {
 
 private let assetURLKey = "AwfulAssetURL"
 
-private func appropriateThumbnailSize(imageSize imageSize: CGSize) -> CGSize {
+private func appropriateThumbnailSize(imageSize: CGSize) -> CGSize {
     let threshold = TextAttachment.requiresThumbnailImageSize
     let widthRatio = imageSize.width / threshold.width
     let heightRatio = imageSize.height / threshold.height

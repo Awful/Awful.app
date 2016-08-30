@@ -10,12 +10,12 @@ class CopyURLActivity: UIActivity {
         return URLToCopyContainer(URL)
     }
     
-    override func activityType() -> String? {
-        return "com.awfulapp.Awful.CopyURL"
+    override class func activityType() -> UIActivityType {
+        return UIActivityType("com.awfulapp.Awful.CopyURL")
     }
     
     override class func activityCategory() -> UIActivityCategory {
-        return .Action
+        return .action
     }
     
     override func activityTitle() -> String? {
@@ -35,18 +35,18 @@ class CopyURLActivity: UIActivity {
     }
     
     override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
-        return any(activityItems) { $0 is URLToCopyContainer }
+        return any(sequence: activityItems) { $0 is URLToCopyContainer }
     }
     
     private var URL: NSURL!
     
     override func prepareWithActivityItems(activityItems: [AnyObject]) {
-        let container = first(activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
+        let container = first(sequence: activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
         URL = container.URL
     }
     
-    override func performActivity() {
-        UIPasteboard.generalPasteboard().awful_URL = URL
+    override func perform() {
+        UIPasteboard.general.awful_URL = URL
     }
     
     /// Wraps an NSURL so that only the CopyURLActivity will try to use it.

@@ -70,14 +70,14 @@ final class MessageComposeViewController: ComposeTextViewController {
     private func commonInit() {
         title = "Private Message"
         submitButtonItem.title = "Send"
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
     }
     
     private func updateThreadTagButtonImage() {
         let image: UIImage
         if let
             imageName = threadTag?.imageName,
-            loadedImage = ThreadTagLoader.imageNamed(imageName)
+            let loadedImage = ThreadTagLoader.imageNamed(imageName)
         {
             image = loadedImage
         } else {
@@ -117,7 +117,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     override func submit(composition: String, completion: (Bool) -> Void) {
         guard let
             to = fieldView.toField.textField.text,
-            subject = fieldView.subjectField.textField.text
+            let subject = fieldView.subjectField.textField.text
             else { return }
         AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error: NSError?) in
             if let error = error {
@@ -191,7 +191,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 fieldView.subjectField.textField.text = subject
             }
             
-            if let initialContents = initialContents where textView.text.isEmpty {
+            if let initialContents = initialContents , textView.text.isEmpty {
                 textView.text = initialContents
             }
         } else if let forwardingMessage = forwardingMessage {
@@ -199,7 +199,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
             }
             
-            if let initialContents = initialContents where textView.text.isEmpty {
+            if let initialContents = initialContents , textView.text.isEmpty {
                 textView.text = initialContents
             }
         }
@@ -241,7 +241,7 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
             threadTag = nil
         } else if let
             availableThreadTags = availableThreadTags,
-            i = availableThreadTags.indexOf({ $0.imageName == imageName })
+            let i = availableThreadTags.indexOf({ $0.imageName == imageName })
         {
             threadTag = availableThreadTags[i]
         }
@@ -263,17 +263,17 @@ extension MessageComposeViewController: UIViewControllerRestoration {
         let composeViewController: MessageComposeViewController
         if let
             recipientKey = recipientKey,
-            recipient = User.objectForKey(recipientKey, inManagedObjectContext: context) as? User
+            let recipient = User.objectForKey(recipientKey, inManagedObjectContext: context) as? User
         {
             composeViewController = MessageComposeViewController(recipient: recipient)
         } else if let
             regardingKey = regardingKey,
-            regardingMessage = PrivateMessage.objectForKey(regardingKey, inManagedObjectContext: context) as? PrivateMessage
+            let regardingMessage = PrivateMessage.objectForKey(regardingKey, inManagedObjectContext: context) as? PrivateMessage
         {
             composeViewController = MessageComposeViewController(regardingMessage: regardingMessage, initialContents: initialContents)
         } else if let
             forwardingKey = forwardingKey,
-            forwardingMessage = PrivateMessage.objectForKey(forwardingKey, inManagedObjectContext: context) as? PrivateMessage
+            let forwardingMessage = PrivateMessage.objectForKey(forwardingKey, inManagedObjectContext: context) as? PrivateMessage
         {
             composeViewController = MessageComposeViewController(forwardingMessage: forwardingMessage, initialContents: initialContents)
         } else {

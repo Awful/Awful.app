@@ -9,25 +9,25 @@ extension UIViewController {
     // Called when the view controller's theme, derived or otherwise, changes. Subclass implementations should reload and/or update any views customized by the theme, and should call the superclass implementation.
     func themeDidChange() {
         var dependants: Set<UIViewController> = []
-        dependants.unionInPlace(childViewControllers)
+        dependants.formUnion(Set(childViewControllers))
         if let presented = presentedViewController {
             dependants.insert(presented)
         }
         if
-            respondsToSelector(Selector("viewControllers")),
-            let viewControllers = valueForKey("viewControllers") as? [UIViewController]
+            responds(to: #selector(getter: UINavigationController.viewControllers)),
+            let viewControllers = value(forKey: "viewControllers") as? [UIViewController]
         {
-            dependants.unionInPlace(viewControllers)
+            dependants.formUnion(Set(viewControllers))
         }
         
-        for viewController in dependants where viewController.isViewLoaded() {
+        for viewController in dependants where viewController.isViewLoaded {
             viewController.themeDidChange()
         }
     }
 }
 
 private func CommonInit(vc: UIViewController) {
-    vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
+    vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 }
 
 /**
@@ -36,14 +36,14 @@ private func CommonInit(vc: UIViewController) {
     Instances call `themeDidChange()` after loading their view, and they call `themeDidChange()` on all child view controllers and on the presented view controller.
  */
 class ViewController: UIViewController {
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
@@ -70,7 +70,7 @@ class ViewController: UIViewController {
         let scrollView: UIScrollView?
         if let scrollingSelf = view as? UIScrollView {
             scrollView = scrollingSelf
-        } else if respondsToSelector(Selector("scrollView")), let scrollingSubview = valueForKey("scrollView") as? UIScrollView {
+        } else if responds(to: #selector(getter: UIWebView.scrollView)), let scrollingSubview = value(forKey: "scrollView") as? UIScrollView {
             scrollView = scrollingSubview
         } else {
             scrollView = nil
@@ -78,13 +78,13 @@ class ViewController: UIViewController {
         scrollView?.indicatorStyle = theme.scrollIndicatorStyle
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         visible = true
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         visible = false
@@ -99,27 +99,27 @@ class ViewController: UIViewController {
 class TableViewController: UITableViewController {
     private var viewIsLoading = false
     
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     override init(style: UITableViewStyle) {
         super.init(style: style)
         
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     deinit {
-        if isViewLoaded(), let pullToRefresh = tableView.topPullToRefresh {
-            tableView.removePullToRefresh(pullToRefresh)
+        if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
+            tableView.removePullToRefresh(pullToRefresh: pullToRefresh)
         }
     }
     
@@ -137,8 +137,8 @@ class TableViewController: UITableViewController {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
             } else {
-                if isViewLoaded(), let pullToRefresh = tableView.topPullToRefresh {
-                    tableView.removePullToRefresh(pullToRefresh)
+                if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
+                    tableView.removePullToRefresh(pullToRefresh: pullToRefresh)
                 }
             }
         }
@@ -147,24 +147,24 @@ class TableViewController: UITableViewController {
     private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
-        niggly.autoresizingMask = .FlexibleWidth
+        niggly.autoresizingMask = .flexibleWidth
         pullToRefreshView = niggly
         let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .Top)
         pullToRefresh.animationDuration = 0.3
         pullToRefresh.initialSpringVelocity = 0
         pullToRefresh.springDamping = 1
-        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
+        tableView.addPullToRefresh(pullToRefresh: pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
     }
     
     private weak var pullToRefreshView: UIView?
     
     func startAnimatingPullToRefresh() {
-        guard isViewLoaded() else { return }
+        guard isViewLoaded else { return }
         tableView.startRefreshing(at: .Top)
     }
     
     func stopAnimatingPullToRefresh() {
-        guard isViewLoaded() else { return }
+        guard isViewLoaded else { return }
         tableView.endRefreshing(at: .Top)
     }
     
@@ -229,13 +229,13 @@ class TableViewController: UITableViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         visible = true
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         visible = false
@@ -243,7 +243,7 @@ class TableViewController: UITableViewController {
     
     // MARK: UITableViewDelegate
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard infiniteScrollState == .Ready, let block = scrollToLoadMoreBlock else { return }
         guard indexPath.row + 1 == tableView.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) else { return }
         guard tableView.contentSize.height >= tableView.bounds.height else { return }
@@ -253,7 +253,7 @@ class TableViewController: UITableViewController {
         
         let imageView = UIImageView(image: NigglyRefreshView.makeImage())
         imageView.bounds.size.height += 12
-        imageView.contentMode = .Center
+        imageView.contentMode = .center
         imageView.backgroundColor = tableView.backgroundColor
         tableView.tableFooterView = imageView
         imageView.startAnimating()
@@ -266,16 +266,16 @@ class TableViewController: UITableViewController {
 class CollectionViewController: UICollectionViewController {
     private var viewIsLoading = false
     
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(self)
+        CommonInit(vc: self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.

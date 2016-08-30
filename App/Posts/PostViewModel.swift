@@ -63,7 +63,7 @@ final class PostViewModel: NSObject {
     }
     
     var authorIsOP: Bool {
-        guard let thisAuthor = post.author, op = post.thread?.author else { return false }
+        guard let thisAuthor = post.author, let op = post.thread?.author else { return false }
         return thisAuthor == op
     }
     
@@ -96,8 +96,8 @@ private extension HTMLDocument {
     func markRevealIgnoredPostLink() {
         guard let
             link = firstNodeMatchingSelector("a[title=\"DON'T DO IT!!\"]"),
-            href = link.objectForKeyedSubscript("href") as? String,
-            components = NSURLComponents(string: href)
+            let href = link.objectForKeyedSubscript("href") as? String,
+            let components = NSURLComponents(string: href)
             else { return }
         components.fragment = "awful-ignored"
         guard let replacement = components.URL?.absoluteString else { return }

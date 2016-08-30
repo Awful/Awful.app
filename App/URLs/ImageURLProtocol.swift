@@ -83,7 +83,7 @@ final class ImageURLProtocol: NSURLProtocol {
     override func startLoading() {
         guard let
             URL = request.URL,
-            data = ImageURLProtocol.imageDatas[URL.canonicalPath]
+            let data = ImageURLProtocol.imageDatas[URL.canonicalPath]
             else { return }
         let headers = [
             "Content-Type": "image/png",

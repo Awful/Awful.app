@@ -33,7 +33,7 @@ public class Post: AwfulManagedObject {
     @NSManaged public var author: User?
     
     /// Where the post is located.
-    @NSManaged public var thread: Thread?
+    @NSManaged public var thread: AwfulThread?
 }
 
 extension Post {

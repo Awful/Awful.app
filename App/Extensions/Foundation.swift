@@ -21,14 +21,14 @@ extension NSMutableURLRequest {
     }
 }
 
-extension NSScanner {
+extension Scanner {
     func scan(fromSet characterSet: NSCharacterSet) -> String? {
         var scanned: NSString?
         guard scanCharactersFromSet(characterSet, intoString: &scanned) else { return nil }
         return scanned as String?
     }
     
-    func scan(string string: String) -> Bool {
+    func scan(string: String) -> Bool {
         return scanString(string, intoString: nil)
     }
     
@@ -47,7 +47,7 @@ extension NSString {
     }
 }
 
-extension NSTimer {
+extension Timer {
     class func scheduledTimerWithInterval(interval: NSTimeInterval, repeats: Bool = false, handler: NSTimer -> Void) -> NSTimer {
         let timer = CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + interval, repeats ? interval : 0, 0, 0) { timer in
             handler(timer)

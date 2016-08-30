@@ -90,13 +90,13 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
         return 0.35
     }
     
-    func animateTransition(context: UIViewControllerContextTransitioning) {
+    func animateTransition(using context: UIViewControllerContextTransitioning) {
         guard let
-            toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey),
-            fromVC = context.viewControllerForKey(UITransitionContextFromViewControllerKey)
+            toVC = context.viewController(forKey: UITransitionContextToViewControllerKey),
+            let fromVC = context.viewController(forKey: UITransitionContextFromViewControllerKey)
             else { return }
         
-        context.containerView()?.addSubview(toVC.view)
+        context.containerView?.addSubview(toVC.view)
         
         let toTargetFrame = fromVC.view.frame
         toVC.view.frame = toTargetFrame.offsetBy(dx: toTargetFrame.width, dy: 0)

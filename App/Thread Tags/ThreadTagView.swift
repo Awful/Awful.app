@@ -17,7 +17,7 @@ final class ThreadTagView: UIView {
         set {
             if let
                 image = newValue,
-                cgimage = image.CGImage
+                let cgimage = image.CGImage
             {
                 secondaryTagImageView.image = UIImage(CGImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
             } else {
@@ -50,7 +50,7 @@ final class ThreadTagView: UIView {
     }
     
     func setTagBorderColor(borderColor: UIColor?, width: CGFloat) {
-        guard let borderColor = borderColor where width > 0 else {
+        guard let borderColor = borderColor , width > 0 else {
             secondaryTagImageView.layer.borderColor = nil
             secondaryTagImageView.layer.borderWidth = 0
             return

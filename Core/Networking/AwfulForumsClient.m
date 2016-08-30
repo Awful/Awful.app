@@ -315,7 +315,7 @@
             if (scraper.threads && !error) {
                 [scraper.threads setValue:@YES forKey:@"bookmarked"];
                 NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
-                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:Thread.entityName];
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:AwfulThread.entityName];
                 fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", (long)page, threadIDsToIgnore];
                 NSError *error;
                 NSArray *threadsToForget = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -340,7 +340,7 @@
     }];
 }
 
-- (NSOperation *)setThread:(Thread *)thread
+- (NSOperation *)setThread:(AwfulThread *)thread
               isBookmarked:(BOOL)isBookmarked
                    andThen:(void (^)(NSError *error))callback
 {
@@ -364,7 +364,7 @@
     }];
 }
 
-- (NSOperation *)rateThread:(Thread *)thread
+- (NSOperation *)rateThread:(AwfulThread *)thread
                            :(NSInteger)rating
                     andThen:(void (^)(NSError *error))callback
 {
@@ -394,7 +394,7 @@
     }];
 }
 
-- (NSOperation *)markThreadUnread:(Thread *)thread
+- (NSOperation *)markThreadUnread:(AwfulThread *)thread
                           andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"showthread.php"
@@ -500,7 +500,7 @@
                  Thread *thread;
                  if (threadID.length > 0) {
                      ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
-                     thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];
+                     thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];
                  } else {
                      error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
                  }
@@ -543,7 +543,7 @@
 
 #pragma mark - Posts
 
-- (NSOperation *)listPostsInThread:(Thread *)thread
+- (NSOperation *)listPostsInThread:(AwfulThread *)thread
                          writtenBy:(User *)author
                             onPage:(NSInteger)page
                 updateLastReadPost:(BOOL)updateLastReadPost
@@ -657,7 +657,7 @@
     }];
 }
 
-- (NSOperation *)replyToThread:(Thread *)thread
+- (NSOperation *)replyToThread:(AwfulThread *)thread
                     withBBcode:(NSString *)text
                        andThen:(void (^)(NSError *error, Post *post))callback
 {
@@ -717,7 +717,7 @@
     }];
 }
 
-- (NSOperation *)previewReplyToThread:(Thread *)thread
+- (NSOperation *)previewReplyToThread:(AwfulThread *)thread
                            withBBcode:(NSString *)BBcode
                               andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
@@ -941,7 +941,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
                 Post *post = [Post objectForKeyWithObjectKey:postKey inManagedObjectContext:managedObjectContext];
                 ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:query[@"threadid"]];
-                post.thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:managedObjectContext];
+                post.thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:managedObjectContext];
                 NSError *error;
                 BOOL ok = [managedObjectContext save:&error];
                 if (callback) {

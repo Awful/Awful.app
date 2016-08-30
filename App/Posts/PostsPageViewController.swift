@@ -11,7 +11,7 @@ import WebViewJavascriptBridge
 
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
-    let thread: Thread
+    let thread: AwfulThread
     private let author: User?
     private(set) var page = 0
     private var hiddenPosts = 0 {
@@ -19,13 +19,13 @@ final class PostsPageViewController: ViewController {
     }
     private var webViewDidLoadOnce = false
     private var advertisementHTML: String?
-    private var networkOperation: NSOperation?
+    private var networkOperation: Operation?
     private var refreshControl: PostsPageRefreshControl?
     private var loadingView: LoadingView? {
         didSet {
             oldValue?.removeFromSuperview()
             
-            if let loadingView = loadingView where isViewLoaded() {
+            if let loadingView = loadingView , isViewLoaded {
                 view.addSubview(loadingView)
             }
         }
@@ -44,12 +44,12 @@ final class PostsPageViewController: ViewController {
         - parameter thread: The thread whose posts are shown.
         - parameter author: An optional author used to filter the shown posts. May be nil, in which case all posts are shown.
      */
-    init(thread: Thread, author: User? = nil) {
+    init(thread: AwfulThread, author: User? = nil) {
         self.thread = thread
         self.author = author
         super.init(nibName: nil, bundle: nil)
         
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
         
         navigationItem.rightBarButtonItem = composeItem
         
@@ -86,7 +86,7 @@ final class PostsPageViewController: ViewController {
     }
     
     override var theme: Theme {
-        guard let forum = thread.forum where !forum.forumID.isEmpty else { return Theme.currentTheme }
+        guard let forum = thread.forum , !forum.forumID.isEmpty else { return Theme.currentTheme }
         return Theme.currentThemeForForum(forum)
     }
     
@@ -123,8 +123,8 @@ final class PostsPageViewController: ViewController {
         var rawPage = rawPage
         if let
             author = author,
-            page = AwfulThreadPage(rawValue: rawPage)
-            where page == .Last
+            let page = AwfulThreadPage(rawValue: rawPage)
+            , page == .Last
         {
             rawPage = Int(thread.filteredNumberOfPagesForAuthor(author))
             if rawPage == 0 {
@@ -183,7 +183,7 @@ final class PostsPageViewController: ViewController {
                 }
             }
             
-            if let posts = posts as? [Post] where !posts.isEmpty {
+            if let posts = posts as? [Post] , !posts.isEmpty {
                 strongSelf.posts = posts
                 
                 let anyPost = posts[0]
@@ -217,7 +217,7 @@ final class PostsPageViewController: ViewController {
             
             strongSelf.updateUserInterface()
             
-            if let lastPost = strongSelf.posts.last where updateLastReadPost {
+            if let lastPost = strongSelf.posts.last , updateLastReadPost {
                 if strongSelf.thread.seenPosts < lastPost.threadIndex {
                     strongSelf.thread.seenPosts = lastPost.threadIndex
                 }
@@ -229,11 +229,11 @@ final class PostsPageViewController: ViewController {
     
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(post: Post) {
-        let i = posts.indexOf(post)
+        let i = posts.index(of: post)
         if loadingView != nil || !webViewDidLoadOnce || i == nil {
             jumpToPostIDAfterLoading = post.postID
         } else {
-            if let i = i where i < hiddenPosts {
+            if let i = i , i < hiddenPosts {
                 showHiddenSeenPosts()
             }
             
@@ -265,15 +265,15 @@ final class PostsPageViewController: ViewController {
             return
         }
         
-        context["version"] = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")
-        context["userInterfaceIdiom"] = UIDevice.currentDevice().userInterfaceIdiom == .Pad ? "ipad" : "iphone"
+        context["version"] = Bundle.mainBundle.objectForInfoDictionaryKey("CFBundleShortVersionString")
+        context["userInterfaceIdiom"] = UIDevice.currentDevice.userInterfaceIdiom == .Pad ? "ipad" : "iphone"
         context["stylesheet"] = theme["postsViewCSS"] as String?
         
         if posts.count > hiddenPosts {
             context["posts"] = posts[hiddenPosts..<posts.endIndex].map(PostViewModel.init)
         }
         
-        if let ad = advertisementHTML where !ad.isEmpty {
+        if let ad = advertisementHTML , !ad.isEmpty {
             context["advertisementHTML"] = ad
         }
         
@@ -281,12 +281,12 @@ final class PostsPageViewController: ViewController {
             context["endMessage"] = true
         }
         
-        let fontScalePercentage = AwfulSettings.sharedSettings().fontScale
+        let fontScalePercentage = AwfulSettings.shared().fontScale
         if fontScalePercentage != 100 {
             context["fontScalePercentage"] = fontScalePercentage
         }
         
-        if let username = AwfulSettings.sharedSettings().username where !username.isEmpty {
+        if let username = AwfulSettings.shared().username , !username.isEmpty {
             context["loggedInUsername"] = username
         }
         
@@ -296,61 +296,61 @@ final class PostsPageViewController: ViewController {
             context["threadID"] = thread.threadID
         }
         
-        if let forum = thread.forum where !forum.forumID.isEmpty {
+        if let forum = thread.forum , !forum.forumID.isEmpty {
             context["forumID"] = forum.forumID
         }
         
         do {
             let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostsView", bundle: nil)
-            webView.loadHTMLString(html, baseURL: AwfulForumsClient.sharedClient().baseURL)
+            webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
         } catch {
             print("\(#function) error loading posts view HTML: \(error)")
         }
     }
     
     private func loadBlankPage() {
-        let request = NSURLRequest(URL: NSURL(string: "about:blank")!)
-        webView.loadRequest(request)
+        let request = NSURLRequest(URL: NSURL(string: "about:blank")! as URL)
+        webView.loadRequest(request as URLRequest)
     }
     
     private lazy var composeItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Reply to thread"
         item.actionBlock = { [weak self] (sender) in
             guard let strongSelf = self else { return }
             if strongSelf.replyWorkspace == nil {
-                strongSelf.replyWorkspace = ReplyWorkspace(thread: strongSelf.thread)
+                strongSelf.replyWorkspace = ReplyWorkspace(post: strongSelf.thread)
                 strongSelf.replyWorkspace?.completion = strongSelf.replyCompletionBlock
             }
-            strongSelf.presentViewController(strongSelf.replyWorkspace!.viewController, animated: true, completion: nil)
+            strongSelf.present(strongSelf.replyWorkspace!.viewController, animated: true, completion: nil)
         }
         return item
     }()
     
     @objc private func newReply(sender: UIKeyCommand) {
         if replyWorkspace == nil {
-            replyWorkspace = ReplyWorkspace(thread: thread)
+            replyWorkspace = ReplyWorkspace(post: thread)
             replyWorkspace?.completion = replyCompletionBlock
         }
-        presentViewController(replyWorkspace!.viewController, animated: true, completion: nil)
+        present(replyWorkspace!.viewController, animated: true, completion: nil)
     }
     
-    private var replyCompletionBlock: (saveDraft: Bool, didSucceed: Bool) -> Void {
+    private var replyCompletionBlock: (_ saveDraft: Bool, _ didSucceed: Bool) -> Void {
         return { [weak self] (saveDraft, didSucceed) in
             if !saveDraft {
                 self?.replyWorkspace = nil
             }
             
             if didSucceed {
-                self?.loadPage(AwfulThreadPage.NextUnread.rawValue, updatingCache: true, updatingLastReadPost: true)
+                self?.loadPage(rawPage: AwfulThreadPage.nextUnread.rawValue, updatingCache: true, updatingLastReadPost: true)
             }
             
-            self?.dismissViewControllerAnimated(true, completion: nil)
+            self?.dismiss(animated: true, completion: nil)
         }
     }
     
     private lazy var settingsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Settings"
         item.actionBlock = { [unowned self] (sender) in
             guard let forum = self.thread.forum else { return }
@@ -366,23 +366,23 @@ final class PostsPageViewController: ViewController {
     }()
     
     private lazy var backItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Previous page"
         item.actionBlock = { [unowned self] (sender) in
             guard self.page > 1 else { return }
-            self.loadPage(self.page - 1, updatingCache: true, updatingLastReadPost: true)
+            self.loadPage(rawPage: self.page - 1, updatingCache: true, updatingLastReadPost: true)
         }
         return item
     }()
     
     private lazy var currentPageItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         item.possibleTitles = ["2345 / 2345"]
         item.accessibilityHint = "Opens page picker"
         item.actionBlock = { [unowned self] (sender) in
             guard self.loadingView == nil else { return }
             let selectotron = Selectotron(postsViewController: self)
-            self.presentViewController(selectotron, animated: true, completion: nil)
+            self.present(selectotron, animated: true, completion: nil)
             
             if let popover = selectotron.popoverPresentationController {
                 popover.barButtonItem = sender
@@ -392,17 +392,17 @@ final class PostsPageViewController: ViewController {
     }()
     
     private lazy var forwardItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Next page"
         item.actionBlock = { [unowned self] (sender) in
             guard self.page < self.numberOfPages && self.page > 0 else { return }
-            self.loadPage(self.page + 1, updatingCache: true, updatingLastReadPost: true)
+            self.loadPage(rawPage: self.page + 1, updatingCache: true, updatingLastReadPost: true)
         }
         return item
     }()
     
     private lazy var actionsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "action"), style: .Plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "action"), style: .plain, target: nil, action: nil)
         item.actionBlock = { [unowned self] (sender) in
             let actionVC = InAppActionViewController()
             actionVC.title = self.title
@@ -417,21 +417,21 @@ final class PostsPageViewController: ViewController {
                     queryItems.append(NSURLQueryItem(name: "pagenumber", value: "\(self.page)"))
                 }
                 components.queryItems = queryItems
-                let url = components.URL!
+                let url = components.url!
                 
-                AwfulSettings.sharedSettings().lastOfferedPasteboardURL = url.absoluteString
-                UIPasteboard.generalPasteboard().awful_URL = url
+                AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+                UIPasteboard.general.awful_URL = url
             })
             copyURLItem.title = "Copy URL"
             
             let voteItem = IconActionItem(.Vote, block: { [unowned self] in
                 let actionSheet = UIAlertController.actionSheet()
                 for i in 5.stride(to: 0, by: -1) {
-                    actionSheet.addActionWithTitle("\(i)", handler: {
-                        let overlay = MRProgressOverlayView.showOverlayAddedTo(self.view, title: "Voting \(i)", mode: .Indeterminate, animated: true)
-                        overlay.tintColor = self.theme["tintColor"]
+                    actionSheet.addActionWithTitle(title: "\(i)", handler: {
+                        let overlay = MRProgressOverlayView.showOverlayAddedTo(self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
+                        overlay?.tintColor = self.theme["tintColor"]
                         
-                        AwfulForumsClient.sharedClient().rateThread(self.thread, i, andThen: { [weak self] (error: NSError?) in
+                        AwfulForumsClient.shared().rateThread(self.thread, i, andThen: { [weak self] (error: NSError?) in
                             if let error = error {
                                 overlay.dismiss(false)
                                 
@@ -448,8 +448,8 @@ final class PostsPageViewController: ViewController {
                         })
                     })
                 }
-                actionSheet.addCancelActionWithHandler(nil)
-                self.presentViewController(actionSheet, animated: false, completion: nil)
+                actionSheet.addCancelActionWithHandler(handler: nil)
+                self.present(actionSheet, animated: false, completion: nil)
                 
                 if let popover = actionSheet.popoverPresentationController {
                     popover.barButtonItem = sender
@@ -458,7 +458,7 @@ final class PostsPageViewController: ViewController {
             
             let bookmarkType: IconAction = self.thread.bookmarked ? .RemoveBookmark : .AddBookmark
             let bookmarkItem = IconActionItem(bookmarkType, block: {
-                AwfulForumsClient.sharedClient().setThread(self.thread, isBookmarked: !self.thread.bookmarked, andThen: { [weak self] (error: NSError?) in
+                AwfulForumsClient.shared().setThread(self.thread, isBookmarked: !self.thread.bookmarked, andThen: { [weak self] (error: NSError?) in
                     if let error = error {
                         print("\(#function) error marking thread: \(error)")
                         return
@@ -486,26 +486,26 @@ final class PostsPageViewController: ViewController {
     }()
     
     @objc private func settingsDidChange(notification: NSNotification) {
-        guard isViewLoaded() else { return }
+        guard isViewLoaded else { return }
         guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
         
         switch key {
-        case AwfulSettingsKeys.showAvatars.takeUnretainedValue():
-            webViewJavascriptBridge?.callHandler("showAvatars", data: AwfulSettings.sharedSettings().showAvatars)
+        case AwfulSettingsKeys.showAvatars.takeUnretainedValue() as String as String:
+            webViewJavascriptBridge?.callHandler("showAvatars", data: AwfulSettings.shared().showAvatars)
 
-        case AwfulSettingsKeys.username.takeUnretainedValue():
-            webViewJavascriptBridge?.callHandler("highlightMentionUsername", data: AwfulSettings.sharedSettings().username)
+        case AwfulSettingsKeys.username.takeUnretainedValue() as String as String:
+            webViewJavascriptBridge?.callHandler("highlightMentionUsername", data: AwfulSettings.shared().username)
             
-        case AwfulSettingsKeys.fontScale.takeUnretainedValue():
-            webViewJavascriptBridge?.callHandler("fontScale", data: AwfulSettings.sharedSettings().fontScale)
+        case AwfulSettingsKeys.fontScale.takeUnretainedValue() as String as String:
+            webViewJavascriptBridge?.callHandler("fontScale", data: AwfulSettings.shared().fontScale)
             
-        case AwfulSettingsKeys.showImages.takeUnretainedValue() where AwfulSettings.sharedSettings().showImages:
+        case AwfulSettingsKeys.showImages.takeUnretainedValue() as String as String where AwfulSettings.shared().showImages:
             webViewJavascriptBridge?.callHandler("loadLinkifiedImages")
         
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
+        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
             configureUserActivityIfPossible()
         
-        case AwfulSettingsKeys.embedTweets.takeUnretainedValue() where AwfulSettings.sharedSettings().embedTweets:
+        case AwfulSettingsKeys.embedTweets.takeUnretainedValue() as String where AwfulSettings.shared().embedTweets:
             webViewJavascriptBridge?.callHandler("embedTweets")
         
         default:
@@ -547,14 +547,14 @@ final class PostsPageViewController: ViewController {
     private func updateUserInterface() {
         title = (thread.title as NSString?)?.stringByCollapsingWhitespace
         
-        if page == AwfulThreadPage.Last.rawValue || page == AwfulThreadPage.NextUnread.rawValue || posts.isEmpty {
+        if page == AwfulThreadPage.last.rawValue || page == AwfulThreadPage.nextUnread.rawValue || posts.isEmpty {
             showLoadingView()
         } else {
             clearLoadingMessage()
         }
         
-        postsView.topBar.scrollToBottomButton.enabled = !posts.isEmpty
-        postsView.topBar.previousPostsButton.enabled = hiddenPosts > 0
+        postsView.topBar.scrollToBottomButton.isEnabled = !posts.isEmpty
+        postsView.topBar.previousPostsButton.isEnabled = hiddenPosts > 0
         
         if numberOfPages > page {
             if !(refreshControl?.contentView is PostsPageRefreshArrowView) {
@@ -566,7 +566,7 @@ final class PostsPageViewController: ViewController {
             }
         }
         
-        backItem.enabled = page > 1
+        backItem.isEnabled = page > 1
         
         if page > 0 && numberOfPages > 0 {
             currentPageItem.title = "\(page) / \(numberOfPages)"
@@ -576,14 +576,14 @@ final class PostsPageViewController: ViewController {
             currentPageItem.accessibilityLabel = nil
         }
         
-        forwardItem.enabled = page > 0 && page < numberOfPages
+        forwardItem.isEnabled = page > 0 && page < numberOfPages
         
         composeItem.enabled = !thread.closed
     }
     
     private func showLoadingView() {
         guard loadingView == nil else { return }
-        loadingView = LoadingView.loadingViewWithTheme(theme)
+        loadingView = LoadingView.loadingViewWithTheme(theme: theme)
     }
     
     private func clearLoadingMessage() {
@@ -605,7 +605,7 @@ final class PostsPageViewController: ViewController {
             nextPage = page + 1
         }
         
-        loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
+        loadPage(rawPage: nextPage, updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc private func scrollToBottom() {
@@ -614,11 +614,11 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func loadPreviousPage(sender: UIKeyCommand) {
-        loadPage(page - 1, updatingCache: true, updatingLastReadPost: true)
+        loadPage(rawPage: page - 1, updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc private func loadNextPage(sender: UIKeyCommand) {
-        loadPage(page + 1, updatingCache: true, updatingLastReadPost: true)
+        loadPage(rawPage: page + 1, updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc private func goToParentForum() {
@@ -631,7 +631,7 @@ final class PostsPageViewController: ViewController {
         let end = hiddenPosts
         hiddenPosts = 0
         
-        let html = (0..<end).map(renderedPostAtIndex).joinWithSeparator("\n")
+        let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
         webViewJavascriptBridge?.callHandler("prependPosts", data: html)
     }
     
@@ -677,24 +677,24 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func didLongPressOnPostsView(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .Began else { return }
-        var location = sender.locationInView(webView)
+        guard sender.state == .began else { return }
+        var location = sender.location(in: webView)
         let scrollView = webView.scrollView
         location.y -= scrollView.contentInset.top
         if scrollView.contentOffset.y < 0 {
             location.y += scrollView.contentOffset.y
         }
         
-        let data: [String: AnyObject] = ["x": location.x, "y": location.y]
+        let data: [String: AnyObject] = ["x": location.x as AnyObject, "y": location.y as AnyObject]
         webViewJavascriptBridge?.callHandler("interestingElementsAtPoint", data: data, responseCallback: { [weak self] (elementInfo) in
-            self?.webView.stringByEvaluatingJavaScriptFromString("Awful.preventNextClickEvent()")
+            self?.webView.stringByEvaluatingJavaScript(from: "Awful.preventNextClickEvent()")
             
             guard
-                let elementInfo = elementInfo as? [String: AnyObject] where !elementInfo.isEmpty,
+                let elementInfo = elementInfo as? [String: AnyObject] , !elementInfo.isEmpty,
                 let strongSelf = self
                 else { return }
             
-            let ok = URLMenuPresenter.presentInterestingElements(elementInfo, fromViewController: strongSelf, fromWebView: strongSelf.webView)
+            let ok = URLMenuPresenter.presentInterestingElements(info: elementInfo, fromViewController: strongSelf, fromWebView: strongSelf.webView)
             guard ok || elementInfo["unspoiledLink"] != nil else {
                 print("\(#function) unexpected interesting elements for data \(data) response: \(elementInfo)")
                 return
@@ -741,7 +741,7 @@ final class PostsPageViewController: ViewController {
         
         items.append(IconActionItem(.UserProfile, block: {
             let profileVC = ProfileViewController(user: user)
-            self.presentViewController(profileVC.enclosingNavigationController, animated: true, completion: nil)
+            self.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
         }))
         
         if author == nil {
@@ -754,23 +754,23 @@ final class PostsPageViewController: ViewController {
         }
         
         if
-            AwfulSettings.sharedSettings().canSendPrivateMessages &&
+            AwfulSettings.shared().canSendPrivateMessages &&
             user.canReceivePrivateMessages &&
-            user.userID != AwfulSettings.sharedSettings().userID
+            user.userID != AwfulSettings.shared().userID
         {
             items.append(IconActionItem(.SendPrivateMessage, block: {
                 let messageVC = MessageComposeViewController(recipient: user)
                 self.messageViewController = messageVC
                 messageVC.delegate = self
                 messageVC.restorationIdentifier = "New PM from posts view"
-                self.presentViewController(messageVC.enclosingNavigationController, animated: true, completion: nil)
+                self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
             }))
         }
         
         items.append(IconActionItem(.RapSheet, block: {
             let rapSheetVC = RapSheetViewController(user: user)
-            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                self.presentViewController(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(rapSheetVC, animated: true)
             }
@@ -791,7 +791,7 @@ final class PostsPageViewController: ViewController {
         
         let post = posts[postIndex + hiddenPosts]
         let possessiveUsername: String
-        if post.author?.username == AwfulSettings.sharedSettings().username {
+        if post.author?.username == AwfulSettings.shared().username {
             possessiveUsername = "Your"
         } else {
             possessiveUsername = "\(post.author?.username ?? "")'s"
@@ -814,15 +814,15 @@ final class PostsPageViewController: ViewController {
             }
             components.queryItems = queryItems
             components.fragment = "post\(post.postID)"
-            let url = components.URL!
+            let url = components.url!
             
             let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
             activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
-                if completed && activityType == UIActivityTypeCopyToPasteboard {
-                    AwfulSettings.sharedSettings().lastOfferedPasteboardURL = url.absoluteString
+                if completed && activityType == UIActivityType.copyToPasteboard {
+                    AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
                 }
             }
-            self.presentViewController(activityVC, animated: false, completion: nil)
+            self.present(activityVC, animated: false, completion: nil)
             
             if let popover = activityVC.popoverPresentationController {
                 popover.sourceView = popoverSourceView
@@ -874,33 +874,33 @@ final class PostsPageViewController: ViewController {
         if !thread.closed {
             items.append(IconActionItem(.QuotePost, block: {
                 if self.replyWorkspace == nil {
-                    self.replyWorkspace = ReplyWorkspace(thread: self.thread)
+                    self.replyWorkspace = ReplyWorkspace(post: self.thread)
                     self.replyWorkspace?.completion = self.replyCompletionBlock
                 }
                 
-                self.replyWorkspace?.quotePost(post, completion: { [weak self] (error) in
+                self.replyWorkspace?.quotePost(post: post, completion: { [weak self] (error) in
                     if let error = error {
-                        let alert = UIAlertController.alertWithNetworkError(error)
+                        let alert = UIAlertController.alertWithNetworkError(error: error)
                         self?.presentViewController(alert, animated: true, completion: nil)
                         return
                     }
                     
                     guard let vc = self?.replyWorkspace?.viewController else { return }
-                    self?.presentViewController(vc, animated: true, completion: nil)
+                    self?.present(vc, animated: true, completion: nil)
                 })
             }))
         }
         
         items.append(IconActionItem(.ReportPost, block: {
             let reportVC = ReportPostViewController(post: post)
-            self.presentViewController(reportVC.enclosingNavigationController, animated: true, completion: nil)
+            self.present(reportVC.enclosingNavigationController, animated: true, completion: nil)
         }))
         
         if author != nil {
             items.append(IconActionItem(.ShowInThread, block: {
                 // This will add the thread to the navigation stack, giving us thread->author->thread.
                 guard let url = NSURL(string: "awful://posts/\(post.postID)") else { return }
-                AppDelegate.instance.openAwfulURL(url)
+                AppDelegate.instance.openAwfulURL(url: url)
             }))
         }
         
@@ -918,7 +918,7 @@ final class PostsPageViewController: ViewController {
     }
     
     private func configureUserActivityIfPossible() {
-        guard page >= 1 && AwfulSettings.sharedSettings().handoffEnabled else {
+        guard page >= 1 && AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
             return
         }
@@ -927,7 +927,7 @@ final class PostsPageViewController: ViewController {
         userActivity?.needsSave = true
     }
     
-    override func updateUserActivityState(activity: NSUserActivity) {
+    override func updateUserActivityState(_ activity: NSUserActivity) {
         activity.title = thread.title
         activity.addUserInfoEntriesFromDictionary([
             Handoff.InfoThreadIDKey: thread.threadID,
@@ -935,10 +935,10 @@ final class PostsPageViewController: ViewController {
             ])
         
         if let author = author {
-            activity.addUserInfoEntriesFromDictionary([Handoff.InfoFilteredThreadUserIDKey: author.userID])
+            activity.addUserInfoEntries(from: [Handoff.InfoFilteredThreadUserIDKey: author.userID])
         }
         
-        guard let components = NSURLComponents(URL: AwfulForumsClient.sharedClient().baseURL, resolvingAgainstBaseURL: true) else { return }
+        guard let components = NSURLComponents(URL: AwfulForumsClient.shared().baseURL, resolvingAgainstBaseURL: true) else { return }
         components.path = "showthread.php"
         var queryItems: [NSURLQueryItem] = [
             NSURLQueryItem(name: "threadid", value: thread.threadID),
@@ -950,7 +950,7 @@ final class PostsPageViewController: ViewController {
         if let author = author {
             queryItems.append(NSURLQueryItem(name: "userid", value: author.userID))
         }
-        activity.webpageURL = components.URL
+        activity.webpageURL = components.url
     }
     
     override func themeDidChange() {
@@ -961,14 +961,14 @@ final class PostsPageViewController: ViewController {
         webViewJavascriptBridge?.callHandler("changeStylesheet", data: theme["postsViewCSS"] as String?)
         
         if loadingView != nil {
-            loadingView = LoadingView.loadingViewWithTheme(theme)
+            loadingView = LoadingView.loadingViewWithTheme(theme: theme)
         }
         
         let topBar = postsView.topBar
         topBar.backgroundColor = theme["postsTopBarBackgroundColor"]
         for button in [topBar.parentForumButton, topBar.previousPostsButton, topBar.scrollToBottomButton] {
-            button.setTitleColor(theme["postsTopBarTextColor"], forState: .Normal)
-            button.setTitleColor(theme["postsTopBarTextColor"]?.colorWithAlphaComponent(0.5), forState: .Disabled)
+            button.setTitleColor(theme["postsTopBarTextColor"], for: .normal)
+            button.setTitleColor(theme["postsTopBarTextColor"]?.withAlphaComponent(0.5), for: .disabled)
             button.backgroundColor = theme["postsTopBarBackgroundColor"]
         }
         
@@ -981,10 +981,10 @@ final class PostsPageViewController: ViewController {
         view = PostsView()
         
         let topBar = postsView.topBar
-        topBar.parentForumButton.addTarget(self, action: #selector(goToParentForum), forControlEvents: .TouchUpInside)
-        topBar.previousPostsButton.addTarget(self, action: #selector(showHiddenSeenPosts), forControlEvents: .TouchUpInside)
-        topBar.previousPostsButton.enabled = hiddenPosts > 0
-        topBar.scrollToBottomButton.addTarget(self, action: #selector(scrollToBottom as () -> Void), forControlEvents: .TouchUpInside)
+        topBar.parentForumButton.addTarget(self, action: #selector(goToParentForum), for: .touchUpInside)
+        topBar.previousPostsButton.addTarget(self, action: #selector(showHiddenSeenPosts), for: .touchUpInside)
+        topBar.previousPostsButton.isEnabled = hiddenPosts > 0
+        topBar.scrollToBottomButton.addTarget(self, action: #selector(scrollToBottom as () -> Void), for: .touchUpInside)
     }
     
     override func viewDidLoad() {
@@ -1004,21 +1004,21 @@ final class PostsPageViewController: ViewController {
         webViewJavascriptBridge?.registerHandler("didTapUserHeader", handler: { [weak self] (data, callback) in
             guard let
                 data = data as? [String: AnyObject],
-                rectString = data["rect"] as? String,
-                rect = self?.webView.rectForElementBoundingRect(rectString),
-                postIndex = data["postIndex"] as? Int
+                let rectString = data["rect"] as? String,
+                let rect = self?.webView.rectForElementBoundingRect(rectString: rectString),
+                let postIndex = data["postIndex"] as? Int
                 else { return }
-            self?.didTapUserHeaderWithRect(rect, forPostAtIndex: postIndex)
+            self?.didTapUserHeaderWithRect(rect: rect, forPostAtIndex: postIndex)
         })
         
         webViewJavascriptBridge?.registerHandler("didTapActionButton", handler: { [weak self] (data, callback) in
             guard let
                 data = data as? [String: AnyObject],
-                rectString = data["rect"] as? String,
-                rect = self?.webView.rectForElementBoundingRect(rectString),
-                postIndex = data["postIndex"] as? Int
+                let rectString = data["rect"] as? String,
+                let rect = self?.webView.rectForElementBoundingRect(rectString: rectString),
+                let postIndex = data["postIndex"] as? Int
                 else { return }
-            self?.didTapActionButtonWithRect(rect, forPostAtIndex: postIndex)
+            self?.didTapActionButtonWithRect(rect: rect, forPostAtIndex: postIndex)
         })
         
         webViewJavascriptBridge?.registerHandler("didFinishLoadingTweets", handler: { [weak self] (data, callback) in
@@ -1032,9 +1032,9 @@ final class PostsPageViewController: ViewController {
             }
         })
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.didUpdateNotification, object: nil)
+        NotificationCenter.defaultCenter.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.didUpdateNotification, object: nil)
         
-        if AwfulSettings.sharedSettings().pullForNext {
+        if AwfulSettings.shared().pullForNext {
             refreshControl = PostsPageRefreshControl(scrollView: webView.scrollView, contentView: PostsPageRefreshSpinnerView())
             refreshControl?.handler = { [weak self] in
                 self?.loadNextPageOrRefresh()
@@ -1048,49 +1048,49 @@ final class PostsPageViewController: ViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated: animated)
         
         configureUserActivityIfPossible()
     }
     
     override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewDidDisappear(animated: animated)
         
         userActivity = nil
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
         coder.encodeObject(thread.objectKey, forKey: Keys.ThreadKey.rawValue)
-        coder.encodeInteger(page, forKey: Keys.Page.rawValue)
-        coder.encodeObject(author?.objectKey, forKey: Keys.AuthorUserKey.rawValue)
-        coder.encodeInteger(hiddenPosts, forKey: Keys.HiddenPosts.rawValue)
-        coder.encodeObject(messageViewController, forKey: Keys.MessageViewController.rawValue)
-        coder.encodeObject(advertisementHTML, forKey: Keys.AdvertisementHTML.rawValue)
-        coder.encodeFloat(Float(webView.fractionalContentOffset), forKey: Keys.ScrolledFractionOfContent.rawValue)
-        coder.encodeObject(replyWorkspace, forKey: Keys.ReplyWorkspace.rawValue)
+        coder.encode(page, forKey: Keys.Page.rawValue)
+        coder.encode(author?.objectKey, forKey: Keys.AuthorUserKey.rawValue)
+        coder.encode(hiddenPosts, forKey: Keys.HiddenPosts.rawValue)
+        coder.encode(messageViewController, forKey: Keys.MessageViewController.rawValue)
+        coder.encode(advertisementHTML, forKey: Keys.AdvertisementHTML.rawValue)
+        coder.encode(Float(webView.fractionalContentOffset), forKey: Keys.ScrolledFractionOfContent.rawValue)
+        coder.encode(replyWorkspace, forKey: Keys.ReplyWorkspace.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
+    override func decodeRestorableState(with coder: NSCoder) {
         restoringState = true
         
-        super.decodeRestorableStateWithCoder(coder)
+        super.decodeRestorableState(with: coder)
         
-        messageViewController = coder.decodeObjectForKey(Keys.MessageViewController.rawValue) as? MessageComposeViewController
+        messageViewController = coder.decodeObject(forKey: Keys.MessageViewController.rawValue) as? MessageComposeViewController
         messageViewController?.delegate = self
         
-        hiddenPosts = coder.decodeIntegerForKey(Keys.HiddenPosts.rawValue)
-        page = coder.decodeIntegerForKey(Keys.Page.rawValue)
-        loadPage(page, updatingCache: false, updatingLastReadPost: true)
+        hiddenPosts = coder.decodeInteger(forKey: Keys.HiddenPosts.rawValue)
+        page = coder.decodeInteger(forKey: Keys.Page.rawValue)
+        loadPage(rawPage: page, updatingCache: false, updatingLastReadPost: true)
         if posts.isEmpty {
-            loadPage(page, updatingCache: true, updatingLastReadPost: true)
+            loadPage(rawPage: page, updatingCache: true, updatingLastReadPost: true)
         }
         
-        advertisementHTML = coder.decodeObjectForKey(Keys.AdvertisementHTML.rawValue) as? String
-        scrollToFractionAfterLoading = CGFloat(coder.decodeFloatForKey(Keys.ScrolledFractionOfContent.rawValue))
+        advertisementHTML = coder.decodeObject(forKey: Keys.AdvertisementHTML.rawValue) as? String
+        scrollToFractionAfterLoading = CGFloat(coder.decodeFloat(forKey: Keys.ScrolledFractionOfContent.rawValue))
         
-        replyWorkspace = coder.decodeObjectForKey(Keys.ReplyWorkspace.rawValue) as? ReplyWorkspace
+        replyWorkspace = coder.decodeObject(forKey: Keys.ReplyWorkspace.rawValue) as? ReplyWorkspace
         replyWorkspace?.completion = replyCompletionBlock
     }
     
@@ -1182,7 +1182,7 @@ extension PostsPageViewController: UIViewControllerRestoration {
         let context = AppDelegate.instance.managedObjectContext
         guard let
             threadKey = coder.decodeObjectForKey(Keys.ThreadKey.rawValue) as? ThreadKey,
-            thread = Thread.objectForKey(threadKey, inManagedObjectContext: context) as? Thread
+            let thread = Thread.objectForKey(threadKey, inManagedObjectContext: context) as? Thread
             else { return nil }
         let userKey = coder.decodeObjectForKey(Keys.AuthorUserKey.rawValue) as? UserKey
         let author: User?

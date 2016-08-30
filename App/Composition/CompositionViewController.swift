@@ -3,9 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 final class CompositionViewController: ViewController {
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nil, bundle: nil)
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
     }
     
     required init?(coder: NSCoder) {
@@ -20,7 +20,7 @@ final class CompositionViewController: ViewController {
     }
     
     @objc private func didTapCancel() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     func cancel(sender: UIKeyCommand) {
@@ -55,29 +55,29 @@ final class CompositionViewController: ViewController {
         super.themeDidChange()
         
         textView.textColor = theme["listTextColor"]
-        textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         textView.becomeFirstResponder()
         
         // Leave an escape hatch in case we were restored without an associated workspace. This can happen when a crash leaves old state information behind.
         if navigationItem.leftBarButtonItem == nil {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(CompositionViewController.didTapCancel))
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CompositionViewController.didTapCancel))
         }
     }
     
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated: animated)
         
         textView.flashScrollIndicators()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         view.endEditing(true)
