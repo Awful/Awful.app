@@ -1,0 +1,877 @@
+High priority:
+	- Twitter embeds can hijack the posts web view when tapping bits that aren't the tweet date. @twitter
+		"If you tap on the embedded tweet, it replaces the entire page of the thread instead of opening in the browser sheet, which does let you see replies or whatevz but less useful if you want to keep reading the thread after the tweet. As far as I can tell, you can't get back to the current page of posts without reloading the page."
+		"That leads to another bug - the twitter page loads in the main view instead of pushing another viewcontroller so you lose your place in the thread"
+		"Please add a way to go back to the thread page that you were viewing after clicking on embedded tweets."
+	- SA Mart threads post with the wrong secondary tag.
+		"In SA Mart put Buy as the title and Sell came out. This is the second time. I made triple sure the B was highlighted and it showed up in the preview as "B" and when it posted it came out as an "S". I use the iPhone app and have an iPhone 6s Plus." @iphoneplus
+		"I don;t [sic] know if this is documented, but every time I make an SA Mart thread, the category is flipped. As in, if I post as buying from within the app, it will be selling and vice versa."
+	- The Film Dump isn't showing any thread tags.
+	- Some links fail to "Open in Safari" but are fine in Awful Browser.
+		"If I tap the link in the post below, it opens fine in awful browser. If I long-tap and open in safari, I get a 404. Something messing up the url escaping I guess? https://forums.somethingawful.com/showthread.php?threadid=3548182&perpage=40&pagenumber=760#post458545691"
+			URL is https://www.se.rit.edu/~tabeec/RIT_441/Resources_files/How%20To%20Write%20Unmaintainable%20Code.pdf
+	- Don't freeze on or endlessly bounce the pull-to-refresh indicator.
+		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
+		"I get a bug when I refresh my bookmarked threads only on my iPad Pro. The smiley face icon to indicate it's refreshing will keep bouncing forever until I terminate the app. Works fine on my iPhone though."
+		"Still getting landscape freeze on 3.17 on Bookmarks screen. Happens after doing a pull to reload."
+	- Crash in posts page, possibly on pages with embedded tweets.
+		"Still having the crashing problems. Maybe a memory leak. Seems like it happens sometimes on pages with tweet embeds?"
+			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
+				"Come to think of it, yeah. It happens not infrequently there. Some others too."
+		"Just had it happen in the cute thread in PYF." (posted 2016-Sept-03)
+Medium priority:
+	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
+		"If you "edit" a post then change your mind and decide to reply and make a new one it still only edits the original post."
+		"I went to a post of mine intending to quote it but I hit Edit instead. When I backed out and then went to Quote, the quote got tacked on to the original post as an edit, it didn't make a new post."
+		Especially bad for mods http://forums.somethingawful.com/showthread.php?threadid=3510131&userid=0&perpage=40&pagenumber=224#post461295184
+		"if you edit a post, then hit cancel, then go quote a post, you will actually end up editing the post you were editing earlier. (rather than making a new post with quote as intended )"
+	- Only trigger the "pull for next page of posts" gesture if scrolling started near the bottom.
+		"Would it be possible to make the "keep scrolling at the bottom of the page to go to the next one" thing less sensitive? Or maybe put in some sort of delay (something like, when you're scrolling and you hit the end of the page, it doesn't trigger until it comes to a stop and you pull up again?) I keep missing the last couple posts on every page, because I apparently scroll too fast :( If neither of those are doable, could we at least get an option to turn it off in settings?"
+		"My dream is to not make pull to load a new page activate the first time I hit the bottom of a page. Sometimes I'm trying to back track to the end of a page and after everything loads I find I hit the bottom too hard and it loaded the next."
+		"Is there a way to not go to the next page/reload the page if I scroll all the way down to the bottom? It's happened too much where I'm scrolling down to get to the bottom and accidentally pull too hard/much and either go on to the next page or reload and end up at the top again."
+	- Refreshing a list of threads sometimes doesn't seem to actually refresh.
+		"Sometimes when I have multiple pages of thread lists in a forum index open and I refresh the list (either by pulling down or by going back into the forum index), the list of threads doesn't go back to being one page and it seems like pagination stops working correctly too." iPhone SE @awful3.16
+	- Maintain the scroll position when app enters background then comes back into foreground.
+		"Previous to the last update if I returned to the app and it had to refresh, once it loaded it would return me to the last-read post on the page. Since the last update it doesn't seem to be doing that anymore. iPhone 6+, latest OS and released app version." @awful3.13 @ios9.3.2
+		"When the latest Awful app version restores from the background, it doesn't return to my last position on the page. I need to scroll down to where I was in order to continue reading. Something broke the update before last; any idea what happened?"
+		"Also I would super duper love to have the app remember your place in an open thread when it's evicted from memory."
+		"Awful always reopens in the middle of the thread even if I was at the bottom, even if the app was not purged—if I close the app while at the bottom of a thread and reopen immediately it jumps up several posts. This only happens in landscape and the position it jumps to is the same as the position it goes to if you scroll to the bottom in landscape and then rotate to portrait and back, so I think it's just resetting the scroll position based on where the "bottom" is in portrait."
+	- Correctly handle nested tags when tapping the [/..] auto-BBcode-close-tag button.
+		"I've noticed that the "[/..]" button on the reply screen's keyboard no longer works correctly with nested tags, and instead will just attempt to close the most recent tag even if that was already a close-tag -- and even if it's not actually a tag at all! So you'll get like "[//..][///..][////..][/////..]" if you hit that button four times as it attempts to close my "[/..]" "tag" from the beginning of this paragraph. Did something happen within the past few releases to the parser or regex engine that recognized open-tags?"
+		Was recently ported to Swift, very possible that introduced an error.
+	- Only enable [/..] auto-close button after finishing a BBcode tag that takes a parameter.
+		"If you have a parametrized opener like "[quote=" then the button activates as soon as you enter the "=", before the tag is actually finished with the "]"."
+	- Ensure pull-for-next-page does that, and does not refresh the current page.
+		"My Awful app seems convinced that page 29 of the current USPOL thread is the final page of the thread, insofar as pull-for-next-page isn't working and it's only doing pull-to-refresh on page 29. https://forums.somethingawful.com/showthread.php?threadid=3774247&perpage=40&pagenumber=29 Note there's like 35 pages right now, which I'm pretty sure means there's a page 30! This has persisted even after I tried several things
+			• opening the thread anew by tapping on it from my bookmarks (after marking as read a post so it would load page 29); still refreshes on a page 29 pull
+			• returning to page 28 then pulling successfully for page 29; page 29 still pulls to refresh
+			• and force-quitting Awful and trying from what I figured would be a fresh state; yep pull to refresh page 29."
+		"a couple times now I've seen a pull-for-next-page instead refresh the current page (even if it's nowhere near the end of the thread, like page 6 of 30). I unfortunately can't yet find any pattern to when this happens and it seems pretty rare, but it is rather confusing for a moment. I can at least just hit the next page button instead when it happens, so that does still work."
+	- Fix tapping on an ignored user's post to reveal it.
+		"Tapping on an ignored users post to reveal it seems bugged. Sometimes it brings up a random post from the thread, and if it's the last post sometimes it doesn't show up."
+		"Have had this issue for the last two app versions I believe. Sometimes tapping to view post will bring up another ignored post and tapping that one will load a third random one" [circa @awful3.16 I think]
+	- Fix niggly pull-to-refresh causing a bouncing table sometimes.
+		"Sometimes my bookmark list continually bounce while the loading smiley shows up."
+		"The constantly bouncing smiley happens if I've got wifi enabled with proxy but the proxy is down. So likely connection issues aren't resolving quite right."
+		"I dare say it happens randomly, but I think it occurs when the refresh happens without me pulling down. It's only been happening since you added that animated emoji [:niggly:] instead of a throbber."
+	- Fix dismissing the image preview screen after sharing.
+		"Whenever I share an image to GroupMe, it successfully posts but I then have to force close the Awful app. I can't swipe the image back down nor can I tap "done". iPhone 6+"
+	- Stop failing to upload to Imgur.
+		"I get "Image Upload Failed Imgur did not respond as expected (code -1)" when I try to upload and attach an image."
+		"Getting a few Error Code 0 and -1s when trying to upload images. 9.1, latest app version [3.7]. Is this a known issue?" @awful3.7 @ios9.1
+			"Same here. Also upload too fast, can't remember if that's a different code."
+		"It usually only happens with photos that are shot with my phone and unedited. If I edit the photo in any way I don't get the error. Although sometimes a photo is uploaded without error regardless of whether or not I've edited it."
+		"I've noticed that if you try to upload a picture from you're phone library that's been cropped with editor, the upload fails. This isn't a problem with unchanged images."
+		"I tried to make this post with an edited screenshot. It wouldn't post ("image upload failed, an unknown error occurred (code 0)") until I took it out. It's not just cropping either, but any change with the editor that makes it fail."
+		"I think I might have posted something before concerning one issue; I'm going to use this post to find it if I did and then edit accordingly. Edit: Yeah, still running into the "Image Upload Failed / Uploading file too fast! (code -1) on the 6+, version 9.3.1 (13E238)." @iphoneplus @ios9.3.1
+		"I had this again as well on Tuesday afternoon with my 6+." @iphoneplus
+		"I get this all the time when I try inserting more than one picture at a time."
+		"I think it's been narrowed down to posting a photo you've taken on that device. If you edit the photo, even adjust the borders slightly, you can then upload it."
+		"Crashed the app repeatedly by trying to upload a photo directly from the camera. Uploading from the gallery seems fine, but using the camera breaks everything." @awful3.1
+		"can't edit the image in either. Looks like something about the imgur upload is crashing out."
+		"I'm on an iPhone 6+ and when I try to post photos using hold->[ img ]->From library I get an error about trying to upload images too fast or something like that. The number code or w/e I think was (-1)? It was not the most helpful message from a stupid user's perspective but hopefully it helps out?"
+		"Posting with an image from photo album is crashing every time for me, could have sworn that had just recently been fixed."
+		"trying to upload a cropped screenshot seems to crash the app or give an error that the upload failed"
+		"Also, image uploading failed so I had to use upit"
+		"Second, this is the third time I'm trying to post this now. Trying to upload an image in the first two resulted in a hard crash to springboard. No idea what that's about, we'll see if this one goes through."
+	- Don't duplicate smilies in the smilie keyboard.
+		"I'm seeing smilies duplicated in the in-app keyboard. Not all, but most." "Say 66%."
+		"Found a weird bug with the emoticon keyboard where some of the emoticons are duplicated. I resolved it by reinstalling the app, but I thought you might like to know http://i.imgur.com/jClkLdN.png"
+		"Edit: Well fuck, it just went back to being duplicative http://i.imgur.com/dJK8FSP.png"
+		"It was weird, I was using the keyboard and it was fine, then it looked like it "refreshed" (all of the icons kinda blinked), then multiples of every icon showed up"
+		"Keyboard loaded then reloaded with double the smilies."
+		"but why are all of the smilies after nexus duplicated? https://i.imgur.com/XneU7UR.png" "and then I got it to duplicate again but I'm not sure exactly how https://i.imgur.com/tBPx3xo.png"
+	- Properly detect various kinds of scraping errors (e.g. CloudFlare) instead of treating them generically as "archives required".
+		"So I'm abroad at the minute and whenever I was trying to use Awful, I would get this. http://i.imgur.com/B1htdNx.png Turns out, when I try via the browser, I get this http://i.imgur.com/XUwmuOO.png VPN solves both issues. Is there a better way of Awful handling this?"
+		If we can detect CloudFlare's interference, maybe we can present a Safari View Controller?
+		"the archives error is kind of annoying, seems to be quite regular now but I guess cloud flare gonna cloud flare. One thing that has happened to me a few times is the edit page has flushed (I hit Preview, then Post), I then get what I assume was a cloud flare error.  So the post doesn't go through, but I also lose the entire post that was in the 'buffer' or whatever, so I've been copying to clipboard just in case."
+		"From the looks of things, there's a bug where the app reacts to Cloudflare being a shit by popping up a "You need Archives to view this content" error message. Should probably be something more accurate/helpful."
+		"I've started getting '403(Forbidden) Code -1011' in the app about a day ago. Granted, I'm currently in Singapore and whenever the forum images aren't loading on my computer I'd head to fi.somethingawful.com and prove that I'm a human. Is there a way I could do this while inside the app? I tried going to the verification page through mobile safari but it doesn't seem to have any effect on the app. In the meantime, I'm just browsing SA in mobile safari which is not as good an experience as the Awful app."
+		"I tried to open a thread and got an error message saying I needed archives, code 8. But I have archives and the thread isn't archived anyway. I tried again a few minutes later and it loaded just fine. Best guess as to what really happened is that the connection was lost while loading, my wifi's been unreliable lately."
+	- Fix [presumably the posts view] settings menu in landscape on a 6S+. @iphoneplus
+		"If I bring up the settings menu while in landscape on a 6S+, it's malformed and I can't dismiss it until I rotate to portrait."
+	- Fix zooming by double-tapping the image preview.
+		"Also zooming by tapping in the image viewer doesn't work most of the time."
+		"Is there a reason that double-tapping in image mode zooms in to comical levels"
+	- Make Handoff work (more consistently).
+		"Just a heads up handout [sic] seems to be more inconsistent. Before I would be able to get a thread almost instantly now it's kind of random if handout will activate (and sometimes it gives me my bookmarks instead of the page). Haven't changed anything and handout works fine for regular Safari. I'm using an iPhone 5/iPad latest version of awful on the apple store. It's not a big deal obviously I can just copy the link, but just thought I should mention it."
+		"Handoff hasn't done anything for me for months."
+		"I tried to use handoff between my iPhone and iPad, and it always crashes the app. I'm on iOS 8.3 beta, so I'm guessing it's because of that." @ios8.3
+		"The last time I tried it with the newest beta was between the iPhone and desktop, but it would only handoff the bookmarks screen. Open a thread and the icon would go away." @awful3.2
+	- Actually take user to last post when tapping "last post" thread action.
+		"Instead it should probably go to the last post, I think."
+		"I actually like it going to the beginning of the last page, I use it to see the most recent posts which is more useful to me than just the very last one."
+		"This is a super minor quibble but shouldn't this read "last page" instead of "last post"? Clicking it takes you to the beginning of the last page, not the last post."
+		"And Last Post still only takes you to the last page, not the last post." @awful3.6 @ios9
+		"on the pop-up dialog you get when you press down on a thread (with "Last Page" "Mark Unread" etc.) could you add "Last Post"? I know there's a last post option when you tap the page counter within a thread (which doesn't work, by the way) but it would be handy to get to the last post of a thread from favorites and stuff without having to go to the last page and then scroll down to the last post. There's still room on the pop-up dialog so I figured it could go there pretty nicely."
+		"Just a reminder that Last Post still only takes you to the last page, not the last post."
+		"I did find that if you go to a thread you've already read, Awful takes you to the last page, but hitting Last Post only puts you at the top of the last page again."
+	- Adjust scroll views when keyboard appears for other app in multitasking. @ipad
+		"When multitasking with split view, our scroll views and bottom bars don't adjust when the keyboard comes up for the other app. I think it would be nice to get them to do that."
+	- Don't crash after logging out first time logging back in.
+		"Was getting warnings about my cookie about to expire. I guess it expired then today, as I started getting cryptic error messages when trying to load any thread. No problem, I'll just log out and then log back in. When I logged back in, there was a crash to springboard. Then when I opened Awful, all my settings were reverted to default. 5S, 9.3.2, latest App Store version." @awful3.13 @ios9.3.2
+	- Don't crash when opening a YouTube video in Safari then returning via the "Back to …" status bar button.
+		"Also seeing some crashes when I tab a youtube out to safari and then switch back from the contextual back button - may be related." [I forget what this "may be related" to. Oops.]
+	- Correctly scroll to a linked post once the page loads.
+		"We could scroll again when everything is loaded I guess?"
+		"You could do it like how you show new replies: Hide the previous posts until you explicitly click to show them. That way the post you want to see is on top and all the shit above or below it won't change the position."
+		"Browsers do one adjustment when everything above the scroll-to point is loaded (really when it's sized), as long as the user hasn't scrolled in the interim. We might have a harder time tracking the requisite information."
+		"Every time I click a quote link to go to the post being quoted it just ends up on the top of the page. This is very annoying and makes it very hard to read large threads." @awful3.13
+	- Don't jump to top of posts page when pulling to refresh.
+		"pull to refresh thread now always takes me to the top of the page instead of last unread post. 5s on 9.3." @awful3.13 @ios9.3
+	- Keep bookmarks list consistent and free of dups.
+		"Glitch I'm seeing. Behold, my bookmarks. http://i.imgur.com/TOGOBL2.png Yeah that ain't right. Let's click on that top thread: http://i.imgur.com/hHlF4eQ.png Yeah that ain't right either. I used to get this a lot in forums view, and I could fix it by backing out to the forums list and refreshing. Now it's happening in bookmarks too and I could only fix it by rebooting the app."
+		"Getting thread triplication in the forum display. The thread is bookmarked, but I haven't posted in it. http://i.imgur.com/89UokN3.png"
+		"I am also having the multiple bookmarks problem. I'm up to three identical bookmarks on some threads. But I've never posted in those threads before."
+		"I just posted a reply to a bookmarked thread and went back to bookmarks and that thread is now duplicated, using the latest version from the app store"
+		"I also have the duplication issue on bookmarks with an iPhone 6+."
+	- Fix pull-for-next-page when at bottom of posts page (often after tapping "scroll to end").
+		"If you go to the next page of a thread and hit scroll to end, pulling up to view the next doesn't work."
+		"Pull-for-next-page doesn't work right after using scroll-to-end. Have to scroll back up a bit first."
+		"after hitting "scroll to end", I can['t] pull up to go to the next page. Have to scroll up a bit first."
+		"Sometimes when I go to pull a thread up to refresh it it hangs, and I have to swipe the opposite way and then up. I don't know if this is the app or just some other weirdness, though."
+	- Ensure the forums list doesn't mostly empty out for some reason.
+		"http://i.imgur.com/XEK8EC7.png Empty below"
+		Could ship with a list of forums, so we have something before the first refresh.
+		Any chance these got randomly deleted somehow? Looks to me like the forums list has never refreshed but some bookmarks loaded, thus creating the forums in question.
+	- Fix split view sidebar kinda showing up weirdly. @ipad
+		"This happens when I use split screen sometimes http://i.imgur.com/Da4Llhb.png"
+		"Ditto. I feel like the repro steps involve some permutation of enabling/disabling split view, with or without a thread open, and backgrounding the app"
+		"As in split view multitasking on my iPad Pro 9.7""
+	- Avoid fixating on, and otherwise properly handle, captive wifi.
+		"I'm crashing as soon as I try to load a thread when I'm behind captive wifi, using the App Store version."
+		"I ran out of Internet time on my phone, and after topping up my bookmarks page is apparently permanently blank. If I switch to the alternative server on the settings page it works, so I suspect the problem relates to awful somehow caching the "you need to top up" page my phone provider injected, failing to parse it, and never trying to fetch an updated list?"
+			"Current behaviour (app store release version[3.2])
+				On mobile data
+					Forum lists/bookmarks simply don't update.
+					Trying to open any thread crashes the app.
+				On wifi
+					Forum lists/bookmarks remain broken if I previously tried to refresh them on mobile data. Anything I didn't try to refresh on mobile data works fine.
+					I can open all threads normally, regardless of whether I tried to open them on mobile data.
+				I've looked at the HTTP response headers using HttpWatch. It looks like my mobile provider decided to implement their "hey give us more money" feature by responding to all HTTP requests with a 301 Moved Permanently (!) that points to http://mbbinfo.three.co.uk/payg_voice_data_usage1.html."
+		"any time I try to load a thread on my iPhone, the app tells me that I'm in a Starbucks? It happens whether I'm connected to wifi or 3G, and I've tried restarting my phone. It wouldn't be a problem, but the Starbucks thing is messily interspersed with the first three or four posts on a page, so...? I've tried clicking the Accept & Connect button, or doing anything else with to interact with the Starbucks thing, but none of it actually works. This has been the case for roughly two days. http://i.imgur.com/LSuZKxy.png http://i.imgur.com/TEGgkdX.png"
+		"I was in a Starbucks a day or two before the problem started, but I didn't connect to the wifi there or anything like that."
+	- Set a minimum size for smilie images or scale them independent of the font size setting.
+		"I'm on an iPhone 6 with my iOS display settings set to the second-smallest font size and 70% scale text in the Awful settings. Text looks great to me but emoji are really, really tiny with those settings. I'm wondering if it's worth it (or even possible?) to bump up their size a little bit (or standardize it regardless of scale text settings?)"
+	- Fix certain animated smilies not erasing certain frames in dark mode.
+		"Oh another #DarkModeProblems: some animated emoticons don't properly erase certain frames of the animation in dark mode, e.g. :roflolomao: :yikes: :angel: (the extended wings never fully retract) :zaeed:"
+		"the zaeed one has black text stays black and illegible in night mode, even when the background is transparentized."
+	- Maintain, don't clear, selected thread tag when cancelling out of tag picker.
+		"If you're making a thread and choose a thread tag (say, "request"), then if you open the list of tags again thinking you'll want to change it to something else and hit cancel, it removes the first selection and leaves you with the shit post tag. I'd think canceling it would retain the original selection since you're canceling the dialog and not intentionally clearing it"
+	- Ease up on the network error alerts.
+		Some errors (failed auto-refresh) don't deserve an alert view. Maybe something more subtle, or just don't bother.
+		Operations cancelled when a screen is dismissed. If you give up loading a thread and back out, you should never see an error from that thread.
+	- Ensure that resetting your password on the Forums logs you out of Awful.
+	- Prevent any horizontal scrolling in posts view.
+		Something in the "every piece of thread content" thread (http://forums.somethingawful.com/showthread.php?threadid=3554578&perpage=40&pagenumber=1) causes horizontal scrolling. [this issue may be very old and irrelevant!]
+	- Feed VoiceOver the correct text for the ⋯ post action button.
+		Currently reads "three bullets".
+	- Stop offering "mark read up to this post" for archived threads.
+		Unless the Forums proper allows it. Don't think it works though.
+	- Ensure "just their posts" URLs work right.
+		"Opening this pasted URL doesn't filter by user: http://forums.somethingawful.com/showthread.php?threadid=3548888&userid=131119"
+	- Ensure ⋯ post action dots are same color as other text in amberpos theme.
+		"The three dots at the bottom of each post seem to be a slightly brighter shade of yellow in the amberPOS theme."
+	- Deal with dates that won't parse due to Forums' incorrect DST data.
+		Post whose date won't parse http://forums.somethingawful.com/showthread.php?threadid=3701512&perpage=40&pagenumber=19#post442455547
+		"Last night we switched to daylight saving time (in the US at least) and I'm noticing some posts from last night have no time stamps in the app. I think this is really just a symptom of a forums bug, and one that will only come up for one hour a year, so it's probably not worth spending any time on it, but I thought it was at least worth mentioning. The posts missing time stamps (according to the forums) were all posted between 2 and 3 AM. I think the forums switched to DST an hour late, and thus those posts are all from datetimes that don't actually exist."
+	- Don't crash on the Forums tab.
+		"So the awful app started crashing whenever I went to the general forums tab. I don't know what relevant info I would need to provide but I'm on a iphone 5s"
+	- Avoid needlessly locating post when opening certain copied URLs.
+		Opening a copied URL that mentions a `#post123` ends up "locating post" when it's really not necessary.
+	- Scroll thread lists like butter.
+		"Inertial scroll of the bookmark list is fairly janky on my 5S (iOS 8)." @ios8
+		"…scrolling through the list of threads is really choppy occasionally." iPhone 4S @awful3.6 @ios9
+		"5s, latest iOS. The new versions seem to be...jittery. Whenever I scroll through threads, the scrolling is very stilted. Awful was completely smooth before this updafe. It's slight, and not a deal breaker, but I've never seen this in any iOS app. Anybody else seeing this?"
+		"It is pretty bad on my 5S. Every time a page is loading scrolling leads to stutters. If I wait about 10 seconds when loading a page it clears up. Definitely has something to do with loading a new page."
+	- Update unread message badge on Messages tab immediately after reading messages.
+		Currently does its own network request to update, so it'll only update when it periodically refreshes.
+		"the messages icon is still flagged even after reading the new PM."
+	- Make "Open in <app>" work from Safari View Controller.
+		Dunno if this is possible.
+		"I notice that things like "Open in App" on Kickstarter's site don't work in the Awful browser. Not sure how hard that is to do."
+	- Nicely lay out multiple icons next to user's name (only some users have multiple). @awful3.17
+		"I feel like I saw this mentioned before but I'll post as a reminder anyways: if someone has one of the custom Plat icons it's just overlaid on the normal Plat icon. http://i.imgur.com/RxJiQJj.jpg"
+		Examples: https://forums.somethingawful.com/showthread.php?threadid=3758813&perpage=40&pagenumber=150#post461706632 https://forums.somethingawful.com/showthread.php?threadid=3782388&perpage=40&pagenumber=147#post462136541 http://forums.somethingawful.com/showthread.php?threadid=3728842&perpage=40&pagenumber=4#post447257900
+	- Fix annoying tendencies when tapping a GIF in spoiler tags.
+		Example: https://forums.somethingawful.com/showthread.php?threadid=3692371&perpage=40&pagenumber=33#post441459193
+	- Don't crash when deleting favourite forums.
+		"I accidentally favorited a forum, and now whenever I try to delete it, the app crashes. Is there anything I can do to fix it?"
+		"For whatever reason I seem to have favorited a forum so it appears at the top of the forums listing. Awful crashes when I try to delete from within the app."
+	- Keep app responsive after multitasking or swiping to dismiss Safari View Controller.
+		"On iOS 9.2, if you use the edge swipe to dismiss Safari View Controller, some (but not all) of the buttons in Awful's UI stop responding to taps." @ios9.2
+		"When I return to the app after its multi tasking the back button in the upper left to return back to bookmarks becomes unresponsive. In order to get back I can tap on Parent Forum and the nav bar at the bottom will reappear."
+	- Fix selecting text in embedded tweets. @twitter
+		"You can't select the text in the tweet -- it'll highlight a word if you tap-and-hold but that will also bring up the "Copy URL / Cancel" buttons, and dismissing the buttons clears the highlight. And you can't drag a highlight anchor into the tweet if you started the selection outside the embedded tweet (mb due to safari iframe javascript ajax dom swift cloud rpc tunneling ppp telnet baud unittests html5 saas xss nodejs on rails, or more probably all of the preceding???). Dragging past the tweet can work but it won't copy the tweet itself, just the surrounding text."
+	- Make links easy to tap in posts page.
+		"Is the "links are incredibly hard to click on" bug in 3.8 on The List?" @awful3.8
+		"For some reason pushing any link doesn't automatically work. I have to push for a few seconds and then I'm asked if I want to display in Safari or YouTube or wherever. It's annoying. Even non YouTube links have me exit the app."
+		"Thirding."
+		"I agree that links are a little hard to click on, I thought I was just inept with my tiny 5 though."
+		"Also the link-clicking issues -- I can mostly click on a link if I've scrolled back enough that the "Parent Forum | Previous Posts | Scroll to Bottom" button bar is fully visible; if that bar isn't fully visible, tapping a link will instead scroll the thread back by a couple pixels or something."
+	- Don't assume it's the current user who wrote the post being edited.
+		"I don't know whether this is intended or fixable or even worth looking into since it only affects mods but: when you go to edit someone else's post and preview it, in the preview panel it shows up like its your post instead of the original author's."
+	- Leper's Colony table row stays selected when ban isn't linked to a specific post.
+		"Sometimes bans aren't linked to any specific post and are done by admins through the admin panel. When you tap on one of these in the Lepers tab in Awful nothing happens but the entry gets stuck highlighted and it looks like something's broken. So, like, that's a minor UI issue I guess. http://i.imgur.com/enJXS68.png"
+	- Don't assume any login failure is an invalid username/password.
+		Actually parse the errors!
+	- Don't crash when user is banned.
+		"The app crashes if you open the side menu and are auto banned. I don't know if being banned also affects it. However this means you can't log out of your banned account."
+	- Don't crash restoring to an edit post screen.
+		"I've had this weird issue twice while editing a post that the app will crash and every time I try to reopen the app it goes back to the post editor then crashes. Force closing and hard resting the phone do not fix this issue, only deleting the app and reinstalling." @iphoneplus
+	- Safari View Controller header is wonky with an active call.
+		"The header on the web modal is a bit wonky when a call banner is displayed. http://i.imgur.com/QEveOBR.png"
+	- Don't crash reading posts in the eastern_europe.gfv thread.
+		"Never seen this before, trying to read the last 10 posts in eastern_europe.gfv thread [as of Feb 13, 2016 14:28 AST] and awful crashes while loading the thread. iPhone 6+, current iOS (9.2.1?), current version of awful 3.10" @iphoneplus @ios9.2.1 @awful3.10
+	- Thread table view cell sizing goes wonky sometimes.
+		"Thread list sizing on a cold start of the app." http://i.imgur.com/m4h298X.png
+		"More sizing hilarity. Auto layout? http://i.imgur.com/BAZiIqH.png"
+	- Threads are sometimes considered bookmarked when they aren't.
+		Tough when user has multiple pages of bookmarks, as we can't ever be that we've seen all bookmarks and everything else should be unbookmarked.
+		Is there something in a page of posts that tells us when a thread is bookmarked?
+		"I've noticed that the app seems to not keep very good track of unbookmarked threads. I unmark TVIV threads (sometimes in the app, sometimes on my computer) before a new episode comes out that I can't watch right away, then catch up with the thread and re-mark after I have time to watch it. When I go to re-mark the thread through the lower-right options menu, sometimes the app shows the un-mark button, apparently thinking that I still have it bookmarked from a while back."
+	- PM view still visible after deleting the PM from the list. @ipad
+	- Prevent accidental swipe-from-left-edge-to-pop-nav gesture while scrolling posts page.
+	- Jumping to end of a posts page should not prevent pull-for-next-page. @awful3.17
+		"Re the scroll to end - pull to refresh: If you scroll to end, the tableview will simply not stubbornly scroll to the y offset to trigger that state switch for what looks like the section/table footer (with the rotating arrow or whatever it is now). If I were to guess what was going on, it looks like once the scroll to end button is tapped, a flag is set and the tableview is applying a static y offset in scrollviewDidScroll. However, scrolling up at all unfucks this and after that you can pull to refresh. I might be filling in blanks where I shouldnt but I have also noticed a little more success in opening links in the pushed webview after scrolling up as well (there may be some lineup with whether that shortcut bar at the top where scroll to end lives being fully visible)"
+		"Bug report: after hitting "Scroll to the End", I'm having a weird time getting the pull up to refresh to work. Manually swiping to scroll down does not have the same problem.iPhone 6, latest Awful [3.10], latest iOS [9.2.1]." @awful3.10 @ios9.2.1
+	- Avoid jumping to top of posts page when highlighting a word.
+		"The thing where if you highlight a word, usually accidentally, and it jumps up the page and you lose your place. And if you scroll back down to your place and keep highlighting the word it will keep jumping up, but 1 or 2 posts closet each time, eventually getting there. It started doing this sort of recently and makes the app nearly unusable."
+	- Don't crash on launch.
+		"The app totally crashes on loading up after a few seconds. Complete crash to the homescreen. Tried uninstalling, turning my phone off, uninstalling then turning my phone off. iPhone 6" "iOS 9.2.1" @ios9.2.1
+		"I was having issues this morning where I'd freshly open Awful and it would crash instantly. I tried killing it from open apps, and opening again would crash again. iphone 6 ios 9.1. It was probably around the same time as the previous posters post, so might have been SA giving weird output that awful wasnt expecting. it would show the forums list before crashing if that matters." @ios9.1
+	- Centre the thread title in the navbar.
+		"for some reason the thread title is slightly to the right of center. Can this be corrected? http://i.imgur.com/6FAnHx9.png"
+	- A blue dot sometimes appears in the upper left corner of the posts page.
+		Sure looks like one of the dots that appears when selecting text.
+		"On a 6s+, 9.1, if I have a page open in the browser, switching device orientations (portrait<->landscape) closes the browser and loses my place in the thread I had open as well." @ios9.1 @iphoneplus
+		"I might have figured out how to reproduce the blue selection dot in the upper left corner. Open a thread from bookmark tab. Hold down on a username until it selects the text in their post. Swipe back to bookmarks. Seems reliable on my 6+."
+			"When I select text on the screen, the magnifier will shoot straight down and off screen when I release my finger. If the context menu disappears there's no way to retrieve it and I keep seeing the magnifier appear and shoot straight down and off the screen."
+			"Navigating to a new page with text highlighted seems to drag the selection cursor along the left side. You can see the left side of the "scroll" on the top left next to the Cancel in this screenshot. http://i.imgur.com/IcnWKJ0.png"
+	- Can tap "Preview" with no content in the text box, but it always errors out on the preview screen. @awful3.17
+		Either don't allow tapping "Preview", or figure out what the error is.
+	- Custom "post" and "preview" button text isn't showing up. @awful3.17
+		e.g. YOSPOS
+	- Long-pressing a tweet and tapping "Copy URL" always puts https://forums.somethingawful.com on the pasteboard.
+		"Add another to the initial tweembedding bugs pile: long-pressing a tweet and then choosing the "Copy URL" button seems to do nothing but place "https://forums.somethingawful.com" into your clipboard, regardless of the tweet, which I don't think is the correct behavior. Same result when long-pressing on a link within the embedded tweet."
+	- Embedded tweets are white in dark theme, is not great. @awful3.17
+		"The tweet is bright white even on the dark Awful theme and I am worried it'll look even more out of place in the amber forum. Aesthetics Is My Watchword™"
+		"Saw this in the other thread and just wanted to say that the twitter script has a built-in dark theme (https://dev.twitter.com/web/embedded-tweets/parameters). Well if you haven't worked that in already of course."
+	- Posts page underbar can suddenly appear at unwelcome times.
+		"iPad mini 4, 9.3 I keep seeing an issue where I stop scrolling down and (with no/zero-second animation) the shortcut bar at the top fully extends and the tableview scrolls down the bar's height and it's annoying as piiiiiissssss"
+	- "Copy URL" activity icon is missing in image preview on iPad. @awful3.17
+		"Incidentally, the icon for our Copy URL activity isn't showing up on my iPad, both Debug and App Store versions. The button and label are both there, but the button is blank. Odd."
+	- Rap sheet of permabanned user "Octo Rugboy" says "nothing to see here", is that right? @awful3.17
+		Post from user: http://forums.somethingawful.com/showthread.php?threadid=3626454&perpage=40&pagenumber=47#post443776065 @ios8.1.2
+	- awful://banlist shows modal on iPad, should just open sidebar to correct tab. @ipad @awful3.17
+	- Smilie keyboard recent tab does rearrange when tapping an entry, but the images don't update.
+		"On the keyboard if you go to the recent tab, tapping any smiley doesn't update the smiley graphics themselves, but does change the notice at the bottom of the screen when one is copied to the clipboard. e.g., if my first four are :yum::awesomelon::ohdear::stonk: the first time I tap :stonk:, I get the notice "Copied :stonk:" and nothing changes position. If I tap :stonk: again it says "Copied :ohdear:" If I scroll down and back up then the order is changed to reflect the taps: :ohdear: :stonk: :yum: :awesomelon:"
+	- Auction thread tag in BFC doesn't show up right, shows little "auction" secondary tag instead. @awful3.17
+		"This thread icon seems messed up: http://i.imgur.com/g2lcuY5.png"
+		Possibly related: thread tags can differ in ID while having the same filename.
+	- Empty PM inbox is incorrectly scraped as an error, instead of just plain empty.
+		"I had another bug where the app would throw out a scary exception popup message when I tried to open my messages on an empty inbox instead of a more meaningful "you have no messages" as the background text to an empty inbox."
+	- Audio sometimes keeps playing, and high battery use attributed to "audio", after closing Awful Browser.
+		"This seems weird: http://i.imgur.com/FWS55YX.png iPhone 6S latest version of iOS." @ios9.3.5
+		"I've noticed if you back out of the webview with media playing in it sometimes it doesn't destroy it and I continue to hear audio"
+		"Why do YouTube videos continue to play after I've gone back to the thread from where I first opened the link?" @ipad
+		"I also have the "video sound sometimes keeps playing after going back to the thread" bug, it's not only Youtube because I had it happen on a Kickstarter video as well. iPad Mini 2 with the latest updates."
+		Soundcloud too.
+	- Don't crash when logging in right after logging out.
+		"3.16 SE if I log out, the app crashes the first time I try to log back in. Works just fine the second time" @awful3.16
+	- Go to page of edited post, not to next unread page.
+		"when I finished and posted the edit, I got taken to the next page (189) instead of staying on the page with the post I'd just edited (188)."
+	- Align toolbar icons with navbar icons in posts screen.
+		See http://i.imgur.com/8LSMq3u.png
+	- Nicely align platinum grenade with post author's username.
+		"Can we center the platinum icon with the text of the name of the poster."
+	- Dark theme spoilers are too bright in large blocks (try reading CD).
+		Maybe a glow effect like Forums YOSPOS?
+	- Some thread tags disappear in the white theme.
+		"a few of the thread tags need borders; they disappear in the white theme. In particular, the <web> tag and ghosts tag."
+	- Compose screen post icon needs VoiceOver. And all thread tags.
+	- Scrape PM loading errors.
+		e.g. "Specified privatemessage was not found in the live forums."
+	- Only queue one quote fetch attempt each time the quote button is tapped.
+		"I'm not sure if this is a fixable problem, but on dodgy wifi, the quote button sometimes becomes unresponsive, only to give you five repeats of the same quote in your post writeup when that eventually loads. They are somewhat tedious to remove."
+	- Avoid opening a link in Awful Browser only to immediately get an "Open in YouTube?" alert.
+		"With the browser set to Awful, Awful.app opens the reader view and then you get a prompt asking if you want to open the link in youtube rather than just switching to youtube.app automatically (like it does when the default browser is set to Safari)."
+		Could do whatever Twitter.app does and redirect to mobile version of site?
+		Or could just bypass the browser and open straight in YouTube.app.
+	- Image preview is hard to close.
+		"Fix up the image viewer. I hate how it doesn't resize the image when you rotate your phone. Also, closing the viewer is infuriatingly hard and I end up frantically pounding the close link to kill the damn thing. The Twitter app has a wonderful image viewer; if it could work as well as that I would be ecstatic."
+	- Don't do dumb things when the next page of posts fails to load.
+		"when the forums return a database error (as they have a couple times this morning) when moving to the next page with the > button, the db error pops up, but the page count still increments as if I've changed pages successfully. Pulling up to change page doesn't change the count, seemingly."
+		"On a weak or nonexistent internet connection when you pull up to go to the next page of a thread, of course it fails with the "internet connection appears to be offline" message. If you then get the connection back and pull up again, when the next page finishes loading the screen will scroll down to the very bottom of the new page (though the page won't be marked read or anything). An oddity."
+	- Keyboard loses keys after pasting a picture into a compose text box.
+		"Also this happened immediately after I pasted in the picture (upload via Awful from Library): http://i.imgur.com/x0s3VmO.png That's disconcerting."
+		"the keyboard does this after selecting an image to upload. fixes itself if you hit a button that would change the keyboard "page". http://i.imgur.com/aYtki5E.png" @awful3.7-beta1
+	- Posts view popover arrow color is wrong in dark theme.
+		"Certain threads seem to give the "share" panel (don't know what you actually call it but see screenshots) a tiny visual bug. Seems to always happen in these threads. http://i.imgur.com/e6ypcrE.png See the arrow-y thing coming from the Share symbol."
+	- Load next page shouldn't just reload the current page.
+		"Just had an issue where the app said reload for the next page and it kept reloading the current page. I clicked the > and it went to the next page."
+	- "Hide Sidebar in Landscape" setting fails on iPhone 6+. @iphoneplus
+		"I think this is only with the hide sidebar in landscape on. How is that supposed to work on the 6+ because I always get the sidebar when I accidentally rotate."
+		"I can confirm I had that option turned on and can also confirm it doesn't seem to work as intended"
+		"…sidebar doesn't disappear despite the option toggled. Done a reinstall, logout-login, etc"
+		"It won't go awaaaaay http://i.imgur.com/tPt9SHD.png"
+		"So if I'm scrolling through a thread and click on an embedded YouTube link, it will open. If I then turn the phone to landscape to view it, the screen stops playing the video and brings the sidebar in. If I then re-click the link, the video (usually, but not always) plays in landscape. I have "Hide Sidebar In Landscape" enabled in the settings. What can I do to simply watch the video in landscape the first time?" (unsure whether this is iPhone +)
+	- Playing YouTube embed disappears after orientation change on iPhone 6+. @iphoneplus
+		"On the 6+, with hide sidebar in landscape enabled, start playing a YouTube video in portrait, and rotate to landscape. Sidebar appears and video disappears. I'm on the latest beta."
+			"I have the same problem, but sidebar doesn't disappear despite the option toggled. Done a reinstall, logout-login, etc"
+	- Crash in compose text box after first time replying/editing/quoting during session.
+		"I'm getting a crash any time a text editor comes up (edit, reply, quote) if I have already replied, edited, or quoted once in a session of using the app. Then when I relaunch the app it starts me at the thread I was viewing directly before I views the one I'm replying to. I post a reply to the formula 1 thread just fine. I then go back to bookmarks, read the Forza Motorsport 6 thread, and post a reply. As soon as the editor comes up to type my reply into the app crashes. When I restart the app I'm back in the formula 1 thread. It's happened with the last few betas. I'm using iOS 9.0.1 on an iPhone 6S but I saw the same thing on the 6+ last week." @iphoneplus @ios9.0.1
+		" I recently upgraded to iOS 9 on my 6+, and it seems like after I make a post, the app always crashes when I try making another, no matter how much time has past. I have to manually kill it and reopen it each time to get it to work again." @iphoneplus
+			"Immediately after the reply screen pops up. Sometimes quoting works if I reload the page it was on, and sometimes not. Sometimes I get the crash if I try quoting and but not when making a new reply. It'll also sometimes crash if I try editing my own post immediately after I make it."
+		"I'm getting the same issue with a 6(non-plus) on 9.0. At first it was make (or start then back out of) one post then it will crash on the next one but now it has moved to just crashing at the start of making a post. But only on some threads - this thread it was crashing but the Verizon thread was fine. Strangely enough if it goes into the "crash all the time" loop for a thread if I go into another thread where it doesn't crash and add a few quotes into a new post then back out it sometimes starts working fine again in the thread where it formerly would crash. But only sometimes. Force quitting didn't help, nor did logging out. Even uninstalling and reinstalling doesn't seem to have made a difference. I just tried disabling Crystal in case there is some bug due to content blocking leaking into places it shouldn't be and it seems to have made the issue go away but I can't tell if that's just a coincidence. I'll update later today." @ios9.0
+	- Partially-loaded posts page after posting.
+		"In short, I got a brief flicker of something in the TV buying thread (possibly a cached image), and then, instead of my latest post (which may not have rendered/finished loading after making it just before I had put my phone in my pocket, possibly locking it): http://i.imgur.com/nvlmsQ8.png"
+			"Just as a followup, based on another recent incident, it likely seems to depend on switching away from the app while a thread is loading and then switching back. Perhaps a change in behavior of an NSURLConnection delegate (or the equivalent) when an open connection is backgrounded? EDIT: Yes, backgrounding seems to be related. I managed to reproduce this again when paging away for a second after posting this while it was still reloading the thread."
+			"A final note on reproducibility: I've now had fairly good luck (>75-80%) reproducing the bug (or a closely related one) as follows: 1. Open a previously unread thread (or a thread with unread posts in it 2. When the loading indicator in the OS time/status bar (next to the cell/wifi status) disappears, but the "Loading" pinwheel is still spinning in the body of the app, immediately background the app (by, for example, going to the home screen) 3. Return to Awful. The "Loading" pinwheel should be frozen for several seconds before being replaced by the thread (although I have occasionally seen it still spin, perhaps if the app is backgrounded very soon after the loading indicator disappears?). Any previously unread posts will then appear blank while any previously read posts will appear normally. This does not appear to work on pages containing previously read (presumably cached) posts. Backgrounding while the status bar loading indicator is visible also does not have the same effect (it will reload the page successfully before rendering)"
+	- Subforum expansion arrow gets out of whack.
+		"if you expand an arrow of subforums and leave it long enough for the list to collapse when you open the app back up, it still shows the -- as if the list is expanded."
+		"I still have the issue where the drop down arrow to show child forums indicates that it has been clicked but no child forums are shown. I have to click the arrow twice to get them to expand."
+		"When I go to the forums list, subforums don't show up even if they were "popped out" last time I viewed - the arrow will be pointed down to indicate it should be showing them, and a tap will make it go back in, so I have to double tap to see them again."
+		"Suddenly sub forums are collapsed in the forums list. I can fix it but when I return to the forums list the sub forums are collapsed again. Is it just me?"
+		"Oftentimes when I come back to the app after it's been killed by the system, any forums I had expanded will still appear expanded (i.e. the arrow will be pointing down) but its subforums don't show up. To get to the subforums, you need to tap the arrow to close it, then tap it again to open it."
+	- Share sheet in image preview can lose its background.
+		"The share sheet for images has black text on black background in dark mode. http://i.imgur.com/sjTZlPy.jpg" @iphoneplus @awful3.4-beta6
+		"Hey you know how when you open an image in the viewer, then tap the Share button, sometimes the Share sheet's background is invisible so it's impossible to read the button labels? Go to settings and turn off the "Hide sidebar in landscape" option. Now behold as the image viewer's share sheet labels get their background!! e: iPhone 6+, iOS 8.4, current App Store version of Awful." @iphoneplus @ios8.4 @awful3.3
+		"it's hard to read the labels on that Sharing sub-sheet from the image viewer sheet, since the Sharing sub-sheet doesn't have any background, and the labels are in non-outlined black text."
+	- Image preview done button disappears after zooming/moving around.
+		"I'm having a weird issue where when I long tap to full-screen an image, then zoom in and back out, the Done button disappears and I have to force quit Awful to get back to the thread view. Running the latest Awful version on a 6+, only slightly unusual thing is that I'm running iOS 8.1" @iphoneplus @ios8.1
+		"Sometimes I get stuck on an image. It's not every time but it seems to happen more often when I pinch zoom on an image. Swiping down doesn't work, and neither does tapping to bring up the "done". I've tried zooming out again but it doesn't help. The only way out is to force close the app. This is on the latest beta, but the last few release versions too. IPhone 6 plus iOS 8.3" @awful3.4 @iphoneplus @ios8.3
+	- GIF- and embed-heavy post pages grind app to a halt.
+		"I love the app i've been using it for ages, but even on my iPhone 5s and iPad 3 gift [sic: gif] threads [such as PYF threads] grind the pages to a halt. Yet in Safari they load up fine; not sure if anyone else has mentioned this in this thread, but I thought i'd ask as to why? I know gifs are meaty files, but it's weird how Safari loads them up fine."
+		"any image-heavy page or page with more than two youtube embeds likes to hang and stutter to the point of being unuseable, like "actually go and open it in safari instead" unuseable"
+	- Posts page jumps around after reentering foreground.
+		"If I leave a thread open with the app in the background, and return to it to refresh the thread by dragging upwards, there's often no rhyme or reason as to where the page decides to finish loading into memory. In the Android app, the oldest unread post would always be the breakpoint. Could this be implemented?"
+	- Multiple menus appear when pressing the share button on an embedded YouTube video and copying the URL.
+		"http://i.imgur.com/202EI1f.png If you hit the share button on an embedded YouTube and then go to copy the url it pops up the text selection context menu and the share context menu for tapping the YouTube link"
+		"If you long press the title of an embedded YouTube video it pops up two context menus."
+	- A thread moving from e.g. Ask/Tell to E/N retains its old "Ask" badge.
+		"[some thread] was originally in A/T but got moved to E/N… but in Awful it still shows its old "ask" badge."
+	- Avoid wrapping username in posts view in YOSPOS themes.
+		"if someone has a long name it pushes their avatar to a seperate line and looks kinda shitty. see: http://forums.somethingawful.com/showthread.php?threadid=3712267&perpage=40&pagenumber=10#post444078905 e: only happens in default yospos and amberpos themes actually."
+		"it's because the font + platinum icon are slightly larger on the default font in the 'pos. http://i.imgur.com/5BvbIv3.png"
+	- Profile screen background doesn't always extend to full height.
+		"If you open someone's profile in portrait, the giant blurred-out avatar background (behind the actual avatar) only extends about 1/3 down the area it's supposed to fill, with the remainder as a formless gray void. Seems to happen on most profiles (e.g. Dewgy, JivJov, and mine on this page), but not all -- Pokeyman's background seems to only have this issue while it's (re)loading the avatar, and fixes itself a couple seconds after opening the profile. Might be in the weird state only until it finishes rendering the larger + blurred version? Also seems to happen much more frequently and/or persist longer when viewing the profiles in portrait orientation." @ios8.2 @awful3.2
+	- Smilie keyboard item rearranging kinda sucks.
+		"Oh and as one other note on the smilie keyboard from a UX standpoint, it definitely looks like the "dance" is individually animated for each button. As a result, it's possible to induce a dance which is slightly offset from other buttons by releasing at a time which is at a different point in the animation cycle from other buttons. I'm not sure how easy it would be to synchronize this, or that it's super relevant to focus on if it turns out to be difficult to do."
+		"Possibly related: After I toggle the reordering mode by a long tap, if I then drag as if to reorder a smiley and change my mind and return it to the exact place in the order of favorites from which I started dragging the smiley, that smiley "key" will no longer dance."
+		"It's possible to drag a smiley near the end of the second-to-last row straight down and, if there is no smiley in the same horizontal location on the last row (i.e. it is possible to drag it straight down without hitting another smiley), the dragged smiley will not behave as if it was being moved to the very end of the list. In other words, the drag action must "hit" an existing smiley on the last row to register as a move to the "end" of the list. This is unintuitive, but perhaps understandably conflicts with desirable behavior when a button the the last row is pulled straight down (which probably shouldn't reorder). Maybe a compromise is to make the entire empty rest of the last row a hot area meaning "move to end"?"
+		"If I drag my finger slightly during the long tap to "pick up" a smiley button (turning the gesture into a swipe), I cannot pick up the button at all until I initiate a new long-press, even if the "swipe" never left the button. If I am not in reordering mode, the button may briefly flash the "delete" icon when I lift my finger, but I do not enter reordering mode. This should probably be a little more lenient and allow reordering mode to be entered following the standard long-press timeout, as long as the "swipe" doesn't leave the smiley."
+		"It's unintuitive to have to continue to do long-presses to pick up smiley buttons even after I'm in reorder mode. The long-press timeout should only be respected when entering the mode (as it is in the Springboard). Or is there some other reason for this?"
+		"It's slightly unintuitive to have to tap the favorite-smilies tab to exit reorder mode. Now of course you can't capture the home button events to behave like the Springboard does, but maybe tapping on empty space inside the favorites pane or outside the keyboard entirely could exit the mode too? But on the other hand, maybe this would be too confusing."
+	- Smilie keyboard reordering acts weird when leaving app or switching keyboards.
+		"After doing a long tap to enter the [smilie keyboard] mode to reorder favorites, if I leave the app while still in reordering mode, returning to the app leaves me in that mode, but the "keys" are no longer moving."
+		"Somewhat related, if I have done this, switch to the normal keyboard, switch back to the smiley keyboard, and then reorder a smiley, the smiley in question and any other smilies that were even momentarily reordered, will start "dancing" again."
+	- Impossible-to-press delete button on smilie keyboard.
+		"How the hell do I hit that minus button? :/ http://i.imgur.com/EQzKU0Y.png"
+	- Tapping an unspoiled image can open the image preview.
+		"If a spoilered picture is quoted when you tap the quoted spoiler it automatically opens the picture viewer. For example: http://forums.somethingawful.com/showthread.php?threadid=3615661&perpage=40&pagenumber=42#post436215884"
+			"e: seems to be intermittent."
+	- Tapping an unspoiled youtube link opens the video.
+		Should just reveal the spoiler.
+		Example https://forums.somethingawful.com/showthread.php?threadid=3783291&perpage=40&pagenumber=2#post462164764
+	- Compose accessory keys fall apart when using split iPad keyboard. @ipad
+		"The buttons above the keyboard don't work when you have the regular keyboard in split mode. For all I know this could have been in there for a long time, but I haven't been using my iPad much lately."
+		There's some other strangeness around the accessory view and split keyboards that could use some work, the layout goes pretty screwy. In screenshot form: http://i.imgur.com/5D71m14.png
+		There doesn't seem to be any reliable way to figure out when the keyboard is split or whether it's undocked (it can be either, both, or neither). (I got close, checking for UIKeyboardWill/DidChangeFrameNotification without a preceding UIKeyboardWillShowNotification, but it falls apart when the hardware keyboard is taken into account.)
+New features:
+	- Scrape and, well, announce announcements.
+	- Add/remove users from ignore list.
+		Apparently if a mod gets on the ignore list, the only valid change is to remove the mod. So maybe don't try to bulk add/remove in one request, or check for "errors" where nothing changes, or something.
+		"Is there a reason you can't block someone from the app?"
+		"I found out today that there's no way to add a user to your ignore list from within the app. I am apparently getting crotchety in my old age, because this is something I'd like to do. Diabolik900 suggested I request the feature here, so here I am. Thanks for listening!"
+	- Set last-read post to last-visible post instead of marking the whole page as read.
+		"Would it be possible to set the last read post only when I exit the thread, and only to the last post I have seen? I think current behavior matches the website, where last read is set to the end of the current page as soon as you open the thread. The app has the ability to be smarter I would think."
+	- Make SAclopedia available for browsing.
+	- Search the Forums.
+		Maybe fall back to scoped Google search if necessary?
+		Is search a platinum feature?
+		Mock http://i.imgur.com/PQg0PVk.png
+		"When are search and archives going to be added plz? Sorry for being an asshole about the good app."
+		"Hi, I am posting again asking for search to added, not because I am impatient, but because I fear the request will get lost if I do not."
+	- Search within a thread.
+		Maybe fall back to scoped Google search if necessary?
+	- Search within a page (like a browser's command-f).
+		"Is there a way to cntrl-f style search a thread/page?"
+		"A search feature (as in ctrl+f) would be great. Maybe it could be slipped in to that section in the lower right with Rate Thread, Link a Thread, etc."
+	- Travel through the archives.
+		"When are search and archives going to be added plz? Sorry for being an asshole about the good app."
+		"If this question has been answered already I apologize: is there anyway for the app to be able to browse archives? I know I can read archived threads if the thread is linked, but as far as I am aware there is no way to browse archives. I have purchased archive access when I registered."
+	- Show new threads in favourited forums.
+		I seldom check the actual CoC or project.log forum pages but I'd like to see new threads.
+	- Add an optional TVIV mode for posts view.
+		Automatically polls for new posts every, let's say, 60 seconds.
+		Never on by default.
+		Appends new posts to the bottom of the view as they come in, skipping pagination?
+	- Browse avatar history.
+		http://muddledmuse.com/saars/ and http://esarahpalinonline.com/soap/ (not sure if these do anything special, or just hit up some mystery page on SA or something else we can replicate directly)
+		Apparently it's "Scraping and guessing". "I believe it grabs the current av URL and backtracks based on that; that's why SOAP won't show avs that are mod-given (like the big BYOB ones) because those are hosted elsewhere on the server and therefore outside the normal SA avatar schema."
+	- Scrape and show buddy list.
+	- Show moderators of a forum.
+		Forum pages (i.e. thread lists) put moderators in the markup, though they're hidden by CSS.
+	- List noisiest posters in a thread.
+	- Reveal a smilie's text and show a menu via e.g. long-press.
+		"Feature request: if you hold on a forum emoticon, show the bbcode for it instead of showing it full-screen."
+		"It'd be nice to be able to favorite a smiley from someone else's post."
+		Action sheet?
+	- Show post histories.
+		This was on my feature list but I dunno exactly what it means. I think a way to tap a user and search the Forums for all their posts?
+	- Setting/ability to embed images always as [img] by default (not [timg]).
+		"I was posting large size web comics into the GBS web comics thread, where some people frown upon timg due to how it reacts when the forum is viewed on touchscreen devices in a normal web browser."
+		"If there isn't an option to embed images from my phone's library not as timg automatically but img instead already, can their be one?"
+	- Some way to skip past exactly one post.
+		"a function where you could skip a post one by one as there tend to be a few posts here and there that quote insanely long posts and scrolling through them is a bit of a pain."
+	- Setting to hide the Messages tab.
+		"Can I hide the messages tab at the bottom? I recently got plat and don't use PM's ever and I accidentally click it a whole lot."
+			(Dick answer) Kinda feels like you'll just get used to it?
+	- Add a "just my posts" button without needing to find a post of mine.
+		"Is there a way to find all my own posts within a thread without having to find where one of my posts are? I asked a question in a thread like a year ago and can't remember what the answer was and would like to find it quickly. I'd like the "their posts" functionality but from anywhere in a thread"
+	- Separate settings for pull-for-next-page and pull-to-refresh in posts view.
+		"This might just be me but it'd be nice to have pull for next page and pull to refresh as different toggles. I'm not a fan of pull to next page but I'd still like to be able to check for new posts when I get to the bottom of a thread"
+	- Show current beta version somewhere (i.e. build number).
+		"Is there a way to see the specific beta version we're using? I know in TestFlight it has a 5 string identifier when you go to update."
+	- Show fully-formatted Leper's Colony entries, not just the plain text version.
+		"Any plans on adding images to the leper colony btw?"
+		"Oh yeah +1 from me on this one."
+	- Allow backing out of all posts views in split view, leaving the main pane empty. @ipad
+		"I wish there were a way in the iPad app to get out of a thread view and just leave the main pane empty. I'm used to the phone version where you can go back to the bookmark list and so when I come back to the iPad app I have to figure out if I am in the middle of reading whatever thread is open or if I already read it."
+	- Open embedded tweets in Twitter.app. @twitter
+		"Is there a way that when u interact with an embedded tweet, it comes up in the twitter app? Instead of the apps browser"
+		"I know there's an open in Twitter app banner on the page, but it keeps signing me out even tho I log in in a window that's not private. Basically I want to click follow and have it work like in the app instead of a 3 step process, can twitter do this?"
+	- Allow connecting to the Forums by IP address.
+		"I think there used to be an option to connect to SA by IP address? Can't find it in the settings anymore but it must be still active because I can only read SA on my phone right now since it's blocked by court order here courtesy of the harm prevention specialists  in TCC."
+		Used to be a feature, was removed when Forums moved to https.
+	- Allow moving the sidebar to either side on iPad. @ipad
+		"Feature suggestion: an option to drag the bookmarks/thread list panel to either side in landscape mode on iPad. I want to scroll left-handed sometimes."
+		Doesn't seem to be available in UISplitViewController; would have to be custom implementation. (And given how much we torture UISVC, maybe not a bad idea anyway.)
+	- Allow copying and pasting a link to an embedded tweet. @twitter
+		"if I try copying and pasting a link to a tweet the forums embedded it seems to just be copying https://forums.somethingawful.com"
+	- Some way to crawl/cache/save pages of a thread.
+		"any chance there could be a "cache x pages" feature? I ride the subway to work and I'll next-page up a few before going underground and I see the app does somehow persist loaded pages. It'd be handy to be able to quickly download a few pages for offline viewing."
+		X should probably not be much larger than, say, 5.
+		"I travel on 24+ hour plane trips very frequently. It would be great if I could save my bookmarked threads for offline viewing, so I'd have something to read on the plane. Would this be hard to code and implement?"
+	- Cache images alongside markup when reading a page of posts.
+	- Add more keyboard commands.
+		"
+			*Cmd+Enter to Preview/Reply
+			*Cmd+M to add/remove bookmark
+			*Cmd+B to open bookmarks
+			*Cmd+I to open main index
+			*Cmd 1-5 to vote
+			*Cmd+L to mark Last read
+			*Cmd+E to edit
+			*Cmd+Q to quote"
+	- Preview [img] tags when writing posts, like how an image-to-be-uploaded is previewed.
+	- Show Forums changelog somewhere?
+		"Odd suggestion: a way to look at the forum's changelog directly in the settings? I don't imagine it'd be too much work to implement, just thought of it the other day when I realised I couldn't get to them within the app like I could the website. Maybe it's a dumb idea, but whatever."
+		Could be handy for "I wonder why nothing works" massive markup changes.
+	- Save draft posts/PMs/threads (outside of UIKit state restoration).
+		So backing out of a thread doesn't lose a reply-in-progress; can go back in and resume the draft.
+		Could have a list of drafts somewhere too.
+	- Add sorting options to Leper's Colony.
+	- Add a "split quote" button when writing a post.
+		Inserts a [/quote] at insertion point (assuming we're in a [quote] already), adds a couple newlines, inserts appropriate [quote=whatever], then places cursor in between the newly-split pieces.
+	- Show "open in…" action sheet when long-tapping a link in a custom title on the profile screen.
+	- Handle perpage values that aren't 40.
+		Handle different perpage values when converting URLs to `awful://` URLs. e.g. a link with `perpage=10&pagenumber=5`
+		"it does look like the parser for SA URLs ignores the perpage value, which seems like it would cause a different bug if someone has a non-standard perpage value."
+	- Allow bookmarking archived threads.
+		The Forums proper doesn't allow this, so currently the bookmark seems to work but disappears next time you refresh bookmarks.
+	- Somehow notify user when on probation.
+		"Suggestion: change the blue banner to purple while probated"
+		Apparently probation end date is not in user's time zone. (Maybe that's obvious.)
+	- Make probation links tap-able.
+		"Any chance in a future update that we can click on a probation link to read the notes?"
+	- Add an "only on wi-fi" option for "show images" etc. settings.
+	- Ship app with a canned forum list for better first-run experience.
+		They'll probably have changed, but that's what refresh is for.
+	- IBInspectable settings bindings?
+	- Automatically hide navbar/toolbar when scrolling around in posts view (à la Safari).
+	- An "Add Bookmark" menu item when long-tapping a link to a thread.
+	- BBcode cheatsheet somewhere near the compose screen.
+	- Automatically insert a [*] tag when pressing return within a [list] element.
+		"Would it be possible to automatically insert a [ * ] tag if I hit return while the cursor is inside an open [list] tag, like the web-based post editor does?"
+	- Replace "End of the thread" text with something.
+		A dot? http://i.imgur.com/e4FxeH6.jpg
+		A circle around the loading spinner? http://i.imgur.com/Ag4J1EC.png
+	- An in-app option to replace embeds (youtube, twitter) with links. @twitter @youtube
+		Maybe phrase it as "embed youtube/twitter" with an "only on wi-fi" option.
+	- Button to close/reopen a thread.
+		"Lock/Open threads. This isn't particularly important to me [a mod] but users generally might actually use this feature and the fact that it would work for mods is really just a bonus, like editing."
+	- Setting to turn off FYAD flags.
+		"Flags are showing up in Fyad threads which is cool but having an option to turn them off would be cool too. Peace."
+	- Get the Forums to host a site association file so the app is launched when tapping http:// links.
+	- Use the noseen=1 query parameter sometimes to avoid bumping the user's last-read-post marker.
+		Maybe when following links to far-off posts (Leper's Colony, or inter-thread links).
+		Maybe when creating URLs to posts for sharing.
+	- Allow toggling post options on preview screen.
+		Mock http://i.imgur.com/R4d7eTA.png
+		Especially "show signature".
+		"Any chance you could add a checkbox to post with signatures in GBS and such?"
+	- Setting to hide signatures in posts page.
+		"can there be an option to turn off signatures in the app like there is for images and avatars? scrolling through a long list of img links is annoying"
+	- Enable mod-only actions on posts.
+		Markup is written up at http://forums.somethingawful.com/showthread.php?threadid=3760254#post458400337
+	- New and exciting 3D Touching. @3dtouch
+		"Idea: force peek or whatever it's called on the "Idiot posted" section of a quote to see the thread from which it originated?"
+		Preview links in posts. Basically exact same as the 3D Touch on thread lists, just ask the webview for important link information at the point.
+		"Is there going to be 3D Touch on web links in a future release?"
+	- Add more contentInset.bottom to the posts page when the video PiP obscures some of the bottom of the page.
+		Is this even a thing we can find out?
+	- Setting to flip between light/dark modes based on current time/location.
+		"Dumb feature idea that would appeal to me a lot: Light/dark mode on a schedule, so it can go to dark mode at night and white mode during the day without having to manually switch it."
+	- Instead of timeouts for network ops, show a non-modal "this is taking awhile" message with a cancel button.
+		Sometimes connections are just real slow but still functional.
+	- Load rest of PM list when scrolling to the bottom.
+	- Make dark theme PHP syntax highlighting less eye-gougy.
+	- Add a search bar to the bookmarks tab.
+		"Has anyone ever suggested a quick search bar on the bookmarks page? That page is pretty much how I read the forums and scanning the whole list to find a particular thread is slightly more work than my lazy ass would like."
+	- Swipe right in posts to go back one page.
+		"Requesting swiping right take you back to the previous page. Seems to be the only app that doesn't do this."
+	- Make "expand" button on embedded YouTube videos less useless. @youtube
+		"In the youtube app, if your orientation is locked, you can still press the expand button to turn the video full screen landscape. In Awful, the expand button for embedded youtube videos only zooms in (useless). I don't know if it's possible, but it's be KILLER for awfuls embedded Youtubes to behave the same as the app when the expand button is tapped."
+	- Make all images in a post available when previewing.
+		e.g. swipe left/right to see the previous/next image in that same post.
+	- Allow portrait-upside-down orientation on phone.
+		"would it be possible to have the screen flip upside down in portrait mode when I turn my phone?"
+		Might need a setting? iOS standard is to not allow that orientation on phone, but I dunno why that's the standard.
+	- Indicate links that show an image in-place when "show images" setting is turned off.
+		"I accidentally turned images off and it was kind of nice. The only problem was there was no indication if an image link was something that was going to expand in the app, or a link someone posted that would open in the web view."
+	- Add "Open" menu item when long-pressing a link.
+		Used to exist but was removed as it seemed redundant; just dismiss the menu and tap the link if that's what you want. But maybe it's still useful!
+		Possibly also useful when long-tapping a link to another thread/post that would be handled internally to the app.
+		"Also I would enjoy having the "Open" option back in the popup menu when you press-and-hold on a link in Awful!"
+		"when someone links a bunch of short words, it was handy when the popup menu let you both preview which link you've pressed on and also let you flawlessly, every time, WITHOUT FAIL open that selfsame link in Embedded Safari."
+		"Also +1 to re-adding the simple "Open" choice to the popup menu when you long-press on a link in a thread. Everyone who has previously made this suggestion is undoubtedly strong and physically attractive!"
+	- Redirect more YouTube URLs to YouTube.app. @youtube
+		youtube://www.youtube.com/channel/channelName is apparently a thing.
+		"We don't catch the form of YouTube URL in this post: https://forums.somethingawful.com/showthread.php?threadid=3766598&perpage=40&pagenumber=10#post457021918" (URL is https://www.youtube.com/user/georgef551/featured)
+		"The link in http://forums.somethingawful.com/showthread.php?threadid=3740700&perpage=40&pagenumber=905#post453511573 doesn't open in YouTube directly. Because of the shortener?" (URL is https://youtu.be/C6UzTXqnxjw)
+	- Only allow "pull for next page" gesture in posts view if, when touch started, scroll view was at or very near bottom.
+		"Can 'pull to load next page' be a toggle in settings please I've jumped to the next page twice in literally the last 30 seconds before reading the last two posts on the page"
+	- Background app refresh.
+		The iOS feature where your app gets launched in the background once in a while to "refresh" itself. Maybe we refresh the bookmarks list, any open thread lists, and the PM inbox.
+	- Local notifications for new PMs (if the app is in the background and happens to discover a previously-unknown, unread PM)
+	- Handoff for previewed images.
+		"If you open an image in Awful app and then use Handoff to your comp, the Handoff'd page is not the image, and not even the thread you opened the image from, but rather the forum you're currently in on the Forums tab (or the most recent forum you've been in, if that tab is on the full forums list). Perplexing!"
+	- Some way to go back to the previous thread you were reading.
+		"Something I'd like and cannot figure a good way to implement design-wise. All too often, I accidentally hit a thread in my bookmarks list while reading in the middle of a page in another thread (it's usually when I have to change my reading position because the cat has gotten in the way of my viewing), in this occasion, a general back button or "oops" gesture would be nice..."
+	- Theme tweaks.
+		"In dark mode, I'd like to see the title bar darker than the current teal. Something grey or dark blue/purple would work."
+			"That bar would look cool if it matched the bottom bar: http://i.imgur.com/6FAnHx9.png"
+		"I think that quote blue text 'Samurai Saunders posted:' should be regular weight rather than bold. http://i.imgur.com/vES4Okv.png"
+	- See about opening Forums website URLs in Awful.
+		Would need SA to host a site association file over HTTPS. Can make file, dunno if anyone is interested in hosting it.
+	- Posts view page toolbar button ("< 1 / 5 >") is discoloured when iOS "button shapes" accessibility setting is enabled.
+		"iPhone version - I'm using the button shapes accessibility feature in iOS 7.1 and when you're swiping to go back the color of the button spazzes out. This happens if you're more than one thread later in, so like when you're in a thread and you click on a link to another post and then you try to swipe back."
+	- Setting for "load previous N posts" when opening a thread to the next unread post.
+		Used to be in the app, but pokeyman didn't care for it and removed it (possibly there was some bug in there). People have asked for it back ever since.
+		"Another feature to hammer with. After someone posts, I think the previous two or three posts above should be shown without needing to hit the previous posts button. In fact, I'm wondering if there's a way we can better show how many posts are hidden on the current page..."
+	- Save login cookie in keychain so it comes back when restoring a backup.
+	- Make unmarking a bookmarked thread (by long-pressing it) in the bookmarks list an undoable action.
+	- Browse other PM folders (e.g. sent, user's folders).
+	- New profile screen mockup: http://i.imgur.com/YRg61Mp.png
+	- Allow multiple selected tags when filtering threads.
+		In a browser, hold shift.
+		Release notes say 10 tags maximum.
+	- Allow signing in to Imgur for uploads.
+		"Does Awful allow me to use an imgur account? I appear to have hit my daily quota for anonymous uploads or something, as it's throwing up fits of error "0"."
+	- Add some padding around copied smilie keyboard images so they aren't cropped by the Messages.app roundrect.
+		"The fact that the edges of the emoticons get obscured by iOS RoundRect-ifying images in the Messages app is kind of a buzzkill. Is it heresy to suggest adding some pixel padding to the edges of the images as a workaround? And if it's not, is that still too hacky to work reliably?"
+		Also small images are embiggened. Not sure what the threshold is. Probably also solved with some padding.
+	- Allow swiping on secondary view in split view to pop primary navbar. @ipad
+		UISplitViewController used to do this before iOS 8.
+		"When I'm in the sidebar, I can't swipe sideways to go back to the forums index from the thread list of an individual forum anymore. Is this intentional? My swipes just do nothing after the first one calls up the sidebar itself, with the thread list."
+	- Check for logout using NSHTTPCookieManagerCookiesChangedNotification?
+	- Add "Open in <browser>" menu item when long-pressing a Forums link.
+		"When you have Safari set as your default for opening clicked links, and you have a link to a forum thread, and you want to open it in Safari, you have to manually copy the link. Oversight I guess? Normally I'd always want to open forum links in Awful and I imagine so would everyone else, but it'd be nice if there could be a way to show the "Open in [default browser]" context option on forums links."
+		"(Also it'd be nice if the long-press menu regained the "open" button it used to have, to immediately open the URL in the Awful Browser without having to close the menu and then re-click on the possibly-small link itself)"
+	- Reworked action sheet mockup http://i.imgur.com/NUG3UWC.jpg
+	- Smilie keyboard dark mode.
+		Mockup http://i.imgur.com/IcB98Em.png
+		Same style light mode mockup http://i.imgur.com/nhrnO84.png
+	- A "reveal all spoilers on page/in thread" button.
+		"the ability to open all spoilers on a page at once for when I've read the recent book people are required to use spoilers for and the thread turn into seas of black."
+	- Make preview post screen more obvious/distinct/informative.
+		"should we make the preview screen more distinct? Unless you read the top bar, which I'm basically numb to, it's easy to think you've posted. Making the Post button look different or changing the top bar text somehow or?"
+		"Include the thread title (and maybe tag and forum) in the post preview screen. If you leave the preview up for a while, it's easy to forget where it's going."
+	- Prevent shameful double-posting.
+		"disables the "post" button once it's been tapped so that inadvertent double tapping doesn't mean the shame of double posting"
+	- Show results of and allow voting in polls.
+	- Check http://www.theforumsaredown.com or suggest visiting if the Forums appear down.
+		"Would it be possible/not too difficult to have the app ping and automatically display a message or launch a new browser tab to http://www.theforumsaredown.com when the server cannot be accessed due to an issue not on the user's end? That would save some frustration when I have to second-guess whether I'm properly set up with a wireless router..."
+		"maybe instead just changing the "Bad Gateway" message to, "There was a connection error. Please try again, or visit http://www.theforumsaredown.com for the current status of the forums. Thanks.""
+	- Make reading reports work for admins (mods?).
+		"Here (for the most part) is what a report thread looks like: http://lpix.org/2304241/Screenshot%202015-12-08%2020.57.02.png
+			Self explanatory for the most part. Notably, there's a separate frame in the report post containing the post that was reported, and it looks exactly like how you'd see the post normally in context. Note the lower right of the reported post; there's the punish, history, edit and quote buttons.
+			Here's the same report in Awful: http://lpix.org/2304536/report.jpg
+			So that's an Actual Safari frame being displayed in Awful, which is always a bit jarring, but observe; the history/edit buttons are visible but the punish button isn't. I assume that there are a bunch of different bits of script crudely inserting these buttons at different points, and some of them work in Safari-In-Awful and some of them don't?
+			Also, that frame can break the tables in Awful, which is always fun.
+			Clicking on Edit, History, Quote, Message or Post History forwards me to Safari. Hitting Profile or Rapsheet open the correct parts of Awful."
+	- Show forums cancer.
+		Still a thing, for a very few users though. Could use an example for testing.
+	- Make it easier to find the smilies you want in the smilie keyboard.
+		"The [smilie] keyboard is too unwieldy for me. Unless I go through in advance to favorite the ones I use most often, it takes to long to actually find the ones I want to use."
+		"Having a way to filter [smilies] would make [the keyboard] more useful"
+		Several +1s.
+	- Confirm bookmark deletion.
+		"Can we also maybe get a "are you sure you want to remove" prompt as an option? Maybe I'm just clumsy, but I've had a recurring issue with fumble fingering away bookmarks."
+		"It's not just you. I've run into this issue way more often than I'm comfortable with."
+		"Also agreeing with this and am pretty sure this is already on the list as I know I've at least mentioned it before- but can we push it up the list a little further towards the top?"
+		"I've been thinking about it, and I've come to believe that deletion of bookmarks should have some visible UI indicator (like the outlook app's bottom overlay "undo delete" button). As it stands, you have to know about shaking there, which you almost certainly won't until you've come and complained in this thread. Alternatively, we could show the thread entry crossed out and let people re-swipe to undelete. Remove the zombie thread from the list on refresh."
+		"I assume removing bookmarks is not something you commonly do, so a confirmation alert wouldn't cause that much friction."
+		Not always sure if we're talking deletion from the bookmark list, from the thread action sheet, or what.
+	- Describe what to do when your session is about to expire.
+		"Just got a popup about my auth toke [sic] expiring in 5 days, but no indication on what action I should take for it. Scanned last few pages and didn't see if this was new or not, what is actionable from it?"
+	- A "my posts" screen, maybe in the tab bar.
+		"Feature request: maybe a toggle in options to swap between 'lepers colony' and a new 'my posts' page in the sidebar tools - I can't imagine that many folks want to look at who's been an idiot in the LC, but a page with all my post history so I can catch up with threads or see 'where did I post that again?' would be useful."
+	- An Imp Zone theme/stylesheet.
+	- Improved attempts to avoid breaking tables.
+		"It would be cool to have some sort of "image scale preview" so I can tell if I am about to break tables for non-mobile users. Not sure what form would be best, if it's difficult or even possible. Maybe it could be a text indicator of image HxW versus table limit."
+	- Some detection and indication of edits to recently-read posts.
+		"Thinking out loud here; could there be a feature to detect edits of recently read posts in a thread? Sometimes people edit their post as a response instead of making a new one. The way the app works right now that's totally invisible. I'm not sure how something like that would be shown in the UI though."
+	- Attach image to post.
+		It's a platinum feature and it's only one image per post, so it can't really replace third-party image uploading. And it's questionable value given third-party image uploading. But it's a Forums feature we don't yet support.
+	- Pop smilie keyboard keys for more visibility when pressed.
+		"Could the smiley keyboard "pop" the smilies above the "keys" on key-press like the standard keyboard "pops" the letters up to improve visibility?"
+	- Pop compose input accessory view keys for more visibility when pressed.
+		"Could the smiley keyboard "pop" the smilies above the "keys" on key-press like the standard keyboard "pops" the letters up to improve visibility? It'd be a bonus if the special keys above the main keyboard did this as well."
+	- Show BBcode menu when long-pressing a compose input accessory key.
+		"Maybe the "[" special "key" could offer options to select common "long" tags (e.g. list, spoiler) on a long press like how the standard keyboard offers diacritics when you do a long-tap on a vowel?"
+	- Show a bit of the newly-loaded posts when pulling to refresh.
+		"When I'm at the bottom of a page/end of the thread and pull up to refresh, once it refreshes it's still at the bottom of the page so I have to scroll up through the new posts to find where I left off. It would be great if refreshing the page kept the view at the last post/first new post."
+		"When I'm at the end of a thread and I pull up to refresh, I get scrolled all the way to the bottom of the page instead of staying at the first unread post. It's quite annoying to then try to manually scroll to some unknown point in the middle of the page somewhere. iOS 7 on iPhone 5c." @ios7
+		"When I refresh [Pull up from bottom] on 4S the screen immediately goes to the last post on the current page instead of the first unread post like it should"
+	- Reformat "user fucked around with" times to match user's 12/24-hour preference.
+		"post times show up in 12hr format with an AM/PM, but "user fucked around with" edit markers use a 24hr format."
+	- Have one font size setting instead of Dynamic Type + a posts view setting.
+		"Maybe having the "scale text" option also affect the forums view would work? For me, both the forums view and the post view need to get bumped down a notch from default, and I assume people feeling the same way probably have the same size of device, with both aspects a problem."
+		"Count me in on those who would like to see font settings affect the thread list as well as thread view, though; I have a lot less threads to browse at once with the size being what it is."
+	- Improve themes for people who see floaters.
+		"I have a lot of very large floaters so this causes me quite a bit of trouble. My feeling is that something like an off-white/lightish grey is good for the font. In normal use this might be something between the grey that you use for the 'killed by' text and the purest white that you can use. I'm not so sure about the background; I think black is probably fine, but I'm not certain. I think I'd tend to find bluish backgrounds a bit jarring, but that might only be my personal preference. I haven't been looking for a huge amount of time, but my perception is that this is the best implementation I've seen so far: http://i.imgur.com/iPVGi14.png The menus have the full white (which is bad really), while the background has the black (which seems good to me), but the rest of the text has the sort of off-white/grey I'm trying to get at."
+	- Pin certain bookmarked threads to the top.
+		"Feature request! I have a LOT of bookmarked threads right now, to the point where it'd be handy to be able to pin selected threads to the top of the bookmark list. Like, I'm working through a couple of really long-running ones in my commute, and they can be hard to find because they're low-traffic enough that there's no telling which page they'll end up on at any given time. Any chance of this making the cut?"
+	- Highlight usernames of people in your Buddy List.
+		"Had a pie in the sky kind of idea (that I wish the forums had); what if, just like highlighting your own username and quoted text, as well as thread starter, it also highlights people in your Buddy List? I know the OP highlight is a forums feature, and you grab the logged-in user name from the account, but could there be a good way to pull the Buddy List, such as when Bookmarks refresh?"
+	- Avoid yanking a thread out from under the thumb when refreshing a thread list.
+		"I agree with canceling auto refresh of a thread is clicked. The 1ms delay when I go to click on a thread and it moves under my thumb is what's annoying. Or if there was some way to keep bookmarked threads on static positions, ya know?"
+		Might not be such an issue assuming the spinner appears during auto-refresh.
+	- Make it so tapping a a visible image linkifies it again when "Load Image" setting is off.
+		"Would it be possible to have it so that pressing the image once it's loaded makes it a link again? Right now I have to toggle images on and off again and that loses my place on the page."
+Needs verification:
+	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
+		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
+	- State restoration falls apart when the app crashes.
+		"I've noticed that when the app crashes it doesn't have the latest last-read value, I usually have to jump 2-3 pages ahead"
+		Using standard UIKit state restoration. Something custom/else might fare better.
+	- Embedded tweets with video have difficulty playing. @twitter
+		"Seeing a lot of tweets with video on ipad not playing. The twitter play icon vanishes and is replaced with the stock ios one but a spinny loading indicator starts and never goes away http://i.imgur.com/4mDJvfz.png"
+	- Back navbar button is poorly sized in landscape. (iPhone?)
+		"When viewed in landscape, the 'go back' arrow in the top left sits too high and is also at 100% size while the bottom graphics shift to 50%."
+	- Reply screen disappears when orientation changes.
+		"While composing a reply in portrait, switch to landscape. The reply sheet disappears."
+		Works on iPad. Test iPhone.
+	- Crash attempt to view an archived thread without archives upgrade.
+		"Trying to access an archived thread without archives consistently crashed Awful for me."
+	- Deleting favourite smilies is not working in the keyboard.
+	- Crash shaking to undo deleting a bookmark.
+		"Fumbled fingered away another bookmark. Shake to undo crashed my app"
+	- Video embed weirdness when changing orientation.
+		"If I launch a video in portrait and then rotate to landscape it stops the video. I'm on a 6+." @iphoneplus
+		"Not sure if this is Awful's problem but it's odd behavior: if you tap on a YouTube link, open it in the app, full screen it, then directly come back to awful via the app switcher awful changes over to landscape display, and changes back to portrait if you leave the app and come back. Latest awful latest iOS, iPhone 6." @awful3.8 @ios9.1
+	- Crash attempting to act on a thread in a list after the list refreshes and the thread disappears.
+		"There's a crash if you long-press on a thread while the list is refreshing, then act on it when it would've been removed from the list"
+		"View a forum, before the forum automatically refreshes, press and hold on a thread so the context menu shows up. If the thread you pressed on refreshes off the page of the forum you are viewing and interact with it, such as "jump to last page" the app seems to consistently crash."
+	- Crash when emptyquoting.
+		"I just emptyquoted a post and it kicked me to the home screen Here is the post I made: https://forums.somethingawful.com/showthread.php?threadid=3787824&perpage=40&pagenumber=34#post463816557 Making this post did not kick me to the home screen."
+	- Thread list auto-update happens irregularly.
+		"Also, the thread list auto update only seems to work when first viewing a forum after launching the app, but not from there on in if you return to that same forum."
+	- Bookmarks list not refreshing/updating properly.
+		"My bookmarks list is only showing the first ~10 threads on my iPad. Scrolling down leads to endless blankness. Not happening on my phone."
+		"Bookmarks list won't refresh for me since yesterday.  I get the 'busy' spiral animation above and below the list, and the one below just continues indefinitely."
+	- Toggling a spoiler can change the height of a post.
+		Example: http://forums.somethingawful.com/showthread.php?threadid=2803713&perpage=40&pagenumber=818#post452399462
+	- "Open YouTube in YouTube.app" setting should affect youtu.be links too. @youtube
+	- Can't pick tag or subject using VoiceOver in new thread screen.
+	- YOSPOS ignores some Themes.plist values.
+		"curious how themes.plist works with the string values. Like why does YOSPOS ignore some of the values, and is that something I can work on."
+		Also ignores navigationBarTextColor and toolbarTextColor.
+	- Alerts about error code 999.
+		"You prob already got this one, but if I scroll to the end of a thread with no new replies I get error code 999 instead of just refreshing to the bottom."
+		"I got a new error number while trying to pull up a thread while it was refreshing but ios 8 made me unable to share pics. It was NSURLErrorDomain -999"
+		NSURLErrorCancelled = -999
+	- Failure scraping a particular post.
+		"The app refuses to show the first unread post in one particular thread http://forums.somethingawful.com/showthread.php?threadid=3522689 I have bookmarked. If there is one new post and I tap on the thread, it loads the thread but doesn't show the post, and instead it says 'End of thread'. If there are several new posts in that thread, it will show the posts after the first unread posts, but still not that one. If I go to previous posts it does show up. It only happens in that thread, and only since the latest update, I think. I'm on an iPhone 5s, 7.0.4 and am using version 2.0.1 of the app." @ios7.0.4 @awful2.0.1
+	- Vimeo embeds are just a blank space.
+		"Hey also are Vimeo video tags supposed to do anything but appear as a big blank space in a post?"
+		Example http://forums.somethingawful.com/showthread.php?goto=post&postid=458029326#post458029326
+	- Posts page links can be hard to tap.
+		"When I encounter difficulties with clicking on a link and it opening, selecting some text on the screen seems to allow me to open the link with the next click.   Can anyone confirm or deny this next time they run into that issue?"
+	- Back button stops working in posts screen.
+		"As for the thing where the back button seems to stop working, that happens when you swipe the Safari View Controller away instead of tapping the Done button. And it actually breaks a whole bunch of other buttons too."
+		"I'm on Awful 3.9, iOS 9.2, iPhone 6S+ and it happens to me every time I swipe out of Safari View Controller. It only happens when swiping away though. Hitting the Done button doesn't make the bug happen." @awful3.9 @ios9.2 @iphoneplus
+		"I was coming to report the same issue and this helped me test exactly where it happens. It's consistent and breaks every time exactly under these situations. Specifically it breaks being able to swipe or hit the back button out of the thread, as well as the tap to bring up the quote/report etc. buttons and the profile info buttons. I'm on 3.9, iOS 9.2, iPhone 6S." @awful3.9 @ios9.2
+		"Clicking back on some bookmarked threads or swiping back to the bookmark list doesn't work sometimes."
+		"Yeah, reading a thread with multiple pages will cause the back button to grey out and require a force close and relaunch."
+		"occasionally I have to force-close the app when the back button decides to stop working" (iPhone 5S)
+	- YOSPOS thread list not updating with theme change.
+		"I found how to change the theme in YOSPOS threads, but the main thread listing for YOSPOS was still green with that terrible font on the iPad."
+	- Can't scroll enough in compose screen with iPad split keyboard.
+		"Not sure if you guys are aware, but if you're typing a ridiculously long post on the iPad and attempt to use the split-keyboard, you can't scroll down far enough to see the bottom line of what you're typing. This happens on both landscape and portrait view. Merging the keyboard back together brings the text box view back to normal and you can see everything again."
+	- Crash quoting a user when a custom keyboard is selected.
+		"I get crashes every time I quote a user when using a custom keyboard. When the modal view animates up, the keyboard and quoted post appear and then the app crashes. In general this seems to be most present when quoting, making new replies doesn't seem to trigger it initially. However, once I've done it once, I can't make any kind of post quotes or not because it will crash every time. I do use a custom keyboard(either Fleksy or Swiftkey), which triggers this crash. Using a regular keyboard doesn't seem to cause the app to crash." @ios9.0 @awful3.6
+		"I'm also getting that crash problem when replying to threads or quoting posts while using SwiftKey, like the problem mentioned in the to-do list. The editor pops up for just a moment and then the app vanishes. When I restart it, it's usually at some place on the forums I was reading earlier, well before I tried to write a post, but it doesn't seem to have anything to do with where I last posted. Closing the app from the task switcher does not fix the problem. It's on an iPhone 5s, iOS 9." @ios9
+		"I'm having the same issue with Swype on a 6 w/9.0.2. I know you've already got it listed, but I figured I would try to give you a little more detail in case it helps. After the crash it will reset my position in the forums and my last read part counter on the thread I was trying to reply to to the top of its last page. It seems to happen more frequently if I click reply, or quote, right after I finish scrolling. If I wait a second or two and let the view "rest" it sometimes won't crash. That's how I got to type this reply actually." @ios9.0.2
+		Crash is WebThread triggering a layout pass, which throws an exception because it's not on the main thread.
+	- Text selection issues in posts screen.
+		"Tap + hold on a word to select it. Then tap + hold on a different word that is at least a few lines away from your initial selection. This produces four distinct issues
+			1: the magnifying loupe that pops up is the wide rectangular version that is supposed to occur only when dragging selection boundaries, rather than the large circular initial-selection magnifying loupe;
+			2: the loupe is vertically located to magnify the same line as the previous selection, although its horizontal position is correct (moving your finger even slightly causes the loupe to correct itself);
+			3: the word you're pressing on doesn't show the tentative selection, nor does the old selection disappear, until you release; and
+			4: if you release your press as soon as the new selection is triggered, the selection and/or the loupe appears by quickly shifting to the proper location from the previous selection's location, rather than simply appearing the proper location without any movement.
+			Issue #1 looks like it might be the intended new iOS 9 behavior for non-input text fields since Safari (the full-on app) also shows it. Similarly for issue #2 and #4 although they definitely seem like bugs. Issue #3 appears to be unique to Awful.app.
+			Issue #2 will actually move the current view to ensure that the old selection is visible, if you had scrolled the old one offscreen before starting a new selection, probably disrupting or ruining that selection attempt." @iphoneplus @ios9.0.2 @awful3.7
+	- Posts screen text menu stops appearing after opening Awful Browser.
+		"Open an external site in the app (e.g. http://www.example.com), open the Share sheet, then close the Share sheet and the Safari view. Now the next time you select text, the "Copy / Define / Select All / Share..." popover menu will not appear, even if you drag the selection bounds around a bit more or scroll the view. The menu will tease an appearance when you dismiss the selection but (as far as I can tell) is not interactive for the brief flash while it's visible. The popover menu will appear properly, and can be interacted with, for any further selection you make. This problem also occurs (more reliably?) if you reload a thread or open a thread with new posts."
+	- Freeze previewing a post in GBS.
+		"The newest version freezes when I try to preview a post on GBS. I'm on an iPhone 6+ with the latest iOS update" (probably iOS 9.0.2 or 9.1)
+	- Animated GIF overlay doesn't appear when "show images" setting is set to "off".
+		"If you have embedded image autoloading set "off", the new "freeze animated gifs till you click them" overlay never appears even after tapping the image URL to load it, and animated gifs stay frozen forever."
+	- Nothing loads in Awful Browser.
+		"I'm having an issue with the app on my 6S+. I can't seem to open any links in the built in browser. When I first click on the link it shows a blank page and when I hit the refresh the load bar stalls at about 10%. I've tried uninstalling and reinstalling."
+	- Long-pressing a YouTube embed on an unread post and pressing "Open in Safari" makes app non-interactive. @youtube
+		"If you encounter an unread post containing an embedded YouTube video (use "Mark Read" on a previous post if necessary), long-press the video's title and hit "Open in Safari". When you return to Awful app, all interactive elements within the thread become non-interactive -- I'm guessing they're occluded by the invisible remnants of the long-press menu. You can scroll around and select text, but you can't open anyone's profile, quote/"mark as read" any posts, follow any links or load any embedded images, etc.
+			While in this glitched state, the app's UI surrounding the thread view works except for a few things
+				the auto-hiding "Load Previous Posts" button only pretends to work by graying out on tap but doesn't actually do anything.
+				you can show and hide the mini-options popup as normal, but none of its contents do anything (app colors work only for the UI but the thread is unaffected).
+				oh also try opening any of the bottom-of-screen popups, then use the App Switcher to open another app that has an keyboard active (e.g. Safari or Notes both work). The popup will be halfway up the screen when you return to Awful using the App Switcher, and then will slide back down into place as (presumably) either the app or the system notices that the keyboard is no longer actually present.
+			The inactive thread elements issue persists if you return to your Bookmarks view (probably Forums view too but I haven't checked) and then swipe back into the glitches thread. It is fixed if you tap any thread, including tapping the same previously-glitched thread."
+		Example post http://forums.somethingawful.com/showthread.php?threadid=3510131&userid=0&perpage=40&pagenumber=202#post453098467
+	- Can't 3D Touch just anywhere on a bookmark thread cell to preview the thread. @3dtouch
+		"in the bookmarks tab you have to do the 3d touch on the actual icon to the left of each bookmark, not the text."
+	- 3D Touch through a bookmark in the bookmarks list fails. @3dtouch
+		"Using 3D Touch to preview a thread from my bookmarks works, but if I press harder to open the thread it fails and says it couldn't load it."
+	- Crash tapping "Post" resulting in a double-post.
+		"Just encountered a bug I haven't seen before on the latest release. When replying to a thread, when I tap "post" the app sometimes crashes and when I reopen the app, I discover that it posted duplicate. Latest update [3.8], iPhone 5s running iOS 9.1" @awful3.8 @ios9.1
+	- Misplaced cursor typing into a compose text box.
+		"While typing I am noticing the cursor is also at least one character behind."
+	- Bookmarks list "load more" spinner appears unhelpfully.
+		"my bookmarks now have a spinning loading icon at the bottom of the list that won't go away."
+		"I have this too, when refreshing bookmarks there are two loading icons, and sometimes the bottom one never goes away."
+	- Crashing tapping a thread where some individual posts are disappeared.
+		"The app crashes when clicking threads that have had individual posts beecocked (moved to a dump thread). Example: Amourphos Blob Containment Thread http://forums.somethingawful.com/showthread.php?threadid=3747724 However, it could be that it only crashes when you'd clicked the thread in the app before the posts were deleted, or if enough posts were deleted to reduce the page count."
+	- Can't dismiss post action sheet in landscape on iPhone 6+. @iphoneplus
+		"in landscape mode, click on a post's bottom-right ellipsis. I don't see any good way to dismiss the sheet that pops up. Rotating back to portrait partially worked the first time (thread still had a slight overlay from the info sheet in portrait, but tapping somewhere removed the overlay), but not the second time (could not dismiss the sheet in landscape, could not remove the overlay in portrait; couldn't interact with the thread regardless). Didn't try the other buttons from landscape. (Also the landscape sheet is weirdly enormous.)" @iphoneplus @ios8.4 @awful3.4
+	- Seemingly unnecessary line break in username "girth brooks part 2".
+		"Also, there is a user named "girth brooks part 2" whose name renders oddly - the 2 is on a new line even though there is plenty of room. I can't check if it's some Unicode wankery in the name but I'm guessing the forum can't handle that anyway."
+	- Back button disappears on empty detail screen on iPad. @ipad
+		"As I'm dicking around with the iPad version in the simulator, it looks like there's a bug where if the size changes and no thread is open, the back arrow might not appear so you're stuck looking at a blank screen unless you rotate to landscape."
+	- Automatic refresh shows top half of the spinner.
+		"automatic refreshes don't show the whole spinner, just the tip [sic] half. Manual refreshes are fine." @awful3.7-beta0
+	- Compose input accessory view stays visible after backing out.
+		"Posted in a thread, backed out and hit power button & the custom keyboard bar stuck on the bottom of the screen when I turned my phone back on. http://i.imgur.com/zzqQfd1.png It followed back into this thread and when I tapped a button it crashed."
+	- Crash opening Messages tab.
+		"My shit crashes every time I open my messages. Help. What do?"
+	- Crash previewing any image.
+		"Every time I view an image (by holding down on it), my app immediately crashes. Without fail, it always happens. I'm using the newest version of the app on my iPhone 6 with updated software, if that helps." @awful3.1
+	- iPad interface goes portrait-width in landscape.
+		"Sometimes this http://i.imgur.com/YMDAjkt.png happens on the iPad. I don't really know what triggers it, but it hasn't happened to me on the iPhone. Restarting the app fixes it."
+		"It happens while using the app normally. Rotating the device might be involved, but I'm not 100% sure."
+	- Forums list not auto-refreshing.
+		"Why don't forums update automatically when opened? I've had to manually drag to update since the last version."
+	- Threads list not auto-refreshing.
+		"Forums also no longer automatically refresh when I enter them. I have to manually pull down to refresh each time I go into a forum."
+	- Posts page cutting off bottom bit of content.
+		"In the latest beta I'm seeing the bottom of pages cut off and only able to be seen if you scroll and hold. As soon as you release it goes back down. It's like the bounds of the webview and the toolbar aren't lined up. Not only on posts either, it's everywhere in the app."
+	- Difficulty loading page two of a list of threads.
+		"When I go to load the second page of threads after reloading the list it doesn't always load up the second page. Sometimes I can scroll up ever so slightly and it'll load."
+	- Can't tap done or otherwise back out of finished YouTube videos when viewing in Awful Browser. @youtube
+		"when I use the app browser to view YouTube videos, decently often I can't get back out of the video at the end. I have to force close the app and find where I was before. I can use the "open in (browser)" for the links which redirects to the YouTube app (the only thing that hasn't had the same issue since iOS 8's release) but it opens a tab in the browser as well. It's mildly annoying, which is why I didn't bother mentioning it for a while but I was just curious if anything was still planned for it."
+		"If I click through to a YouTube video and play it, it goes full-screen but the Done button doesn't close it. Have to force-quit."
+		"Not sure if this was covered but intermittently I've opened some YouTube links in the awful browser and found the Done button top left doesn't dismiss the player interface."
+		"Video links are a coin flip as to whether they will let me escape or not. I will click on a video link, then on the new page, click on the video itself. It starts playing (swaps to full screen automatically) but about 50% of the time I can get out of the video. Hitting done or the resize button does nothing. At first I thought it had to do with locking the phone mid-video, but have since had it happen after just watching 10-15 seconds of a video. Whether the video is playing, paused or just ended also seems to have no particular relevance. If I close out the app, it will reload itself on the page outside the video. Not really able to narrow down what causes it unfortunately."
+	- App fails to log out when session is apparently destroyed.
+		"okay it's doing it [nothing loads when I try and refresh my bookmarks] again. basically, sometimes when i'm browsing i'll get an "error, not logged in" and then things will stop loading. if i exit the app i'll need to log back in, but once i log in i'll just get loading errors and will need to log back in again if i exit the app. it has fixed itself randomly and then gotten bad again at least twice"
+	- Crash previewing a new thread in PHIZ.
+		"Whenever I try to post in my own thread in PHIZ the app instantly hard crashes when I get to the post preview window."
+	- Avatars and smilies swapping.
+		"Lots of avatars and smilies have swapped places for some reason in the app. :grin: displays as the :D smilie for me, and :D shows up as Black Baby Goku's avatar."
+	- Nothing finished/errors refreshing.
+		"On an iPhone 5C, the vast majority of the time when I try to refresh anything - bookmarks, a thread - it never completes. It spins and spins forever. Occasionally it'll eventually throw a generic error about not being able to complete it. I have to force close the app to get it to work. This happens across wifi and 3G/4G networks, it's definitely not a connection speed issue." @awful3.3
+	- Stuck in a reply screen with no thread and the cancel button crashes or doesn't work.
+		"http://i.imgur.com/dorSrRU.png I had to reinstall because when I opened the app I was trapped in a reply box for a non exsistant thread. Cancelling would crash the app to springboard. Hard resetting my phone or closed the app from the spring board never helped."
+		"I just had a terrible bug where I was stuck in between the post and preview screen and pressing cancel did nothing. Tried force closing the app and restarting my phone multiples times with no luck, it kept bringing me back to that very same post screen. Only thing that worked was deleting the app and reinstalling it to reset the whole affair."
+			"Couldn't get back to the side menu or any other screen outside of those two editor screens. Restarting the app and even restarting the phone didn't help, somehow the app preserved that bugged state and only reinstalling it reset it."
+			"Canceling an edit basically just wouldn't happen, neither Delete Edit or Save Draft did anything, though closing the app through multitasking got it just fine. E: Update! This happens consistently with editing posts. Like this one for example! You have to preview and save changes, canceling or saving the draft does nothing at all."
+	- Permanent error scraping PM list.
+		"Every time I hit the messages tab with my fat/clumsy fingers it gives me an error message."
+			"Network Error: Failed to parse message in folder; could not find message ID (code 3)"
+			"I do have messages, but they are viewed and kind of old."
+	- Can interact with the posts view behind a share popup.
+		"If you long-press on a link to show the sharing menu and keep touching the screen after it comes up, you can then drag that finger to scroll the backgrounded+tinted thread around." @ios8.2 @awful3.2
+	- Profile modal disappears when changing orientation.
+		"If you open someone's profile dialog* in landscape orientation, it disappears if you switch to portrait. You can then scroll around and even open someone else's profile sheet in portrait orientation; if you switch back to landscape, the portrait profile sheet will be closed but the initial landscape profile dialog* returns !! The portrait profile sheet stays closed when you return to portrait though. *I'm calling the landscape profile popup a "dialog" to distinguish it from the portrait profile sheet thing, since they behave qualitatively differently here. Not sure of the actual behind-the-scenes terminology in Cocoa Touch or in the Awful codebase." @ios8.2 @awful3.2
+	- Weird empty view visible abottom the bookmarks list.
+		"My bookmarks screen has this empty space at the bottom now. http://i.imgur.com/WFwpWVn.png"
+		Looks like an empty toolbar.
+	- Crash adding image to compose text box.
+		"If I [img] -> camera -> take photo -> use photo I get a crash every time."
+		"I get the same with importing from library."
+	- Profile loading screen is very bright in dark theme.
+		"In dark mode the loading screens (external URL or profile) are very bright. Could a change be made to have Awful's renderer be theme-aware?"
+		Might already be fixed.
+	- Using (smilie?) keyboard when composing a post causes a grey region on the screen.
+		"Any time I use the smilie keyboard when composing a reply it then grays out the bottom half of the screen after posting which requires killing the app to clear. http://i.imgur.com/SU270j2.png"
+		"Setup: while reading a thread in Portrait orientation, either start scrolling and hit New Reply, or hit one of the Quote Post buttons and then start scrolling the thread so it's still scrolling when the reply sheet comes up. Now hit Cancel. Expected behavior: the reply gets canceled/hidden and everything goes back to reading the thread like normal, same as if you weren't scrolling when the reply sheet came up. Actual behavior: The gray box behind the keyboard sticks around, obscuring the bottom ~40% of the view, including the bottom bar that contains the widgets for display settings, page controls, and thread info. If you hit New Reply (no scrolling this time) again it'll bring you back to your reply and the keyboard will reappear, but the gray box keeps staying behind if you Cancel again. The box also remains if you go back to the Bookmarks screen. Workarounds: flipping to landscape and back mostly gets rid of the issue. Likewise mostly fixed if the view is scrolling again when you reopen the reply sheet. I say "mostly" because the gray box doesn't get glued back to the keyboard, but it does slide off the bottom of the screen about half a second after the keyboard does."
+	- Tapping where the Done/Share buttons are in the image preview when they're hidden doesn't cause them to appear.
+		"If you have the image viewer sheet open and you tap to hide the "Done" and Share buttons, tapping in the top left and bottom right corners (where the buttons where) does not re-show those buttons."
+	- Maybe turn off swipe-down-to-dismiss image preview while zoomed in.
+		"I love image view but swipe down to dismiss needs to be disabled while zoomed in."
+	- Crash pasting a [url] in a compose screen.
+		"Sometimes when a URL is in the clipboard, tapping the [url] option from the context menu to try to paste it (the top-level option, which would normally list "[url] | Paste" when selected) crashes Awful. It seems intermittent, but a cursory follow up suggests that copying a link in Safari by doing a long-press on the link and copying from the modal popup is the most reliable way to reproduce the behavior. The fact that this copy mechanism is putting a special blob in the clipboard that Awful can't handle seems to be supported by the fact that pasting and re-copying the text from a third app seems to avoid the issue."
+	- Don't crash loading a rap sheet.
+		"I had someone else's rap sheet crash on me tonight but yours [jivjov's] doesn't. Pokeyman's does, though. Couldn't load the "bad" ones at all, let alone scroll to the bottom...immediate crash." (pokeyman's rap sheet is empty, dunno if relevant)
+		"Scrolling through the Rap Sheet for poster Literally the Worst triggers a repeatable crash for me. Edit: seems to be all rap sheets, hitting the bottom of my own crashed the app as well Edit 2: Pokeyman, attempting to load your rap sheet at all causes a crash. All of this on a fully updated app on a fully updated iPhone 6+"
+	- Compose menu gets busted after posting a photo.
+		"After posting a photo, when I go to post another photo, tapping [img] shows an incorrect non functioning list (not Camera, Library, etc.) until after a force quit. I'm on iPhone 6, iOS 8.1.2, and Awful 3.2. Edit: I don't even have to post the photo. If I insert the photo, delete everything in the post, then cancel the post, when I go to post again (can be different thread), the non functioning list occurs. I have to delete the whole post to trigger this; even with 1 letter left saved in the cancelled post, things are ok. http://i.imgur.com/GcouYpU.png Edit2: now it seems when I tap hold to post a subsequent photo, the top level list appears correctly but just goes away when I tap [img]. Then when I tap hold again, the top level list is messed up and the buttons on the second image just make the list go away: http://i.imgur.com/IunQbeN.png http://i.imgur.com/X3hkbmH.png It appears to be flipping between states because when I tap hold a third time (odd number of tap holds) the process in edit2 repeats. Edit3: I can't replicate edit2. The replicable problem is that the edit1 non functioning submenu shows up when I tap [img] in the top level menu."
+	- Messed kerning in compose text box.
+		"Third, the text in the reply box is all kinds of fucked up in regard to spacing. Maybe I'm just seeing shit, but the space between individual letters is seriously whacked out. They seem too close to each other."
+	- Can't delete favourite smilies from the keyboard.
+		* "I still cannot seem to trigger the delete action on any smiley added to the favorites. Tapping on the little red icon in reorder mode appears to do nothing."
+	- Bright flash behind toolbar while a thread loads.
+		"Latest beta: Something bright loads behind the toolbar when a thread loads, and then once it is fully loaded it disappears. My money is on the Sasquatch from Ski Free."
+	- New post button moves around a bit in the navbar.
+		"Can the new post button be a bit more static? It moves a couple of pixels to the left on my 5s when I enter a thread."
+			"I don't think that's exactly what's happening. On my 6, when you click on a new thread, it shifts right during the thread entry transition, then shifts back left when the thread is loading."
+			"Actually, it does both. It depends whether you're entering from your bookmarks or a forum." http://i.imgur.com/x1LcgLE.gif http://i.imgur.com/Ok8d98x.gif
+	- VoiceOver considers each line a separate element when touched, but the whole field as one when swiped to.
+		"Only things I've noticed as of now is that VO won't read the entire contents of a field if the field is given focused by a touch rather than swiping into it from another element. Each line of text is its own element when touched but the whole field is unified when swiped to. Not really a dealbreaker."
+	- Smilies are unlabeled in VoiceOver.
+		"And the emoticons are unlabeled. Dunno if there's a way to let VO see the text used to create the emoticon. That would be the most expedient way to fix it. Manually labeling them seems a leetle time consuming to me."
+	- Can't scroll while tapping and holding text selection in compose screen.
+		"also still this: in post/reply/edit screen. tap and hold text -> select -> drag selection box upward -> screen will not scroll, just jitters spastically -> now my penis is soft"
+	- Sometimes thread lists refuse to load next page.
+		"I can't figure out a rhyme or reason for it but when I get to the bottom of the thread list in certain forums like GBS or Ask/Tell it refuses to load the next page of thread titles. No spinning thing or acknowledgement there might be more either. Still using the beta on my 6+ btw." @iphoneplus @awful3.2
+		"The other thing is that I've been having a bug where, when I come back to the app after a long while, scrolling to the bottom of the first page of threads doesn't trigger the automatic loading of the second page of threads. I have to go to the top, reload the listing and then go back to the bottom to have it load more."
+	- Bizarre thread list behaviour after refreshing threads.
+		"http://i.imgur.com/TdWirMc.png I opened the app and refreshed it and it did this."
+	- Crash in posts page scrolling down.
+		"Scrolling down this page seems to regularly cause a crash or brief hang then crash: http://forums.somethingawful.com/showthread.php?threadid=3177805&perpage=40&pagenumber=280 iPhone 6, iOS 8.1.2, latest Awful" @ios8.1.2
+	- Tapping back + reply at same time in posts page breaks things.
+		"If you're in a thread and hit the back button + reply at the same time it breaks. Sometimes it brings up the post screen which cancel does nothing to, sometimes cancel brings you back to a greyed out Bookmarks."
+	- Maintain scroll position when returning to a thread list from a thread.
+		"Every time I back out of a thread the forum page is scrolled down by a lot from when I actually clicked on the thread and it's really annoying"
+	- Page numbering gets screwy when failing to load a posts page.
+		"Also when the internet connection crashes, and it doesn't load the new posts in a thread, and then you make a post with the regained connection, the page numbering goes wild, like "137/136""
+	- Viewing certain users' rap sheets fails and can get stuck in infinite loop.
+		"I noticed a user that had a name referencing another user named Aatrek, and when I saw a post by this Aatrek guy I decided to check out his rap sheet to see what got him permabanned. I tried to view the post via rapsheet but nothing would happen when I selected it. Then I tried looking at some of his older (archived) probations and got a 'post not found' dialog box and hit close, then tried tapping the topmost post again (which I think should still be viewable because it's in the gas chamber) and got stuck in a loop of 'post not found' dialog boxes that would pop up again as soon as they were dismissed. Pressing the back arrow got me out of it, though. Edit: oh... Ah... Hmm. Well, I never go to TVIV so I guess I wouldn't know. Edit 2: went to safari and saw that the permabanned post isn't linked or doesn't exist. So now I know why I couldn't view it."
+	- Crash deleting multiple PMs in quick succession.
+		"Just wanted to mention the app quits out if you delete a couple private messages one after the other. Edit: apparently I can't compose and send a new pm from scratch but replying to PMs works. The send button gets greyed out, cancel button doesn't work so I need to force quit it."
+		"I had this same error this afternoon. The PM did successfully send though."
+	- Lengthy Leper's Colony entries jump around when tapping and holding.
+		"When you tap or tap and hold on an LC entry with a long probate/ban reason, as it highlights the box changes size to cut some lines off. It fixes itself if you tap-hold-scroll and seemingly if you try to screenshot. iOS 6.1.4 iPhone 5. Test case: the ban at http://forums.somethingawful.com/showthread.php?threadid=3571226&perpage=40&pagenumber=1#post419710507"
+		Still a thing?
