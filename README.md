@@ -133,6 +133,27 @@ The posts view uses [zepto.js][]. Awful uses the *Touch* module which is not par
 
 [zepto.js]: http://zeptojs.com/
 
+URL schemes
+-----------
+
+Awful answers to a couple URL schemes:
+
+* `awful:` opens Awful directly to various screens. This URL scheme is documented at http://handleopenurl.com and at [Launch Center Pro](http://actions.contrast.co).
+    * `awful://forums` opens the Forums tab.
+    * `awful://forums/:forumid` opens the Forums tab to the identified forum.
+    * `awful://threads/:threadid` opens the first page of the identified thread. For example, `awful://threads/3510131` opens Awful's thread.
+    * `awful://threads/:threadid/pages/:page` opens the given page of the identified thread. For example, `awful://threads/3510131/pages/15` opens the fifteenth page of Awful's thread.
+    * `awful://posts/:postid` opens the identified post's page of its thread and jumps to it. For example, `awful://posts/408179339` opens the OP of Awful's thread.
+    * `awful://bookmarks` opens the Bookmarks tab.
+    * `awful://messages` opens the Messages tab.
+    * `awful://messages/:messageid` opens the identified private message. (I guess the idea is to handle a link from one message to another? )
+    * `awful://settings` opens the Settings tab.
+    * `awful://users/:userid` opens the identified user's profile. For example, `awful://users/106125` opens pokeyman's profile.
+    * `awful://banlist` opens the Leper's Colony.
+    * `awful://banlist/:userid` opens the identified user's rap sheet. For example, `awful://banlist/106125` opens pokeyman's rap sheet.
+* `awfulhttp:` and `awfulhttps:` handle Forums website URLs to any screens that have a corresponding `awful:` URL described above.
+    * The idea is you take your `https://forums.somethingawful.com/…` URL, put `awful` in front, and now it opens in Awful.
+
 License
 -------
 
