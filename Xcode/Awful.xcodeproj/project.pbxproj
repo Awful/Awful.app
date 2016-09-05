@@ -740,6 +740,8 @@
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CC780201612D989002AF958 /* AwfulForumsClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumsClient.h; sourceTree = "<group>"; };
 		1CC780211612D989002AF958 /* AwfulForumsClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumsClient.m; sourceTree = "<group>"; };
+		1CC9B6A41D7DD35C000C7A06 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		1CC9B6A51D7DD365000C7A06 /* TODO.taskpaper */ = {isa = PBXFileReference; lastKnownFileType = text; name = TODO.taskpaper; path = ../TODO.taskpaper; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -1580,6 +1582,8 @@
 		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
+				1CC9B6A41D7DD35C000C7A06 /* CHANGELOG.md */,
+				1CC9B6A51D7DD365000C7A06 /* TODO.taskpaper */,
 				1C3857A115675AFE0078AF95 /* App */,
 				1C3CF9671A94B9B40065C964 /* Core */,
 				8CCD498115B497A700E5893B /* Resources */,
