@@ -10,6 +10,7 @@ final class ForumTweaks: NSObject {
     let autocapitalizationType: UITextAutocapitalizationType
     let spellCheckingType: UITextSpellCheckingType
     let showRatings: Bool
+    let showRatingsAsThreadTags: Bool
     
     private init(dictionary: [String: AnyObject]) {
         postButton = dictionary["postButton"] as? String
@@ -33,6 +34,7 @@ final class ForumTweaks: NSObject {
         }
         
         showRatings = dictionary["showRatings"] as? Bool ?? true
+        showRatingsAsThreadTags = dictionary["showRatingsAsThreadTags"] as? Bool ?? false
         
         super.init()
     }

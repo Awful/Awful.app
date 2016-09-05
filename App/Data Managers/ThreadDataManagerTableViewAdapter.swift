@@ -124,8 +124,16 @@ private extension ThreadTableViewCell.ViewModel {
         unreadPosts = Int(thread.unreadPosts)
         starCategory = thread.starCategory
         
+        let tweaks = thread.forum.flatMap { ForumTweaks(forumID: $0.forumID) }
+        
         showsTagAndRating = showsTag
-        let imageName = thread.threadTag?.imageName
+        let imageName: String?
+        if let tweaks = tweaks where tweaks.showRatingsAsThreadTags {
+            let rating = round(thread.rating * 2) / 2
+            imageName = NSString(format: "%.1fstars.png", rating) as String
+        } else {
+            imageName = thread.threadTag?.imageName
+        }
         if let
             imageName = imageName,
             image = ThreadTagLoader.imageNamed(imageName)
@@ -144,21 +152,13 @@ private extension ThreadTableViewCell.ViewModel {
             secondaryTagImageName = nil
         }
         
-        var showRatings = true
-        if let
-            forumID = thread.forum?.forumID,
-            tweaks = ForumTweaks(forumID: forumID)
-        {
-            showRatings = tweaks.showRatings
-        }
+        let showRatings = tweaks?.showRatings ?? true
         var rating: Int?
-        if showRatings {
-            let rounded = lroundf(thread.rating).clamp(0...5)
-            if rounded != 0 {
-                rating = rounded
-            }
+        let rounded = lroundf(thread.rating).clamp(0...5)
+        if rounded != 0 {
+            rating = rounded
         }
-        if let rating = rating {
+        if showRatings, let rating = rating {
             let imageName = "rating\(rating)"
             self.rating = UIImage(named: imageName)
             ratingImageName = imageName
