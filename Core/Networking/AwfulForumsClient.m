@@ -451,6 +451,8 @@
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = _managedObjectContext;
+    NSManagedObjectID *threadTagObjectID = threadTag.objectID;
+    NSManagedObjectID *secondaryTagObjectID = secondaryTag.objectID;
     return [_HTTPManager GET:@"newthread.php"
                   parameters:@{ @"action": @"newthread",
                                 @"forumid": forum.forumID }
@@ -480,13 +482,17 @@
                 return;
             }
             
+            [form scrapeThreadTagsIntoManagedObjectContext:managedObjectContext];
+            
             parameters[@"subject"] = [subject copy];
-            if (threadTag.threadTagID) {
-                parameters[form.selectedThreadTagKey] = threadTag.threadTagID;
+            ThreadTag *threadTag = threadTagObjectID ? [managedObjectContext objectWithID:threadTagObjectID] : nil;
+            if (threadTag.imageName) {
+                parameters[form.selectedThreadTagKey] = [form threadTagIDWithImageName:threadTag.imageName];
             }
             parameters[@"message"] = [text copy];
-            if (secondaryTag.threadTagID) {
-                parameters[form.selectedSecondaryThreadTagKey] = secondaryTag.threadTagID;
+            ThreadTag *secondaryTag = secondaryTagObjectID ? [managedObjectContext objectWithID:secondaryTagObjectID] : nil;
+            if (secondaryTag.imageName) {
+                parameters[form.selectedSecondaryThreadTagKey] = [form secondaryThreadTagIDWithImageName:secondaryTag.imageName];
             }
             [parameters removeObjectForKey:@"preview"];
             [_HTTPManager POST:@"newthread.php"

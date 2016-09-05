@@ -3,7 +3,7 @@ High priority:
 		"If you tap on the embedded tweet, it replaces the entire page of the thread instead of opening in the browser sheet, which does let you see replies or whatevz but less useful if you want to keep reading the thread after the tweet. As far as I can tell, you can't get back to the current page of posts without reloading the page."
 		"That leads to another bug - the twitter page loads in the main view instead of pushing another viewcontroller so you lose your place in the thread"
 		"Please add a way to go back to the thread page that you were viewing after clicking on embedded tweets."
-	- SA Mart threads post with the wrong secondary tag.
+	- SA Mart threads post with the wrong secondary tag. @done(2016-09-05)
 		"In SA Mart put Buy as the title and Sell came out. This is the second time. I made triple sure the B was highlighted and it showed up in the preview as "B" and when it posted it came out as an "S". I use the iPhone app and have an iPhone 6s Plus." @iphoneplus
 		"I don;t [sic] know if this is documented, but every time I make an SA Mart thread, the category is flipped. As in, if I post as buying from within the app, it will be selling and vice versa."
 	- The Film Dump isn't showing any thread tags.
@@ -269,7 +269,7 @@ Medium priority:
 		"On the keyboard if you go to the recent tab, tapping any smiley doesn't update the smiley graphics themselves, but does change the notice at the bottom of the screen when one is copied to the clipboard. e.g., if my first four are :yum::awesomelon::ohdear::stonk: the first time I tap :stonk:, I get the notice "Copied :stonk:" and nothing changes position. If I tap :stonk: again it says "Copied :ohdear:" If I scroll down and back up then the order is changed to reflect the taps: :ohdear: :stonk: :yum: :awesomelon:"
 	- Auction thread tag in BFC doesn't show up right, shows little "auction" secondary tag instead. @awful3.17
 		"This thread icon seems messed up: http://i.imgur.com/g2lcuY5.png"
-		Possibly related: thread tags can differ in ID while having the same filename.
+		Possibly related: thread tags can differ in ID while having the same filename. Bad for looking up thread tags just by ID!
 	- Empty PM inbox is incorrectly scraped as an error, instead of just plain empty.
 		"I had another bug where the app would throw out a scary exception popup message when I tried to open my messages on an empty inbox instead of a more meaningful "you have no messages" as the background text to an empty inbox."
 	- Audio sometimes keeps playing, and high battery use attributed to "audio", after closing Awful Browser.
