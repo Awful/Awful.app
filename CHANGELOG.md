@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Fix long-pressed URLs with %-encodes getting %-encoded again, breaking the presented URL.
 * Fix SA Mart threads posting with the wrong secondary tag.
 * Prevent Twitter embeds from hijacking posts web view.
 * Restore thread tags to The Film Dump.
