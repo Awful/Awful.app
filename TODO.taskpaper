@@ -74,6 +74,7 @@ Medium priority:
 		"trying to upload a cropped screenshot seems to crash the app or give an error that the upload failed"
 		"Also, image uploading failed so I had to use upit"
 		"Second, this is the third time I'm trying to post this now. Trying to upload an image in the first two resulted in a hard crash to springboard. No idea what that's about, we'll see if this one goes through."
+		"So this happens a lot, mostly when I try to upload pics from my ipad and uploads several at a time http://i.imgur.com/4sgTtaN.jpg Try again with only three pics and it still doesn't work."
 	- Don't duplicate smilies in the smilie keyboard.
 		"I'm seeing smilies duplicated in the in-app keyboard. Not all, but most." "Say 66%."
 		"Found a weird bug with the emoticon keyboard where some of the emoticons are duplicated. I resolved it by reinstalling the app, but I thought you might like to know http://i.imgur.com/jClkLdN.png"
