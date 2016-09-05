@@ -1,5 +1,5 @@
 High priority:
-	- Twitter embeds can hijack the posts web view when tapping bits that aren't the tweet date. @twitter
+	- Twitter embeds can hijack the posts web view when tapping bits that aren't the tweet date. @twitter @done(2016-09-05)
 		"If you tap on the embedded tweet, it replaces the entire page of the thread instead of opening in the browser sheet, which does let you see replies or whatevz but less useful if you want to keep reading the thread after the tweet. As far as I can tell, you can't get back to the current page of posts without reloading the page."
 		"That leads to another bug - the twitter page loads in the main view instead of pushing another viewcontroller so you lose your place in the thread"
 		"Please add a way to go back to the thread page that you were viewing after clicking on embedded tweets."
