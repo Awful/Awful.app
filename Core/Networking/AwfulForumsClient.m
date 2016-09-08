@@ -276,7 +276,7 @@
             if (scraper.threads && !error) {
                 if (page == 1) {
                     NSMutableSet *threadsToForget = [scraper.forum.threads mutableCopy];
-                    for (Thread *thread in scraper.threads) {
+                    for (AwfulThread *thread in scraper.threads) {
                         [threadsToForget removeObject:thread];
                     }
                     [threadsToForget setValue:@(0) forKey:@"threadListPage"];
@@ -447,7 +447,7 @@
                          threadTag:(ThreadTag *)threadTag
                       secondaryTag:(ThreadTag *)secondaryTag
                             BBcode:(NSString *)text
-                           andThen:(void (^)(NSError *error, Thread *thread))callback
+                           andThen:(void (^)(NSError *error, AwfulThread *thread))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = _managedObjectContext;
@@ -503,7 +503,7 @@
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  NSString *threadID = URL.awful_queryDictionary[@"threadid"];
                  NSError *error;
-                 Thread *thread;
+                 AwfulThread *thread;
                  if (threadID.length > 0) {
                      ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
                      thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];

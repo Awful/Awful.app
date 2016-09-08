@@ -10,52 +10,52 @@ import UIKit
     func itemAtIndexPath(indexPath: NSIndexPath) -> AnyObject
     func indexPathsForItem(item: AnyObject) -> [NSIndexPath]
     
-    optional func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String
-    optional func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath
+    @objc optional func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String
+    @objc optional func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath
 }
 
 @objc protocol DataSourceDelegate: NSObjectProtocol {
-    optional func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath])
-    optional func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath])
-    optional func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath])
-    optional func dataSource(dataSource: DataSource, didMoveItemAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath)
+    @objc optional func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath])
+    @objc optional func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath])
+    @objc optional func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath])
+    @objc optional func dataSource(dataSource: DataSource, didMoveItemAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath)
     
-    optional func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet)
-    optional func dataSource(dataSource: DataSource, didRemoveSections sections: NSIndexSet)
-    optional func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet)
-    optional func dataSource(dataSource: DataSource, didMoveSection fromSection: Int, toSection: Int)
+    @objc optional func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet)
+    @objc optional func dataSource(dataSource: DataSource, didRemoveSections sections: NSIndexSet)
+    @objc optional func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet)
+    @objc optional func dataSource(dataSource: DataSource, didMoveSection fromSection: Int, toSection: Int)
     
-    optional func dataSourceDidReloadData(dataSource: DataSource)
-    optional func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?)
+    @objc optional func dataSourceDidReloadData(dataSource: DataSource)
+    @objc optional func dataSource(dataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?)
 }
 
 extension TableViewController: DataSourceDelegate {
     func dataSource(dataSource: DataSource, didInsertItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+        tableView.insertRows(at: indexPaths as [IndexPath], with: .automatic)
     }
     
     func dataSource(dataSource: DataSource, didRemoveItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+        tableView.deleteRowsAtIndexPaths(indexPaths as [IndexPath], withRowAnimation: .Automatic)
     }
     
     func dataSource(dataSource: DataSource, didRefreshItemsAtIndexPaths indexPaths: [NSIndexPath]) {
-        tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+        tableView.reloadRowsAtIndexPaths(indexPaths as [IndexPath], withRowAnimation: .Automatic)
     }
     
     func dataSource(dataSource: DataSource, didMoveItemAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-        tableView.moveRowAtIndexPath(fromIndexPath, toIndexPath: toIndexPath)
+        tableView.moveRowAtIndexPath(fromIndexPath as IndexPath, toIndexPath: toIndexPath as IndexPath)
     }
     
     func dataSource(dataSource: DataSource, didInsertSections sections: NSIndexSet) {
-        tableView.insertSections(sections, withRowAnimation: .Automatic)
+        tableView.insertSections(sections as IndexSet, withRowAnimation: .Automatic)
     }
     
     func dataSource(dataSource: DataSource, didRemoveSections sections: NSIndexSet) {
-        tableView.deleteSections(sections, withRowAnimation: .Automatic)
+        tableView.deleteSections(sections as IndexSet, withRowAnimation: .Automatic)
     }
     
     func dataSource(dataSource: DataSource, didRefreshSections sections: NSIndexSet) {
-        tableView.reloadSections(sections, withRowAnimation: .Automatic)
+        tableView.reloadSections(sections as IndexSet, withRowAnimation: .Automatic)
     }
     
     func dataSource(dataSource: DataSource, didMoveSection fromSection: Int, toSection: Int) {

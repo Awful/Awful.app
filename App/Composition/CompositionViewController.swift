@@ -23,7 +23,7 @@ final class CompositionViewController: ViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func cancel(sender: UIKeyCommand) {
+    func cancel(_ sender: UIKeyCommand) {
         self.didTapCancel()
     }
     
@@ -55,7 +55,7 @@ final class CompositionViewController: ViewController {
         super.themeDidChange()
         
         textView.textColor = theme["listTextColor"]
-        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
     }
@@ -71,8 +71,8 @@ final class CompositionViewController: ViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated: animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         textView.flashScrollIndicators()
     }
@@ -91,7 +91,7 @@ final class CompositionViewController: ViewController {
 }
 
 extension CompositionViewController: UIViewControllerRestoration {
-    class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+    class func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
         let composition = self.init()
         composition.restorationIdentifier = identifierComponents.last as! String?
         return composition

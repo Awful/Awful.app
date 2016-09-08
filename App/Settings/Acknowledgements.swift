@@ -10,11 +10,11 @@ final class AcknowledgementsViewController: ViewController {
     private var backgroundColor: UIColor { return theme["backgroundColor"]! }
     private var textColor: UIColor { return theme["listTextColor"]! }
     
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
         title = "Acknowledgements"
-        modalPresentationStyle = .FormSheet
+        modalPresentationStyle = .formSheet
     }
 
     required init(coder: NSCoder) {
@@ -22,7 +22,7 @@ final class AcknowledgementsViewController: ViewController {
     }
     
     @IBAction @objc private func didTapDone() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     override func loadView() {
@@ -30,14 +30,14 @@ final class AcknowledgementsViewController: ViewController {
         webView.navigationDelegate = self
         
         // Avoids flash of white when first presented.
-        view.opaque = false
-        view.backgroundColor = UIColor.clearColor()
+        view.isOpaque = false
+        view.backgroundColor = UIColor.clear
         
         let context = [
             "backgroundColor": backgroundColor.hexCode,
             "textColor": textColor.hexCode
         ]
-        let bundle = NSBundle(forClass: AcknowledgementsViewController.self)
+        let bundle = Bundle(for: AcknowledgementsViewController.self)
         
         var HTML : String = ""
         do {
@@ -56,22 +56,22 @@ final class AcknowledgementsViewController: ViewController {
         let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.hexCode)'; s.color='\(textColor.hexCode)'"
         webView.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
-                NSLog("%@ error running script `%@` in acknowledgements screen: %@", #function, js, error)
+                NSLog("\(#function): error running script `\(js)` in acknowledgements screen: \(error)")
             }
         })
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if navigationController?.viewControllers.first! == self {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(didTapDone))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
         } else {
             navigationItem.rightBarButtonItem = nil
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         webView.scrollView.flashScrollIndicators()
@@ -79,12 +79,12 @@ final class AcknowledgementsViewController: ViewController {
 }
 
 extension AcknowledgementsViewController: WKNavigationDelegate {
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-        if navigationAction.navigationType == .LinkActivated {
-            UIApplication.sharedApplication().openURL(navigationAction.request.URL!)
-            decisionHandler(.Cancel)
+    override func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.navigationType == .linkActivated {
+            UIApplication.shared.openURL(navigationAction.request.url!)
+            decisionHandler(.cancel)
         } else {
-            decisionHandler(.Allow)
+            decisionHandler(.allow)
         }
     }
 }

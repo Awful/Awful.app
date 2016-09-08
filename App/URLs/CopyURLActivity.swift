@@ -10,16 +10,22 @@ class CopyURLActivity: UIActivity {
         return URLToCopyContainer(URL)
     }
     
-    override class func activityType() -> UIActivityType {
-        return UIActivityType("com.awfulapp.Awful.CopyURL")
+    override open var activityType: UIActivityType {
+        get {
+            return UIActivityType("com.awfulapp.Awful.CopyURL")
+        }
     }
     
-    override class func activityCategory() -> UIActivityCategory {
-        return .action
+    override open class var activityCategory: UIActivityCategory {
+        get {
+            return .action
+        }
     }
     
-    override func activityTitle() -> String? {
-        return overriddenTitle ?? "Copy URL"
+    override open var activityTitle: String? {
+        get {
+            return overriddenTitle ?? "Copy URL"
+        }
     }
     
     private var overriddenTitle: String?
@@ -30,17 +36,19 @@ class CopyURLActivity: UIActivity {
         overriddenTitle = title
     }
     
-    override func activityImage() -> UIImage? {
-        return UIImage(named: "copy")
+    override open var activityImage: UIImage? {
+        get {
+            return UIImage(named: "copy")
+        }
     }
     
-    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return any(sequence: activityItems) { $0 is URLToCopyContainer }
     }
     
     private var URL: NSURL!
     
-    override func prepareWithActivityItems(activityItems: [AnyObject]) {
+    override func prepare(withActivityItems activityItems: [Any]) {
         let container = first(sequence: activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
         URL = container.URL
     }

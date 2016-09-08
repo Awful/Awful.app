@@ -73,12 +73,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.attributedPlaceholder = themedString
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateAvailableThreadTagsIfNecessary()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         onAppearBlock?()
         onAppearBlock = nil
@@ -206,7 +206,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         }
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
+    override func encodeRestorableState(with coder: NSCoder) {
         super.encodeRestorableStateWithCoder(coder)
         
         coder.encodeObject(forum.objectKey, forKey: Keys.ForumKey.rawValue)
@@ -215,7 +215,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         coder.encodeObject(secondaryThreadTag?.objectKey, forKey: Keys.SecondaryThreadTagKey.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
+    override func decodeRestorableState(with coder: NSCoder) {
         fieldView.subjectField.textField.text = coder.decodeObjectForKey(Keys.SubjectKey.rawValue) as? String
         
         if let tagKey = coder.decodeObjectForKey(Keys.ThreadTagKey.rawValue) as? ThreadTagKey {

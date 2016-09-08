@@ -256,7 +256,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
 }
 
 @objc protocol SubmittableDraft {
-    func submit(completion: NSError? -> Void) -> NSProgress
+    func submit(completion: (NSError?) -> Void) -> NSProgress
 }
 
 @objc protocol ReplyUI {

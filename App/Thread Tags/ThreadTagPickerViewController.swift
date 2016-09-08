@@ -20,29 +20,29 @@ final class ThreadTagPickerViewController: ViewController {
     
     func present(fromView view: UIView) {
         let presentedViewController: UIViewController
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .Pad {
             presentedViewController = self
         } else {
             presentedViewController = enclosingNavigationController
         }
         presentingView = view
-        presentedViewController.modalPresentationStyle = .Popover
-        view.nearestViewController?.presentViewController(presentedViewController, animated: true, completion: nil)
+        presentedViewController.modalPresentationStyle = .popover
+        view.nearestViewController?.present(presentedViewController, animated: true, completion: nil)
         
         if let popover = presentedViewController.popoverPresentationController {
             popover.delegate = self
-            popover.permittedArrowDirections = [.Up, .Down]
+            popover.permittedArrowDirections = [.Up, .down]
             popover.sourceRect = view.bounds
             popover.sourceView = view
         }
     }
     
     func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     func selectImageName(imageName: String) {
-        guard let item = imageNames.indexOf(imageName) else { return }
+        guard let item = imageNames.index(of: imageName) else { return }
         let section = secondaryImageNames?.isEmpty == false ? 1 : 0
         collectionView.performBatchUpdates({
             let indexPath = NSIndexPath(forItem: item, inSection: section)
@@ -53,7 +53,7 @@ final class ThreadTagPickerViewController: ViewController {
     
     func selectSecondaryImageName(imageName: String) {
         guard let secondaryImageNames = secondaryImageNames , !secondaryImageNames.isEmpty else { fatalError("thread tag picker isn't showing secondary tags") }
-        guard let item = secondaryImageNames.indexOf(imageName) else { return }
+        guard let item = secondaryImageNames.index(of: imageName) else { return }
         collectionView.performBatchUpdates({ 
             let indexPath = NSIndexPath(forItem: item, inSection: 0)
             self.collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .Top)
@@ -62,19 +62,19 @@ final class ThreadTagPickerViewController: ViewController {
     }
     
     private(set) lazy var cancelButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .Cancel, target: nil, action: nil)
+        let button = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
         button.actionBlock = { [weak self] _ in
             self?.dismiss()
-            self?.delegate?.threadTagPickerDidDismiss?(self!)
+            self?.delegate?.threadTagPickerDidDismiss?(picker: self!)
         }
         return button
     }()
     
     private(set) lazy var doneButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: nil)
+        let button = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
         button.actionBlock = { [weak self] _ in
             self?.dismiss()
-            self?.delegate?.threadTagPickerDidDismiss?(self!)
+            self?.delegate?.threadTagPickerDidDismiss?(picker: self!)
         }
         return button
     }()
@@ -100,7 +100,7 @@ final class ThreadTagPickerViewController: ViewController {
     }
     
     private func ensureLoneSelectedCellInSectionAtIndexPath(indexPath: NSIndexPath) {
-        for selectedIndexPath in collectionView.indexPathsForSelectedItems() ?? [] {
+        for selectedIndexPath in collectionView.indexPathsForSelectedItems ?? [] {
             if selectedIndexPath.section == indexPath.section && selectedIndexPath.item != indexPath.item {
                 collectionView.deselectItemAtIndexPath(selectedIndexPath, animated: true)
             }
@@ -116,16 +116,16 @@ final class ThreadTagPickerViewController: ViewController {
         layout.minimumLineSpacing = 5
         
         collectionView = UICollectionView(frame: CGRect(origin: .zero, size: view.bounds.size), collectionViewLayout: layout)
-        collectionView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        collectionView.registerClass(ThreadTagPickerCell.self, forCellWithReuseIdentifier: cellID)
-        collectionView.registerClass(SecondaryTagPickerCell.self, forCellWithReuseIdentifier: secondaryCellID)
+        collectionView.autoresizingMask = [.flexibleWidth, .FlexibleHeight]
+        collectionView.register(ThreadTagPickerCell.self, forCellWithReuseIdentifier: cellID)
+        collectionView.register(SecondaryTagPickerCell.self, forCellWithReuseIdentifier: secondaryCellID)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.allowsMultipleSelection = secondaryImageNames?.isEmpty == false
         view.addSubview(collectionView)
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
         let popoverCornerRadius: CGFloat = 10
@@ -134,26 +134,26 @@ final class ThreadTagPickerViewController: ViewController {
 }
 
 extension ThreadTagPickerViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return secondaryImageNames?.isEmpty == false ? 2 : 1
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return selectSecondaryImageName.isEmpty == false ? 2 : 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if isSecondaryTagSection(section) {
-            return secondaryImageNames?.count ?? 0
+            return selectSecondaryImageName.count ?? 0
         }
         return imageNames.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if isSecondaryTagSection(indexPath.section) {
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier(secondaryCellID, forIndexPath: indexPath) as! SecondaryTagPickerCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: secondaryCellID, for: indexPath as IndexPath) as! SecondaryTagPickerCell
             cell.titleTextColor = theme["tagPickerTextColor"] ?? .blackColor()
-            cell.tagImageName = secondaryImageNames![indexPath.item]
+            cell.tagImageName = selectSecondaryImageName[indexPath.item]
             return cell
         }
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellID, forIndexPath: indexPath) as! ThreadTagPickerCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath as IndexPath) as! ThreadTagPickerCell
         let imageName = imageNames[indexPath.item]
         let image = ThreadTagLoader.imageNamed(imageName)
         cell.image = image ?? ThreadTagLoader.emptyThreadTagImage
@@ -178,19 +178,19 @@ extension ThreadTagPickerViewController: UICollectionViewDataSource, UICollectio
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
         collectionView.performBatchUpdates({ 
             self.ensureLoneSelectedCellInSectionAtIndexPath(indexPath)
             }, completion: nil)
         
         if isSecondaryTagSection(indexPath.section) {
-            delegate?.threadTagPicker?(self, didSelectSecondaryImageName: secondaryImageNames![indexPath.item])
+            delegate?.threadTagPicker?(picker: self, didSelectSecondaryImageName: selectSecondaryImageName![indexPath.item])
         } else {
             delegate?.threadTagPicker(self, didSelectImageName: imageNames[indexPath.item])
         }
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if isSecondaryTagSection(section) {
             return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
         }
@@ -202,20 +202,20 @@ private let cellID = "Cell"
 private let secondaryCellID = "Secondary"
 
 extension ThreadTagPickerViewController: UIPopoverPresentationControllerDelegate {
-    func popoverPresentationController(popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
+    private func popoverPresentationController(popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
         view.memory = presentingView
         rect.memory = presentingView?.bounds ?? .zero
     }
     
-    func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
-        delegate?.threadTagPickerDidDismiss?(self)
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        delegate?.threadTagPickerDidDismiss?(picker: self)
     }
 }
 
 @objc protocol ThreadTagPickerViewControllerDelegate: class {
     func threadTagPicker(picker: ThreadTagPickerViewController, didSelectImageName imageName: String)
     
-    optional func threadTagPicker(picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String)
+    @objc optional func threadTagPicker(picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String)
     
-    optional func threadTagPickerDidDismiss(picker: ThreadTagPickerViewController)
+    @objc optional func threadTagPickerDidDismiss(picker: ThreadTagPickerViewController)
 }

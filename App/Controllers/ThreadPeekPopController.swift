@@ -8,20 +8,20 @@ import UIKit
 
 final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIViewControllerPreviewingDelegate {
     private weak var previewingViewController: UIViewController?
-    private var thread: Thread?
+    private var thread: AwfulThread?
     
     init<ViewController: UIViewController>(previewingViewController: ViewController) where ViewController: ThreadPeekPopControllerDelegate {
         self.previewingViewController = previewingViewController
         
         super.init()
         
-        previewingViewController.registerForPreviewingWithDelegate(self, sourceView: previewingViewController.view)
+        previewingViewController.registerForPreviewing(with: self, sourceView: previewingViewController.view)
     }
     
     // MARK: PreviewActionItemProvider
     
     var previewActionItems: [UIPreviewActionItem] {
-        let copyAction = UIPreviewAction(title: "Copy URL", style: .Default) { action, previewViewController in
+        let copyAction = UIPreviewAction(title: "Copy URL", style: .default) { action, previewViewController in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
@@ -34,42 +34,42 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             if (postsViewController.page > 1) {
                 queryItems.append(NSURLQueryItem(name:"pagenumber", value: "\(postsViewController.page)"))
             }
-            components.queryItems = queryItems
+            components.queryItems = queryItems as [URLQueryItem]
             
-            let URL = components.URL!
-            AwfulSettings.sharedSettings().lastOfferedPasteboardURL = URL.absoluteString
-            UIPasteboard.generalPasteboard().awful_URL = URL
+            let URL = components.url!
+            AwfulSettings.shared().lastOfferedPasteboardURL = URL.absoluteString
+            UIPasteboard.general.awful_URL = URL as NSURL?
         }
         
-        let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .Default) { action, previewViewController in
+        let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
             let thread = postsViewController.thread
             
-            AwfulForumsClient.sharedClient().listPostsInThread(thread, writtenBy: nil, onPage: AwfulThreadPage.Last.rawValue, updateLastReadPost: true, andThen: { (error: NSError?, _, _, _) -> Void in
+            AwfulForumsClient.shared().listPosts(in: thread, writtenBy: nil, onPage: AwfulThreadPage.last.rawValue, updateLastReadPost: true, andThen: { (error: Error?, _, _, _) -> Void in
                 guard let
                     error = error,
-                    let previewingViewController = postsViewController.parentViewController
+                    let previewingViewController = postsViewController.parent
                 else {
                     return
                 }
                 
-                let alert = UIAlertController(networkError: error, handler: nil)
-                previewingViewController.presentViewController(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                previewingViewController.present(alert, animated: true, completion: nil)
             })
         }
         
         let bookmarkTitle = thread?.bookmarked == true ? "Remove Bookmark" : "Add Bookmark"
-        let bookmarkStyle: UIPreviewActionStyle = thread?.bookmarked == true ? .Destructive : .Default
+        let bookmarkStyle: UIPreviewActionStyle = thread?.bookmarked == true ? .destructive : .default
         let bookmarkAction = UIPreviewAction(title: bookmarkTitle, style: bookmarkStyle) { action, previewViewController in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
             let thread = postsViewController.thread
             
-            AwfulForumsClient.sharedClient().setThread(thread, isBookmarked:!thread.bookmarked) { (error: NSError?) in
-                guard let presentingViewController = previewViewController.parentViewController else {
+            AwfulForumsClient.shared().setThread(thread, isBookmarked:!thread.bookmarked) { (error: Error?) in
+                guard let presentingViewController = previewViewController.parent else {
                     return
                 }
                 
@@ -92,10 +92,10 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
     
     // MARK: UIViewControllerPreviewingDelegate
     
-    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
         guard let
             delegate = previewingViewController as? ThreadPeekPopControllerDelegate,
-            let thread = delegate.threadForLocation(location)
+            let thread = delegate.threadForLocation(location: location)
         else {
             return nil
         }
@@ -105,35 +105,35 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
-        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: false)
+        let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
+        postsViewController.loadPage(rawPage: targetPage, updatingCache: true, updatingLastReadPost: false)
         
         postsViewController.preferredContentSize = CGSize(width: 0, height: 500)
         postsViewController.previewActionItemProvider = self
         
-        if let view = delegate.viewForThread(thread) {
+        if let view = delegate.viewForThread(thread: thread) {
             previewingContext.sourceRect = view.frame
         }
         
         return postsViewController
     }
     
-    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
         guard let viewController = previewingViewController else {
             return
         }
         
         if let postsViewController = viewControllerToCommit as? PostsPageViewController {
-            postsViewController.loadPage(postsViewController.page, updatingCache: true, updatingLastReadPost: true)
+            postsViewController.loadPage(rawPage: postsViewController.page, updatingCache: true, updatingLastReadPost: true)
         }
         
-        viewController.showViewController(viewControllerToCommit, sender: self)
+        viewController.show(viewControllerToCommit, sender: self)
     }
 }
 
 protocol ThreadPeekPopControllerDelegate {
-    func threadForLocation(location: CGPoint) -> Thread?
-    func viewForThread(thread: Thread) -> UIView?
+    func threadForLocation(location: CGPoint) -> AwfulThread?
+    func viewForThread(thread: AwfulThread) -> UIView?
 }
 
 @objc protocol PreviewActionItemProvider {

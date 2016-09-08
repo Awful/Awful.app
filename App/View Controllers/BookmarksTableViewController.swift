@@ -28,7 +28,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+        let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.shared().bookmarksSortedByUnread)
         dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
         super.init(style: .plain)
@@ -53,7 +53,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             cell.longPressAction = self?.didLongPressCell
         })
         tableViewAdapter.deletionHandler = { [weak self] thread in
-            self?.setThread(thread: thread, isBookmarked: false)
+            self?.setThread(thread, isBookmarked: false)
         }
         
         dataManager.delegate = tableViewAdapter
@@ -139,8 +139,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
                 row = self?.dataManager.contents.index(of: thread),
                 let cell = self?.tableView.cellForRow(at: IndexPath(row: row, section: 0))
             {
-                sourceRect.memory = cell.bounds
-                sourceView.memory = cell
+                sourceRect.pointee = cell.bounds
+                sourceView.pointee = cell
             }
         }
         present(actionViewController, animated: true, completion: nil)
@@ -166,7 +166,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String as String:
-            let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+            let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.shared().bookmarksSortedByUnread)
             dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
@@ -230,15 +230,15 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         return undoManager
         }()
     
-    @objc private func setThread(thread: AwfulThread, isBookmarked: Bool) {
-        (undoManager.prepareWithInvocationTarget(self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
+    @objc private func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
+        (undoManager.prepare(withInvocationTarget: self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: NSError?) in
+        AwfulForumsClient.shared().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: Error?) -> Void in
             if let error = error {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
         }
     }
@@ -255,8 +255,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
-    override func tableView(_ tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: IndexPath) {
-        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)

@@ -8,9 +8,9 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
     private(set) var contents: [Object] = []
     weak var delegate: FetchedDataManagerDelegate?
     
-    private let resultsController: NSFetchedResultsController<AnyObject>
+    private let resultsController: NSFetchedResultsController<NSFetchRequestResult>
     
-    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<AnyObject>) {
+    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         
         super.init()
@@ -55,7 +55,7 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
     
     // MARK: NSFetchedResultsControllerDelegate
     
-    @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<Any>) {
+    @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateContents()
         delegate?.dataManagerDidChangeContent(dataManager: self)
     }
