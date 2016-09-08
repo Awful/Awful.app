@@ -236,7 +236,7 @@ function interestingElementsAtPoint(x, y) {
         if (isSpoiled(a)) {
             items.spoiledLink = {
             rect: rectOfElement(a),
-            URL: encodeURI(a.attr('href')).replace(/%5B/g, '[').replace(/%5D/g, ']')
+            URL: a.attr('href')
             };
         } else {
             

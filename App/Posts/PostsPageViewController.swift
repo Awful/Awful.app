@@ -1113,21 +1113,30 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
     }
 }
 
+/// Twitter and YouTube embeds try to use taps to take over the frame. Here we try to detect that and treat it as if a link was tapped.
+private func isHijackingWebView(navigationType navigationType: UIWebViewNavigationType, url: NSURL) -> Bool {
+    guard case .Other = navigationType else { return false }
+    guard let host = url.host?.lowercaseString else { return false }
+    if
+        host.hasSuffix("www.youtube.com"),
+        let path = url.path?.lowercaseString where path.hasPrefix("/watch")
+    {
+        return true
+    } else if
+        host.hasSuffix("twitter.com"),
+        let thirdComponent = url.pathComponents?.dropFirst(2).first
+        where thirdComponent.lowercaseString == "status"
+    {
+        return true
+    } else {
+        return false
+    }
+}
+
 extension PostsPageViewController: UIWebViewDelegate {
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard let url = request.URL else { return true }
-        
-        // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
-        var navigationType = navigationType
-        if
-            navigationType != .LinkClicked &&
-            url.host?.lowercaseString.hasSuffix("www.youtube.com") == true &&
-            url.path?.lowercaseString.hasPrefix("/watch") == true
-        {
-            navigationType = .LinkClicked
-        }
-        
-        guard navigationType == .LinkClicked else { return true }
+        guard navigationType == .LinkClicked || isHijackingWebView(navigationType: navigationType, url: url) else { return true }
         
         if let awfulURL = url.awfulURL {
             if url.fragment == "awful-ignored" {

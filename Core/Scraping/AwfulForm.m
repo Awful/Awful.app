@@ -76,6 +76,25 @@
     return _selectedSecondaryThreadTagKey;
 }
 
+- (NSString *)threadTagIDWithImageName:(NSString *)imageName {
+    return [self threadTagIDInThreadTagKeys:_threadTagKeys withImageName:imageName];
+}
+
+- (NSString *)secondaryThreadTagIDWithImageName:(NSString *)imageName {
+    return [self threadTagIDInThreadTagKeys:_secondaryThreadTagKeys withImageName:imageName];
+}
+
+- (NSString *)threadTagIDInThreadTagKeys:(NSArray *)threadTagKeys withImageName:(NSString *)imageName {
+    [self scrapeIfNecessary];
+    
+    for (ThreadTagKey *key in threadTagKeys) {
+        if ([key.imageName isEqualToString:imageName]) {
+            return key.threadTagID;
+        }
+    }
+    return nil;
+}
+
 - (NSMutableDictionary *)recommendedParameters
 {
     [self scrapeIfNecessary];

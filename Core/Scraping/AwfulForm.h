@@ -40,6 +40,12 @@
 /// The key for the selected secondary thread tag.
 @property (readonly, copy, nonatomic) NSString *selectedSecondaryThreadTagKey;
 
+/// Returns the thread tag ID associated with an image name, or `nil` if none exists.
+- (NSString *)threadTagIDWithImageName:(NSString *)imageName;
+
+/// Returns the secondary thread tag ID associated with an image name, or `nil` if none exists.
+- (NSString *)secondaryThreadTagIDWithImageName:(NSString *)imageName;
+
 /**
     A dictionary of parameters necessary (but perhaps insufficient) to submit the form.
  

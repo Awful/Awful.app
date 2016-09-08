@@ -6,17 +6,16 @@ import AwfulCore
 import UIKit
 
 final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, FetchedDataManagerDelegate {
-
-    typealias DataManager = FetchedDataManager<AwfulThread>
+    typealias DataManager = FetchedDataManager<Thread>
     
     private let tableView: UITableView
     private let dataManager: DataManager
     private let ignoreSticky: Bool
     private let cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void
     private var viewModels: [ThreadTableViewCell.ViewModel]
-    var deletionHandler: ((AwfulThread) -> Void)?
+    var deletionHandler: (Thread -> Void)?
     
-    init(tableView: UITableView, dataManager: DataManager, ignoreSticky: Bool, cellConfigurationHandler: @escaping (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void) {
+    init(tableView: UITableView, dataManager: DataManager, ignoreSticky: Bool, cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void) {
         self.tableView = tableView
         self.dataManager = dataManager
         self.ignoreSticky = ignoreSticky
@@ -26,15 +25,15 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         
         viewModels = dataManager.contents.map(createViewModel)
         
-        NotificationCenter.defaultCenter.addObserver(self, selector: #selector(ThreadDataManagerTableViewAdapter.threadTagDidDownload(_:)), name: ThreadTagLoader.newImageAvailableNotification, object: ThreadTagLoader.sharedLoader)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadDataManagerTableViewAdapter.threadTagDidDownload(_:)), name: ThreadTagLoader.newImageAvailableNotification, object: ThreadTagLoader.sharedLoader)
     }
     
     deinit {
-        NotificationCenter.defaultCenter.removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    private func createViewModel(thread: AwfulThread) -> ThreadTableViewCell.ViewModel {
-        return ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.shared().showThreadTags, ignoreSticky: ignoreSticky)
+    private func createViewModel(thread: Thread) -> ThreadTableViewCell.ViewModel {
+        return ThreadTableViewCell.ViewModel(thread: thread, showsTag: AwfulSettings.sharedSettings().showThreadTags, ignoreSticky: ignoreSticky)
     }
     
     private func reloadViewModels() {
@@ -46,7 +45,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         tableView.beginUpdates()
         
         func pathify(row: Int) -> NSIndexPath {
-            return NSIndexPath(for: row, in: 0)
+            return NSIndexPath(forRow: row, inSection: 0)
         }
         
         let deletions = delta.deletions.map(pathify)
@@ -92,29 +91,29 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
     
     // MARK: UITableViewDataSource
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModels.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ThreadTableViewCell.identifier, for: indexPath) as! ThreadTableViewCell
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(ThreadTableViewCell.identifier, forIndexPath: indexPath) as! ThreadTableViewCell
         let viewModel = viewModels[indexPath.row]
         cellConfigurationHandler(cell, viewModel)
         return cell
     }
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return deletionHandler != nil
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         let thread = dataManager.contents[indexPath.row]
         deletionHandler!(thread)
     }
 }
 
 private extension ThreadTableViewCell.ViewModel {
-    init(thread: AwfulThread, showsTag: Bool, ignoreSticky: Bool) {
+    init(thread: Thread, showsTag: Bool, ignoreSticky: Bool) {
         title = thread.title ?? ""
         numberOfPages = Int(thread.numberOfPages)
         
@@ -125,11 +124,19 @@ private extension ThreadTableViewCell.ViewModel {
         unreadPosts = Int(thread.unreadPosts)
         starCategory = thread.starCategory
         
+        let tweaks = thread.forum.flatMap { ForumTweaks(forumID: $0.forumID) }
+        
         showsTagAndRating = showsTag
-        let imageName = thread.threadTag?.imageName
+        let imageName: String?
+        if let tweaks = tweaks where tweaks.showRatingsAsThreadTags {
+            let rating = round(thread.rating * 2) / 2
+            imageName = NSString(format: "%.1fstars.png", rating) as String
+        } else {
+            imageName = thread.threadTag?.imageName
+        }
         if let
             imageName = imageName,
-            let image = ThreadTagLoader.imageNamed(imageName: imageName)
+            image = ThreadTagLoader.imageNamed(imageName)
         {
             tag = Tag.Downloaded(image)
         } else {
@@ -138,28 +145,20 @@ private extension ThreadTableViewCell.ViewModel {
         }
         
         if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {
-            secondaryTag = ThreadTagLoader.imageNamed(imageName: secondaryTagImageName)
+            secondaryTag = ThreadTagLoader.imageNamed(secondaryTagImageName)
             self.secondaryTagImageName = secondaryTagImageName
         } else {
             secondaryTag = nil
             secondaryTagImageName = nil
         }
         
-        var showRatings = true
-        if let
-            forumID = thread.forum?.forumID,
-            let tweaks = ForumTweaks(forumID: forumID)
-        {
-            showRatings = tweaks.showRatings
-        }
+        let showRatings = tweaks?.showRatings ?? true
         var rating: Int?
-        if showRatings {
-            let rounded = lroundf(thread.rating).clamp(interval: 0...5)
-            if rounded != 0 {
-                rating = rounded
-            }
+        let rounded = lroundf(thread.rating).clamp(0...5)
+        if rounded != 0 {
+            rating = rounded
         }
-        if let rating = rating {
+        if showRatings, let rating = rating {
             let imageName = "rating\(rating)"
             self.rating = UIImage(named: imageName)
             ratingImageName = imageName
