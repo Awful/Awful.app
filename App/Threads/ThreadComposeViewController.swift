@@ -7,20 +7,20 @@ import AwfulCore
 /// For writing the OP of a new thread.
 final class ThreadComposeViewController: ComposeTextViewController {
     /// The newly-posted thread.
-    private(set) var thread: Thread?
-    private let forum: Forum
-    private var threadTag: ThreadTag? {
+    fileprivate(set) var thread: AwfulThread?
+    fileprivate let forum: Forum
+    fileprivate var threadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
-    private var secondaryThreadTag: ThreadTag? {
+    fileprivate var secondaryThreadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
-    private var fieldView: NewThreadFieldView!
-    private var availableThreadTags: [ThreadTag]?
-    private var availableSecondaryThreadTags: [ThreadTag]?
-    private var updatingThreadTags = false
-    private var onAppearBlock: (() -> Void)?
-    private var threadTagPicker: ThreadTagPickerViewController?
+    fileprivate var fieldView: NewThreadFieldView!
+    fileprivate var availableThreadTags: [ThreadTag]?
+    fileprivate var availableSecondaryThreadTags: [ThreadTag]?
+    fileprivate var updatingThreadTags = false
+    fileprivate var onAppearBlock: (() -> Void)?
+    fileprivate var threadTagPicker: ThreadTagPickerViewController?
     
     /// - parameter forum: The forum in which the new thread is posted.
     init(forum: Forum) {
@@ -44,9 +44,9 @@ final class ThreadComposeViewController: ComposeTextViewController {
         super.loadView()
         
         fieldView = NewThreadFieldView(frame: CGRect(x: 0, y: 0, width: 0, height: 45))
-        fieldView.subjectField.label.textColor = .grayColor()
-        fieldView.threadTagButton.addTarget(self, action: #selector(didTapThreadTagButton), forControlEvents: .TouchUpInside)
-        fieldView.subjectField.textField.addTarget(self, action: #selector(subjectFieldDidChange), forControlEvents: .EditingChanged)
+        fieldView.subjectField.label.textColor = .gray
+        fieldView.threadTagButton.addTarget(self, action: #selector(didTapThreadTagButton), for: .touchUpInside)
+        fieldView.subjectField.textField.addTarget(self, action: #selector(subjectFieldDidChange), for: .editingChanged)
         customView = fieldView
     }
     
@@ -68,7 +68,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSForegroundColorAttributeName: theme["placeholderTextColor"] ?? .grayColor()]
+        let attributes = [NSForegroundColorAttributeName: theme["placeholderTextColor"] ?? .gray]
         let themedString = NSAttributedString(string: "Subject", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = themedString
     }
@@ -84,7 +84,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         onAppearBlock = nil
     }
     
-    private func updateTweaks() {
+    fileprivate func updateTweaks() {
         guard let tweaks = ForumTweaks(forumID: forum.forumID) else { return }
         fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType
         fieldView.subjectField.textField.autocorrectionType = tweaks.autocorrectionType
@@ -95,14 +95,14 @@ final class ThreadComposeViewController: ComposeTextViewController {
         textView.spellCheckingType = tweaks.spellCheckingType
     }
     
-    private func updateThreadTagButtonImage() {
+    fileprivate func updateThreadTagButtonImage() {
         let image: UIImage?
         if let imageName = threadTag?.imageName {
             image = ThreadTagLoader.imageNamed(imageName)
         } else {
             image = ThreadTagLoader.unsetThreadTagImage
         }
-        fieldView.threadTagButton.setImage(image, forState: .Normal)
+        fieldView.threadTagButton.setImage(image, for: UIControlState())
         
         let secondaryImage: UIImage?
         if let imageName = secondaryThreadTag?.imageName {
@@ -113,7 +113,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.threadTagButton.secondaryTagImage = secondaryImage
     }
     
-    @objc private func didTapThreadTagButton(sender: UIButton) {
+    @objc fileprivate func didTapThreadTagButton(_ sender: UIButton) {
         guard let picker = threadTagPicker else { return }
         
         let selectedImageName = threadTag?.imageName ?? ThreadTagLoader.emptyThreadTagImageName
@@ -133,7 +133,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         view.endEditing(true)
     }
     
-    @objc private func subjectFieldDidChange(sender: UITextField) {
+    @objc fileprivate func subjectFieldDidChange(_ sender: UITextField) {
         if let text = sender.text , !text.isEmpty {
             title = text
         } else {
@@ -143,11 +143,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updateSubmitButtonItem()
     }
     
-    private func updateAvailableThreadTagsIfNecessary() {
+    fileprivate func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        AwfulForumsClient.sharedClient().listAvailablePostIconsForForumWithID(forum.forumID) { [weak self] (error: NSError?, form: AwfulForm?) in
+        AwfulForumsClient.shared().listAvailablePostIconsForForum(withID: forum.forumID) { [weak self] (error: Error?, form: AwfulForm?) in
             self?.updatingThreadTags = false
             self?.availableThreadTags = form?.threadTags as! [ThreadTag]?
             self?.availableSecondaryThreadTags = form?.secondaryThreadTags as! [ThreadTag]?
@@ -172,7 +172,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         return threadTag != nil
     }
     
-    override func shouldSubmit(handler: (Bool) -> Void) {
+    override func shouldSubmit(_ handler: @escaping (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
@@ -187,17 +187,17 @@ final class ThreadComposeViewController: ComposeTextViewController {
         return "Posting…"
     }
     
-    override func submit(composition: String, completion: (Bool) -> Void) {
+    override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
         guard let
             subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
             else { return completion(false) }
-        AwfulForumsClient.sharedClient().postThreadInForum(forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, BBcode: composition) { [weak self] (error: NSError?, thread: Thread?) in
+        AwfulForumsClient.shared().postThread(in: forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bBcode: composition) { [weak self] (error: Error?, thread: AwfulThread?) in
             if let error = error {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
                     completion(false)
                 })
-                self?.presentViewController(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
                 return
             }
             
@@ -207,36 +207,36 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(forum.objectKey, forKey: Keys.ForumKey.rawValue)
-        coder.encodeObject(fieldView.subjectField.textField.text, forKey: Keys.SubjectKey.rawValue)
-        coder.encodeObject(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
-        coder.encodeObject(secondaryThreadTag?.objectKey, forKey: Keys.SecondaryThreadTagKey.rawValue)
+        coder.encode(forum.objectKey, forKey: Keys.ForumKey.rawValue)
+        coder.encode(fieldView.subjectField.textField.text, forKey: Keys.SubjectKey.rawValue)
+        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
+        coder.encode(secondaryThreadTag?.objectKey, forKey: Keys.SecondaryThreadTagKey.rawValue)
     }
     
     override func decodeRestorableState(with coder: NSCoder) {
-        fieldView.subjectField.textField.text = coder.decodeObjectForKey(Keys.SubjectKey.rawValue) as? String
+        fieldView.subjectField.textField.text = coder.decodeObject(forKey: Keys.SubjectKey.rawValue) as? String
         
-        if let tagKey = coder.decodeObjectForKey(Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+        if let tagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
+            threadTag = ThreadTag.objectForKey(objectKey: tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
         }
         
-        if let secondaryTagKey = coder.decodeObjectForKey(Keys.SecondaryThreadTagKey.rawValue) as? ThreadTagKey {
-            secondaryThreadTag = ThreadTag.objectForKey(secondaryTagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+        if let secondaryTagKey = coder.decodeObject(forKey: Keys.SecondaryThreadTagKey.rawValue) as? ThreadTagKey {
+            secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryTagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
         }
         
-        super.decodeRestorableStateWithCoder(coder)
+        super.decodeRestorableState(with: coder)
     }
 }
 
 extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
-    func threadTagPicker(picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
+    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
         if imageName == ThreadTagLoader.emptyThreadTagImageName {
             threadTag = nil
         } else if let
             threadTags = availableThreadTags,
-            let i = threadTags.indexOf({ $0.imageName == imageName})
+            let i = threadTags.index(where: { $0.imageName == imageName})
         {
             threadTag = threadTags[i]
         }
@@ -247,25 +247,25 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         }
     }
     
-    func threadTagPicker(picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String) {
+    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String) {
         if let
             tags = availableSecondaryThreadTags,
-            let i = tags.indexOf({ $0.imageName == imageName })
+            let i = tags.index(where: { $0.imageName == imageName })
         {
             secondaryThreadTag = tags[i]
         }
     }
     
-    func threadTagPickerDidDismiss(picker: ThreadTagPickerViewController) {
+    func threadTagPickerDidDismiss(_ picker: ThreadTagPickerViewController) {
         focusInitialFirstResponder()
     }
 }
 
 extension ThreadComposeViewController: UIViewControllerRestoration {
-    static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
         guard let
-            forumKey = coder.decodeObjectForKey(Keys.ForumKey.rawValue) as? ForumKey,
-            let forum = Forum.objectForKey(forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
+            forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey,
+            let forum = Forum.objectForKey(objectKey: forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
             else { return nil }
         
         let composeViewController = ThreadComposeViewController(forum: forum)

@@ -31,28 +31,28 @@ final class NigglyRefreshView: UIView, RefreshViewAnimator {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func addAnimation() {
-        guard layer.animationForKey("sprite") == nil else { return }
-        layer.addAnimation(makeSpriteAnimation(for: NigglyRefreshView.makeImage()), forKey: "sprite")
+    fileprivate func addAnimation() {
+        guard layer.animation(forKey: "sprite") == nil else { return }
+        layer.add(makeSpriteAnimation(for: NigglyRefreshView.makeImage()), forKey: "sprite")
     }
     
-    private func removeAnimation() {
-        layer.removeAnimationForKey("sprite")
+    fileprivate func removeAnimation() {
+        layer.removeAnimation(forKey: "sprite")
     }
     
-    func animateState(state: State) {
+    func animateState(_ state: State) {
         switch state {
-        case .Initial:
+        case .initial:
             removeAnimation()
             
-        case .Releasing(let progress) where progress < 1:
+        case .releasing(let progress) where progress < 1:
             addAnimation()
             layer.pause()
             
-        case .Loading, .Releasing:
+        case .loading, .releasing:
             layer.resume()
             
-        case .Finished:
+        case .finished:
             layer.pause()
         }
     }
@@ -62,7 +62,7 @@ final class NigglyRefreshView: UIView, RefreshViewAnimator {
 private extension CALayer {
     func pause() {
         guard speed != 0 else { return }
-        let pausedTime = convertTime(CACurrentMediaTime(), fromLayer: nil)
+        let pausedTime = convertTime(CACurrentMediaTime(), from: nil)
         speed = 0.0
         timeOffset = pausedTime
     }
@@ -73,7 +73,7 @@ private extension CALayer {
         speed = 1.0
         timeOffset = 0.0
         beginTime = 0.0
-        let timeSincePause = convertTime(CACurrentMediaTime(), fromLayer: nil) - pausedTime
+        let timeSincePause = convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         beginTime = timeSincePause
     }
 }
@@ -84,9 +84,9 @@ private func makeSpriteAnimation(for image: UIImage) -> CAAnimation {
     
     let animation = CAKeyframeAnimation(keyPath: "contents")
     animation.calculationMode = kCAAnimationDiscrete
-    animation.values = images.map { $0.CGImage! }
+    animation.values = images.map { $0.cgImage! }
     animation.duration = image.duration
     animation.repeatCount = Float.infinity
-    animation.keyTimes = images.indices.map { Float($0) / Float(images.count) } + [1.0]
+    animation.keyTimes = (images.indices.map { Float($0) / Float(images.count) } + [1.0]).map { NSNumber(value: $0) }
     return animation
 }

@@ -6,16 +6,16 @@ import UIKit
 
 /// Waits for a particular new thread tag to be downloaded.
 final class NewThreadTagObserver: NSObject {
-    private let imageName: String
-    private let downloadedBlock: UIImage -> Void
-    private var observerToken: NSObjectProtocol?
+    fileprivate let imageName: String
+    fileprivate let downloadedBlock: (UIImage) -> Void
+    fileprivate var observerToken: NSObjectProtocol?
     
-    init(imageName: String, downloadedBlock: UIImage -> Void) {
+    init(imageName: String, downloadedBlock: @escaping (UIImage) -> Void) {
         self.imageName = imageName
         self.downloadedBlock = downloadedBlock
         super.init()
         
-        observerToken = NSNotificationCenter.defaultCenter().addObserverForName(ThreadTagLoader.newImageAvailableNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (notification) in
+        observerToken = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: ThreadTagLoader.newImageAvailableNotification), object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
             guard let note = NewImageAvailableNotification(notification) else { return }
             self?.newThreadTagDidDownload(note)
         })
@@ -25,13 +25,13 @@ final class NewThreadTagObserver: NSObject {
         stopObserving()
     }
     
-    private func stopObserving() {
+    fileprivate func stopObserving() {
         guard let token = observerToken else { return }
-        NSNotificationCenter.defaultCenter().removeObserver(token)
+        NotificationCenter.default.removeObserver(token)
         observerToken = nil
     }
     
-    private func newThreadTagDidDownload(notification: NewImageAvailableNotification) {
+    fileprivate func newThreadTagDidDownload(_ notification: NewImageAvailableNotification) {
         guard notification.imageName == imageName else { return }
         stopObserving()
         
@@ -44,11 +44,11 @@ private struct NewImageAvailableNotification {
     let loader: ThreadTagLoader
     let imageName: String
     
-    init?(_ notification: NSNotification) {
-        guard notification.name == ThreadTagLoader.newImageAvailableNotification else { return nil }
+    init?(_ notification: Notification) {
+        guard notification.name.rawValue == ThreadTagLoader.newImageAvailableNotification else { return nil }
         guard let
             loader = notification.object as? ThreadTagLoader,
-            let imageName = notification.userInfo?[ThreadTagLoader.newImageNameKey] as? String else { return nil }
+            let imageName = (notification as NSNotification).userInfo?[ThreadTagLoader.newImageNameKey] as? String else { return nil }
         self.loader = loader
         self.imageName = imageName
     }

@@ -11,27 +11,27 @@ final class ThreadTableViewCell: UITableViewCell {
     static let estimatedRowHeight: CGFloat = 75
     
     var viewModel: ViewModel? {
-        didSet { applyViewModel(data: viewModel) }
+        didSet { applyViewModel(viewModel) }
     }
     var themeData: ThemeData? {
-        didSet { applyThemeData(theme: themeData!) }
+        didSet { applyThemeData(themeData!) }
     }
     var longPressAction: ((ThreadTableViewCell) -> Void)? {
         didSet { longPress.isEnabled = longPressAction != nil }
     }
     
-    @IBOutlet private weak var tagAndRatingView: UIStackView!
-    @IBOutlet private weak var tagView: UIImageView!
-    @IBOutlet private weak var secondaryTagView: UIImageView!
-    @IBOutlet private weak var ratingView: UIImageView!
-    @IBOutlet private weak var titleLabel: UILabel!
-    @IBOutlet private weak var pageCountLabel: UILabel!
-    @IBOutlet private weak var pageIconView: UIImageView!
-    @IBOutlet private weak var killedPostedByLabel: UILabel!
-    @IBOutlet private weak var unreadPostsLabel: UILabel!
-    @IBOutlet private weak var stickyView: UIImageView!
-    @IBOutlet private weak var separatorView: HairlineView!
-    private lazy var longPress: UILongPressGestureRecognizer = { [unowned self] in
+    @IBOutlet fileprivate weak var tagAndRatingView: UIStackView!
+    @IBOutlet fileprivate weak var tagView: UIImageView!
+    @IBOutlet fileprivate weak var secondaryTagView: UIImageView!
+    @IBOutlet fileprivate weak var ratingView: UIImageView!
+    @IBOutlet fileprivate weak var titleLabel: UILabel!
+    @IBOutlet fileprivate weak var pageCountLabel: UILabel!
+    @IBOutlet fileprivate weak var pageIconView: UIImageView!
+    @IBOutlet fileprivate weak var killedPostedByLabel: UILabel!
+    @IBOutlet fileprivate weak var unreadPostsLabel: UILabel!
+    @IBOutlet fileprivate weak var stickyView: UIImageView!
+    @IBOutlet fileprivate weak var separatorView: HairlineView!
+    fileprivate lazy var longPress: UILongPressGestureRecognizer = { [unowned self] in
         let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(ThreadTableViewCell.didLongPress))
         self.addGestureRecognizer(recognizer)
         return recognizer
@@ -39,7 +39,7 @@ final class ThreadTableViewCell: UITableViewCell {
     
     // MARK: Actions
     
-    @objc private func didLongPress() {
+    @objc fileprivate func didLongPress() {
         longPressAction?(self)
     }
     
@@ -70,13 +70,13 @@ final class ThreadTableViewCell: UITableViewCell {
         let tagAndRatingAlpha: CGFloat
         
         enum Tag: Equatable {
-            case Downloaded(UIImage)
-            case Unavailable(fallbackImage: UIImage, desiredImageName: String)
+            case downloaded(UIImage)
+            case unavailable(fallbackImage: UIImage, desiredImageName: String)
             
             var image: UIImage {
                 switch self {
-                case let .Downloaded(image): return image
-                case let .Unavailable(image, _): return image
+                case let .downloaded(image): return image
+                case let .unavailable(image, _): return image
                 }
             }
         }
@@ -112,7 +112,7 @@ final class ThreadTableViewCell: UITableViewCell {
         }
     }
     
-    private func applyViewModel(data: ViewModel?) {
+    fileprivate func applyViewModel(_ data: ViewModel?) {
         tagAndRatingView.isHidden = !(data?.showsTagAndRating ?? false)
         tagAndRatingView.alpha = data?.tagAndRatingAlpha ?? 1
         
@@ -167,7 +167,7 @@ final class ThreadTableViewCell: UITableViewCell {
         let selectedBackgroundColor: UIColor
     }
     
-    private func applyThemeData(theme: ThemeData) {
+    fileprivate func applyThemeData(_ theme: ThemeData) {
         titleLabel.textColor = theme.titleColor
         titleLabel.font = theme.titleFont
         
@@ -207,10 +207,10 @@ func ==(lhs: ThreadTableViewCell.ViewModel, rhs: ThreadTableViewCell.ViewModel) 
 
 func ==(lhs: ThreadTableViewCell.ViewModel.Tag, rhs: ThreadTableViewCell.ViewModel.Tag) -> Bool {
     switch (lhs, rhs) {
-    case (.Downloaded, .Downloaded):
+    case (.downloaded, .downloaded):
         return true
         
-    case let (.Unavailable(_, lhsName), .Unavailable(_, rhsName)):
+    case let (.unavailable(_, lhsName), .unavailable(_, rhsName)):
         return lhsName == rhsName
         
     default:
@@ -238,10 +238,10 @@ extension ThreadTableViewCell.ThemeData {
         }
         
         let fontName: String? = theme["listFontName"]
-        titleFont = UIFont.preferredFontForTextStyle(textStyle: .Body, fontName: fontName)
-        pageCountFont = UIFont.preferredFontForTextStyle(textStyle: .Footnote, fontName: fontName)
+        titleFont = UIFont.preferredFontForTextStyle(.body, fontName: fontName)
+        pageCountFont = UIFont.preferredFontForTextStyle(.footnote, fontName: fontName)
         killedPostedByFont = pageCountFont
-        unreadPostsFont = UIFont.preferredFontForTextStyle(textStyle: .Caption1, fontName: fontName, sizeAdjustment: 2)
+        unreadPostsFont = UIFont.preferredFontForTextStyle(.caption1, fontName: fontName, sizeAdjustment: 2)
         
         separatorColor = theme["listSeparatorColor"]!
         backgroundColor = theme["listBackgroundColor"]!

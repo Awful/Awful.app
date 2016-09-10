@@ -18,45 +18,45 @@ class LoginViewController: ViewController {
     @IBOutlet weak var onePasswordButton: UIButton!
     @IBOutlet var onePasswordUnavailableConstraints: [NSLayoutConstraint]!
     
-    private enum State {
-        case AwaitingUsername
-        case AwaitingPassword
-        case CanAttemptLogin
-        case AttemptingLogin
-        case FailedLogin
+    fileprivate enum State {
+        case awaitingUsername
+        case awaitingPassword
+        case canAttemptLogin
+        case attemptingLogin
+        case failedLogin
     }
     
-    private var state: State = .AwaitingUsername {
+    fileprivate var state: State = .awaitingUsername {
         didSet {
             switch(state) {
-            case .AwaitingUsername, .AwaitingPassword:
-                usernameTextField.enabled = true
-                passwordTextField.enabled = true
-                nextBarButtonItem.enabled = false
-            case .CanAttemptLogin:
-                usernameTextField.enabled = true
-                passwordTextField.enabled = true
-                nextBarButtonItem.enabled = true
-                forgotPasswordButton.hidden = false
-            case .AttemptingLogin:
-                usernameTextField.enabled = false
-                passwordTextField.enabled = false
-                nextBarButtonItem.enabled = false
-                forgotPasswordButton.hidden = true
+            case .awaitingUsername, .awaitingPassword:
+                usernameTextField.isEnabled = true
+                passwordTextField.isEnabled = true
+                nextBarButtonItem.isEnabled = false
+            case .canAttemptLogin:
+                usernameTextField.isEnabled = true
+                passwordTextField.isEnabled = true
+                nextBarButtonItem.isEnabled = true
+                forgotPasswordButton.isHidden = false
+            case .attemptingLogin:
+                usernameTextField.isEnabled = false
+                passwordTextField.isEnabled = false
+                nextBarButtonItem.isEnabled = false
+                forgotPasswordButton.isHidden = true
                 activityIndicator.startAnimating()
-            case .FailedLogin:
+            case .failedLogin:
                 activityIndicator.stopAnimating()
                 let alert = UIAlertController(title: "Problem Logging In", message: "Double-check your username and password, then try again.") { action in
-                    self.state = .CanAttemptLogin
+                    self.state = .canAttemptLogin
                     self.passwordTextField.becomeFirstResponder()
                 }
-                presentViewController(alert, animated: true, completion: nil)
+                present(alert, animated: true, completion: nil)
             }
         }
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     class func newFromStoryboard() -> LoginViewController {
@@ -67,17 +67,17 @@ class LoginViewController: ViewController {
         super.viewDidLoad()
         
         // Can't set this in the storyboard for some reason.
-        nextBarButtonItem.enabled = false
+        nextBarButtonItem.isEnabled = false
         
-        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+        if !OnePasswordExtension.shared().isAppExtensionAvailable() {
             onePasswordButton.removeFromSuperview()
             view.addConstraints(onePasswordUnavailableConstraints)
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         usernameTextField.becomeFirstResponder()
     }
@@ -86,48 +86,48 @@ class LoginViewController: ViewController {
         attemptToLogIn()
     }
     
-    @IBAction func didChangeUsername(sender: UITextField) {
+    @IBAction func didChangeUsername(_ sender: UITextField) {
         if sender.text!.isEmpty {
-            state = .AwaitingUsername
+            state = .awaitingUsername
         } else if passwordTextField.text!.isEmpty {
-            state = .AwaitingPassword
+            state = .awaitingPassword
         } else {
-            state = .CanAttemptLogin
+            state = .canAttemptLogin
         }
     }
     
-    @IBAction func didChangePassword(sender: UITextField) {
+    @IBAction func didChangePassword(_ sender: UITextField) {
         if sender.text!.isEmpty {
-            state = .AwaitingPassword
+            state = .awaitingPassword
         } else if usernameTextField.text!.isEmpty {
-            state = .AwaitingUsername
+            state = .awaitingUsername
         } else {
-            state = .CanAttemptLogin
+            state = .canAttemptLogin
         }
     }
     
-    @IBAction func didTapOnePassword(sender: AnyObject) {
+    @IBAction func didTapOnePassword(_ sender: AnyObject) {
         view.endEditing(true)
         
-        OnePasswordExtension.sharedExtension().findLoginForURLString("forums.somethingawful.com", forViewController: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
+        OnePasswordExtension.shared().findLogin(forURLString: "forums.somethingawful.com", for: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
             if loginInfo == nil {
-                if error.code != AppExtensionErrorCodeCancelledByUser {
+                if (error as? NSError)?.code != AppExtensionErrorCodeCancelledByUser {
                     NSLog("[\(Mirror(reflecting: self)) \(#function)] 1Password extension failed: \(error)")
                 }
                 return
             }
-            self?.usernameTextField.text = loginInfo[AppExtensionUsernameKey] as! NSString as String
-            self?.passwordTextField.text = loginInfo[AppExtensionPasswordKey] as! NSString as String
-            self?.state = .CanAttemptLogin
+            self?.usernameTextField.text = loginInfo?[AppExtensionUsernameKey] as? String
+            self?.passwordTextField.text = loginInfo?[AppExtensionPasswordKey] as? String
+            self?.state = .canAttemptLogin
         }
     }
     
-    private func attemptToLogIn() {
-        assert(state == .CanAttemptLogin, "unexpected state")
-        state = .AttemptingLogin
-        AwfulForumsClient.sharedClient().logInWithUsername(usernameTextField.text, password: passwordTextField.text) { [unowned self] (error: NSError?, user: User?) -> Void in
+    fileprivate func attemptToLogIn() {
+        assert(state == .canAttemptLogin, "unexpected state")
+        state = .attemptingLogin
+        let _ = AwfulForumsClient.shared().logIn(withUsername: usernameTextField.text, password: passwordTextField.text) { [unowned self] (error: Error?, user: User?) -> Void in
             if let user = user {
-                let settings = AwfulSettings.sharedSettings()
+                let settings = AwfulSettings.shared()!
                 settings.username = user.username
                 settings.userID = user.userID
                 settings.canSendPrivateMessages = user.canReceivePrivateMessages
@@ -135,31 +135,31 @@ class LoginViewController: ViewController {
                     completionBlock(self)
                 }
             } else {
-                self.state = .FailedLogin
+                self.state = .failedLogin
             }
         }
     }
     
     @IBAction func didTapForgetPassword() {
-        let URL = NSURL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
-        UIApplication.sharedApplication().openURL(URL)
+        let URL = Foundation.URL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
+        UIApplication.shared.openURL(URL)
     }
 }
 
 extension LoginViewController: UITextFieldDelegate {
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        let targetRect = scrollView.convertRect(textField.bounds, fromView: textField)
-        scrollView.scrollRectToVisible(CGRectInset(targetRect, 0, -8), animated: true)
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        let targetRect = scrollView.convert(textField.bounds, from: textField)
+        scrollView.scrollRectToVisible(targetRect.insetBy(dx: 0, dy: -8), animated: true)
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch (state) {
-        case .AwaitingUsername:
+        case .awaitingUsername:
             usernameTextField.becomeFirstResponder()
-        case .AwaitingPassword:
+        case .awaitingPassword:
             passwordTextField.becomeFirstResponder()
-        case .CanAttemptLogin:
+        case .canAttemptLogin:
             attemptToLogIn()
         default:
             fatalError("unexpected state")
@@ -169,24 +169,22 @@ extension LoginViewController: UITextFieldDelegate {
 }
 
 extension LoginViewController {
-    @objc private func keyboardWillChangeFrame(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [NSObject:NSObject]
-
+    @objc fileprivate func keyboardWillChangeFrame(_ notification: Notification) {
         // For whatever insane reason, iOS9 gives you keyboard events for things that happen in extensions.
         // Check to make sure the keyboard is actually "ours", because `self.view.window` is apparently nil if 1Password is using the keyboard.
-        let isLocal = userInfo[UIKeyboardIsLocalUserInfoKey] as? Bool
+        let isLocal = notification.userInfo?[UIKeyboardIsLocalUserInfoKey] as? Bool
         if (isLocal != nil && isLocal == false) {
             return;
         }
         
-        let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
-        let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
-        let options = UIViewAnimationOptions(rawValue: UInt(curve.unsignedIntegerValue) << 16)
-        UIView.animateWithDuration(duration.doubleValue, delay: 0, options: options, animations: {
-            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-            let windowKeyboardFrame = self.view.window!.convertRect(keyboardFrame, fromWindow: nil)
-            let localKeyboardFrame = self.view.convertRect(windowKeyboardFrame, fromView: nil)
-            let insetBottom = CGRectIntersection(localKeyboardFrame, self.view.bounds).height
+        let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
+        let curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
+        let options = UIViewAnimationOptions(rawValue: UInt(curve.uintValue) << 16)
+        UIView.animate(withDuration: duration.doubleValue, delay: 0, options: options, animations: {
+            let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+            let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
+            let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
+            let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
             
             var contentInsets = self.scrollView.contentInset
             contentInsets.bottom = insetBottom

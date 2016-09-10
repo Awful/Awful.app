@@ -7,23 +7,23 @@ import UIKit
 
 /// Displays a list of probations and bans.
 final class RapSheetViewController: TableViewController {
-    private let user: User?
-    private let punishments = NSMutableOrderedSet()
-    private var mostRecentlyLoadedPage = 0
-    private lazy var doneItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(didTapDone))
+    fileprivate let user: User?
+    fileprivate let punishments = NSMutableOrderedSet()
+    fileprivate var mostRecentlyLoadedPage = 0
+    fileprivate lazy var doneItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
     }()
-    private lazy var banDateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .MediumStyle
-        formatter.timeStyle = .ShortStyle
+    fileprivate lazy var banDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
         return formatter
     }()
 
     
     init(user: User?) {
         self.user = user
-        super.init(style: .Plain)
+        super.init(style: .plain)
         
         if user == nil {
             title = "Leper's Colony"
@@ -33,7 +33,7 @@ final class RapSheetViewController: TableViewController {
         } else {
             title = "Rap Sheet"
             hidesBottomBarWhenPushed = true
-            modalPresentationStyle = .FormSheet
+            modalPresentationStyle = .formSheet
         }
     }
     
@@ -45,10 +45,10 @@ final class RapSheetViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func load(page: Int) {
-        AwfulForumsClient.sharedClient().listPunishmentsOnPage(page, forUser: user) { [weak self] (error: NSError?, newPunishments: [AnyObject]?) in
+    fileprivate func load(_ page: Int) {
+        AwfulForumsClient.shared().listPunishments(onPage: page, for: user) { [weak self] (error: Error?, newPunishments: [Any]?) in
             if let error = error {
-                self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return
             }
             
@@ -58,7 +58,7 @@ final class RapSheetViewController: TableViewController {
             
             if page == 1 {
                 self?.punishments.removeAllObjects()
-                self?.punishments.addObjectsFromArray(newPunishments)
+                self?.punishments.addObjects(from: newPunishments)
                 self?.tableView.reloadData()
                 
                 if self?.punishments.count == 0 {
@@ -68,10 +68,10 @@ final class RapSheetViewController: TableViewController {
                 }
             } else {
                 let oldCount = self?.punishments.count ?? 0
-                self?.punishments.addObjectsFromArray(newPunishments)
+                self?.punishments.addObjects(from: newPunishments)
                 let newCount = self?.punishments.count ?? 0
-                let indexPaths = (oldCount..<newCount).map { NSIndexPath(forRow: $0, inSection: 0) }
-                self?.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+                self?.tableView.insertRows(at: indexPaths, with: .automatic)
             }
             
             self?.stopAnimatingPullToRefresh()
@@ -79,35 +79,35 @@ final class RapSheetViewController: TableViewController {
         }
     }
     
-    private func showNothingToSeeView() {
+    fileprivate func showNothingToSeeView() {
         let label = UILabel()
         label.text = "Nothing to see here…"
         label.frame = CGRect(origin: .zero, size: view.bounds.size)
-        label.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        label.textAlignment = .Center
+        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        label.textAlignment = .center
         label.textColor = theme["listTextColor"]
         view.addSubview(label)
     }
     
-    private func setUpInfiniteScroll() {
+    fileprivate func setUpInfiniteScroll() {
         scrollToLoadMoreBlock = { [weak self] in
             guard let latestPage = self?.mostRecentlyLoadedPage else { return }
-            self?.load(page: latestPage + 1)
+            self?.load(latestPage + 1)
         }
     }
     
-    @objc private func didTapDone() {
-        dismissViewControllerAnimated(true, completion: nil)
+    @objc fileprivate func didTapDone() {
+        dismiss(animated: true, completion: nil)
     }
     
-    private func refreshIfNecessary() {
+    fileprivate func refreshIfNecessary() {
         guard punishments.count == 0 else { return }
         refresh()
     }
     
-    @objc private func refresh() {
+    @objc fileprivate func refresh() {
         startAnimatingPullToRefresh()
-        load(page: 1)
+        load(1)
     }
     
     // MARK: - View lifecycle
@@ -115,8 +115,8 @@ final class RapSheetViewController: TableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerClass(PunishmentCell.self, forCellReuseIdentifier: cellID)
-        tableView.separatorStyle = .None
+        tableView.register(PunishmentCell.self, forCellReuseIdentifier: cellID)
+        tableView.separatorStyle = .none
         tableView.hideExtraneousSeparators()
         
         pullToRefreshBlock = { [unowned self] in
@@ -124,14 +124,14 @@ final class RapSheetViewController: TableViewController {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         guard presentingViewController != nil && navigationController?.viewControllers.count == 1 else { return }
         navigationItem.rightBarButtonItem = doneItem
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         refreshIfNecessary()
@@ -139,12 +139,12 @@ final class RapSheetViewController: TableViewController {
     
     // MARK: - UITableViewDataSource and UITableViewDelegate
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return punishments.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! PunishmentCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! PunishmentCell
         let punishment = punishments[indexPath.row] as! Punishment
         
         switch punishment.sentence {
@@ -162,7 +162,7 @@ final class RapSheetViewController: TableViewController {
         }
         
         cell.textLabel?.text = punishment.subject.username
-        let date = banDateFormatter.stringFromDate(punishment.date)
+        let date = banDateFormatter.string(from: punishment.date as Date)
         cell.detailTextLabel?.text = "\(date) by \(punishment.requester?.username ?? "")"
         cell.reasonLabel.text = punishment.reasonHTML
         
@@ -184,21 +184,21 @@ final class RapSheetViewController: TableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let punishment = punishments[indexPath.row] as! Punishment
         return PunishmentCell.rowHeightWithBanReason(punishment.reasonHTML ?? "", width: tableView.bounds.width)
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let punishment = punishments[indexPath.row] as! Punishment
         guard punishment.post?.postID.isEmpty == false else { return }
         guard let
             postID = punishment.post?.postID,
-            let URL = NSURL(string: "awful://posts/\(postID)")
+            let URL = URL(string: "awful://posts/\(postID)")
             else { return }
         AppDelegate.instance.openAwfulURL(URL)
         if presentingViewController != nil {
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
         }
     }
 }

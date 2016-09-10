@@ -23,12 +23,12 @@ final class Selectotron : ViewController {
     }
     
     @IBAction func firstPostButtonTapped() {
-        dismissAndLoadPage(page: 1)
+        dismissAndLoadPage(1)
     }
     
     @IBAction func jumpButtonTapped() {
         let page = picker.selectedRow(inComponent: 0) + 1
-        dismissAndLoadPage(page: page)
+        dismissAndLoadPage(page)
     }
     
     @IBAction func lastPostButtonTapped() {
@@ -36,8 +36,8 @@ final class Selectotron : ViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    private func dismissAndLoadPage(page: Int) {
-        postsViewController.loadPage(rawPage: page, updatingCache: true, updatingLastReadPost: true)
+    fileprivate func dismissAndLoadPage(_ page: Int) {
+        postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
         dismiss(animated: true, completion: nil)
     }
     
@@ -86,7 +86,7 @@ final class Selectotron : ViewController {
         jumpButton.setTitle(title, for: .normal)
     }
     
-    private override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError("Selectotron needs a posts view controller")
     }
     
@@ -96,7 +96,7 @@ final class Selectotron : ViewController {
 }
 
 extension Selectotron: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
 }

@@ -6,13 +6,13 @@ import AwfulCore
 import CoreData
 
 final class BookmarksTableViewController: TableViewController, ThreadPeekPopControllerDelegate {
-    private var latestPage = 0
-    private let managedObjectContext: NSManagedObjectContext
-    private var peekPopController: ThreadPeekPopController?
+    fileprivate var latestPage = 0
+    fileprivate let managedObjectContext: NSManagedObjectContext
+    fileprivate var peekPopController: ThreadPeekPopController?
     
-    private typealias DataManager = FetchedDataManager<AwfulThread>
+    fileprivate typealias DataManager = FetchedDataManager<AwfulThread>
     
-    private var dataManager: DataManager {
+    fileprivate var dataManager: DataManager {
         didSet {
             tableViewAdapter = nil
             
@@ -24,11 +24,11 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         }
     }
     
-    private var tableViewAdapter: ThreadDataManagerTableViewAdapter!
+    fileprivate var tableViewAdapter: ThreadDataManagerTableViewAdapter!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.shared().bookmarksSortedByUnread)
+        let fetchRequest = Thread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
         dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
         super.init(style: .plain)
@@ -70,7 +70,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             if error as NSError? == .none {
                 self?.latestPage = page
                 
-                RefreshMinder.sharedMinder.didRefresh(r: .Bookmarks)
+                RefreshMinder.sharedMinder.didRefresh(.bookmarks)
             }
             
             self?.stopAnimatingPullToRefresh()
@@ -114,7 +114,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         becomeFirstResponder()
         
         if AwfulForumsClient.shared().reachable &&
-            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(r: .Bookmarks))
+            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks))
         {
             refresh()
         }
@@ -166,7 +166,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String as String:
-            let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.shared().bookmarksSortedByUnread)
+            let fetchRequest = Thread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
             dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
@@ -224,13 +224,13 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         return _undoManager
     }
     
-    private let _undoManager: UndoManager = {
+    fileprivate let _undoManager: UndoManager = {
         let undoManager = UndoManager()
         undoManager.levelsOfUndo = 1
         return undoManager
         }()
     
-    @objc private func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
+    @objc fileprivate func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
         (undoManager.prepare(withInvocationTarget: self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
         undoManager.setActionName("Delete")
         
@@ -250,7 +250,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
-        postsViewController.loadPage(rawPage: targetPage, updatingCache: true, updatingLastReadPost: true)
+        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }

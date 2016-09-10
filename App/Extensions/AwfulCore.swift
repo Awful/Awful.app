@@ -5,8 +5,8 @@
 import AwfulCore
 
 extension Thread {
-    static func bookmarksFetchRequest(sortedByUnread: Bool) -> NSFetchRequest<NSFetchRequestResult> {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: AwfulThread.entityName())
+    static func bookmarksFetchRequest(_ sortedByUnread: Bool) -> NSFetchRequest<AwfulThread> {
+        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
         fetchRequest.fetchBatchSize = 20
         fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
         
@@ -20,8 +20,8 @@ extension Thread {
         return fetchRequest
     }
     
-    static func threadsFetchRequest(forum: Forum, sortedByUnread: Bool, filterThreadTag: ThreadTag?) -> NSFetchRequest<NSFetchRequestResult> {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: AwfulThread.entityName())
+    static func threadsFetchRequest(_ forum: Forum, sortedByUnread: Bool, filterThreadTag: ThreadTag?) -> NSFetchRequest<AwfulThread> {
+        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
         fetchRequest.fetchBatchSize = 20
         
         let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)

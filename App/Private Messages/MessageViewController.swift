@@ -8,14 +8,14 @@ import WebViewJavascriptBridge
 
 /// Displays a single private message.
 final class MessageViewController: ViewController {
-    private let privateMessage: PrivateMessage
-    private var didRender = false
-    private var fractionalContentOffsetOnLoad: CGFloat = 0
-    private var composeVC: MessageComposeViewController?
-    private var webViewJavascriptBridge: WebViewJavascriptBridge?
-    private var networkActivityIndicatorManager: WebViewNetworkActivityIndicatorManager?
-    private var loadingView: LoadingView?
-    private var didLoadOnce = false
+    fileprivate let privateMessage: PrivateMessage
+    fileprivate var didRender = false
+    fileprivate var fractionalContentOffsetOnLoad: CGFloat = 0
+    fileprivate var composeVC: MessageComposeViewController?
+    fileprivate var webViewJavascriptBridge: WebViewJavascriptBridge?
+    fileprivate var networkActivityIndicatorManager: WebViewNetworkActivityIndicatorManager?
+    fileprivate var loadingView: LoadingView?
+    fileprivate var didLoadOnce = false
     
     init(privateMessage: PrivateMessage) {
         self.privateMessage = privateMessage
@@ -25,14 +25,14 @@ final class MessageViewController: ViewController {
         navigationItem.rightBarButtonItem = replyButtonItem
         hidesBottomBarWhenPushed = true
         restorationClass = type(of: self)
-        NotificationCenter.defaultCenter.addObserver(self, selector: #selector(settingsDidChange), name: AwfulSettingsDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var replyButtonItem: UIBarButtonItem = {
+    fileprivate lazy var replyButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(didTapReplyButtonItem))
     }()
     
@@ -40,13 +40,13 @@ final class MessageViewController: ViewController {
         didSet { navigationItem.titleLabel.text = title }
     }
     
-    private var webView: UIWebView {
+    fileprivate var webView: UIWebView {
         return view as! UIWebView
     }
     
-    private func renderMessage() {
+    fileprivate func renderMessage() {
         let viewModel = PrivateMessageViewModel(privateMessage: privateMessage)
-        viewModel.stylesheet = theme["postsViewCSS"]
+        viewModel.stylesheet = theme["postsViewCSS"] as String? as NSString?
         let html: String
         do {
             html = try GRMustacheTemplate.renderObject(viewModel, fromResource: "PrivateMessage", bundle: nil)
@@ -60,13 +60,13 @@ final class MessageViewController: ViewController {
         webView.fractionalContentOffset = fractionalContentOffsetOnLoad
     }
     
-    @objc private func didTapReplyButtonItem(sender: UIBarButtonItem?) {
+    @objc fileprivate func didTapReplyButtonItem(_ sender: UIBarButtonItem?) {
         let actionSheet = UIAlertController.actionSheet()
         
-        actionSheet.addActionWithTitle(title: "Reply") {
-            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
+        actionSheet.addActionWithTitle("Reply") {
+            _ = AwfulForumsClient.shared().quoteBBcodeContents(of: self.privateMessage, andThen: { [weak self] (error: Error?, BBcode: String?) in
                 if let error = error {
-                    self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
+                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
                 }
                 
@@ -76,14 +76,14 @@ final class MessageViewController: ViewController {
                 composeVC.delegate = self
                 composeVC.restorationIdentifier = "New private message replying to private message"
                 self?.composeVC = composeVC
-                self?.presentViewController(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
             })
         }
         
-        actionSheet.addActionWithTitle(title: "Forward") {
-            AwfulForumsClient.sharedClient().quoteBBcodeContentsOfPrivateMessage(self.privateMessage, andThen: { [weak self] (error: NSError?, BBcode: String?) in
+        actionSheet.addActionWithTitle("Forward") {
+            _ = AwfulForumsClient.shared().quoteBBcodeContents(of: self.privateMessage, andThen: { [weak self] (error: Error?, BBcode: String?) in
                 if let error = error {
-                    self?.presentViewController(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
+                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
                 }
                 
@@ -93,11 +93,11 @@ final class MessageViewController: ViewController {
                 composeVC.delegate = self
                 composeVC.restorationIdentifier = "New private message forwarding private message"
                 self?.composeVC = composeVC
-                self?.presentViewController(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
             })
         }
         
-        actionSheet.addCancelActionWithHandler(handler: nil)
+        actionSheet.addCancelActionWithHandler(nil)
         present(actionSheet, animated: true, completion: nil)
         
         if let popover = actionSheet.popoverPresentationController {
@@ -105,7 +105,7 @@ final class MessageViewController: ViewController {
         }
     }
     
-    @objc private func didLongPressWebView(sender: UILongPressGestureRecognizer) {
+    @objc fileprivate func didLongPressWebView(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         var location = sender.location(in: webView)
         let offsetY = webView.scrollView.contentOffset.y
@@ -114,25 +114,25 @@ final class MessageViewController: ViewController {
         }
         let data = ["x": location.x, "y": location.y]
         webViewJavascriptBridge?.callHandler("interestingElementsAtPoint", data: data) { [weak self] (response) in
-            self?.webView.stringByEvaluatingJavaScript(from: "Awful.preventNextClickEvent()")
+            _ = self?.webView.stringByEvaluatingJavaScript(from: "Awful.preventNextClickEvent()")
             
             guard
                 let response = response as? [String: AnyObject] , !response.isEmpty,
                 let presenter = self
                 else { return }
             
-            let ok = URLMenuPresenter.presentInterestingElements(info: response, fromViewController: presenter, fromWebView: presenter.webView)
+            let ok = URLMenuPresenter.presentInterestingElements(response, fromViewController: presenter, fromWebView: presenter.webView)
             if !ok && response["unspoiledLink"] == nil {
                 print("\(#function) unexpected interesting elements for data: \(data), response: \(response)")
             }
         }
     }
     
-    private func showUserActions(from rect: CGRect) {
+    fileprivate func showUserActions(from rect: CGRect) {
         guard let user = privateMessage.from else { return }
         
-        func present(viewController: UIViewController) {
-            if UIDevice.currentDevice.userInterfaceIdiom == .pad {
+        func present(_ viewController: UIViewController) {
+            if UIDevice.current.userInterfaceIdiom == .pad {
                 self.present(viewController.enclosingNavigationController, animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(viewController, animated: true)
@@ -141,34 +141,34 @@ final class MessageViewController: ViewController {
         
         let actionVC = InAppActionViewController()
         actionVC.items = [
-            IconActionItem(.UserProfile, block: {
+            IconActionItem(.userProfile, block: {
                 present(ProfileViewController(user: user))
             }),
-            IconActionItem(.RapSheet, block: {
+            IconActionItem(.rapSheet, block: {
                 present(RapSheetViewController(user: user))
             })
         ]
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
-            guard let rectString = self.webView.stringByEvaluatingJavaScriptFromString("HeaderRect()") else { return }
-            sourceRect.memory = self.webView.rectForElementBoundingRect(rectString)
-            sourceView.memory = self.webView
+            guard let rectString = self.webView.stringByEvaluatingJavaScript(from: "HeaderRect()") else { return }
+            sourceRect.pointee = self.webView.rectForElementBoundingRect(rectString)
+            sourceView.pointee = self.webView
         }
-        presentViewController(actionVC, animated: true, completion: nil)
+        self.present(actionVC, animated: true, completion: nil)
     }
     
-    @objc private func settingsDidChange(notification: NSNotification) {
+    @objc fileprivate func settingsDidChange(_ notification: Notification) {
         guard isViewLoaded else { return }
-        switch notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String {
-        case AwfulSettingsKeys.showAvatars.takeUnretainedValue() as String as String?:
+        switch notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String as NSString? {
+        case AwfulSettingsKeys.showAvatars.takeUnretainedValue()?:
             webViewJavascriptBridge?.callHandler("showAvatars", data: AwfulSettings.shared().showAvatars)
             
-        case AwfulSettingsKeys.showImages.takeUnretainedValue() as String as String?:
+        case AwfulSettingsKeys.showImages.takeUnretainedValue()?:
             webViewJavascriptBridge?.callHandler("loadLinkifiedImages")
             
-        case AwfulSettingsKeys.fontScale.takeUnretainedValue() as String as String?:
+        case AwfulSettingsKeys.fontScale.takeUnretainedValue()?:
             webViewJavascriptBridge?.callHandler("fontScale", data: Int(AwfulSettings.shared().fontScale))
             
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String? where visible:
+        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue()? where visible:
             configureUserActivity()
             
         default:
@@ -176,7 +176,7 @@ final class MessageViewController: ViewController {
         }
     }
     
-    private func configureUserActivity() {
+    fileprivate func configureUserActivity() {
         guard AwfulSettings.shared().handoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityTypeReadingMessage)
         userActivity?.needsSave = true
@@ -189,7 +189,7 @@ final class MessageViewController: ViewController {
         } else {
             activity.title = "Private Message"
         }
-        activity.webpageURL = NSURL(string: "/private.php?action=show&privatemessageid=\(privateMessage.messageID)", relativeToURL: AwfulForumsClient.sharedClient().baseURL)
+        activity.webpageURL = URL(string: "/private.php?action=show&privatemessageid=\(privateMessage.messageID)", relativeTo: AwfulForumsClient.shared().baseURL)
     }
     
     // MARK: View lifecycle
@@ -203,13 +203,13 @@ final class MessageViewController: ViewController {
         
         networkActivityIndicatorManager = WebViewNetworkActivityIndicatorManager(nextDelegate: self)
         
-        webViewJavascriptBridge = WebViewJavascriptBridge(forWebView: webView, webViewDelegate: networkActivityIndicatorManager, handler: { (data, callback) in
+        webViewJavascriptBridge = WebViewJavascriptBridge(for: webView, webViewDelegate: networkActivityIndicatorManager, handler: { (data, callback) in
             print("\(#function) \(data)")
         })
         webViewJavascriptBridge?.registerHandler("didTapUserHeader", handler: { [weak self] (rectString, responseCallback) in
             guard let
                 rectString = rectString as? String,
-                let rect = self?.webView.rectForElementBoundingRect(rectString: rectString)
+                let rect = self?.webView.rectForElementBoundingRect(rectString)
                 else { return }
             self?.showUserActions(from: rect)
         })
@@ -219,11 +219,11 @@ final class MessageViewController: ViewController {
         webView.addGestureRecognizer(longPress)
         
         if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
-            let loadingView = LoadingView.loadingViewWithTheme(theme: theme)
+            let loadingView = LoadingView.loadingViewWithTheme(theme)
             self.loadingView = loadingView
             view.addSubview(loadingView)
             
-            AwfulForumsClient.sharedClient().readPrivateMessageWithKey(privateMessage.objectKey, andThen: { [weak self] (error: NSError?, message: PrivateMessage?) in
+            AwfulForumsClient.shared().readPrivateMessage(with: privateMessage.objectKey, andThen: { [weak self] (error: Error?, message: PrivateMessage?) in
                 self?.title = message?.subject
                 
                 self?.renderMessage()
@@ -253,14 +253,14 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated: animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         configureUserActivity()
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated: animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         
         userActivity = nil
     }
@@ -284,24 +284,24 @@ final class MessageViewController: ViewController {
 }
 
 extension MessageViewController: ComposeTextViewControllerDelegate {
-    func composeTextViewController(composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func composeTextViewController(_ composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
+        dismiss(animated: true, completion: nil)
         
         composeVC = nil
     }
 }
 
 extension MessageViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }
 
 extension MessageViewController: UIViewControllerRestoration {
-    static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-        guard let messageKey = coder.decodeObjectForKey(Keys.MessageKey.rawValue) as? PrivateMessageKey else { return nil }
+    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+        guard let messageKey = coder.decodeObject(forKey: Keys.MessageKey.rawValue) as? PrivateMessageKey else { return nil }
         let context = AppDelegate.instance.managedObjectContext
-        guard let privateMessage = PrivateMessage.objectForKey(messageKey, inManagedObjectContext: context) as? PrivateMessage else { return nil }
+        guard let privateMessage = PrivateMessage.objectForKey(objectKey: messageKey, inManagedObjectContext: context) as? PrivateMessage else { return nil }
         let messageVC = self.init(privateMessage: privateMessage)
         messageVC.restorationIdentifier = identifierComponents.last as? String
         return messageVC
@@ -315,12 +315,12 @@ private enum Keys: String {
 }
 
 extension MessageViewController: UIWebViewDelegate {
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard let url = request.url else { return true }
         
         var navigationType = navigationType
         // Tapping the title of an embedded YouTube video doesn't come through as a click. It'll just take over the web view if we're not careful.
-        if url.host?.lowercaseString.hasSuffix("www.youtube.com") == true && url.path.lowercaseString.hasPrefix("/watch") == true {
+        if url.host?.lowercased().hasSuffix("www.youtube.com") == true && url.path.lowercased().hasPrefix("/watch") == true {
             navigationType = .linkClicked
         }
         
@@ -328,9 +328,9 @@ extension MessageViewController: UIWebViewDelegate {
         if let awfulURL = url.awfulURL {
             AppDelegate.instance.openAwfulURL(awfulURL)
         } else if url.opensInBrowser {
-            URLMenuPresenter(linkURL: url as NSURL).presentInDefaultBrowser(fromViewController: self)
+            URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         } else {
-            UIApplication.sharedApplication.openURL(url)
+            UIApplication.shared.openURL(url)
         }
         return false
     }

@@ -26,12 +26,12 @@ class ComposeTextViewController: ViewController {
     }
     
     /// The button that submits the composition when tapped. Set its title property.
-    private(set) lazy var submitButtonItem: UIBarButtonItem = {
+    fileprivate(set) lazy var submitButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(didTapSubmit))
     }()
     
     /// The button that cancels the composition when tapped. Set its title as appropriate.
-    private(set) lazy var cancelButtonItem: UIBarButtonItem = {
+    fileprivate(set) lazy var cancelButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancel))
     }()
     
@@ -56,7 +56,7 @@ class ComposeTextViewController: ViewController {
      
         - parameter handler: A block to call after determining whether submission should continue, which takes as a parameter YES if submission should continue or NO otherwise.
      */
-    func shouldSubmit(handler: (Bool) -> Void) {
+    func shouldSubmit(_ handler: @escaping (Bool) -> Void) {
         handler(true)
     }
     
@@ -71,14 +71,14 @@ class ComposeTextViewController: ViewController {
         - parameter composition: The composition with upload images having been replaced by appropriate textual equivalents.
         - parameter completion: A block to call once submission is complete; the block takes a single parameter, either YES on success or NO if submission failed.
      */
-    func submit(composition: String, completion: (_ success: Bool) -> Void) {
+    func submit(_ composition: String, completion: @escaping (_ success: Bool) -> Void) {
         fatalError("\(type(of: self)) needs to implement \(#function)")
     }
     
     /// Called when the cancel button is tapped and no submission is in progress. The default implementation simply informs the delegate; overridden implementations can do so directly or call super as desired.
     func cancel() {
         if let delegate = delegate {
-            delegate.composeTextViewController(composeController: self, didFinishWithSuccessfulSubmission: false, shouldKeepDraft: true)
+            delegate.composeTextViewController(self, didFinishWithSuccessfulSubmission: false, shouldKeepDraft: true)
         } else {
             dismiss(animated: true, completion: nil)
         }
@@ -117,13 +117,13 @@ class ComposeTextViewController: ViewController {
         }
     }
     
-    private var customViewWidthConstraint: NSLayoutConstraint?
+    fileprivate var customViewWidthConstraint: NSLayoutConstraint?
     
     weak var delegate: ComposeTextViewControllerDelegate?
     
-    private var menuTree: CompositionMenuTree!
+    fileprivate var menuTree: CompositionMenuTree!
     
-    private func beginObservingTextChangeNotification() {
+    fileprivate func beginObservingTextChangeNotification() {
         guard textDidChangeObserver == nil else { return }
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
@@ -136,15 +136,15 @@ class ComposeTextViewController: ViewController {
     }
     private var textDidChangeObserver: NSObjectProtocol?
     
-    private func beginObservingKeyboardNotifications() {
+    fileprivate func beginObservingKeyboardNotifications() {
         guard keyboardWillShowObserver == nil else { return }
         
         keyboardWillShowObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillShow, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
-            self?.keyboardWillThingy(notification: notification)
+            self?.keyboardWillThingy(notification)
         })
         
         keyboardWillHideObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillHide, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
-            self?.keyboardWillThingy(notification: notification)
+            self?.keyboardWillThingy(notification)
         })
     }
     private func endObservingKeyboardNotifications() {
@@ -159,17 +159,17 @@ class ComposeTextViewController: ViewController {
         }
     }
     private var keyboardWillShowObserver: NSObjectProtocol?
-    private var keyboardWillHideObserver: NSObjectProtocol?
+    fileprivate var keyboardWillHideObserver: NSObjectProtocol?
     
-    private func keyboardWillThingy(notification: Notification) {
+    fileprivate func keyboardWillThingy(_ notification: Notification) {
         guard let
             duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
             let curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
             let keyboardEndScreenFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let window = view.window
             else { return }
-        let keyboardEndTextViewFrame = textView.convert(rect: keyboardEndScreenFrame as CGRect, to: window.screen.coordinateSpace as UICoordinateSpace)
-        let overlap = keyboardEndTextViewFrame.intersect(textView.bounds)
+        let keyboardEndTextViewFrame = textView.convert(keyboardEndScreenFrame, to: window.screen.coordinateSpace)
+        let overlap = keyboardEndTextViewFrame.intersection(textView.bounds)
         
         let options = UIViewAnimationOptions(rawValue: curve << 16)
         
@@ -186,24 +186,24 @@ class ComposeTextViewController: ViewController {
         }
     }
     
-    private var imageUploadProgress: Progress?
+    fileprivate var imageUploadProgress: Progress?
     
-    private func submit() {
+    fileprivate func submit() {
         let overlay = MRProgressOverlayView.showOverlayAdded(to: viewToOverlay, title: submissionInProgressTitle, mode: .indeterminate, animated: true)
         overlay?.tintColor = theme["tintColor"]
         
         imageUploadProgress = uploadImages(attachedTo: textView.attributedText, completion: { [weak self] (plainText, error) in
             if let error = error {
-                overlay.dismiss(false)
+                overlay?.dismiss(false)
                 
                 self?.enableEverything()
                 
-                if error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError {
+                if (error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError {
                     self?.focusInitialFirstResponder()
                 } else {
                     // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
                     let presenter = self?.navigationController ?? self
-                    presenter?.presentViewController(UIAlertController.alertWithTitle("Image Upload Failed", error: error), animated: true, completion: nil)
+                    presenter?.present(UIAlertController.alertWithTitle("Image Upload Failed", error: error), animated: true, completion: nil)
                 }
                 
                 return
@@ -215,7 +215,7 @@ class ComposeTextViewController: ViewController {
                     if let delegate = self?.delegate {
                         delegate.composeTextViewController(self!, didFinishWithSuccessfulSubmission: true, shouldKeepDraft: false)
                     } else {
-                        self?.dismissViewControllerAnimated(true, completion: nil)
+                        self?.dismiss(animated: true, completion: nil)
                     }
                 } else {
                     self?.enableEverything()
@@ -228,7 +228,7 @@ class ComposeTextViewController: ViewController {
         })
     }
     
-    private var viewToOverlay: UIView {
+    fileprivate var viewToOverlay: UIView {
         if let top = navigationController?.topViewController {
             return top.view
         } else {
@@ -236,14 +236,14 @@ class ComposeTextViewController: ViewController {
         }
     }
     
-    private func enableEverything() {
+    fileprivate func enableEverything() {
         updateSubmitButtonItem()
         
         textView.isEditable = true
         customView?.enabled = true
     }
     
-    private func disableEverythingButTheCancelButton() {
+    fileprivate func disableEverythingButTheCancelButton() {
         view.endEditing(true)
         
         submitButtonItem.isEnabled = false
@@ -251,9 +251,9 @@ class ComposeTextViewController: ViewController {
         customView?.enabled = false
     }
     
-    @objc private func didTapSubmit() {
+    @objc fileprivate func didTapSubmit() {
         disableEverythingButTheCancelButton()
-        shouldSubmit(handler: { [weak self] (ok: Bool) in
+        shouldSubmit({ [weak self] (ok: Bool) in
             if ok {
                 self?.submit()
             } else {
@@ -267,7 +267,7 @@ class ComposeTextViewController: ViewController {
         })
     }
     
-    @objc private func didTapCancel() {
+    @objc fileprivate func didTapCancel() {
         if let progress = imageUploadProgress {
             progress.cancel()
             imageUploadProgress = nil
@@ -356,7 +356,7 @@ class ComposeTextViewController: ViewController {
     }
 }
 
-private enum Keys: String {
+fileprivate enum Keys: String {
     case AttributedText
 }
 
@@ -377,5 +377,5 @@ protocol ComposeCustomView {
         - parameter success: true if the submission was successful, otherwise false.
         - parameter keepDraft: true if the view controller should be kept around, otherwise false.
      */
-    func composeTextViewController(composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool)
+    func composeTextViewController(_ composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool)
 }

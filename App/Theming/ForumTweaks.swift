@@ -12,25 +12,25 @@ final class ForumTweaks: NSObject {
     let showRatings: Bool
     let showRatingsAsThreadTags: Bool
     
-    private init(dictionary: [String: AnyObject]) {
+    fileprivate init(dictionary: [String: AnyObject]) {
         postButton = dictionary["postButton"] as? String
         
         if let correction = dictionary["autocorrection"] as? Bool {
             autocorrectionType = UITextAutocorrectionType(correction)
         } else {
-            autocorrectionType = .Default
+            autocorrectionType = .default
         }
         
         if let capitalization = dictionary["autocapitalization"] as? Bool {
             autocapitalizationType = UITextAutocapitalizationType(capitalization)
         } else {
-            autocapitalizationType = .Sentences
+            autocapitalizationType = .sentences
         }
         
         if let spellChecking = dictionary["checkSpelling"] as? Bool {
             spellCheckingType = UITextSpellCheckingType(spellChecking)
         } else {
-            spellCheckingType = .Default
+            spellCheckingType = .default
         }
         
         showRatings = dictionary["showRatings"] as? Bool ?? true
@@ -42,27 +42,27 @@ final class ForumTweaks: NSObject {
 
 private extension UITextAutocorrectionType {
     init(_ bool: Bool) {
-        self = bool ? .Yes : .No
+        self = bool ? .yes : .no
     }
 }
 
 private extension UITextAutocapitalizationType {
     init(_ bool: Bool) {
-        self = bool ? .Sentences : .None
+        self = bool ? .sentences : .none
     }
 }
 
 private extension UITextSpellCheckingType {
     init(_ bool: Bool) {
-        self = bool ? .Yes : .No
+        self = bool ? .yes : .no
     }
 }
 
 private let tweaks: [String: [String: AnyObject]] = {
-    guard let URL = NSBundle(forClass: ForumTweaks.self).URLForResource("ForumTweaks.plist", withExtension: nil) else {
+    guard let URL = Bundle(for: ForumTweaks.self).url(forResource: "ForumTweaks.plist", withExtension: nil) else {
         fatalError("missing ForumTweaks.plist")
     }
-    guard let dict = NSDictionary(contentsOfURL: URL) as? [String: [String: AnyObject]] else {
+    guard let dict = NSDictionary(contentsOf: URL) as? [String: [String: AnyObject]] else {
         fatalError("unexpected hierarchy in ForumTweaks.plist")
     }
     return dict

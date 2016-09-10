@@ -7,10 +7,10 @@ import UIKit
 final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     let navigationController: UINavigationController
     var viewControllers: [UIViewController] = []
-    private var gestureStartPointX: CGFloat = 0
-    private(set) var interactiveUnpopIsTakingPlace = false
+    fileprivate var gestureStartPointX: CGFloat = 0
+    fileprivate(set) var interactiveUnpopIsTakingPlace = false
     var navigationControllerIsAnimating = false
-    private let panRecognizer = UIScreenEdgePanGestureRecognizer()
+    fileprivate let panRecognizer = UIScreenEdgePanGestureRecognizer()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -26,7 +26,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationController.view.removeGestureRecognizer(panRecognizer)
     }
     
-    @objc private func handlePan(sender: UIScreenEdgePanGestureRecognizer) {
+    @objc fileprivate func handlePan(_ sender: UIScreenEdgePanGestureRecognizer) {
         let location = sender.location(in: sender.view)
         switch sender.state {
         case .began:
@@ -78,7 +78,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationControllerIsAnimating = false
     }
     
-    func shouldHandleAnimatingTransitionForOperation(operation: UINavigationControllerOperation) -> Bool {
+    func shouldHandleAnimatingTransitionForOperation(_ operation: UINavigationControllerOperation) -> Bool {
         return operation == .push && interactiveUnpopIsTakingPlace
     }
 }
@@ -135,7 +135,7 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
         })
     }
     
-    func animationEnded(transitionCompleted: Bool) {
+    func animationEnded(_ transitionCompleted: Bool) {
         if !transitionCompleted {
             navigationControllerIsAnimating = false
         }

@@ -8,23 +8,23 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: NSError, handler: ((_ action: UIAlertAction?) -> Void)!) {
-        self.init(title: title, message: messageForError(error: error), handler: handler)
+    convenience init(title: String, error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
+        self.init(title: title, message: messageForError(error), handler: handler)
     }
 
-    convenience init(title: String, error: NSError) {
-        self.init(title: title, message: messageForError(error: error))
+    convenience init(title: String, error: Error) {
+        self.init(title: title, message: messageForError(error))
     }
     
-    class func alertWithTitle(title: String, error: NSError) -> UIAlertController {
+    class func alertWithTitle(_ title: String, error: Error) -> UIAlertController {
         return UIAlertController(title: title, error: error)
     }
 
-    convenience init(networkError error: NSError, handler: ((_ action: UIAlertAction?) -> Void)!) {
-        self.init(title: "Network Error", error: error, handler: handler as! ((UIAlertAction?) -> Void)!)
+    convenience init(networkError error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
+        self.init(title: "Network Error", error: error, handler: handler )
     }
     
-    class func alertWithNetworkError(error: NSError) -> UIAlertController {
+    class func alertWithNetworkError(_ error: Error) -> UIAlertController {
         return UIAlertController(networkError: error, handler: nil)
     }
 
@@ -45,23 +45,24 @@ extension UIAlertController {
 
     // MARK: Convenient actions
 
-    func addActionWithTitle(title: String, handler: (() -> Void)!) {
+    func addActionWithTitle(_ title: String, handler: (() -> Void)!) {
         addAction(UIAlertAction(title: title, style: .default) { _ in
             if handler != nil { handler() } })
     }
 
-    func addCancelActionWithHandler(handler: (() -> Void)!) {
+    func addCancelActionWithHandler(_ handler: (() -> Void)!) {
         addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             if handler != nil { handler() } })
     }
 
-    func addActions(actions: [UIAlertAction]) {
+    func addActions(_ actions: [UIAlertAction]) {
         for action in actions {
             addAction(action)
         }
     }
 }
 
-private func messageForError(error: NSError) -> String {
+private func messageForError(_ error: Error) -> String {
+    let error = error as NSError
     return "\(error.localizedDescription) (code \(error.code))"
 }

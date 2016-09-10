@@ -10,8 +10,8 @@ import UIKit
 
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
 final class AwfulURLRouter: NSObject {
-    private let rootViewController: UIViewController
-    private let managedObjectContext: NSManagedObjectContext
+    fileprivate let rootViewController: UIViewController
+    fileprivate let managedObjectContext: NSManagedObjectContext
     
     /**
         - parameter rootViewController: The application's root view controller.
@@ -23,7 +23,7 @@ final class AwfulURLRouter: NSObject {
         super.init()
     }
     
-    private lazy var routes: JLRoutes = {
+    fileprivate lazy var routes: JLRoutes = {
         let routes = JLRoutes()
         
         routes.addRoute("/forums/:forumID", handler: { [weak self] (parameters) -> Bool in
@@ -33,7 +33,7 @@ final class AwfulURLRouter: NSObject {
                 else { return false }
             let key = ForumKey(forumID: forumID)
             guard let forum = Forum.existingObjectForKey(objectKey: key, inManagedObjectContext: context) as? Forum else { return false }
-            return self?.jumpToForum(forum: forum) ?? false
+            return self?.jumpToForum(forum) ?? false
         })
         
         routes.addRoute("/forums", handler: { [weak self] (parameters) -> Bool in
@@ -57,7 +57,7 @@ final class AwfulURLRouter: NSObject {
                 let thread = post.thread
                 , post.page > 0
             {
-                let postsVC = PostsPageViewController(coder: thread)
+                let postsVC = PostsPageViewController(thread: thread)
                 postsVC.loadPage(post.page, updatingCache: true, updatingLastReadPost: true)
                 postsVC.scrollPostToVisible(post)
                 return self?.showPostsViewController(postsVC) ?? false
@@ -79,10 +79,10 @@ final class AwfulURLRouter: NSObject {
                 
                 overlay?.dismiss(true, completion: {
                     guard let post = post, let thread = post.thread else { return }
-                    let postsVC = PostsPageViewController(coder: thread)
+                    let postsVC = PostsPageViewController(thread: thread)
                     postsVC.loadPage(page.rawValue, updatingCache: true, updatingLastReadPost: true)
                     postsVC.scrollPostToVisible(post)
-                    self?.showPostsViewController(postsVC)
+                    _ = self?.showPostsViewController(postsVC)
                     
                     try! context.save()
                 })
@@ -92,13 +92,13 @@ final class AwfulURLRouter: NSObject {
         
         routes.addRoute("/messages/:messageID", handler: { [weak self] (parameters) -> Bool in
             guard let inbox = self?.selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
-            inbox.navigationController?.popToViewController(inbox, animated: false)
+            _ = inbox.navigationController?.popToViewController(inbox, animated: false)
             
             guard let messageID = parameters?["messageID"] as? String else { return false }
             let key = PrivateMessageKey(messageID: messageID)
             guard let context = self?.managedObjectContext else { return false }
             if let message = PrivateMessage.objectForKey(objectKey: key, inManagedObjectContext: context) as? PrivateMessage {
-                inbox.showMessage(message: message)
+                inbox.showMessage(message)
                 return true
             }
             
@@ -106,19 +106,19 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            AwfulForumsClient.shared().readPrivateMessageWithKey(key, andThen: { [weak self] (error: NSError?, message: PrivateMessage?) in
+            _ = AwfulForumsClient.shared().readPrivateMessage(with: key, andThen: { [weak self] (error: Error?, message: PrivateMessage?) in
                 if let error = error {
-                    overlay.titleLabelText = "Message Not Found"
-                    overlay.mode = .Cross
+                    overlay?.titleLabelText = "Message Not Found"
+                    overlay?.mode = .cross
                     
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.7 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), { 
-                        overlay.dismiss(true)
-                    })
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        overlay?.dismiss(true)
+                    }
                     return
                 }
                 
                 guard let message = message else { fatalError("no error should mean yes message") }
-                overlay.dismiss(true, completion: {
+                overlay?.dismiss(true, completion: {
                     inbox.showMessage(message)
                 })
             })
@@ -186,36 +186,36 @@ final class AwfulURLRouter: NSObject {
      
         - returns: `true` if the URL was successfully routed, otherwise `false`.
      */
-    func route(url: NSURL) -> Bool {
+    func route(_ url: URL) -> Bool {
         guard url.scheme?.caseInsensitiveCompare("awful") == .orderedSame else { return false }
         return routes.routeURL(url as URL!)
     }
     
-    private func jumpToForum(forum: Forum) -> Bool {
+    fileprivate func jumpToForum(_ forum: Forum) -> Bool {
         if let
-            threadsVC = rootViewController.firstDescendantOfType(type: ThreadsTableViewController.self)
+            threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self)
             , threadsVC.forum == forum
         {
-            threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
+            _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
             return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
         }
         
-        if let forumsVC = rootViewController.firstDescendantOfType(type: ForumsTableViewController.self) {
-            forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
-            forumsVC.openForum(forum: forum, animated: false)
+        if let forumsVC = rootViewController.firstDescendantOfType(ForumsTableViewController.self) {
+            _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
+            forumsVC.openForum(forum, animated: false)
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
         }
         
         return false
     }
     
-    private func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
+    fileprivate func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
         guard let
             splitVC = rootViewController as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
-            guard let match = topmost.firstDescendantOfType(type: T.self) else { continue }
+            guard let match = topmost.firstDescendantOfType(T.self) else { continue }
             tabBarVC.selectedViewController = topmost
             splitVC.showPrimaryViewController()
             return match
@@ -223,10 +223,10 @@ final class AwfulURLRouter: NSObject {
         return nil
     }
     
-    private func showThread(withParameters parameters: [AnyHashable: Any]) -> Bool {
+    fileprivate func showThread(withParameters parameters: [AnyHashable: Any]) -> Bool {
         guard let threadID = parameters["threadID"] as? String else { return false }
         let threadKey = ThreadKey(threadID: threadID)
-        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: managedObjectContext) as! Thread
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: managedObjectContext) as! AwfulThread
         let userID = parameters["userid"] as? String
         let postsVC: PostsPageViewController
         if let userID = userID , !userID.isEmpty {
@@ -260,7 +260,7 @@ final class AwfulURLRouter: NSObject {
                 rawPage = 1
             }
         }
-        postsVC.loadPage(rawPage: rawPage, updatingCache: true, updatingLastReadPost: true)
+        postsVC.loadPage(rawPage, updatingCache: true, updatingLastReadPost: true)
         
         if let postID = parameters["post"] as? String , !postID.isEmpty {
             let postKey = PostKey(postID: postID)
@@ -268,10 +268,10 @@ final class AwfulURLRouter: NSObject {
             postsVC.scrollPostToVisible(post)
         }
         
-        return showPostsViewController(postsVC: postsVC)
+        return showPostsViewController(postsVC)
     }
     
-    private func showPostsViewController(postsVC: PostsPageViewController) -> Bool {
+    fileprivate func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
         postsVC.restorationIdentifier = "Posts from URL"
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
@@ -299,14 +299,14 @@ final class AwfulURLRouter: NSObject {
         return true
     }
     
-    private func fetchUser(withUserID userID: String, completion: @escaping (NSError?, User?) -> Void) {
+    fileprivate func fetchUser(withUserID userID: String, completion: @escaping (Error?, User?) -> Void) {
         let key = UserKey(userID: userID, username: nil)
         if let user = User.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? User {
             completion(nil, user)
             return
         }
         
-        AwfulForumsClient.sharedClient().profileUserWithID(userID, username: nil, andThen: { (error: NSError?, profile: Profile?) in
+        AwfulForumsClient.shared().profileUser(withID: userID, username: nil, andThen: { (error: Error?, profile: Profile?) in
             completion(error, profile?.user)
         })
     }

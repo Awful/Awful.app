@@ -13,7 +13,7 @@ ReplyWorkspace conforms to UIStateRestoring, so it is ok to involve it in UIKit 
 */
 final class ReplyWorkspace: NSObject {
     let draft: ReplyDraft
-    private let restorationIdentifier: String
+    fileprivate let restorationIdentifier: String
     
     /**
     Called when the viewController should be dismissed. saveDraft is true if the workspace should stick around; newPost is a newly-created Post if one was made.
@@ -23,7 +23,7 @@ final class ReplyWorkspace: NSObject {
     var completion: ((_ saveDraft: Bool, _ didSucceed: Bool) -> Void)?
     
     /// Constructs a workspace for a new reply to a thread.
-    convenience init(thread: Thread) {
+    convenience init(thread: AwfulThread) {
         let draft = NewReplyDraft(thread: thread)
         self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
     }
@@ -33,16 +33,16 @@ final class ReplyWorkspace: NSObject {
         let draft = EditReplyDraft(post: post)
         self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
         
-        let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view, animated: false)
-        progressView.titleLabelText = "Reading post…"
+        let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view, animated: false)
+        progressView?.titleLabelText = "Reading post…"
         
-        AwfulForumsClient.sharedClient().findBBcodeContentsWithPost(post) { [weak self] (error: NSError?, BBcode: String?) in
-            progressView.dismiss(true)
+        _ = AwfulForumsClient.shared().findBBcodeContents(with: post) { [weak self] (error: Error?, BBcode: String?) in
+            progressView?.dismiss(true)
             
             if let error = error {
                 if self?.compositionViewController.visible == true {
                     let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
-                    self?.viewController.presentViewController(alert, animated: true, completion: nil)
+                    self?.viewController.present(alert, animated: true, completion: nil)
                 }
             } else {
                 self?.compositionViewController.textView.text = BBcode
@@ -51,17 +51,17 @@ final class ReplyWorkspace: NSObject {
     }
     
     /// A nil restorationIdentifier implies that we were not created by UIKit state restoration.
-    private init(draft: ReplyDraft, didRestoreWithRestorationIdentifier restorationIdentifier: String?) {
+    fileprivate init(draft: ReplyDraft, didRestoreWithRestorationIdentifier restorationIdentifier: String?) {
         self.draft = draft
-        self.restorationIdentifier = restorationIdentifier ?? NSUUID().UUIDString
+        self.restorationIdentifier = restorationIdentifier ?? UUID().uuidString
         super.init()
         
-        UIApplication.registerObjectForStateRestoration(self, restorationIdentifier: self.restorationIdentifier)
+        UIApplication.registerObject(forStateRestoration: self, restorationIdentifier: self.restorationIdentifier)
     }
     
     deinit {
         if let textViewNotificationToken: AnyObject = textViewNotificationToken {
-            NSNotificationCenter.defaultCenter().removeObserver(textViewNotificationToken)
+            NotificationCenter.default.removeObserver(textViewNotificationToken)
         }
     }
     
@@ -70,24 +70,24 @@ final class ReplyWorkspace: NSObject {
     Unfortunately, any compositionViewController that we preserve in encodeRestorableStateWithCoder() is not yet available in objectWithRestorationIdentifierPath(_:coder:); it only becomes available in decodeRestorableStateWithCoder().
     This didSet encompasses the junk we want to set up on the compositionViewController no matter how it's created and really belongs in init(), except we're stuck.
     */
-    private var compositionViewController: CompositionViewController! {
+    fileprivate var compositionViewController: CompositionViewController! {
         didSet {
             assert(oldValue == nil, "please set compositionViewController only once")
             
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
-            KVOController.observe(draft, keyPath: "thread.title", options: [.Initial, .New]) { [unowned self] _, _, change in
-                self.compositionViewController.title = change[NSKeyValueChangeNewKey] as? String
+            kvoController.observe(draft, keyPath: "thread.title", options: [.initial, .new]) { [unowned self] _, _, change in
+                self.compositionViewController.title = change?[NSKeyValueChangeKey.newKey] as? String
             }
             
-            textViewNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: compositionViewController.textView, queue: NSOperationQueue.mainQueue()) { [unowned self] note in
-                self.rightButtonItem.enabled = textView.hasText()
+            textViewNotificationToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
+                self.rightButtonItem.isEnabled = textView.hasText
             }
             
             let navigationItem = compositionViewController.navigationItem
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
-            KVOController.observe(AwfulSettings.sharedSettings(), keyPath: AwfulSettingsKeys.confirmNewPosts.takeUnretainedValue() as String, options: .Initial) { [unowned self] _, _, change in
+            kvoController.observe(AwfulSettings.shared(), keyPath: AwfulSettingsKeys.confirmNewPosts.takeUnretainedValue() as String, options: .initial) { [unowned self] _, _, change in
                 self.updateRightButtonItem()
             }
             
@@ -102,14 +102,14 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
-    private var textViewNotificationToken: AnyObject?
+    fileprivate var textViewNotificationToken: AnyObject?
     
-    private lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
-        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .Done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+    fileprivate lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
+        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         }()
     
-    private func updateRightButtonItem() {
-        if AwfulSettings.sharedSettings().confirmNewPosts {
+    fileprivate func updateRightButtonItem() {
+        if AwfulSettings.shared().confirmNewPosts {
             rightButtonItem.title = "Preview"
             rightButtonItem.action = #selector(ReplyWorkspace.didTapPreview(_:))
         } else {
@@ -118,57 +118,57 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
-    @objc private func didTapCancel(sender: UIBarButtonItem) {
+    @objc fileprivate func didTapCancel(_ sender: UIBarButtonItem) {
         let saveDraft = compositionViewController.textView.attributedText.length > 0
-        completion?(saveDraft: saveDraft, didSucceed: false)
+        completion?(saveDraft, false)
     }
     
-    @objc private func didTapPreview(sender: UIBarButtonItem) {
+    @objc fileprivate func didTapPreview(_ sender: UIBarButtonItem) {
         saveTextToDraft()
         
         let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? NSAttributedString())
-        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .Done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     
-    @objc private func didTapPost(sender: UIBarButtonItem) {
+    @objc fileprivate func didTapPost(_ sender: UIBarButtonItem) {
         saveTextToDraft()
         
-        let progressView = MRProgressOverlayView.showOverlayAddedTo(viewController.view.window, animated: true)
-        progressView.tintColor = viewController.view.tintColor
-        progressView.titleLabelText = draft.progressViewTitle
+        let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view.window, animated: true)
+        progressView?.tintColor = viewController.view.tintColor
+        progressView?.titleLabelText = draft.progressViewTitle
         
         let submitProgress = draft.submit { [unowned self] error in
-            progressView.dismiss(true)
+            progressView?.dismiss(true)
             
             if let error = error {
-                if !(error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError) {
+                if !((error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError) {
                     let alert = UIAlertController(title: "Image Upload Failed", error: error)
-                    self.viewController.presentViewController(alert, animated: true, completion: nil)
+                    self.viewController.present(alert, animated: true, completion: nil)
                 }
             } else {
                 DraftStore.sharedStore().deleteDraft(self.draft)
                 
-                self.completion?(saveDraft: false, didSucceed: true)
+                self.completion?(false, true)
             }
         }
         self.submitProgress = submitProgress
         
-        progressView.stopBlock = { _ in
+        progressView?.stopBlock = { _ in
             submitProgress.cancel() }
         
-        KVOController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: []) { [weak self] _, object, _ in
-            if let progress = object as? NSProgress {
-                if progress.fractionCompleted >= 1 || progress.cancelled {
-                    progressView.stopBlock = nil
-                    self?.KVOController.unobserve(progress)
+        kvoController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: []) { [weak self] _, object, _ in
+            if let progress = object as? Progress {
+                if progress.fractionCompleted >= 1 || progress.isCancelled {
+                    progressView?.stopBlock = nil
+                    self?.kvoController.unobserve(progress)
                 }
             }
         }
     }
-    private var submitProgress: NSProgress?
+    fileprivate var submitProgress: Progress?
     
-    private func saveTextToDraft() {
+    fileprivate func saveTextToDraft() {
         draft.text = compositionViewController.textView.attributedText
     }
     
@@ -178,7 +178,7 @@ final class ReplyWorkspace: NSObject {
         return compositionViewController.enclosingNavigationController
     }
     
-    private func createCompositionViewController() {
+    fileprivate func createCompositionViewController() {
         if compositionViewController == nil {
             compositionViewController = CompositionViewController()
             compositionViewController.restorationIdentifier = "\(self.restorationIdentifier) Reply composition"
@@ -186,19 +186,19 @@ final class ReplyWorkspace: NSObject {
     }
     
     /// Append a quoted post to the reply.
-    func quotePost(post: Post, completion: NSError? -> Void) {
+    func quotePost(_ post: Post, completion: @escaping (Error?) -> Void) {
         createCompositionViewController()
 
-        AwfulForumsClient.sharedClient().quoteBBcodeContentsWithPost(post) { [weak self] (error: NSError?, BBcode: String?) in
+        AwfulForumsClient.shared().quoteBBcodeContents(with: post) { [weak self] (error: Error?, BBcode: String?) in
             if let textView = self?.compositionViewController.textView, var replacement = BBcode {
-                let selectedRange = textView.selectedTextRange ?? textView.textRangeFromPosition(textView.endOfDocument, toPosition: textView.endOfDocument)!
+                let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
                 
                 // Yep. This is just a delight.
-                let precedingOffset = max(-2, textView.offsetFromPosition(selectedRange.start, toPosition: textView.beginningOfDocument))
+                let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
                 if precedingOffset < 0 {
-                    let precedingStart = textView.positionFromPosition(selectedRange.start, offset: precedingOffset)
-                    let precedingRange = textView.textRangeFromPosition(precedingStart!, toPosition: selectedRange.start)
-                    let preceding = textView.textInRange(precedingRange!)
+                    let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset)
+                    let precedingRange = textView.textRange(from: precedingStart!, to: selectedRange.start)
+                    let preceding = textView.text(in: precedingRange!)
                     if preceding != "\n\n" {
                         if preceding!.hasSuffix("\n") {
                             replacement = "\n" + replacement
@@ -208,7 +208,7 @@ final class ReplyWorkspace: NSObject {
                     }
                 }
                 
-                textView.replaceRange(selectedRange, withText: replacement)
+                textView.replace(selectedRange, withText: replacement)
             }
             
             completion(error)
@@ -217,19 +217,19 @@ final class ReplyWorkspace: NSObject {
 }
 
 extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
-    var objectRestorationClass: AnyObject.Type? {
+    var objectRestorationClass: UIObjectRestoration.Type? {
         return ReplyWorkspace.self
     }
     
-    func encodeRestorableStateWithCoder(coder: NSCoder) {
+    func encodeRestorableState(with coder: NSCoder) {
         saveTextToDraft()
         DraftStore.sharedStore().saveDraft(draft)
-        coder.encodeObject(draft.storePath, forKey: Keys.draftPath)
-        coder.encodeObject(compositionViewController, forKey: Keys.compositionViewController)
+        coder.encode(draft.storePath, forKey: Keys.draftPath)
+        coder.encode(compositionViewController, forKey: Keys.compositionViewController)
     }
     
-    class func objectWithRestorationIdentifierPath(identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
-        if let path = coder.decodeObjectForKey(Keys.draftPath) as! String? {
+    class func object(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
+        if let path = coder.decodeObject(forKey: Keys.draftPath) as! String? {
             if let draft = DraftStore.sharedStore().loadDraft(path) as! ReplyDraft? {
                 return self.init(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last )
             }
@@ -239,24 +239,24 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
         return nil
     }
     
-    func decodeRestorableStateWithCoder(coder: NSCoder) {
+    func decodeRestorableState(with coder: NSCoder) {
         // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
-        compositionViewController = coder.decodeObjectForKey(Keys.compositionViewController) as! CompositionViewController
+        compositionViewController = coder.decodeObject(forKey: Keys.compositionViewController) as! CompositionViewController
     }
 
-    private struct Keys {
+    fileprivate struct Keys {
         static let draftPath = "draftPath"
         static let compositionViewController = "compositionViewController"
     }
 }
 
 @objc protocol ReplyDraft: StorableDraft, SubmittableDraft, ReplyUI {
-    var thread: Thread { get }
+    var thread: AwfulThread { get }
     var text: NSAttributedString? { get set }
 }
 
 @objc protocol SubmittableDraft {
-    func submit(completion: (NSError?) -> Void) -> NSProgress
+    func submit(_ completion: @escaping (Error?) -> Void) -> Progress
 }
 
 @objc protocol ReplyUI {
@@ -265,28 +265,28 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
 }
 
 final class NewReplyDraft: NSObject, ReplyDraft {
-    let thread: Thread
+    let thread: AwfulThread
     var text: NSAttributedString?
     
-    init(thread: Thread, text: NSAttributedString? = nil) {
+    init(thread: AwfulThread, text: NSAttributedString? = nil) {
         self.thread = thread
         self.text = text
         super.init()
     }
     
     convenience init?(coder: NSCoder) {
-        let threadKey = coder.decodeObjectForKey(Keys.threadKey) as! ThreadKey
-        let thread = Thread.objectForKey(threadKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! Thread
-        let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
+        let threadKey = coder.decodeObject(forKey: Keys.threadKey) as! ThreadKey
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! AwfulThread
+        let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
     }
     
-    func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(thread.objectKey, forKey: Keys.threadKey)
-        coder.encodeObject(text, forKey: Keys.text)
+    func encode(with coder: NSCoder) {
+        coder.encode(thread.objectKey, forKey: Keys.threadKey)
+        coder.encode(text, forKey: Keys.text)
     }
     
-    private struct Keys {
+    fileprivate struct Keys {
         static let threadKey = "threadKey"
         static let text = "text"
     }
@@ -307,23 +307,23 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     }
     
     convenience init?(coder: NSCoder) {
-        let postKey = coder.decodeObjectForKey(Keys.postKey) as! PostKey
-        let post = Post.objectForKey(postKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! Post
-        let text = coder.decodeObjectForKey(Keys.text) as? NSAttributedString
+        let postKey = coder.decodeObject(forKey: Keys.postKey) as! PostKey
+        let post = Post.objectForKey(objectKey: postKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as! Post
+        let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(post: post, text: text)
     }
     
-    func encodeWithCoder(coder: NSCoder) {
-        coder.encodeObject(post.objectKey, forKey: Keys.postKey)
-        coder.encodeObject(text, forKey: Keys.text)
+    func encode(with coder: NSCoder) {
+        coder.encode(post.objectKey, forKey: Keys.postKey)
+        coder.encode(text, forKey: Keys.text)
     }
     
-    private struct Keys {
+    fileprivate struct Keys {
         static let postKey = "postKey"
         static let text = "text"
     }
     
-    var thread: Thread {
+    var thread: AwfulThread {
         // TODO can we assume an edited post always has a thread?
         return post.thread!
     }
@@ -334,12 +334,12 @@ final class EditReplyDraft: NSObject, ReplyDraft {
 }
 
 extension NewReplyDraft: SubmittableDraft {
-    func submit(completion: NSError? -> Void) -> NSProgress {
+    func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
         return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
-                AwfulForumsClient.sharedClient().replyToThread(self.thread, withBBcode: plainText) { (error: NSError?, post: Post?) in
+                AwfulForumsClient.shared().reply(to: self.thread, withBBcode: plainText) { (error: Error?, post: Post?) in
                     completion(error)
                 }
             }
@@ -348,12 +348,12 @@ extension NewReplyDraft: SubmittableDraft {
 }
 
 extension EditReplyDraft: SubmittableDraft {
-    func submit(completion: NSError? -> Void) -> NSProgress {
+    func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
         return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
-                AwfulForumsClient.sharedClient().editPost(self.post, setBBcode: plainText, andThen: completion)
+                _ = AwfulForumsClient.shared().edit(self.post, setBBcode: plainText, andThen: completion)
             }
         }
     }

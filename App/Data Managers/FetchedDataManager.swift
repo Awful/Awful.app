@@ -5,12 +5,12 @@
 import CoreData
 
 final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
-    private(set) var contents: [Object] = []
+    fileprivate(set) var contents: [Object] = []
     weak var delegate: FetchedDataManagerDelegate?
     
-    private let resultsController: NSFetchedResultsController<NSFetchRequestResult>
+    fileprivate let resultsController: NSFetchedResultsController<Object>
     
-    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
+    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<Object>) {
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         
         super.init()
@@ -39,14 +39,14 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
     
     The suggestion for this workaround comes from https://forums.developer.apple.com/thread/7628
     */
-    private func updateContents() {
+    fileprivate func updateContents() {
         guard let fetchedObjects = resultsController.fetchedObjects else {
             return
         }
         
         var newContents: [Object] = []
         for anyObject in fetchedObjects {
-            let object = anyObject as! Object
+            let object = anyObject 
             newContents.append(object)
         }
         
@@ -57,10 +57,10 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
     
     @objc func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         updateContents()
-        delegate?.dataManagerDidChangeContent(dataManager: self)
+        delegate?.dataManagerDidChangeContent(self)
     }
 }
 
 protocol FetchedDataManagerDelegate: class {
-    func dataManagerDidChangeContent<Object: NSManagedObject>(dataManager: FetchedDataManager<Object>)
+    func dataManagerDidChangeContent<Object: NSManagedObject>(_ dataManager: FetchedDataManager<Object>)
 }

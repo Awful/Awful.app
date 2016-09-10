@@ -32,9 +32,9 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
         - parameter sourceRect: On input, the suggested target rectangle for the popover (in the coordinate space of the sourceView). Put a new value in this parameter to change the target rectangle.
         - parameter sourceView: On input, the suggested target view for the popover. Put a new view in this parameter to change the target view.
     */
-    var popoverPositioningBlock: ((_ sourceRect: UnsafeMutablePointer<CGRect>, _ sourceView: AutoreleasingUnsafeMutablePointer<UIView?>) -> Void)?
+    var popoverPositioningBlock: ((_ sourceRect: UnsafeMutablePointer<CGRect>, _ sourceView: AutoreleasingUnsafeMutablePointer<UIView>) -> Void)?
     
-    private var headerHeightConstraint: NSLayoutConstraint?
+    fileprivate var headerHeightConstraint: NSLayoutConstraint?
     
     override init(nibName: String!, bundle: Bundle!) {
         super.init(nibName: nibName, bundle: bundle)
@@ -71,7 +71,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
         recalculatePreferredContentSize()
     }
     
-    private func titleDidChange() {
+    fileprivate func titleDidChange() {
         if (title ?? "").characters.count == 0 {
             if headerHeightConstraint == nil {
                 let constraint = NSLayoutConstraint(item: headerBackground, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
@@ -87,7 +87,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
         recalculatePreferredContentSize()
     }
     
-    private func recalculatePreferredContentSize() {
+    fileprivate func recalculatePreferredContentSize() {
         let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
@@ -116,12 +116,12 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
 }
 
 extension InAppActionViewController {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
     
-    @objc(collectionView:cellForItemAtIndexPath:) func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    @objc(collectionView:cellForItemAtIndexPath:)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = items[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath as IndexPath) as! IconActionCell
         cell.titleLabel.text = item.title
@@ -134,35 +134,35 @@ extension InAppActionViewController {
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
+    @objc(collectionView:didSelectItemAtIndexPath:)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[indexPath.item]
         dismiss(animated: true, completion: item.block)
     }
-    
 }
 
 private let cellIdentifier = "Cell"
 
 extension InAppActionViewController {
-    
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+    @objc(adaptivePresentationStyleForPresentationController:)
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
     
-    func prepareForPopoverPresentation(popover: UIPopoverPresentationController) {
+    func prepareForPopoverPresentation(_ popover: UIPopoverPresentationController) {
         if let block = popoverPositioningBlock {
             var sourceRect = popover.sourceRect
-            var sourceView: UIView? = popover.sourceView
+            var sourceView = popover.sourceView!
             block(&sourceRect, &sourceView)
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
         }
     }
     
-    func popoverPresentationController(popover: UIPopoverPresentationController, willRepositionPopoverToRect rect: UnsafeMutablePointer<CGRect>, inView view: AutoreleasingUnsafeMutablePointer<UIView?>) {
+    @objc(popoverPresentationController:willRepositionPopoverToRect:inView:)
+    func popoverPresentationController(_ popover: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
         if let block = popoverPositioningBlock {
             block(rect, view)
         }
     }
-    
 }

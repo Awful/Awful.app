@@ -6,16 +6,16 @@ import Foundation
 
 /// Hosts image data via the `awful-image` URL protocol so it can be shown from a UIWebView.
 final class SelfHostingAttachmentInterpolator: NSObject {
-    private var URLs: [NSURL] = []
+    fileprivate var URLs: [URL] = []
     
-    func interpolateImagesInString(string: NSAttributedString) -> String {
-        let basePath = NSUUID().UUIDString as NSString
+    func interpolateImagesInString(_ string: NSAttributedString) -> String {
+        let basePath = UUID().uuidString as NSString
         let mutableString = string.mutableCopy() as! NSMutableAttributedString
         
         // I'm not sure how to modify the string within calls to -[NSMutableAttributedString enumerateAttribute:...] when the range has length one, unless we go in reverse. I'm not sure it's a bug either.
-        string.enumerateAttribute(NSAttachmentAttributeName, inRange: NSRange(0..<string.length), options: [.LongestEffectiveRangeNotRequired, .Reverse]) { (attachment, range, stop) in
+        string.enumerateAttribute(NSAttachmentAttributeName, in: NSRange(0..<string.length), options: [.longestEffectiveRangeNotRequired, .reverse]) { (attachment, range, stop) in
             guard let attachment = attachment as? NSTextAttachment else { return }
-            let path = basePath.stringByAppendingPathComponent("\(self.URLs.count)")
+            let path = basePath.appendingPathComponent("\(self.URLs.count)")
             guard let URL = serve(attachment: attachment, fromPath: path) else { return }
             self.URLs.append(URL)
             
@@ -25,7 +25,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
             // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
             let tag = "[\(t)img]http://\(URL.absoluteString)[/\(t)img]"
             let replacement = NSAttributedString(string: tag)
-            mutableString.replaceCharactersInRange(range, withAttributedString: replacement)
+            mutableString.replaceCharacters(in: range, with: replacement)
         }
         
         return mutableString.string
@@ -36,7 +36,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
     }
 }
 
-private func serve(attachment attachment: NSTextAttachment, fromPath path: String) -> NSURL? {
+private func serve(attachment: NSTextAttachment, fromPath path: String) -> URL? {
     if let attachment = attachment as? TextAttachment {
         if let assetURL = attachment.assetURL {
             return ImageURLProtocol.serveAsset(assetURL, atPath: path)

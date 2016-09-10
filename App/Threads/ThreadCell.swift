@@ -30,16 +30,16 @@ class ThreadCell: DynamicTypeTableViewCell {
         contentView.addGestureRecognizer(longPress)
         
         // Can't do this in IB.
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 75))
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 75))
         
         // Can't do this in IB.
-        contentView.addConstraint(NSLayoutConstraint(item: pageIcon, attribute: .Bottom, relatedBy: .Equal, toItem: numberOfPagesLabel, attribute: .Baseline, multiplier: 1, constant: 0))
+        contentView.addConstraint(NSLayoutConstraint(item: pageIcon, attribute: .bottom, relatedBy: .equal, toItem: numberOfPagesLabel, attribute: .lastBaseline, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
         contentView.layoutMargins.left = 16
     }
     
-    override func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
+    override func fontPointSizeForLabel(_ label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
         if label == unreadRepliesLabel {
             return suggestedPointSize + 2
         } else {
@@ -50,10 +50,10 @@ class ThreadCell: DynamicTypeTableViewCell {
     // MARK: Hide and show tag and/or rating
     
     /// Constraints needed when showing a rating image.
-    @IBOutlet private var ratingConstraints: [NSLayoutConstraint]!
+    @IBOutlet fileprivate var ratingConstraints: [NSLayoutConstraint]!
     
     /// Constraints needed when showing a tag image.
-    @IBOutlet private var tagConstraints: [NSLayoutConstraint]!
+    @IBOutlet fileprivate var tagConstraints: [NSLayoutConstraint]!
     
     var showsRating: Bool = true {
         didSet(wasShowingRating) {
@@ -79,26 +79,26 @@ class ThreadCell: DynamicTypeTableViewCell {
     
     // MARK: Long-press
     
-    private(set) weak var longPressTarget: AnyObject!
-    private(set) var longPressAction: Selector!
+    fileprivate(set) weak var longPressTarget: AnyObject!
+    fileprivate(set) var longPressAction: Selector!
     
-    func setLongPressTarget(target: AnyObject!, action: String!) {
+    func setLongPressTarget(_ target: AnyObject!, action: String!) {
         if let action = action {
-            longPress.enabled = true
+            longPress.isEnabled = true
             longPressTarget = target
             longPressAction = Selector(action)
         } else {
-            longPress.enabled = false
+            longPress.isEnabled = false
             longPressTarget = nil
             longPressAction = nil
         }
     }
     
-    private var longPress: UILongPressGestureRecognizer!
+    fileprivate var longPress: UILongPressGestureRecognizer!
     
-    @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
-        if sender.state == .Began {
-            UIApplication.sharedApplication().sendAction(longPressAction, to: longPressTarget, from: self, forEvent: nil)
+    @objc fileprivate func didLongPress(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            UIApplication.shared.sendAction(longPressAction, to: longPressTarget, from: self, for: nil)
         }
     }
 }
@@ -106,8 +106,8 @@ class ThreadCell: DynamicTypeTableViewCell {
 @IBDesignable
 class TopCapAlignmentLabel: UILabel {
     
-    override func alignmentRectInsets() -> UIEdgeInsets {
-        var insets = super.alignmentRectInsets()
+    override var alignmentRectInsets : UIEdgeInsets {
+        var insets = super.alignmentRectInsets
         insets.top = ceil(font.ascender - font.capHeight)
         return insets
     }
@@ -118,25 +118,25 @@ import AVFoundation
 @IBDesignable
 class PageIcon: UIView {
     
-    @IBInspectable var borderColor: UIColor = UIColor.darkGrayColor() {
+    @IBInspectable var borderColor: UIColor = .darkGray {
         didSet { setNeedsDisplay() }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         
         // Page shape.
-        let outline = AVMakeRectWithAspectRatioInsideRect(CGSize(width: 8.5, height: 11), bounds)
+        let outline = AVMakeRect(aspectRatio: CGSize(width: 8.5, height: 11), insideRect: bounds)
         let borderPath = UIBezierPath()
-        borderPath.moveToPoint(CGPoint(x: CGRectGetMinX(outline), y: CGRectGetMinY(outline)))
-        borderPath.addLineToPoint(CGPoint(x: CGRectGetMinX(outline) + outline.width * 5/8, y: CGRectGetMinY(outline)))
-        borderPath.addLineToPoint(CGPoint(x: CGRectGetMaxX(outline), y: CGRectGetMinY(outline) + ceil(outline.height / 3)))
-        borderPath.addLineToPoint(CGPoint(x: CGRectGetMaxX(outline), y: CGRectGetMaxY(outline)))
-        borderPath.addLineToPoint(CGPoint(x: CGRectGetMinX(outline), y: CGRectGetMaxY(outline)))
-        borderPath.closePath()
+        borderPath.move(to: CGPoint(x: outline.minX, y: outline.minY))
+        borderPath.addLine(to: CGPoint(x: outline.minX + outline.width * 5/8, y: outline.minY))
+        borderPath.addLine(to: CGPoint(x: outline.maxX, y: outline.minY + ceil(outline.height / 3)))
+        borderPath.addLine(to: CGPoint(x: outline.maxX, y: outline.maxY))
+        borderPath.addLine(to: CGPoint(x: outline.minX, y: outline.maxY))
+        borderPath.close()
         borderPath.lineWidth = 1
         
         // Dog-eared corner.
-        let dogEar = UIBezierPath(rect: CGRect(x: CGRectGetMidX(outline), y: CGRectGetMinY(outline), width: CGRectGetWidth(outline) / 2, height: CGRectGetHeight(outline) / 2))
+        let dogEar = UIBezierPath(rect: CGRect(x: outline.midX, y: outline.minY, width: outline.width / 2, height: outline.height / 2))
         
         borderPath.addClip()
         borderColor.set()

@@ -6,41 +6,41 @@ import Smilies
 import UIKit
 
 final class CompositionInputAccessoryView: UIInputView {
-    private(set) weak var textView: UITextView?
-    private let middleButtonContainer = UIStackView()
-    private let smilieCommand: ShowSmilieKeyboardCommand
-    private let autocloseCommand: CloseBBcodeTagCommand
-    private var widthConstraints: [NSLayoutConstraint] = []
-    private var heightConstraints: [NSLayoutConstraint] = []
-    private var edgeConstraints: [NSLayoutConstraint] = []
+    fileprivate(set) weak var textView: UITextView?
+    fileprivate let middleButtonContainer = UIStackView()
+    fileprivate let smilieCommand: ShowSmilieKeyboardCommand
+    fileprivate let autocloseCommand: CloseBBcodeTagCommand
+    fileprivate var widthConstraints: [NSLayoutConstraint] = []
+    fileprivate var heightConstraints: [NSLayoutConstraint] = []
+    fileprivate var edgeConstraints: [NSLayoutConstraint] = []
     
-    private lazy var smilieButton: KeyboardButton = {
+    fileprivate lazy var smilieButton: KeyboardButton = {
         let button = KeyboardButton()
-        button.setTitle(":-)", forState: .Normal)
+        button.setTitle(":-)", for: UIControlState())
         button.accessibilityLabel = "Toggle smilie keyboard"
-        button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapSmilieButton), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapSmilieButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var middleButtons: [KeyboardButton] = {
+    fileprivate lazy var middleButtons: [KeyboardButton] = {
         return ["[", "=", ":", "/", "]"].map { title in
             let button = KeyboardButton()
-            button.setTitle(title, forState: .Normal)
-            button.addTarget(self, action: #selector(CompositionInputAccessoryView.didPressSingleCharacterKey(_:)), forControlEvents: .TouchUpInside)
+            button.setTitle(title, for: UIControlState())
+            button.addTarget(self, action: #selector(CompositionInputAccessoryView.didPressSingleCharacterKey(_:)), for: .touchUpInside)
             return button
         }
     }()
     
-    private lazy var autocloseButton: KeyboardButton = {
+    fileprivate lazy var autocloseButton: KeyboardButton = {
         let button = KeyboardButton()
-        button.setTitle("[/..]", forState: .Normal)
+        button.setTitle("[/..]", for: UIControlState())
         button.accessibilityLabel = "Close tag"
-        button.setTitleColor(.grayColor(), forState: .Disabled)
-        button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapAutocloseButton), forControlEvents: .TouchUpInside)
+        button.setTitleColor(.gray, for: .disabled)
+        button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapAutocloseButton), for: .touchUpInside)
         return button
     }()
     
-    var keyboardAppearance: UIKeyboardAppearance = .Default {
+    var keyboardAppearance: UIKeyboardAppearance = .default {
         didSet { updateColors() }
     }
     
@@ -49,21 +49,21 @@ final class CompositionInputAccessoryView: UIInputView {
         smilieCommand = ShowSmilieKeyboardCommand(textView: textView)
         autocloseCommand = CloseBBcodeTagCommand(textView: textView)
         
-        let height = UIDevice.currentDevice().userInterfaceIdiom == .Pad ? 66 : 38
+        let height = UIDevice.current.userInterfaceIdiom == .pad ? 66 : 38
         let frame = CGRect(x: 0, y: 0, width: 0, height: height)
-        super.init(frame: frame, inputViewStyle: .Default)
+        super.init(frame: frame, inputViewStyle: .default)
         
-        opaque = true
+        isOpaque = true
         
-        KVOController.observe(autocloseCommand, keyPath: "enabled", options: [.Initial], typedBlock: { [weak self] (command, change) in
-            self?.autocloseButton.enabled = command.enabled
+        kvoController.observe(autocloseCommand, keyPath: "enabled", options: [.initial], typedBlock: { [weak self] (command, change) in
+            self?.autocloseButton.isEnabled = command.enabled
             })
         
         smilieButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(smilieButton)
         
-        middleButtonContainer.distribution = .FillEqually
-        middleButtonContainer.alignment = .Center
+        middleButtonContainer.distribution = .fillEqually
+        middleButtonContainer.alignment = .center
         middleButtonContainer.translatesAutoresizingMaskIntoConstraints = false
         addSubview(middleButtonContainer)
         
@@ -76,44 +76,44 @@ final class CompositionInputAccessoryView: UIInputView {
         
         let allButtons = [smilieButton, autocloseButton] + middleButtons
         for button in allButtons {
-            widthConstraints.append(button.widthAnchor.constraintEqualToConstant(40))
-            heightConstraints.append(button.heightAnchor.constraintEqualToConstant(32))
+            widthConstraints.append(button.widthAnchor.constraint(equalToConstant: 40))
+            heightConstraints.append(button.heightAnchor.constraint(equalToConstant: 32))
         }
-        (widthConstraints + heightConstraints).forEach { $0.active = true }
+        (widthConstraints + heightConstraints).forEach { $0.isActive = true }
         
-        edgeConstraints.append(smilieButton.leadingAnchor.constraintEqualToAnchor(leadingAnchor))
-        edgeConstraints.append(trailingAnchor.constraintEqualToAnchor(autocloseButton.trailingAnchor))
-        edgeConstraints.forEach { $0.active = true }
+        edgeConstraints.append(smilieButton.leadingAnchor.constraint(equalTo: leadingAnchor))
+        edgeConstraints.append(trailingAnchor.constraint(equalTo: autocloseButton.trailingAnchor))
+        edgeConstraints.forEach { $0.isActive = true }
         
-        smilieButton.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
-        autocloseButton.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
+        smilieButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        autocloseButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
-        middleButtonContainer.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
-        middleButtonContainer.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        middleButtonContainer.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
+        middleButtonContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        middleButtonContainer.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        middleButtonContainer.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func didPressSingleCharacterKey(button: KeyboardButton) {
+    @objc fileprivate func didPressSingleCharacterKey(_ button: KeyboardButton) {
         guard let text = button.currentTitle else { return }
-        UIDevice.currentDevice().playInputClick()
+        UIDevice.current.playInputClick()
         textView?.insertText(text)
     }
     
-    @objc private func didTapSmilieButton() {
-        UIDevice.currentDevice().playInputClick()
+    @objc fileprivate func didTapSmilieButton() {
+        UIDevice.current.playInputClick()
         smilieCommand.execute()
     }
     
-    @objc private func didTapAutocloseButton() {
-        UIDevice.currentDevice().playInputClick()
+    @objc fileprivate func didTapAutocloseButton() {
+        UIDevice.current.playInputClick()
         autocloseCommand.execute()
     }
     
-    private func updateColors() {
+    fileprivate func updateColors() {
         let backgroundColor: UIColor
         let titleColor: UIColor
         let normalBackgroundColor: UIColor
@@ -121,37 +121,37 @@ final class CompositionInputAccessoryView: UIInputView {
         let shadowColor: UIColor
         
         switch keyboardAppearance {
-        case .Dark:
+        case .dark:
             backgroundColor = UIColor(white: 0.078, alpha: 1)
-            titleColor = .whiteColor()
+            titleColor = .white
             normalBackgroundColor = UIColor(white: 0.353, alpha: 1)
             selectedBackgroundColor = UIColor(white: 0.149, alpha: 1)
-            shadowColor = .blackColor()
+            shadowColor = .black
             
         default:
             switch traitCollection.userInterfaceIdiom {
-            case .Pad:
+            case .pad:
                 backgroundColor = UIColor(red: 0.812, green: 0.824, blue: 0.835, alpha: 1)
             default:
                 backgroundColor = UIColor(red: 0.863, green: 0.875, blue: 0.886, alpha: 1)
             }
-            titleColor = .blackColor()
+            titleColor = .black
             normalBackgroundColor = UIColor(red: 0.988, green: 0.988, blue: 0.992, alpha: 1)
             selectedBackgroundColor = UIColor(red: 0.831, green: 0.839, blue: 0.847, alpha: 1)
-            shadowColor = .grayColor()
+            shadowColor = .gray
         }
         
         self.backgroundColor = backgroundColor
         
         for button in [smilieButton, autocloseButton] + middleButtons {
-            button.setTitleColor(titleColor, forState: .Normal)
+            button.setTitleColor(titleColor, for: UIControlState())
             button.normalBackgroundColor = normalBackgroundColor
             button.selectedBackgroundColor = selectedBackgroundColor
-            button.layer.shadowColor = shadowColor.CGColor
+            button.layer.shadowColor = shadowColor.cgColor
         }
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
         guard previousTraitCollection?.userInterfaceIdiom != traitCollection.userInterfaceIdiom else { return }
@@ -161,7 +161,7 @@ final class CompositionInputAccessoryView: UIInputView {
         let edge: CGFloat
         let between: CGFloat
         switch traitCollection.userInterfaceIdiom {
-        case .Pad:
+        case .pad:
             width = 57
             height = 57
             edge = 5
@@ -208,12 +208,12 @@ private final class KeyboardButton: SmilieButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
         guard previousTraitCollection?.userInterfaceIdiom != traitCollection.userInterfaceIdiom else { return }
         
-        if traitCollection.userInterfaceIdiom == .Phone {
+        if traitCollection.userInterfaceIdiom == .phone {
             contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
         } else {
             contentEdgeInsets = UIEdgeInsets()

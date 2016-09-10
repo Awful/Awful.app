@@ -26,7 +26,7 @@ extension UIViewController {
     }
 }
 
-private func CommonInit(vc: UIViewController) {
+private func CommonInit(_ vc: UIViewController) {
     vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 }
 
@@ -38,12 +38,12 @@ private func CommonInit(vc: UIViewController) {
 class ViewController: UIViewController {
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    private(set) var visible = false
+    fileprivate(set) var visible = false
     
     // MARK: View lifecycle
     
@@ -97,29 +97,29 @@ class ViewController: UIViewController {
     Implements `UITableViewDelegate.tableView(_:willDisplayCell:forRowAtIndexPath:)`. If your subclass also implements this method, please call its superclass implementation at some point.
  */
 class TableViewController: UITableViewController {
-    private var viewIsLoading = false
+    fileprivate var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     override init(style: UITableViewStyle) {
         super.init(style: style)
         
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     deinit {
         if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
-            tableView.removePullToRefresh(pullToRefresh: pullToRefresh)
+            tableView.removePullToRefresh(pullToRefresh)
         }
     }
     
@@ -129,7 +129,7 @@ class TableViewController: UITableViewController {
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    private(set) var visible = false
+    fileprivate(set) var visible = false
     
     /// A block to call when the table is pulled down to refresh. If nil, no refresh control is shown.
     var pullToRefreshBlock: (() -> Void)? {
@@ -138,34 +138,34 @@ class TableViewController: UITableViewController {
                 createRefreshControl()
             } else {
                 if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
-                    tableView.removePullToRefresh(pullToRefresh: pullToRefresh)
+                    tableView.removePullToRefresh(pullToRefresh)
                 }
             }
         }
     }
     
-    private func createRefreshControl() {
+    fileprivate func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
         niggly.autoresizingMask = .flexibleWidth
         pullToRefreshView = niggly
-        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .Top)
+        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .top)
         pullToRefresh.animationDuration = 0.3
         pullToRefresh.initialSpringVelocity = 0
         pullToRefresh.springDamping = 1
-        tableView.addPullToRefresh(pullToRefresh: pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
+        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
     }
     
-    private weak var pullToRefreshView: UIView?
+    fileprivate weak var pullToRefreshView: UIView?
     
     func startAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
-        tableView.startRefreshing(at: .Top)
+        tableView.startRefreshing(at: .top)
     }
     
     func stopAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
-        tableView.endRefreshing(at: .Top)
+        tableView.endRefreshing(at: .top)
     }
     
     override var refreshControl: UIRefreshControl? {
@@ -183,14 +183,14 @@ class TableViewController: UITableViewController {
         }
     }
     
-    private enum InfiniteScrollState {
-        case Ready
-        case LoadingMore
+    fileprivate enum InfiniteScrollState {
+        case ready
+        case loadingMore
     }
-    private var infiniteScrollState: InfiniteScrollState = .Ready
+    fileprivate var infiniteScrollState: InfiniteScrollState = .ready
     
     func stopAnimatingInfiniteScroll() {
-        infiniteScrollState = .Ready
+        infiniteScrollState = .ready
         
         guard let footer = tableView.tableFooterView else { return }
         tableView.contentInset.bottom -= footer.bounds.height
@@ -244,11 +244,11 @@ class TableViewController: UITableViewController {
     // MARK: UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard infiniteScrollState == .Ready, let block = scrollToLoadMoreBlock else { return }
+        guard infiniteScrollState == .ready, let block = scrollToLoadMoreBlock else { return }
         guard indexPath.row + 1 == tableView.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) else { return }
         guard tableView.contentSize.height >= tableView.bounds.height else { return }
         
-        infiniteScrollState = .LoadingMore
+        infiniteScrollState = .loadingMore
         block()
         
         let imageView = UIImageView(image: NigglyRefreshView.makeImage())
@@ -264,18 +264,18 @@ class TableViewController: UITableViewController {
 
 /// A thin customization of UICollectionViewController that extends Theme support.
 class CollectionViewController: UICollectionViewController {
-    private var viewIsLoading = false
+    fileprivate var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(vc: self)
+        CommonInit(self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.

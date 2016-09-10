@@ -7,7 +7,7 @@ import UIKit
 /// A text view suitable for composing replies, posts, and private messages.
 final class ComposeTextView: UITextView, CompositionHidesMenuItems {
     var hidesBuiltInMenuItems = false
-    private lazy var BBcodeBar: CompositionInputAccessoryView = {
+    fileprivate lazy var BBcodeBar: CompositionInputAccessoryView = {
         let bar = CompositionInputAccessoryView(textView: self)
         bar.keyboardAppearance = self.keyboardAppearance
         return bar
@@ -36,7 +36,7 @@ final class ComposeTextView: UITextView, CompositionHidesMenuItems {
         return true
     }
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         guard !hidesBuiltInMenuItems else { return false }
         return super.canPerformAction(action, withSender: sender)
     }

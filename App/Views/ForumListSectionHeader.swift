@@ -23,6 +23,6 @@ final class ForumListSectionHeader: UITableViewHeaderFooterView {
         super.layoutSubviews()
         
         let insets = UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: 0)
-        sectionNameLabel.frame = UIEdgeInsetsInsetRect(CGRect(origin: CGPointZero, size: bounds.size), insets)
+        sectionNameLabel.frame = UIEdgeInsetsInsetRect(CGRect(origin: .zero, size: bounds.size), insets)
     }
 }

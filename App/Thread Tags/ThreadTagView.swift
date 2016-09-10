@@ -5,21 +5,21 @@
 import UIKit
 
 final class ThreadTagView: UIView {
-    private let tagImageView = UIImageView()
+    fileprivate let tagImageView = UIImageView()
     var tagImage: UIImage? {
         get { return tagImageView.image }
         set { tagImageView.image = newValue }
     }
     
-    private let secondaryTagImageView = UIImageView()
+    fileprivate let secondaryTagImageView = UIImageView()
     var secondaryTagImage: UIImage? {
         get { return secondaryTagImageView.image }
         set {
             if let
                 image = newValue,
-                let cgimage = image.CGImage
+                let cgimage = image.cgImage
             {
-                secondaryTagImageView.image = UIImage(CGImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
+                secondaryTagImageView.image = UIImage(cgImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
             } else {
                 secondaryTagImageView.image = newValue
             }
@@ -35,27 +35,27 @@ final class ThreadTagView: UIView {
         secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(secondaryTagImageView)
         
-        tagImageView.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(tagImageView.trailingAnchor).active = true
+        tagImageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: tagImageView.trailingAnchor).isActive = true
         
-        tagImageView.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(tagImageView.bottomAnchor).active = true
+        tagImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: tagImageView.bottomAnchor).isActive = true
         
-        bottomAnchor.constraintEqualToAnchor(secondaryTagImageView.bottomAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(secondaryTagImageView.trailingAnchor).active = true
+        bottomAnchor.constraint(equalTo: secondaryTagImageView.bottomAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: secondaryTagImageView.trailingAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTagBorderColor(borderColor: UIColor?, width: CGFloat) {
+    func setTagBorderColor(_ borderColor: UIColor?, width: CGFloat) {
         guard let borderColor = borderColor , width > 0 else {
             secondaryTagImageView.layer.borderColor = nil
             secondaryTagImageView.layer.borderWidth = 0
             return
         }
-        secondaryTagImageView.layer.borderColor = borderColor.CGColor
+        secondaryTagImageView.layer.borderColor = borderColor.cgColor
         secondaryTagImageView.layer.borderWidth = width
     }
 }

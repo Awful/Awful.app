@@ -6,19 +6,19 @@ import ARChromeActivity
 import SafariServices
 
 final class AwfulBrowser: NSObject {
-    class func presentBrowserForURL(URL: NSURL, fromViewController presentingViewController: UIViewController) -> SFSafariViewController {
-        let browser = SFSafariViewController(URL: URL)
+    @discardableResult class func presentBrowserForURL(_ URL: Foundation.URL, fromViewController presentingViewController: UIViewController) -> SFSafariViewController {
+        let browser = SFSafariViewController(url: URL)
         browser.delegate = sharedInstance
         browser.restorationIdentifier = "Awful Browser"
-        presentingViewController.presentViewController(browser, animated: true, completion: nil)
+        presentingViewController.present(browser, animated: true, completion: nil)
         return browser
     }
     
-    private static var sharedInstance = AwfulBrowser()
+    fileprivate static var sharedInstance = AwfulBrowser()
 }
 
 extension AwfulBrowser: SFSafariViewControllerDelegate {
-    func safariViewController(controller: SFSafariViewController, activityItemsForURL URL: NSURL, title: String?) -> [UIActivity] {
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return [ARChromeActivity()]
     }
 }

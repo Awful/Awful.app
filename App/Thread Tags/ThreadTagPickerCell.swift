@@ -6,9 +6,9 @@ import UIKit
 
 /// A thread tag in an AwfulThreadTagPickerController.
 final class ThreadTagPickerCell: UICollectionViewCell {
-    private let tagView = ThreadTagView()
-    private let imageNameLabel = UILabel()
-    private let selectedIcon = UIImageView()
+    fileprivate let tagView = ThreadTagView()
+    fileprivate let imageNameLabel = UILabel()
+    fileprivate let selectedIcon = UIImageView()
     
     /// An image representing the thread tag.
     var image: UIImage? {
@@ -66,7 +66,7 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         didSet {
             guard let name = tagImageName, let info = tagInfo[name] else { return }
             titleText = info["title"] ?? "?????"
-            if let hexColor = info["color"], let color = UIColor.fromHex(hexCode: hexColor) {
+            if let hexColor = info["color"], let color = UIColor.fromHex(hexColor) {
                 drawColor = color
             } else {
                 drawColor = UIColor.red
@@ -79,11 +79,11 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         didSet { setNeedsDisplay() }
     }
     
-    private var titleText: String = "" {
+    fileprivate var titleText: String = "" {
         didSet { setNeedsDisplay() }
     }
     
-    private var drawColor: UIColor = UIColor.red {
+    fileprivate var drawColor: UIColor = UIColor.red {
         didSet { setNeedsDisplay() }
     }
     
@@ -108,7 +108,7 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         context.setFillColor(drawColor.cgColor)
         context.setStrokeColor(drawColor.cgColor)
         context.setLineWidth(1)
-        isSelected ? context.fillEllipse(inRect: circleFrame) : context.strokeEllipse(inRect: circleFrame)
+        isSelected ? context.fillEllipse(in: circleFrame) : context.strokeEllipse(in: circleFrame)
         
         let firstLetter = String(titleText.characters.first ?? "?")
         let letterAttributes = [

@@ -27,7 +27,7 @@ final class PostsPageRefreshControl: UIView {
         
         configureContentView()
         
-        KVOController.observe(scrollView, keyPath: "contentSize", options: .Initial) { [unowned self] _, _ in
+        kvoController.observe(scrollView, keyPath: "contentSize", options: .initial) { [unowned self] _, _ in
             self.layoutScrollView()
         }
         
@@ -43,21 +43,21 @@ final class PostsPageRefreshControl: UIView {
     }
     
     func endRefreshing() {
-        state = .Waiting(triggeredFraction: 0)
+        state = .waiting(triggeredFraction: 0)
     }
     
-    private var content: PostsPageRefreshControlContent? {
+    fileprivate var content: PostsPageRefreshControlContent? {
         return contentView as? PostsPageRefreshControlContent
     }
     
-    private func configureContentView() {
+    fileprivate func configureContentView() {
         content?.state = state
         
         contentView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentView)
         
-        contentView.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
-        contentView.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
+        contentView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        contentView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
         scrollView.addSubview(self)
     }
@@ -65,38 +65,39 @@ final class PostsPageRefreshControl: UIView {
     // MARK: State machine
     
     enum State {
-        case Waiting(triggeredFraction: CGFloat)
-        case Triggered
-        case Refreshing
+        case waiting(triggeredFraction: CGFloat)
+        case triggered
+        case refreshing
     }
     
-    private var state: State = .Waiting(triggeredFraction: 0) {
+    fileprivate var state: State = .waiting(triggeredFraction: 0) {
         didSet { content?.state = state }
     }
     
     // MARK: Actions
     
-    @objc private func didPan(sender: UIPanGestureRecognizer) {
+    @objc fileprivate func didPan(_ sender: UIPanGestureRecognizer) {
         let maxVisibleY = scrollView.bounds.maxY - scrollView.contentInset.bottom + bottomInset
         
         switch sender.state {
-        case .Began, .Changed:
+        case .began, .changed:
             switch state {
-            case .Waiting where maxVisibleY > frame.maxY:
-                state = .Triggered
+            case .waiting where maxVisibleY > frame.maxY:
+                state = .triggered
                 
-            case (.Waiting), .Triggered where maxVisibleY <= frame.maxY:
+            case .waiting, 
+                 .triggered where maxVisibleY <= frame.maxY:
                 let fraction = max((maxVisibleY - frame.minY) / frame.height, 0)
-                state = .Waiting(triggeredFraction: fraction)
+                state = .waiting(triggeredFraction: fraction)
             
             default:
                 break
             }
             
-        case .Ended where maxVisibleY > frame.maxY:
-            state = .Refreshing
+        case .ended where maxVisibleY > frame.maxY:
+            state = .refreshing
             
-            UIView.animateWithDuration(0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
                 self.bottomInset = self.height
                 
                 var contentOffset = self.scrollView.contentOffset
@@ -106,8 +107,8 @@ final class PostsPageRefreshControl: UIView {
 
             handler?()
             
-        case .Cancelled, .Ended:
-            state = .Waiting(triggeredFraction: 0)
+        case .cancelled, .ended:
+            state = .waiting(triggeredFraction: 0)
             bottomInset = 0
             
         default:
@@ -117,12 +118,12 @@ final class PostsPageRefreshControl: UIView {
     
     // MARK: Layout
     
-    private func layoutScrollView() {
+    fileprivate func layoutScrollView() {
         let y = max(scrollView.contentSize.height, scrollView.bounds.height)
         frame = CGRect(x: 0, y: y, width: scrollView.bounds.width, height: height)
         
         switch state {
-        case .Refreshing:
+        case .refreshing:
             bottomInset = height
             
         default:
@@ -130,18 +131,18 @@ final class PostsPageRefreshControl: UIView {
         }
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        let contentHeight = contentView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+    override var intrinsicContentSize : CGSize {
+        let contentHeight = contentView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         return CGSize(width: UIViewNoIntrinsicMetric, height: contentHeight + 2 * contentPadding)
     }
     
-    private lazy var height: CGFloat = { [unowned self] in
-        return self.intrinsicContentSize().height
+    fileprivate lazy var height: CGFloat = { [unowned self] in
+        return self.intrinsicContentSize.height
         }()
     
     // MARK: Content inset
     
-    private var bottomInset: CGFloat = 0 {
+    fileprivate var bottomInset: CGFloat = 0 {
         didSet {
             if bottomInset != oldValue {
                 scrollView.contentInset.bottom += bottomInset - oldValue

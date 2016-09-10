@@ -10,5 +10,5 @@ struct CaseInsensitive {
 }
 
 func ~=(pattern: String?, predicate: CaseInsensitive) -> Bool {
-    return pattern?.caseInsensitiveCompare(predicate.string) == .OrderedSame
+    return pattern?.caseInsensitiveCompare(predicate.string) == .orderedSame
 }

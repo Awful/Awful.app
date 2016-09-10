@@ -7,8 +7,8 @@ import MRProgress
 import UIKit
 
 final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIViewControllerPreviewingDelegate {
-    private weak var previewingViewController: UIViewController?
-    private var thread: AwfulThread?
+    fileprivate weak var previewingViewController: UIViewController?
+    fileprivate var thread: AwfulThread?
     
     init<ViewController: UIViewController>(previewingViewController: ViewController) where ViewController: ThreadPeekPopControllerDelegate {
         self.previewingViewController = previewingViewController
@@ -27,18 +27,18 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
-            var queryItems: [NSURLQueryItem] = []
-            queryItems.append(NSURLQueryItem(name: "threadid", value: thread.threadID))
-            queryItems.append(NSURLQueryItem(name: "perpage", value: "40"))
+            var components = URLComponents(string: "https://forums.somethingawful.com/showthread.php")!
+            var queryItems: [URLQueryItem] = []
+            queryItems.append(URLQueryItem(name: "threadid", value: thread.threadID))
+            queryItems.append(URLQueryItem(name: "perpage", value: "40"))
             if (postsViewController.page > 1) {
-                queryItems.append(NSURLQueryItem(name:"pagenumber", value: "\(postsViewController.page)"))
+                queryItems.append(URLQueryItem(name:"pagenumber", value: "\(postsViewController.page)"))
             }
             components.queryItems = queryItems as [URLQueryItem]
             
             let URL = components.url!
             AwfulSettings.shared().lastOfferedPasteboardURL = URL.absoluteString
-            UIPasteboard.general.awful_URL = URL as NSURL?
+            UIPasteboard.general.awful_URL = URL
         }
         
         let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController in
@@ -74,14 +74,14 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                 }
                 
                 if let error = error {
-                    let alert = UIAlertController(networkError: error, handler: nil)
-                    presentingViewController.presentViewController(alert, animated: true, completion: nil)
+                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                    presentingViewController.present(alert, animated: true, completion: nil)
                 } else {
                     let title = thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
-                    let overlay = MRProgressOverlayView.showOverlayAddedTo(presentingViewController.view, title: title, mode: .Checkmark, animated: true)
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: presentingViewController.view, title: title, mode: .checkmark, animated: true)
                     
-                    NSTimer.scheduledTimerWithInterval(0.7) { timer in
-                        overlay.dismiss(true)
+                    Timer.scheduledTimerWithInterval(0.7) { timer in
+                        overlay?.dismiss(true)
                     }
                 }
             }
@@ -106,7 +106,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
-        postsViewController.loadPage(rawPage: targetPage, updatingCache: true, updatingLastReadPost: false)
+        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: false)
         
         postsViewController.preferredContentSize = CGSize(width: 0, height: 500)
         postsViewController.previewActionItemProvider = self
@@ -124,7 +124,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         }
         
         if let postsViewController = viewControllerToCommit as? PostsPageViewController {
-            postsViewController.loadPage(rawPage: postsViewController.page, updatingCache: true, updatingLastReadPost: true)
+            postsViewController.loadPage(postsViewController.page, updatingCache: true, updatingLastReadPost: true)
         }
         
         viewController.show(viewControllerToCommit, sender: self)

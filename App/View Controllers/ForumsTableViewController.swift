@@ -6,11 +6,11 @@ import AwfulCore
 
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
-    private var dataSource: ForumTableViewDataSource!
+    fileprivate var dataSource: ForumTableViewDataSource!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .Plain)
+        super.init(style: .plain)
         
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
@@ -21,28 +21,28 @@ final class ForumsTableViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func refreshIfNecessary() {
-        if RefreshMinder.sharedMinder.shouldRefresh(.ForumList) || dataSource.isEmpty {
+    fileprivate func refreshIfNecessary() {
+        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) || dataSource.isEmpty {
             refresh()
         }
     }
     
-    private func refresh() {
-        AwfulForumsClient.sharedClient().taxonomizeForumsAndThen { (error: NSError?, forums: [AnyObject]?) in
+    fileprivate func refresh() {
+        AwfulForumsClient.shared().taxonomizeForumsAndThen { (error: Error?, forums: [Any]?) in
             if error == nil {
-                RefreshMinder.sharedMinder.didRefresh(.ForumList)
+                RefreshMinder.sharedMinder.didRefresh(.forumList)
                 self.migrateFavoriteForumsFromSettings()
             }
             self.stopAnimatingPullToRefresh()
         }
     }
     
-    private func migrateFavoriteForumsFromSettings() {
+    fileprivate func migrateFavoriteForumsFromSettings() {
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
-        if let forumIDs = AwfulSettings.sharedSettings().favoriteForums as! [String]? {
-            AwfulSettings.sharedSettings().favoriteForums = nil
-            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs, inManagedObjectContext: managedObjectContext)
-            for (i, metadata) in metadatas.enumerate() {
+        if let forumIDs = AwfulSettings.shared().favoriteForums as! [String]? {
+            AwfulSettings.shared().favoriteForums = nil
+            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs: forumIDs, inManagedObjectContext: managedObjectContext)
+            for (i, metadata) in metadatas.enumerated() {
                 metadata.favoriteIndex = Int32(i)
                 metadata.favorite = true
             }
@@ -55,15 +55,15 @@ final class ForumsTableViewController: TableViewController {
         }
     }
     
-    func openForum(forum: Forum, animated: Bool) {
+    func openForum(_ forum: Forum, animated: Bool) {
         let threadList = ThreadsTableViewController(forum: forum)
         threadList.restorationClass = ThreadsTableViewController.self
         threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
     }
     
-    private func updateEditButtonPresence(animated animated: Bool) {
-        navigationItem.setRightBarButtonItem(dataSource.hasFavorites ? editButtonItem() : nil, animated: animated)
+    fileprivate func updateEditButtonPresence(animated: Bool) {
+        navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
     }
     
     // MARK: View lifecycle
@@ -71,11 +71,11 @@ final class ForumsTableViewController: TableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerNib(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
+        tableView.register(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
         
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
         let cellConfigurator: (ForumTableViewCell, Forum, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, forum, viewModel in
             cell.viewModel = viewModel
@@ -85,7 +85,7 @@ final class ForumsTableViewController: TableViewController {
             guard let theme = self?.theme else { return }
             cell.themeData = ForumTableViewCell.ThemeData(theme)
         }
-        let headerThemer: UITableViewCell -> Void = { [weak self] cell in
+        let headerThemer: (UITableViewCell) -> Void = { [weak self] cell in
             guard let theme = self?.theme else { return }
             cell.textLabel?.textColor = theme["listHeaderTextColor"]
             cell.backgroundColor = theme["listHeaderBackgroundColor"]
@@ -97,8 +97,8 @@ final class ForumsTableViewController: TableViewController {
         dataSource.didReload = { [weak self] in
             self?.updateEditButtonPresence(animated: false)
             
-            if self?.editing == true && self?.dataSource.hasFavorites == false {
-                dispatch_async(dispatch_get_main_queue()) {
+            if self?.isEditing == true && self?.dataSource.hasFavorites == false {
+                DispatchQueue.main.async {
                     // The docs say not to call this from an implementation of UITableViewDataSource.tableView(_:commitEditingStyle:forRowAtIndexPath:), but if you must, do a delayed perform.
                     self?.setEditing(false, animated: true)
                 }
@@ -112,23 +112,23 @@ final class ForumsTableViewController: TableViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         refreshIfNecessary()
     }
     
     // MARK: Actions
     
-    private func didTapStarButton(cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+    fileprivate func didTapStarButton(_ cell: ForumTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
         guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped star button in header?") }
         forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { $0 + 1 } ?? 0
         forum.metadata.favorite = !forum.metadata.favorite
         try! forum.managedObjectContext!.save()
     }
     
-    private func didTapDisclosureButton(cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+    fileprivate func didTapDisclosureButton(_ cell: ForumTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
         guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped disclosure button in header?") }
         forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
         try! forum.managedObjectContext!.save()
@@ -136,20 +136,20 @@ final class ForumsTableViewController: TableViewController {
 }
 
 extension ForumsTableViewController {
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        guard case .Some = dataSource.objectAtIndexPath(indexPath) else { return nil }
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard case .some = dataSource.objectAtIndexPath(indexPath) else { return nil }
         return indexPath
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("shouldn't be selecting a header cell") }
         openForum(forum, animated: true)
     }
     
-    override func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath toIndexPath: NSIndexPath) -> NSIndexPath {
+    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
         guard let lastFavoriteIndex = dataSource.lastFavoriteIndex else { fatalError("asking for target index path for non-favorite") }
-        let targetRow = min(toIndexPath.row, lastFavoriteIndex)
-        return NSIndexPath(forRow: targetRow, inSection: 0)
+        let targetRow = min((toIndexPath as NSIndexPath).row, lastFavoriteIndex)
+        return IndexPath(row: targetRow, section: 0)
     }
 }
 

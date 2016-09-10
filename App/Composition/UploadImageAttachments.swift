@@ -13,32 +13,32 @@ import Photos
  
     - returns: A progress object that can cancel the image upload.
  */
-func uploadImages(attachedTo richText: NSAttributedString, completion: (_ plainText: String?, _ error: NSError?) -> Void) -> NSProgress {
-    let progress = NSProgress(totalUnitCount: 1)
+func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping (_ plainText: String?, _ error: Error?) -> Void) -> Progress {
+    let progress = Progress(totalUnitCount: 1)
     
     let localCopy = richText.mutableCopy() as! NSMutableAttributedString
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) { 
+    DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async { 
         let tags = localCopy.imageTags
         guard !tags.isEmpty else {
             progress.completedUnitCount += 1
-            return dispatch_async(dispatch_get_main_queue()) {
-                completion(plainText: localCopy.string, error: nil)
+            return DispatchQueue.main.async {
+                completion(localCopy.string, nil)
             }
         }
         
         let uploadProgress = uploadImages(fromSources: tags.map { $0.source }, completion: { (urls, error) in
             if let error = error {
-                return dispatch_async(dispatch_get_main_queue()) {
-                    completion(plainText: nil, error: error)
+                return DispatchQueue.main.async {
+                    completion(nil, error)
                 }
             }
             
             guard let urls = urls else { fatalError("no error should mean some URLs!") }
-            for (url, tag) in zip(urls, tags).reverse() {
-                localCopy.replaceCharactersInRange(tag.range, withString: tag.BBcode(url))
+            for (url, tag) in zip(urls, tags).reversed() {
+                localCopy.replaceCharacters(in: tag.range, with: tag.BBcode(url as URL))
             }
-            dispatch_async(dispatch_get_main_queue()) {
-                completion(plainText: localCopy.string, error: nil)
+            DispatchQueue.main.async {
+                completion(localCopy.string, nil)
             }
         })
         progress.addChild(uploadProgress, withPendingUnitCount: 1)
@@ -47,22 +47,22 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: (_ plainT
     return progress
 }
 
-private func uploadImages(fromSources sources: [ImageTag.Source], completion: (_ urls: [NSURL]?, _ error: NSError?) -> Void) -> NSProgress {
-    let progress = NSProgress(totalUnitCount: Int64(sources.count))
+private func uploadImages(fromSources sources: [ImageTag.Source], completion: @escaping (_ urls: [URL]?, _ error: Error?) -> Void) -> Progress {
+    let progress = Progress(totalUnitCount: Int64(sources.count))
     
-    let group = dispatch_group_create()
+    let group = DispatchGroup()
     
-    var urls: [NSURL!] = Array(count: sources.count, repeatedValue: nil)
-    for (i, source) in sources.enumerate() {
-        dispatch_group_enter(group)
+    var urls: [URL?] = Array(repeating: nil, count: sources.count)
+    for (i, source) in sources.enumerated() {
+        group.enter()
         
-        func uploadComplete(url: NSURL?, error: NSError?) {
-            defer { dispatch_group_leave(group) }
+        func uploadComplete(_ url: URL?, error: Error?) {
+            defer { group.leave() }
             
             if let error = error {
-                if !progress.cancelled { progress.cancel() }
-                return dispatch_async(dispatch_get_main_queue()) {
-                    completion(urls: nil, error: error)
+                if !progress.isCancelled { progress.cancel() }
+                return DispatchQueue.main.async {
+                    completion(nil, error)
                 }
             }
             
@@ -70,23 +70,23 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: (_
             urls[i] = url
         }
         
-        progress.becomeCurrentWithPendingUnitCount(1)
+        progress.becomeCurrent(withPendingUnitCount: 1)
         
         switch source {
-        case .Asset(let assetURL):
-            ImgurAnonymousAPIClient.sharedClient().uploadAssetWithURL(assetURL, filename: "image.png", completionHandler: uploadComplete)
-        case .Image(let image):
-            ImgurAnonymousAPIClient.sharedClient().uploadImage(image, withFilename: "image.png", completionHandler: uploadComplete)
+        case .asset(let assetURL):
+            ImgurAnonymousAPIClient.shared().uploadAsset(with: assetURL, filename: "image.png", completionHandler: uploadComplete)
+        case .image(let image):
+            ImgurAnonymousAPIClient.shared().uploadImage(image, withFilename: "image.png", completionHandler: uploadComplete)
         }
         
         progress.resignCurrent()
     }
     
-    dispatch_group_notify(group, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) { 
-        if progress.cancelled {
-            completion(urls: nil, error: NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
+    group.notify(queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default)) { 
+        if progress.isCancelled {
+            completion(nil, NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
         } else {
-            completion(urls: urls.map { $0 }, error: nil)
+            completion(urls.flatMap { $0 }, nil)
         }
     }
     
@@ -99,28 +99,28 @@ private struct ImageTag {
     let source: Source
     
     enum Source {
-        case Asset(NSURL)
-        case Image(UIImage)
+        case asset(URL)
+        case image(UIImage)
     }
     
     init(_ attachment: TextAttachment, range: NSRange) {
         self.range = range
         
-        if let
-            assetURL = attachment.assetURL,
-            let asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
+        if
+            let assetURL = attachment.assetURL,
+            let asset = PHAsset.fetchAssets(withALAssetURLs: [assetURL as URL], options: nil).firstObject
         {
-            source = .Asset(assetURL)
+            source = .asset(assetURL)
             size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
         } else if let image = attachment.image {
-            source = .Image(image)
+            source = .image(image)
             size = image.size
         } else {
             fatalError("couldn't get image off of attachment")
         }
     }
     
-    func BBcode(url: NSURL) -> String {
+    func BBcode(_ url: URL) -> String {
         let t: String
         if
             size.width > TextAttachment.requiresThumbnailImageSize.width ||
@@ -137,7 +137,7 @@ private struct ImageTag {
 private extension NSAttributedString {
     var imageTags: [ImageTag] {
         var tags: [ImageTag] = []
-        enumerateAttribute(NSAttachmentAttributeName, inRange: NSRange(location: 0, length: length), options: .LongestEffectiveRangeNotRequired) { (attachment, range, stop) in
+        enumerateAttribute(NSAttachmentAttributeName, in: NSRange(location: 0, length: length), options: .longestEffectiveRangeNotRequired) { (attachment, range, stop) in
             guard let attachment = attachment as? TextAttachment else { return }
             tags.append(ImageTag(attachment, range: range))
         }

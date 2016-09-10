@@ -3,28 +3,28 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 final class CompoundDataSource: NSObject {
-    private let dataSources = NSMutableOrderedSet()
+    fileprivate let dataSources = NSMutableOrderedSet()
     
     var numberOfSections: Int {
         return (dataSources.array as! [DataSource]).reduce(0) { $0 + $1.numberOfSections }
     }
 
-    func addDataSource(dataSource: DataSource) {
-        assert(!dataSources.containsObject(dataSource), "data source \(dataSource) is already here")
+    func addDataSource(_ dataSource: DataSource) {
+        assert(!dataSources.contains(dataSource), "data source \(dataSource) is already here")
         let firstNewGlobalSection = numberOfSections
-        dataSources.addObject(dataSource)
+        dataSources.add(dataSource)
         dataSource.delegate = self
-        let newSections = NSIndexSet(indexesInRange: NSRange(location: firstNewGlobalSection, length: dataSource.numberOfSections))
+        let newSections = IndexSet(integersIn: NSRange(location: firstNewGlobalSection, length: dataSource.numberOfSections).toRange() ?? 0..<0)
         delegate?.dataSource?(self, didInsertSections: newSections)
     }
     
-    func removeDataSource(dataSource: DataSource) {
-        let index = dataSources.indexOfObject(dataSource)
+    func removeDataSource(_ dataSource: DataSource) {
+        let index = dataSources.index(of: dataSource)
         assert(index != NSNotFound, "data source \(dataSource) was never here")
         let firstOldGlobalSection = (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
-        dataSources.removeObjectAtIndex(index)
+        dataSources.removeObject(at: index)
         dataSource.delegate = nil
-        let oldSections = NSIndexSet(indexesInRange: NSRange(location: firstOldGlobalSection, length: dataSource.numberOfSections))
+        let oldSections = IndexSet(integersIn: NSRange(location: firstOldGlobalSection, length: dataSource.numberOfSections).toRange() ?? 0..<0)
         delegate?.dataSource?(self, didRemoveSections: oldSections)
     }
     
@@ -41,16 +41,16 @@ extension CompoundDataSource {
         }
     }
     
-    private func dataSourceForGlobalSection(globalSection: Int) -> (DataSource, localSection: Int) {
+    fileprivate func dataSourceForGlobalSection(_ globalSection: Int) -> (DataSource, localSection: Int) {
         assert(globalSection < numberOfSections)
         let index = nearestStartingGlobalSectionForGlobalSection(globalSection)
         let sectionsBeforeDataSource = (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
-        return (dataSources.objectAtIndex(index) as! DataSource, localSection: globalSection - sectionsBeforeDataSource)
+        return (dataSources.object(at: index) as! DataSource, localSection: globalSection - sectionsBeforeDataSource)
     }
     
-    private func nearestStartingGlobalSectionForGlobalSection(globalSection: Int) -> Int {
+    fileprivate func nearestStartingGlobalSectionForGlobalSection(_ globalSection: Int) -> Int {
         var sectionsSoFar = 0
-        for (i, dataSource) in (dataSources.array as! [DataSource]).enumerate() {
+        for (i, dataSource) in (dataSources.array as! [DataSource]).enumerated() {
             sectionsSoFar += dataSource.numberOfSections
             if sectionsSoFar > globalSection {
                 return i
@@ -59,44 +59,44 @@ extension CompoundDataSource {
         return 0
     }
     
-    private func dataSourceForGlobalIndexPath(indexPath: NSIndexPath) -> (DataSource, localIndexPath: NSIndexPath) {
-        let (dataSource, localSection) = dataSourceForGlobalSection(indexPath.section)
-        return (dataSource, localIndexPath: NSIndexPath(forRow: indexPath.row, inSection: localSection))
+    fileprivate func dataSourceForGlobalIndexPath(_ indexPath: IndexPath) -> (DataSource, localIndexPath: IndexPath) {
+        let (dataSource, localSection) = dataSourceForGlobalSection((indexPath as NSIndexPath).section)
+        return (dataSource, localIndexPath: IndexPath(row: (indexPath as NSIndexPath).row, section: localSection))
     }
     
-    private func startingGlobalSectionForDataSource(dataSource: DataSource) -> Int {
-        let index = dataSources.indexOfObject(dataSource)
+    fileprivate func startingGlobalSectionForDataSource(_ dataSource: DataSource) -> Int {
+        let index = dataSources.index(of: dataSource)
         assert(index != NSNotFound)
         return (dataSources.array as! [DataSource])[0..<index].reduce(0) { $0 + $1.numberOfSections }
     }
     
-    private func globalize(localDataSource: DataSource, _ localIndexPaths: [NSIndexPath]) -> [NSIndexPath] {
+    fileprivate func globalize(_ localDataSource: DataSource, _ localIndexPaths: [IndexPath]) -> [IndexPath] {
         let globalOffset = startingGlobalSectionForDataSource(localDataSource)
-        return localIndexPaths.map { NSIndexPath(forRow: $0.row, inSection: $0.section + globalOffset) }
+        return localIndexPaths.map { IndexPath(row: $0.row, section: $0.section + globalOffset) }
     }
 
-    private func globalize(localDataSource: DataSource, _ localIndexPath: NSIndexPath) -> NSIndexPath {
+    fileprivate func globalize(_ localDataSource: DataSource, _ localIndexPath: IndexPath) -> IndexPath {
         return globalize(localDataSource, [localIndexPath]).first!
     }
     
-    private func globalize(localDataSource: DataSource, _ localSections: NSIndexSet) -> NSIndexSet {
-        let globalSections = NSMutableIndexSet(indexSet: localSections)
+    fileprivate func globalize(_ localDataSource: DataSource, _ localSections: IndexSet) -> IndexSet {
+        var globalSections = localSections
         let globalOffset = startingGlobalSectionForDataSource(localDataSource)
-        globalSections.shiftIndexesStartingAtIndex(globalSections.firstIndex, by: globalOffset)
+        globalSections.shift(startingAt: globalSections.first!, by: globalOffset)
         return globalSections
     }
     
-    private func globalize(localDataSource: DataSource, _ localSection: Int) -> Int {
-        return globalize(localDataSource, NSIndexSet(index: localSection)).firstIndex
+    fileprivate func globalize(_ localDataSource: DataSource, _ localSection: Int) -> Int {
+        return globalize(localDataSource, IndexSet(integer: localSection)).first!
     }
     
-    private func numberOfGlobalSectionsForDataSource(localDataSource: DataSource) -> Int {
-        let index = dataSources.indexOfObject(localDataSource)
+    fileprivate func numberOfGlobalSectionsForDataSource(_ localDataSource: DataSource) -> Int {
+        let index = dataSources.index(of: localDataSource)
         assert(index != NSNotFound)
         if index + 1 == dataSources.count {
             return numberOfSections - startingGlobalSectionForDataSource(localDataSource)
         } else {
-            let nextDataSource = dataSources.objectAtIndex(index + 1) as! DataSource
+            let nextDataSource = dataSources.object(at: index + 1) as! DataSource
             return startingGlobalSectionForDataSource(nextDataSource) - startingGlobalSectionForDataSource(localDataSource)
         }
     }
@@ -105,77 +105,77 @@ extension CompoundDataSource {
 // MARK: - DataSource
 
 extension CompoundDataSource: DataSource {
-    func itemAtIndexPath(globalIndexPath: NSIndexPath) -> AnyObject {
+    func itemAtIndexPath(_ globalIndexPath: IndexPath) -> AnyObject {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
         return dataSource.itemAtIndexPath(localIndexPath)
     }
     
-    func indexPathsForItem(item: AnyObject) -> [NSIndexPath] {
+    func indexPathsForItem(_ item: AnyObject) -> [IndexPath] {
         let typedDataSources = self.dataSources.array as! [DataSource]
         return typedDataSources.reduce([]) { $0 + self.globalize($1, $1.indexPathsForItem(item)) }
     }
     
-    func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath globalIndexPath: NSIndexPath) -> String {
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath globalIndexPath: IndexPath) -> String {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
         return dataSource.tableView?(tableView, titleForDeleteConfirmationButtonForRowAtIndexPath: localIndexPath) ?? "Delete"
     }
 }
 
 extension CompoundDataSource: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return numberOfSections
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection globalSection: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection globalSection: Int) -> Int {
         let (dataSource, localSection) = dataSourceForGlobalSection(globalSection)
         return dataSource.tableView(tableView, numberOfRowsInSection: localSection)
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath globalIndexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt globalIndexPath: IndexPath) -> UITableViewCell {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
-        return dataSource.tableView(tableView, cellForRowAtIndexPath: localIndexPath)
+        return dataSource.tableView(tableView, cellForRowAt: localIndexPath)
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection globalSection: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection globalSection: Int) -> String? {
         let (dataSource, localSection) = dataSourceForGlobalSection(globalSection)
         return dataSource.tableView?(tableView, titleForHeaderInSection: localSection)
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath globalIndexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt globalIndexPath: IndexPath) -> Bool {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
-        if let canEdit = dataSource.tableView?(tableView, canEditRowAtIndexPath: localIndexPath) {
+        if let canEdit = dataSource.tableView?(tableView, canEditRowAt: localIndexPath) {
             return canEdit
         } else {
             return false
         }
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath globalIndexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt globalIndexPath: IndexPath) {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
-        dataSource.tableView?(tableView, commitEditingStyle: editingStyle, forRowAtIndexPath: localIndexPath)
+        dataSource.tableView?(tableView, commit: editingStyle, forRowAt: localIndexPath)
     }
     
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath globalIndexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canMoveRowAt globalIndexPath: IndexPath) -> Bool {
         let (dataSource, localIndexPath) = dataSourceForGlobalIndexPath(globalIndexPath)
-        if let canMove = dataSource.tableView?(tableView, canMoveRowAtIndexPath: localIndexPath) {
+        if let canMove = dataSource.tableView?(tableView, canMoveRowAt: localIndexPath) {
             return canMove
         } else {
-            return dataSource.respondsToSelector(#selector(UITableViewDataSource.tableView(_:moveRowAtIndexPath:toIndexPath:)))
+            return dataSource.responds(to: #selector(UITableViewDataSource.tableView(_:moveRowAt:to:)))
         }
     }
     
-    func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath globalFromIndexPath: NSIndexPath, toProposedIndexPath globalToIndexPath: NSIndexPath) -> NSIndexPath {
+    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath globalFromIndexPath: IndexPath, toProposedIndexPath globalToIndexPath: IndexPath) -> IndexPath {
         let (fromDataSource, localFromIndexPath) = dataSourceForGlobalIndexPath(globalFromIndexPath)
         let (toDataSource, localToIndexPath) = dataSourceForGlobalIndexPath(globalToIndexPath)
         if !fromDataSource.isEqual(toDataSource) {
-            if globalFromIndexPath.section < globalToIndexPath.section {
+            if (globalFromIndexPath as NSIndexPath).section < (globalToIndexPath as NSIndexPath).section {
                 // We're dragging above the fromDataSource; pin to the top.
-                return globalize(fromDataSource, NSIndexPath(forRow: 0, inSection: 0))
+                return globalize(fromDataSource, IndexPath(row: 0, section: 0))
             } else {
                 // We're dragging below the fromDataSource; pin to the bottom.
                 let lastSection = fromDataSource.numberOfSections - 1
                 let lastRow = fromDataSource.tableView(tableView, numberOfRowsInSection: lastSection)
-                return globalize(fromDataSource, NSIndexPath(forRow: lastRow, inSection: lastSection))
+                return globalize(fromDataSource, IndexPath(row: lastRow, section: lastSection))
             }
         } else if let target = toDataSource.tableView?(tableView, targetIndexPathForMoveFromRowAtIndexPath: localFromIndexPath, toProposedIndexPath: localToIndexPath) {
             return target
@@ -184,68 +184,68 @@ extension CompoundDataSource: UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, moveRowAtIndexPath globalFromIndexPath: NSIndexPath, toIndexPath globalToIndexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, moveRowAt globalFromIndexPath: IndexPath, to globalToIndexPath: IndexPath) {
         let (fromDataSource, localFromIndexPath) = dataSourceForGlobalIndexPath(globalFromIndexPath)
         let (toDataSource, localToIndexPath) = dataSourceForGlobalIndexPath(globalToIndexPath)
         assert(fromDataSource.isEqual(toDataSource), "cannot move between data sources")
-        fromDataSource.tableView!(tableView, moveRowAtIndexPath: localFromIndexPath, toIndexPath: localToIndexPath)
+        fromDataSource.tableView!(tableView, moveRowAt: localFromIndexPath, to: localToIndexPath)
     }
 }
 
 // MARK: - DataSourceDelegate
 
 extension CompoundDataSource: DataSourceDelegate {
-    func dataSource(localDataSource: DataSource, didInsertItemsAtIndexPaths localIndexPaths: [NSIndexPath]) {
+    func dataSource(_ localDataSource: DataSource, didInsertItemsAtIndexPaths localIndexPaths: [IndexPath]) {
         delegate?.dataSource?(self, didInsertItemsAtIndexPaths: globalize(localDataSource, localIndexPaths))
     }
     
-    func dataSource(localDataSource: DataSource, didRemoveItemsAtIndexPaths localIndexPaths: [NSIndexPath]) {
+    func dataSource(_ localDataSource: DataSource, didRemoveItemsAtIndexPaths localIndexPaths: [IndexPath]) {
         delegate?.dataSource?(self, didRemoveItemsAtIndexPaths: globalize(localDataSource, localIndexPaths))
     }
     
-    func dataSource(localDataSource: DataSource, didRefreshItemsAtIndexPaths localIndexPaths: [NSIndexPath]) {
+    func dataSource(_ localDataSource: DataSource, didRefreshItemsAtIndexPaths localIndexPaths: [IndexPath]) {
         delegate?.dataSource?(self, didRefreshItemsAtIndexPaths: globalize(localDataSource, localIndexPaths))
     }
 
-    func dataSource(localDataSource: DataSource, didMoveItemAtIndexPath fromLocalIndexPath: NSIndexPath, toIndexPath toLocalIndexPath: NSIndexPath) {
+    func dataSource(_ localDataSource: DataSource, didMoveItemAtIndexPath fromLocalIndexPath: IndexPath, toIndexPath toLocalIndexPath: IndexPath) {
         delegate?.dataSource?(self, didMoveItemAtIndexPath: globalize(localDataSource, fromLocalIndexPath), toIndexPath: globalize(localDataSource, toLocalIndexPath))
     }
     
-    func dataSource(localDataSource: DataSource, didInsertSections localSections: NSIndexSet) {
+    func dataSource(_ localDataSource: DataSource, didInsertSections localSections: IndexSet) {
         delegate?.dataSource?(self, didInsertSections: globalize(localDataSource, localSections))
     }
     
-    func dataSource(localDataSource: DataSource, didRemoveSections localSections: NSIndexSet) {
+    func dataSource(_ localDataSource: DataSource, didRemoveSections localSections: IndexSet) {
         delegate?.dataSource?(self, didRemoveSections: globalize(localDataSource, localSections))
     }
     
-    func dataSource(localDataSource: DataSource, didRefreshSections localSections: NSIndexSet) {
+    func dataSource(_ localDataSource: DataSource, didRefreshSections localSections: IndexSet) {
         delegate?.dataSource?(self, didRefreshSections: globalize(localDataSource, localSections))
     }
     
-    func dataSource(localDataSource: DataSource, didMoveSection fromLocalSection: Int, toSection toLocalSection: Int) {
+    func dataSource(_ localDataSource: DataSource, didMoveSection fromLocalSection: Int, toSection toLocalSection: Int) {
         delegate?.dataSource?(self, didMoveSection: globalize(localDataSource, fromLocalSection), toSection: globalize(localDataSource, toLocalSection))
     }
     
-    func dataSourceDidReloadData(localDataSource: DataSource) {
+    func dataSourceDidReloadData(_ localDataSource: DataSource) {
         // Reload the sections that stayed; insert/remove any sections beyond.
         let oldNumberOfSections = numberOfGlobalSectionsForDataSource(localDataSource)
         let newNumberOfSections = localDataSource.numberOfSections
-        let localRefreshSections = NSIndexSet(indexesInRange: NSRange(location: 0, length: min(oldNumberOfSections, newNumberOfSections)))
+        let localRefreshSections = IndexSet(integersIn: NSRange(location: 0, length: min(oldNumberOfSections, newNumberOfSections)).toRange() ?? 0..<0)
         let deltaSections = newNumberOfSections - oldNumberOfSections
         var otherRange = NSRange(location: oldNumberOfSections, length: abs(deltaSections))
         dataSource(localDataSource, performBatchUpdates: {
             self.dataSource(localDataSource, didRefreshSections: localRefreshSections)
             if deltaSections < 0 {
                 otherRange.location += deltaSections
-                self.dataSource(localDataSource, didRemoveSections: NSIndexSet(indexesInRange: otherRange))
+                self.dataSource(localDataSource, didRemoveSections: IndexSet(integersIn: otherRange.toRange() ?? 0..<0))
             } else if deltaSections > 0 {
-                self.dataSource(localDataSource, didInsertSections: NSIndexSet(indexesInRange: otherRange))
+                self.dataSource(localDataSource, didInsertSections: IndexSet(integersIn: otherRange.toRange() ?? 0..<0))
             }
         }, completion: nil)
     }
     
-    func dataSource(localDataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
+    func dataSource(_ localDataSource: DataSource, performBatchUpdates updates: () -> Void, completion: (() -> Void)?) {
         delegate?.dataSource?(self, performBatchUpdates: updates, completion: completion)
     }
 }

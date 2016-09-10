@@ -10,7 +10,7 @@ import UIKit
         return 1 / max(traitCollection.displayScale, 1)
     }
     
-    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
         if previousTraitCollection == nil || previousTraitCollection?.displayScale != traitCollection.displayScale {
@@ -18,7 +18,7 @@ import UIKit
         }
     }
 
-    public override func intrinsicContentSize() -> CGSize {
+    public override var intrinsicContentSize : CGSize {
         return CGSize(width: UIViewNoIntrinsicMetric, height: thickness)
     }
 }

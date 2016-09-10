@@ -31,7 +31,7 @@ final class ProfileViewController: ViewController {
         return view as! WKWebView
     }
     
-    private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
+    fileprivate var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
     override func loadView() {
         let configuration = WKWebViewConfiguration()
@@ -94,7 +94,7 @@ final class ProfileViewController: ViewController {
         }
     }
     
-    private func renderProfile() {
+    fileprivate func renderProfile() {
         var HTML = ""
         if let profile = user.profile {
             let viewModel = ProfileViewModel(profile: profile)
@@ -108,8 +108,8 @@ final class ProfileViewController: ViewController {
         webView.loadHTMLString(HTML, baseURL: baseURL as URL)
     }
     
-    var baseURL: NSURL {
-        return AwfulForumsClient.shared().baseURL as NSURL
+    var baseURL: URL {
+        return AwfulForumsClient.shared().baseURL
     }
 }
 
@@ -120,21 +120,21 @@ extension ProfileViewController: WKScriptMessageHandler {
             sendPrivateMessage()
         case "showHomepageActions":
             let body = message.body as! [String:String]
-            if let URL = NSURL(string: body["URL"]!, relativeTo: baseURL as URL) {
-                showActionsForHomepage(URL: URL, atRect: CGRectFromString(body["rect"]!))
+            if let url = URL(string: body["URL"]!, relativeTo: baseURL as URL) {
+                showActionsForHomepage(url, atRect: CGRectFromString(body["rect"]!))
             }
         default:
             print("\(self) received unknown message from webview: \(message.name)")
         }
     }
     
-    private func sendPrivateMessage() {
+    fileprivate func sendPrivateMessage() {
         let composeViewController = MessageComposeViewController(recipient: user)
         present(composeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
-    private func showActionsForHomepage(URL: NSURL, atRect rect: CGRect) {
-        let activityViewController = UIActivityViewController(activityItems: [URL], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
+    fileprivate func showActionsForHomepage(_ url: URL, atRect rect: CGRect) {
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
         present(activityViewController, animated: true, completion: nil)
         let popover = activityViewController.popoverPresentationController
         popover?.sourceRect = rect
@@ -150,7 +150,7 @@ The network activity indicator will show in the status bar while *any* NetworkAc
 NetworkActivityIndicatorForWKWebView will turn off during deinitialization.
 */
 private class NetworkActivityIndicatorForWKWebView: NSObject {
-    private(set) var on: Bool = false {
+    fileprivate(set) var on: Bool = false {
         didSet {
             if on && !oldValue {
                 AFNetworkActivityIndicatorManager.shared().incrementActivityCount()
@@ -179,7 +179,7 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
                 on = loading.boolValue
             }
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change as! [NSKeyValueChangeKey : Any]?, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change , context: context)
         }
     }
 }

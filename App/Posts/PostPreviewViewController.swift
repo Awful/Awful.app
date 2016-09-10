@@ -8,17 +8,17 @@ import GRMustache
 /// Previews a post (new or edited).
 class PostPreviewViewController: ViewController {
     let editingPost: Post?
-    let thread: Thread?
+    let thread: AwfulThread?
     let BBcode: NSAttributedString
     var submitBlock: (() -> Void)?
-    private var loadingView: LoadingView?
+    fileprivate var loadingView: LoadingView?
     var fakePost: Post?
-    private var networkOperation: NSOperation?
-    private var imageInterpolator: SelfHostingAttachmentInterpolator?
-    private var webViewDidLoadOnce = false
-    private lazy var managedObjectContext: NSManagedObjectContext = {
-        let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        context.parentContext = self.editingPost?.managedObjectContext ?? self.thread?.managedObjectContext
+    fileprivate var networkOperation: Operation?
+    fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
+    fileprivate var webViewDidLoadOnce = false
+    fileprivate lazy var managedObjectContext: NSManagedObjectContext = {
+        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        context.parent = self.editingPost?.managedObjectContext ?? self.thread?.managedObjectContext
         return context
     }()
     
@@ -30,13 +30,13 @@ class PostPreviewViewController: ViewController {
     }
     
     /// Preview a new post.
-    convenience init(thread: Thread, BBcode: NSAttributedString) {
+    convenience init(thread: AwfulThread, BBcode: NSAttributedString) {
         self.init(BBcode: BBcode, thread: thread)
         
         title = "Post Preview"
     }
     
-    init(BBcode: NSAttributedString, post: Post? = nil, thread: Thread? = nil) {
+    init(BBcode: NSAttributedString, post: Post? = nil, thread: AwfulThread? = nil) {
         self.BBcode = BBcode
         editingPost = post
         self.thread = thread
@@ -49,10 +49,10 @@ class PostPreviewViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var postButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: "Post", style: .Plain, target: nil, action: nil)
+    fileprivate lazy var postButtonItem: UIBarButtonItem = {
+        let buttonItem = UIBarButtonItem(title: "Post", style: .plain, target: nil, action: nil)
         buttonItem.actionBlock = { [weak self] item in
-            item.enabled = false
+            item.isEnabled = false
             self?.submitBlock?()
         }
         return buttonItem
@@ -69,9 +69,9 @@ class PostPreviewViewController: ViewController {
         self.imageInterpolator = imageInterpolator
         
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
-        let callback: (NSError?, String?) -> Void = { [weak self] (error, postHTML) in
+        let callback: (Error?, String?) -> Void = { [weak self] (error, postHTML) in
             if let error = error {
-                self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return
             }
             
@@ -80,25 +80,25 @@ class PostPreviewViewController: ViewController {
                 let context = self?.managedObjectContext
                 else { return }
             let postKey = PostKey(postID: "fake")
-            self?.fakePost = Post.objectForKey(postKey, inManagedObjectContext: context) as? Post
-            let userKey = UserKey(userID: AwfulSettings.sharedSettings().userID, username: AwfulSettings.sharedSettings().username)
-            guard let loggedInUser = User.objectForKey(userKey, inManagedObjectContext: context) as? User else { return }
+            self?.fakePost = Post.objectForKey(objectKey: postKey, inManagedObjectContext: context) as? Post
+            let userKey = UserKey(userID: AwfulSettings.shared().userID, username: AwfulSettings.shared().username)
+            guard let loggedInUser = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User else { return }
             
             if let editingPost = self?.editingPost {
                 // Create a copy of the post we're editing. We'll later change the properties we care about previewing.
                 for property in editingPost.entity.properties {
                     if let attribute = property as? NSAttributeDescription {
-                        let actualValue = editingPost.valueForKey(attribute.name)
+                        let actualValue = editingPost.value(forKey: attribute.name)
                         self?.fakePost?.setValue(actualValue, forKey: attribute.name)
                     } else if let
                         relationship = property as? NSRelationshipDescription,
-                        let actualValue = editingPost.valueForKey(relationship.name) as? NSManagedObject
+                        let actualValue = editingPost.value(forKey: relationship.name) as? NSManagedObject
                     {
-                        self?.fakePost?.setValue(context.objectWithID(actualValue.objectID), forKey: relationship.name)
+                        self?.fakePost?.setValue(context.object(with: actualValue.objectID), forKey: relationship.name)
                     }
                 }
             } else {
-                self?.fakePost?.postDate = NSDate()
+                self?.fakePost?.postDate = Date() as NSDate?
                 self?.fakePost?.author = loggedInUser
             }
             
@@ -107,9 +107,9 @@ class PostPreviewViewController: ViewController {
         }
         
         if let editingPost = editingPost {
-            networkOperation = AwfulForumsClient.sharedClient().previewEditToPost(editingPost, withBBcode: interpolatedBBcode, andThen: callback)
+            networkOperation = AwfulForumsClient.shared().previewEdit(to: editingPost, withBBcode: interpolatedBBcode, andThen: callback)
         } else if let thread = thread {
-            networkOperation = AwfulForumsClient.sharedClient().previewReplyToThread(thread, withBBcode: interpolatedBBcode, andThen: callback)
+            networkOperation = AwfulForumsClient.shared().previewReply(to: thread, withBBcode: interpolatedBBcode, andThen: callback)
         } else {
             print("\(#function) Nothing to do??")
         }
@@ -122,28 +122,28 @@ class PostPreviewViewController: ViewController {
         
         guard let fakePost = fakePost else { return }
         var context: [String: AnyObject] = [
-            "userInterfaceIdiom": UIDevice.currentDevice().userInterfaceIdiom == .Pad ? "ipad" : "iphone",
-            "version": NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String,
-            "stylesheet": theme["postsViewCSS"] as String? ?? "",
+            "userInterfaceIdiom": (UIDevice.current.userInterfaceIdiom == .pad ? "ipad" : "iphone") as NSString,
+            "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String as NSString,
+            "stylesheet": (theme["postsViewCSS"] as String? ?? "") as NSString,
             "post": PostViewModel(post: fakePost),
         ]
         do {
             var error: NSError?
             if let script = LoadJavaScriptResources(["zepto.min.js", "common.js"], &error) {
-                context["script"] = script
+                context["script"] = script as AnyObject?
             } else if let error = error {
                 throw error
             }
         } catch {
             print("\(#function) error loading: \(error)")
         }
-        if AwfulSettings.sharedSettings().fontScale != 100 {
-            context["fontScalePercentage"] = AwfulSettings.sharedSettings().fontScale
+        if AwfulSettings.shared().fontScale != 100 {
+            context["fontScalePercentage"] = AwfulSettings.shared().fontScale as AnyObject?
         }
         
         do {
             let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostPreview", bundle: nil)
-            webView.loadHTMLString(html, baseURL: AwfulForumsClient.sharedClient().baseURL)
+            webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
         } catch {
             print("\(#function) error loading post preview HTML: \(error)")
         }
@@ -180,18 +180,18 @@ class PostPreviewViewController: ViewController {
 }
 
 extension PostPreviewViewController: UIWebViewDelegate {
-    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         var navigationType = navigationType
         
         // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
-        if navigationType != .LinkClicked && request.URL?.host?.lowercaseString.hasSuffix("www.youtube.com") == true && request.URL?.path?.lowercaseString.hasPrefix("/watch") == true {
-            navigationType = .LinkClicked
+        if navigationType != .linkClicked && (request as NSURLRequest).url?.host?.lowercased().hasSuffix("www.youtube.com") == true && (request as NSURLRequest).url?.path.lowercased().hasPrefix("/watch") == true {
+            navigationType = .linkClicked
         }
         
-        return navigationType != .LinkClicked
+        return navigationType != .linkClicked
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webViewDidFinishLoad(_ webView: UIWebView) {
         guard !webViewDidLoadOnce else { return }
         webViewDidLoadOnce = true
         loadingView?.removeFromSuperview()

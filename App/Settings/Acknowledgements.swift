@@ -6,9 +6,9 @@ import GRMustache
 import UIKit
 
 final class AcknowledgementsViewController: ViewController {
-    private var webView: WKWebView { return view as! WKWebView }
-    private var backgroundColor: UIColor { return theme["backgroundColor"]! }
-    private var textColor: UIColor { return theme["listTextColor"]! }
+    fileprivate var webView: WKWebView { return view as! WKWebView }
+    fileprivate var backgroundColor: UIColor { return theme["backgroundColor"]! }
+    fileprivate var textColor: UIColor { return theme["listTextColor"]! }
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
@@ -21,7 +21,7 @@ final class AcknowledgementsViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @IBAction @objc private func didTapDone() {
+    @IBAction @objc fileprivate func didTapDone() {
         dismiss(animated: true, completion: nil)
     }
     
@@ -79,7 +79,7 @@ final class AcknowledgementsViewController: ViewController {
 }
 
 extension AcknowledgementsViewController: WKNavigationDelegate {
-    override func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
             UIApplication.shared.openURL(navigationAction.request.url!)
             decisionHandler(.cancel)

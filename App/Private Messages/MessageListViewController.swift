@@ -6,8 +6,8 @@ import AwfulCore
 
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
-    private let managedObjectContext: NSManagedObjectContext
-    private var dataSource: MessagesDataSource!
+    fileprivate let managedObjectContext: NSManagedObjectContext
+    fileprivate var dataSource: MessagesDataSource!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -21,14 +21,14 @@ final class MessageListViewController: TableViewController {
         tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
         updateUnreadMessageCountBadge()
         
-        navigationItem.leftBarButtonItem = editButtonItem()
-        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
+        navigationItem.leftBarButtonItem = editButtonItem
+        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = "Compose"
         navigationItem.rightBarButtonItem = composeItem
         
-        let noteCenter = NSNotificationCenter.defaultCenter()
-        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NewMessageChecker.didChangeNotification, object: nil)
-        noteCenter.addObserver(self, selector: #selector(MessageListViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
+        let noteCenter = NotificationCenter.default
+        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NSNotification.Name(rawValue: NewMessageChecker.didChangeNotification), object: nil)
+        noteCenter.addObserver(self, selector: #selector(MessageListViewController.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
     }
 
     required init(coder: NSCoder) {
@@ -36,20 +36,20 @@ final class MessageListViewController: TableViewController {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    @objc private func settingsDidChange(note: NSNotification) {
-        if note.userInfo?[AwfulSettingsDidChangeSettingKey] as? String == AwfulSettingsKeys.showThreadTags.takeUnretainedValue() {
-            if isViewLoaded() {
+    @objc fileprivate func settingsDidChange(_ note: Notification) {
+        if ((note as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String)! == AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String {
+            if isViewLoaded {
                 tableView.reloadData()
             }
         }
     }
     
-    private var composeViewController: MessageComposeViewController?
+    fileprivate var composeViewController: MessageComposeViewController?
     
-    @objc private func didTapComposeButtonItem(sender: UIBarButtonItem) {
+    @objc fileprivate func didTapComposeButtonItem(_ sender: UIBarButtonItem) {
         if composeViewController == nil {
             let compose = MessageComposeViewController()
             compose.restorationIdentifier = "New message"
@@ -57,11 +57,11 @@ final class MessageListViewController: TableViewController {
             composeViewController = compose
         }
         if let compose = composeViewController {
-            presentViewController(compose.enclosingNavigationController, animated: true, completion: nil)
+            present(compose.enclosingNavigationController, animated: true, completion: nil)
         }
     }
     
-    private func updateUnreadMessageCountBadge() {
+    fileprivate func updateUnreadMessageCountBadge() {
         let unreadCount = NewMessageChecker.sharedChecker.unreadCount
         if unreadCount > 0 {
             tabBarItem.badgeValue = "\(unreadCount)"
@@ -70,39 +70,39 @@ final class MessageListViewController: TableViewController {
         }
     }
     
-    @objc private func unreadMessageCountDidChange(note: NSNotification) {
+    @objc fileprivate func unreadMessageCountDidChange(_ note: Notification) {
         updateUnreadMessageCountBadge()
     }
     
-    private func refreshIfNecessary() {
-        if !AwfulSettings.sharedSettings().canSendPrivateMessages { return }
+    fileprivate func refreshIfNecessary() {
+        if !AwfulSettings.shared().canSendPrivateMessages { return }
         
         if dataSource.numberOfSections >= 1 && dataSource.tableView(tableView, numberOfRowsInSection: 0) == 0 {
             return refresh()
         }
         
-        if RefreshMinder.sharedMinder.shouldRefresh(.PrivateMessagesInbox) {
+        if RefreshMinder.sharedMinder.shouldRefresh(.privateMessagesInbox) {
             return refresh()
         }
     }
     
-    @objc private func refresh() {
+    @objc fileprivate func refresh() {
         startAnimatingPullToRefresh()
         
-        AwfulForumsClient.sharedClient().listPrivateMessageInboxAndThen { [weak self] (error: NSError?, messages: [AnyObject]?) in
+        AwfulForumsClient.shared().listPrivateMessageInboxAndThen { [weak self] (error: Error?, messages: [Any]?) in
             if let error = error {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 if self?.visible == true {
-                    self?.presentViewController(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                 }
             } else {
-                RefreshMinder.sharedMinder.didRefresh(.PrivateMessagesInbox)
+                RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
             }
             self?.stopAnimatingPullToRefresh()
         }
     }
     
-    func showMessage(message: PrivateMessage) {
+    func showMessage(_ message: PrivateMessage) {
         let viewController = MessageViewController(privateMessage: message)
         viewController.restorationIdentifier = "Message"
         showDetailViewController(viewController, sender: self)
@@ -112,8 +112,8 @@ final class MessageListViewController: TableViewController {
         super.viewDidLoad()
         
         tableView.estimatedRowHeight = 65
-        tableView.separatorStyle = .None
-        tableView.registerNib(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "Message")
+        tableView.separatorStyle = .none
+        tableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "Message")
         dataSource = MessagesDataSource(managedObjectContext: managedObjectContext)
         dataSource.delegate = self
         dataSource.deletionDelegate = self
@@ -130,7 +130,7 @@ final class MessageListViewController: TableViewController {
         composeViewController?.themeDidChange()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         refreshIfNecessary()
@@ -138,18 +138,18 @@ final class MessageListViewController: TableViewController {
 }
 
 extension MessageListViewController {
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let message = dataSource.itemAtIndexPath(indexPath) as! PrivateMessage
         showMessage(message)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
         let cell = cell as! MessageCell
         cell.backgroundColor = theme["listBackgroundColor"]
         cell.senderLabel.textColor = theme["listTextColor"]
-        let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleSubheadline)
-        cell.senderLabel.font = UIFont.boldSystemFontOfSize(descriptor.pointSize)
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline)
+        cell.senderLabel.font = UIFont.boldSystemFont(ofSize: descriptor.pointSize)
         cell.dateLabel.textColor = theme["listTextColor"]
         cell.subjectLabel.textColor = theme["listTextColor"]
         cell.separator.backgroundColor = theme["listSeparatorColor"]
@@ -160,8 +160,8 @@ extension MessageListViewController {
 }
 
 extension MessageListViewController: ComposeTextViewControllerDelegate {
-    func composeTextViewController(composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
-        dismissViewControllerAnimated(true, completion: nil)
+    func composeTextViewController(_ composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
+        dismiss(animated: true, completion: nil)
         if !shouldKeepDraft {
             self.composeViewController = nil
         }
@@ -169,16 +169,16 @@ extension MessageListViewController: ComposeTextViewControllerDelegate {
 }
 
 extension MessageListViewController {
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(composeViewController, forKey: ComposeViewControllerKey)
+        coder.encode(composeViewController, forKey: ComposeViewControllerKey)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        composeViewController = coder.decodeObjectForKey(ComposeViewControllerKey) as! MessageComposeViewController?
+        composeViewController = coder.decodeObject(forKey: ComposeViewControllerKey) as! MessageComposeViewController?
         composeViewController?.delegate = self
     }
 }
@@ -186,42 +186,42 @@ extension MessageListViewController {
 private let ComposeViewControllerKey = "AwfulComposeViewController"
 
 private protocol DeletesMessages: class {
-    func deleteMessage(message: PrivateMessage)
+    func deleteMessage(_ message: PrivateMessage)
 }
 
 extension MessageListViewController: DeletesMessages {
-    private func deleteMessage(message: PrivateMessage) {
-        message.managedObjectContext!.deleteObject(message)
+    fileprivate func deleteMessage(_ message: PrivateMessage) {
+        message.managedObjectContext!.delete(message)
         if !message.seen {
             NewMessageChecker.sharedChecker.decrementUnreadCount()
         }
-        AwfulForumsClient.sharedClient().deletePrivateMessage(message) { [weak self] (error: NSError?) in
+        AwfulForumsClient.shared().delete(message) { [weak self] (error: Error?) in
             if let error = error {
                 let alert = UIAlertController(title: "Could Not Delete Message", error: error)
                 if self?.visible == true {
-                    self?.presentViewController(alert, animated: true, completion: nil)
+                    self?.present(alert, animated: true, completion: nil)
                 }
             }
         }
     }
 }
 
-final class MessagesDataSource: FetchedDataSource {
-    private weak var deletionDelegate: DeletesMessages?
+final class MessagesDataSource: FetchedDataSource<PrivateMessage> {
+    fileprivate weak var deletionDelegate: DeletesMessages?
     
     init(managedObjectContext: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest(entityName: PrivateMessage.entityName())
+        let fetchRequest = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sentDate", ascending: false)]
         super.init(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil)
     }
     
-    private var threadTagObservers = [String: NewThreadTagObserver]()
+    fileprivate var threadTagObservers = [String: NewThreadTagObserver]()
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = itemAtIndexPath(indexPath) as! PrivateMessage
-        let cell = tableView.dequeueReusableCellWithIdentifier("Message", forIndexPath: indexPath) as! MessageCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Message", for: indexPath) as! MessageCell
         
-        cell.showsTag = AwfulSettings.sharedSettings().showThreadTags
+        cell.showsTag = AwfulSettings.shared().showThreadTags
         if cell.showsTag {
             if let imageName = message.threadTag?.imageName {
                 if let image = ThreadTagLoader.imageNamed(imageName) {
@@ -231,13 +231,13 @@ final class MessagesDataSource: FetchedDataSource {
                     
                     let messageID = message.messageID
                     threadTagObservers[messageID] = NewThreadTagObserver(imageName: imageName) { [unowned self] image in
-                        if let indexPath = tableView.indexPathForCell(cell) {
+                        if let indexPath = tableView.indexPath(for: cell) {
                             let message = self.itemAtIndexPath(indexPath) as! PrivateMessage
                             if message.messageID == messageID {
                                 cell.tagImageView.image = image
                             }
                         }
-                        self.threadTagObservers.removeValueForKey(messageID)
+                        self.threadTagObservers.removeValue(forKey: messageID)
                     }
                 }
             } else {
@@ -256,7 +256,7 @@ final class MessagesDataSource: FetchedDataSource {
         }
         
         cell.senderLabel.text = message.fromUsername
-        let sentDateString = stringForSentDate(message.sentDate)
+        let sentDateString = stringForSentDate(message.sentDate as Date?)
         cell.dateLabel.text = sentDateString
         cell.subjectLabel.text = message.subject
         
@@ -268,36 +268,36 @@ final class MessagesDataSource: FetchedDataSource {
         return cell
     }
     
-    private func stringForSentDate(date: NSDate?) -> String {
+    fileprivate func stringForSentDate(_ date: Date?) -> String {
         if let date = date {
-            let calendar = NSCalendar.currentCalendar()
-            let units: NSCalendarUnit = [.Day, .Month, .Year]
-            let components = calendar.components(units, fromDate: date)
-            let today = calendar.components(units, fromDate: NSDate())
+            let calendar = Calendar.current
+            let units: NSCalendar.Unit = [.day, .month, .year]
+            let components = (calendar as NSCalendar).components(units, from: date)
+            let today = (calendar as NSCalendar).components(units, from: Date())
             let formatter = components == today ? timeFormatter : dateFormatter
-            return formatter.stringFromDate(date)
+            return formatter.string(from: date)
         } else {
             return ""
         }
     }
     
-    private lazy var dateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .ShortStyle
-        formatter.timeStyle = .NoStyle
+    fileprivate lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
         formatter.doesRelativeDateFormatting = true
         return formatter
         }()
     
-    private lazy var timeFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .NoStyle
-        formatter.timeStyle = .ShortStyle
+    fileprivate lazy var timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
         return formatter
         }()
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    func tableView(_ tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: IndexPath) {
+        if editingStyle == .delete {
             let message = itemAtIndexPath(indexPath) as! PrivateMessage
             deletionDelegate?.deleteMessage(message)
         }

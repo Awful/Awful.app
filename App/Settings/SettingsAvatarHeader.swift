@@ -8,14 +8,14 @@ import UIKit
 class SettingsAvatarHeader: UIView {
     
     // Strong reference in case we temporarily remove it
-    @IBOutlet private var avatarImageView: FLAnimatedImageView!
+    @IBOutlet fileprivate var avatarImageView: FLAnimatedImageView!
     
-    @IBOutlet private(set) weak var usernameLabel: UILabel!
-    @IBOutlet private var avatarConstraints: [NSLayoutConstraint]!
-    @IBOutlet private var insetConstraints: [NSLayoutConstraint]!
+    @IBOutlet fileprivate(set) weak var usernameLabel: UILabel!
+    @IBOutlet fileprivate var avatarConstraints: [NSLayoutConstraint]!
+    @IBOutlet fileprivate var insetConstraints: [NSLayoutConstraint]!
     
     /// Only the `insets.left` value is used, though it is applied to both the left and the right.
-    var contentEdgeInsets: UIEdgeInsets = UIEdgeInsetsZero {
+    var contentEdgeInsets: UIEdgeInsets = .zero {
         didSet(oldInsets) {
             if contentEdgeInsets.left != oldInsets.left {
                 setNeedsUpdateConstraints()
@@ -24,7 +24,7 @@ class SettingsAvatarHeader: UIView {
     }
     
     class func newFromNib() -> SettingsAvatarHeader {
-        return NSBundle.mainBundle().loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)[0] as! SettingsAvatarHeader
+        return Bundle.main.loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)![0] as! SettingsAvatarHeader
     }
     
     override func updateConstraints() {
@@ -37,20 +37,20 @@ class SettingsAvatarHeader: UIView {
         super.updateConstraints()
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        let usernameHeight = usernameLabel.intrinsicContentSize().height + 8
+    override var intrinsicContentSize: CGSize {
+        let usernameHeight = usernameLabel.intrinsicContentSize.height + 8
         if hasAvatar {
-            return CGSize(width: UIViewNoIntrinsicMetric, height: max(avatarImageView.intrinsicContentSize().height, usernameHeight))
+            return CGSize(width: UIViewNoIntrinsicMetric, height: max(avatarImageView.intrinsicContentSize.height, usernameHeight))
         } else {
             return CGSize(width: UIViewNoIntrinsicMetric, height: usernameHeight)
         }
     }
     
-    private var hasAvatar: Bool {
+    fileprivate var hasAvatar: Bool {
         return avatarImageView.image != nil
     }
     
-    func setAvatarImage(image: AnyObject?) {
+    func setAvatarImage(_ image: AnyObject?) {
         if let image = image as? FLAnimatedImage {
             avatarImageView.animatedImage = image
         } else {
@@ -69,25 +69,25 @@ class SettingsAvatarHeader: UIView {
     
     // MARK: Target-action
     
-    @IBOutlet private weak var tapGestureRecognizer: UITapGestureRecognizer!
-    private var target: AnyObject?
-    private var action: Selector?
+    @IBOutlet fileprivate weak var tapGestureRecognizer: UITapGestureRecognizer!
+    fileprivate var target: AnyObject?
+    fileprivate var action: Selector?
     
-    func setTarget(target: AnyObject?, action: Selector?) {
+    func setTarget(_ target: AnyObject?, action: Selector?) {
         if let action = action {
             self.target = target
             self.action = action
-            tapGestureRecognizer.enabled = true
+            tapGestureRecognizer.isEnabled = true
         } else {
             self.target = nil
             self.action = nil
-            tapGestureRecognizer.enabled = false
+            tapGestureRecognizer.isEnabled = false
         }
     }
     
-    @IBAction func didTap(sender: UITapGestureRecognizer) {
-        if sender.state == .Ended {
-            UIApplication.sharedApplication().sendAction(action!, to: target, from: self, forEvent: nil)
+    @IBAction func didTap(_ sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            UIApplication.shared.sendAction(action!, to: target, from: self, for: nil)
         }
     }
 }

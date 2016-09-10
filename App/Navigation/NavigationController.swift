@@ -6,12 +6,12 @@ import UIKit
 
 /// Adds theming support; hosts instances of NavigationBar and Toolbar; shows and hides the toolbar depending on whether the view controller has toolbar items; and, on iPhone, allows swiping from the *right* screen edge to unpop a view controller.
 final class NavigationController: UINavigationController {
-    private weak var realDelegate: UINavigationControllerDelegate?
-    private lazy var unpopHandler: UnpoppingViewHandler? = {
+    fileprivate weak var realDelegate: UINavigationControllerDelegate?
+    fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
         return UnpoppingViewHandler(navigationController: self)
     }()
-    private var pushAnimationInProgress = false
+    fileprivate var pushAnimationInProgress = false
     
     // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
     
@@ -166,7 +166,7 @@ extension NavigationController: UINavigationControllerDelegate {
                 if !unpopping {
                     viewControllerCount += 1
                 }
-                dispatch_after(DispatchTime.now(DispatchTime.now, Int64(completion * Double(NSEC_PER_SEC))), DispatchQueue.main, {
+                DispatchQueue.main.asyncAfter(deadline: .now() + completion) {
                     if unpopping {
                         unpopHandler.navigationControllerDidCancelInteractiveUnpop()
                     } else {
@@ -174,11 +174,11 @@ extension NavigationController: UINavigationControllerDelegate {
                     }
                     
                     self.pushAnimationInProgress = false
-                })
+                }
             })
         }
         
-        realDelegate?.navigationController?(navigationController, willShowViewController: viewController, animated: animated)
+        realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
     
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
@@ -188,15 +188,15 @@ extension NavigationController: UINavigationControllerDelegate {
         
         pushAnimationInProgress = false
         
-        realDelegate?.navigationController?(navigationController, didShowViewController: viewController, animated: animated)
+        realDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
     
-    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         if let unpopHandler = unpopHandler {
             return unpopHandler
         }
         
-        return realDelegate?.navigationController?(navigationController, interactionControllerForAnimationController: animationController)
+        return realDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
     }
     
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -204,12 +204,12 @@ extension NavigationController: UINavigationControllerDelegate {
             return unpopHandler
         }
         
-        return realDelegate?.navigationController?(navigationController, animationControllerForOperation: operation, fromViewController: fromVC, toViewController: toVC)
+        return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
     }
 }
 
 extension NavigationController: UIViewControllerRestoration {
-    static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
         let nav = self.init()
         nav.restorationIdentifier = identifierComponents.last as? String
         return nav

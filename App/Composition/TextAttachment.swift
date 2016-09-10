@@ -13,9 +13,9 @@ import UIKit
     * Uses the Photos framework for thumbnailing when possible.
  */
 final class TextAttachment: NSTextAttachment {
-    let assetURL: NSURL?
+    let assetURL: URL?
     
-    init(image: UIImage, assetURL: NSURL?) {
+    init(image: UIImage, assetURL: URL?) {
         self.assetURL = assetURL
         super.init(data: nil, ofType: nil)
         
@@ -23,7 +23,7 @@ final class TextAttachment: NSTextAttachment {
     }
     
     required init?(coder: NSCoder) {
-        assetURL = coder.decodeObject(forKey: assetURLKey) as! NSURL?
+        assetURL = coder.decodeObject(forKey: assetURLKey) as! NSURL? as URL?
         super.init(coder: coder)
     }
     
@@ -50,7 +50,7 @@ final class TextAttachment: NSTextAttachment {
         }
     }
     
-    private var _thumbnailImage: UIImage?
+    fileprivate var _thumbnailImage: UIImage?
     var thumbnailImage: UIImage? {
         if let thumbnail = _thumbnailImage { return thumbnail }
         guard let image = self.image else { return nil }
@@ -89,7 +89,7 @@ private func appropriateThumbnailSize(imageSize: CGSize) -> CGSize {
     let threshold = TextAttachment.requiresThumbnailImageSize
     let widthRatio = imageSize.width / threshold.width
     let heightRatio = imageSize.height / threshold.height
-    let screenRatio = imageSize.width / (UIScreen.mainScreen.bounds.width - 8)
+    let screenRatio = imageSize.width / (UIScreen.main.bounds.width - 8)
     let ratio = max(widthRatio, heightRatio, screenRatio)
     
     if ratio <= 1 { return imageSize }

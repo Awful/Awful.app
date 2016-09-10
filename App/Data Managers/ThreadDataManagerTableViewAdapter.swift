@@ -8,11 +8,11 @@ import UIKit
 final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, FetchedDataManagerDelegate {
     typealias DataManager = FetchedDataManager<AwfulThread>
     
-    private let tableView: UITableView
-    private let dataManager: DataManager
-    private let ignoreSticky: Bool
-    private let cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void
-    private var viewModels: [ThreadTableViewCell.ViewModel]
+    fileprivate let tableView: UITableView
+    fileprivate let dataManager: DataManager
+    fileprivate let ignoreSticky: Bool
+    fileprivate let cellConfigurationHandler: (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void
+    fileprivate var viewModels: [ThreadTableViewCell.ViewModel]
     var deletionHandler: ((AwfulThread) -> Void)?
     
     init(tableView: UITableView, dataManager: DataManager, ignoreSticky: Bool, cellConfigurationHandler: @escaping (ThreadTableViewCell, ThreadTableViewCell.ViewModel) -> Void) {
@@ -44,18 +44,18 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         
         tableView.beginUpdates()
         
-        func pathify(row: Int) -> NSIndexPath {
-            return NSIndexPath(row: row, section: 0)
+        func pathify(_ row: Int) -> IndexPath {
+            return IndexPath(row: row, section: 0)
         }
         
         let deletions = delta.deletions.map(pathify)
-        tableView.deleteRowsAtIndexPaths(deletions, withRowAnimation: .Automatic)
+        tableView.deleteRows(at: deletions, with: .automatic)
         
         let insertions = delta.insertions.map(pathify)
-        tableView.insertRowsAtIndexPaths(insertions, withRowAnimation: .Automatic)
+        tableView.insertRows(at: insertions, with: .automatic)
         
         for (fromRow, toRow) in delta.moves {
-            tableView.moveRowAtIndexPath(pathify(fromRow), toIndexPath: pathify(toRow))
+            tableView.moveRow(at: pathify(fromRow), to: pathify(toRow))
         }
         
         tableView.endUpdates()
@@ -70,7 +70,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
         
         let shouldReload = viewModels.contains { viewModel in
             switch viewModel.tag {
-            case let .Unavailable(_, desiredImageName: imageName) where imageName == newImageName:
+            case let .unavailable(_, desiredImageName: imageName) where imageName == newImageName:
                 return true
                 
             default:
@@ -85,7 +85,7 @@ final class ThreadDataManagerTableViewAdapter: NSObject, UITableViewDataSource, 
     
     // MARK: FetchedDataManagerDelegate
     
-    func dataManagerDidChangeContent<Object>(dataManager: FetchedDataManager<Object>) {
+    func dataManagerDidChangeContent<Object>(_ dataManager: FetchedDataManager<Object>) {
         reloadViewModels()
     }
     
@@ -136,16 +136,16 @@ private extension ThreadTableViewCell.ViewModel {
         }
         if let
             imageName = imageName,
-            let image = ThreadTagLoader.imageNamed(imageName: imageName)
+            let image = ThreadTagLoader.imageNamed(imageName)
         {
-            tag = Tag.Downloaded(image)
+            tag = Tag.downloaded(image)
         } else {
             let image = ThreadTagLoader.emptyThreadTagImage
-            tag = .Unavailable(fallbackImage: image, desiredImageName: imageName ?? "")
+            tag = .unavailable(fallbackImage: image, desiredImageName: imageName ?? "")
         }
         
         if let secondaryTagImageName = thread.secondaryThreadTag?.imageName {
-            secondaryTag = ThreadTagLoader.imageNamed(imageName: secondaryTagImageName)
+            secondaryTag = ThreadTagLoader.imageNamed(secondaryTagImageName)
             self.secondaryTagImageName = secondaryTagImageName
         } else {
             secondaryTag = nil
@@ -154,7 +154,7 @@ private extension ThreadTableViewCell.ViewModel {
         
         let showRatings = tweaks?.showRatings ?? true
         var rating: Int?
-        let rounded = lroundf(thread.rating).clamp(interval: 0...5)
+        let rounded = lroundf(thread.rating).clamp(0...5)
         if rounded != 0 {
             rating = rounded
         }

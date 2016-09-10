@@ -6,8 +6,8 @@ import UIKit
 
 /// Adds a "Copy URL" activity. The target URL needs to go through wrapURL() before being added to the activityItems array, and no other activities will see or attempt to use the URL.
 class CopyURLActivity: UIActivity {
-    class func wrapURL(URL: NSURL) -> AnyObject {
-        return URLToCopyContainer(URL)
+    class func wrapURL(_ url: URL) -> AnyObject {
+        return URLToCopyContainer(url)
     }
     
     override open var activityType: UIActivityType {
@@ -28,7 +28,7 @@ class CopyURLActivity: UIActivity {
         }
     }
     
-    private var overriddenTitle: String?
+    fileprivate var overriddenTitle: String?
     
     /// Change the title from the default "Copy URL". Useful for distinguishing the target URL from other URLs that may be activity items.
     convenience init(title: String) {
@@ -43,26 +43,26 @@ class CopyURLActivity: UIActivity {
     }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return any(sequence: activityItems) { $0 is URLToCopyContainer }
+        return any(activityItems) { $0 is URLToCopyContainer }
     }
     
-    private var URL: NSURL!
+    fileprivate var url: URL!
     
     override func prepare(withActivityItems activityItems: [Any]) {
-        let container = first(sequence: activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
-        URL = container.URL
+        let container = first(activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
+        url = container.url
     }
     
     override func perform() {
-        UIPasteboard.general.awful_URL = URL
+        UIPasteboard.general.awful_URL = url
     }
     
     /// Wraps an NSURL so that only the CopyURLActivity will try to use it.
-    private class URLToCopyContainer: NSObject {
-        let URL: NSURL
+    fileprivate class URLToCopyContainer: NSObject {
+        let url: URL
         
-        init(_ URL: NSURL) {
-            self.URL = URL
+        init(_ url: URL) {
+            self.url = url
             super.init()
         }
     }

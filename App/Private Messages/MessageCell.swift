@@ -20,17 +20,17 @@ class MessageCell: DynamicTypeTableViewCell {
         super.awakeFromNib()
         
         // Can't do this in IB.
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 65))
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 65))
         
         // Can't do this in IB; the contentView stops before the accessory view.
-        addConstraint(NSLayoutConstraint(item: separator, attribute: .Trailing, relatedBy: .Equal, toItem: self, attribute: .Trailing, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: separator, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: 0))
         
         // UITableViewCell will have a left layout margin of 16 while the contentView will have a left layout margin of 8. This is not helpful.
         contentView.layoutMargins.left = 22
     }
     
     // Constraints that get added or removed as the tag comes and goes.
-    @IBOutlet private var tagConstraints: [NSLayoutConstraint]!
+    @IBOutlet fileprivate var tagConstraints: [NSLayoutConstraint]!
     
     var showsTag: Bool = true {
         didSet {
@@ -47,7 +47,7 @@ class MessageCell: DynamicTypeTableViewCell {
     
     // MARK: DynamicTypeTableViewCell
     
-    override func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
+    override func fontPointSizeForLabel(_ label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
         switch (label) {
         case subjectLabel, dateLabel:
             return suggestedPointSize - 2

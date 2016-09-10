@@ -46,12 +46,12 @@ final class CompositionMenuTree: NSObject {
         return textView.selectedRect ?? textView.bounds
     }
     
-    private func popToRootItems() {
-        UIMenuController.sharedMenuController().menuItems = psItemsForMenuItems(rootItems)
+    fileprivate func popToRootItems() {
+        UIMenuController.shared.menuItems = psItemsForMenuItems(items: rootItems)
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = false
     }
     
-    private func showSubmenu(submenu: [MenuItem]) {
+    fileprivate func showSubmenu(_ submenu: [MenuItem]) {
         shouldPopWhenMenuHides = false
         
         UIMenuController.shared.menuItems = psItemsForMenuItems(items: submenu)
@@ -66,7 +66,7 @@ final class CompositionMenuTree: NSObject {
         shouldPopWhenMenuHides = true
     }
     
-    func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
+    func showImagePicker(_ sourceType: UIImagePickerControllerSourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType : NSString = kUTTypeImage as NSString
@@ -84,7 +84,7 @@ final class CompositionMenuTree: NSObject {
         textView.nearestViewController?.present(picker, animated: true, completion: nil)
     }
     
-    func insertImage(_ image: UIImage, withAssetURL assetURL: NSURL? = nil) {
+    func insertImage(_ image: UIImage, withAssetURL assetURL: URL? = nil) {
         // Inserting the image changes our font and text color, so save those now and restore those later.
         let font = textView.font
         let textColor = textView.textColor
@@ -124,7 +124,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             insertImage(edited)
         } else {
             let original = info[UIImagePickerControllerOriginalImage] as! UIImage
-            insertImage(original, withAssetURL: info[UIImagePickerControllerReferenceURL] as! NSURL?)
+            insertImage(original, withAssetURL: info[UIImagePickerControllerReferenceURL] as! URL?)
         }
         picker.dismiss(animated: true) {
             self.textView.becomeFirstResponder()
@@ -148,7 +148,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     var hidesBuiltInMenuItems: Bool { get set }
 }
 
-private struct MenuItem {
+fileprivate struct MenuItem {
     var title: String
     var action: (CompositionMenuTree) -> Void
     var enabled: () -> Bool
@@ -163,14 +163,14 @@ private struct MenuItem {
         self.init(title: title, action: action, enabled: { true })
     }
     
-    func psItem(tree: CompositionMenuTree) {
+    func psItem(_ tree: CompositionMenuTree) {
         return
     }
 }
 
-private let rootItems = [
+fileprivate let rootItems = [
     MenuItem(title: "[url]", action: { tree in
-        if UIPasteboard.generalPasteboard().awful_URL == nil {
+        if UIPasteboard.general.awful_URL == nil {
             linkifySelection(tree)
         } else {
             tree.showSubmenu(URLItems)
@@ -179,52 +179,52 @@ private let rootItems = [
     MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
-        if let URL = UIPasteboard.generalPasteboard().awful_URL {
+        if let URL = UIPasteboard.general.awful_URL {
             if videoTagURLForURL(URL) != nil {
                 return tree.showSubmenu(videoSubmenuItems)
             }
         }
-        wrapSelectionInTag("[video]")(tree: tree)
+        wrapSelectionInTag("[video]")(tree)
     })
 ]
 
-private let URLItems = [
+fileprivate let URLItems = [
     MenuItem(title: "[url]", action: linkifySelection),
     MenuItem(title: "Paste", action: { tree in
         if let URL = UIPasteboard.general.awful_URL {
-            wrapSelectionInTag(tagspec: "[url=\(URL.absoluteString)]" as NSString)(tree)
+            wrapSelectionInTag("[url=\(URL.absoluteString)]" as NSString)(tree)
         }
     })
 ]
 
-private let imageItems = [
-    MenuItem(title: "From Camera", action: { $0.showImagePicker(sourceType: .Camera) }, enabled: isPickerAvailable(sourceType: .Camera)),
-    MenuItem(title: "From Library", action: { $0.showImagePicker(sourceType: .PhotoLibrary) }, enabled: isPickerAvailable(sourceType: .PhotoLibrary)),
+fileprivate let imageItems = [
+    MenuItem(title: "From Camera", action: { $0.showImagePicker(.camera) }, enabled: isPickerAvailable(.camera)),
+    MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
     MenuItem(title: "[img]", action: wrapSelectionInTag("[img]")),
     MenuItem(title: "Paste", action: { tree in
-        if let image = UIPasteboard.generalPasteboard().image {
+        if let image = UIPasteboard.general.image {
             tree.insertImage(image)
         }
-        }, enabled: { UIPasteboard.generalPasteboard().image != nil })
+        }, enabled: { UIPasteboard.general.image != nil })
 ]
 
-private let formattingItems = [
-    MenuItem(title: "[b]", action: wrapSelectionInTag(tagspec: "[b]")),
-    MenuItem(title: "[i]", action: wrapSelectionInTag(tagspec: "[i]")),
-    MenuItem(title: "[s]", action: wrapSelectionInTag(tagspec: "[s]")),
-    MenuItem(title: "[u]", action: wrapSelectionInTag(tagspec: "[u]")),
-    MenuItem(title: "[spoiler]", action: wrapSelectionInTag(tagspec: "[spoiler]")),
-    MenuItem(title: "[fixed]", action: wrapSelectionInTag(tagspec: "[fixed]")),
-    MenuItem(title: "[quote]", action: wrapSelectionInTag(tagspec: "[quote=]\n")),
-    MenuItem(title: "[code]", action: wrapSelectionInTag(tagspec: "[code]\n")),
+fileprivate let formattingItems = [
+    MenuItem(title: "[b]", action: wrapSelectionInTag("[b]")),
+    MenuItem(title: "[i]", action: wrapSelectionInTag("[i]")),
+    MenuItem(title: "[s]", action: wrapSelectionInTag("[s]")),
+    MenuItem(title: "[u]", action: wrapSelectionInTag("[u]")),
+    MenuItem(title: "[spoiler]", action: wrapSelectionInTag("[spoiler]")),
+    MenuItem(title: "[fixed]", action: wrapSelectionInTag("[fixed]")),
+    MenuItem(title: "[quote]", action: wrapSelectionInTag("[quote=]\n")),
+    MenuItem(title: "[code]", action: wrapSelectionInTag("[code]\n")),
 ]
 
-private let videoSubmenuItems = [
-    MenuItem(title: "[video]", action: wrapSelectionInTag(tagspec: "[video]")),
+fileprivate let videoSubmenuItems = [
+    MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
         if let
             copiedURL = UIPasteboard.general.awful_URL,
-            let URL = videoTagURLForURL(URL: copiedURL)
+            let URL = videoTagURLForURL(copiedURL as URL)
         {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
@@ -237,27 +237,27 @@ private let videoSubmenuItems = [
     })
 ]
 
-private func videoTagURLForURL(URL: NSURL) -> NSURL? {
-    switch (URL.host?.lowercased(), URL.path?.lowercased()) {
-    case let (.some(host), .some(path)) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"):
-        return URL
-    case let (.some(host), .some(path)) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"):
-        return URL
-    case let (.some(host), _) where host.hasSuffix("video.yahoo.com"):
-        return URL
-    case let (.some(host), _) where host.hasSuffix("vimeo.com"):
-        return URL
-    case let (.some(host), .some(path)) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
-        return URL
-    case let (.some(host), .some(path)) where host.hasSuffix("youtu.be") && path.characters.count > 1:
-        if let components = NSURLComponents(url: URL as URL, resolvingAgainstBaseURL: true) {
-            let videoID = URL.pathComponents![1] 
+fileprivate func videoTagURLForURL(_ url: URL) -> URL? {
+    switch (url.host?.lowercased(), url.path.lowercased()) {
+    case let (host?, path) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"):
+        return url
+    case let (host?, path) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"):
+        return url
+    case let (host?, _) where host.hasSuffix("video.yahoo.com"):
+        return url
+    case let (host?, _) where host.hasSuffix("vimeo.com"):
+        return url
+    case let (host?, path) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
+        return url
+    case let (host?, path) where host.hasSuffix("youtu.be") && path.characters.count > 1:
+        if var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+            let videoID = url.pathComponents[1]
             components.host = "www.youtube.com"
             components.path = "/watch"
             var queryItems = components.queryItems ?? []
-            queryItems.insert(NSURLQueryItem(name: "v", value: videoID) as URLQueryItem, at: 0)
+            queryItems.insert(URLQueryItem(name: "v", value: videoID) as URLQueryItem, at: 0)
             components.queryItems = queryItems
-            return components.url as NSURL?
+            return components.url
         }
         return nil
     default:
@@ -265,7 +265,7 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
     }
 }
 
-private func linkifySelection(tree: CompositionMenuTree) {
+fileprivate func linkifySelection(_ tree: CompositionMenuTree) {
     var detector : NSDataDetector = NSDataDetector()
     do {
         detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
@@ -280,12 +280,12 @@ private func linkifySelection(tree: CompositionMenuTree) {
         let matches = detector.matches(in: selection as String, options: [], range: NSRange(location: 0, length: selection.length))
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
-                return wrapSelectionInTag(tagspec: "[url]")(tree)
+                return wrapSelectionInTag("[url]")(tree)
             }
         }
     }
     
-    wrapSelectionInTag(tagspec: "[url=]")(tree)
+    wrapSelectionInTag("[url=]")(tree)
 }
 
 /**
@@ -296,7 +296,7 @@ tagspec specifies which tag to insert, with optional newlines and attribute inse
 - [quote=]\n does the above plus inserts an = sign within the opening tag and, after wrapping, places the cursor after it.
 - [url=http://example.com] puts an opening and closing tag around the selection with the attribute intact in the opening tag and, after wrapping, places the cursor after the closing tag.
 */
-private func wrapSelectionInTag(tagspec: NSString) -> (_ tree: CompositionMenuTree) -> Void {
+fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: CompositionMenuTree) -> Void {
     return { tree in
         let textView = tree.textView
         
@@ -337,7 +337,7 @@ private func wrapSelectionInTag(tagspec: NSString) -> (_ tree: CompositionMenuTr
     }
 }
 
-private func isPickerAvailable(sourceType: UIImagePickerControllerSourceType) -> (Void) -> Bool {
+fileprivate func isPickerAvailable(_ sourceType: UIImagePickerControllerSourceType) -> (Void) -> Bool {
     return {
         return UIImagePickerController.isSourceTypeAvailable(sourceType)
     }

@@ -6,21 +6,21 @@ import Smilies
 import UIKit
 
 final class ShowSmilieKeyboardCommand: NSObject {
-    private let textView: UITextView
+    fileprivate let textView: UITextView
     
     init(textView: UITextView) {
         self.textView = textView
         super.init()
     }
     
-    private lazy var smilieKeyboard: SmilieKeyboard = {
+    fileprivate lazy var smilieKeyboard: SmilieKeyboard = {
         let keyboard = SmilieKeyboard()
         keyboard.delegate = self
-        keyboard.view.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        keyboard.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         return keyboard
         }()
     
-    private var showingSmilieKeyboard: Bool = false
+    fileprivate var showingSmilieKeyboard: Bool = false
     
     func execute() {
         showingSmilieKeyboard = !showingSmilieKeyboard
@@ -38,23 +38,23 @@ final class ShowSmilieKeyboardCommand: NSObject {
         }
     }
     
-    private var justInsertedSmilieText: String?
+    fileprivate var justInsertedSmilieText: String?
 }
 
 extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
-    func advanceToNextInputModeForSmilieKeyboard(keyboard: SmilieKeyboard) {
+    func advanceToNextInputMode(for keyboard: SmilieKeyboard) {
         execute()
     }
     
-    func deleteBackwardForSmilieKeyboard(keyboard: SmilieKeyboard) {
+    func deleteBackward(for keyboard: SmilieKeyboard) {
         if let justInserted = justInsertedSmilieText {
             justInsertedSmilieText = nil
             
             if let selectedTextRange = textView.selectedTextRange {
-                let startPosition = textView.positionFromPosition(selectedTextRange.start, offset: -(justInserted as NSString).length)
-                let range = textView.textRangeFromPosition(startPosition!, toPosition: selectedTextRange.start)
-                if textView.textInRange(range!) == justInserted {
-                    return textView.replaceRange(range!, withText: "")
+                let startPosition = textView.position(from: selectedTextRange.start, offset: -(justInserted as NSString).length)
+                let range = textView.textRange(from: startPosition!, to: selectedTextRange.start)
+                if textView.text(in: range!) == justInserted {
+                    return textView.replace(range!, withText: "")
                 }
             }
         }
@@ -62,12 +62,12 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
         textView.deleteBackward()
     }
     
-    func smilieKeyboard(keyboard: SmilieKeyboard, didTapSmilie smilie: Smilie) {
+    func smilieKeyboard(_ keyboard: SmilieKeyboard, didTap smilie: Smilie) {
         textView.insertText(smilie.text)
         justInsertedSmilieText = smilie.text
         
-        smilie.managedObjectContext?.performBlock {
-            smilie.metadata.lastUsedDate = NSDate()
+        smilie.managedObjectContext?.perform {
+            smilie.metadata.lastUsedDate = Date()
             do {
                 try smilie.managedObjectContext!.save()
             }
@@ -77,7 +77,7 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
         }
     }
     
-    func smilieKeyboard(keyboard: SmilieKeyboard, insertNumberOrDecimal numberOrDecimal: String) {
+    func smilieKeyboard(_ keyboard: SmilieKeyboard, insertNumberOrDecimal numberOrDecimal: String) {
         textView.insertText(numberOrDecimal)
     }
 }

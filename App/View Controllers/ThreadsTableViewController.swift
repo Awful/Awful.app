@@ -7,18 +7,18 @@ import CoreData
 
 final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
     let forum: Forum
-    private var latestPage = 0
-    private var peekPopController: ThreadPeekPopController?
+    fileprivate var latestPage = 0
+    fileprivate var peekPopController: ThreadPeekPopController?
     
-    private var filterThreadTag: ThreadTag?
+    fileprivate var filterThreadTag: ThreadTag?
     
-    private typealias DataManager = FetchedDataManager<Thread>
+    fileprivate typealias DataManager = FetchedDataManager<AwfulThread>
     
-    private var dataManager: DataManager {
+    fileprivate var dataManager: DataManager {
         didSet {
             tableViewAdapter = nil
             
-            if isViewLoaded() {
+            if isViewLoaded {
                 createTableViewAdapter()
                 
                 tableView.reloadData()
@@ -26,14 +26,14 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         }
     }
     
-    private var tableViewAdapter: ThreadDataManagerTableViewAdapter!
+    fileprivate var tableViewAdapter: ThreadDataManagerTableViewAdapter!
     
     init(forum: Forum) {
         self.forum = forum
-        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
         dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
-        super.init(style: .Plain)
+        super.init(style: .plain)
         
         title = forum.name
         
@@ -46,14 +46,14 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override var theme: Theme {
         return Theme.currentThemeForForum(forum)
     }
     
-    private func createTableViewAdapter() {
+    fileprivate func createTableViewAdapter() {
         tableViewAdapter = ThreadDataManagerTableViewAdapter(tableView: tableView, dataManager: dataManager, ignoreSticky: false, cellConfigurationHandler: { [weak self] cell, viewModel in
             cell.viewModel = viewModel
             cell.longPressAction = self?.didLongPressCell
@@ -63,14 +63,14 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         tableView.dataSource = tableViewAdapter
     }
     
-    private func loadPage(page: Int) {
-        AwfulForumsClient.sharedClient().listThreadsInForum(forum, withThreadTag: filterThreadTag, onPage: page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
-            if let error = error , self?.visible == true {
+    fileprivate func loadPage(_ page: Int) {
+        let _ = AwfulForumsClient.shared().listThreads(in: forum, with: filterThreadTag, onPage: page) { [weak self] (error: Error?, threads: [Any]?) in
+            if let error = error as? NSError , self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
             
-            if error == .None {
+            if error == nil {
                 self?.latestPage = page
                 
                 self?.scrollToLoadMoreBlock = { self?.loadNextPage() }
@@ -96,19 +96,19 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerNib(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
+        tableView.register(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
         tableView.restorationIdentifier = "Threads table view"
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
         createTableViewAdapter()
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ThreadsTableViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ThreadsTableViewController.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
         
-        if traitCollection.forceTouchCapability == .Available {
+        if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
     }
@@ -119,7 +119,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         updateFilterButton()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if !dataManager.contents.isEmpty {
@@ -137,7 +137,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         } else {
             isTimeToRefresh = RefreshMinder.sharedMinder.shouldRefreshFilteredForum(forum)
         }
-        if AwfulForumsClient.sharedClient().reachable &&
+        if AwfulForumsClient.shared().reachable &&
             (isTimeToRefresh || dataManager.contents.isEmpty)
         {
             refresh()
@@ -146,30 +146,30 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Actions
     
-    private func didLongPressCell(cell: ThreadTableViewCell) {
-        guard let indexPath = tableView.indexPathForCell(cell) else {
+    fileprivate func didLongPressCell(_ cell: ThreadTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
             return
         }
         
         let thread = dataManager.contents[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
-        actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
+        actionViewController.popoverPositioningBlock = { [weak self] (sourceRect, sourceView) in
             if let
-                row = self?.dataManager.contents.indexOf(thread),
-                let cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+                row = self?.dataManager.contents.index(of: thread),
+                let cell = self?.tableView.cellForRow(at: IndexPath(row: row, section: 0))
             {
-                sourceRect.memory = cell.bounds
-                sourceView.memory = cell
+                sourceRect.pointee = cell.bounds
+                sourceView.pointee = cell
             }
         }
-        presentViewController(actionViewController, animated: true, completion: nil)
+        present(actionViewController, animated: true, completion: nil)
     }
     
-    private func loadNextPage() {
+    fileprivate func loadNextPage() {
         loadPage(latestPage + 1)
     }
     
-    private func refresh() {
+    fileprivate func refresh() {
         startAnimatingPullToRefresh()
         
         loadPage(1)
@@ -177,21 +177,21 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Notifications
     
-    @objc private func settingsDidChange(notification: NSNotification) {
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else {
+    @objc fileprivate func settingsDidChange(_ notification: Notification) {
+        guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else {
             return
         }
 
         switch key {
-        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() where isViewLoaded():
+        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String as String where isViewLoaded:
             createTableViewAdapter()
             tableView.reloadData()
             
-        case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue():
-            let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue() as String as String:
+            let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
             dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
             
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
+        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
             prepareUserActivity()
             
         default:
@@ -201,31 +201,31 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Composition
     
-    private lazy var composeBarButtonItem: UIBarButtonItem = { [unowned self] in
-        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .Plain, target: self, action: #selector(ThreadsTableViewController.didTapCompose))
+    fileprivate lazy var composeBarButtonItem: UIBarButtonItem = { [unowned self] in
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(ThreadsTableViewController.didTapCompose))
         item.accessibilityLabel = "New thread"
         return item
         }()
     
-    private lazy var threadComposeViewController: ThreadComposeViewController! = { [unowned self] in
+    fileprivate lazy var threadComposeViewController: ThreadComposeViewController! = { [unowned self] in
         let composeViewController = ThreadComposeViewController(forum: self.forum)
         composeViewController.restorationIdentifier = "New thread composition"
         composeViewController.delegate = self
         return composeViewController
         }()
     
-    private func updateComposeBarButtonItem() {
-        composeBarButtonItem.enabled = forum.canPost && forum.lastRefresh != nil
+    fileprivate func updateComposeBarButtonItem() {
+        composeBarButtonItem.isEnabled = forum.canPost && forum.lastRefresh != nil
     }
     
     func didTapCompose() {
-        presentViewController(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
+        present(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
     // MARK: ComposeTextViewControllerDelegate
     
-    func composeTextViewController(composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
-        dismissViewControllerAnimated(true) {
+    func composeTextViewController(_ composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
+        dismiss(animated: true) {
             if let thread = self.threadComposeViewController.thread , success {
                 let postsPage = PostsPageViewController(thread: thread)
                 postsPage.restorationIdentifier = "Posts"
@@ -241,14 +241,14 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Filtering by tag
     
-    private lazy var filterButton: UIButton = { [unowned self] in
-        let button = UIButton(type: .System)
-        button.bounds.size.height = button.intrinsicContentSize().height + 8
-        button.addTarget(self, action: #selector(ThreadsTableViewController.didTapFilterButton(_:)), forControlEvents: .TouchUpInside)
+    fileprivate lazy var filterButton: UIButton = { [unowned self] in
+        let button = UIButton(type: .system)
+        button.bounds.size.height = button.intrinsicContentSize.height + 8
+        button.addTarget(self, action: #selector(ThreadsTableViewController.didTapFilterButton(_:)), for: .touchUpInside)
         return button
         }()
     
-    private lazy var threadTagPicker: ThreadTagPickerViewController = { [unowned self] in
+    fileprivate lazy var threadTagPicker: ThreadTagPickerViewController = { [unowned self] in
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
             .map { ($0 as! ThreadTag).imageName! }
@@ -259,22 +259,22 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         return picker
         }()
     
-    @objc private func didTapFilterButton(sender: UIButton) {
+    @objc fileprivate func didTapFilterButton(_ sender: UIButton) {
         let imageName = filterThreadTag?.imageName ?? ThreadTagLoader.noFilterImageName
         threadTagPicker.selectImageName(imageName)
         threadTagPicker.present(fromView: sender)
     }
     
-    private func updateFilterButton() {
+    fileprivate func updateFilterButton() {
         let title = filterThreadTag == nil ? "Filter By Tag" : "Change Filter"
-        filterButton.setTitle(title, forState: .Normal)
+        filterButton.setTitle(title, for: .normal)
         
         filterButton.tintColor = theme["tintColor"]
     }
     
     // MARK: ThreadTagPickerViewControllerDelegate
     
-    func threadTagPicker(picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
+    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
         if imageName == ThreadTagLoader.noFilterImageName {
             filterThreadTag = nil
         } else {
@@ -284,7 +284,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         RefreshMinder.sharedMinder.forgetForum(forum)
         updateFilterButton()
         
-        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.sharedSettings().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
         dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         picker.dismiss()
@@ -292,8 +292,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Handoff
     
-    private func prepareUserActivity() {
-        guard AwfulSettings.sharedSettings().handoffEnabled else {
+    fileprivate func prepareUserActivity() {
+        guard AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
             return
         }
@@ -303,45 +303,45 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         userActivity = activity
     }
     
-    override func updateUserActivityState(activity: NSUserActivity) {
+    override func updateUserActivityState(_ activity: NSUserActivity) {
         activity.title = forum.name
-        activity.addUserInfoEntriesFromDictionary([Handoff.InfoForumIDKey: forum.forumID])
-        activity.webpageURL = NSURL(string: "https://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
+        activity.addUserInfoEntries(from: [Handoff.InfoForumIDKey: forum.forumID])
+        activity.webpageURL = URL(string: "https://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
     }
     
     // MARK: ThreadPeekPopControllerDelegate
     
-    func threadForLocation(location: CGPoint) -> Thread? {
-        guard let row = tableView.indexPathForRowAtPoint(location)?.row else {
+    func threadForLocation(location: CGPoint) -> AwfulThread? {
+        guard let row = tableView.indexPathForRow(at: location)?.row else {
             return nil
         }
         
         return dataManager.contents[row]
     }
     
-    func viewForThread(thread: Thread) -> UIView? {
-        guard let row = dataManager.contents.indexOf(thread) else {
+    func viewForThread(thread: AwfulThread) -> UIView? {
+        guard let row = dataManager.contents.index(of: thread) else {
             return nil
         }
         
-        return tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+        return tableView.cellForRow(at: IndexPath(row: row, section: 0))
     }
     
     // MARK: UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let thread = dataManager.contents[indexPath.row]
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
+        let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)
@@ -349,56 +349,56 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: UIViewControllerRestoration
     
-    class func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-        var forumKey = coder.decodeObjectForKey(RestorationKeys.forumKey) as! ForumKey!
+    class func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+        var forumKey = coder.decodeObject(forKey: RestorationKeys.forumKey) as! ForumKey!
         if forumKey == nil {
-            guard let forumID = coder.decodeObjectForKey(ObsoleteRestorationKeys.forumID) as? String else { return nil }
+            guard let forumID = coder.decodeObject(forKey: ObsoleteRestorationKeys.forumID) as? String else { return nil }
             forumKey = ForumKey(forumID: forumID)
         }
         let managedObjectContext = AppDelegate.instance.managedObjectContext
-        let forum = Forum.objectForKey(forumKey, inManagedObjectContext: managedObjectContext) as! Forum
+        let forum = Forum.objectForKey(objectKey: forumKey!, inManagedObjectContext: managedObjectContext) as! Forum
         let viewController = self.init(forum: forum)
         viewController.restorationIdentifier = identifierComponents.last as! String?
         viewController.restorationClass = self
         return viewController
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(forum.objectKey, forKey: RestorationKeys.forumKey)
-        coder.encodeObject(threadComposeViewController, forKey: RestorationKeys.newThreadViewController)
-        coder.encodeObject(filterThreadTag?.objectKey, forKey: RestorationKeys.filterThreadTagKey)
+        coder.encode(forum.objectKey, forKey: RestorationKeys.forumKey)
+        coder.encode(threadComposeViewController, forKey: RestorationKeys.newThreadViewController)
+        coder.encode(filterThreadTag?.objectKey, forKey: RestorationKeys.filterThreadTagKey)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        if let compose = coder.decodeObjectForKey(RestorationKeys.newThreadViewController) as? ThreadComposeViewController {
+        if let compose = coder.decodeObject(forKey: RestorationKeys.newThreadViewController) as? ThreadComposeViewController {
             compose.delegate = self
             threadComposeViewController = compose
         }
         
-        var tagKey = coder.decodeObjectForKey(RestorationKeys.filterThreadTagKey) as! ThreadTagKey?
+        var tagKey = coder.decodeObject(forKey: RestorationKeys.filterThreadTagKey) as! ThreadTagKey?
         if tagKey == nil {
-            if let tagID = coder.decodeObjectForKey(ObsoleteRestorationKeys.filterThreadTagID) as? String {
+            if let tagID = coder.decodeObject(forKey: ObsoleteRestorationKeys.filterThreadTagID) as? String {
                 tagKey = ThreadTagKey(imageName: nil, threadTagID: tagID)
             }
         }
         if let tagKey = tagKey {
-            filterThreadTag = ThreadTag.objectForKey(tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+            filterThreadTag = ThreadTag.objectForKey(objectKey: tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
         }
         
         updateFilterButton()
     }
     
-    private struct RestorationKeys {
+    fileprivate struct RestorationKeys {
         static let forumKey = "ForumKey"
         static let newThreadViewController = "AwfulNewThreadViewController"
         static let filterThreadTagKey = "FilterThreadTagKey"
     }
     
-    private struct ObsoleteRestorationKeys {
+    fileprivate struct ObsoleteRestorationKeys {
         static let forumID = "AwfulForumID"
         static let filterThreadTagID = "AwfulFilterThreadTagID"
     }

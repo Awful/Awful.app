@@ -4,11 +4,11 @@
 
 import Foundation
 
-extension NSURL {
+extension URL {
     /// Returns true if this URL would normally open in Safari, or false otherwise.
     var opensInBrowser: Bool {
-        switch CaseInsensitive(scheme) {
-        case "http", "https", "ftp":
+        switch scheme.map(CaseInsensitive.init) {
+        case "http"?, "https"?, "ftp"?:
             break
         default:
             return false

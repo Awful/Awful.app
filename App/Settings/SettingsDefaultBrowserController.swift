@@ -3,14 +3,14 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 final class SettingsDefaultBrowserController: TableViewController {
-    private var selectedIndexPath: NSIndexPath = selectedBrowserIndexPath()
+    fileprivate var selectedIndexPath: IndexPath = selectedBrowserIndexPath()
     
     init() {
-        super.init(style: .Grouped)
+        super.init(style: .grouped)
         title = "Default Browser"
     }
     
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
     }
 
@@ -20,20 +20,20 @@ final class SettingsDefaultBrowserController: TableViewController {
     
     override func loadView() {
         super.loadView()
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        tableView.separatorStyle = .SingleLine
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.separatorStyle = .singleLine
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return AwfulDefaultBrowsers().count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) 
         let browsers = AwfulDefaultBrowsers() as! [String]
-        let thisBrowser = browsers[indexPath.row]
+        let thisBrowser = browsers[(indexPath as NSIndexPath).row]
         cell.textLabel?.text = thisBrowser
-        cell.accessoryType = thisBrowser == AwfulSettings.sharedSettings().defaultBrowser ? .Checkmark : .None
+        cell.accessoryType = thisBrowser == AwfulSettings.shared().defaultBrowser ? .checkmark : .none
         
         let theme = self.theme
         cell.textLabel?.textColor = theme["listTextColor"]
@@ -46,24 +46,24 @@ final class SettingsDefaultBrowserController: TableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath == selectedIndexPath {
             return
         }
         
-        AwfulSettings.sharedSettings().defaultBrowser = (AwfulDefaultBrowsers() as! [String])[indexPath.row]
+        AwfulSettings.shared().defaultBrowser = (AwfulDefaultBrowsers() as! [String])[(indexPath as NSIndexPath).row]
         
-        tableView.cellForRowAtIndexPath(selectedIndexPath)?.accessoryType = .None
-        tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = .Checkmark
+        tableView.cellForRow(at: selectedIndexPath)?.accessoryType = .none
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         
         selectedIndexPath = indexPath
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 private let cellIdentifier = "Cell"
 
-private func selectedBrowserIndexPath() -> NSIndexPath {
-    let row = (AwfulDefaultBrowsers() as! [String]).indexOf(AwfulSettings.sharedSettings().defaultBrowser)!
-    return NSIndexPath(forRow: row, inSection: 0)
+private func selectedBrowserIndexPath() -> IndexPath {
+    let row = (AwfulDefaultBrowsers() as! [String]).index(of: AwfulSettings.shared().defaultBrowser)!
+    return IndexPath(row: row, section: 0)
 }

@@ -12,43 +12,40 @@ import UIKit
 final class AvatarLoader: NSObject {
     static let sharedLoader = AvatarLoader(cacheFolder: defaultCacheFolder())
     
-    private let cacheFolder: NSURL
-    private let sessionManager = AFURLSessionManager()
+    fileprivate let cacheFolder: URL
+    fileprivate let sessionManager = AFURLSessionManager()
     
-    init(cacheFolder: NSURL) {
+    init(cacheFolder: URL) {
         self.cacheFolder = cacheFolder
     }
     
     /// - returns: Either a UIImage or FLAnimatedImage if a cached avatar exists, otherwise nil.
-    func cachedAvatarImageForUser(user: User) -> AnyObject? {
+    func cachedAvatarImageForUser(_ user: User) -> AnyObject? {
         let URL = imageURLForUser(user)
         return loadImageAtFileURL(URL)
     }
     
     /// - parameter completionBlock: A block that takes: `modified` which is `true` iff the image changed; `image`, either an FLAnimatedImage or a UIImage or nil; `error`, an NSError if an error occurred.
-    func fetchAvatarImageForUser(user: User, completionBlock: (_ modified: Bool, _ image: AnyObject?, _ error: NSError?) -> Void) {
-        guard let
-            avatarURL = user.avatarURL,
-            let path = avatarURL.path , !path.isEmpty
-            else { return completionBlock(modified: true, image: nil, error: nil) }
-        let request = NSMutableURLRequest(URL: avatarURL)
+    func fetchAvatarImageForUser(_ user: User, completionBlock: @escaping (_ modified: Bool, _ image: AnyObject?, _ error: NSError?) -> Void) {
+        guard let avatarURL = user.avatarURL, !avatarURL.path.isEmpty else {
+            return completionBlock(true, nil, nil)
+        }
+        let request = NSMutableURLRequest(url: avatarURL as URL)
         
-        if let
-            path = cachedResopnesURLForUser(user).path,
-            let oldResponse = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as? NSHTTPURLResponse
-            , oldResponse.URL == avatarURL
+        if let oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponesURLForUser(user).path) as? HTTPURLResponse,
+            oldResponse.url == avatarURL
         {
             request.setCacheHeadersWithResponse(oldResponse)
         }
         
-        sessionManager.downloadTaskWithRequest(request, progress: nil, destination: { (targetPath, URLResponse) -> NSURL! in
+        sessionManager.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, URLResponse) -> URL! in
             guard let
-                response = URLResponse as? NSHTTPURLResponse
+                response = URLResponse as? HTTPURLResponse
                 , response.statusCode >= 200 && response.statusCode < 300
                 else { return nil }
             
             do {
-                try NSFileManager.defaultManager().createDirectoryAtURL(self.cacheFolder, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: self.cacheFolder, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print("\(#function) error creating avatar cache folder \(self.cacheFolder): \(error)")
                 return nil
@@ -56,7 +53,7 @@ final class AvatarLoader: NSObject {
             
             let destinationURL = self.imageURLForUser(user)
             do {
-                try NSFileManager.defaultManager().removeItemAtURL(destinationURL)
+                try FileManager.default.removeItem(at: destinationURL)
             } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
                 // ok
             } catch let error as NSError {
@@ -66,29 +63,26 @@ final class AvatarLoader: NSObject {
             return destinationURL
             
             }, completionHandler: { (response, filePath, error) in
-                if let
-                    response = response,
-                    let path = self.cachedResopnesURLForUser(user).path
-                {
-                    NSKeyedArchiver.archiveRootObject(response, toFile: path)
+                if let response = response {
+                    NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
                 }
                 
-                if let
-                    error = error,
-                    let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse
-                    , response.statusCode == 304
+                if
+                    let error = error,
+                    let response = (error as NSError).userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                    response.statusCode == 304
                 {
-                    return completionBlock(modified: false, image: nil, error: nil)
+                    return completionBlock(false, nil, nil)
                 }
                 
                 let image = loadImageAtFileURL(self.imageURLForUser(user))
-                completionBlock(modified: true, image: image, error: error)
+                completionBlock(true, image, error as NSError?)
         }).resume()
     }
     
     func emptyCache() {
         do {
-            try NSFileManager.defaultManager().removeItemAtURL(cacheFolder)
+            try FileManager.default.removeItem(at: cacheFolder)
         } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
             // nop
         } catch let error as NSError {
@@ -98,34 +92,33 @@ final class AvatarLoader: NSObject {
     
     // MARK: Private
     
-    private func imageURLForUser(user: User) -> NSURL {
+    fileprivate func imageURLForUser(_ user: User) -> URL {
         return cacheFolder
-            .URLByAppendingPathComponent(user.userID)
-            .URLByAppendingPathExtension("image")
+            .appendingPathComponent(user.userID)
+            .appendingPathExtension("image")
     }
     
-    private func cachedResopnesURLForUser(user: User) -> NSURL {
+    fileprivate func cachedResponesURLForUser(_ user: User) -> URL {
         return cacheFolder
-            .URLByAppendingPathComponent(user.userID)
-            .URLByAppendingPathExtension("cachedresponse")
+            .appendingPathComponent(user.userID)
+            .appendingPathExtension("cachedresponse")
     }
 }
 
-private func defaultCacheFolder() -> NSURL {
-    let caches = try! NSFileManager.defaultManager().URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-    return caches.URLByAppendingPathComponent("Avatars", isDirectory: true)
+private func defaultCacheFolder() -> URL {
+    let caches = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    return caches.appendingPathComponent("Avatars", isDirectory: true)
 }
 
-private func loadImageAtFileURL(URL: NSURL) -> AnyObject? {
+private func loadImageAtFileURL(_ url: URL) -> AnyObject? {
     guard let
-        source = CGImageSourceCreateWithURL(URL, nil),
+        source = CGImageSourceCreateWithURL(url as CFURL, nil),
         let type = CGImageSourceGetType(source)
         else { return nil }
     if UTTypeConformsTo(type, kUTTypeGIF) {
-        guard let data = NSData(contentsOfURL: URL) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
         return FLAnimatedImage(animatedGIFData: data)
     } else {
-        guard let path = URL.path else { return nil }
-        return UIImage(contentsOfFile: path)
+        return UIImage(contentsOfFile: url.path)
     }
 }

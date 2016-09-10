@@ -6,13 +6,13 @@ import FLAnimatedImage
 
 /// Downloads an image and shows it in a zoomable scroll view.
 final class ImageViewController: UIViewController {
-    private let imageURL: NSURL
-    private var doneAction: (() -> Void)?
-    private var downloadProgress: NSProgress!
-    private var image: DecodedImage?
-    private var rootView: RootView { return view as! RootView }
+    fileprivate let imageURL: URL
+    fileprivate var doneAction: (() -> Void)?
+    fileprivate var downloadProgress: Progress!
+    fileprivate var image: DecodedImage?
+    fileprivate var rootView: RootView { return view as! RootView }
     
-    init(imageURL: NSURL) {
+    init(imageURL: URL) {
         self.imageURL = imageURL
         super.init(nibName: nil, bundle: nil)
         
@@ -23,49 +23,49 @@ final class ImageViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func didDownloadImage(image: DecodedImage) {
+    fileprivate func didDownloadImage(_ image: DecodedImage) {
         self.image = image
-        if isViewLoaded() {
+        if isViewLoaded {
             applyImage(image)
         }
     }
     
-    private func applyImage(image: DecodedImage) {
+    fileprivate func applyImage(_ image: DecodedImage) {
         switch image {
-        case .Animated, .Static:
+        case .animated, .static:
             rootView.image = image
-        case let .Error(error):
+        case let .error(error):
             let alert = UIAlertController(networkError: error, handler: { [unowned self] action in
                 self.dismiss()
             })
-            presentViewController(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
     }
     
-    private func dismiss() {
+    fileprivate func dismiss() {
         downloadProgress.cancel()
         rootView.cancelHideOverlayAfterDelay()
         
         if let action = doneAction {
             action()
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return image != nil && rootView.overlayHidden
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
     
-    @IBAction @objc private func didTapDone() {
+    @IBAction @objc fileprivate func didTapDone() {
         dismiss()
     }
     
-    @IBAction @objc private func didTapAction(sender: UIButton) {
+    @IBAction @objc fileprivate func didTapAction(_ sender: UIButton) {
         rootView.cancelHideOverlayAfterDelay()
         let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
@@ -75,12 +75,12 @@ final class ImageViewController: UIViewController {
             activityViewController = UIActivityViewController(activityItems: [imageURL, wrappedURL], applicationActivities: [CopyURLActivity()])
             
             // Only use our copy button so it's clear they're copying the URL, not the image
-            activityViewController.excludedActivityTypes = [UIActivityTypeCopyToPasteboard]
+            activityViewController.excludedActivityTypes = [UIActivityType.copyToPasteboard]
         } else {
             activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
             
         }
-        presentViewController(activityViewController, animated: true, completion: nil)
+        present(activityViewController, animated: true, completion: nil)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
@@ -90,7 +90,7 @@ final class ImageViewController: UIViewController {
     
     // MARK: View lifecycle
     
-    private class RootView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+    fileprivate class RootView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
         let scrollView = UIScrollView()
         let imageView = FLAnimatedImageView()
         let statusBarBackground = UIView()
@@ -99,8 +99,8 @@ final class ImageViewController: UIViewController {
         var overlayViews: [UIView] { return [statusBarBackground, doneButton, actionButton] }
         var overlayButtons: [UIButton] { return [doneButton, actionButton] }
         var overlayHidden = false
-        var hideOverlayTimer: NSTimer?
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        var hideOverlayTimer: Timer?
+        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
         let tap = UITapGestureRecognizer()
         let panToDismiss = UIPanGestureRecognizer()
         var panToDismissAction: (() -> Void)?
@@ -110,16 +110,16 @@ final class ImageViewController: UIViewController {
             super.init(frame: frame)
             
             tap.addTarget(self, action: #selector(didTapImage))
-            tap.requireGestureRecognizerToFail(doubleTap)
+            tap.require(toFail: doubleTap)
             addGestureRecognizer(tap)
             
             panToDismiss.addTarget(self, action: #selector(didPanToDismiss))
             panToDismiss.delegate = self
             addGestureRecognizer(panToDismiss)
             
-            backgroundColor = UIColor.blackColor()
+            backgroundColor = UIColor.black
             
-            scrollView.indicatorStyle = .White
+            scrollView.indicatorStyle = .white
             scrollView.delegate = self
             addSubview(scrollView)
             
@@ -128,23 +128,23 @@ final class ImageViewController: UIViewController {
             scrollView.addGestureRecognizer(doubleTap)
             
             // Many images include transparent regions that are assumed to reveal a vaguely white background.
-            imageView.backgroundColor = UIColor.whiteColor()
-            imageView.opaque = true
+            imageView.backgroundColor = UIColor.white
+            imageView.isOpaque = true
             scrollView.addSubview(imageView)
             
-            let overlaidForegroundColor = UIColor.whiteColor()
-            let overlaidBackgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+            let overlaidForegroundColor = UIColor.white
+            let overlaidBackgroundColor = UIColor.black.withAlphaComponent(0.7)
             let buttonCornerRadius: CGFloat = 8
             
             statusBarBackground.backgroundColor = overlaidBackgroundColor
             addSubview(statusBarBackground)
             
-            let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleBody)
+            let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.body)
             let title = NSAttributedString(string: "Done", attributes: [
                 NSForegroundColorAttributeName: overlaidForegroundColor,
-                NSFontAttributeName: UIFont.boldSystemFontOfSize(bodyFontDescriptor.pointSize)
+                NSFontAttributeName: UIFont.boldSystemFont(ofSize: bodyFontDescriptor.pointSize)
                 ])
-            doneButton.setAttributedTitle(title, forState: .Normal)
+            doneButton.setAttributedTitle(title, for: UIControlState())
             doneButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
             doneButton.horizontalSlop = 10
             doneButton.verticalSlop = 20
@@ -152,7 +152,7 @@ final class ImageViewController: UIViewController {
             doneButton.layer.cornerRadius = buttonCornerRadius
             addSubview(doneButton)
 
-            actionButton.setImage(UIImage(named: "action"), forState: .Normal)
+            actionButton.setImage(UIImage(named: "action"), for: UIControlState())
             actionButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 7, bottom: 7, right: 7)
             actionButton.horizontalSlop = 10
             actionButton.verticalSlop = 20
@@ -173,11 +173,11 @@ final class ImageViewController: UIViewController {
             didSet {
                 if let image = image {
                     switch image {
-                    case let .Animated(animatedImage):
+                    case let .animated(animatedImage):
                         imageView.animatedImage = animatedImage
-                    case let .Static(image: image, data: _):
+                    case let .static(image: image, data: _):
                         imageView.image = image
-                    case .Error:
+                    case .error:
                         imageView.image = nil
                     }
                 } else {
@@ -185,8 +185,8 @@ final class ImageViewController: UIViewController {
                 }
                 
                 if image != nil {
-                    actionButton.enabled = true
-                    actionButton.hidden = false
+                    actionButton.isEnabled = true
+                    actionButton.isHidden = false
                     
                     hideOverlayAfterDelay()
                 }
@@ -197,7 +197,7 @@ final class ImageViewController: UIViewController {
             }
         }
         
-        private var didConfigureScrollView = false
+        fileprivate var didConfigureScrollView = false
         
         override func layoutSubviews() {
             scrollView.frame = bounds
@@ -208,7 +208,7 @@ final class ImageViewController: UIViewController {
                     if let imageSize = image?.size {
                         scrollView.contentSize = imageSize
                         // FLAnimatedImageView.sizeToFit() sometimes doesn't change the size?
-                        imageView.frame = CGRect(origin: CGPointZero, size: imageSize)
+                        imageView.frame = CGRect(origin: CGPoint.zero, size: imageSize)
                         
                         let fitsOnScreenZoomScale = min(scrollViewSize.width / imageSize.width, scrollViewSize.height / imageSize.height, 1)
                         scrollView.minimumZoomScale = fitsOnScreenZoomScale
@@ -227,8 +227,8 @@ final class ImageViewController: UIViewController {
             layoutOverlay()
         }
         
-        private func layoutOverlay() {
-            let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
+        fileprivate func layoutOverlay() {
+            let statusBarFrame = UIApplication.shared.statusBarFrame
             // Status bar frame is in screen coordinates.
             let statusBarHeight = min(statusBarFrame.width, statusBarFrame.height)
             let typicalStatusBarHeight: CGFloat = 20
@@ -266,17 +266,17 @@ final class ImageViewController: UIViewController {
             scrollView.contentInset = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
         }
         
-        func setOverlayHidden(hidden: Bool, animated: Bool) {
+        func setOverlayHidden(_ hidden: Bool, animated: Bool) {
             overlayHidden = hidden
             
             for button in overlayButtons {
-                button.enabled = !hidden
+                button.isEnabled = !hidden
             }
             
             cancelHideOverlayAfterDelay()
             
             let duration = animated ? 0.3 : 0
-            UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .BeginFromCurrentState, animations: {
+            UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .beginFromCurrentState, animations: {
                 self.nearestViewController?.setNeedsStatusBarAppearanceUpdate()
                 UIView.performWithoutAnimation {
                     self.layoutOverlay()
@@ -289,10 +289,10 @@ final class ImageViewController: UIViewController {
         }
         
         func hideOverlayAfterDelay() {
-            hideOverlayTimer = NSTimer.scheduledTimerWithTimeInterval(3, target: self, selector: #selector(RootView.hideOverlayTimerDidFire(_:)), userInfo: nil, repeats: false)
+            hideOverlayTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(RootView.hideOverlayTimerDidFire(_:)), userInfo: nil, repeats: false)
         }
         
-        @objc private func hideOverlayTimerDidFire(timer: NSTimer) {
+        @objc fileprivate func hideOverlayTimerDidFire(_ timer: Timer) {
             setOverlayHidden(true, animated: true)
         }
         
@@ -303,31 +303,31 @@ final class ImageViewController: UIViewController {
         
         // MARK: Gesture recognizers
         
-        @IBAction @objc private func didTapImage(sender: UITapGestureRecognizer) {
-            if sender.state == .Ended {
+        @IBAction @objc fileprivate func didTapImage(_ sender: UITapGestureRecognizer) {
+            if sender.state == .ended {
                 setOverlayHidden(!overlayHidden, animated: true)
             }
         }
         
-        private var panStart: NSTimeInterval = 0
+        fileprivate var panStart: TimeInterval = 0
         
-        @IBAction @objc private func didPanToDismiss(sender: UIPanGestureRecognizer) {
+        @IBAction @objc fileprivate func didPanToDismiss(_ sender: UIPanGestureRecognizer) {
             switch sender.state {
-            case .Began:
-                panStart = NSProcessInfo.processInfo().systemUptime
+            case .began:
+                panStart = ProcessInfo.processInfo.systemUptime
                 
-            case .Changed:
-                let velocity = sender.velocityInView(self)
+            case .changed:
+                let velocity = sender.velocity(in: self)
                 if velocity.y < 0 || abs(velocity.x) > abs(velocity.y) {
-                    sender.enabled = false
-                    sender.enabled = true
+                    sender.isEnabled = false
+                    sender.isEnabled = true
                 }
                 
-            case .Ended:
-                let translation = sender.translationInView(self)
+            case .ended:
+                let translation = sender.translation(in: self)
                 if abs(translation.x) < 30 {
                     if translation.y > 60 {
-                        if NSProcessInfo.processInfo().systemUptime - panStart < 0.5 {
+                        if ProcessInfo.processInfo.systemUptime - panStart < 0.5 {
                             panToDismissAction?()
                         }
                     }
@@ -338,14 +338,14 @@ final class ImageViewController: UIViewController {
             }
         }
         
-        @IBAction @objc private func didDoubleTap(sender: UITapGestureRecognizer) {
+        @IBAction @objc fileprivate func didDoubleTap(_ sender: UITapGestureRecognizer) {
             cancelHideOverlayAfterDelay()
             
             if scrollView.zoomScale == scrollView.minimumZoomScale {
-                let midpoint = sender.locationInView(scrollView)
+                let midpoint = sender.location(in: scrollView)
                 let halfSize = CGSize(width: scrollView.contentSize.width / 2, height: scrollView.contentSize.height / 2)
-                let quarterImageCenteredAtMidpoint = CGRect(origin: midpoint, size: CGSizeZero).insetBy(dx: -halfSize.width / 2, dy: -halfSize.height / 2)
-                scrollView.zoomToRect(quarterImageCenteredAtMidpoint, animated: true)
+                let quarterImageCenteredAtMidpoint = CGRect(origin: midpoint, size: .zero).insetBy(dx: -halfSize.width / 2, dy: -halfSize.height / 2)
+                scrollView.zoom(to: quarterImageCenteredAtMidpoint, animated: true)
             } else {
                 scrollView.setZoomScale(1, animated: true)
             }
@@ -353,7 +353,7 @@ final class ImageViewController: UIViewController {
         
         // MARK: UIGestureRecognizerDelegate
         
-        @objc private func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        @objc fileprivate func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             if gestureRecognizer == panToDismiss {
                 return otherGestureRecognizer is UIPanGestureRecognizer
             }
@@ -363,11 +363,11 @@ final class ImageViewController: UIViewController {
         
         // MARK: UIScrollViewDelegate
         
-        @objc func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        @objc func viewForZooming(in scrollView: UIScrollView) -> UIView? {
             return imageView
         }
         
-        @objc func scrollViewDidZoom(scrollView: UIScrollView) {
+        @objc func scrollViewDidZoom(_ scrollView: UIScrollView) {
             centerImageInScrollView()
             
             // Setting the scroll view zoom scale can trigger a didZoom delegate call, which can cause us to hide the overlay almost immediately after becoming visible. So check for a completed scroll view configuration too.
@@ -380,8 +380,8 @@ final class ImageViewController: UIViewController {
     override func loadView() {
         view = RootView()
         
-        rootView.doneButton.addTarget(self, action: #selector(didTapDone), forControlEvents: .TouchUpInside)
-        rootView.actionButton.addTarget(self, action: #selector(didTapAction), forControlEvents: .TouchUpInside)
+        rootView.doneButton.addTarget(self, action: #selector(didTapDone), for: .touchUpInside)
+        rootView.actionButton.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
         
         rootView.panToDismissAction = { [weak self] in self?.dismiss(); return }
     }
@@ -396,7 +396,7 @@ final class ImageViewController: UIViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if image != nil {
@@ -406,63 +406,63 @@ final class ImageViewController: UIViewController {
 }
 
 private enum DecodedImage {
-    case Animated(FLAnimatedImage)
-    case Static(image: UIImage, data: NSData)
-    case Error(NSError)
+    case animated(FLAnimatedImage)
+    case `static`(image: UIImage, data: Data)
+    case error(Error)
     
-    var data: NSData? {
+    var data: Data? {
         switch self {
-        case let .Animated(animatedImage): return animatedImage.data
-        case let .Static(_, data: data): return data
-        case .Error: return nil
+        case let .animated(animatedImage): return animatedImage.data
+        case let .static(_, data: data): return data
+        case .error: return nil
         }
     }
     
     var size: CGSize? {
         switch self {
-        case let .Animated(animatedImage): return animatedImage.size
-        case let .Static(image: image, _): return image.size
-        case .Error: return nil
+        case let .animated(animatedImage): return animatedImage.size
+        case let .static(image: image, _): return image.size
+        case .error: return nil
         }
     }
 }
 
 /// Downloads and decodes the image at the URL. Completion is called on the main thread.
-private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSProgress {
-    let done: DecodedImage -> () = { image in
-        dispatch_async(dispatch_get_main_queue()) {
+private func downloadImage(_ url: URL, completion: @escaping (DecodedImage) -> Void) -> Progress {
+    let done: (DecodedImage) -> Void = { image in
+        DispatchQueue.main.async {
             completion(image)
         }
     }
     
-    let progress = NSProgress(totalUnitCount: 2)
+    let progress = Progress(totalUnitCount: 2)
     
-    let request = NSMutableURLRequest(URL: URL)
+    var request = URLRequest(url: url)
     request.addValue("image/*", forHTTPHeaderField: "Accept")
     
-    let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
+    let task = URLSession.shared.dataTask(with: request, completionHandler: { (data: Data?, response: URLResponse?, error: Error?) in
         progress.completedUnitCount += 1
         
         if let error = error {
-            return done(.Error(error))
+            return done(.error(error))
         }
         
-        if let response = response as? NSHTTPURLResponse {
+        if let response = response as? HTTPURLResponse {
             if !(200...299).contains(response.statusCode) {
                 let error = NSError(domain: AwfulErrorDomain, code: AwfulErrorCodes.badServerResponse, userInfo: [
                     NSLocalizedDescriptionKey: "Request failed (\(response.statusCode))",
-                    NSURLErrorFailingURLErrorKey: URL
+                    NSURLErrorFailingURLErrorKey: url
                     ])
-                return done(.Error(error))
+                return done(.error(error))
             }
         }
         
         if let data = data {
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
                 if let animatedImage = FLAnimatedImage(animatedGIFData: data) {
                     progress.completedUnitCount += 1
                     
-                    return done(.Animated(animatedImage))
+                    return done(.animated(animatedImage))
                 }
                 
                 if let image = UIImage(data: data) {
@@ -470,34 +470,34 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
                     
                     UIGraphicsBeginImageContextWithOptions(image.size, false, 1)
                     
-                    image.drawInRect(CGRect(origin: CGPointZero, size: image.size))
+                    image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
                     
-                    if progress.cancelled {
+                    if progress.isCancelled {
                         UIGraphicsEndImageContext()
                         
                         let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
-                        return done(.Error(error))
+                        return done(.error(error))
                     }
                     
-                    let decodedImage = UIGraphicsGetImageFromCurrentImageContext()
+                    let decodedImage = UIGraphicsGetImageFromCurrentImageContext()!
                     
                     UIGraphicsEndImageContext()
                     
                     progress.completedUnitCount += 1
                     
-                    return done(.Static(image: decodedImage, data: data))
+                    return done(.static(image: decodedImage, data: data))
                 }
                 
                 let error = NSError(domain: AwfulErrorDomain, code: AwfulErrorCodes.badServerResponse, userInfo: [
                     NSLocalizedDescriptionKey: "Request failed (no image data)",
-                    NSURLErrorFailingURLErrorKey: URL
+                    NSURLErrorFailingURLErrorKey: url
                     ])
-                return done(.Error(error))
+                return done(.error(error))
             }
         } else {
             fatalError("No data and no error in data task callback")
         }
-    }
+    }) 
     task.resume()
     
     progress.cancellationHandler = { task.cancel() }
@@ -506,35 +506,35 @@ private func downloadImage(URL: NSURL, completion: DecodedImage -> Void) -> NSPr
 
 /// Adds a "Preview Image" activity which uses an ImageViewController. Add the activity both as an application activity and as one of the activity items.
 final class ImagePreviewActivity: UIActivity {
-    let imageURL: NSURL
+    let imageURL: URL
     
-    init(imageURL: NSURL) {
+    init(imageURL: URL) {
         self.imageURL = imageURL
         super.init()
     }
     
-    override func activityViewController() -> UIViewController? {
+    override var activityViewController : UIViewController? {
         return _activityViewController
     }
-    private var _activityViewController: UIViewController?
+    fileprivate var _activityViewController: UIViewController?
     
-    override func activityType() -> String? {
-        return "com.awfulapp.Awful.ImagePreview"
+    override var activityType: UIActivityType? {
+        return UIActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
     }
     
-    override func activityTitle() -> String? {
+    override var activityTitle: String? {
         return "Preview Image"
     }
     
-    override func activityImage() -> UIImage? {
+    override var activityImage: UIImage? {
         return UIImage(named: "quick-look")
     }
     
-    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return any(activityItems) { $0 as! NSObject == self }
     }
     
-    override func prepareWithActivityItems(activityItems: [AnyObject]) {
+    override func prepare(withActivityItems activityItems: [Any]) {
         let imageViewController = ImageViewController(imageURL: imageURL)
         imageViewController.doneAction = { self.activityDidFinish(true) }
         _activityViewController = imageViewController

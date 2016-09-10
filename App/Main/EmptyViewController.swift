@@ -4,7 +4,7 @@
 
 /// An EmptyViewController sets its view's background color per its theme, and opens the split view's primary view controller when it first appears.
 final class EmptyViewController: ViewController {
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         splitViewController?.showPrimaryViewController()

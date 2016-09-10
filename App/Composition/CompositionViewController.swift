@@ -19,7 +19,7 @@ final class CompositionViewController: ViewController {
         }
     }
     
-    @objc private func didTapCancel() {
+    @objc fileprivate func didTapCancel() {
         dismiss(animated: true, completion: nil)
     }
     
@@ -40,9 +40,9 @@ final class CompositionViewController: ViewController {
         textView.inputAccessoryView = BBcodeBar
     }
     
-    private var keyboardAvoider: ScrollViewKeyboardAvoider?
-    private var BBcodeBar: CompositionInputAccessoryView?
-    private var menuTree: CompositionMenuTree?
+    fileprivate var keyboardAvoider: ScrollViewKeyboardAvoider?
+    fileprivate var BBcodeBar: CompositionInputAccessoryView?
+    fileprivate var menuTree: CompositionMenuTree?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,7 +101,7 @@ extension CompositionViewController: UIViewControllerRestoration {
 final class CompositionTextView: UITextView, CompositionHidesMenuItems {
     var hidesBuiltInMenuItems: Bool = false
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         if hidesBuiltInMenuItems {
             return false
         }
