@@ -26,13 +26,13 @@ public class User: AwfulManagedObject {
 
 extension User {
     // TODO this is very stupid, just handle it during scraping
-    public var avatarURL: NSURL? {
+    public var avatarURL: URL? {
         if let HTML = customTitleHTML {
             if let element = avatarImageElement(customTitleHTML: HTML) {
-                if let url = element.objectForKeyedSubscript("data-cfsrc") as! String! {
-                    return NSURL(string: url)
-                } else if let url = element.objectForKeyedSubscript("src") as! String! {
-                    return NSURL(string: url)
+                if let url = element.objectForKeyedSubscript("data-cfsrc") as! String? {
+                    return URL(string: url)
+                } else if let url = element.objectForKeyedSubscript("src") as! String? {
+                    return URL(string: url)
                 }
                 return nil
             }

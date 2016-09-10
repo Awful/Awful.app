@@ -6,8 +6,8 @@ import XCTest
 import AwfulCore
 
 final class FormScrapingTests: ScrapingTestCase {
-    private func scrapeFormFixtureNamed(fixtureName: String) -> AwfulForm {
-        let document = fixtureNamed(basename: fixtureName)
+    fileprivate func scrapeFormFixtureNamed(_ fixtureName: String) -> AwfulForm {
+        let document = fixtureNamed(fixtureName)
         let formElement = document.firstNode(matchingSelector: "form[name='vbform']")
         let form = AwfulForm(element: formElement)
         form?.scrapeThreadTags(into: managedObjectContext)
@@ -22,7 +22,7 @@ final class FormScrapingTests: ScrapingTestCase {
     }
 
     func testReply() {
-        let form = scrapeFormFixtureNamed(fixtureName: "newreply")
+        let form = scrapeFormFixtureNamed("newreply")
         XCTAssertTrue(form.threadTags == nil)
         let parameters = form.recommendedParameters()
         XCTAssertEqual((parameters?["action"] as! String), "postreply")
@@ -37,14 +37,14 @@ final class FormScrapingTests: ScrapingTestCase {
     }
 
     func testReplyWithAmazonSearch() {
-        let form = scrapeFormFixtureNamed(fixtureName: "newreply-amazon-form")
+        let form = scrapeFormFixtureNamed("newreply-amazon-form")
         XCTAssertNotNil(form.recommendedParameters()["threadid"])
     }
 
     func testThread() {
-        let form = scrapeFormFixtureNamed(fixtureName: "newthread")
+        let form = scrapeFormFixtureNamed("newthread")
         XCTAssertTrue(form.threadTags.count == 51)
-        XCTAssertEqual(fetchAll(type: ThreadTag.self, inContext: managedObjectContext).count, form.threadTags.count)
+        XCTAssertEqual(fetchAll(ThreadTag.self, inContext: managedObjectContext).count, form.threadTags.count)
         XCTAssertTrue(form.secondaryThreadTags == nil)
         let parameters = form.allParameters
         XCTAssertNotNil(parameters?["subject"])
@@ -58,24 +58,24 @@ final class FormScrapingTests: ScrapingTestCase {
     }
     
     func testAskTellThread() {
-        let form = scrapeFormFixtureNamed(fixtureName: "newthread-at")
+        let form = scrapeFormFixtureNamed("newthread-at")
         XCTAssertTrue(form.threadTags.count == 55)
         XCTAssertTrue(form.secondaryThreadTags.count == 2)
-        let secondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
+        let secondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName IN { 'ama', 'tma' }"))
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count);
     }
     
     func testSAMartThread() {
-        let form = scrapeFormFixtureNamed(fixtureName: "newthread-samart")
+        let form = scrapeFormFixtureNamed("newthread-samart")
         XCTAssertTrue(form.threadTags.count == 69)
         XCTAssertTrue(form.secondaryThreadTags.count == 4)
-        let possibleSecondaryTags = fetchAll(type: ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
+        let possibleSecondaryTags = fetchAll(ThreadTag.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "imageName LIKE 'icon*ing'"))
         let secondaryTags = possibleSecondaryTags.filter { Int($0.threadTagID!)! < 5 }
         XCTAssertEqual(secondaryTags.count, form.secondaryThreadTags.count)
     }
     
     func testMessage() {
-        let form = scrapeFormFixtureNamed(fixtureName: "private-reply")
+        let form = scrapeFormFixtureNamed("private-reply")
         let parameters = form.allParameters
         XCTAssertNotNil(parameters?["message"])
         XCTAssertTrue((parameters?["message"] as! String).range(of: "InFlames235 wrote") != nil)

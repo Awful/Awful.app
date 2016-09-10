@@ -11,11 +11,11 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
     }
     
     func testFirstPage() {
-        let scraper = scrapeFixtureNamed(fixtureName: "banlist") as! LepersColonyPageScraper
+        let scraper = scrapeFixtureNamed("banlist") as! LepersColonyPageScraper
         let punishments = scraper.punishments as! [Punishment]
         XCTAssert(punishments.count == 50)
-        XCTAssert(fetchAll(type: User.self, inContext: managedObjectContext).count == 71)
-        XCTAssert(fetchAll(type: Post.self, inContext: managedObjectContext).count == 46)
+        XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 71)
+        XCTAssert(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
         
         let first = punishments[0]
         XCTAssert(first.sentence == PunishmentSentence.Probation)

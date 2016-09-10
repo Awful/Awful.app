@@ -11,10 +11,10 @@ final class PrivateMessageScrapingTests: ScrapingTestCase {
     }
     
     func testSingleMessage() {
-        let scraper = scrapeFixtureNamed(fixtureName: "private-one") as! PrivateMessageScraper
+        let scraper = scrapeFixtureNamed("private-one") as! PrivateMessageScraper
         let message = scraper.privateMessage
-        XCTAssert(fetchAll(type: PrivateMessage.self, inContext: managedObjectContext).count == 1)
-        XCTAssert(fetchAll(type: User.self, inContext: managedObjectContext).count == 1)
+        XCTAssert(fetchAll(PrivateMessage.self, inContext: managedObjectContext).count == 1)
+        XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         
         XCTAssert(message?.messageID == "4601162")
         XCTAssert(message?.subject == "Awful app")

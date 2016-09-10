@@ -9,12 +9,12 @@ import CoreData
 class ScrapingTestCase: XCTestCase {
     var managedObjectContext: NSManagedObjectContext!
     
-    private var storeCoordinator: NSPersistentStoreCoordinator = {
+    fileprivate var storeCoordinator: NSPersistentStoreCoordinator = {
         let modelURL = Bundle(for: AwfulManagedObject.self).url(forResource: "Awful", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: modelURL)!
         return NSPersistentStoreCoordinator(managedObjectModel: model)
         }()
-    private var memoryStore: NSPersistentStore!
+    fileprivate var memoryStore: NSPersistentStore!
     
     class func scraperClass() -> AnyClass {
         fatalError("subclass implementation please")
@@ -48,8 +48,8 @@ class ScrapingTestCase: XCTestCase {
         super.tearDown()
     }
     
-    func scrapeFixtureNamed(fixtureName: String) -> AwfulScraper {
-        let document = fixtureNamed(basename: fixtureName)
+    func scrapeFixtureNamed(_ fixtureName: String) -> AwfulScraper {
+        let document = fixtureNamed(fixtureName)
         let scraperClass = type(of: self).scraperClass() as! AwfulScraper.Type
         let scraper = scraperClass.scrape(document, into: managedObjectContext)
         assert(scraper?.error == nil, "error scraping \(scraperClass): \(scraper?.error)")

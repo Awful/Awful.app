@@ -6,12 +6,26 @@ import Foundation
 
 public extension NSURL {
     var awful_queryDictionary: [String: String] {
-        guard let components = NSURLComponents(url: self as URL, resolvingAgainstBaseURL: true), let queryItems = components.queryItems
-            else { return [:] }
-        return queryItems.reduce([:]) { acc, item in
-            var acc = acc
-            acc[item.name] = item.value ?? ""
-            return acc
-        }
+        guard let absoluteString = absoluteString else { return [:] }
+        return extractQueryDictionary(from: absoluteString)
+    }
+}
+
+public extension URL {
+    var awful_queryDictionary: [String: String] {
+        return extractQueryDictionary(from: absoluteString)
+    }
+}
+
+private func extractQueryDictionary(from: String) -> [String: String] {
+    guard
+        let url = URL(string: from),
+        let components = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
+        let queryItems = components.queryItems
+        else { return [:] }
+    return queryItems.reduce([:]) { acc, item in
+        var acc = acc
+        acc[item.name] = item.value ?? ""
+        return acc
     }
 }

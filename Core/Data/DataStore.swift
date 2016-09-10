@@ -7,7 +7,7 @@ import UIKit
 
 public final class DataStore: NSObject {
     /// A directory in which the store is saved. Since stores can span multiple files, a directory is required.
-    let storeDirectoryURL: NSURL
+    let storeDirectoryURL: URL
     
     /// A main-queue-concurrency-type context that is automatically saved when the application enters the background.
     public let mainManagedObjectContext: NSManagedObjectContext
@@ -18,10 +18,10 @@ public final class DataStore: NSObject {
     /**
     :param: storeDirectoryURL A directory to save the store. Created if it doesn't already exist. The directory will be excluded from backups to iCloud or iTunes.
     */
-    public init(storeDirectoryURL: NSURL, modelURL: NSURL) {
+    public init(storeDirectoryURL: URL, modelURL: URL) {
         self.storeDirectoryURL = storeDirectoryURL
         mainManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        let model = NSManagedObjectModel(contentsOf: modelURL as URL)!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
         storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
         mainManagedObjectContext.persistentStoreCoordinator = storeCoordinator
         lastModifiedObserver = LastModifiedContextObserver(managedObjectContext: mainManagedObjectContext)
@@ -74,14 +74,17 @@ public final class DataStore: NSObject {
         let fileManager = FileManager.default
 
         do {
-            try fileManager.createDirectory(at:storeDirectoryURL as URL, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(at:storeDirectoryURL, withIntermediateDirectories: true, attributes: nil)
         }
         catch {
             fatalError("could not create directory at \(storeDirectoryURL): \(error)")
         }
         
         do {
-            try storeDirectoryURL.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
+            var resourceValues = URLResourceValues()
+            resourceValues.isExcludedFromBackup = true
+            var mutableStoreDirectoryURL = storeDirectoryURL
+            try mutableStoreDirectoryURL.setResourceValues(resourceValues)
         }
         catch {
             NSLog("[\(Mirror(reflecting: self)) \(#function)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
