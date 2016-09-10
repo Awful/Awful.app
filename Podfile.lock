@@ -65,7 +65,7 @@ DEPENDENCIES:
   - KVOController (= 1.0.3)
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
-  - PullToRefresher (= 1.4.0)
+  - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
   - TUSafariActivity (= 1.0.4)
   - WebViewJavascriptBridge (= 4.1.4)
 
@@ -73,11 +73,17 @@ EXTERNAL SOURCES:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
+    :git: https://github.com/marlontojal/PullToRefresh
 
 CHECKOUT OPTIONS:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
+    :git: https://github.com/marlontojal/PullToRefresh
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
@@ -95,6 +101,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: e41be21efe91127d6dd4d5bfb919cf9414df89fa
+PODFILE CHECKSUM: d48e1701ab838d470b6b1b0e04f6fed0fa466413
 
 COCOAPODS: 1.0.1

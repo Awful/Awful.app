@@ -22,19 +22,19 @@ class DefaultRefreshView: UIView {
             }()
         }
         centerActivityIndicator()
-        setupFrameInSuperview(newSuperview: superview)
+        setupFrameInSuperview(superview)
         super.layoutSubviews()
     }
     
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        setupFrameInSuperview(newSuperview: superview)
+        setupFrameInSuperview(superview)
     }
 }
 
 private extension DefaultRefreshView {
     
-    func setupFrameInSuperview(newSuperview: UIView?) {
+    func setupFrameInSuperview(_ newSuperview: UIView?) {
         if let superview = newSuperview {
             frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: superview.frame.width, height: frame.height)
         }
