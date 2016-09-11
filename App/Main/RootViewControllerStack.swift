@@ -103,8 +103,8 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     }
     
     @objc fileprivate func settingsDidChange(_ notification: Notification) {
-        let userInfo = (notification as NSNotification).userInfo as! [String:String]
-        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]!
+        let userInfo = (notification).userInfo!
+        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]! as! String
         if changeKey == AwfulSettingsKeys.canSendPrivateMessages.takeUnretainedValue() as String {
             updateMessagesTabPresence()
         } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape.takeUnretainedValue() as String {

@@ -518,7 +518,7 @@ final class ImagePreviewActivity: UIActivity {
     }
     fileprivate var _activityViewController: UIViewController?
     
-    override var activityType: UIActivityType? {
+    override var activityType: UIActivityType {
         return UIActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
     }
     
