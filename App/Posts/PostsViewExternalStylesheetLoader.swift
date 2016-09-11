@@ -72,7 +72,9 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                     return
                 }
                 
-                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path)
+                if let response = response {
+                    NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path)
+                }
                 
                 self.reloadCachedStylesheet()
                 
