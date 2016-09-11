@@ -14,4 +14,4 @@ minor:
 	Xcode/version-bump.rb minor
 
 test:
-	set -o pipefail && xcodebuild -scheme Awful -configuration Release -sdk iphonesimulator test | xcpretty -c
+	set -o pipefail && xcodebuild -scheme Awful -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.0' test | xcpretty -c
