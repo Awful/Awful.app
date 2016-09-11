@@ -29,15 +29,11 @@ public final class DataStore: NSObject {
         
         loadPersistentStore()
         let noteCenter = NotificationCenter.default
-        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
-        noteCenter.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidBecomeActive(_:)), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
+        noteCenter.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        noteCenter.addObserver(self, selector: #selector(applicationDidBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc private func applicationDidEnterBackground(notification: NSNotification) {
+    @objc private func applicationDidEnterBackground(notification: Notification) {
         invalidatePruneTimer()
         
         do {
@@ -48,7 +44,7 @@ public final class DataStore: NSObject {
         }
     }
     
-    @objc private func applicationDidBecomeActive(notification: NSNotification) {
+    @objc private func applicationDidBecomeActive(notification: Notification) {
         invalidatePruneTimer()
         // Since pruning could potentially take a noticeable amount of time, and there's no real rush, let's schedule it for a little bit after becoming active.
         pruneTimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(DataStore.pruneTimerDidFire(timer:)), userInfo: nil, repeats: false)
