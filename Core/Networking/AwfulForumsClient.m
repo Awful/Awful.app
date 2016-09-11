@@ -276,7 +276,7 @@
             if (scraper.threads && !error) {
                 if (page == 1) {
                     NSMutableSet *threadsToForget = [scraper.forum.threads mutableCopy];
-                    for (AwfulThread *thread in scraper.threads) {
+                    for (Thread *thread in scraper.threads) {
                         [threadsToForget removeObject:thread];
                     }
                     [threadsToForget setValue:@(0) forKey:@"threadListPage"];
@@ -315,7 +315,7 @@
             if (scraper.threads && !error) {
                 [scraper.threads setValue:@YES forKey:@"bookmarked"];
                 NSArray *threadIDsToIgnore = [scraper.threads valueForKey:@"threadID"];
-                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:AwfulThread.entityName];
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:Thread.entityName];
                 fetchRequest.predicate = [NSPredicate predicateWithFormat:@"bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", (long)page, threadIDsToIgnore];
                 NSError *error;
                 NSArray *threadsToForget = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -340,7 +340,7 @@
     }];
 }
 
-- (NSOperation *)setThread:(AwfulThread *)thread
+- (NSOperation *)setThread:(Thread *)thread
               isBookmarked:(BOOL)isBookmarked
                    andThen:(void (^)(NSError *error))callback
 {
@@ -364,7 +364,7 @@
     }];
 }
 
-- (NSOperation *)rateThread:(AwfulThread *)thread
+- (NSOperation *)rateThread:(Thread *)thread
                            :(NSInteger)rating
                     andThen:(void (^)(NSError *error))callback
 {
@@ -394,7 +394,7 @@
     }];
 }
 
-- (NSOperation *)markThreadUnread:(AwfulThread *)thread
+- (NSOperation *)markThreadUnread:(Thread *)thread
                           andThen:(void (^)(NSError *error))callback
 {
     return [_HTTPManager POST:@"showthread.php"
@@ -447,7 +447,7 @@
                          threadTag:(ThreadTag *)threadTag
                       secondaryTag:(ThreadTag *)secondaryTag
                             BBcode:(NSString *)text
-                           andThen:(void (^)(NSError *error, AwfulThread *thread))callback
+                           andThen:(void (^)(NSError *error, Thread *thread))callback
 {
     NSManagedObjectContext *managedObjectContext = _backgroundManagedObjectContext;
     NSManagedObjectContext *mainManagedObjectContext = _managedObjectContext;
@@ -503,10 +503,10 @@
                  NSURL *URL = [NSURL URLWithString:link[@"href"]];
                  NSString *threadID = URL.awful_queryDictionary[@"threadid"];
                  NSError *error;
-                 AwfulThread *thread;
+                 Thread *thread;
                  if (threadID.length > 0) {
                      ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
-                     thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];
+                     thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:mainManagedObjectContext];
                  } else {
                      error = [NSError errorWithDomain:AwfulCoreError.domain code:AwfulCoreError.parseError userInfo:@{ NSLocalizedDescriptionKey: @"The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."}];
                  }
@@ -549,7 +549,7 @@
 
 #pragma mark - Posts
 
-- (NSOperation *)listPostsInThread:(AwfulThread *)thread
+- (NSOperation *)listPostsInThread:(Thread *)thread
                          writtenBy:(User *)author
                             onPage:(NSInteger)page
                 updateLastReadPost:(BOOL)updateLastReadPost
@@ -663,7 +663,7 @@
     }];
 }
 
-- (NSOperation *)replyToThread:(AwfulThread *)thread
+- (NSOperation *)replyToThread:(Thread *)thread
                     withBBcode:(NSString *)text
                        andThen:(void (^)(NSError *error, Post *post))callback
 {
@@ -723,7 +723,7 @@
     }];
 }
 
-- (NSOperation *)previewReplyToThread:(AwfulThread *)thread
+- (NSOperation *)previewReplyToThread:(Thread *)thread
                            withBBcode:(NSString *)BBcode
                               andThen:(void (^)(NSError *error, NSString *postHTML))callback
 {
@@ -947,7 +947,7 @@ static void WorkAroundAnnoyingImageBBcodeTagNotMatchingInPostHTML(HTMLElement *p
                 PostKey *postKey = [[PostKey alloc] initWithPostID:postID];
                 Post *post = [Post objectForKeyWithObjectKey:postKey inManagedObjectContext:managedObjectContext];
                 ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:query[@"threadid"]];
-                post.thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:managedObjectContext];
+                post.thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:managedObjectContext];
                 NSError *error;
                 BOOL ok = [managedObjectContext save:&error];
                 if (callback) {

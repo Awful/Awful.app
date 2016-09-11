@@ -10,7 +10,7 @@
 
 @interface AwfulPostsPageScraper ()
 
-@property (strong, nonatomic) AwfulThread *thread;
+@property (strong, nonatomic) Thread *thread;
 
 @property (copy, nonatomic) NSArray *posts;
 
@@ -37,7 +37,7 @@
     }
     
     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
-    self.thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:self.managedObjectContext];
+    self.thread = [Thread objectForKeyWithObjectKey:threadKey inManagedObjectContext:self.managedObjectContext];
     ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
     Forum *forum = [Forum objectForKeyWithObjectKey:forumKey inManagedObjectContext:self.managedObjectContext];
     self.thread.forum = forum;
