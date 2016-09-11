@@ -46,11 +46,26 @@
 
 @end
 
+@interface ImgurAnonymousAPIClient ()
+
++ (ALAssetsLibrary *)sharedAssetsLibrary;
+
+@end
+
 #endif
 
 @implementation ImgurAnonymousAPIClient
 {
     AFHTTPSessionManager *_session;
+}
+
++ (ALAssetsLibrary *)sharedAssetsLibrary {
+    static ALAssetsLibrary *sharedLib = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedLib = [ALAssetsLibrary new];
+    });
+    return sharedLib;
 }
 
 - (id)initWithClientID:(NSString *)clientID
@@ -205,7 +220,7 @@ static const CGFloat ArbitraryMaximumPixelWidthToAvoidRunningOutOfMemoryAndCrash
                  completionHandler:(void (^)(NSURL *imgurURL, NSError *error))completionHandler
 {
     dispatch_semaphore_t flag = dispatch_semaphore_create(0);
-    ALAssetsLibrary *library = [ALAssetsLibrary new];
+    ALAssetsLibrary *library = [ImgurAnonymousAPIClient sharedAssetsLibrary];
     __block ALAssetRepresentation *representation;
     __block NSError *underlyingError;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -493,7 +508,7 @@ static BOOL FilenameSuggestsJPEG(NSString *filename)
 {
     self.streamStatus = NSStreamStatusOpening;
     dispatch_semaphore_t flag = dispatch_semaphore_create(0);
-    _library = [ALAssetsLibrary new];
+    _library = [ImgurAnonymousAPIClient sharedAssetsLibrary];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [_library assetForURL:self.assetURL resultBlock:^(ALAsset *asset) {
             if (asset) {
