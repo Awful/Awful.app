@@ -59,9 +59,9 @@ final class PostsViewExternalStylesheetLoader: NSObject {
             }, completionHandler: { (response, filePath, error) in
                 self.checkingForUpdate = false
                 
-                if let
-                    HTTPResponse = (error as? NSError)?.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse
-                    , HTTPResponse.statusCode == 304
+                if
+                    let HTTPResponse = (error as NSError?)?.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                    HTTPResponse.statusCode == 304
                 {
                     RefreshMinder.sharedMinder.didRefresh(.externalStylesheet)
                     return
