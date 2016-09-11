@@ -10,7 +10,7 @@
 
 @interface AwfulPostsPageScraper ()
 
-@property (strong, nonatomic) Thread *thread;
+@property (strong, nonatomic) AwfulThread *thread;
 
 @property (copy, nonatomic) NSArray *posts;
 
@@ -37,9 +37,9 @@
     }
     
     ThreadKey *threadKey = [[ThreadKey alloc] initWithThreadID:threadID];
-    self.thread = [Thread objectForKey:threadKey inManagedObjectContext:self.managedObjectContext];
+    self.thread = [AwfulThread objectForKeyWithObjectKey:threadKey inManagedObjectContext:self.managedObjectContext];
     ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
-    Forum *forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
+    Forum *forum = [Forum objectForKeyWithObjectKey:forumKey inManagedObjectContext:self.managedObjectContext];
     self.thread.forum = forum;
     
     if (!self.thread.threadID && [body firstNodeMatchingSelector:@"div.standard div.inner a[href*=archives.php]"]) {
@@ -62,14 +62,14 @@
         HTMLElement *groupLink = hierarchyLinks.firstObject;
         NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
         ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:URL.awful_queryDictionary[@"forumid"]];
-        ForumGroup *group = [ForumGroup objectForKey:groupKey inManagedObjectContext:self.managedObjectContext];
+        ForumGroup *group = [ForumGroup objectForKeyWithObjectKey:groupKey inManagedObjectContext:self.managedObjectContext];
         group.name = groupLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 2)];
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.awful_queryDictionary[@"forumid"]];
-            Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
+            Forum *subforum = [Forum objectForKeyWithObjectKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
             currentForum.parentForum = subforum;
@@ -129,7 +129,7 @@
         AuthorScraper *authorScraper = [AuthorScraper scrapeNode:table intoManagedObjectContext:self.managedObjectContext];
         [authorScrapers addObject:authorScraper];
     }
-    NSArray *posts = [Post objectsForKeys:postKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *posts = [Post objectsForKeysWithObjectKeys:postKeys inManagedObjectContext:self.managedObjectContext];
     
     NSMutableArray *userKeys = [NSMutableArray new];
     for (AuthorScraper *authorScraper in authorScrapers) {
@@ -137,7 +137,7 @@
             [userKeys addObject:[[UserKey alloc] initWithUserID:authorScraper.userID username:authorScraper.username]];
         }
     }
-    NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *users = [User objectsForKeysWithObjectKeys:userKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     
     __block Post *firstUnseenPost;
@@ -226,7 +226,7 @@
     }
     
     if (singleUserFilterEnabled) {
-        [self.thread setFilteredNumberOfPages:numberOfPages forAuthor:lastPost.author];
+        [self.thread setFilteredNumberOfPagesWithNumberOfPages:numberOfPages forAuthor:lastPost.author];
     } else {
         self.thread.numberOfPages = numberOfPages;
     }

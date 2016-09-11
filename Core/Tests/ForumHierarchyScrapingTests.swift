@@ -13,7 +13,7 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
     func testHierarchy() {
         let _ = scrapeFixtureNamed("forumdisplay") as! AwfulForumHierarchyScraper
         let groups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        let groupNames = groups.map{$0.name!}.sort(<)
+        let groupNames = groups.map{$0.name!}.sorted()
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
         XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).count == 66)
         
@@ -46,7 +46,7 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
     /// This is a thing that can happen sometimes, and it made the app crash.
     func testDropdownOnlyHasSections() {
         let document = fixtureNamed("forumdisplay3")
-        let scraper = AwfulForumHierarchyScraper.scrapeNode(document, intoManagedObjectContext: managedObjectContext)
-        XCTAssert(scraper.error != nil)
+        let scraper = AwfulForumHierarchyScraper.scrape(document, into: managedObjectContext)
+        XCTAssert(scraper?.error != nil)
     }
 }

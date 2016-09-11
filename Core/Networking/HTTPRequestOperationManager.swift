@@ -14,13 +14,13 @@ import AFNetworking
     TODO: Only public so it appears in AwfulCore-Swift.h. Make internal once AwfulHTTPRequestOperationManager no longer needs an objc import.
  */
 public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
-    override init(baseURL: NSURL?) {
+    override public init(baseURL: URL?) {
         super.init(baseURL: baseURL)
         
         requestSerializer = HTMLRequestSerializer()
-        requestSerializer.stringEncoding = NSWindowsCP1252StringEncoding
+        requestSerializer.stringEncoding = String.Encoding.windowsCP1252.rawValue
         
-        responseSerializer = AFCompoundResponseSerializer.compoundSerializerWithResponseSerializers([AFJSONRequestSerializer(), HTMLResponseSerializer()])
+        responseSerializer = AFCompoundResponseSerializer.compoundSerializer(withResponseSerializers: [AFJSONRequestSerializer(), HTMLResponseSerializer()])
         
         reachabilityManager.startMonitoring()
     }
@@ -29,8 +29,8 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
         super.init(coder: coder)
     }
     
-    override public func HTTPRequestOperationWithRequest(request: NSURLRequest!, success: ((AFHTTPRequestOperation!, AnyObject!) -> Void)!, failure: ((AFHTTPRequestOperation!, NSError!) -> Void)!) -> AFHTTPRequestOperation! {
-        let operation = super.HTTPRequestOperationWithRequest(request, success: success, failure: failure)
+    override public func httpRequestOperation(with request: URLRequest!, success: ((AFHTTPRequestOperation?, Any?) -> Swift.Void)!, failure: ((AFHTTPRequestOperation?, Error?) -> Swift.Void)!) -> AFHTTPRequestOperation! {
+        let operation = super.httpRequestOperation(with: request as URLRequest!, success: success, failure: failure)
         
         /*
             NSURLConnection will, absent relevant HTTP headers, cache responses for an unknown and unfortunately long time.
@@ -39,14 +39,14 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
  
             This came up when using Awful from some public wi-fi that redirected to a login page. Six hours and a different network later, the same login page was being served up from the cache.
          */
-        guard request.HTTPMethod?.caseInsensitiveCompare("GET") == .OrderedSame else { return operation }
-        operation.setCacheResponseBlock { (connection, response) -> NSCachedURLResponse! in
-            guard connection.currentRequest.cachePolicy == .UseProtocolCachePolicy else { return response }
-            guard let HTTPResponse = response.response as? NSHTTPURLResponse else { return response }
+        guard request.httpMethod?.caseInsensitiveCompare("GET") == .orderedSame else { return operation }
+        operation?.setCacheResponseBlock { (connection, response) -> CachedURLResponse! in
+            guard connection?.currentRequest.cachePolicy == .useProtocolCachePolicy else { return response }
+            guard let HTTPResponse = response?.response as? HTTPURLResponse else { return response }
             let headers = HTTPResponse.allHeaderFields
             guard headers["Cache-Control"] == nil && headers["Expires"] == nil else { return response }
             
-            print("\(#function) refusing to cache response to \(request.URL)")
+            print("\(#function) refusing to cache response to \(request.url)")
             return nil
         }
         return operation

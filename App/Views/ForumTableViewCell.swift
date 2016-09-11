@@ -15,18 +15,18 @@ import UIKit
     var themeData: ThemeData! {
         didSet { applyThemeData(themeData) }
     }
-    var starButtonAction: (ForumTableViewCell -> Void)?
-    var disclosureButtonAction: (ForumTableViewCell -> Void)?
+    var starButtonAction: ((ForumTableViewCell) -> Void)?
+    var disclosureButtonAction: ((ForumTableViewCell) -> Void)?
     
-    @IBOutlet private weak var starButton: UIButton!
-    @IBOutlet private weak var nameLabel: UILabel!
-    @IBOutlet private weak var disclosureButton: UIButton!
-    @IBOutlet private weak var separator: HairlineView!
-    @IBOutlet private var nameLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet private var nameTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet fileprivate weak var starButton: UIButton!
+    @IBOutlet fileprivate weak var nameLabel: UILabel!
+    @IBOutlet fileprivate weak var disclosureButton: UIButton!
+    @IBOutlet fileprivate weak var separator: HairlineView!
+    @IBOutlet fileprivate var nameLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet fileprivate var nameTrailingConstraint: NSLayoutConstraint!
     
-    private var baseNameLeadingConstant: CGFloat = 0
-    private static let indentationLevelIncrease: CGFloat = 15
+    fileprivate var baseNameLeadingConstant: CGFloat = 0
+    fileprivate static let indentationLevelIncrease: CGFloat = 15
     var nameIndentationLevel: Int = 0 {
         didSet {
             let newConstant = baseNameLeadingConstant + ForumTableViewCell.indentationLevelIncrease * CGFloat(nameIndentationLevel)
@@ -38,45 +38,45 @@ import UIKit
         super.awakeFromNib()
         
         // Constraints we can't set in IB.
-        contentView.heightAnchor.constraintGreaterThanOrEqualToConstant(44).active = true
-        separator.trailingAnchor.constraintEqualToAnchor(trailingAnchor).active = true
+        contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        separator.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         
-        starButton.addTarget(self, action: #selector(ForumTableViewCell.didTapStarButton), forControlEvents: .TouchUpInside)
-        disclosureButton.addTarget(self, action: #selector(ForumTableViewCell.didTapDisclosureButton), forControlEvents: .TouchUpInside)
+        starButton.addTarget(self, action: #selector(ForumTableViewCell.didTapStarButton), for: .touchUpInside)
+        disclosureButton.addTarget(self, action: #selector(ForumTableViewCell.didTapDisclosureButton), for: .touchUpInside)
         
         baseNameLeadingConstant = nameLeadingConstraint.constant
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ForumTableViewCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ForumTableViewCell.contentSizeCategoryDidChange(_:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
     }
     
     // MARK: Actions
     
-    @objc private func didTapStarButton() {
+    @objc fileprivate func didTapStarButton() {
         starButtonAction?(self)
     }
     
-    @objc private func didTapDisclosureButton() {
+    @objc fileprivate func didTapDisclosureButton() {
         disclosureButtonAction?(self)
     }
     
     // MARK: Notifications
     
-    @objc private func contentSizeCategoryDidChange(notification: NSNotification) {
-        guard let style = nameLabel.font.fontDescriptor().objectForKey(UIFontDescriptorTextStyleAttribute) as? String else { return }
-        nameLabel.font = UIFont.preferredFontForTextStyle(style)
+    @objc fileprivate func contentSizeCategoryDidChange(_ notification: Notification) {
+        guard let style = nameLabel.font.fontDescriptor.object(forKey: UIFontDescriptorTextStyleAttribute) as? String else { return }
+        nameLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle(rawValue: style))
     }
     
     // MARK: Editing
     
-    override func willTransitionToState(state: UITableViewCellStateMask) {
-        super.willTransitionToState(state)
+    override func willTransition(to state: UITableViewCellStateMask) {
+        super.willTransition(to: state)
         
-        if state.contains(.ShowingEditControlMask) {
+        if state.contains(.showingEditControlMask) {
             starButton.alpha = 0
-            nameLeadingConstraint.active = false
+            nameLeadingConstraint.isActive = false
             
             disclosureButton.alpha = 0
-            nameTrailingConstraint.active = false
+            nameTrailingConstraint.isActive = false
         } else {
             /*
             Setting `startButton.alpha = 1` here does not get animated, and I don't know why.
@@ -86,18 +86,18 @@ import UIKit
             So for now we'll set the alpha in didTransitionToState(_:), even though it looks ugly. If you can get the starButton to fade in here, please do it!
             */
             // startButton.alpha = 1
-            nameLeadingConstraint.active = true
+            nameLeadingConstraint.isActive = true
             
             disclosureButton.alpha = 1
-            nameTrailingConstraint.active = true
+            nameTrailingConstraint.isActive = true
         }
     }
     
-    override func didTransitionToState(state: UITableViewCellStateMask) {
-        super.didTransitionToState(state)
+    override func didTransition(to state: UITableViewCellStateMask) {
+        super.didTransition(to: state)
         
-        if !state.contains(.ShowingEditControlMask) {
-            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+        if !state.contains(.showingEditControlMask) {
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
                 self.starButton.alpha = 1
                 }, completion: nil)
         }
@@ -114,7 +114,7 @@ import UIKit
         let showSeparator: Bool
         
         enum ButtonStatus: Int {
-            case On, Off, Hidden
+            case on, off, hidden
         }
         
         var cellAccessibilityLabel: String {
@@ -128,21 +128,21 @@ import UIKit
         
         var disclosureAccessibilityLabel: String {
             switch canExpand {
-            case .On:
+            case .on:
                 return "Hide subforums"
                 
-            case .Off:
+            case .off:
                 return "Expand subforums"
                 
-            case .Hidden:
+            case .hidden:
                 return ""
             }
         }
     }
     
-    private func applyViewModel(data: ViewModel?) {
-        starButton.configure(data?.favorite ?? .Hidden)
-        disclosureButton.configure(data?.canExpand ?? .Hidden)
+    fileprivate func applyViewModel(_ data: ViewModel?) {
+        starButton.configure(data?.favorite ?? .hidden)
+        disclosureButton.configure(data?.canExpand ?? .hidden)
         
         nameLabel.text = data?.name ?? ""
         nameIndentationLevel = data?.indentationLevel ?? 0
@@ -150,7 +150,7 @@ import UIKit
         accessibilityLabel = data?.cellAccessibilityLabel
         disclosureButton.accessibilityLabel = data?.disclosureAccessibilityLabel
         
-        separator.hidden = data?.showSeparator == false
+        separator.isHidden = data?.showSeparator == false
     }
     
     // MARK: Theming
@@ -162,7 +162,7 @@ import UIKit
         let selectedBackgroundColor: UIColor
     }
     
-    private func applyThemeData(theme: ThemeData) {
+    fileprivate func applyThemeData(_ theme: ThemeData) {
         nameLabel.textColor = theme.nameColor
         separator.backgroundColor = theme.separatorColor
         backgroundColor = theme.backgroundColor
@@ -181,18 +181,18 @@ func ==(lhs: ForumTableViewCell.ViewModel, rhs: ForumTableViewCell.ViewModel) ->
 }
 
 private extension UIButton {
-    func configure(status: ForumTableViewCell.ViewModel.ButtonStatus) {
+    func configure(_ status: ForumTableViewCell.ViewModel.ButtonStatus) {
         switch status {
-        case .On:
-            hidden = false
-            selected = true
+        case .on:
+            isHidden = false
+            isSelected = true
             
-        case .Off:
-            hidden = false
-            selected = false
+        case .off:
+            isHidden = false
+            isSelected = false
             
-        case .Hidden:
-            hidden = true
+        case .hidden:
+            isHidden = true
         }
     }
 }

@@ -5,15 +5,15 @@
 import UIKit
 
 final class ThreadTagButton: UIButton {
-    private let secondaryTagImageView = UIImageView()
+    fileprivate let secondaryTagImageView = UIImageView()
     var secondaryTagImage: UIImage? {
         get { return secondaryTagImageView.image }
         set {
             if let
                 image = newValue,
-                cgimage = image.CGImage
+                let cgimage = image.cgImage
             {
-                secondaryTagImageView.image = UIImage(CGImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
+                secondaryTagImageView.image = UIImage(cgImage: cgimage, scale: image.scale, orientation: image.imageOrientation)
             } else {
                 secondaryTagImageView.image = newValue
             }
@@ -30,11 +30,11 @@ final class ThreadTagButton: UIButton {
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         secondaryTagImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(secondaryTagImageView)
         
-        trailingAnchor.constraintEqualToAnchor(secondaryTagImageView.trailingAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(secondaryTagImageView.bottomAnchor).active = true
+        trailingAnchor.constraint(equalTo: secondaryTagImageView.trailingAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: secondaryTagImageView.bottomAnchor).isActive = true
     }
 }

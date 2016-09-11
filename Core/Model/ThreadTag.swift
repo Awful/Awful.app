@@ -16,13 +16,13 @@ public class ThreadTag: AwfulManagedObject {
 
 extension ThreadTag {
     func setURL(URL: NSURL) {
-        imageName = imageNameFromURL(URL)
+        imageName = imageNameFromURL(URL: URL)
     }
 }
 
 private func imageNameFromURL(URL: NSURL) -> String {
     // This silly casting works around an API change between Xcode 6.1 and Xcode 6.1.1, wherein NSURL.lastPathComponent went from returning `String` to returning `String?`. The cast allows compilation on either version.
-    return (URL.lastPathComponent as NSString!).stringByDeletingPathExtension
+    return (URL.lastPathComponent as NSString!).deletingPathExtension
 }
 
 @objc(ThreadTagKey)
@@ -31,8 +31,8 @@ public final class ThreadTagKey: AwfulObjectKey {
     public let threadTagID: String?
     
     public init(imageName: String!, threadTagID: String!) {
-        let imageName = nilIfEmpty(imageName)
-        let threadTagID = nilIfEmpty(threadTagID)
+        let imageName = nilIfEmpty(s: imageName)
+        let threadTagID = nilIfEmpty(s: threadTagID)
         precondition(imageName != nil || threadTagID != nil)
         
         self.imageName = imageName
@@ -41,12 +41,12 @@ public final class ThreadTagKey: AwfulObjectKey {
     }
     
     public convenience init(imageURL: NSURL, threadTagID: String?) {
-        self.init(imageName: imageNameFromURL(imageURL), threadTagID: threadTagID)
+        self.init(imageName: imageNameFromURL(URL: imageURL), threadTagID: threadTagID)
     }
     
     public required init?(coder: NSCoder) {
-        imageName = coder.decodeObjectForKey(imageNameKey) as! String?
-        threadTagID = coder.decodeObjectForKey(threadTagIDKey) as! String?
+        imageName = coder.decodeObject(forKey: imageNameKey) as! String?
+        threadTagID = coder.decodeObject(forKey: threadTagIDKey) as! String?
         super.init(coder: coder)
     }
     

@@ -25,7 +25,7 @@
     HTMLElement *body = [self.node firstNodeMatchingSelector:@"body"];
     if (body[@"data-forum"]) {
         ForumKey *forumKey = [[ForumKey alloc] initWithForumID:body[@"data-forum"]];
-        self.forum = [Forum objectForKey:forumKey inManagedObjectContext:self.managedObjectContext];
+        self.forum = [Forum objectForKeyWithObjectKey:forumKey inManagedObjectContext:self.managedObjectContext];
         self.forum.canPost = !![body firstNodeMatchingSelector:@"ul.postbuttons a[href*='newthread']"];
     }
     
@@ -43,14 +43,14 @@
         NSURL *URL = [NSURL URLWithString:groupLink[@"href"]];
         NSString *groupID = URL.awful_queryDictionary[@"forumid"];
         ForumGroupKey *groupKey = [[ForumGroupKey alloc] initWithGroupID:groupID];
-        ForumGroup *group = [ForumGroup objectForKey:groupKey inManagedObjectContext:self.managedObjectContext];
+        ForumGroup *group = [ForumGroup objectForKeyWithObjectKey:groupKey inManagedObjectContext:self.managedObjectContext];
         group.name = groupLink.textContent;
         NSArray *subforumLinks = [hierarchyLinks subarrayWithRange:NSMakeRange(1, hierarchyLinks.count - 1)];
         Forum *currentForum;
         for (HTMLElement *subforumLink in subforumLinks.reverseObjectEnumerator) {
             NSURL *URL = [NSURL URLWithString:subforumLink[@"href"]];
             ForumKey *subforumKey = [[ForumKey alloc] initWithForumID:URL.awful_queryDictionary[@"forumid"]];
-            Forum *subforum = [Forum objectForKey:subforumKey inManagedObjectContext:self.managedObjectContext];
+            Forum *subforum = [Forum objectForKeyWithObjectKey:subforumKey inManagedObjectContext:self.managedObjectContext];
             subforum.name = subforumLink.textContent;
             subforum.group = group;
             currentForum.parentForum = subforum;
@@ -70,7 +70,7 @@
             NSURL *imageURL = [NSURL URLWithString:image[@"src"]];
             [threadTagKeys addObject:[[ThreadTagKey alloc] initWithImageURL:imageURL threadTagID:threadTagID]];
         }
-        NSArray *threadTags = [ThreadTag objectsForKeys:threadTagKeys inManagedObjectContext:self.managedObjectContext];
+        NSArray *threadTags = [ThreadTag objectsForKeysWithObjectKeys:threadTagKeys inManagedObjectContext:self.managedObjectContext];
         self.forum.threadTags = [NSMutableOrderedSet orderedSetWithArray:threadTags];
     }
     
@@ -147,10 +147,10 @@
         return;
     }
     
-    NSArray *threads = [Thread objectsForKeys:threadKeys inManagedObjectContext:self.managedObjectContext];
-    NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *threads = [AwfulThread objectsForKeysWithObjectKeys:threadKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *users = [User objectsForKeysWithObjectKeys:userKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
-    NSArray *threadTags = [ThreadTag objectsForKeys:threadTagKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *threadTags = [ThreadTag objectsForKeysWithObjectKeys:threadTagKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *threadTagsByKey = [NSDictionary dictionaryWithObjects:threadTags forKeys:[threadTags valueForKey:@"objectKey"]];
     __block NSUInteger threadIndex = 0;
     __block int32_t stickyIndex = -(int32_t)threadLinks.count;
@@ -160,7 +160,7 @@
             // probably an announcement
             return;
         }
-        Thread *thread = threads[threadIndex++];
+        AwfulThread *thread = threads[threadIndex++];
         
         HTMLElement *stickyCell = [row firstNodeMatchingSelector:@"td.title_sticky"];
         thread.sticky = !!stickyCell;

@@ -7,8 +7,8 @@ final class SlopButton: UIButton {
     @IBInspectable var horizontalSlop: CGFloat = 0
     @IBInspectable var verticalSlop: CGFloat = 0
     
-    override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
-        if let view = super.hitTest(point, withEvent: event) {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if let view = super.hitTest(point, with: event) {
             return view
         }
         

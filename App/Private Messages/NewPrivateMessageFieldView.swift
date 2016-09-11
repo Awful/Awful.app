@@ -8,14 +8,14 @@ final class NewPrivateMessageFieldView: UIView, ComposeCustomView {
     let threadTagButton = ThreadTagButton()
     let toField = ComposeField()
     let subjectField = ComposeField()
-    private let topSeparator = UIView()
-    private let bottomSeparator = UIView()
+    fileprivate let topSeparator = UIView()
+    fileprivate let bottomSeparator = UIView()
     
     var enabled = false {
         didSet {
-            threadTagButton.enabled = enabled
-            toField.textField.enabled = enabled
-            subjectField.textField.enabled = enabled
+            threadTagButton.isEnabled = enabled
+            toField.textField.isEnabled = enabled
+            subjectField.textField.isEnabled = enabled
         }
     }
     
@@ -26,48 +26,48 @@ final class NewPrivateMessageFieldView: UIView, ComposeCustomView {
         addSubview(threadTagButton)
         
         toField.translatesAutoresizingMaskIntoConstraints = false
-        toField.textField.autocapitalizationType = .None
-        toField.textField.autocorrectionType = .No
+        toField.textField.autocapitalizationType = .none
+        toField.textField.autocorrectionType = .no
         addSubview(toField)
         
         topSeparator.translatesAutoresizingMaskIntoConstraints = false
-        topSeparator.backgroundColor = .lightGrayColor()
+        topSeparator.backgroundColor = .lightGray
         addSubview(topSeparator)
         
         subjectField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(subjectField)
         
         bottomSeparator.translatesAutoresizingMaskIntoConstraints = false
-        bottomSeparator.backgroundColor = .lightGrayColor()
+        bottomSeparator.backgroundColor = .lightGray
         addSubview(bottomSeparator)
         
-        threadTagButton.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        toField.leadingAnchor.constraintEqualToAnchor(threadTagButton.trailingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(toField.trailingAnchor).active = true
+        threadTagButton.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        toField.leadingAnchor.constraint(equalTo: threadTagButton.trailingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: toField.trailingAnchor).isActive = true
         
-        topSeparator.leadingAnchor.constraintEqualToAnchor(threadTagButton.trailingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(topSeparator.trailingAnchor).active = true
+        topSeparator.leadingAnchor.constraint(equalTo: threadTagButton.trailingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: topSeparator.trailingAnchor).isActive = true
         
-        subjectField.leadingAnchor.constraintEqualToAnchor(threadTagButton.trailingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(subjectField.trailingAnchor).active = true
+        subjectField.leadingAnchor.constraint(equalTo: threadTagButton.trailingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: subjectField.trailingAnchor).isActive = true
         
-        bottomSeparator.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(bottomSeparator.trailingAnchor).active = true
+        bottomSeparator.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: bottomSeparator.trailingAnchor).isActive = true
         
-        toField.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        topSeparator.topAnchor.constraintEqualToAnchor(toField.bottomAnchor).active = true
-        subjectField.topAnchor.constraintEqualToAnchor(topSeparator.bottomAnchor).active = true
-        bottomSeparator.topAnchor.constraintEqualToAnchor(subjectField.bottomAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(bottomSeparator.bottomAnchor).active = true
+        toField.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        topSeparator.topAnchor.constraint(equalTo: toField.bottomAnchor).isActive = true
+        subjectField.topAnchor.constraint(equalTo: topSeparator.bottomAnchor).isActive = true
+        bottomSeparator.topAnchor.constraint(equalTo: subjectField.bottomAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: bottomSeparator.bottomAnchor).isActive = true
         
-        toField.heightAnchor.constraintEqualToAnchor(subjectField.heightAnchor).active = true
-        subjectField.heightAnchor.constraintEqualToAnchor(toField.heightAnchor).active = true
-        topSeparator.heightAnchor.constraintEqualToConstant(1).active = true
-        bottomSeparator.heightAnchor.constraintEqualToConstant(1).active = true
+        toField.heightAnchor.constraint(equalTo: subjectField.heightAnchor).isActive = true
+        subjectField.heightAnchor.constraint(equalTo: toField.heightAnchor).isActive = true
+        topSeparator.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        bottomSeparator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        threadTagButton.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
-        threadTagButton.widthAnchor.constraintEqualToConstant(54).active = true
-        threadTagButton.widthAnchor.constraintEqualToAnchor(threadTagButton.heightAnchor).active = true
+        threadTagButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        threadTagButton.widthAnchor.constraint(equalToConstant: 54).isActive = true
+        threadTagButton.widthAnchor.constraint(equalTo: threadTagButton.heightAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {

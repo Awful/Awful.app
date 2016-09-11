@@ -8,21 +8,21 @@ import Foundation
 /// Periodically checks for new private messages in the logged-in user's inbox and posts notifications.
 final class NewMessageChecker: NSObject {
     static let sharedChecker = NewMessageChecker()
-    private var timer: NSTimer?
+    fileprivate var timer: Timer?
     
     override init() {
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationWillEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
     }
     
     var unreadCount: Int {
-        get { return NSUserDefaults.standardUserDefaults().integerForKey(unreadCountKey) }
+        get { return UserDefaults.standard.integer(forKey: unreadCountKey) }
         set {
-            NSUserDefaults.standardUserDefaults().setInteger(newValue, forKey: unreadCountKey)
+            UserDefaults.standard.set(newValue, forKey: unreadCountKey)
             let userInfo = [NewMessageChecker.notificationUnreadCountKey: newValue]
-            NSNotificationCenter.defaultCenter().postNotificationName(NewMessageChecker.didChangeNotification, object: self, userInfo: userInfo)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: NewMessageChecker.didChangeNotification), object: self, userInfo: userInfo)
         }
     }
     
@@ -31,35 +31,35 @@ final class NewMessageChecker: NSObject {
         unreadCount -= 1
     }
     
-    private func startTimer() {
+    fileprivate func startTimer() {
         timer?.invalidate()
-        let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.NewPrivateMessages).timeIntervalSinceNow
-        timer = NSTimer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
+        let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.newPrivateMessages).timeIntervalSinceNow
+        timer = Timer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
             self?.refreshIfNecessary()
         })
     }
     
     func refreshIfNecessary() {
-        guard RefreshMinder.sharedMinder.shouldRefresh(.NewPrivateMessages) else { return }
-        AwfulForumsClient.sharedClient().countUnreadPrivateMessagesInInboxAndThen { [weak self] (error: NSError?, unreadCount) in
+        guard RefreshMinder.sharedMinder.shouldRefresh(.newPrivateMessages) else { return }
+        AwfulForumsClient.shared().countUnreadPrivateMessages { [weak self] (error: Error?, unreadCount) in
             if let error = error {
                 print("\(#function) error checking for new private messages: \(error)")
                 return
             }
             self?.unreadCount = unreadCount
-            RefreshMinder.sharedMinder.didRefresh(.NewPrivateMessages)
+            RefreshMinder.sharedMinder.didRefresh(.newPrivateMessages)
         }
     }
     
     static let didChangeNotification = "Awful.NewMessageCheckerUnreadCountDidChangeNotification"
     static let notificationUnreadCountKey = "unreadCount"
     
-    @objc private func applicationWillEnterForeground(notification: NSNotification) {
+    @objc fileprivate func applicationWillEnterForeground(_ notification: Notification) {
         refreshIfNecessary()
         startTimer()
     }
     
-    @objc private func applicationDidEnterBackground(notification: NSNotification) {
+    @objc fileprivate func applicationDidEnterBackground(_ notification: Notification) {
         timer?.invalidate()
         timer = nil
     }

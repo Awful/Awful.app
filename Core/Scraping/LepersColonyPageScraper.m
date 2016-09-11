@@ -101,9 +101,9 @@
     if (postKeys.count == 0)
         return;
 
-    NSArray *posts = [Post objectsForKeys:postKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *posts = [Post objectsForKeysWithObjectKeys:postKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *postsByKey = [NSDictionary dictionaryWithObjects:posts forKeys:[posts valueForKey:@"objectKey"]];
-    NSArray *users = [User objectsForKeys:userKeys inManagedObjectContext:self.managedObjectContext];
+    NSArray *users = [User objectsForKeysWithObjectKeys:userKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *usersByKey = [NSDictionary dictionaryWithObjects:users forKeys:[users valueForKey:@"objectKey"]];
     
     [rows enumerateObjectsUsingBlock:^(HTMLElement *row, NSUInteger i, BOOL *stop) {

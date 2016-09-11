@@ -16,7 +16,7 @@ install_framework()
     local source="$1"
   fi
 
-  local destination="${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+  local destination="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
 
   if [ -L "${source}" ]; then
       echo "Symlinked..."
@@ -59,8 +59,8 @@ code_sign_if_enabled() {
   if [ -n "${EXPANDED_CODE_SIGN_IDENTITY}" -a "${CODE_SIGNING_REQUIRED}" != "NO" -a "${CODE_SIGNING_ALLOWED}" != "NO" ]; then
     # Use the current code_sign_identitiy
     echo "Code Signing $1 with Identity ${EXPANDED_CODE_SIGN_IDENTITY_NAME}"
-    echo "/usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} --preserve-metadata=identifier,entitlements \"$1\""
-    /usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} --preserve-metadata=identifier,entitlements "$1"
+    echo "/usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} ${OTHER_CODE_SIGN_FLAGS} --preserve-metadata=identifier,entitlements \"$1\""
+    /usr/bin/codesign --force --sign ${EXPANDED_CODE_SIGN_IDENTITY} ${OTHER_CODE_SIGN_FLAGS} --preserve-metadata=identifier,entitlements "$1"
   fi
 }
 
@@ -84,34 +84,34 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods-Awful/AFNetworking.framework"
-  install_framework "Pods-Awful/ARChromeActivity.framework"
-  install_framework "Pods-Awful/FLAnimatedImage.framework"
-  install_framework "Pods-Awful/GRMustache.framework"
-  install_framework "Pods-Awful/HTMLReader.framework"
-  install_framework "Pods-Awful/ImgurAnonymousAPIClient.framework"
-  install_framework "Pods-Awful/JLRoutes.framework"
-  install_framework "Pods-Awful/JRSwizzle.framework"
-  install_framework "Pods-Awful/KVOController.framework"
-  install_framework "Pods-Awful/MJRefresh.framework"
-  install_framework "Pods-Awful/MRProgress.framework"
-  install_framework "Pods-Awful/PSMenuItem.framework"
-  install_framework "Pods-Awful/TUSafariActivity.framework"
-  install_framework "Pods-Awful/WebViewJavascriptBridge.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/ARChromeActivity/ARChromeActivity.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/FLAnimatedImage/FLAnimatedImage.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GRMustache/GRMustache.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/HTMLReader/HTMLReader.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/JLRoutes/JLRoutes.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/JRSwizzle/JRSwizzle.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/KVOController/KVOController.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MRProgress/MRProgress.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/PSMenuItem/PSMenuItem.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/PullToRefresher/PullToRefresh.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/TUSafariActivity/TUSafariActivity.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/WebViewJavascriptBridge/WebViewJavascriptBridge.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods-Awful/AFNetworking.framework"
-  install_framework "Pods-Awful/ARChromeActivity.framework"
-  install_framework "Pods-Awful/FLAnimatedImage.framework"
-  install_framework "Pods-Awful/GRMustache.framework"
-  install_framework "Pods-Awful/HTMLReader.framework"
-  install_framework "Pods-Awful/ImgurAnonymousAPIClient.framework"
-  install_framework "Pods-Awful/JLRoutes.framework"
-  install_framework "Pods-Awful/JRSwizzle.framework"
-  install_framework "Pods-Awful/KVOController.framework"
-  install_framework "Pods-Awful/MJRefresh.framework"
-  install_framework "Pods-Awful/MRProgress.framework"
-  install_framework "Pods-Awful/PSMenuItem.framework"
-  install_framework "Pods-Awful/TUSafariActivity.framework"
-  install_framework "Pods-Awful/WebViewJavascriptBridge.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/AFNetworking/AFNetworking.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/ARChromeActivity/ARChromeActivity.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/FLAnimatedImage/FLAnimatedImage.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/GRMustache/GRMustache.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/HTMLReader/HTMLReader.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/ImgurAnonymousAPIClient/ImgurAnonymousAPIClient.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/JLRoutes/JLRoutes.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/JRSwizzle/JRSwizzle.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/KVOController/KVOController.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/MRProgress/MRProgress.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/PSMenuItem/PSMenuItem.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/PullToRefresher/PullToRefresh.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/TUSafariActivity/TUSafariActivity.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/WebViewJavascriptBridge/WebViewJavascriptBridge.framework"
 fi

@@ -7,17 +7,17 @@ import UIKit
 extension UIBarButtonItem {
     /// Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
     class func flexibleSpace() -> Self {
-        return self.init(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        return self.init(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
     
     /// Returns a UIBarButtonItem of type UIBarButtonSystemItemFixedSpace.
-    class func fixedSpace(width: CGFloat) -> Self {
-        let item = self.init(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+    class func fixedSpace(_ width: CGFloat) -> Self {
+        let item = self.init(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         item.width = width
         return item
     }
     
-    var actionBlock: (UIBarButtonItem -> Void)? {
+    var actionBlock: ((UIBarButtonItem) -> Void)? {
         get {
             guard let wrapper = objc_getAssociatedObject(self, &actionBlockKey) as? BlockWrapper else { return nil }
             return wrapper.block
@@ -37,18 +37,18 @@ extension UIBarButtonItem {
 }
 
 private class BlockWrapper {
-    let block: UIBarButtonItem -> Void
-    init(_ block: UIBarButtonItem -> Void) { self.block = block }
-    @objc func invoke(sender: UIBarButtonItem) { block(sender) }
+    let block: (UIBarButtonItem) -> Void
+    init(_ block: @escaping (UIBarButtonItem) -> Void) { self.block = block }
+    @objc func invoke(_ sender: UIBarButtonItem) { block(sender) }
 }
 
 private var actionBlockKey = 0
 
 extension UIColor {
     // Making this a failable convenience initializer causes a crash in Xcode 7.3 (Swift 2.2, iOS 9.3) when bailing out early (i.e. when scanHex() fails).
-    class func fromHex(hexCode: String) -> UIColor? {
-        let scanner = NSScanner(string: hexCode)
-        scanner.scan(string: "#")
+    class func fromHex(_ hexCode: String) -> UIColor? {
+        let scanner = Scanner(string: hexCode)
+        _ = scanner.scan("#")
         let start = scanner.scanLocation
         guard let hex = scanner.scanHex() else { return nil }
         let length = scanner.scanLocation - start
@@ -88,23 +88,23 @@ extension UIColor {
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return "" }
-        func hexy(f: CGFloat) -> String {
+        func hexy(_ f: CGFloat) -> String {
             return String(lround(Double(f) * 255), radix: 16, uppercase: false)
         }
-        return "#" + [red, green, blue].map(hexy).joinWithSeparator("")
+        return "#" + [red, green, blue].map(hexy).joined(separator: "")
     }
 }
 
 extension UIFont {
     /// Typed versions of the `UIFontTextStyle*` constants.
     enum TextStyle {
-        case Body, Footnote, Caption1
+        case body, footnote, caption1
         
         var UIKitRawValue: String {
             switch self {
-            case .Body: return UIFontTextStyleBody
-            case .Footnote: return UIFontTextStyleFootnote
-            case .Caption1: return UIFontTextStyleCaption1
+            case .body: return UIFontTextStyle.body.rawValue
+            case .footnote: return UIFontTextStyle.footnote.rawValue
+            case .caption1: return UIFontTextStyle.caption1.rawValue
             }
         }
     }
@@ -117,8 +117,8 @@ extension UIFont {
     - returns:
         A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
     **/
-    class func preferredFontForTextStyle(textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
-        let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(textStyle.UIKitRawValue)
+    class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle(rawValue: textStyle.UIKitRawValue))
         if let fontName = fontName {
             return UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!
         } else {
@@ -132,15 +132,15 @@ extension UINavigationItem {
     var titleLabel: UILabel {
         if let label = titleView as? UILabel { return label }
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
-        label.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        label.textAlignment = .Center
-        label.textColor = .whiteColor()
+        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        label.textAlignment = .center
+        label.textColor = .white
         label.accessibilityTraits |= UIAccessibilityTraitHeader
-        switch UIDevice.currentDevice().userInterfaceIdiom {
-        case .Pad:
-            label.font = UIFont.systemFontOfSize(17)
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            label.font = UIFont.systemFont(ofSize: 17)
         default:
-            label.font = UIFont.systemFontOfSize(13)
+            label.font = UIFont.systemFont(ofSize: 13)
             label.numberOfLines = 2
         }
         titleView = label
@@ -150,10 +150,10 @@ extension UINavigationItem {
 
 extension UIPasteboard {
     /// Some (system) apps seem to put actual NSURLs on the pasteboard, while others deal in strings that happen to resemble URLs. This property handles both.
-    var awful_URL: NSURL? {
+    var awful_URL: URL? {
         get {
-            if let URL = URL { return URL }
-            if let string = string { return NSURL(string: string) }
+            if let URL = url { return URL }
+            if let string = string { return URL(string: string) }
             return nil
         }
         set {
@@ -170,21 +170,21 @@ extension UISplitViewController {
     /// Animates the primary view controller into view if it is not already visible.
     func showPrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
-        guard !collapsed else { return }
-        guard displayMode == .PrimaryHidden else { return }
-        let button = displayModeButtonItem()
+        guard !isCollapsed else { return }
+        guard displayMode == .primaryHidden else { return }
+        let button = displayModeButtonItem
         guard let target = button.target as? NSObject else { return }
-        target.performSelector(button.action, withObject: nil)
+        target.perform(button.action, with: nil)
     }
     
     /// Animates the primary view controller out of view if it is currently visible in an overlay.
     func hidePrimaryViewController() {
         // The docs say that displayMode is "ignored" when we're collapsed. I'm not really sure what that means so let's bail early.
-        guard !collapsed else { return }
-        guard displayMode == .PrimaryOverlay else { return }
-        let button = displayModeButtonItem()
+        guard !isCollapsed else { return }
+        guard displayMode == .primaryOverlay else { return }
+        let button = displayModeButtonItem
         guard let target = button.target as? NSObject else { return }
-        target.performSelector(button.action, withObject: nil)
+        target.perform(button.action, with: nil)
     }
 }
 
@@ -196,7 +196,7 @@ extension UITableView {
     
     /// Causes the section headers not to stick to the top of a table view.
     func unstickSectionHeaders() {
-        let headerFrame = CGRectMake(0, 0, 0, sectionHeaderHeight * 2)
+        let headerFrame = CGRect(x: 0, y: 0, width: 0, height: sectionHeaderHeight * 2)
         tableHeaderView = UIView(frame: headerFrame)
         contentInset.top -= headerFrame.height
     }
@@ -219,16 +219,16 @@ extension UITextView {
     /// Returns a rectangle that encompasses the current selection in the text view, or nil if there is no selection.
     var selectedRect: CGRect? {
         switch selectedTextRange {
-        case .Some(let selection) where selection.empty:
-            return caretRectForPosition(selection.end)
-        case .Some(let selection):
-            let rects = selectionRectsForRange(selection).map { $0.rect }
+        case .some(let selection) where selection.isEmpty:
+            return caretRect(for: selection.end)
+        case .some(let selection):
+            let rects = selectionRects(for: selection).map { ($0 as! UITextSelectionRect).rect }
             if rects.isEmpty {
                 return nil
             } else {
-                return rects.reduce(CGRect.null) { $0.union($1) }
+                return rects.reduce { $0.union($1) }
             }
-        case .None:
+        case .none:
             return nil
         }
     }
@@ -238,7 +238,7 @@ extension UIView {
     var nearestViewController: UIViewController? {
         var responder: UIResponder? = self
         while responder != nil {
-            responder = responder?.nextResponder()
+            responder = responder?.next
             if let vc = responder as? UIViewController { return vc }
         }
         return nil
@@ -259,10 +259,10 @@ extension UIViewController {
 }
 
 extension UIViewController {
-    func firstDescendantOfType<VC: UIViewController>(type: VC.Type) -> VC? {
+    func firstDescendantOfType<VC: UIViewController>(_ type: VC.Type) -> VC? {
         if let found = self as? VC { return found }
-        if respondsToSelector(Selector("viewControllers")) {
-            for child in valueForKey("viewControllers") as! [UIViewController] {
+        if responds(to: #selector(getter: UINavigationController.viewControllers)) {
+            for child in value(forKey: "viewControllers") as! [UIViewController] {
                 if let found = child.firstDescendantOfType(type) {
                     return found
                 }
@@ -272,10 +272,10 @@ extension UIViewController {
     }
     
     // objc version
-    func firstDescendantOfClass(cls: AnyClass) -> AnyObject? {
-        if isKindOfClass(cls) { return self }
-        if respondsToSelector(Selector("viewControllers")) {
-            for child in valueForKey("viewControllers") as! [UIViewController] {
+    func firstDescendantOfClass(_ cls: AnyClass) -> AnyObject? {
+        if isKind(of: cls) { return self }
+        if responds(to: #selector(getter: UINavigationController.viewControllers)) {
+            for child in value(forKey: "viewControllers") as! [UIViewController] {
                 if let found = child.firstDescendantOfClass(cls) {
                     return found
                 }
@@ -290,13 +290,13 @@ extension UIWebView {
     var fractionalContentOffset: CGFloat {
         get {
             guard let
-                result = stringByEvaluatingJavaScriptFromString("document.body.scrollTop / document.body.scrollHeight"),
-                offset = Double(result)
+                result = stringByEvaluatingJavaScript(from: "document.body.scrollTop / document.body.scrollHeight"),
+                let offset = Double(result)
                 else { return 0 }
             return CGFloat(offset)
         }
         set {
-            stringByEvaluatingJavaScriptFromString("window.scroll(0, document.body.scrollHeight * \(newValue)")
+            stringByEvaluatingJavaScript(from: "window.scroll(0, document.body.scrollHeight * \(newValue)")
         }
     }
     
@@ -305,8 +305,8 @@ extension UIWebView {
         let webView = self.init()
         webView.scalesPageToFit = true
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-        webView.dataDetectorTypes = .None
-        webView.opaque = false
+        webView.dataDetectorTypes = UIDataDetectorTypes()
+        webView.isOpaque = false
         return webView
     }
     
@@ -315,7 +315,7 @@ extension UIWebView {
      
         - returns: A rect in the web view's coordinate system corresponding to an element's offset.
      */
-    func rectForElementBoundingRect(rectString: String) -> CGRect {
+    func rectForElementBoundingRect(_ rectString: String) -> CGRect {
         return CGRectFromString(rectString).insetBy(dx: scrollView.contentInset.left, dy: scrollView.contentInset.top)
     }
 }

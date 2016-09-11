@@ -20,7 +20,7 @@ public class Punishment: NSObject {
         super.init()
     }
     
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         if let other = object as? Punishment {
             return other.date == date && other.sentence == sentence && other.subject == subject
         }

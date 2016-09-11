@@ -13,9 +13,9 @@ import UIKit
     * Uses the Photos framework for thumbnailing when possible.
  */
 final class TextAttachment: NSTextAttachment {
-    let assetURL: NSURL?
+    let assetURL: URL?
     
-    init(image: UIImage, assetURL: NSURL?) {
+    init(image: UIImage, assetURL: URL?) {
         self.assetURL = assetURL
         super.init(data: nil, ofType: nil)
         
@@ -23,14 +23,14 @@ final class TextAttachment: NSTextAttachment {
     }
     
     required init?(coder: NSCoder) {
-        assetURL = coder.decodeObjectForKey(assetURLKey) as! NSURL?
+        assetURL = coder.decodeObject(forKey: assetURLKey) as! NSURL? as URL?
         super.init(coder: coder)
     }
     
-    override func encodeWithCoder(coder: NSCoder) {
-        super.encodeWithCoder(coder)
+    override func encode(with coder: NSCoder) {
+        super.encode(with: coder)
         
-        coder.encodeObject(assetURL, forKey: assetURLKey)
+        coder.encode(assetURL, forKey: assetURLKey)
     }
     
     override var image: UIImage? {
@@ -50,7 +50,7 @@ final class TextAttachment: NSTextAttachment {
         }
     }
     
-    private var _thumbnailImage: UIImage?
+    fileprivate var _thumbnailImage: UIImage?
     var thumbnailImage: UIImage? {
         if let thumbnail = _thumbnailImage { return thumbnail }
         guard let image = self.image else { return nil }
@@ -59,38 +59,37 @@ final class TextAttachment: NSTextAttachment {
         
         if let
             assetURL = assetURL,
-            asset = PHAsset.fetchAssetsWithALAssetURLs([assetURL], options: nil).firstObject as? PHAsset
+            let asset = PHAsset.fetchAssets(withALAssetURLs: [assetURL as URL], options: nil).firstObject
         {
             let options = PHImageRequestOptions()
-            options.synchronous = true
-            options.resizeMode = .Exact
-            PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: thumbnailSize, contentMode: .AspectFit, options: options, resultHandler: { (image, info) in
+            options.isSynchronous = true
+            options.resizeMode = .exact
+            PHImageManager.default().requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFit, options: options, resultHandler: { (image, info) in
                 self._thumbnailImage = image
             })
         }
         if let thumbnail = _thumbnailImage { return thumbnail }
         
-        _thumbnailImage = image.thumbnail(thumbnailSize)
+        _thumbnailImage = image.thumbnail(targetSize: thumbnailSize)
         return _thumbnailImage
     }
-    
-    override func attachmentBoundsForTextContainer(textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
+    override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> CGRect {
         let size = thumbnailImage?.size ?? .zero
         return CGRect(origin: .zero, size: size)
     }
     
-    override func imageForBounds(imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex: Int) -> UIImage? {
+    override func image(forBounds imageBounds: CGRect, textContainer: NSTextContainer?, characterIndex charIndex: Int) -> UIImage? {
         return thumbnailImage
     }
 }
 
 private let assetURLKey = "AwfulAssetURL"
 
-private func appropriateThumbnailSize(imageSize imageSize: CGSize) -> CGSize {
+private func appropriateThumbnailSize(imageSize: CGSize) -> CGSize {
     let threshold = TextAttachment.requiresThumbnailImageSize
     let widthRatio = imageSize.width / threshold.width
     let heightRatio = imageSize.height / threshold.height
-    let screenRatio = imageSize.width / (UIScreen.mainScreen().bounds.width - 8)
+    let screenRatio = imageSize.width / (UIScreen.main.bounds.width - 8)
     let ratio = max(widthRatio, heightRatio, screenRatio)
     
     if ratio <= 1 { return imageSize }
@@ -101,8 +100,8 @@ private extension UIImage {
     func thumbnail(targetSize: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(targetSize, false, scale)
         defer { UIGraphicsEndImageContext() }
-        drawInRect(CGRect(origin: .zero, size: targetSize))
-        return UIGraphicsGetImageFromCurrentImageContext()
+        draw(in: CGRect(origin: .zero, size: targetSize))
+        return UIGraphicsGetImageFromCurrentImageContext()!
     }
 }
 

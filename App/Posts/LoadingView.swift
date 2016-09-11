@@ -7,9 +7,9 @@ import UIKit
 
 /// A view that covers its superview with an indeterminate progress indicator.
 class LoadingView: UIView {
-    private let theme: Theme?
+    fileprivate let theme: Theme?
     
-    private init(theme: Theme?) {
+    fileprivate init(theme: Theme?) {
         self.theme = theme
         super.init(frame: .zero)
     }
@@ -22,7 +22,7 @@ class LoadingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class func loadingViewWithTheme(theme: Theme) -> LoadingView {
+    class func loadingViewWithTheme(_ theme: Theme) -> LoadingView {
         switch theme["postsLoadingViewType"] as String? {
         case "Macinyos"?:
             return MacinyosLoadingView(theme: theme)
@@ -35,14 +35,14 @@ class LoadingView: UIView {
         }
     }
     
-    private func retheme() {
+    fileprivate func retheme() {
         // nop
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
+    override func willMove(toSuperview newSuperview: UIView?) {
         guard let newSuperview = newSuperview else { return }
         frame = CGRect(origin: .zero, size: newSuperview.bounds.size)
-        autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        autoresizingMask = [.flexibleWidth, .flexibleHeight]
         retheme()
     }
 }
@@ -54,8 +54,8 @@ private class DefaultLoadingView: LoadingView {
         spinner.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(spinner)
         
-        self.centerXAnchor.constraintEqualToAnchor(spinner.centerXAnchor).active = true
-        self.centerYAnchor.constraintEqualToAnchor(spinner.bottomAnchor).active = true
+        self.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+        self.centerYAnchor.constraint(equalTo: spinner.bottomAnchor).isActive = true
         
         return spinner
     }()
@@ -68,8 +68,8 @@ private class DefaultLoadingView: LoadingView {
         spinner.backgroundColor = tint
     }
     
-    private override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+    fileprivate override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
         if newSuperview == nil {
             spinner.stopAnimating()
@@ -81,22 +81,22 @@ private class DefaultLoadingView: LoadingView {
 
 private class YOSPOSLoadingView: LoadingView {
     let label = UILabel()
-    private var timer: NSTimer?
+    fileprivate var timer: Timer?
     
     override init(theme: Theme?) {
         super.init(theme: theme)
         
-        backgroundColor = .blackColor()
+        backgroundColor = .black
         
         label.text = "|"
         label.font = UIFont(name: "Menlo", size: 15)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(label)
+        addSubview(label)
         
-        label.leadingAnchor.constraintEqualToAnchor(self.leadingAnchor).active = true
-        self.trailingAnchor.constraintEqualToAnchor(label.trailingAnchor).active = true
-        label.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        self.trailingAnchor.constraint(equalTo: label.trailingAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -114,8 +114,8 @@ private class YOSPOSLoadingView: LoadingView {
         label.backgroundColor = backgroundColor
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
         if newSuperview == nil {
             stopAnimating()
@@ -124,19 +124,19 @@ private class YOSPOSLoadingView: LoadingView {
         }
     }
     
-    private func startAnimating() {
+    fileprivate func startAnimating() {
         stopAnimating()
-        timer = NSTimer.scheduledTimerWithInterval(0.12, repeats: true, handler: { [unowned self] timer in
+        timer = Timer.scheduledTimerWithInterval(0.12, repeats: true, handler: { [unowned self] timer in
             self.advanceSpinner()
         })
     }
     
-    private func stopAnimating() {
+    fileprivate func stopAnimating() {
         timer?.invalidate()
         timer = nil
     }
     
-    private func advanceSpinner() {
+    fileprivate func advanceSpinner() {
         switch label.text {
         case "/"?: label.text = "-"
         case "-"?: label.text = "\\"
@@ -157,17 +157,17 @@ private class MacinyosLoadingView: LoadingView {
         }
         
         imageView.image = UIImage(named: "macinyos-loading")
-        imageView.contentMode = .Center
-        imageView.backgroundColor = .whiteColor()
-        imageView.layer.borderColor = UIColor.blackColor().CGColor
+        imageView.contentMode = .center
+        imageView.backgroundColor = .white
+        imageView.layer.borderColor = UIColor.black.cgColor
         imageView.layer.borderWidth = 1
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
-        imageView.widthAnchor.constraintEqualToConstant(300).active = true
-        imageView.heightAnchor.constraintEqualToConstant(275).active = true
-        imageView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
-        imageView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
+        imageView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 275).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -185,15 +185,15 @@ private class Winpos95LoadingView: LoadingView {
         
         backgroundColor = UIColor(red: 0.067, green: 0.502, blue: 0.502, alpha: 1)
         
-        guard let imageURL = NSBundle(forClass: Winpos95LoadingView.self).URLForResource("hourglass.gif", withExtension: nil) else { fatalError("missing hourglass.gif") }
-        guard let imageData = NSData(contentsOfURL: imageURL) else { fatalError("couldn't load hourglass.gif") }
+        guard let imageURL = Bundle(for: Winpos95LoadingView.self).url(forResource: "hourglass.gif", withExtension: nil) else { fatalError("missing hourglass.gif") }
+        guard let imageData = try? Data(contentsOf: imageURL) else { fatalError("couldn't load hourglass.gif") }
         imageView.animatedImage = FLAnimatedImage(animatedGIFData: imageData)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
         
-        centerXConstraint = imageView.centerXAnchor.constraintEqualToAnchor(centerXAnchor)
-        centerYConstraint = imageView.centerYAnchor.constraintEqualToAnchor(centerYAnchor)
-        [centerXConstraint, centerYConstraint].forEach { $0.active = true }
+        centerXConstraint = imageView.centerXAnchor.constraint(equalTo: centerXAnchor)
+        centerYConstraint = imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        [centerXConstraint, centerYConstraint].forEach { $0.isActive = true }
         
         addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(didPan)))
     }
@@ -202,15 +202,15 @@ private class Winpos95LoadingView: LoadingView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func didPan(sender: UIPanGestureRecognizer) {
-        guard sender.state == .Began || sender.state == .Changed else { return }
-        let location = sender.locationInView(self)
+    @objc func didPan(_ sender: UIPanGestureRecognizer) {
+        guard sender.state == .began || sender.state == .changed else { return }
+        let location = sender.location(in: self)
         centerXConstraint.constant = location.x - bounds.midX
         centerYConstraint.constant = location.y - bounds.midY
     }
     
-    override func willMoveToSuperview(newSuperview: UIView?) {
-        super.willMoveToSuperview(newSuperview)
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
         
         if newSuperview == nil {
             imageView.stopAnimating()

@@ -4,27 +4,27 @@
 
 import Foundation
 
-extension NSDateFormatter {
-    class func postDateFormatter() -> NSDateFormatter { return _postDateFormatter }
-	class func regDateFormatter() -> NSDateFormatter { return _regDateFormatter }
+extension DateFormatter {
+    class func postDateFormatter() -> DateFormatter { return _postDateFormatter }
+	class func regDateFormatter() -> DateFormatter { return _regDateFormatter }
 }
 
-private let _postDateFormatter: NSDateFormatter = {
-	let formatter = NSDateFormatter()
+private let _postDateFormatter: DateFormatter = {
+	let formatter = DateFormatter()
     
 	// 01/02/03 16:05
-	formatter.dateStyle = .ShortStyle
-	formatter.timeStyle = .ShortStyle
+	formatter.dateStyle = .short
+	formatter.timeStyle = .short
     
 	return formatter
 }()
 
-private let _regDateFormatter: NSDateFormatter = {
-	let formatter = NSDateFormatter()
+private let _regDateFormatter: DateFormatter = {
+	let formatter = DateFormatter()
     
 	// Jan 2, 2003
-	formatter.dateStyle = .MediumStyle
-	formatter.timeStyle = .NoStyle
+	formatter.dateStyle = .medium
+	formatter.timeStyle = .none
     
 	return formatter
 }()

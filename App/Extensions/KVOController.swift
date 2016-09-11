@@ -5,7 +5,7 @@
 import KVOController
 
 extension FBKVOController {
-    typealias Change = [NSObject: AnyObject]
+    typealias Change = [AnyHashable: Any]
     
     /**
     Swift-convenient overload that:
@@ -16,9 +16,9 @@ extension FBKVOController {
     
     See observe(_:keyPath:options:block:).
     */
-    func observe<Observee: AnyObject>(object: Observee, keyPath: String, options: NSKeyValueObservingOptions = [], typedBlock: (Observee, Change) -> Void) {
+    func observe<Observee: AnyObject>(_ object: Observee, keyPath: String, options: NSKeyValueObservingOptions = [], typedBlock: @escaping (Observee, Change) -> Void) {
         observe(object, keyPath: keyPath, options: options) { [unowned object] _, _, change in
-            typedBlock(object, change)
+            typedBlock(object, change!)
         }
     }
     
@@ -31,9 +31,9 @@ extension FBKVOController {
     
     See observe(_:keyPaths:options:block:).
     */
-    func observe<Observee: AnyObject>(object: Observee, keyPaths: [String], options: NSKeyValueObservingOptions = [], typedBlock: (Observee, Change) -> Void) {
+    func observe<Observee: AnyObject>(_ object: Observee, keyPaths: [String], options: NSKeyValueObservingOptions = [], typedBlock: @escaping (Observee, Change) -> Void) {
         observe(object, keyPaths: keyPaths, options: options) { [unowned object] _, _, change in
-            typedBlock(object, change)
+            typedBlock(object, change!)
         }
     }
 }

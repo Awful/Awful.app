@@ -4,8 +4,8 @@
 
 import CoreData
 
-@objc(Thread)
-public class Thread: AwfulManagedObject {
+@objc(AwfulThread)
+public class AwfulThread: AwfulManagedObject {
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
@@ -14,17 +14,17 @@ public class Thread: AwfulManagedObject {
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?
     @NSManaged public var lastPostDate: NSDate?
-    @NSManaged private var primitiveNumberOfPages: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveNumberOfPages: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     @NSManaged public var numberOfVotes: Int32
     @NSManaged public var rating: Float32
-    @NSManaged private var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
-    @NSManaged private var primitiveStarCategory: NSNumber
+    @NSManaged internal var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveStarCategory: NSNumber
     @NSManaged public var sticky: Bool
     @NSManaged public var stickyIndex: Int32
     @NSManaged public var threadID: String
     @NSManaged public var threadListPage: Int32
     @NSManaged public var title: String?
-    @NSManaged private var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
+    @NSManaged internal var primitiveTotalReplies: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     
     @NSManaged public var author: User?
     @NSManaged public var forum: Forum?
@@ -38,28 +38,28 @@ public class Thread: AwfulManagedObject {
     case Orange, Red, Yellow, None
 }
 
-extension Thread {
+extension AwfulThread {
     public var beenSeen: Bool {
         return seenPosts > 0
     }
     
     public var numberOfPages: Int32 {
         get {
-            willAccessValueForKey("numberOfPages")
-            let numberOfPages = primitiveNumberOfPages.intValue
-            didAccessValueForKey("numberOfPages")
+            willAccessValue(forKey: "numberOfPages")
+            let numberOfPages = Int32(primitiveNumberOfPages.intValue)
+            didAccessValue(forKey: "numberOfPages")
             return numberOfPages
         }
         set {
-            willChangeValueForKey("numberOfPages")
-            primitiveNumberOfPages = NSNumber(int: newValue)
-            didChangeValueForKey("numberOfPages")
+            willChangeValue(forKey: "numberOfPages")
+            primitiveNumberOfPages = NSNumber(value: Int32(newValue))
+            didChangeValue(forKey: "numberOfPages")
             
             let minimumTotalReplies: Int32 = (newValue - 1) * 40
             if minimumTotalReplies > totalReplies {
-                willChangeValueForKey("totalReplies")
-                primitiveTotalReplies = NSNumber(int: minimumTotalReplies)
-                didChangeValueForKey("totalReplies")
+                willChangeValue(forKey: "totalReplies")
+                primitiveTotalReplies = NSNumber(value: minimumTotalReplies)
+                didChangeValue(forKey: "totalReplies")
                 updateAnyUnreadPosts()
             }
         }
@@ -67,15 +67,15 @@ extension Thread {
     
     public var seenPosts: Int32 {
         get {
-            willAccessValueForKey("seenPosts")
-            let seenPosts = primitiveSeenPosts.intValue
-            didAccessValueForKey("seenPosts")
+            willAccessValue(forKey: "seenPosts")
+            let seenPosts = Int32(primitiveSeenPosts.intValue)
+            didAccessValue(forKey: "seenPosts")
             return seenPosts
         }
         set {
-            willChangeValueForKey("seenPosts")
-            primitiveSeenPosts = NSNumber(int: newValue)
-            didChangeValueForKey("seenPosts")
+            willChangeValue(forKey: "seenPosts")
+            primitiveSeenPosts = NSNumber(value: newValue)
+            didChangeValue(forKey: "seenPosts")
             
             if newValue > totalReplies + 1 {
                 totalReplies = newValue - 1
@@ -86,35 +86,35 @@ extension Thread {
     
     public var starCategory: StarCategory {
         get {
-            willAccessValueForKey("starCategory")
-            let starCategory = Int16(primitiveStarCategory.integerValue)
-            didAccessValueForKey("starCategory")
+            willAccessValue(forKey: "starCategory")
+            let starCategory = Int16(primitiveStarCategory.intValue)
+            didAccessValue(forKey: "starCategory")
             return StarCategory(rawValue: starCategory) ?? .None
         }
         set {
-            willChangeValueForKey("starCategory")
-            primitiveStarCategory = Int(newValue.rawValue)
-            didChangeValueForKey("starCategory")
+            willChangeValue(forKey: "starCategory")
+            primitiveStarCategory = NSNumber(value: newValue.rawValue)
+            didChangeValue(forKey: "starCategory")
         }
     }
     
     public var totalReplies: Int32 {
         get {
-            willAccessValueForKey("totalReplies")
-            let totalReplies = primitiveTotalReplies.intValue
-            didAccessValueForKey("totalReplies")
+            willAccessValue(forKey: "totalReplies")
+            let totalReplies = Int32(primitiveTotalReplies.intValue)
+            didAccessValue(forKey: "totalReplies")
             return totalReplies
         }
         set {
-            willChangeValueForKey("totalReplies")
-            primitiveTotalReplies = NSNumber(int: newValue)
-            didChangeValueForKey("totalReplies")
+            willChangeValue(forKey: "totalReplies")
+            primitiveTotalReplies = NSNumber(value: newValue)
+            didChangeValue(forKey: "totalReplies")
             
             let minimumNumberOfPages = 1 + newValue / 40
             if minimumNumberOfPages > numberOfPages {
-                willChangeValueForKey("numberOfPages")
-                primitiveNumberOfPages = NSNumber(int: minimumNumberOfPages)
-                didChangeValueForKey("numberOfPages")
+                willChangeValue(forKey: "numberOfPages")
+                primitiveNumberOfPages = NSNumber(value: minimumNumberOfPages)
+                didChangeValue(forKey: "numberOfPages")
             }
             updateAnyUnreadPosts()
         }
@@ -136,11 +136,11 @@ public final class ThreadKey: AwfulObjectKey {
     public init(threadID: String) {
         assert(!threadID.isEmpty)
         self.threadID = threadID
-        super.init(entityName: Thread.entityName())
+        super.init(entityName: AwfulThread.entityName())
     }
     
     public required init?(coder: NSCoder) {
-        threadID = coder.decodeObjectForKey(threadIDKey) as! String
+        threadID = coder.decodeObject(forKey: threadIDKey) as! String
         super.init(coder: coder)
     }
     
@@ -150,7 +150,7 @@ public final class ThreadKey: AwfulObjectKey {
 }
 private let threadIDKey = "threadID"
 
-extension Thread {
+extension AwfulThread {
     public override var objectKey: ThreadKey {
         return ThreadKey(threadID: threadID)
     }
@@ -161,10 +161,10 @@ class ThreadFilter: AwfulManagedObject {
     @NSManaged var numberOfPages: Int32
     
     @NSManaged var author: User
-    @NSManaged var thread: Thread
+    @NSManaged var thread: AwfulThread
 }
 
-extension Thread {
+extension AwfulThread {
     public func filteredNumberOfPagesForAuthor(author: User) -> Int32 {
         if let filter = fetchFilter(author: author) {
             return filter.numberOfPages
@@ -176,21 +176,21 @@ extension Thread {
     public func setFilteredNumberOfPages(numberOfPages: Int32, forAuthor author: User) {
         var filter: ThreadFilter! = fetchFilter(author: author)
         if filter == nil {
-            filter = ThreadFilter.insertIntoManagedObjectContext(managedObjectContext!)
+            filter = ThreadFilter.insertIntoManagedObjectContext(context: managedObjectContext!)
             filter.thread = self
             filter.author = author
         }
         filter.numberOfPages = numberOfPages
     }
     
-    private func fetchFilter(author author: User) -> ThreadFilter? {
-        let request = NSFetchRequest(entityName: ThreadFilter.entityName())
+    private func fetchFilter(author: User) -> ThreadFilter? {
+        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: ThreadFilter.entityName())
         request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
         var results: [ThreadFilter] = []
         var success: Bool = false
         do {
-            results = try (managedObjectContext!.executeFetchRequest(request) as! [ThreadFilter])
+            results = try (managedObjectContext!.fetch(request) as! [ThreadFilter])
             success = true
         }
         catch let error as NSError {

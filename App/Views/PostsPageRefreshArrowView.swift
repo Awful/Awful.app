@@ -5,9 +5,9 @@
 import UIKit
 
 final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
-    private let arrow: UIImageView
-    private let spinner: UIActivityIndicatorView
-    private struct Angles {
+    fileprivate let arrow: UIImageView
+    fileprivate let spinner: UIActivityIndicatorView
+    fileprivate struct Angles {
         static let triggered = CGFloat(0)
         static let waiting = CGFloat(-M_PI_2)
     }
@@ -15,22 +15,22 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     init() {
         let image = UIImage(named: "arrowright")!
         arrow = UIImageView(image: image)
-        spinner = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
         
         super.init(frame: CGRect(origin: CGPoint.zero, size: image.size))
         
         arrow.translatesAutoresizingMaskIntoConstraints = false
         addSubview(arrow)
         
-        arrow.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
-        arrow.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
+        arrow.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        arrow.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         spinner.translatesAutoresizingMaskIntoConstraints = false
         spinner.hidesWhenStopped = true
         addSubview(spinner)
         
-        spinner.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
-        spinner.centerYAnchor.constraintEqualToAnchor(centerYAnchor).active = true
+        spinner.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
         rotateArrow(Angles.waiting, animated: false)
     }
@@ -39,20 +39,20 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func transitionFromState(oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
+    fileprivate func transitionFromState(_ oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
-        case (.Waiting, .Waiting), (.Triggered, .Triggered), (.Refreshing, .Refreshing):
+        case (.waiting, .waiting), (.triggered, .triggered), (.refreshing, .refreshing):
             break
             
-        case (.Waiting, .Triggered):
+        case (.waiting, .triggered):
             rotateArrow(Angles.triggered, animated: true)
             
-        case (_, .Refreshing):
-            arrow.hidden = true
+        case (_, .refreshing):
+            arrow.isHidden = true
             spinner.startAnimating()
             
-        case (_, .Waiting):
-            arrow.hidden = false
+        case (_, .waiting):
+            arrow.isHidden = false
             rotateArrow(Angles.waiting, animated: true)
             spinner.stopAnimating()
             
@@ -61,10 +61,10 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         }
     }
     
-    private func rotateArrow(angle: CGFloat, animated: Bool) {
+    fileprivate func rotateArrow(_ angle: CGFloat, animated: Bool) {
         let duration = animated ? 0.3 : 0
-        UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
-            self.arrow.transform = angle == 0 ? CGAffineTransformIdentity : CGAffineTransformMakeRotation(angle)
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
+            self.arrow.transform = angle == 0 ? .identity : CGAffineTransform(rotationAngle: angle)
             }, completion: nil)
     }
     
@@ -76,10 +76,10 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         spinner.color = tintColor
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        let arrowSize = arrow.intrinsicContentSize()
+    override var intrinsicContentSize : CGSize {
+        let arrowSize = arrow.intrinsicContentSize
         let longestArrowSize = max(arrowSize.width, arrowSize.height)
-        let spinnerSize = spinner.intrinsicContentSize()
+        let spinnerSize = spinner.intrinsicContentSize
         return CGSize(
             width: max(longestArrowSize, spinnerSize.width),
             height: max(longestArrowSize, spinnerSize.height))
@@ -87,7 +87,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .Waiting(triggeredFraction: 0) {
+    var state: PostsPageRefreshControl.State = .waiting(triggeredFraction: 0) {
         didSet {
             transitionFromState(oldValue, toState: state)
         }

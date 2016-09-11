@@ -2,19 +2,19 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-extension CollectionType where Index: Hashable, Generator.Element: Equatable {
+extension Collection where Index: Hashable, Iterator.Element: Equatable {
     
     /**
     Returns the difference between `self` and another collection, expressed as a series of deletions, insertions, and moves.
     
     The returned `Delta` is particularly useful for updating a `UICollectionView` or `UITableView`.
     */
-    func delta(other: Self) -> Delta<Index> {
+    func delta(_ other: Self) -> Delta<Index> {
         var unchanged: Set<Index> = []
         do {
             var i = startIndex
             while i != endIndex && i != other.endIndex {
-                defer { i = i.successor() }
+                defer { i = index(after: i) }
                 
                 if self[i] == other[i] {
                     unchanged.insert(i)
@@ -27,12 +27,12 @@ extension CollectionType where Index: Hashable, Generator.Element: Equatable {
         do {
             var i = other.startIndex
             while i != other.endIndex {
-                defer { i = i.successor() }
+                defer { i = index(after: i) }
                 
                 if unchanged.contains(i) { continue }
                 
                 let otherValue = other[i]
-                if let oldIndex = indexOf(otherValue) {
+                if let oldIndex = index(of: otherValue) {
                     moves.append((from: oldIndex, to: i))
                 } else {
                     insertions.append(i)
@@ -44,7 +44,7 @@ extension CollectionType where Index: Hashable, Generator.Element: Equatable {
         do {
             var i = startIndex
             while i != endIndex {
-                defer { i = i.successor() }
+                defer { i = index(after: i) }
                 
                 if unchanged.contains(i) { continue }
                 
@@ -71,7 +71,7 @@ struct Delta<Index> {
     }
     
     // Private initializer suggests this struct is not generally useful except as returned by `CollectionType.delta()`.
-    private init(deletions: [Index], insertions: [Index], moves: [(from: Index, to: Index)]) {
+    fileprivate init(deletions: [Index], insertions: [Index], moves: [(from: Index, to: Index)]) {
         self.deletions = deletions
         self.insertions = insertions
         self.moves = moves

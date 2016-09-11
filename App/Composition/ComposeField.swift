@@ -12,23 +12,23 @@ final class ComposeField: UIView {
         super.init(frame: frame)
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFontOfSize(16)
-        label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Horizontal)
-        label.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
         addSubview(label)
         
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.font = UIFont.systemFontOfSize(16)
+        textField.font = UIFont.systemFont(ofSize: 16)
         addSubview(textField)
         
-        label.leadingAnchor.constraintEqualToAnchor(leadingAnchor, constant: 4).active = true
-        textField.leadingAnchor.constraintEqualToAnchor(label.trailingAnchor, constant: 8).active = true
-        textField.trailingAnchor.constraintEqualToAnchor(trailingAnchor).active = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4).isActive = true
+        textField.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8).isActive = true
+        textField.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         
-        topAnchor.constraintEqualToAnchor(label.topAnchor).active = true
-        label.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
-        topAnchor.constraintEqualToAnchor(textField.topAnchor).active = true
-        textField.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
+        topAnchor.constraint(equalTo: label.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        topAnchor.constraint(equalTo: textField.topAnchor).isActive = true
+        textField.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {

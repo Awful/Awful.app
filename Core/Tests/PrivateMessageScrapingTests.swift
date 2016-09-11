@@ -16,16 +16,16 @@ final class PrivateMessageScrapingTests: ScrapingTestCase {
         XCTAssert(fetchAll(PrivateMessage.self, inContext: managedObjectContext).count == 1)
         XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 1)
         
-        XCTAssert(message.messageID == "4601162")
-        XCTAssert(message.subject == "Awful app")
-        XCTAssert(message.seen)
-        XCTAssert(!message.replied)
-        XCTAssert(!message.forwarded)
-        XCTAssert(message.sentDate!.timeIntervalSince1970 == 1352408160)
-        XCTAssert(message.innerHTML!.rangeOfString("awesome app") != nil)
-        let from = message.from!
-        XCTAssert(from.userID == "47395")
-        XCTAssert(from.username == "InFlames235")
-        XCTAssert(from.regdate!.timeIntervalSince1970 == 1073952000)
+        XCTAssert(message?.messageID == "4601162")
+        XCTAssert(message?.subject == "Awful app")
+        XCTAssert((message?.seen)!)
+        XCTAssert(!(message?.replied)!)
+        XCTAssert(!(message?.forwarded)!)
+        XCTAssert(message?.sentDate!.timeIntervalSince1970 == 1352408160)
+        XCTAssert(message?.innerHTML!.range(of: "awesome app") != nil)
+        let from = message?.from!
+        XCTAssert(from?.userID == "47395")
+        XCTAssert(from?.username == "InFlames235")
+        XCTAssert(from?.regdate!.timeIntervalSince1970 == 1073952000)
     }
 }

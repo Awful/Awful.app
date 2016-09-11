@@ -4,7 +4,7 @@
 
 import CoreData
 
-final class CachePruner: NSOperation {
+final class CachePruner: Operation {
     let managedObjectContext: NSManagedObjectContext
     
     init(managedObjectContext context: NSManagedObjectContext) {
@@ -14,23 +14,23 @@ final class CachePruner: NSOperation {
     
     override func main() {
         let context = managedObjectContext
-        context.performBlockAndWait {
+        context.performAndWait {
             let allEntities = context.persistentStoreCoordinator!.managedObjectModel.entities as [NSEntityDescription]
             let prunableEntities = allEntities.filter { $0.attributesByName["lastModifiedDate"] != nil }
             
             var candidateObjectIDs = [NSManagedObjectID]()
             let components = NSDateComponents()
             components.day = -7
-            let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-            let oneWeekAgo = calendar.dateByAddingComponents(components, toDate: NSDate(), options: [])!
-            let fetchRequest = NSFetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "lastModifiedDate < %@", oneWeekAgo)
-            fetchRequest.resultType = .ManagedObjectIDResultType
+            let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+            let oneWeekAgo = calendar.date(byAdding: components as DateComponents, to: NSDate() as Date)!
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "lastModifiedDate < %@", oneWeekAgo as CVarArg)
+            fetchRequest.resultType = .managedObjectIDResultType
             for entity in prunableEntities {
                 fetchRequest.entity = entity
                 var result: [NSManagedObjectID] = []
                 do {
-                    result = try context.executeFetchRequest(fetchRequest) as! [NSManagedObjectID]
+                    result = try context.fetch(fetchRequest) as! [NSManagedObjectID]
                     candidateObjectIDs += result
                 }
                 catch {
@@ -39,11 +39,11 @@ final class CachePruner: NSOperation {
             }
             
             // An object isn't expired if it's actively in use. Since lastModifiedDate gets updated on save, it's possible to have objects actively in use with an expired lastModifiedDate, and we don't want to delete those.
-            let expiredObjectIDs = candidateObjectIDs.filter { self.managedObjectContext.objectRegisteredForID($0) == nil }
+            let expiredObjectIDs = candidateObjectIDs.filter { self.managedObjectContext.registeredObject(for: $0) == nil }
             
             for objectID in expiredObjectIDs {
-                let object = context.objectWithID(objectID)
-                context.deleteObject(object)
+                let object = context.object(with: objectID)
+                context.delete(object)
             }
             
             do {
@@ -51,7 +51,7 @@ final class CachePruner: NSOperation {
             }
             catch {
                 // Would prefer fatalError() but that doesn't show up in Crashlytics logs.
-                NSException(name: NSGenericException, reason: "error saving: \(error)", userInfo: nil).raise()
+                NSException(name: NSExceptionName.genericException, reason: "error saving: \(error)", userInfo: nil).raise()
             }
         }
     }

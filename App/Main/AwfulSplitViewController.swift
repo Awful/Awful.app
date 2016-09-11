@@ -6,7 +6,7 @@ import UIKit
 
 /// Forwards status bar style questions to its first view controller.
 class AwfulSplitViewController: UISplitViewController {
-    override func childViewControllerForStatusBarStyle() -> UIViewController? {
+    override var childViewControllerForStatusBarStyle : UIViewController? {
         return viewControllers.first as UIViewController?
     }
 }

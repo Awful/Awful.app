@@ -5,7 +5,7 @@
 import AwfulCore
 
 final class ProfileViewModel: NSObject {
-    private let profile: Profile
+    fileprivate let profile: Profile
     
     init(profile: Profile) {
         self.profile = profile
@@ -13,49 +13,49 @@ final class ProfileViewModel: NSObject {
     }
     
     var stylesheet: String {
-        guard let URL = NSBundle(forClass: ProfileViewModel.self).URLForResource("profile.css", withExtension: nil) else { fatalError("missing profile.css") }
+        guard let URL = Bundle(for: ProfileViewModel.self).url(forResource: "profile.css", withExtension: nil) else { fatalError("missing profile.css") }
         do {
-            return try String(contentsOfURL: URL, encoding: NSUTF8StringEncoding)
+            return try String(contentsOf: URL, encoding: String.Encoding.utf8)
         } catch {
             fatalError("couldn't load \(URL): \(error)")
         }
     }
     
     var userInterfaceIdiom: String {
-        switch UIDevice.currentDevice().userInterfaceIdiom {
-        case .Pad: return "ipad"
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad: return "ipad"
         default: return "iphone"
         }
     }
     
     var dark: Bool {
-        return AwfulSettings.sharedSettings().darkTheme
+        return AwfulSettings.shared().darkTheme
     }
     
-    var regDateFormat: NSDateFormatter {
-        return NSDateFormatter.regDateFormatter()
+    var regDateFormat: DateFormatter {
+        return DateFormatter.regDateFormatter()
     }
     
-    var lastPostDateFormat: NSDateFormatter {
-        return NSDateFormatter.postDateFormatter()
+    var lastPostDateFormat: DateFormatter {
+        return DateFormatter.postDateFormatter()
     }
     
     var anyContactInfo: Bool {
         if privateMessagesWork { return true }
-        if let AIM = profile.aimName where !AIM.isEmpty { return true }
-        if let ICQ = profile.icqName where !ICQ.isEmpty { return true }
-        if let yahoo = profile.yahooName where !yahoo.isEmpty { return true }
+        if let AIM = profile.aimName , !AIM.isEmpty { return true }
+        if let ICQ = profile.icqName , !ICQ.isEmpty { return true }
+        if let yahoo = profile.yahooName , !yahoo.isEmpty { return true }
         if profile.homepageURL != nil { return true }
         return false
     }
     
     var privateMessagesWork: Bool {
         guard profile.user.canReceivePrivateMessages else { return false }
-        return AwfulSettings.sharedSettings().canSendPrivateMessages
+        return AwfulSettings.shared().canSendPrivateMessages
     }
     
     var customTitleHTML: String? {
-        guard let HTML = profile.user.customTitleHTML where HTML != "<br/>" else { return nil }
+        guard let HTML = profile.user.customTitleHTML , HTML != "<br/>" else { return nil }
         return HTML
     }
     
@@ -63,12 +63,12 @@ final class ProfileViewModel: NSObject {
         return profile.gender ?? "porpoise"
     }
     
-    var avatarURL: NSURL? {
-        return profile.user.avatarURL
+    var avatarURL: URL? {
+        return profile.user.avatarURL as URL?
     }
     
-    var regdate: NSDate? {
-        return profile.user.regdate
+    var regdate: Date? {
+        return profile.user.regdate as Date?
     }
     
     var username: String? {
@@ -83,8 +83,8 @@ final class ProfileViewModel: NSObject {
         return profile.aimName
     }
     
-    var homepageURL: NSURL? {
-        return profile.homepageURL
+    var homepageURL: URL? {
+        return profile.homepageURL as URL?
     }
     
     var icqName: String? {
@@ -95,8 +95,8 @@ final class ProfileViewModel: NSObject {
         return profile.interests
     }
     
-    var lastPost: NSDate? {
-        return profile.lastPostDate
+    var lastPost: Date? {
+        return profile.lastPostDate as Date?
     }
     
     var location: String? {
@@ -115,8 +115,8 @@ final class ProfileViewModel: NSObject {
         return profile.postRate
     }
     
-    var profilePictureURL: NSURL? {
-        return profile.profilePictureURL
+    var profilePictureURL: URL? {
+        return profile.profilePictureURL as URL?
     }
     
     var yahooName: String? {

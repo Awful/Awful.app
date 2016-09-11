@@ -6,9 +6,9 @@ import UIKit
 
 /// A thread tag in an AwfulThreadTagPickerController.
 final class ThreadTagPickerCell: UICollectionViewCell {
-    private let tagView = ThreadTagView()
-    private let imageNameLabel = UILabel()
-    private let selectedIcon = UIImageView()
+    fileprivate let tagView = ThreadTagView()
+    fileprivate let imageNameLabel = UILabel()
+    fileprivate let selectedIcon = UIImageView()
     
     /// An image representing the thread tag.
     var image: UIImage? {
@@ -22,23 +22,23 @@ final class ThreadTagPickerCell: UICollectionViewCell {
         set { imageNameLabel.text = newValue }
     }
     
-    override var selected: Bool {
-        didSet { selectedIcon.hidden = !selected }
+    override var isSelected: Bool {
+        didSet { selectedIcon.isHidden = !isSelected }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        imageNameLabel.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        imageNameLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         imageNameLabel.numberOfLines = 0
-        imageNameLabel.lineBreakMode = .ByCharWrapping
+        imageNameLabel.lineBreakMode = .byCharWrapping
         contentView.addSubview(imageNameLabel)
         
-        tagView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        tagView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentView.addSubview(tagView)
         
         selectedIcon.image = UIImage(named: "selected-tick-icon")
-        selectedIcon.hidden = true
+        selectedIcon.isHidden = true
         contentView.addSubview(selectedIcon)
     }
     
@@ -64,68 +64,68 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
     /// The image name of the secondary tag. The cell will draw its own rendition of the tag based on the image name.
     var tagImageName: String? {
         didSet {
-            guard let name = tagImageName, info = tagInfo[name] else { return }
+            guard let name = tagImageName, let info = tagInfo[name] else { return }
             titleText = info["title"] ?? "?????"
-            if let hexColor = info["color"], color = UIColor.fromHex(hexColor) {
+            if let hexColor = info["color"], let color = UIColor.fromHex(hexColor) {
                 drawColor = color
             } else {
-                drawColor = .redColor()
+                drawColor = UIColor.red
             }
         }
     }
     
     /// The color of the description that appears below the tag.
-    var titleTextColor: UIColor = .whiteColor() {
+    var titleTextColor: UIColor = UIColor.white {
         didSet { setNeedsDisplay() }
     }
     
-    private var titleText: String = "" {
+    fileprivate var titleText: String = "" {
         didSet { setNeedsDisplay() }
     }
     
-    private var drawColor: UIColor = .redColor() {
+    fileprivate var drawColor: UIColor = UIColor.red {
         didSet { setNeedsDisplay() }
     }
     
-    override var selected: Bool {
+    override var isSelected: Bool {
         didSet { setNeedsDisplay() }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
         let titleAttributes = [
             NSForegroundColorAttributeName: titleTextColor,
-            NSFontAttributeName: UIFont.systemFontOfSize(12)]
-        let titleSize = titleText.sizeWithAttributes(titleAttributes)
+            NSFontAttributeName: UIFont.systemFont(ofSize: 12)] as [String : Any]
+        let titleSize = titleText.size(attributes: titleAttributes)
         let titleOrigin = CGPoint(x: (bounds.width - titleSize.width) / 2, y: bounds.height - titleSize.height)
         let titleFrame = CGRect(origin: titleOrigin, size: titleSize)
-        titleText.drawInRect(titleFrame, withAttributes: titleAttributes)
+        titleText.draw(in: titleFrame, withAttributes: titleAttributes)
         
         let diameter = titleFrame.minY
         let circleFrame = CGRect(x: bounds.midX - diameter / 2, y: 0, width: diameter, height: diameter)
             .insetBy(dx: 5, dy: 5)
-        context.setFillColor(drawColor.CGColor)
-        context.setStrokeColor(drawColor.CGColor)
+        context.setFillColor(drawColor.cgColor)
+        context.setStrokeColor(drawColor.cgColor)
         context.setLineWidth(1)
-        selected ? context.fillEllipse(inRect: circleFrame) : context.strokeEllipse(inRect: circleFrame)
+        isSelected ? context.fillEllipse(in: circleFrame) : context.strokeEllipse(in: circleFrame)
         
         let firstLetter = String(titleText.characters.first ?? "?")
         let letterAttributes = [
-            NSForegroundColorAttributeName: selected ? UIColor.whiteColor() : drawColor,
-            NSFontAttributeName: UIFont.systemFontOfSize(24)]
-        let letterSize = firstLetter.sizeWithAttributes(letterAttributes)
+            NSForegroundColorAttributeName: isSelected ? UIColor.white : drawColor,
+            NSFontAttributeName: UIFont.systemFont(ofSize: 24)]
+        let letterSize = firstLetter.size(attributes: letterAttributes)
         let letterOrigin = CGPoint(
             x: circleFrame.midX - letterSize.width / 2,
             y: circleFrame.midY - letterSize.height / 2)
-        firstLetter.drawInRect(CGRect(origin: letterOrigin, size: letterSize), withAttributes: letterAttributes)
+        firstLetter.draw(in: CGRect(origin: letterOrigin, size: letterSize), withAttributes: letterAttributes)
     }
 }
 
 private let tagInfo: [String: [String: String]] = {
-    guard let URL = NSBundle(forClass: SecondaryTagPickerCell.self).URLForResource("SecondaryTags.plist", withExtension: nil) else {
+    guard let URL = Bundle(for: SecondaryTagPickerCell.self).url(forResource: "SecondaryTags.plist", withExtension: nil) else {
         fatalError("missing SecondaryTags.plist")
     }
-    guard let dict = NSDictionary(contentsOfURL: URL) as? [String: [String: String]] else { fatalError("unexpected format for SecondaryTags.plist") }
+    guard let dict = NSDictionary(contentsOf: URL) as? [String: [String: String]] else { fatalError("unexpected format for SecondaryTags.plist") }
     return dict
 }()

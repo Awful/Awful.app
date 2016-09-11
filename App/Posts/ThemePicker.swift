@@ -10,16 +10,15 @@ final class ThemePicker: UIControl {
     var selectedThemeIndex: Int = UISegmentedControlNoSegment {
         didSet {
             if oldValue != UISegmentedControlNoSegment {
-                buttons[oldValue].selected = false
+                buttons[oldValue].isSelected = false
             }
             if selectedThemeIndex != UISegmentedControlNoSegment {
-                buttons[selectedThemeIndex].selected = true
+                buttons[selectedThemeIndex].isSelected = true
             }
         }
     }
     
-    private var buttons: [UIButton] = []
-    var isLoaded: Bool = false
+    fileprivate var buttons: [UIButton] = []
     
     /**
         Insert a new theme.
@@ -27,30 +26,24 @@ final class ThemePicker: UIControl {
         - parameter color: A color describing the theme. Set its accessibilityLabel to a descriptive name.
         - parameter index: Where to insert the theme.
      */
-    func insertThemeWithColor(color: UIColor, atIndex index: Int) {
+    func insertThemeWithColor(_ color: UIColor, atIndex index: Int) {
         let button = ThemeButton(themeColor: color)
-        button.addTarget(self, action: #selector(didTapThemeButton), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(didTapThemeButton), for: .touchUpInside)
         let index = min(index, subviews.count)
-        insertSubview(button, atIndex: index)
-        buttons.insert(button, atIndex: index)
+        insertSubview(button, at: index)
+        buttons.append(button)
         
         invalidateIntrinsicContentSize()
         setNeedsLayout()
     }
-
-    func setDefaultThemeColor(color: UIColor) {
-        subviews[0].removeFromSuperview()
-        buttons.removeAtIndex(0)
-        insertThemeWithColor(color, atIndex: 0)
-    }
     
-    @objc private func didTapThemeButton(button: UIButton) {
-        selectedThemeIndex = buttons.indexOf(button) ?? UISegmentedControlNoSegment
-        sendActionsForControlEvents(.ValueChanged)
+    @objc fileprivate func didTapThemeButton(_ button: UIButton) {
+        selectedThemeIndex = buttons.index(of: button) ?? UISegmentedControlNoSegment
+        sendActions(for: .valueChanged)
     }
     
     override func layoutSubviews() {
-        guard let size = buttons.first?.intrinsicContentSize() else { return }
+        guard let size = buttons.first?.intrinsicContentSize else { return }
         
         var buttonFrame = CGRect(origin: .zero, size: size)
         for button in buttons {
@@ -63,8 +56,8 @@ final class ThemePicker: UIControl {
         }
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        guard let size = buttons.first?.intrinsicContentSize() else { return .zero }
+    override var intrinsicContentSize: CGSize {
+        guard let size = buttons.first?.intrinsicContentSize else { return .zero }
         let maxWidth = bounds.width
         guard maxWidth >= size.width else {
             print("\(self) \(#function) can't even lay out a single button")

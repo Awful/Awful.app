@@ -7,37 +7,37 @@ import XCTest
 
 final class NSURLQueryDictionaryTests: XCTestCase {
     func testSome() {
-        let URL = NSURL(string: "?g=hello&what=updog")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["g": "hello", "what": "updog"])
+        let url = URL(string: "?g=hello&what=updog")!
+        XCTAssertEqual(url.awful_queryDictionary, ["g": "hello", "what": "updog"])
     }
     
     func testOne() {
-        let URL = NSURL(string: "?sam=iam")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["sam": "iam"])
+        let url = URL(string: "?sam=iam")!
+        XCTAssertEqual(url.awful_queryDictionary, ["sam": "iam"])
     }
     
     func testOneSkippingOne() {
-        let URL = NSURL(string: "?&howdy=maam")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["": "", "howdy": "maam"])
+        let url = URL(string: "?&howdy=maam")!
+        XCTAssertEqual(url.awful_queryDictionary, ["": "", "howdy": "maam"])
     }
     
     func testEmptyValue() {
-        let URL = NSURL(string: "?whodat=")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["whodat": ""])
+        let url = URL(string: "?whodat=")!
+        XCTAssertEqual(url.awful_queryDictionary, ["whodat": ""])
     }
     
     func testEmptyKey() {
-        let URL = NSURL(string: "?=ahoy")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["": "ahoy"])
+        let url = URL(string: "?=ahoy")!
+        XCTAssertEqual(url.awful_queryDictionary, ["": "ahoy"])
     }
     
     func testNoEquals() {
-        let URL = NSURL(string: "?hooray")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["hooray": ""])
+        let url = URL(string: "?hooray")!
+        XCTAssertEqual(url.awful_queryDictionary, ["hooray": ""])
     }
     
     func testManyNoEquals() {
-        let URL = NSURL(string: "?reach&for&the&sky")!
-        XCTAssertEqual(URL.awful_queryDictionary, ["reach": "", "for": "", "the": "", "sky": ""])
+        let url = URL(string: "?reach&for&the&sky")!
+        XCTAssertEqual(url.awful_queryDictionary, ["reach": "", "for": "", "the": "", "sky": ""])
     }
 }

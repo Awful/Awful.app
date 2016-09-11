@@ -7,11 +7,11 @@ import Foundation
 
 final class PostsViewExternalStylesheetLoader: NSObject {
     static let sharedLoader: PostsViewExternalStylesheetLoader = {
-        guard let stylesheetURLString = NSBundle.mainBundle().infoDictionary?[externalStylesheetURLKey] as? String else { fatalError("missing Info.plist key for AwfulPostsViewExternalStylesheetURL") }
-        let stylesheetURL = NSURL(string: stylesheetURLString)!
+        guard let stylesheetURLString = Bundle.main.infoDictionary?[externalStylesheetURLKey] as? String else { fatalError("missing Info.plist key for AwfulPostsViewExternalStylesheetURL") }
+        let stylesheetURL = URL(string: stylesheetURLString)!
         
-        let caches = try! NSFileManager.defaultManager().URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-        let cacheFolder = caches.URLByAppendingPathComponent("ExternalStylesheet", isDirectory: true)
+        let caches = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let cacheFolder = caches.appendingPathComponent("ExternalStylesheet", isDirectory: true)
         return PostsViewExternalStylesheetLoader(stylesheetURL: stylesheetURL, cacheFolder: cacheFolder)
     }()
     
@@ -19,51 +19,51 @@ final class PostsViewExternalStylesheetLoader: NSObject {
         return "AwfulPostsViewExternalStylesheetDidUpdate"
     }
     
-    private(set) var stylesheet: String?
-    private let stylesheetURL: NSURL
-    private let cacheFolder: NSURL
-    private let session = AFURLSessionManager(sessionConfiguration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
-    private var checkingForUpdate = false
-    private var updateTimer: NSTimer?
+    fileprivate(set) var stylesheet: String?
+    fileprivate let stylesheetURL: URL
+    fileprivate let cacheFolder: URL
+    fileprivate let session = AFURLSessionManager(sessionConfiguration: URLSessionConfiguration.ephemeral)
+    fileprivate var checkingForUpdate = false
+    fileprivate var updateTimer: Timer?
     
-    init(stylesheetURL: NSURL, cacheFolder: NSURL) {
+    init(stylesheetURL: URL, cacheFolder: URL) {
         self.stylesheetURL = stylesheetURL
         self.cacheFolder = cacheFolder
         super.init()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationWillEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         
         startTimer()
     }
     
     func refreshIfNecessary() {
-        guard RefreshMinder.sharedMinder.shouldRefresh(.ExternalStylesheet) && !checkingForUpdate else { return }
+        guard RefreshMinder.sharedMinder.shouldRefresh(.externalStylesheet) && !checkingForUpdate else { return }
         
         checkingForUpdate = true
         
-        let request = NSMutableURLRequest(URL: stylesheetURL)
+        let request = NSMutableURLRequest(url: stylesheetURL)
         
         if let
-            oldResponse = NSKeyedUnarchiver.unarchiveObjectWithFile(cachedResponseURL.path!) as? NSHTTPURLResponse,
-            oldURL = oldResponse.URL
-            where oldURL.absoluteURL == stylesheetURL.absoluteURL
+            oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponseURL.path) as? HTTPURLResponse,
+            let oldURL = oldResponse.url,
+            oldURL.absoluteURL == stylesheetURL.absoluteURL
         {
             request.setCacheHeadersWithResponse(oldResponse)
         }
         
-        session.downloadTaskWithRequest(request, progress: nil, destination: { (targetPath, response) -> NSURL! in
+        session?.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, response) -> URL! in
             self.createCacheFolderIfNecessary()
             return self.cachedStylesheetURL
             
             }, completionHandler: { (response, filePath, error) in
                 self.checkingForUpdate = false
                 
-                if let
-                    HTTPResponse = error?.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse
-                    where HTTPResponse.statusCode == 304
+                if
+                    let HTTPResponse = (error as NSError?)?.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                    HTTPResponse.statusCode == 304
                 {
-                    RefreshMinder.sharedMinder.didRefresh(.ExternalStylesheet)
+                    RefreshMinder.sharedMinder.didRefresh(.externalStylesheet)
                     return
                 }
                 
@@ -72,43 +72,45 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                     return
                 }
                 
-                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path!)
+                if let response = response {
+                    NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path)
+                }
                 
                 self.reloadCachedStylesheet()
                 
-                RefreshMinder.sharedMinder.didRefresh(.ExternalStylesheet)
+                RefreshMinder.sharedMinder.didRefresh(.externalStylesheet)
                 
-                NSNotificationCenter.defaultCenter().postNotificationName(PostsViewExternalStylesheetLoader.didUpdateNotification, object: self.stylesheet)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: PostsViewExternalStylesheetLoader.didUpdateNotification), object: self.stylesheet)
         }).resume()
     }
     
-    private var cachedResponseURL: NSURL {
-        return cacheFolder.URLByAppendingPathComponent("style.cachedresponse", isDirectory: false)
+    fileprivate var cachedResponseURL: URL {
+        return cacheFolder.appendingPathComponent("style.cachedresponse", isDirectory: false)
     }
     
-    private var cachedStylesheetURL: NSURL {
-        return cacheFolder.URLByAppendingPathComponent("style.css", isDirectory: false)
+    fileprivate var cachedStylesheetURL: URL {
+        return cacheFolder.appendingPathComponent("style.css", isDirectory: false)
     }
     
-    private func createCacheFolderIfNecessary() {
+    fileprivate func createCacheFolderIfNecessary() {
         do {
-            try NSFileManager.defaultManager().createDirectoryAtURL(cacheFolder, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
             print("\(#function) error creating external stylesheet cache folder \(cacheFolder): \(error)")
         }
     }
     
-    private func reloadCachedStylesheet() {
+    fileprivate func reloadCachedStylesheet() {
         do {
-            stylesheet = try String(contentsOfURL: cachedStylesheetURL)
+            stylesheet = try String(contentsOf: cachedStylesheetURL)
         } catch let error as NSError {
             print("\(#function) error loading cached stylesheet from \(cachedStylesheetURL): \(error)")
         }
     }
     
-    private func startTimer() {
-        let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.ExternalStylesheet).timeIntervalSinceNow
-        updateTimer = NSTimer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
+    fileprivate func startTimer() {
+        let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.externalStylesheet).timeIntervalSinceNow
+        updateTimer = Timer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
             if self?.updateTimer === timer {
                 self?.updateTimer = nil
             }
@@ -116,17 +118,17 @@ final class PostsViewExternalStylesheetLoader: NSObject {
         })
     }
     
-    private func stopTimer() {
+    fileprivate func stopTimer() {
         updateTimer?.invalidate()
         updateTimer = nil
     }
     
-    @objc private func applicationWillEnterForeground(notification: NSNotification) {
+    @objc fileprivate func applicationWillEnterForeground(_ notification: Notification) {
         refreshIfNecessary()
         startTimer()
     }
     
-    @objc private func applicationDidEnterBackground(notification: NSNotification) {
+    @objc fileprivate func applicationDidEnterBackground(_ notification: Notification) {
         stopTimer()
     }
 }

@@ -6,17 +6,17 @@ import AwfulCore
 import CoreData
 
 final class BookmarksTableViewController: TableViewController, ThreadPeekPopControllerDelegate {
-    private var latestPage = 0
-    private let managedObjectContext: NSManagedObjectContext
-    private var peekPopController: ThreadPeekPopController?
+    fileprivate var latestPage = 0
+    fileprivate let managedObjectContext: NSManagedObjectContext
+    fileprivate var peekPopController: ThreadPeekPopController?
     
-    private typealias DataManager = FetchedDataManager<Thread>
+    fileprivate typealias DataManager = FetchedDataManager<AwfulThread>
     
-    private var dataManager: DataManager {
+    fileprivate var dataManager: DataManager {
         didSet {
             tableViewAdapter = nil
             
-            if isViewLoaded() {
+            if isViewLoaded {
                 createTableViewAdapter()
                 
                 tableView.reloadData()
@@ -24,14 +24,14 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         }
     }
     
-    private var tableViewAdapter: ThreadDataManagerTableViewAdapter!
+    fileprivate var tableViewAdapter: ThreadDataManagerTableViewAdapter!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+        let fetchRequest = AwfulThread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
         dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
-        super.init(style: .Plain)
+        super.init(style: .plain)
         
         title = "Bookmarks"
         
@@ -44,7 +44,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func createTableViewAdapter() {
@@ -61,22 +61,22 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func loadPage(page: Int) {
-        AwfulForumsClient.sharedClient().listBookmarkedThreadsOnPage(page) { [weak self] (error: NSError?, threads: [AnyObject]?) in
-            if let error = error where self?.visible == true {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
+        AwfulForumsClient.shared().listBookmarkedThreads(onPage: page) { [weak self] (error: Error?, threads: [Any]?) -> Void in
+            if let error = error, self?.visible == true {
+                let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
             
-            if error == .None {
+            if error as NSError? == .none {
                 self?.latestPage = page
                 
-                RefreshMinder.sharedMinder.didRefresh(.Bookmarks)
+                RefreshMinder.sharedMinder.didRefresh(.bookmarks)
             }
             
             self?.stopAnimatingPullToRefresh()
             self?.stopAnimatingInfiniteScroll()
             
-            self?.scrollToLoadMoreBlock = threads?.count >= 40 ? self!.loadMore : nil
+            self?.scrollToLoadMoreBlock = (threads?.count)! >= 40 ? { self?.loadMore() } : nil
         }
     }
     
@@ -85,42 +85,42 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerNib(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
+        tableView.register(UINib(nibName: ThreadTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ThreadTableViewCell.identifier)
         
         tableView.estimatedRowHeight = ThreadTableViewCell.estimatedRowHeight
         tableView.restorationIdentifier = "Bookmarks table"
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
         createTableViewAdapter()
         
-        pullToRefreshBlock = refresh
+        pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BookmarksTableViewController.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BookmarksTableViewController.settingsDidChange(notification:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
         
-        if traitCollection.forceTouchCapability == .Available {
+        if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         prepareUserActivity()
         
         if !dataManager.contents.isEmpty {
-            scrollToLoadMoreBlock = loadMore
+            scrollToLoadMoreBlock = { [weak self] in self?.loadMore() }
         }
         
         becomeFirstResponder()
         
-        if AwfulForumsClient.sharedClient().reachable &&
-            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.Bookmarks))
+        if AwfulForumsClient.shared().reachable &&
+            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks))
         {
             refresh()
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         undoManager.removeAllActions()
@@ -131,28 +131,28 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     // MARK: Actions
     
     private func didLongPressCell(cell: ThreadTableViewCell) {
-        guard let indexPath = tableView.indexPathForCell(cell) else { return }
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
         let thread = dataManager.contents[indexPath.row]
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
         actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
             if let
-                row = self?.dataManager.contents.indexOf(thread),
-                cell = self?.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+                row = self?.dataManager.contents.index(of: thread),
+                let cell = self?.tableView.cellForRow(at: IndexPath(row: row, section: 0))
             {
-                sourceRect.memory = cell.bounds
-                sourceView.memory = cell
+                sourceRect.pointee = cell.bounds
+                sourceView.pointee = cell
             }
         }
-        presentViewController(actionViewController, animated: true, completion: nil)
+        present(actionViewController, animated: true, completion: nil)
     }
     
     private func loadMore() {
-        loadPage(latestPage + 1)
+        loadPage(page: latestPage + 1)
     }
     
     private func refresh() {
         startAnimatingPullToRefresh()
-        loadPage(1)
+        loadPage(page: 1)
     }
     
     // MARK: Notifications
@@ -161,15 +161,15 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
         
         switch key {
-        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() where isViewLoaded():
+        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String as String where isViewLoaded:
             createTableViewAdapter()
             tableView.reloadData()
             
-        case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue():
-            let fetchRequest = Thread.bookmarksFetchRequest(sortedByUnread: AwfulSettings.sharedSettings().bookmarksSortedByUnread)
+        case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String as String:
+            let fetchRequest = AwfulThread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
             dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
+        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
             prepareUserActivity()
             
         default:
@@ -180,7 +180,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     // MARK: Handoff
     
     private func prepareUserActivity() {
-        guard AwfulSettings.sharedSettings().handoffEnabled else {
+        guard AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
             return
         }
@@ -190,74 +190,73 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         userActivity = activity
     }
     
-    override func updateUserActivityState(activity: NSUserActivity) {
+    override func updateUserActivityState(_ activity: NSUserActivity) {
         activity.title = "Bookmarked Threads"
-        activity.addUserInfoEntriesFromDictionary([Handoff.InfoBookmarksKey: true])
-        activity.webpageURL = NSURL(string: "/bookmarkthreads.php", relativeToURL: AwfulForumsClient.sharedClient().baseURL)
+        activity.addUserInfoEntries(from: [Handoff.InfoBookmarksKey: true])
+        activity.webpageURL = URL(string: "/bookmarkthreads.php", relativeTo: AwfulForumsClient.shared().baseURL)
     }
     
     // MARK: ThreadPeekPopControllerDelegate
     
-    func threadForLocation(location: CGPoint) -> Thread? {
-        guard let row = tableView.indexPathForRowAtPoint(location)?.row else {
+    func threadForLocation(location: CGPoint) -> AwfulThread? {
+        guard let row = tableView.indexPathForRow(at: location)?.row else {
             return nil
         }
         
         return dataManager.contents[row]
     }
     
-    func viewForThread(thread: Thread) -> UIView? {
-        guard let row = dataManager.contents.indexOf(thread) else {
+    func viewForThread(thread: AwfulThread) -> UIView? {
+        guard let row = dataManager.contents.index(of: thread) else {
             return nil
         }
         
-        return tableView.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+        return tableView.cellForRow(at: IndexPath(row: row, section: 0))
     }
     
     // MARK: Undo
     
-    override func canBecomeFirstResponder() -> Bool {
+    override var canBecomeFirstResponder: Bool {
         return true
     }
     
-    override var undoManager: NSUndoManager {
+    override var undoManager: UndoManager {
         return _undoManager
     }
     
-    private let _undoManager: NSUndoManager = {
-        let undoManager = NSUndoManager()
+    fileprivate let _undoManager: UndoManager = {
+        let undoManager = UndoManager()
         undoManager.levelsOfUndo = 1
         return undoManager
         }()
     
-    @objc private func setThread(thread: Thread, isBookmarked: Bool) {
-        undoManager.prepareWithInvocationTarget(self).setThread(thread, isBookmarked: !isBookmarked)
+    @objc fileprivate func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
+        (undoManager.prepare(withInvocationTarget: self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: NSError?) in
+        AwfulForumsClient.shared().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: Error?) -> Void in
             if let error = error {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.presentViewController(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                self?.present(alert, animated: true, completion: nil)
             }
         }
     }
     
     // MARK: UITableViewDelegate
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let thread = dataManager.contents[indexPath.row]
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? AwfulThreadPage.NextUnread.rawValue : 1
+        let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        super.tableView(tableView, willDisplayCell: cell, forRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
         let cell = cell as! ThreadTableViewCell
         let thread = dataManager.contents[indexPath.row]
         cell.themeData = ThreadTableViewCell.ThemeData(theme: theme, thread: thread)

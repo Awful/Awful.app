@@ -7,7 +7,7 @@ import UIKit
 final class NewThreadFieldView: UIView, ComposeCustomView {
     let threadTagButton = ThreadTagButton()
     let subjectField = ComposeField()
-    private let separator = UIView()
+    fileprivate let separator = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -18,26 +18,26 @@ final class NewThreadFieldView: UIView, ComposeCustomView {
         subjectField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(subjectField)
         
-        separator.backgroundColor = .lightGrayColor()
+        separator.backgroundColor = .lightGray
         separator.translatesAutoresizingMaskIntoConstraints = false
         addSubview(separator)
         
-        threadTagButton.widthAnchor.constraintEqualToAnchor(threadTagButton.heightAnchor).active = true
+        threadTagButton.widthAnchor.constraint(equalTo: threadTagButton.heightAnchor).isActive = true
         
-        threadTagButton.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        subjectField.leadingAnchor.constraintEqualToAnchor(threadTagButton.trailingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(subjectField.trailingAnchor).active = true
+        threadTagButton.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        subjectField.leadingAnchor.constraint(equalTo: threadTagButton.trailingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: subjectField.trailingAnchor).isActive = true
         
-        separator.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(separator.trailingAnchor).active = true
+        separator.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: separator.trailingAnchor).isActive = true
         
-        threadTagButton.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(threadTagButton.bottomAnchor).active = true
+        threadTagButton.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: threadTagButton.bottomAnchor).isActive = true
         
-        subjectField.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        separator.topAnchor.constraintEqualToAnchor(subjectField.bottomAnchor).active = true
-        separator.heightAnchor.constraintEqualToConstant(1).active = true
-        bottomAnchor.constraintEqualToAnchor(separator.bottomAnchor).active = true
+        subjectField.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        separator.topAnchor.constraint(equalTo: subjectField.bottomAnchor).isActive = true
+        separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        bottomAnchor.constraint(equalTo: separator.bottomAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -46,8 +46,8 @@ final class NewThreadFieldView: UIView, ComposeCustomView {
     
     var enabled = false {
         didSet {
-            threadTagButton.enabled = enabled
-            subjectField.textField.enabled = enabled
+            threadTagButton.isEnabled = enabled
+            subjectField.textField.isEnabled = enabled
         }
     }
     

@@ -14,17 +14,17 @@ import UIKit
 final class PostsView: UIView {
     let webView = UIWebView.nativeFeelingWebView()
     let topBar = PostsViewTopBar()
-    private var exposedTopBarSlice: CGFloat = 0 {
+    fileprivate var exposedTopBarSlice: CGFloat = 0 {
         didSet {
             if oldValue != exposedTopBarSlice {
                 setNeedsLayout()
             }
         }
     }
-    private var ignoreScrollViewDidScroll = false
-    private var lastContentOffset: CGPoint = .zero
-    private var maintainTopBarState = true
-    private var topBarAlwaysVisible = false
+    fileprivate var ignoreScrollViewDidScroll = false
+    fileprivate var lastContentOffset: CGPoint = .zero
+    fileprivate var maintainTopBarState = true
+    fileprivate var topBarAlwaysVisible = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,27 +37,27 @@ final class PostsView: UIView {
         
         updateForVoiceOver(animated: false)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibilityVoiceOverStatusChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func voiceOverStatusDidChange(notification: NSNotification) {
+    @objc fileprivate func voiceOverStatusDidChange(_ notification: Notification) {
         updateForVoiceOver(animated: true)
     }
     
-    private func updateForVoiceOver(animated animated: Bool) {
+    fileprivate func updateForVoiceOver(animated: Bool) {
         topBarAlwaysVisible = UIAccessibilityIsVoiceOverRunning()
         guard topBarAlwaysVisible else { return }
         exposedTopBarSlice = topBar.bounds.height
-        UIView.animateWithDuration(animated ? 0.2 : 0) { 
+        UIView.animate(withDuration: animated ? 0.2 : 0, animations: { 
             self.layoutIfNeeded()
-        }
+        }) 
     }
     
-    private func furtherExposeTopBarSlice(delta: CGFloat) {
+    fileprivate func furtherExposeTopBarSlice(_ delta: CGFloat) {
         let oldExposedSlice = exposedTopBarSlice
         exposedTopBarSlice = (exposedTopBarSlice + delta).clamp(0, topBar.bounds.height)
         let exposedDelta = exposedTopBarSlice - oldExposedSlice
@@ -94,42 +94,42 @@ final class PostsView: UIView {
          
             That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
          */
-        if !webView.scrollView.dragging {
+        if !webView.scrollView.isDragging {
             webView.fractionalContentOffset = fractionalOffset
         }
     }
 }
 
 private enum TopBarState {
-    case Hidden, Visible, PartiallyVisible
+    case hidden, visible, partiallyVisible
 }
 
 extension PostsView {
-    private var topBarState: TopBarState {
+    fileprivate var topBarState: TopBarState {
         if exposedTopBarSlice <= 0 {
-            return .Hidden
+            return .hidden
         } else if exposedTopBarSlice >= topBar.bounds.height {
-            return .Visible
+            return .visible
         } else {
-            return .PartiallyVisible
+            return .partiallyVisible
         }
     }
 }
 
 extension PostsView: UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastContentOffset = scrollView.contentOffset
         maintainTopBarState = false
     }
     
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard !ignoreScrollViewDidScroll && !topBarAlwaysVisible else { return }
         
         let scrollDistance = scrollView.contentOffset.y - lastContentOffset.y
         guard scrollDistance != 0 else { return }
         
         switch topBarState {
-        case .Hidden:
+        case .hidden:
             // Don't start showing a hidden topbar after bouncing.
             guard !maintainTopBarState else { break }
             
@@ -141,10 +141,10 @@ extension PostsView: UIScrollViewDelegate {
                 furtherExposeTopBarSlice(-scrollDistance)
             }
             
-        case .PartiallyVisible:
+        case .partiallyVisible:
             furtherExposeTopBarSlice(-scrollDistance)
             
-        case .Visible:
+        case .visible:
             // Don't start hiding a visible topbar after bouncing.
             guard !maintainTopBarState else { break }
             
@@ -160,11 +160,11 @@ extension PostsView: UIScrollViewDelegate {
         lastContentOffset = scrollView.contentOffset
     }
     
-    func scrollViewWillBeginDecelerating(scrollView: UIScrollView) {
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
         maintainTopBarState = true
     }
     
-    func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         maintainTopBarState = true
         return true
     }

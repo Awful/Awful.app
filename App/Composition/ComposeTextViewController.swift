@@ -5,8 +5,8 @@
 import MRProgress
 
 class ComposeTextViewController: ViewController {
-    override init(nibName: String?, bundle: NSBundle?) {
-        super.init(nibName: nibName, bundle: bundle)
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         navigationItem.leftBarButtonItem = cancelButtonItem
         navigationItem.rightBarButtonItem = submitButtonItem
     }
@@ -26,13 +26,13 @@ class ComposeTextViewController: ViewController {
     }
     
     /// The button that submits the composition when tapped. Set its title property.
-    private(set) lazy var submitButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(title: "Submit", style: .Plain, target: self, action: #selector(didTapSubmit))
+    fileprivate(set) lazy var submitButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(didTapSubmit))
     }()
     
     /// The button that cancels the composition when tapped. Set its title as appropriate.
-    private(set) lazy var cancelButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(didTapCancel))
+    fileprivate(set) lazy var cancelButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancel))
     }()
     
     /// Tells a reasonable responder to become first responder.
@@ -43,7 +43,7 @@ class ComposeTextViewController: ViewController {
     
     /// Refreshes the submit button's enabled status.
     func updateSubmitButtonItem() {
-        submitButtonItem.enabled = canSubmitComposition
+        submitButtonItem.isEnabled = canSubmitComposition
     }
     
     /// Returns YES when the submission is valid and ready, otherwise NO. The default is to return YES when the textView is nonempty.
@@ -56,7 +56,7 @@ class ComposeTextViewController: ViewController {
      
         - parameter handler: A block to call after determining whether submission should continue, which takes as a parameter YES if submission should continue or NO otherwise.
      */
-    func shouldSubmit(handler: (Bool) -> Void) {
+    func shouldSubmit(_ handler: @escaping (Bool) -> Void) {
         handler(true)
     }
     
@@ -71,8 +71,8 @@ class ComposeTextViewController: ViewController {
         - parameter composition: The composition with upload images having been replaced by appropriate textual equivalents.
         - parameter completion: A block to call once submission is complete; the block takes a single parameter, either YES on success or NO if submission failed.
      */
-    func submit(composition: String, completion: (success: Bool) -> Void) {
-        fatalError("\(self.dynamicType) needs to implement \(#function)")
+    func submit(_ composition: String, completion: @escaping (_ success: Bool) -> Void) {
+        fatalError("\(type(of: self)) needs to implement \(#function)")
     }
     
     /// Called when the cancel button is tapped and no submission is in progress. The default implementation simply informs the delegate; overridden implementations can do so directly or call super as desired.
@@ -80,7 +80,7 @@ class ComposeTextViewController: ViewController {
         if let delegate = delegate {
             delegate.composeTextViewController(self, didFinishWithSuccessfulSubmission: false, shouldKeepDraft: true)
         } else {
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
         }
     }
     
@@ -91,11 +91,11 @@ class ComposeTextViewController: ViewController {
             
             old.removeFromSuperview()
             
-            customViewWidthConstraint?.active = false
+            customViewWidthConstraint?.isActive = false
             customViewWidthConstraint = nil
         }
         didSet {
-            if let old = oldValue as? UIView where customView == nil {
+            if let old = oldValue as? UIView , customView == nil {
                 textView.textContainerInset.top -= old.bounds.height
             }
             
@@ -105,105 +105,105 @@ class ComposeTextViewController: ViewController {
             
             textView.textContainerInset.top += customView.bounds.height
             
-            textView.leadingAnchor.constraintEqualToAnchor(customView.leadingAnchor).active = true
-            textView.topAnchor.constraintEqualToAnchor(customView.topAnchor).active = true
-            customView.heightAnchor.constraintEqualToConstant(customView.bounds.height).active = true
-            customViewWidthConstraint = customView.widthAnchor.constraintEqualToConstant(view.bounds.width)
+            textView.leadingAnchor.constraint(equalTo: customView.leadingAnchor).isActive = true
+            textView.topAnchor.constraint(equalTo: customView.topAnchor).isActive = true
+            customView.heightAnchor.constraint(equalToConstant: customView.bounds.height).isActive = true
+            customViewWidthConstraint = customView.widthAnchor.constraint(equalToConstant: view.bounds.width)
             
             // If we're not in the view controller hierarchy, we might not yet have a width, in which case we'll add the constraint later.
-            if let constraint = customViewWidthConstraint where constraint.constant > 0 {
-                constraint.active = true
+            if let constraint = customViewWidthConstraint , constraint.constant > 0 {
+                constraint.isActive = true
             }
         }
     }
     
-    private var customViewWidthConstraint: NSLayoutConstraint?
+    fileprivate var customViewWidthConstraint: NSLayoutConstraint?
     
     weak var delegate: ComposeTextViewControllerDelegate?
     
-    private var menuTree: CompositionMenuTree!
+    fileprivate var menuTree: CompositionMenuTree!
     
-    private func beginObservingTextChangeNotification() {
+    fileprivate func beginObservingTextChangeNotification() {
         guard textDidChangeObserver == nil else { return }
-        textDidChangeObserver = NSNotificationCenter.defaultCenter().addObserverForName(UITextViewTextDidChangeNotification, object: textView, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (note: NSNotification) in
+        textDidChangeObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
         })
     }
     private func endObservingTextChangeNotification() {
         guard let token = textDidChangeObserver else { return }
-        NSNotificationCenter.defaultCenter().removeObserver(token)
+        NotificationCenter.default.removeObserver(token)
         textDidChangeObserver = nil
     }
     private var textDidChangeObserver: NSObjectProtocol?
     
-    private func beginObservingKeyboardNotifications() {
+    fileprivate func beginObservingKeyboardNotifications() {
         guard keyboardWillShowObserver == nil else { return }
         
-        keyboardWillShowObserver = NSNotificationCenter.defaultCenter().addObserverForName(UIKeyboardWillShowNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (notification) in
+        keyboardWillShowObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillShow, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
             self?.keyboardWillThingy(notification)
         })
         
-        keyboardWillHideObserver = NSNotificationCenter.defaultCenter().addObserverForName(UIKeyboardWillHideNotification, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: { [weak self] (notification) in
+        keyboardWillHideObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillHide, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
             self?.keyboardWillThingy(notification)
         })
     }
     private func endObservingKeyboardNotifications() {
         if let token = keyboardWillShowObserver {
-            NSNotificationCenter.defaultCenter().removeObserver(token)
+            NotificationCenter.default.removeObserver(token)
             keyboardWillShowObserver = nil
         }
         
         if let token = keyboardWillHideObserver {
-            NSNotificationCenter.defaultCenter().removeObserver(token)
+            NotificationCenter.default.removeObserver(token)
             keyboardWillHideObserver = nil
         }
     }
     private var keyboardWillShowObserver: NSObjectProtocol?
-    private var keyboardWillHideObserver: NSObjectProtocol?
+    fileprivate var keyboardWillHideObserver: NSObjectProtocol?
     
-    private func keyboardWillThingy(notification: NSNotification) {
+    fileprivate func keyboardWillThingy(_ notification: Notification) {
         guard let
-            duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSTimeInterval,
-            curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
-            keyboardEndScreenFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue(),
-            window = view.window
+            duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
+            let curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
+            let keyboardEndScreenFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let window = view.window
             else { return }
-        let keyboardEndTextViewFrame = textView.convertRect(keyboardEndScreenFrame, fromCoordinateSpace: window.screen.coordinateSpace)
-        let overlap = keyboardEndTextViewFrame.intersect(textView.bounds)
+        let keyboardEndTextViewFrame = textView.convert(keyboardEndScreenFrame, to: window.screen.coordinateSpace)
+        let overlap = keyboardEndTextViewFrame.intersection(textView.bounds)
         
         let options = UIViewAnimationOptions(rawValue: curve << 16)
         
-        UIView.animateWithDuration(duration, delay: 0, options: options, animations: { 
+        UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
             self.textView.contentInset.bottom = overlap.height
             self.textView.scrollIndicatorInsets.bottom = overlap.height
             }) { (finished) in
                 guard let
                     endPosition = self.textView.selectedTextRange?.end
-                    where notification.name == UIKeyboardWillShowNotification
+                    , notification.name == NSNotification.Name.UIKeyboardWillShow
                     else { return }
-                let caretRect = self.textView.caretRectForPosition(endPosition)
+                let caretRect = self.textView.caretRect(for: endPosition)
                 self.textView.scrollRectToVisible(caretRect, animated: true)
         }
     }
     
-    private var imageUploadProgress: NSProgress?
+    fileprivate var imageUploadProgress: Progress?
     
-    private func submit() {
-        let overlay = MRProgressOverlayView.showOverlayAddedTo(viewToOverlay, title: submissionInProgressTitle, mode: .Indeterminate, animated: true)
-        overlay.tintColor = theme["tintColor"]
+    fileprivate func submit() {
+        let overlay = MRProgressOverlayView.showOverlayAdded(to: viewToOverlay, title: submissionInProgressTitle, mode: .indeterminate, animated: true)
+        overlay?.tintColor = theme["tintColor"]
         
         imageUploadProgress = uploadImages(attachedTo: textView.attributedText, completion: { [weak self] (plainText, error) in
             if let error = error {
-                overlay.dismiss(false)
+                overlay?.dismiss(false)
                 
                 self?.enableEverything()
                 
-                if error.domain == NSCocoaErrorDomain && error.code == NSUserCancelledError {
+                if (error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError {
                     self?.focusInitialFirstResponder()
                 } else {
                     // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
                     let presenter = self?.navigationController ?? self
-                    presenter?.presentViewController(UIAlertController.alertWithTitle("Image Upload Failed", error: error), animated: true, completion: nil)
+                    presenter?.present(UIAlertController.alertWithTitle("Image Upload Failed", error: error), animated: true, completion: nil)
                 }
                 
                 return
@@ -215,7 +215,7 @@ class ComposeTextViewController: ViewController {
                     if let delegate = self?.delegate {
                         delegate.composeTextViewController(self!, didFinishWithSuccessfulSubmission: true, shouldKeepDraft: false)
                     } else {
-                        self?.dismissViewControllerAnimated(true, completion: nil)
+                        self?.dismiss(animated: true, completion: nil)
                     }
                 } else {
                     self?.enableEverything()
@@ -228,7 +228,7 @@ class ComposeTextViewController: ViewController {
         })
     }
     
-    private var viewToOverlay: UIView {
+    fileprivate var viewToOverlay: UIView {
         if let top = navigationController?.topViewController {
             return top.view
         } else {
@@ -236,22 +236,22 @@ class ComposeTextViewController: ViewController {
         }
     }
     
-    private func enableEverything() {
+    fileprivate func enableEverything() {
         updateSubmitButtonItem()
         
-        textView.editable = true
+        textView.isEditable = true
         customView?.enabled = true
     }
     
-    private func disableEverythingButTheCancelButton() {
+    fileprivate func disableEverythingButTheCancelButton() {
         view.endEditing(true)
         
-        submitButtonItem.enabled = false
-        textView.editable = false
+        submitButtonItem.isEnabled = false
+        textView.isEditable = false
         customView?.enabled = false
     }
     
-    @objc private func didTapSubmit() {
+    @objc fileprivate func didTapSubmit() {
         disableEverythingButTheCancelButton()
         shouldSubmit({ [weak self] (ok: Bool) in
             if ok {
@@ -267,12 +267,12 @@ class ComposeTextViewController: ViewController {
         })
     }
     
-    @objc private func didTapCancel() {
+    @objc fileprivate func didTapCancel() {
         if let progress = imageUploadProgress {
             progress.cancel()
             imageUploadProgress = nil
             
-            MRProgressOverlayView.dismissAllOverlaysForView(viewToOverlay, animated: true, completion: { 
+            MRProgressOverlayView.dismissAllOverlays(for: viewToOverlay, animated: true, completion: { 
                 self.enableEverything()
             })
         } else {
@@ -283,7 +283,7 @@ class ComposeTextViewController: ViewController {
     override func loadView() {
         let textView = ComposeTextView()
         textView.restorationIdentifier = "ComposeTextView"
-        textView.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
         textView.delegate = self
         view = textView
     }
@@ -304,17 +304,17 @@ class ComposeTextViewController: ViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        if let constraint = customViewWidthConstraint where view.bounds.width > 0 {
+        if let constraint = customViewWidthConstraint , view.bounds.width > 0 {
             constraint.constant = view.bounds.width
             
             // If our view wasn't already in the hierarchy when the custom view was added, we didn't know how wide to make the custom view. Now we do.
-            constraint.active = true
+            constraint.isActive = true
             
             view.layoutSubviews()
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         focusInitialFirstResponder()
@@ -324,13 +324,13 @@ class ComposeTextViewController: ViewController {
         beginObservingKeyboardNotifications()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         beginObservingTextChangeNotification()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         view.endEditing(true)
@@ -338,16 +338,16 @@ class ComposeTextViewController: ViewController {
     
     // MARK: State restoration
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(textView.attributedText, forKey: Keys.AttributedText.rawValue)
+        coder.encode(textView.attributedText, forKey: Keys.AttributedText.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        textView.attributedText = coder.decodeObjectForKey(Keys.AttributedText.rawValue) as? NSAttributedString
+        textView.attributedText = coder.decodeObject(forKey: Keys.AttributedText.rawValue) as? NSAttributedString
         
         // -viewDidLoad gets called before -decodeRestorableStateWithCoder: and so the text color gets loaded from the saved attributed string. Reapply the theme after restoring state.
         themeDidChange()
@@ -356,7 +356,7 @@ class ComposeTextViewController: ViewController {
     }
 }
 
-private enum Keys: String {
+fileprivate enum Keys: String {
     case AttributedText
 }
 
@@ -377,5 +377,5 @@ protocol ComposeCustomView {
         - parameter success: true if the submission was successful, otherwise false.
         - parameter keepDraft: true if the view controller should be kept around, otherwise false.
      */
-    func composeTextViewController(composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool)
+    func composeTextViewController(_ composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool)
 }

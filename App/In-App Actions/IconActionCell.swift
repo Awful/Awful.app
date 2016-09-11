@@ -11,14 +11,14 @@ final class IconActionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        iconImageView.contentMode = .Center
+        iconImageView.contentMode = .center
         contentView.addSubview(iconImageView)
         
-        titleLabel.font = UIFont.systemFontOfSize(12)
-        titleLabel.textColor = .whiteColor()
-        titleLabel.backgroundColor = .clearColor()
+        titleLabel.font = UIFont.systemFont(ofSize: 12)
+        titleLabel.textColor = .white
+        titleLabel.backgroundColor = .clear
         titleLabel.numberOfLines = 2
-        titleLabel.textAlignment = .Center
+        titleLabel.textAlignment = .center
         contentView.addSubview(titleLabel)
     }
     
@@ -26,14 +26,14 @@ final class IconActionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override var highlighted: Bool {
+    override var isHighlighted: Bool {
         didSet {
-            iconImageView.tintColor = highlighted ? .whiteColor() : nil
+            iconImageView.tintColor = isHighlighted ? .white : nil
         }
     }
     
     override func layoutSubviews() {
-        var (iconFrame, titleFrame) = contentView.bounds.divide(imageSize.height, fromEdge: .MinYEdge)
+        var (iconFrame, titleFrame) = contentView.bounds.divided(atDistance: imageSize.height, from: .minYEdge)
         
         iconFrame.origin.x += (iconFrame.width - imageSize.width) / 2
         iconFrame.size.width = imageSize.width

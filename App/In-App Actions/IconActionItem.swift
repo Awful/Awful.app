@@ -10,16 +10,16 @@ final class IconActionItem: NSObject {
     let themeKey: String
     let block: () -> Void
     
-    @nonobjc convenience init(_ action: IconAction, block: () -> Void) {
+    @nonobjc convenience init(_ action: IconAction, block: @escaping () -> Void) {
         guard let icon = UIImage(named: action.iconName) else { fatalError("missing image named \(action.iconName)") }
         self.init(title: action.title, icon: icon, themeKey: action.themeKey, block: block)
     }
     
-    static func itemWithAction(action: IconAction, block: () -> Void) -> IconActionItem {
+    static func itemWithAction(_ action: IconAction, block: @escaping () -> Void) -> IconActionItem {
         return self.init(action, block: block)
     }
     
-    private init(title: String, icon: UIImage, themeKey: String, block: () -> Void) {
+    fileprivate init(title: String, icon: UIImage, themeKey: String, block: @escaping () -> Void) {
         self.title = title
         self.icon = icon
         self.themeKey = themeKey
@@ -29,83 +29,83 @@ final class IconActionItem: NSObject {
 }
 
 @objc enum IconAction: Int {
-    case AddBookmark
-    case CopyURL
-    case EditPost
-    case JumpToFirstPage
-    case JumpToLastPage
-    case MarkAsUnread
-    case MarkReadUpToHere
-    case QuotePost
-    case RapSheet
-    case RemoveBookmark
-    case ReportPost
-    case SendPrivateMessage
-    case ShowInThread
-    case SingleUsersPosts
-    case UserProfile
-    case Vote
+    case addBookmark
+    case copyURL
+    case editPost
+    case jumpToFirstPage
+    case jumpToLastPage
+    case markAsUnread
+    case markReadUpToHere
+    case quotePost
+    case rapSheet
+    case removeBookmark
+    case reportPost
+    case sendPrivateMessage
+    case showInThread
+    case singleUsersPosts
+    case userProfile
+    case vote
     
-    private var title: String {
+    fileprivate var title: String {
         switch self {
-        case .AddBookmark: return "Bookmark"
-        case .CopyURL: return "Link"
-        case .EditPost: return "Edit"
-        case .JumpToFirstPage: return "First Page"
-        case .JumpToLastPage: return "Last Page"
-        case .MarkAsUnread: return "Mark Unread"
-        case .MarkReadUpToHere: return "Mark Read"
-        case .QuotePost: return "Quote"
-        case .RapSheet: return "Rap Sheet"
-        case .ReportPost: return "Report"
-        case .RemoveBookmark: return "Unmark"
-        case .SendPrivateMessage: return "PM"
-        case .ShowInThread: return "All Posts"
-        case .SingleUsersPosts: return "Their Posts"
-        case .UserProfile: return "Profile"
-        case .Vote: return "Vote"
+        case .addBookmark: return "Bookmark"
+        case .copyURL: return "Link"
+        case .editPost: return "Edit"
+        case .jumpToFirstPage: return "First Page"
+        case .jumpToLastPage: return "Last Page"
+        case .markAsUnread: return "Mark Unread"
+        case .markReadUpToHere: return "Mark Read"
+        case .quotePost: return "Quote"
+        case .rapSheet: return "Rap Sheet"
+        case .reportPost: return "Report"
+        case .removeBookmark: return "Unmark"
+        case .sendPrivateMessage: return "PM"
+        case .showInThread: return "All Posts"
+        case .singleUsersPosts: return "Their Posts"
+        case .userProfile: return "Profile"
+        case .vote: return "Vote"
         }
     }
     
-    private var iconName: String {
+    fileprivate var iconName: String {
         switch self {
-        case .AddBookmark: return "add-bookmark"
-        case .CopyURL: return "copy-url"
-        case .EditPost: return "edit-post"
-        case .JumpToFirstPage: return "jump-to-first-page"
-        case .JumpToLastPage: return "jump-to-last-page"
-        case .MarkAsUnread: return "mark-as-unread"
-        case .MarkReadUpToHere: return "mark-read-up-to-here"
-        case .QuotePost: return "quote-post"
-        case .RapSheet: return "rap-sheet"
-        case .ReportPost: return "rap-sheet"
-        case .RemoveBookmark: return "remove-bookmark"
-        case .SendPrivateMessage: return "send-private-message"
-        case .ShowInThread: return "view-in-thread"
-        case .SingleUsersPosts: return "single-users-posts"
-        case .UserProfile: return "user-profile"
-        case .Vote: return "vote"
+        case .addBookmark: return "add-bookmark"
+        case .copyURL: return "copy-url"
+        case .editPost: return "edit-post"
+        case .jumpToFirstPage: return "jump-to-first-page"
+        case .jumpToLastPage: return "jump-to-last-page"
+        case .markAsUnread: return "mark-as-unread"
+        case .markReadUpToHere: return "mark-read-up-to-here"
+        case .quotePost: return "quote-post"
+        case .rapSheet: return "rap-sheet"
+        case .reportPost: return "rap-sheet"
+        case .removeBookmark: return "remove-bookmark"
+        case .sendPrivateMessage: return "send-private-message"
+        case .showInThread: return "view-in-thread"
+        case .singleUsersPosts: return "single-users-posts"
+        case .userProfile: return "user-profile"
+        case .vote: return "vote"
         }
     }
     
-    private var themeKey: String {
+    fileprivate var themeKey: String {
         switch self {
-        case .AddBookmark: return "addBookmarkIconColor"
-        case .CopyURL: return "copyURLIconColor"
-        case .EditPost: return "editPostIconColor"
-        case .JumpToFirstPage: return "jumpToFirstPageIconColor"
-        case .JumpToLastPage: return "jumpToLastPageIconColor"
-        case .MarkAsUnread: return "markUnreadIconColor"
-        case .MarkReadUpToHere: return "markReadUpToHereIconColor"
-        case .QuotePost: return "quoteIconColor"
-        case .RapSheet: return "rapSheetIconColor"
-        case .ReportPost: return "rapSheetIconColor"
-        case .RemoveBookmark: return "removeBookmarkIconColor"
-        case .SendPrivateMessage: return "sendPMIconColor"
-        case .ShowInThread: return "showInThreadIconColor"
-        case .SingleUsersPosts: return "singleUserIconColor"
-        case .UserProfile: return "profileIconColor"
-        case .Vote: return "voteIconColor"
+        case .addBookmark: return "addBookmarkIconColor"
+        case .copyURL: return "copyURLIconColor"
+        case .editPost: return "editPostIconColor"
+        case .jumpToFirstPage: return "jumpToFirstPageIconColor"
+        case .jumpToLastPage: return "jumpToLastPageIconColor"
+        case .markAsUnread: return "markUnreadIconColor"
+        case .markReadUpToHere: return "markReadUpToHereIconColor"
+        case .quotePost: return "quoteIconColor"
+        case .rapSheet: return "rapSheetIconColor"
+        case .reportPost: return "rapSheetIconColor"
+        case .removeBookmark: return "removeBookmarkIconColor"
+        case .sendPrivateMessage: return "sendPMIconColor"
+        case .showInThread: return "showInThreadIconColor"
+        case .singleUsersPosts: return "singleUserIconColor"
+        case .userProfile: return "profileIconColor"
+        case .vote: return "voteIconColor"
         }
     }
 }

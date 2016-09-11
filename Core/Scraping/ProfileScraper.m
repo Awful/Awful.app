@@ -29,7 +29,7 @@
     }
     self.profile = authorScraper.author.profile;
     if (!self.profile) {
-        self.profile = [Profile insertIntoManagedObjectContext:self.managedObjectContext];
+        self.profile = [Profile insertIntoManagedObjectContextWithContext:self.managedObjectContext];
         self.profile.user = authorScraper.author;
     }
     

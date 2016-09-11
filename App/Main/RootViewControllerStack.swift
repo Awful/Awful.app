@@ -14,8 +14,8 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         get { return splitViewController }
     }
     
-    private let splitViewController: AwfulSplitViewController
-    private let tabBarController: UITabBarController
+    fileprivate let splitViewController: AwfulSplitViewController
+    fileprivate let tabBarController: UITabBarController
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -56,28 +56,28 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
         
         updateMessagesTabPresence()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewControllerStack.settingsDidChange(_:)), name: AwfulSettingsDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(RootViewControllerStack.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
         
         configureSplitViewControllerDisplayMode()
 		configureTabBarColor()
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
-    private func createEmptyDetailNavigationController() -> UINavigationController {
+    fileprivate func createEmptyDetailNavigationController() -> UINavigationController {
         let emptyNavigationController = NavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController
     }
     
-    private func updateMessagesTabPresence() {
-        let roots = tabBarController.mutableArrayValueForKey("viewControllers")
+    fileprivate func updateMessagesTabPresence() {
+        let roots = tabBarController.mutableArrayValue(forKey: "viewControllers")
         let messagesRestorationIdentifier = "Messages"
         var messagesTabIndex: Int?
-        for (i, root) in roots.enumerate() {
+        for (i, root) in roots.enumerated() {
             let navigationController = root as! UINavigationController
             let viewController = navigationController.viewControllers[0]
             if viewController.restorationIdentifier == messagesRestorationIdentifier {
@@ -86,70 +86,70 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             }
         }
         
-        if AwfulSettings.sharedSettings().canSendPrivateMessages {
+        if AwfulSettings.shared().canSendPrivateMessages {
             if messagesTabIndex == nil {
                 let messages = MessageListViewController(managedObjectContext: managedObjectContext)
                 messages.restorationIdentifier = messagesRestorationIdentifier
                 let navigationController = messages.enclosingNavigationController
                 navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)
                 navigationController.restorationClass = nil
-                roots.insertObject(navigationController, atIndex: 2)
+                roots.insert(navigationController, at: 2)
             }
         } else {
             if let messagesTabIndex = messagesTabIndex {
-                roots.removeObjectAtIndex(messagesTabIndex)
+                roots.removeObject(at: messagesTabIndex)
             }
         }
     }
     
-    @objc private func settingsDidChange(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String:String]
-        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]!
-        if changeKey == AwfulSettingsKeys.canSendPrivateMessages.takeUnretainedValue() {
+    @objc fileprivate func settingsDidChange(_ notification: Notification) {
+        let userInfo = (notification).userInfo!
+        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]! as! String
+        if changeKey == AwfulSettingsKeys.canSendPrivateMessages.takeUnretainedValue() as String {
             updateMessagesTabPresence()
-        } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape.takeUnretainedValue() {
+        } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape.takeUnretainedValue() as String {
             configureSplitViewControllerDisplayMode()
-		} else if changeKey == AwfulSettingsKeys.darkTheme.takeUnretainedValue() {
+		} else if changeKey == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String {
 			configureTabBarColor()
 		}
     }
 	
-	private func configureTabBarColor() {
-		if AwfulSettings.sharedSettings().darkTheme {
-			self.tabBarController.tabBar.barTintColor = UIColor.blackColor()
+	fileprivate func configureTabBarColor() {
+		if AwfulSettings.shared().darkTheme {
+			self.tabBarController.tabBar.barTintColor = UIColor.black
 		} else {
 			self.tabBarController.tabBar.barTintColor = nil
 		}
 		self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
 	}
 	
-    private func configureSplitViewControllerDisplayMode() {
-        if AwfulSettings.sharedSettings().hideSidebarInLandscape {
+    fileprivate func configureSplitViewControllerDisplayMode() {
+        if AwfulSettings.shared().hideSidebarInLandscape {
             switch splitViewController.displayMode {
-            case .PrimaryOverlay, .AllVisible:
-                splitViewController.preferredDisplayMode = .PrimaryOverlay
-            case .PrimaryHidden:
-                splitViewController.preferredDisplayMode = .PrimaryHidden
+            case .primaryOverlay, .allVisible:
+                splitViewController.preferredDisplayMode = .primaryOverlay
+            case .primaryHidden:
+                splitViewController.preferredDisplayMode = .primaryHidden
             default:
                 fatalError("unexpected display mode \(splitViewController.displayMode)")
             }
         } else {
-            splitViewController.preferredDisplayMode = .Automatic
+            splitViewController.preferredDisplayMode = .automatic
         }
     }
 
-    func viewControllerWithRestorationIdentifierPath(identifierComponents: [String]) -> UIViewController? {
+    func viewControllerWithRestorationIdentifierPath(_ identifierComponents: [String]) -> UIViewController? {
         // I can't recursively call a nested function? Toss it in a closure then I guess.
         var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
         search = { identifierComponents, viewControllers in
-            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).indexOf(identifierComponents[0]) {
+            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).index(of: identifierComponents[0]) {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
-                } else if currentViewController.respondsToSelector(Selector("viewControllers")) {
+                } else if currentViewController.responds(to: #selector(getter: UINavigationController.viewControllers)) {
                     // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
                     let remainingPath = identifierComponents[1..<identifierComponents.count]
-                    let subsequentViewControllers = currentViewController.valueForKey("viewControllers") as! [UIViewController]
+                    let subsequentViewControllers = currentViewController.value(forKey: "viewControllers") as! [UIViewController]
                     return search(Array(remainingPath), subsequentViewControllers)
                 }
             }
@@ -166,32 +166,32 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         
         // Sometimes after restoring state the split view decides to get the wrong display mode, possibly through some combination of state restoration goofiness (e.g. preserving in one orientation then restoring in another) and the "Hide sidebar in landscape" setting (set to NO in both cases).
         let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
-        if !splitViewController.collapsed {
+        if !splitViewController.isCollapsed {
             // One possibility is restoring in portrait orientation with the sidebar always visible.
-            if isPortrait && splitViewController.displayMode == .AllVisible {
-                splitViewController.preferredDisplayMode = .PrimaryHidden
+            if isPortrait && splitViewController.displayMode == .allVisible {
+                splitViewController.preferredDisplayMode = .primaryHidden
             }
             
             // Another possibility is restoring in landscape orientation with the sidebar always hidden, and no button to show it.
-            if !isPortrait && splitViewController.displayMode == .PrimaryHidden && splitViewController.preferredDisplayMode == .Automatic {
-                splitViewController.preferredDisplayMode = .AllVisible
-                splitViewController.preferredDisplayMode = .Automatic
+            if !isPortrait && splitViewController.displayMode == .primaryHidden && splitViewController.preferredDisplayMode == .automatic {
+                splitViewController.preferredDisplayMode = .allVisible
+                splitViewController.preferredDisplayMode = .automatic
             }
         }
         
         if let detail = detailNavigationController?.viewControllers.first {
             // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
-            if splitViewController.displayMode != .AllVisible {
+            if splitViewController.displayMode != .allVisible {
                 detail.navigationItem.leftBarButtonItem = backBarButtonItem
             }
         }
     }
     
-    private var primaryNavigationController: UINavigationController {
+    fileprivate var primaryNavigationController: UINavigationController {
         return tabBarController.selectedViewController as! UINavigationController
     }
 
-    private var detailNavigationController: UINavigationController? {
+    fileprivate var detailNavigationController: UINavigationController? {
         let viewControllers = splitViewController.viewControllers as! [UINavigationController]
         return viewControllers.count > 1 ? viewControllers[1] : nil
     }
@@ -202,7 +202,8 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 }
 
 extension RootViewControllerStack {
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
+    @objc(splitViewController:collapseSecondaryViewController:ontoPrimaryViewController:)
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let secondaryNavigationController = secondaryViewController as! UINavigationController
@@ -221,14 +222,15 @@ extension RootViewControllerStack {
         
         // This ugliness fixes the resulting navigation controller's toolbar appearing empty despite having the correct items. (i.e. none of the items' views are in the toolbar's view hierarchy.) Presumably if some fix is discovered for the grey screen mentioned atop kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior, I think this will be fixed too. Or at least it's worth testing out.
         let toolbar = primaryNavigationController.toolbar
-        let items = toolbar.items
-        toolbar.items = nil
-        toolbar.items = items
+        let items = toolbar?.items
+        toolbar?.items = nil
+        toolbar?.items = items
         
         return true
     }
     
-    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+    @objc(splitViewController:separateSecondaryViewControllerFromPrimaryViewController:)
+    func splitViewController(_ splitViewController: UISplitViewController, separateSecondaryFrom primaryViewController: UIViewController) -> UIViewController? {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let viewControllers = primaryNavigationController.viewControllers 
@@ -252,17 +254,18 @@ extension RootViewControllerStack {
     }
     
     // Split view controllers really don't like it outside of .Automatic on iPhone 6+. This largely works around a bug whereby the screen just turns grey after rotating from landscape to portrait with "Hide sidebar in landscape" enabled. rdar://problem/18553183
-    private func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
+    fileprivate func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
         let tempMode = splitViewController.preferredDisplayMode
-        splitViewController.preferredDisplayMode = .Automatic
+        splitViewController.preferredDisplayMode = .automatic
         splitViewController.preferredDisplayMode = tempMode
     }
     
-    func splitViewController(splitViewController: UISplitViewController, showDetailViewController viewController: UIViewController, sender: AnyObject?) -> Bool {
-        if splitViewController.collapsed {
+    @objc(splitViewController:showDetailViewController:sender:)
+    func splitViewController(_ splitViewController: UISplitViewController, showDetail viewController: UIViewController, sender: Any?) -> Bool {
+        if splitViewController.isCollapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
-            if splitViewController.displayMode != .AllVisible {
+            if splitViewController.displayMode != .allVisible {
                 viewController.navigationItem.leftBarButtonItem = backBarButtonItem
             }
             
@@ -277,27 +280,28 @@ extension RootViewControllerStack {
         return true
     }
     
-    func targetDisplayModeForActionInSplitViewController(splitViewController: UISplitViewController) -> UISplitViewControllerDisplayMode {
+    @objc(targetDisplayModeForActionInSplitViewController:)
+    func targetDisplayModeForAction(in splitViewController: UISplitViewController) -> UISplitViewControllerDisplayMode {
         // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
         if let detailNav = detailNavigationController {
             if let root = detailNav.viewControllers.first {
-                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .AllVisible ? nil : backBarButtonItem
+                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .allVisible ? nil : backBarButtonItem
             }
         }
-        return .Automatic
+        return .automatic
     }
     
-    private var backBarButtonItem: UIBarButtonItem? {
-        guard !splitViewController.collapsed else {
+    fileprivate var backBarButtonItem: UIBarButtonItem? {
+        guard !splitViewController.isCollapsed else {
             return nil
         }
         
-        let realItem = splitViewController.displayModeButtonItem()
-        return UIBarButtonItem(image: UIImage(named: "back"), style: .Plain, target: realItem.target, action: realItem.action)
+        let realItem = splitViewController.displayModeButtonItem
+        return UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
     }
 }
 
-private func navigationIdentifier(rootIdentifier: String?) -> String {
+private func navigationIdentifier(_ rootIdentifier: String?) -> String {
     if let identifier = rootIdentifier {
         return "\(identifier) navigation"
     } else {
@@ -305,13 +309,11 @@ private func navigationIdentifier(rootIdentifier: String?) -> String {
     }
 }
 
-func partition<S:CollectionType>(s: S, test: (S.Generator.Element) -> Bool) -> (S.SubSequence, S.SubSequence) {
-    for i in s.startIndex ..< s.endIndex {
-        if test(s[i]) {
-            return (s[s.startIndex ..< i], s[i ..< s.endIndex])
-        }
+func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.SubSequence, C.SubSequence) {
+    if let i = c.index(where: test) {
+        return (c.prefix(upTo: i), c.suffix(from: i))
     }
-    return (s[s.startIndex ..< s.endIndex], s[s.endIndex ..< s.endIndex])
+    return (c.prefix(upTo: c.endIndex), c.suffix(from: c.endIndex))
 }
 
 extension UIViewController {

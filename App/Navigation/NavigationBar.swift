@@ -10,15 +10,15 @@ final class NavigationBar: UINavigationBar {
         super.init(frame: frame)
         
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
-        translucent = false
+        isTranslucent = false
         
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
-        barStyle = .Black
+        barStyle = .black
         
         backIndicatorImage = UIImage(named: "back-padded")
         backIndicatorTransitionMaskImage = UIImage(named: "back-padded")
         
-        titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(17, weight: UIFontWeightRegular)]
+        titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
     }
@@ -27,17 +27,17 @@ final class NavigationBar: UINavigationBar {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func didLongPress(sender: UILongPressGestureRecognizer) {
-        guard sender.state == .Began else { return }
+    @objc fileprivate func didLongPress(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
         guard backItem != nil else { return }
         guard let nav = delegate as? UINavigationController else { return }
         
         // Try to find the back button's view without accessing its private `_view` ivar.
         guard let leftmost = subviews.lazy
             .filter({$0.bounds.width < self.bounds.width / 2})
-            .minElement({$0.frame.minX < $1.frame.minX || $0.bounds.width > $1.bounds.width})
-            where leftmost.bounds.contains(sender.locationInView(leftmost))
+            .min(by: {$0.frame.minX < $1.frame.minX || $0.bounds.width > $1.bounds.width}),
+            leftmost.bounds.contains(sender.location(in: leftmost))
             else { return }
-        nav.popToRootViewControllerAnimated(true)
+        nav.popToRootViewController(animated: true)
     }
 }

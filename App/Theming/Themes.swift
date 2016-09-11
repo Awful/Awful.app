@@ -23,10 +23,10 @@ import UIKit
 */
 @objc final class Theme: NSObject, Comparable {
     let name: String
-    private let dictionary: [String: AnyObject]
-    private var parent: Theme?
+    fileprivate let dictionary: [String: AnyObject]
+    fileprivate var parent: Theme?
     
-    private init(name: String, dictionary: [String: AnyObject]) {
+    fileprivate init(name: String, dictionary: [String: AnyObject]) {
         self.name = name
         self.dictionary = flatten(dictionary)
     }
@@ -51,11 +51,11 @@ import UIKit
         let appearance = (dictionary["keyboardAppearance"] as! String?) ?? parent?["keyboardAppearance"] ?? "default"
         switch appearance {
         case "Dark", "dark":
-            return .Dark
+            return .dark
         case "Light", "light":
-            return .Light
+            return .light
         case "default":
-            return .Default
+            return .default
         default:
             fatalError("Unrecognized keyboard appearance: \(appearance) (in theme \(name)")
         }
@@ -66,14 +66,14 @@ import UIKit
         if let style = (dictionary["scrollIndicatorStyle"] as! String?) ?? parent?["scrollIndicatorStyle"] {
             switch style {
             case "Dark", "dark":
-                return .Black
+                return .black
             case "Light", "light":
-                return .White
+                return .white
             default:
                 fatalError("Unrecognized scroll indicator style: \(style) (in theme \(name))")
             }
         } else {
-            return .Default
+            return .default
         }
     }
     
@@ -100,10 +100,10 @@ import UIKit
         @objc(stringNamed:) get {
             if let value = (dictionary[key] as! String?) ?? parent?[key] {
                 if key.hasSuffix("CSS") {
-                    let URL = NSBundle.mainBundle().URLForResource(value, withExtension: nil)!
+                    let URL = Bundle.main.url(forResource: value, withExtension: nil)!
                     var CSS = NSString()
                     do {
-                        try CSS = NSString(contentsOfURL: URL, usedEncoding: nil)
+                        try CSS = NSString(contentsOf: URL, usedEncoding: nil)
                     }
                     catch {
                         fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)")
@@ -123,7 +123,7 @@ import UIKit
         if key.hasSuffix("Color") {
             return self[key] as UIColor?
         } else {
-            return self[key] as String?
+            return self[key] as String? as AnyObject?
         }
     }
 }
@@ -149,7 +149,7 @@ func < (lhs: Theme, rhs: Theme) -> Bool {
     return lhs.name < rhs.name
 }
 
-private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
+private func flatten<K, V>(_ dictionary: [K: V]) -> [K: V] {
     return dictionary.reduce([:]) { (accum, kvpair) in
         var accum = accum
         if let nested = kvpair.1 as? [K: V] {
@@ -164,8 +164,8 @@ private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
 }
 
 private let bundledThemes: [String: Theme] = {
-    let URL = NSBundle.mainBundle().URLForResource("Themes", withExtension: "plist")!
-    let plist = NSDictionary(contentsOfURL: URL) as! [String: AnyObject]
+    let URL = Bundle.main.url(forResource: "Themes", withExtension: "plist")!
+    let plist = NSDictionary(contentsOf: URL) as! [String: AnyObject]
     
     var themes = [String: Theme]()
     
@@ -190,12 +190,8 @@ extension Theme {
         return bundledThemes["default"]!
     }
     
-    class var darkTheme: Theme {
-        return bundledThemes["dark"]!
-    }
-    
     class var currentTheme: Theme {
-        if AwfulSettings.sharedSettings().darkTheme {
+        if AwfulSettings.shared().darkTheme {
             return bundledThemes["dark"]!
         } else {
             return defaultTheme
@@ -203,34 +199,22 @@ extension Theme {
     }
     
     class var allThemes: [Theme] {
-        return bundledThemes.values.sort()
+        return bundledThemes.values.sorted()
     }
     
-    class func currentThemeForForum(forum: Forum) -> Theme {
-        if let name = AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID) {
-            if name == "default" || name == "dark" {
-                return currentTheme
-            }
+    class func currentThemeForForum(_ forum: Forum) -> Theme {
+        if let name = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
             return bundledThemes[name]!
         } else {
             return currentTheme
         }
     }
     
-    class func themesForForum(forum: Forum) -> [Theme] {
-        let ubiquitousNames = AwfulSettings.sharedSettings().ubiquitousThemeNames as! [String]? ?? []
+    class func themesForForum(_ forum: Forum) -> [Theme] {
+        let ubiquitousNames = AwfulSettings.shared().ubiquitousThemeNames as! [String]? ?? []
         let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID || ($0.forumID == nil && appThemeMatchesTheme($0.name)) || ubiquitousNames.contains($0.name)
+            $0.forumID == forum.forumID || $0.forumID == nil || ubiquitousNames.contains($0.name)
         }
-        
-        return themes.sort()
-    }
-    
-    class func appThemeMatchesTheme(themeName: String) -> Bool {
-        if (themeName == "default" && AwfulSettings.sharedSettings().darkTheme)
-            || (themeName == "dark" && !AwfulSettings.sharedSettings().darkTheme) {
-            return false
-        }
-        return true
+        return themes.sorted()
     }
 }

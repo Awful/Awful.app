@@ -4,7 +4,7 @@
 
 extension Array {
     /// Returns the first element for which the predicate returns true.
-    func first(predicate: Element -> Bool) -> Element? {
+    func first(_ predicate: (Element) -> Bool) -> Element? {
         for item in self {
             if predicate(item) {
                 return item
@@ -14,9 +14,9 @@ extension Array {
     }
     
     /// Same as reduce() but with the first element used as the initial accumulated value.
-    func reduce(combine: (Element, Element) -> Element) -> Element? {
+    func reduce(_ combine: (Element, Element) -> Element) -> Element? {
         if let initial = first {
-            return self.dropFirst().reduce(initial, combine: combine)
+            return self.dropFirst().reduce(initial, combine)
         } else {
             return nil
         }
@@ -24,26 +24,26 @@ extension Array {
 }
 
 extension Int {
-    func clamp<T: IntervalType where T.Bound == Int>(interval: T) -> Int {
-        if self < interval.start {
-            return interval.start
-        } else if self > interval.end {
-            return interval.end
+    func clamp(_ range: ClosedRange<Int>) -> Int {
+        if self < range.lowerBound {
+            return range.lowerBound
+        } else if self > range.upperBound {
+            return range.upperBound
         } else {
             return self
         }
     }
 }
 
-extension SequenceType {
-    func all(includeElement: Generator.Element -> Bool) -> Bool {
+extension Sequence {
+    func all(_ includeElement: (Iterator.Element) -> Bool) -> Bool {
         for element in self where !includeElement(element) {
             return false
         }
         return true
     }
     
-    func any(includeElement: Generator.Element -> Bool) -> Bool {
+    func any(_ includeElement: (Iterator.Element) -> Bool) -> Bool {
         for element in self where includeElement(element) {
             return true
         }
@@ -51,11 +51,11 @@ extension SequenceType {
     }
 }
 
-func any<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> Bool {
+func any<S: Sequence, T>(_ sequence: S, includeElement: (T) -> Bool) -> Bool where T == S.Iterator.Element {
     return first(sequence, includeElement: includeElement) != nil
 }
 
-func first<S: SequenceType, T where T == S.Generator.Element>(sequence: S, includeElement: T -> Bool) -> T? {
+func first<S: Sequence, T>(_ sequence: S, includeElement: (T) -> Bool) -> T? where T == S.Iterator.Element {
     for element in sequence {
         if includeElement(element) {
             return element

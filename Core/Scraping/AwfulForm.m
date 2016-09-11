@@ -76,6 +76,25 @@
     return _selectedSecondaryThreadTagKey;
 }
 
+- (NSString *)threadTagIDWithImageName:(NSString *)imageName {
+    return [self threadTagIDInThreadTagKeys:_threadTagKeys withImageName:imageName];
+}
+
+- (NSString *)secondaryThreadTagIDWithImageName:(NSString *)imageName {
+    return [self threadTagIDInThreadTagKeys:_secondaryThreadTagKeys withImageName:imageName];
+}
+
+- (NSString *)threadTagIDInThreadTagKeys:(NSArray *)threadTagKeys withImageName:(NSString *)imageName {
+    [self scrapeIfNecessary];
+    
+    for (ThreadTagKey *key in threadTagKeys) {
+        if ([key.imageName isEqualToString:imageName]) {
+            return key.threadTagID;
+        }
+    }
+    return nil;
+}
+
 - (NSMutableDictionary *)recommendedParameters
 {
     [self scrapeIfNecessary];
@@ -189,10 +208,10 @@
     [self scrapeIfNecessary];
     
     if (_threadTagKeys.count > 0) {
-        self.threadTags = [ThreadTag objectsForKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
+        self.threadTags = [ThreadTag objectsForKeysWithObjectKeys:_threadTagKeys inManagedObjectContext:managedObjectContext];
     }
     if (_secondaryThreadTagKeys.count > 0) {
-        self.secondaryThreadTags = [ThreadTag objectsForKeys:_secondaryThreadTagKeys inManagedObjectContext:managedObjectContext];
+        self.secondaryThreadTags = [ThreadTag objectsForKeysWithObjectKeys:_secondaryThreadTagKeys inManagedObjectContext:managedObjectContext];
     }
 }
 

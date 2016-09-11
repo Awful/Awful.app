@@ -6,24 +6,24 @@ import AwfulCore
 
 /// For writing private messages.
 final class MessageComposeViewController: ComposeTextViewController {
-    private let recipient: User?
-    private let regardingMessage: PrivateMessage?
-    private let forwardingMessage: PrivateMessage?
-    private let initialContents: String?
-    private var threadTag: ThreadTag? {
+    fileprivate let recipient: User?
+    fileprivate let regardingMessage: PrivateMessage?
+    fileprivate let forwardingMessage: PrivateMessage?
+    fileprivate let initialContents: String?
+    fileprivate var threadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
-    private var availableThreadTags: [ThreadTag]?
-    private var updatingThreadTags = false
-    private var threadTagPicker: ThreadTagPickerViewController?
+    fileprivate var availableThreadTags: [ThreadTag]?
+    fileprivate var updatingThreadTags = false
+    fileprivate var threadTagPicker: ThreadTagPickerViewController?
     
-    private lazy var fieldView: NewPrivateMessageFieldView = {
+    fileprivate lazy var fieldView: NewPrivateMessageFieldView = {
         let fieldView = NewPrivateMessageFieldView(frame: CGRect(x: 0, y: 0, width: 0, height: 88))
-        fieldView.toField.label.textColor = .grayColor()
-        fieldView.subjectField.label.textColor = .grayColor()
-        fieldView.threadTagButton.addTarget(self, action: #selector(didTapThreadTagButton), forControlEvents: .TouchUpInside)
-        fieldView.toField.textField.addTarget(self, action: #selector(toFieldDidChange), forControlEvents: .EditingChanged)
-        fieldView.subjectField.textField.addTarget(self, action: #selector(subjectFieldDidChange), forControlEvents: .EditingChanged)
+        fieldView.toField.label.textColor = .gray
+        fieldView.subjectField.label.textColor = .gray
+        fieldView.threadTagButton.addTarget(self, action: #selector(didTapThreadTagButton), for: .touchUpInside)
+        fieldView.toField.textField.addTarget(self, action: #selector(toFieldDidChange), for: .editingChanged)
+        fieldView.subjectField.textField.addTarget(self, action: #selector(subjectFieldDidChange), for: .editingChanged)
         return fieldView
     }()
     
@@ -67,29 +67,29 @@ final class MessageComposeViewController: ComposeTextViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         title = "Private Message"
         submitButtonItem.title = "Send"
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
     }
     
-    private func updateThreadTagButtonImage() {
+    fileprivate func updateThreadTagButtonImage() {
         let image: UIImage
         if let
             imageName = threadTag?.imageName,
-            loadedImage = ThreadTagLoader.imageNamed(imageName)
+            let loadedImage = ThreadTagLoader.imageNamed(imageName)
         {
             image = loadedImage
         } else {
             image = ThreadTagLoader.unsetThreadTagImage
         }
-        fieldView.threadTagButton.setImage(image, forState: .Normal)
+        fieldView.threadTagButton.setImage(image, for: UIControlState())
     }
     
-    private func updateAvailableThreadTagsIfNecessary() {
+    fileprivate func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
-        AwfulForumsClient.sharedClient().listAvailablePrivateMessageThreadTagsAndThen { [weak self] (error: NSError?, threadTags: [AnyObject]?) in
+        AwfulForumsClient.shared().listAvailablePrivateMessageThreadTagsAndThen { [weak self] (error: Error?, threadTags: [Any]?) in
             self?.updatingThreadTags = false
             
             if let threadTags = threadTags as? [ThreadTag] {
@@ -114,22 +114,22 @@ final class MessageComposeViewController: ComposeTextViewController {
         return "Sending…"
     }
     
-    override func submit(composition: String, completion: (Bool) -> Void) {
+    override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
         guard let
             to = fieldView.toField.textField.text,
-            subject = fieldView.subjectField.textField.text
+            let subject = fieldView.subjectField.textField.text
             else { return }
-        AwfulForumsClient.sharedClient().sendPrivateMessageTo(to, withSubject: subject, threadTag: threadTag, BBcode: composition, asReplyToMessage: regardingMessage, forwardedFromMessage: forwardingMessage) { [weak self] (error: NSError?) in
+        let _ = AwfulForumsClient.shared().sendPrivateMessage(to: to, withSubject: subject, threadTag: threadTag, bBcode: composition, asReplyTo: regardingMessage, forwardedFrom: forwardingMessage) { [weak self] (error: Error?) in
             if let error = error {
                 completion(false)
-                self?.presentViewController(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
             } else {
                 completion(true)
             }
         }
     }
     
-    @objc private func didTapThreadTagButton(sender: ThreadTagButton) {
+    @objc fileprivate func didTapThreadTagButton(_ sender: ThreadTagButton) {
         guard let picker = threadTagPicker else { return }
         
         let selectedImageName = threadTag?.imageName ?? ThreadTagLoader.emptyPrivateMessageImageName
@@ -141,11 +141,11 @@ final class MessageComposeViewController: ComposeTextViewController {
         view.endEditing(true)
     }
     
-    @objc private func toFieldDidChange() {
+    @objc fileprivate func toFieldDidChange() {
         updateSubmitButtonItem()
     }
     
-    @objc private func subjectFieldDidChange() {
+    @objc fileprivate func subjectFieldDidChange() {
         updateSubmitButtonItem()
     }
     
@@ -164,7 +164,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSForegroundColorAttributeName: theme["placeholderTextColor"] as UIColor? ?? .grayColor()]
+        let attributes = [NSForegroundColorAttributeName: (theme["placeholderTextColor"] as UIColor?) ?? .gray]
         fieldView.toField.textField.attributedPlaceholder = NSAttributedString(string: "To", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = NSAttributedString(string: "Subject", attributes: attributes)
     }
@@ -191,7 +191,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 fieldView.subjectField.textField.text = subject
             }
             
-            if let initialContents = initialContents where textView.text.isEmpty {
+            if let initialContents = initialContents , textView.text.isEmpty {
                 textView.text = initialContents
             }
         } else if let forwardingMessage = forwardingMessage {
@@ -199,7 +199,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
             }
             
-            if let initialContents = initialContents where textView.text.isEmpty {
+            if let initialContents = initialContents , textView.text.isEmpty {
                 textView.text = initialContents
             }
         }
@@ -207,7 +207,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         updateAvailableThreadTagsIfNecessary()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         updateAvailableThreadTagsIfNecessary()
@@ -215,33 +215,33 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     // MARK: State restoration
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(recipient?.objectKey, forKey: Keys.RecipientUserKey.rawValue)
-        coder.encodeObject(regardingMessage?.objectKey, forKey: Keys.RegardingMessageKey.rawValue)
-        coder.encodeObject(forwardingMessage?.objectKey, forKey: Keys.ForwardingMessageKey.rawValue)
-        coder.encodeObject(initialContents, forKey: Keys.InitialContents.rawValue)
-        coder.encodeObject(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
+        coder.encode(recipient?.objectKey, forKey: Keys.RecipientUserKey.rawValue)
+        coder.encode(regardingMessage?.objectKey, forKey: Keys.RegardingMessageKey.rawValue)
+        coder.encode(forwardingMessage?.objectKey, forKey: Keys.ForwardingMessageKey.rawValue)
+        coder.encode(initialContents, forKey: Keys.InitialContents.rawValue)
+        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
+    override func decodeRestorableState(with coder: NSCoder) {
         let context = AppDelegate.instance.managedObjectContext
-        if let threadTagKey = coder.decodeObjectForKey(Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(threadTagKey, inManagedObjectContext: context) as? ThreadTag
+        if let threadTagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
+            threadTag = ThreadTag.objectForKey(objectKey: threadTagKey, inManagedObjectContext: context) as? ThreadTag
         }
         
-        super.decodeRestorableStateWithCoder(coder)
+        super.decodeRestorableState(with: coder)
     }
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
-    func threadTagPicker(picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
+    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
         if imageName == ThreadTagLoader.emptyPrivateMessageImageName {
             threadTag = nil
         } else if let
             availableThreadTags = availableThreadTags,
-            i = availableThreadTags.indexOf({ $0.imageName == imageName })
+            let i = availableThreadTags.index(where: { $0.imageName == imageName })
         {
             threadTag = availableThreadTags[i]
         }
@@ -253,27 +253,27 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
 }
 
 extension MessageComposeViewController: UIViewControllerRestoration {
-    static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-        let recipientKey = coder.decodeObjectForKey(Keys.RecipientUserKey.rawValue) as? UserKey
-        let regardingKey = coder.decodeObjectForKey(Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
-        let forwardingKey = coder.decodeObjectForKey(Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
-        let initialContents = coder.decodeObjectForKey(Keys.InitialContents.rawValue) as? String
+    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+        let recipientKey = coder.decodeObject(forKey: Keys.RecipientUserKey.rawValue) as? UserKey
+        let regardingKey = coder.decodeObject(forKey: Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
+        let forwardingKey = coder.decodeObject(forKey: Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
+        let initialContents = coder.decodeObject(forKey: Keys.InitialContents.rawValue) as? String
         let context = AppDelegate.instance.managedObjectContext
         
         let composeViewController: MessageComposeViewController
         if let
             recipientKey = recipientKey,
-            recipient = User.objectForKey(recipientKey, inManagedObjectContext: context) as? User
+            let recipient = User.objectForKey(objectKey: recipientKey, inManagedObjectContext: context) as? User
         {
             composeViewController = MessageComposeViewController(recipient: recipient)
         } else if let
             regardingKey = regardingKey,
-            regardingMessage = PrivateMessage.objectForKey(regardingKey, inManagedObjectContext: context) as? PrivateMessage
+            let regardingMessage = PrivateMessage.objectForKey(objectKey: regardingKey, inManagedObjectContext: context) as? PrivateMessage
         {
             composeViewController = MessageComposeViewController(regardingMessage: regardingMessage, initialContents: initialContents)
         } else if let
             forwardingKey = forwardingKey,
-            forwardingMessage = PrivateMessage.objectForKey(forwardingKey, inManagedObjectContext: context) as? PrivateMessage
+            let forwardingMessage = PrivateMessage.objectForKey(objectKey: forwardingKey, inManagedObjectContext: context) as? PrivateMessage
         {
             composeViewController = MessageComposeViewController(forwardingMessage: forwardingMessage, initialContents: initialContents)
         } else {

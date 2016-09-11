@@ -8,30 +8,30 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
+    convenience init(title: String, error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
         self.init(title: title, message: messageForError(error), handler: handler)
     }
 
-    convenience init(title: String, error: NSError) {
+    convenience init(title: String, error: Error) {
         self.init(title: title, message: messageForError(error))
     }
     
-    class func alertWithTitle(title: String, error: NSError) -> UIAlertController {
+    class func alertWithTitle(_ title: String, error: Error) -> UIAlertController {
         return UIAlertController(title: title, error: error)
     }
 
-    convenience init(networkError error: NSError, handler: ((action: UIAlertAction!) -> Void)!) {
-        self.init(title: "Network Error", error: error, handler: handler)
+    convenience init(networkError error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
+        self.init(title: "Network Error", error: error, handler: handler )
     }
     
-    class func alertWithNetworkError(error: NSError) -> UIAlertController {
+    class func alertWithNetworkError(_ error: Error) -> UIAlertController {
         return UIAlertController(networkError: error, handler: nil)
     }
 
     @objc(initAlertWithTitle:message:handler:)
-    convenience init(title: String, message: String, handler: ((action: UIAlertAction!) -> Void)!) {
-        self.init(title: title, message: message, preferredStyle: .Alert)
-        addAction(UIAlertAction(title: "OK", style: .Default, handler: handler))
+    convenience init(title: String, message: String, handler: ((_ action: UIAlertAction?) -> Void)!) {
+        self.init(title: title, message: message, preferredStyle: .alert)
+        addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
     }
 
     @objc(initAlertWithTitle:message:)
@@ -40,28 +40,29 @@ extension UIAlertController {
     }
 
     class func actionSheet() -> UIAlertController {
-        return self.init(title: nil, message: nil, preferredStyle: .ActionSheet)
+        return self.init(title: nil, message: nil, preferredStyle: .actionSheet)
     }
 
     // MARK: Convenient actions
 
-    func addActionWithTitle(title: String, handler: (() -> Void)!) {
-        addAction(UIAlertAction(title: title, style: .Default) { _ in
+    func addActionWithTitle(_ title: String, handler: (() -> Void)!) {
+        addAction(UIAlertAction(title: title, style: .default) { _ in
             if handler != nil { handler() } })
     }
 
-    func addCancelActionWithHandler(handler: (() -> Void)!) {
-        addAction(UIAlertAction(title: "Cancel", style: .Cancel) { _ in
+    func addCancelActionWithHandler(_ handler: (() -> Void)!) {
+        addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             if handler != nil { handler() } })
     }
 
-    func addActions(actions: [UIAlertAction]) {
+    func addActions(_ actions: [UIAlertAction]) {
         for action in actions {
             addAction(action)
         }
     }
 }
 
-private func messageForError(error: NSError) -> String {
+private func messageForError(_ error: Error) -> String {
+    let error = error as NSError
     return "\(error.localizedDescription) (code \(error.code))"
 }

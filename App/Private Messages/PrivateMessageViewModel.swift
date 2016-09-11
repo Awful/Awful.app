@@ -6,7 +6,7 @@ import AwfulCore
 import Foundation
 
 final class PrivateMessageViewModel: NSObject {
-    private let privateMessage: PrivateMessage
+    fileprivate let privateMessage: PrivateMessage
     
     init(privateMessage: PrivateMessage) {
         self.privateMessage = privateMessage
@@ -16,18 +16,18 @@ final class PrivateMessageViewModel: NSObject {
     @NSCopying var stylesheet: NSString?
     
     var userInterfaceIdiom: String {
-        switch UIDevice.currentDevice().userInterfaceIdiom {
-        case .Pad: return "ipad"
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad: return "ipad"
         default: return "iphone"
         }
     }
     
-    var visibleAvatarURL: NSURL? {
-        return showAvatars ? privateMessage.from?.avatarURL : nil
+    var visibleAvatarURL: URL? {
+        return showAvatars ? privateMessage.from?.avatarURL as URL? : nil
     }
     
-    var hiddenAvataruRL: NSURL? {
-        return showAvatars ? nil : privateMessage.from?.avatarURL
+    var hiddenAvataruRL: URL? {
+        return showAvatars ? nil : privateMessage.from?.avatarURL as URL?
     }
     
     var fromUsername: String {
@@ -35,7 +35,7 @@ final class PrivateMessageViewModel: NSObject {
     }
     
     var showAvatars: Bool {
-        return AwfulSettings.sharedSettings().showAvatars
+        return AwfulSettings.shared().showAvatars
     }
     
     var HTMLContents: String? {
@@ -43,16 +43,16 @@ final class PrivateMessageViewModel: NSObject {
         let document = HTMLDocument(string: originalHTML)
         RemoveSpoilerStylingAndEvents(document)
         UseHTML5VimeoPlayer(document)
-        ProcessImgTags(document, !AwfulSettings.sharedSettings().showImages)
-        return document.firstNodeMatchingSelector("body")?.innerHTML
+        ProcessImgTags(document, !AwfulSettings.shared().showImages)
+        return document.firstNode(matchingSelector: "body")?.innerHTML
     }
     
-    var regDateFormat: NSDateFormatter {
-        return NSDateFormatter.regDateFormatter()
+    var regDateFormat: DateFormatter {
+        return DateFormatter.regDateFormatter()
     }
     
-    var sentDateFormat: NSDateFormatter {
-        return NSDateFormatter.postDateFormatter()
+    var sentDateFormat: DateFormatter {
+        return DateFormatter.postDateFormatter()
     }
     
     var javascript: String? {
@@ -65,9 +65,9 @@ final class PrivateMessageViewModel: NSObject {
     }
     
     var fontScalePercentage: NSNumber? {
-        let percentage = floor(AwfulSettings.sharedSettings().fontScale)
+        let percentage = floor(AwfulSettings.shared().fontScale)
         if percentage == 100 { return nil }
-        return percentage
+        return percentage as NSNumber?
     }
     
     var from: User? {
@@ -82,7 +82,7 @@ final class PrivateMessageViewModel: NSObject {
         return privateMessage.seen
     }
     
-    var sentDate: NSDate? {
-        return privateMessage.sentDate
+    var sentDate: Date? {
+        return privateMessage.sentDate as Date?
     }
 }

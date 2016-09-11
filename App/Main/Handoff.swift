@@ -35,31 +35,31 @@ import Foundation
 
 extension NSUserActivity {
     /// An awful:// URL locating the user activity, or nil if no such URL exists.
-    var awfulURL: NSURL? {
+    var awfulURL: URL? {
         if let userInfo = userInfo {
             switch activityType {
             case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoFilteredThreadUserIDKey] != nil:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
-                if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
-                    URL += "/pages/\(page)"
+                var url = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
+                if let page: AnyObject = userInfo[Handoff.InfoPageKey] as AnyObject? {
+                    url += "/pages/\(page)"
                 }
-                URL += "?userid=\(userInfo[Handoff.InfoFilteredThreadUserIDKey]!)"
-                if let postID: AnyObject = userInfo[Handoff.InfoPostIDKey] {
-                    URL += "#post=\(postID)"
+                url += "?userid=\(userInfo[Handoff.InfoFilteredThreadUserIDKey]!)"
+                if let postID: AnyObject = userInfo[Handoff.InfoPostIDKey] as AnyObject? {
+                    url += "#post=\(postID)"
                 }
-                return NSURL(string: URL)
+                return URL(string: url)
             case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoPostIDKey] != nil:
-                return NSURL(string: "awful://posts/\(userInfo[Handoff.InfoPostIDKey]!)")
+                return URL(string: "awful://posts/\(userInfo[Handoff.InfoPostIDKey]!)")
             case Handoff.ActivityTypeBrowsingPosts:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
-                if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
-                    URL += "/pages/\(page)"
+                var url = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
+                if let page: AnyObject = userInfo[Handoff.InfoPageKey] as AnyObject? {
+                    url += "/pages/\(page)"
                 }
-                return NSURL(string: URL)
+                return URL(string: url)
             case Handoff.ActivityTypeListingThreads:
-                return NSURL(string: "awful://forums/\(userInfo[Handoff.InfoForumIDKey]!)")
+                return URL(string: "awful://forums/\(userInfo[Handoff.InfoForumIDKey]!)")
             case Handoff.ActivityTypeReadingMessage:
-                return NSURL(string: "awful://messages/\(userInfo[Handoff.InfoMessageIDKey]!)")
+                return URL(string: "awful://messages/\(userInfo[Handoff.InfoMessageIDKey]!)")
             default:
                 break
             }
@@ -74,13 +74,13 @@ extension UIDevice {
         // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
         // Models are listed at http://theiphonewiki.com/wiki/Models
         // Let's assume all future models also support Handoff.
-        let scanner = NSScanner(string: modelIdentifier())
+        let scanner = Scanner(string: modelIdentifier())
         var major: Int = Int.min
-        if scanner.scanString("iPad", intoString: nil) && scanner.scanInteger(&major) {
+        if scanner.scanString("iPad", into: nil) && scanner.scanInt(&major) {
             return major >= 2
-        } else if scanner.scanString("iPhone", intoString: nil) && scanner.scanInteger(&major) {
+        } else if scanner.scanString("iPhone", into: nil) && scanner.scanInt(&major) {
             return major >= 5
-        } else if scanner.scanString("iPod", intoString: nil) && scanner.scanInteger(&major) {
+        } else if scanner.scanString("iPod", into: nil) && scanner.scanInt(&major) {
             return major >= 5
         } else {
             return false
@@ -96,16 +96,16 @@ private func modelIdentifier() -> String {
     }
     
     let bufferSize = Int(size) + 1
-    let buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
+    let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferSize)
     if sysctlbyname("hw.machine", buffer, &size, nil, 0) != 0 {
         NSLog("%@ failed to get model identifier", #function)
-        buffer.dealloc(bufferSize)
+        buffer.deallocate(capacity: bufferSize)
         return ""
     }
     
     buffer[Int(size)] = 0
-    let identifier = String.fromCString(buffer)!
+    let identifier = String(cString: buffer)
     
-    buffer.dealloc(bufferSize)
+    buffer.deallocate(capacity: bufferSize)
     return identifier
 }

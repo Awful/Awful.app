@@ -6,7 +6,7 @@ import UIKit
 
 /// Represents a selectable theme.
 final class ThemeButton: UIButton {
-    private let themeColor: UIColor
+    fileprivate let themeColor: UIColor
     
     init(themeColor: UIColor) {
         self.themeColor = themeColor
@@ -17,18 +17,18 @@ final class ThemeButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func intrinsicContentSize() -> CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: 32, height: 32)
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let borderWidth: CGFloat = 2
-        let path = UIBezierPath(ovalInRect: bounds.insetBy(dx: borderWidth, dy: borderWidth))
+        let path = UIBezierPath(ovalIn: bounds.insetBy(dx: borderWidth, dy: borderWidth))
         path.lineWidth = borderWidth
         themeColor.set()
         path.fill()
         
-        if selected {
+        if isSelected {
             tintColor.set()
             path.stroke()
         }

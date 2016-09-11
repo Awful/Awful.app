@@ -32,7 +32,7 @@
     }
     
     PrivateMessageKey *messageKey = [[PrivateMessageKey alloc] initWithMessageID:messageID];
-    PrivateMessage *message = [PrivateMessage objectForKey:messageKey inManagedObjectContext:self.managedObjectContext];
+    PrivateMessage *message = [PrivateMessage objectForKeyWithObjectKey:messageKey inManagedObjectContext:self.managedObjectContext];
     
     HTMLElement *breadcrumbs = [self.node firstNodeMatchingSelector:@"div.breadcrumbs b"];
     HTMLNode *subjectText = breadcrumbs.children.lastObject;

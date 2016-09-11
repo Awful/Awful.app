@@ -6,7 +6,7 @@ import AwfulCore
 import Foundation
 
 final class PostViewModel: NSObject {
-    private let post: Post
+    fileprivate let post: Post
     
     init(post: Post) {
         self.post = post
@@ -19,27 +19,27 @@ final class PostViewModel: NSObject {
         RemoveSpoilerStylingAndEvents(document)
         RemoveEmptyEditedByParagraphs(document)
         UseHTML5VimeoPlayer(document)
-        HighlightQuotesOfPostsByUserNamed(document, AwfulSettings.sharedSettings().username)
-        ProcessImgTags(document, !AwfulSettings.sharedSettings().showImages)
-        if !AwfulSettings.sharedSettings().autoplayGIFs {
+        HighlightQuotesOfPostsByUserNamed(document, AwfulSettings.shared().username)
+        ProcessImgTags(document, !AwfulSettings.shared().showImages)
+        if !AwfulSettings.shared().autoplayGIFs {
             StopGifAutoplay(document)
         }
         if post.ignored {
             document.markRevealIgnoredPostLink()
         }
-        return document.firstNodeMatchingSelector("body")?.innerHTML
+        return document.firstNode(matchingSelector: "body")?.innerHTML
     }
     
-    var visibleAvatarURL: NSURL? {
-        return showAvatars ? post.author?.avatarURL : nil
+    var visibleAvatarURL: URL? {
+        return showAvatars ? post.author?.avatarURL as URL? : nil
     }
     
-    var hiddenAvatarURL: NSURL? {
-        return showAvatars ? nil : post.author?.avatarURL
+    var hiddenAvatarURL: URL? {
+        return showAvatars ? nil : post.author?.avatarURL as URL?
     }
     
     var showAvatars: Bool {
-        return AwfulSettings.sharedSettings().showAvatars
+        return AwfulSettings.shared().showAvatars
     }
     
     var roles: String {
@@ -57,22 +57,22 @@ final class PostViewModel: NSObject {
             "op": "oritinal poster",
             ]
         return roles
-            .componentsSeparatedByCharactersInSet(.whitespaceAndNewlineCharacterSet())
+            .components(separatedBy: .whitespacesAndNewlines)
             .map { spokenRoles[$0] ?? $0 }
-            .joinWithSeparator("; ")
+            .joined(separator: "; ")
     }
     
     var authorIsOP: Bool {
-        guard let thisAuthor = post.author, op = post.thread?.author else { return false }
+        guard let thisAuthor = post.author, let op = post.thread?.author else { return false }
         return thisAuthor == op
     }
     
-    var postDateFormat: NSDateFormatter {
-        return NSDateFormatter.postDateFormatter()
+    var postDateFormat: DateFormatter {
+        return DateFormatter.postDateFormatter()
     }
     
-    var regDateFormat: NSDateFormatter {
-        return NSDateFormatter.regDateFormatter()
+    var regDateFormat: DateFormatter {
+        return DateFormatter.regDateFormatter()
     }
     
     var author: User? {
@@ -83,8 +83,8 @@ final class PostViewModel: NSObject {
         return post.beenSeen
     }
     
-    var postDate: NSDate? {
-        return post.postDate
+    var postDate: Date? {
+        return post.postDate as Date?
     }
     
     var postID: String {
@@ -94,13 +94,13 @@ final class PostViewModel: NSObject {
 
 private extension HTMLDocument {
     func markRevealIgnoredPostLink() {
-        guard let
-            link = firstNodeMatchingSelector("a[title=\"DON'T DO IT!!\"]"),
-            href = link.objectForKeyedSubscript("href") as? String,
-            components = NSURLComponents(string: href)
+        guard
+            let link = firstNode(matchingSelector: "a[title=\"DON'T DO IT!!\"]"),
+            let href = link.objectForKeyedSubscript("href") as? String,
+            var components = URLComponents(string: href)
             else { return }
         components.fragment = "awful-ignored"
-        guard let replacement = components.URL?.absoluteString else { return }
+        guard let replacement = components.url?.absoluteString else { return }
         link.setObject(replacement, forKeyedSubscript: "href")
     }
 }

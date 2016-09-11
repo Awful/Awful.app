@@ -15,29 +15,29 @@ final class PunishmentCell: UITableViewCell {
         - parameter banReason: The reason for the ban that will be wrapped into several lines if necessary.
         - parameter width: The width of the cell.
      */
-    class func rowHeightWithBanReason(banReason: String, width: CGFloat) -> CGFloat {
+    class func rowHeightWithBanReason(_ banReason: String, width: CGFloat) -> CGFloat {
         let reasonInsets = UIEdgeInsets(top: 63, left: 10, bottom: 10, right: 30)
         let remainingWidth = width - reasonInsets.left - reasonInsets.right
-        let reasonRect = (banReason as NSString).boundingRectWithSize(CGSize(width: remainingWidth, height: .max), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(reasonFontSize)], context: nil)
+        let reasonRect = (banReason as NSString).boundingRect(with: CGSize(width: remainingWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: reasonFontSize)], context: nil)
         return ceil(reasonRect.height) + reasonInsets.top + reasonInsets.bottom
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
-        contentView.autoresizingMask.unionInPlace(.FlexibleWidth)
+        contentView.autoresizingMask.formUnion(.flexibleWidth)
         
-        imageView?.contentMode = .ScaleAspectFit
+        imageView?.contentMode = .scaleAspectFit
         
-        textLabel?.font = UIFont.boldSystemFontOfSize(15)
-        textLabel?.backgroundColor = .clearColor()
+        textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        textLabel?.backgroundColor = .clear
         
-        detailTextLabel?.font = UIFont.systemFontOfSize(13)
-        detailTextLabel?.backgroundColor = .clearColor()
+        detailTextLabel?.font = UIFont.systemFont(ofSize: 13)
+        detailTextLabel?.backgroundColor = .clear
         
         reasonLabel.numberOfLines = 0
-        reasonLabel.font = UIFont.systemFontOfSize(reasonFontSize)
-        reasonLabel.backgroundColor = .clearColor()
+        reasonLabel.font = UIFont.systemFont(ofSize: reasonFontSize)
+        reasonLabel.backgroundColor = .clear
         reasonLabel.highlightedTextColor = textLabel?.highlightedTextColor
         contentView.addSubview(reasonLabel)
     }
@@ -46,14 +46,14 @@ final class PunishmentCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private static let backgroundImageCache: NSCache = {
-        let cache = NSCache()
+    fileprivate static let backgroundImageCache: NSCache<UIColor, UIImage> = {
+        let cache = NSCache<UIColor, UIImage>()
         cache.name = "PunishmentCell background image cache"
         return cache
     }()
     
-    private class func backgroundImageWithColor(color: UIColor) -> UIImage {
-        if let image = backgroundImageCache.objectForKey(color) as? UIImage {
+    fileprivate class func backgroundImageWithColor(_ color: UIColor) -> UIImage {
+        if let image = backgroundImageCache.object(forKey: color) {
             return image
         }
         
@@ -70,29 +70,29 @@ final class PunishmentCell: UITableViewCell {
         let topHalf = CGRect(x: 0, y: 0, width: size.width, height: size.height - 2)
         
         context.withGState {
-            context.setFillColor(bottomColor.CGColor)
-            context.fillRect(CGRect(origin: .zero, size: size))
+            context.setFillColor(bottomColor.cgColor)
+            context.fill(CGRect(origin: .zero, size: size))
         }
         
         context.withGState { 
             // For whatever reason drawing a shadow in the little triangular notch draws the shadow all the way down, like a stripe. We clip first to prevent the stripe.
-            context.clip(topHalf.insetBy(dx: 0, dy: -1))
+            context.clip(to: topHalf.insetBy(dx: 0, dy: -1))
             
-            context.move(CGPoint(x: topHalf.minX, y: topHalf.minY))
-            context.addLine(CGPoint(x: topHalf.minX, y: topHalf.maxY))
-            context.addLine(CGPoint(x: topHalf.minX + 25, y: topHalf.maxY))
-            context.addLine(CGPoint(x: topHalf.minX + 31, y: topHalf.maxY - 4))
-            context.addLine(CGPoint(x: topHalf.minX + 37, y: topHalf.maxY))
-            context.addLine(CGPoint(x: topHalf.maxX, y: topHalf.maxY))
-            context.addLine(CGPoint(x: topHalf.maxX, y: topHalf.minY))
-            context.setFillColor(topColor.CGColor)
-            context.setShadow(offset: CGSize(width: 0, height: 1), blur: 1, color: shadowColor.CGColor)
+            context.move(to: CGPoint(x: topHalf.minX, y: topHalf.minY))
+            context.addLine(to: CGPoint(x: topHalf.minX, y: topHalf.maxY))
+            context.addLine(to: CGPoint(x: topHalf.minX + 25, y: topHalf.maxY))
+            context.addLine(to: CGPoint(x: topHalf.minX + 31, y: topHalf.maxY - 4))
+            context.addLine(to: CGPoint(x: topHalf.minX + 37, y: topHalf.maxY))
+            context.addLine(to: CGPoint(x: topHalf.maxX, y: topHalf.maxY))
+            context.addLine(to: CGPoint(x: topHalf.maxX, y: topHalf.minY))
+            context.setFillColor(topColor.cgColor)
+            context.setShadow(offset: CGSize(width: 0, height: 1), blur: 1, color: shadowColor.cgColor)
             context.fillPath()
         }
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         let capInsets = UIEdgeInsets(top: size.height - 1, left: size.width - 1, bottom: 0, right: 0)
-        let backgroundImage = image.resizableImageWithCapInsets(capInsets)
+        guard let backgroundImage = image?.resizableImage(withCapInsets: capInsets) else { fatalError("couldn't get image") }
         backgroundImageCache.setObject(backgroundImage, forKey: color)
         return backgroundImage
     }
@@ -109,7 +109,7 @@ final class PunishmentCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
-        guard let imageView = imageView, textLabel = textLabel, detailTextLabel = detailTextLabel else { return }
+        guard let imageView = imageView, let textLabel = textLabel, let detailTextLabel = detailTextLabel else { return }
         
         let cellMargin = UIEdgeInsets(top: 5, left: 10, bottom: 10, right: 10)
         
@@ -138,7 +138,7 @@ final class PunishmentCell: UITableViewCell {
 
 private let reasonFontSize: CGFloat = 15
 
-private func bottomColorForTopColor(topColor: UIColor) -> UIColor {
+private func bottomColorForTopColor(_ topColor: UIColor) -> UIColor {
     var hue: CGFloat = 0
     var saturation: CGFloat = 0
     var brightness: CGFloat = 0

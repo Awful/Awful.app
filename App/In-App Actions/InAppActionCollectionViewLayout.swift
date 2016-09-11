@@ -16,9 +16,9 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         didSet { invalidateLayout() }
     }
     
-    private var allAttributes = [UICollectionViewLayoutAttributes]()
+    fileprivate var allAttributes = [UICollectionViewLayoutAttributes]()
     
-    private var contentSize: CGSize = CGSizeZero {
+    fileprivate var contentSize: CGSize = .zero {
         didSet(oldSize) {
             if oldSize.height != contentSize.height {
                 collectionView?.invalidateIntrinsicContentSize()
@@ -26,8 +26,8 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         }
     }
     
-    override func prepareLayout() {
-        assert(collectionView!.numberOfSections() <= 1, "InAppActionLayout only works with one section")
+    override func prepare() {
+        assert(collectionView!.numberOfSections <= 1, "InAppActionLayout only works with one section")
         allAttributes.removeAll()
         
         /*
@@ -48,16 +48,16 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
                 +---------+            +---------+            +---------+
         */
         
-        func widthForItems(numberOfItems: Int) -> CGFloat {
+        func widthForItems(_ numberOfItems: Int) -> CGFloat {
             assert(numberOfItems > 0)
             return CGFloat(numberOfItems) * itemSize.width + (CGFloat(numberOfItems) - 1) * interitemSpacing
         }
-        func appendAttributesWithFrame(frame: CGRect) {
-            let attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forItem: allAttributes.count, inSection: 0))
+        func appendAttributesWithFrame(_ frame: CGRect) {
+            let attributes = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: allAttributes.count, section: 0))
             attributes.frame = frame
             allAttributes.append(attributes)
         }
-        let itemCount = collectionView!.numberOfItemsInSection(0)
+        let itemCount = collectionView!.numberOfItems(inSection: 0)
         let bounds = collectionView!.bounds
         
         if widthForItems(itemCount) <= bounds.width {
@@ -72,24 +72,24 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
             
         } else if widthForItems(itemCount / 2 + itemCount % 2) <= bounds.width {
             // The middle row of the diagram
-            var frame = CGRect(origin: CGPointZero, size: itemSize)
+            var frame = CGRect(origin: .zero, size: itemSize)
             for _ in 0..<itemCount {
                 appendAttributesWithFrame(frame)
                 frame.origin.x += frame.width + interitemSpacing
-                if CGRectGetMaxX(frame) > bounds.width {
+                if frame.maxX > bounds.width {
                     frame.origin.x = 0
                     frame.origin.y += frame.height + lineSpacing
                 }
             }
             
-            let margin = (bounds.width - allAttributes.map({ CGRectGetMaxX($0.frame) }).maxElement()!) / 2
+            let margin = (bounds.width - allAttributes.map({ $0.frame.maxX }).max()!) / 2
             for attributes in allAttributes {
                 attributes.center.x += margin
             }
             
         } else {
             // The bottom row of the diagram
-            var frame = CGRect(origin: CGPointZero, size: itemSize)
+            var frame = CGRect(origin: .zero, size: itemSize)
             let halfway = itemCount / 2 + itemCount % 2
             for _ in 0..<halfway {
                 appendAttributesWithFrame(frame)
@@ -104,24 +104,24 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         }
         
         contentSize = CGSize(
-            width: max(allAttributes.map({ CGRectGetMaxX($0.frame) }).maxElement()!, bounds.width),
-            height: allAttributes.map({ CGRectGetMaxY($0.frame) }).maxElement()!
+            width: max(allAttributes.map({ $0.frame.maxX }).max()!, bounds.width),
+            height: allAttributes.map({ $0.frame.maxY }).max()!
         )
     }
     
-    override func collectionViewContentSize() -> CGSize {
+    override var collectionViewContentSize : CGSize {
         return contentSize
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        return allAttributes.filter { CGRectIntersectsRect(rect, $0.frame) }
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        return allAttributes.filter { rect.intersects($0.frame) }
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> (UICollectionViewLayoutAttributes!) {
-        return allAttributes[indexPath.item]
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> (UICollectionViewLayoutAttributes!) {
+        return allAttributes[(indexPath as NSIndexPath).item]
     }
     
-    override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return newBounds.width != collectionView!.bounds.width
     }
     

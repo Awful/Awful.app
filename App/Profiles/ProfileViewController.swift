@@ -19,7 +19,7 @@ final class ProfileViewController: ViewController {
         super.init(nibName: nil, bundle: nil)
         
         title = user.username ?? "Profile"
-        modalPresentationStyle = .FormSheet
+        modalPresentationStyle = .formSheet
         hidesBottomBarWhenPushed = true
     }
     
@@ -27,31 +27,31 @@ final class ProfileViewController: ViewController {
         fatalError("NSCoding is not supported")
     }
     
-    private var webView: WKWebView {
+    var webView: WKWebView {
         return view as! WKWebView
     }
     
-    private var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
+    fileprivate var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
     
     override func loadView() {
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
-        userContentController.addScriptMessageHandler(self, name: "sendPrivateMessage")
-        userContentController.addScriptMessageHandler(self, name: "showHomepageActions")
+        userContentController.add(self, name: "sendPrivateMessage")
+        userContentController.add(self, name: "showHomepageActions")
         for filename in ["zepto.min.js", "common.js", "profile.js"] {
-            let URL = NSBundle.mainBundle().URLForResource(filename, withExtension: nil)
+            let URL = Bundle.main.url(forResource: filename, withExtension: nil)
             var source : String = ""
             do {
-                source = try NSString(contentsOfURL: URL!, encoding: NSUTF8StringEncoding) as String
+                source = try NSString(contentsOf: URL!, encoding: String.Encoding.utf8.rawValue) as String
             }
             catch {
-                NSException(name: NSInternalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
+                NSException(name: NSExceptionName.internalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
             }
-            let script = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+            let script = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
             userContentController.addUserScript(script)
         }
         configuration.userContentController = userContentController
-        view = WKWebView(frame: CGRectZero, configuration: configuration)
+        view = WKWebView(frame: CGRect.zero, configuration: configuration)
         networkActivityIndicator = NetworkActivityIndicatorForWKWebView(webView)
     }
     
@@ -63,29 +63,29 @@ final class ProfileViewController: ViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        let darkMode = AwfulSettings.sharedSettings().darkTheme ? "true" : "false"
+        let darkMode = AwfulSettings.shared().darkTheme ? "true" : "false"
         webView.evaluateJavaScript("darkMode(\(darkMode))", completionHandler: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
-            let doneItem = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: nil)
+            let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
             doneItem.actionBlock = { _ in
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
             navigationItem.leftBarButtonItem = doneItem
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         webView.scrollView.flashScrollIndicators()
         
         let (userID, username) = (user.userID, user.username)
-        AwfulForumsClient.sharedClient().profileUserWithID(user.userID, username: user.username) { [weak self] (error: NSError?, profile: Profile?) in
+        AwfulForumsClient.shared().profileUser(withID: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
             if let error = error {
                 NSLog("[\(Mirror(reflecting:self)) \(#function)] error fetching user profile for \(username) (ID \(userID)): \(error)")
             } else {
@@ -94,7 +94,7 @@ final class ProfileViewController: ViewController {
         }
     }
     
-    private func renderProfile() {
+    fileprivate func renderProfile() {
         var HTML = ""
         if let profile = user.profile {
             let viewModel = ProfileViewModel(profile: profile)
@@ -105,37 +105,37 @@ final class ProfileViewController: ViewController {
                 NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
             }
         }
-        webView.loadHTMLString(HTML, baseURL: baseURL)
+        webView.loadHTMLString(HTML, baseURL: baseURL as URL)
     }
     
-    private var baseURL: NSURL {
-        return AwfulForumsClient.sharedClient().baseURL
+    var baseURL: URL {
+        return AwfulForumsClient.shared().baseURL
     }
 }
 
 extension ProfileViewController: WKScriptMessageHandler {
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         switch (message.name) {
         case "sendPrivateMessage":
             sendPrivateMessage()
         case "showHomepageActions":
             let body = message.body as! [String:String]
-            if let URL = NSURL(string: body["URL"]!, relativeToURL: baseURL) {
-                showActionsForHomepage(URL, atRect: CGRectFromString(body["rect"]!))
+            if let url = URL(string: body["URL"]!, relativeTo: baseURL as URL) {
+                showActionsForHomepage(url, atRect: CGRectFromString(body["rect"]!))
             }
         default:
             print("\(self) received unknown message from webview: \(message.name)")
         }
     }
     
-    private func sendPrivateMessage() {
+    fileprivate func sendPrivateMessage() {
         let composeViewController = MessageComposeViewController(recipient: user)
-        presentViewController(composeViewController.enclosingNavigationController, animated: true, completion: nil)
+        present(composeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
-    private func showActionsForHomepage(URL: NSURL, atRect rect: CGRect) {
-        let activityViewController = UIActivityViewController(activityItems: [URL], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
-        presentViewController(activityViewController, animated: true, completion: nil)
+    fileprivate func showActionsForHomepage(_ url: URL, atRect rect: CGRect) {
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
+        present(activityViewController, animated: true, completion: nil)
         let popover = activityViewController.popoverPresentationController
         popover?.sourceRect = rect
         popover?.sourceView = self.webView
@@ -150,12 +150,12 @@ The network activity indicator will show in the status bar while *any* NetworkAc
 NetworkActivityIndicatorForWKWebView will turn off during deinitialization.
 */
 private class NetworkActivityIndicatorForWKWebView: NSObject {
-    private(set) var on: Bool = false {
+    fileprivate(set) var on: Bool = false {
         didSet {
             if on && !oldValue {
-                AFNetworkActivityIndicatorManager.sharedManager().incrementActivityCount()
+                AFNetworkActivityIndicatorManager.shared().incrementActivityCount()
             } else if !on && oldValue {
-                AFNetworkActivityIndicatorManager.sharedManager().decrementActivityCount()
+                AFNetworkActivityIndicatorManager.shared().decrementActivityCount()
             }
         }
     }
@@ -166,21 +166,20 @@ private class NetworkActivityIndicatorForWKWebView: NSObject {
         self.webView = webView
         super.init()
         
-        webView.addObserver(self, forKeyPath: "loading", options: .New, context: &KVOContext)
+        webView.addObserver(self, forKeyPath: "loading", options: .new, context: &KVOContext)
     }
     
     deinit {
         webView.removeObserver(self, forKeyPath: "loading", context: &KVOContext)
         on = false
     }
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == &KVOContext {
-            if let loading = change![NSKeyValueChangeNewKey] as? NSNumber {
+            if let loading = change![NSKeyValueChangeKey.newKey] as? NSNumber {
                 on = loading.boolValue
             }
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change , context: context)
         }
     }
 }

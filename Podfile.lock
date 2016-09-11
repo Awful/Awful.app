@@ -30,7 +30,6 @@ PODS:
   - JLRoutes (1.5.1)
   - JRSwizzle (1.0)
   - KVOController (1.0.3)
-  - MJRefresh (3.1.9)
   - MRProgress/ActivityIndicator (0.8.0):
     - MRProgress/Stopable
   - MRProgress/Blur (0.8.0):
@@ -51,6 +50,7 @@ PODS:
   - MRProgress/Stopable (0.8.0):
     - MRProgress/Helper
   - PSMenuItem (1.0.0)
+  - PullToRefresher (1.4.0)
   - TUSafariActivity (1.0.4)
   - WebViewJavascriptBridge (4.1.4)
 
@@ -63,9 +63,9 @@ DEPENDENCIES:
   - ImgurAnonymousAPIClient (= 0.3.2)
   - JLRoutes (= 1.5.1)
   - KVOController (= 1.0.3)
-  - MJRefresh (= 3.1.9)
   - MRProgress/Overlay (= 0.8.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
+  - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
   - TUSafariActivity (= 1.0.4)
   - WebViewJavascriptBridge (= 4.1.4)
 
@@ -73,11 +73,17 @@ EXTERNAL SOURCES:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
+    :git: https://github.com/marlontojal/PullToRefresh
 
 CHECKOUT OPTIONS:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
+    :git: https://github.com/marlontojal/PullToRefresh
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
@@ -89,10 +95,12 @@ SPEC CHECKSUMS:
   JLRoutes: eececedd8c3f1f040209520f783e12049674416e
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MJRefresh: c5f1f1653e5a1b932c90f78074f2bc86f3f9bd5e
   MRProgress: 43bed03f7a1919add87aa583678c8ea244c1cd0d
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
+  PullToRefresher: c4629a459f305c14a66d35f52c2feeaccf85c49e
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: d48e1701ab838d470b6b1b0e04f6fed0fa466413
+
+COCOAPODS: 1.0.1

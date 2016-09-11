@@ -11,9 +11,9 @@ A maximum point size (the largest available setting before augmenting with acces
 */
 class DynamicTypeTableViewCell: UITableViewCell {
     /// Labels that should update whenever Dynamic Type settings change.
-    @IBOutlet private var dynamicTypeLabels: [UILabel]!
+    @IBOutlet fileprivate var dynamicTypeLabels: [UILabel]!
     
-    private var observer: NSObjectProtocol?
+    fileprivate var observer: NSObjectProtocol?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,30 +26,30 @@ class DynamicTypeTableViewCell: UITableViewCell {
         }
         
         updateFonts()
-        observer = NSNotificationCenter.defaultCenter().addObserverForName(UIContentSizeCategoryDidChangeNotification, object: nil, queue: NSOperationQueue.mainQueue()) { notification in
+        observer = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil, queue: OperationQueue.main) { notification in
             self.updateFonts()
         }
     }
     
     deinit {
         if let observer = observer {
-            NSNotificationCenter.defaultCenter().removeObserver(observer)
+            NotificationCenter.default.removeObserver(observer)
         }
     }
     
-    private func updateFonts() {
+    fileprivate func updateFonts() {
         let maximumSizes: [String:CGFloat] = [
-            UIFontTextStyleHeadline: 23,
-            UIFontTextStyleSubheadline: 12,
-            UIFontTextStyleBody: 23,
-            UIFontTextStyleCaption1: 18,
-            UIFontTextStyleCaption2: 17,
-            UIFontTextStyleFootnote: 19,
+            UIFontTextStyle.headline.rawValue: 23,
+            UIFontTextStyle.subheadline.rawValue: 12,
+            UIFontTextStyle.body.rawValue: 23,
+            UIFontTextStyle.caption1.rawValue: 18,
+            UIFontTextStyle.caption2.rawValue: 17,
+            UIFontTextStyle.footnote.rawValue: 19,
         ]
         eachLabelWithTextStyle { label, textStyle in
             let maximum = maximumSizes[textStyle] ?? 0
             var descriptor = fontDescriptorForTextStyle(textStyle, maximumPointSize: maximum)
-            descriptor = descriptor.fontDescriptorWithSize(self.fontPointSizeForLabel(label, suggestedPointSize: descriptor.pointSize))
+            descriptor = descriptor.withSize(self.fontPointSizeForLabel(label, suggestedPointSize: descriptor.pointSize))
             if let customFontName = self.fontNameForLabels {
                 label.font = UIFont(name: customFontName, size: descriptor.pointSize)
             } else {
@@ -58,13 +58,13 @@ class DynamicTypeTableViewCell: UITableViewCell {
         }
     }
     
-    func fontPointSizeForLabel(label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
+    func fontPointSizeForLabel(_ label: UILabel, suggestedPointSize: CGFloat) -> CGFloat {
         return suggestedPointSize
     }
     
-    private func eachLabelWithTextStyle(block: (UILabel, String) -> Void) {
+    fileprivate func eachLabelWithTextStyle(_ block: (UILabel, String) -> Void) {
         let guessedTextStyles = guessedTextStylesByIdentifier[reuseIdentifier!]!
-        for (label, textStyle) in Zip2Sequence(dynamicTypeLabels, guessedTextStyles) {
+        for (label, textStyle) in zip(dynamicTypeLabels, guessedTextStyles) {
             if let textStyle = textStyle {
                 block(label, textStyle)
             }
@@ -81,18 +81,18 @@ class DynamicTypeTableViewCell: UITableViewCell {
     }
 }
     
-private func guessTextStyle(label: UILabel) -> String? {
+private func guessTextStyle(_ label: UILabel) -> String? {
     let textStyles = [
-        UIFontTextStyleHeadline,
-        UIFontTextStyleSubheadline,
-        UIFontTextStyleBody,
-        UIFontTextStyleFootnote,
-        UIFontTextStyleCaption1,
-        UIFontTextStyleCaption2,
+        UIFontTextStyle.headline,
+        UIFontTextStyle.subheadline,
+        UIFontTextStyle.body,
+        UIFontTextStyle.footnote,
+        UIFontTextStyle.caption1,
+        UIFontTextStyle.caption2,
     ]
     for textStyle in textStyles {
-        if label.font == UIFont.preferredFontForTextStyle(textStyle) {
-            return textStyle
+        if label.font == UIFont.preferredFont(forTextStyle: textStyle) {
+            return textStyle.rawValue
         }
     }
     return nil
@@ -100,7 +100,7 @@ private func guessTextStyle(label: UILabel) -> String? {
 
 private var guessedTextStylesByIdentifier = [String:[String?]]()
 
-private func fontDescriptorForTextStyle(textStyle: String, maximumPointSize: CGFloat) -> UIFontDescriptor {
-    let descriptor = UIFontDescriptor.preferredFontDescriptorWithTextStyle(textStyle)
-    return descriptor.fontDescriptorWithSize(min(descriptor.pointSize, maximumPointSize))
+private func fontDescriptorForTextStyle(_ textStyle: String, maximumPointSize: CGFloat) -> UIFontDescriptor {
+    let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle(rawValue: textStyle))
+    return descriptor.withSize(min(descriptor.pointSize, maximumPointSize))
 }

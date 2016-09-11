@@ -4,11 +4,11 @@
 
 import CoreData
 
-class FetchedDataSource: NSObject {
-    let fetchedResultsController: NSFetchedResultsController
+class FetchedDataSource<DataType: NSManagedObject>: NSObject, DataSource, NSFetchedResultsControllerDelegate {
+    let fetchedResultsController: NSFetchedResultsController<DataType>
     weak var delegate: DataSourceDelegate?
     
-    init(fetchRequest: NSFetchRequest, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String?) {
+    init(fetchRequest: NSFetchRequest<DataType>, managedObjectContext: NSManagedObjectContext, sectionNameKeyPath: String?) {
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: nil)
         super.init()
         
@@ -21,86 +21,86 @@ class FetchedDataSource: NSObject {
         }
     }
     
-    func userDrivenChange(changes: () -> Void) {
+    func userDrivenChange(_ changes: () -> Void) {
         ignoreUpdates = true
         changes()
         fetchedResultsController.managedObjectContext.processPendingChanges()
         ignoreUpdates = false
     }
     
-    private var ignoreUpdates = false
+    fileprivate var ignoreUpdates = false
     
-    private var storedUpdates: [(DataSourceDelegate) -> Void] = []
+    fileprivate var storedUpdates: [(DataSourceDelegate) -> Void] = []
     
-    private func storeUpdate(update: (DataSourceDelegate) -> Void) {
+    fileprivate func storeUpdate(_ update: @escaping (DataSourceDelegate) -> Void) {
         if !ignoreUpdates {
             storedUpdates.append(update)
         }
     }
-}
-
-extension FetchedDataSource: DataSource {
+    
+    // MARK: DataSource
+    
     var numberOfSections: Int {
         return fetchedResultsController.sections!.count
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return numberOfSections
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController.sections![section]
         return sectionInfo.numberOfObjects
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         fatalError("subclass implementation please")
     }
     
-    func itemAtIndexPath(indexPath: NSIndexPath) -> AnyObject {
-        return fetchedResultsController.objectAtIndexPath(indexPath)
+    func itemAtIndexPath(_ indexPath: IndexPath) -> AnyObject {
+        return fetchedResultsController.object(at: indexPath)
     }
     
-    func indexPathsForItem(item: AnyObject) -> [NSIndexPath] {
-        if let indexPath = fetchedResultsController.indexPathForObject(item as! NSManagedObject) {
+    func indexPathsForItem(_ item: AnyObject) -> [IndexPath] {
+        if let indexPath = fetchedResultsController.indexPath(forObject: item as! DataType) {
             return [indexPath]
         } else {
             return []
         }
     }
-}
-
-extension FetchedDataSource: NSFetchedResultsControllerDelegate {
-    func controller(_: NSFetchedResultsController, didChangeObject object: AnyObject, atIndexPath oldIndexPath: NSIndexPath?, forChangeType change: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    
+    // MARK: NSFetchedResultsControllerDelegate
+    
+    func controller(_: NSFetchedResultsController<NSFetchRequestResult>, didChange object: Any, at oldIndexPath: IndexPath?, for change: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         storeUpdate { delegate in
             switch change {
-            case .Insert:
+            case .insert:
                 delegate.dataSource?(self, didInsertItemsAtIndexPaths: [newIndexPath!])
-            case .Delete:
+            case .delete:
                 delegate.dataSource?(self, didRemoveItemsAtIndexPaths: [oldIndexPath!])
-            case .Update:
+            case .update:
                 delegate.dataSource?(self, didRefreshItemsAtIndexPaths: [oldIndexPath!])
-            case .Move:
+            case .move:
                 delegate.dataSource?(self, didRemoveItemsAtIndexPaths: [oldIndexPath!])
                 delegate.dataSource?(self, didInsertItemsAtIndexPaths: [newIndexPath!])
             }
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType change: NSFetchedResultsChangeType) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for change: NSFetchedResultsChangeType) {
         storeUpdate { delegate in
             switch change {
-            case .Insert:
-                delegate.dataSource?(self, didInsertSections: NSIndexSet(index: sectionIndex))
-            case .Delete:
-                delegate.dataSource?(self, didRemoveSections: NSIndexSet(index: sectionIndex))
-            case .Update, .Move:
+            case .insert:
+                delegate.dataSource?(self, didInsertSections: IndexSet(integer: sectionIndex))
+            case .delete:
+                delegate.dataSource?(self, didRemoveSections: IndexSet(integer: sectionIndex))
+            case .update, .move:
                 NSLog("[\(Mirror(reflecting: self)) \(#function)] unexpected change type \(change.rawValue)")
             }
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let delegate = delegate {
             if !storedUpdates.isEmpty {
                 delegate.dataSource?(self, performBatchUpdates: {

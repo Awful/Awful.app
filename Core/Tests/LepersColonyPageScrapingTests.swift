@@ -23,7 +23,7 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
         XCTAssert(first.date.timeIntervalSince1970 == 1384078200)
         XCTAssert(first.subject.username == "Kheldragar")
         XCTAssert(first.subject.userID == "202925")
-        XCTAssert(first.reasonHTML!.rangeOfString("shitty as you") != nil)
+        XCTAssert(first.reasonHTML!.range(of: "shitty as you") != nil)
         XCTAssert(first.requester!.username == "Ralp")
         XCTAssert(first.requester!.userID == "61644")
         XCTAssert(first.approver! == first.requester!)

@@ -6,22 +6,22 @@ import UIKit
 
 /// Adds theming support; hosts instances of NavigationBar and Toolbar; shows and hides the toolbar depending on whether the view controller has toolbar items; and, on iPhone, allows swiping from the *right* screen edge to unpop a view controller.
 final class NavigationController: UINavigationController {
-    private weak var realDelegate: UINavigationControllerDelegate?
-    private lazy var unpopHandler: UnpoppingViewHandler? = {
-        guard UIDevice.currentDevice().userInterfaceIdiom == .Phone else { return nil }
+    fileprivate weak var realDelegate: UINavigationControllerDelegate?
+    fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
         return UnpoppingViewHandler(navigationController: self)
     }()
-    private var pushAnimationInProgress = false
+    fileprivate var pushAnimationInProgress = false
     
     // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
     
-    override init(nibName: String?, bundle: NSBundle?) {
+    override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
     }
     
     init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
-        restorationClass = self.dynamicType
+        restorationClass = type(of: self)
         delegate = self
     }
     
@@ -36,13 +36,13 @@ final class NavigationController: UINavigationController {
     
     // MARK: Swipe to unpop
     
-    override func popViewControllerAnimated(animated: Bool) -> UIViewController? {
-        let viewController = super.popViewControllerAnimated(animated)
+    override func popViewController(animated: Bool) -> UIViewController? {
+        let viewController = super.popViewController(animated: animated)
         unpopHandler?.navigationController(self, didPopViewController: viewController)
         return viewController
     }
     
-    override func popToViewController(viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+    override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
         let popped = super.popToViewController(viewController, animated: animated)
         for viewController in popped ?? [] {
             unpopHandler?.navigationController(self, didPopViewController: viewController)
@@ -50,15 +50,15 @@ final class NavigationController: UINavigationController {
         return popped
     }
     
-    override func popToRootViewControllerAnimated(animated: Bool) -> [UIViewController]? {
-        let popped = super.popToRootViewControllerAnimated(animated)
+    override func popToRootViewController(animated: Bool) -> [UIViewController]? {
+        let popped = super.popToRootViewController(animated: animated)
         for viewController in popped ?? [] {
             unpopHandler?.navigationController(self, didPopViewController: viewController)
         }
         return popped
     }
     
-    override func pushViewController(viewController: UIViewController, animated: Bool) {
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         pushAnimationInProgress = true
         
         super.pushViewController(viewController, animated: animated)
@@ -88,16 +88,16 @@ final class NavigationController: UINavigationController {
         toolbar?.barTintColor = theme["toolbarTintColor"]
     }
     
-    override func encodeRestorableStateWithCoder(coder: NSCoder) {
-        super.encodeRestorableStateWithCoder(coder)
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
         
-        coder.encodeObject(unpopHandler?.viewControllers, forKey: Key.FutureViewControllers.rawValue)
+        coder.encode(unpopHandler?.viewControllers, forKey: Key.FutureViewControllers.rawValue)
     }
     
-    override func decodeRestorableStateWithCoder(coder: NSCoder) {
-        super.decodeRestorableStateWithCoder(coder)
+    override func decodeRestorableState(with coder: NSCoder) {
+        super.decodeRestorableState(with: coder)
         
-        if let viewControllers = coder.decodeObjectForKey(Key.FutureViewControllers.rawValue) as? [UIViewController] {
+        if let viewControllers = coder.decodeObject(forKey: Key.FutureViewControllers.rawValue) as? [UIViewController] {
             unpopHandler?.viewControllers = viewControllers
         }
     }
@@ -115,12 +115,12 @@ final class NavigationController: UINavigationController {
         }
     }
     
-    override func respondsToSelector(selector: Selector) -> Bool {
-        return super.respondsToSelector(selector) || realDelegate?.respondsToSelector(selector) ?? false
+    override func responds(to selector: Selector) -> Bool {
+        return super.responds(to: selector) || realDelegate?.responds(to: selector) ?? false
     }
     
-    override func forwardingTargetForSelector(selector: Selector) -> AnyObject? {
-        if let realDelegate = realDelegate where realDelegate.respondsToSelector(selector) {
+    override func forwardingTarget(for selector: Selector) -> Any? {
+        if let realDelegate = realDelegate , realDelegate.responds(to: selector) {
             return realDelegate
         }
         return nil
@@ -132,13 +132,13 @@ private enum Key: String {
 }
 
 extension NavigationController: UIGestureRecognizerDelegate {
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         // Disable swipe-to-pop gesture recognizer during pop animations and when we have nothing to pop. If we don't do this, something bad happens in conjunction with the swipe-to-unpop that causes a pushed view controller not to actually appear on the screen. It looks like the app has simply frozen.
         // See http://holko.pl/ios/2014/04/06/interactive-pop-gesture/ for more, and https://github.com/fastred/AHKNavigationController for the fix.
         return viewControllers.count > 1 && !pushAnimationInProgress
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         /*
             Allow simultaneous recognition with:
          
@@ -150,23 +150,23 @@ extension NavigationController: UIGestureRecognizerDelegate {
 }
 
 extension NavigationController: UINavigationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         setToolbarHidden(viewController.toolbarItems?.count ?? 0 == 0, animated: animated)
         
-        if let unpopHandler = unpopHandler where animated {
+        if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             
             // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
             // See http://stackoverflow.com/questions/23484310
-            navigationController.transitionCoordinator()?.notifyWhenInteractionEndsUsingBlock({ (context) in
-                guard context.isCancelled() else { return }
+            navigationController.transitionCoordinator?.notifyWhenInteractionEnds({ (context) in
+                guard context.isCancelled else { return }
                 let unpopping = unpopHandler.interactiveUnpopIsTakingPlace
-                let completion = context.transitionDuration() * Double(context.percentComplete())
+                let completion = context.transitionDuration * Double(context.percentComplete)
                 var viewControllerCount = navigationController.viewControllers.count
                 if !unpopping {
                     viewControllerCount += 1
                 }
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(completion * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+                DispatchQueue.main.asyncAfter(deadline: .now() + completion) {
                     if unpopping {
                         unpopHandler.navigationControllerDidCancelInteractiveUnpop()
                     } else {
@@ -174,42 +174,42 @@ extension NavigationController: UINavigationControllerDelegate {
                     }
                     
                     self.pushAnimationInProgress = false
-                })
+                }
             })
         }
         
-        realDelegate?.navigationController?(navigationController, willShowViewController: viewController, animated: animated)
+        realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
     
-    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if animated {
             unpopHandler?.navigationControllerDidFinishAnimating()
         }
         
         pushAnimationInProgress = false
         
-        realDelegate?.navigationController?(navigationController, didShowViewController: viewController, animated: animated)
+        realDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
     
-    func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         if let unpopHandler = unpopHandler {
             return unpopHandler
         }
         
-        return realDelegate?.navigationController?(navigationController, interactionControllerForAnimationController: animationController)
+        return realDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
     }
     
-    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let unpopHandler = unpopHandler where unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if let unpopHandler = unpopHandler , unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
             return unpopHandler
         }
         
-        return realDelegate?.navigationController?(navigationController, animationControllerForOperation: operation, fromViewController: fromVC, toViewController: toVC)
+        return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
     }
 }
 
 extension NavigationController: UIViewControllerRestoration {
-    static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
         let nav = self.init()
         nav.restorationIdentifier = identifierComponents.last as? String
         return nav

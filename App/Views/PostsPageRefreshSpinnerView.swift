@@ -5,7 +5,7 @@
 import UIKit
 
 final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
-    private let arrows: UIImageView
+    fileprivate let arrows: UIImageView
     
     init() {
         arrows = UIImageView(image: UIImage(named: "pull-to-refresh")!)
@@ -14,27 +14,27 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         arrows.translatesAutoresizingMaskIntoConstraints = false
         addSubview(arrows)
         
-        arrows.topAnchor.constraintEqualToAnchor(topAnchor).active = true
-        arrows.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
-        arrows.centerXAnchor.constraintEqualToAnchor(centerXAnchor).active = true
+        arrows.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        arrows.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        arrows.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func transitionFromState(oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
+    fileprivate func transitionFromState(_ oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
-        case (.Waiting, .Waiting), (.Triggered, .Triggered), (.Refreshing, .Refreshing):
+        case (.waiting, .waiting), (.triggered, .triggered), (.refreshing, .refreshing):
             break
             
-        case (.Waiting, .Triggered):
+        case (.waiting, .triggered):
             rotateArrows(CGFloat(M_PI_2))
             
-        case (_, .Refreshing):
+        case (_, .refreshing):
             rotateArrowsForever()
             
-        case (_, .Waiting):
+        case (_, .waiting):
             rotateArrows(0)
             stopRotatingForever()
             
@@ -43,23 +43,23 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         }
     }
     
-    private func rotateArrows(angle: CGFloat) {
-        UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
+    fileprivate func rotateArrows(_ angle: CGFloat) {
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
             self.arrowsRotation = angle
             }, completion: nil)
     }
     
-    private var arrowsRotation: CGFloat = 0 {
+    fileprivate var arrowsRotation: CGFloat = 0 {
         didSet {
             if arrowsRotation == 0 {
-                arrows.transform = CGAffineTransformIdentity
+                arrows.transform = CGAffineTransform.identity
             } else {
-                arrows.transform = CGAffineTransformMakeRotation(arrowsRotation)
+                arrows.transform = CGAffineTransform(rotationAngle: arrowsRotation)
             }
         }
     }
     
-    private func rotateArrowsForever() {
+    fileprivate func rotateArrowsForever() {
         let existingAnimationKeys = arrows.layer.animationKeys() ?? []
         guard !existingAnimationKeys.contains(indefiniteRotationAnimationKey) else {
             return
@@ -70,18 +70,18 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         animation.toValue = arrowsRotation + (2 * CGFloat(M_PI))
         animation.duration = 1
         animation.repeatCount = .infinity
-        arrows.layer.addAnimation(animation, forKey: indefiniteRotationAnimationKey)
+        arrows.layer.add(animation, forKey: indefiniteRotationAnimationKey)
         
         arrowsRotation = 0
     }
     
-    private func stopRotatingForever() {
-        arrows.layer.removeAnimationForKey(indefiniteRotationAnimationKey)
+    fileprivate func stopRotatingForever() {
+        arrows.layer.removeAnimation(forKey: indefiniteRotationAnimationKey)
     }
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .Waiting(triggeredFraction: 0) {
+    var state: PostsPageRefreshControl.State = .waiting(triggeredFraction: 0) {
         didSet {
             transitionFromState(oldValue, toState: state)
         }
