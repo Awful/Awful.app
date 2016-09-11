@@ -87,5 +87,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Awful will upload to Imgur any photos you choose from your library when you tap Post</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Awful will upload to Imgur any photos you take and choose to include in your post when you tap Post</string>
 </dict>
 </plist>
