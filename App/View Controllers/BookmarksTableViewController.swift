@@ -28,7 +28,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        let fetchRequest = Thread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
+        let fetchRequest = AwfulThread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
         dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
         
         super.init(style: .plain)
@@ -166,7 +166,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             tableView.reloadData()
             
         case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String as String:
-            let fetchRequest = Thread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
+            let fetchRequest = AwfulThread.bookmarksFetchRequest(AwfulSettings.shared().bookmarksSortedByUnread)
             dataManager = DataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:

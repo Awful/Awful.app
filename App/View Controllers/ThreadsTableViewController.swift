@@ -30,7 +30,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     init(forum: Forum) {
         self.forum = forum
-        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        let fetchRequest = AwfulThread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
         dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         super.init(style: .plain)
@@ -188,7 +188,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             tableView.reloadData()
             
         case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue() as String as String:
-            let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+            let fetchRequest = AwfulThread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
             dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
             
         case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
@@ -284,7 +284,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         RefreshMinder.sharedMinder.forgetForum(forum)
         updateFilterButton()
         
-        let fetchRequest = Thread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
+        let fetchRequest = AwfulThread.threadsFetchRequest(forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, filterThreadTag: filterThreadTag)
         dataManager = DataManager(managedObjectContext: forum.managedObjectContext!, fetchRequest: fetchRequest)
         
         picker.dismiss()

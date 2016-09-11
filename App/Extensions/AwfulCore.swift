@@ -4,7 +4,7 @@
 
 import AwfulCore
 
-extension Thread {
+extension AwfulThread {
     static func bookmarksFetchRequest(_ sortedByUnread: Bool) -> NSFetchRequest<AwfulThread> {
         let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
         fetchRequest.fetchBatchSize = 20
