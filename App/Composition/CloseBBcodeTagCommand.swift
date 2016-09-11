@@ -29,12 +29,12 @@ final class CloseBBcodeTagCommand: NSObject {
     }
     
     fileprivate func updateEnabled() {
-        enabled = getCurrentlyOpenTag(textContent as NSString as NSString) != nil
+        enabled = getCurrentlyOpenTag(textContent as NSString) != nil
     }
     
     /// Closes the nearest open BBcode tag.
     func execute() {
-        if hasOpenCodeTag(textContent as NSString as NSString) {
+        if hasOpenCodeTag(textContent as NSString) {
             textView.insertText("[/code]")
             return
         }
