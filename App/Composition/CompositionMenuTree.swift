@@ -26,11 +26,11 @@ final class CompositionMenuTree: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    @objc private func textViewDidBeginEditing(note: NSNotification) {
+    @objc private func textViewDidBeginEditing(_ note: NSNotification) {
         popToRootItems()
     }
     
-    @objc private func textViewDidEndEditing(note: NSNotification) {
+    @objc private func textViewDidEndEditing(_ note: NSNotification) {
         UIMenuController.shared.menuItems = nil
     }
     
