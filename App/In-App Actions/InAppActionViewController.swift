@@ -152,7 +152,7 @@ extension InAppActionViewController {
     func prepareForPopoverPresentation(_ popover: UIPopoverPresentationController) {
         if let block = popoverPositioningBlock {
             var sourceRect = popover.sourceRect
-            var sourceView = popover.sourceView!
+            var sourceView = popover.sourceView ?? UIView()
             block(&sourceRect, &sourceView)
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
