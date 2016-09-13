@@ -169,7 +169,7 @@ class PostPreviewViewController: ViewController {
             thread = thread ?? editingPost?.thread,
             let forum = thread.forum
             else { return Theme.defaultTheme }
-        return Theme.currentThemeForForum(forum)
+        return Theme.currentThemeForForum(forum: forum)
     }
     
     override func themeDidChange() {

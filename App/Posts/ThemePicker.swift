@@ -18,6 +18,7 @@ final class ThemePicker: UIControl {
         }
     }
     
+    var isLoaded: Bool = false
     fileprivate var buttons: [UIButton] = []
     
     /**
@@ -35,6 +36,12 @@ final class ThemePicker: UIControl {
         
         invalidateIntrinsicContentSize()
         setNeedsLayout()
+    }
+
+    func setDefaultThemeColor(color: UIColor) {
+        subviews[0].removeFromSuperview()
+        buttons.remove(at: 0)
+        insertThemeWithColor(color, atIndex: 0)
     }
     
     @objc fileprivate func didTapThemeButton(_ button: UIButton) {

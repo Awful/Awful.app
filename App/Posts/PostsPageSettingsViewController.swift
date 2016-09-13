@@ -36,6 +36,14 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet var labels: [UILabel]!
     @IBOutlet var switches: [UISwitch]!
     
+    @IBOutlet weak var autoThemeSwitch: UISwitch!
+    @IBOutlet weak var darkThemeSwitch: UISwitch!
+    @IBOutlet weak var darkThemeLabel: UILabel!
+    @IBAction func toggleAutomaticTheme(_ sender: UISwitch) {
+        updateAutoThemeSetting()
+    }
+    
+    @IBOutlet weak var themeLabel: UILabel!
     @IBOutlet weak var themePicker: ThemePicker!
     @IBAction func changeSelectedTheme(_ sender: ThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
@@ -54,6 +62,8 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             themePicker.insertThemeWithColor(color, atIndex: i)
         }
         updateSelectedThemeInPicker()
+        updateAutoThemeSetting()
+        themePicker.isLoaded = true
         
         let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
@@ -61,18 +71,27 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     fileprivate func updateSelectedThemeInPicker() {
         let names = themes.map { $0.name }
-        if let themeName = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
+        if var themeName = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
+            if themeName == "default" || themeName == "dark" {
+                themeName = Theme.currentTheme.name
+            }
             if let i = names.index(of: themeName) {
                 themePicker.selectedThemeIndex = i
             }
         }
         else {
-            if AwfulSettings.shared().darkTheme {
-                themePicker.selectedThemeIndex = names.index(of: "dark")!
-            }
-            else {
-                themePicker.selectedThemeIndex = names.index(of: "default")!
-            }
+            themePicker.selectedThemeIndex = names.index(of: Theme.currentTheme.name)!
+        }
+    }
+    
+    private func updateAutoThemeSetting() {
+        if autoThemeSwitch.isOn {
+            darkThemeSwitch.isEnabled = false;
+            darkThemeLabel.isEnabled = false;
+        }
+        else {
+            darkThemeSwitch.isEnabled = true;
+            darkThemeLabel.isEnabled = true;
         }
     }
     
@@ -93,6 +112,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         
         // Theme picker's background is a light grey so I can see it (until I figure out how live views work in Xcode 6), but it should be transparent for real.
         themePicker.backgroundColor = nil
+        
+        if themePicker.isLoaded {
+            themePicker.setDefaultThemeColor(color: theme["descriptiveColor"]!)
+            updateSelectedThemeInPicker()
+        }
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate

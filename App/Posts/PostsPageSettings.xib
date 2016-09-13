@@ -1,15 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11129.15" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A313a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11103.10"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PostsPageSettingsViewController" customModule="Awful" customModuleProvider="target">
             <connections>
+                <outlet property="autoThemeSwitch" destination="xMB-Ac-jjY" id="UQd-cV-Qux"/>
+                <outlet property="darkThemeLabel" destination="PtM-NY-3PO" id="wNi-EU-vj4"/>
+                <outlet property="darkThemeSwitch" destination="Tqs-Zr-NaN" id="iat-3o-Umb"/>
                 <outlet property="headerBackground" destination="PWM-Qs-8gj" id="D3T-fk-OjS"/>
                 <outlet property="headerLabel" destination="nRF-Tv-dRt" id="M0H-hP-139"/>
+                <outlet property="themeLabel" destination="jBq-go-frF" id="kST-iR-aAR"/>
                 <outlet property="themePicker" destination="mYe-FY-VF2" id="m8X-VZ-eOU"/>
                 <outlet property="view" destination="iN0-l3-epB" id="gXv-4o-mMl"/>
                 <outletCollection property="labels" destination="rif-rC-wd0" collectionClass="NSMutableArray" id="qKz-gB-yC8"/>
@@ -18,25 +23,29 @@
                 <outletCollection property="labels" destination="jBq-go-frF" collectionClass="NSMutableArray" id="J8X-8E-PYa"/>
                 <outletCollection property="switches" destination="l4w-sl-F1e" collectionClass="NSMutableArray" id="Rwc-OR-LCo"/>
                 <outletCollection property="switches" destination="kv2-c9-5sj" collectionClass="NSMutableArray" id="Q21-oF-pe1"/>
+                <outletCollection property="labels" destination="CyB-GB-e47" collectionClass="NSMutableArray" id="q0I-MZ-QHe"/>
+                <outletCollection property="labels" destination="PtM-NY-3PO" collectionClass="NSMutableArray" id="AtZ-iq-VU4"/>
+                <outletCollection property="switches" destination="xMB-Ac-jjY" collectionClass="NSMutableArray" id="4Si-8W-ol3"/>
+                <outletCollection property="switches" destination="Tqs-Zr-NaN" collectionClass="NSMutableArray" id="4Hd-SB-fB3"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="292"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PWM-Qs-8gj" userLabel="Header Background">
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Formatting" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nRF-Tv-dRt" userLabel="Header">
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                     <color key="backgroundColor" red="0.95657652616500854" green="0.95657652616500854" blue="0.95657652616500854" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="bottomMargin" secondItem="nRF-Tv-dRt" secondAttribute="bottom" id="JhV-FW-Wd4"/>
-                        <constraint firstAttribute="centerX" secondItem="nRF-Tv-dRt" secondAttribute="centerX" id="bYe-QR-DFa"/>
+                        <constraint firstAttribute="centerX" secondItem="nRF-Tv-dRt" secondAttribute="centerX" constant="-2" id="bYe-QR-DFa"/>
                         <constraint firstItem="nRF-Tv-dRt" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="topMargin" id="gvl-Of-SS6"/>
                     </constraints>
                 </view>
@@ -45,7 +54,7 @@
                         <bool key="isElement" value="NO"/>
                     </accessibility>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l4w-sl-F1e" userLabel="Avatars Switch">
@@ -59,7 +68,7 @@
                         <bool key="isElement" value="NO"/>
                     </accessibility>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kv2-c9-5sj" userLabel="Images Switch">
@@ -70,7 +79,7 @@
                 </switch>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scale Text 100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="font_scale"/>
@@ -82,47 +91,87 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="font_scale"/>
                     </userDefinedRuntimeAttributes>
                 </stepper>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="ThemePicker" customModule="Awful" customModuleProvider="target">
                     <color key="backgroundColor" red="0.95657652616500854" green="0.95657652616500854" blue="0.95657652616500854" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <action selector="changeSelectedTheme:" destination="-1" eventType="valueChanged" id="2DZ-Ar-SHV"/>
                     </connections>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Dark Theme In Low Light" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="CyB-GB-e47">
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xMB-Ac-jjY" userLabel="Auto Theme Switch">
+                    <accessibility key="accessibilityConfiguration" label="Automatically switch theme with brightness"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="auto_dark_theme"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="toggleAutomaticTheme:" destination="-1" eventType="touchUpInside" id="CVC-sE-kMa"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dark Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PtM-NY-3PO">
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tqs-Zr-NaN" userLabel="Dark Theme Switch">
+                    <accessibility key="accessibilityConfiguration" label="Use a dark theme"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="dark_theme"/>
+                    </userDefinedRuntimeAttributes>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Style" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="jBq-go-frF" firstAttribute="centerY" secondItem="mYe-FY-VF2" secondAttribute="centerY" id="3AW-n2-DSs"/>
-                <constraint firstItem="mYe-FY-VF2" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="trailing" constant="8" id="5I8-Kx-bLi"/>
+                <constraint firstItem="jBq-go-frF" firstAttribute="centerY" secondItem="mYe-FY-VF2" secondAttribute="centerY" constant="1" id="3AW-n2-DSs"/>
+                <constraint firstItem="mYe-FY-VF2" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="trailing" constant="20" id="5I8-Kx-bLi"/>
+                <constraint firstItem="Tqs-Zr-NaN" firstAttribute="top" secondItem="xMB-Ac-jjY" secondAttribute="bottom" constant="16" id="6RL-69-9A9"/>
+                <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Tqs-Zr-NaN" secondAttribute="bottom" constant="16" id="6qF-yQ-5HR"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="79o-Fw-uc2"/>
                 <constraint firstAttribute="trailing" secondItem="kv2-c9-5sj" secondAttribute="trailing" constant="8" id="7t1-Mx-pP2"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="8hj-Ve-cu5"/>
+                <constraint firstAttribute="trailing" secondItem="xMB-Ac-jjY" secondAttribute="trailing" constant="8" id="CIm-QY-Gsd"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="EER-iy-1xh"/>
-                <constraint firstAttribute="bottom" secondItem="mYe-FY-VF2" secondAttribute="bottom" constant="14" id="Kae-og-gOZ"/>
+                <constraint firstAttribute="trailing" secondItem="Tqs-Zr-NaN" secondAttribute="trailing" constant="8" id="EdS-Dz-7NA"/>
+                <constraint firstAttribute="bottom" secondItem="mYe-FY-VF2" secondAttribute="bottom" constant="20" id="Kae-og-gOZ"/>
                 <constraint firstAttribute="trailing" secondItem="PWM-Qs-8gj" secondAttribute="trailing" id="LDb-Ns-qD6"/>
-                <constraint firstItem="09i-VH-Faf" firstAttribute="top" secondItem="l4w-sl-F1e" secondAttribute="bottom" constant="20" id="NmB-Aw-UoW"/>
+                <constraint firstItem="09i-VH-Faf" firstAttribute="top" secondItem="l4w-sl-F1e" secondAttribute="bottom" constant="23" id="NmB-Aw-UoW"/>
                 <constraint firstItem="jBq-go-frF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Xcw-hW-Cb2"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="l4w-sl-F1e" secondAttribute="centerY" id="Y94-YE-Utn"/>
-                <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="8" id="cZu-ef-6a4"/>
+                <constraint firstItem="PtM-NY-3PO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="c2q-Da-jwm"/>
+                <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="5" id="cZu-ef-6a4"/>
                 <constraint firstAttribute="trailing" secondItem="mYe-FY-VF2" secondAttribute="trailing" constant="8" id="deU-3H-5AK"/>
-                <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Xho-0N-tKL" secondAttribute="bottom" constant="20" id="fkf-gC-Hem"/>
                 <constraint firstItem="xqX-OM-5FZ" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="gBQ-41-aji"/>
-                <constraint firstItem="l4w-sl-F1e" firstAttribute="leading" secondItem="rif-rC-wd0" secondAttribute="trailing" constant="8" id="gId-cF-Y2h"/>
+                <constraint firstItem="l4w-sl-F1e" firstAttribute="leading" secondItem="rif-rC-wd0" secondAttribute="trailing" constant="5" id="gId-cF-Y2h"/>
                 <constraint firstItem="Xho-0N-tKL" firstAttribute="leading" secondItem="09i-VH-Faf" secondAttribute="trailing" constant="8" id="gqy-2M-cs7"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="kv2-c9-5sj" secondAttribute="centerY" id="jaC-Sd-nj6"/>
+                <constraint firstItem="xMB-Ac-jjY" firstAttribute="top" secondItem="Xho-0N-tKL" secondAttribute="bottom" constant="16" id="jnR-a0-vyv"/>
                 <constraint firstItem="09i-VH-Faf" firstAttribute="centerY" secondItem="Xho-0N-tKL" secondAttribute="centerY" id="kWd-al-EKk"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="xqX-OM-5FZ" secondAttribute="centerY" id="kib-cp-qOn"/>
                 <constraint firstAttribute="trailing" secondItem="Xho-0N-tKL" secondAttribute="trailing" constant="8" id="ljC-op-rew"/>
+                <constraint firstItem="CyB-GB-e47" firstAttribute="top" secondItem="09i-VH-Faf" secondAttribute="bottom" constant="26" id="n0t-61-8ds"/>
+                <constraint firstItem="CyB-GB-e47" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="leading" id="rAO-Qu-QWH"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="raR-G9-Bjq"/>
+                <constraint firstItem="PtM-NY-3PO" firstAttribute="top" secondItem="CyB-GB-e47" secondAttribute="bottom" constant="27" id="rbd-zE-gVU"/>
                 <constraint firstItem="09i-VH-Faf" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="voI-g3-r08"/>
+                <constraint firstItem="CyB-GB-e47" firstAttribute="centerY" secondItem="xMB-Ac-jjY" secondAttribute="centerY" id="zJF-XG-8kr"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="330" y="531"/>
+            <point key="canvasLocation" x="241" y="71"/>
         </view>
     </objects>
 </document>

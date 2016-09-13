@@ -87,7 +87,7 @@ final class PostsPageViewController: ViewController {
     
     override var theme: Theme {
         guard let forum = thread.forum , !forum.forumID.isEmpty else { return Theme.currentTheme }
-        return Theme.currentThemeForForum(forum)
+        return Theme.currentThemeForForum(forum: forum)
     }
     
     override var title: String? {

@@ -41,7 +41,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentThemeForForum(forum)
+        return Theme.currentThemeForForum(forum: forum)
     }
     
     override func fetchPreviewIfNecessary() {

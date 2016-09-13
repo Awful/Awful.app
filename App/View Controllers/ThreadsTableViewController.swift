@@ -50,7 +50,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     override var theme: Theme {
-        return Theme.currentThemeForForum(forum)
+        return Theme.currentThemeForForum(forum: forum)
     }
     
     fileprivate func createTableViewAdapter() {
