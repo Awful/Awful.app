@@ -73,6 +73,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: NSNotification.Name.UIScreenBrightnessDidChange, object: nil)
+        
+        // Brightness may have changed since app was shut down
+        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+
         
         return true
     }
@@ -109,6 +114,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let _ = self.openAwfulURL(awfulURL)
         })
         window?.rootViewController?.present(alert, animated: true, completion: nil)
+        
+        // Brightness may have changed while app was inactive
+        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -281,6 +290,21 @@ private extension AppDelegate {
             })
         } else if key == AwfulSettingsKeys.customBaseURL.takeUnretainedValue() as String {
             updateClientBaseURL()
+        } else if key == AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String {
+            NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        }
+    }
+    
+    @objc func brightnessDidChange(note: NSNotification) {
+        if AwfulSettings.shared().autoDarkTheme {
+            if let screen: UIScreen = note.object as? UIScreen {
+                // TODO: Replace threshold with user-set preference
+                if screen.brightness > 0.4 && AwfulSettings.shared().darkTheme {
+                    AwfulSettings.shared().darkTheme = false
+                } else if screen.brightness <= 0.4 && !AwfulSettings.shared().darkTheme {
+                    AwfulSettings.shared().darkTheme = true
+                }
+            }
         }
     }
     
