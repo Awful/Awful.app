@@ -24,7 +24,7 @@ PODS:
   - FLAnimatedImage (1.0.2)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (0.9.6)
+  - HTMLReader (1.0.1)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.5.1)
@@ -59,7 +59,7 @@ DEPENDENCIES:
   - ARChromeActivity (= 1.0.6)
   - FLAnimatedImage (= 1.0.2)
   - GRMustache (= 7.3.2)
-  - HTMLReader (= 0.9.6)
+  - HTMLReader (= 1.0.1)
   - ImgurAnonymousAPIClient (= 0.3.2)
   - JLRoutes (= 1.5.1)
   - KVOController (= 1.0.3)
@@ -90,7 +90,7 @@ SPEC CHECKSUMS:
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 352065d63a011faade774ca3b833237785a59854
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
-  HTMLReader: 7e21488ee378afc56ccade8af35840c4e03e434c
+  HTMLReader: 9c9a018b11d7e9884a52ab97ce1bd23bdca7fddb
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: eececedd8c3f1f040209520f783e12049674416e
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
@@ -101,6 +101,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: d48e1701ab838d470b6b1b0e04f6fed0fa466413
+PODFILE CHECKSUM: 353d3297a754d33f650ac83fd8d1bb560cc2e380
 
 COCOAPODS: 1.0.1

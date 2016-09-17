@@ -8,7 +8,7 @@ use_frameworks!
 
 def afnetworking; pod 'AFNetworking', '2.5.2'; end
 def fl_animated_image; pod 'FLAnimatedImage', '1.0.2'; end
-def html_reader; pod 'HTMLReader', '0.9.6'; end
+def html_reader; pod 'HTMLReader', '1.0.1'; end
 
 target 'Awful' do
   afnetworking
@@ -30,10 +30,11 @@ end
 target 'Core' do
   afnetworking
   html_reader
-  
-  target 'CoreTests' do
-    inherit! :search_paths
-  end
+end
+
+target 'CoreTests' do
+  afnetworking
+  html_reader
 end
 
 # FLAnimatedImage is used by both Awful and Smilies targets, but CocoaPods doesn't have a good story for dealing with that. Instead we'll compile it in Smilies and leave Awful's dependency implicit.
