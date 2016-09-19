@@ -19,12 +19,15 @@ High priority:
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
 				"Come to think of it, yeah. It happens not infrequently there. Some others too."
 		"Just had it happen in the cute thread in PYF." (posted 2016-Sept-03)
+	- Can scroll posts page horizontally.
+		"With tap to play gifs turned on, there are so many placeholders in this post that they overflow the bounds of the post area and make it so you can drag the whole thread of posts left and right http://forums.somethingawful.com/showthread.php?threadid=3771497&userid=0&perpage=40&pagenumber=226#post464190151" @ios9.3.6 @iphone6 @awful3.17
 Medium priority:
 	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
 		"If you "edit" a post then change your mind and decide to reply and make a new one it still only edits the original post."
 		"I went to a post of mine intending to quote it but I hit Edit instead. When I backed out and then went to Quote, the quote got tacked on to the original post as an edit, it didn't make a new post."
 		Especially bad for mods http://forums.somethingawful.com/showthread.php?threadid=3510131&userid=0&perpage=40&pagenumber=224#post461295184
 		"if you edit a post, then hit cancel, then go quote a post, you will actually end up editing the post you were editing earlier. (rather than making a new post with quote as intended )"
+		"So this is really minor but it would be nice if the "Cancel" button to the top and left of me right now didn't say Cancel but instead said something like "Back" since its not really a cancel button. For the longest time I didn't know I could hit that button mid post in order to grab another quote or re-read a post before posting cause I always thought it would cancel and delete my entry."
 	- Only trigger the "pull for next page of posts" gesture if scrolling started near the bottom.
 		"Would it be possible to make the "keep scrolling at the bottom of the page to go to the next one" thing less sensitive? Or maybe put in some sort of delay (something like, when you're scrolling and you hit the end of the page, it doesn't trigger until it comes to a stop and you pull up again?) I keep missing the last couple posts on every page, because I apparently scroll too fast :( If neither of those are doable, could we at least get an option to turn it off in settings?"
 		"My dream is to not make pull to load a new page activate the first time I hit the bottom of a page. Sometimes I'm trying to back track to the end of a page and after everything loads I find I hit the bottom too hard and it loaded the next."
@@ -75,13 +78,14 @@ Medium priority:
 		"Also, image uploading failed so I had to use upit"
 		"Second, this is the third time I'm trying to post this now. Trying to upload an image in the first two resulted in a hard crash to springboard. No idea what that's about, we'll see if this one goes through."
 		"So this happens a lot, mostly when I try to upload pics from my ipad and uploads several at a time http://i.imgur.com/4sgTtaN.jpg Try again with only three pics and it still doesn't work."
-	- Don't duplicate smilies in the smilie keyboard.
+	- Smilies are duplicating/multiplying in the smilie keyboard.
 		"I'm seeing smilies duplicated in the in-app keyboard. Not all, but most." "Say 66%."
 		"Found a weird bug with the emoticon keyboard where some of the emoticons are duplicated. I resolved it by reinstalling the app, but I thought you might like to know http://i.imgur.com/jClkLdN.png"
 		"Edit: Well fuck, it just went back to being duplicative http://i.imgur.com/dJK8FSP.png"
 		"It was weird, I was using the keyboard and it was fine, then it looked like it "refreshed" (all of the icons kinda blinked), then multiples of every icon showed up"
 		"Keyboard loaded then reloaded with double the smilies."
 		"but why are all of the smilies after nexus duplicated? https://i.imgur.com/XneU7UR.png" "and then I got it to duplicate again but I'm not sure exactly how https://i.imgur.com/tBPx3xo.png"
+		"so yeah, the smilies selection keeps multiplying each one. I'm up to 5 repeats for each smilie."
 	- Properly detect various kinds of scraping errors (e.g. CloudFlare) instead of treating them generically as "archives required".
 		"So I'm abroad at the minute and whenever I was trying to use Awful, I would get this. http://i.imgur.com/B1htdNx.png Turns out, when I try via the browser, I get this http://i.imgur.com/XUwmuOO.png VPN solves both issues. Is there a better way of Awful handling this?"
 		If we can detect CloudFlare's interference, maybe we can present a Safari View Controller?
@@ -379,6 +383,13 @@ Medium priority:
 		"The buttons above the keyboard don't work when you have the regular keyboard in split mode. For all I know this could have been in there for a long time, but I haven't been using my iPad much lately."
 		There's some other strangeness around the accessory view and split keyboards that could use some work, the layout goes pretty screwy. In screenshot form: http://i.imgur.com/5D71m14.png
 		There doesn't seem to be any reliable way to figure out when the keyboard is split or whether it's undocked (it can be either, both, or neither). (I got close, checking for UIKeyboardWill/DidChangeFrameNotification without a preceding UIKeyboardWillShowNotification, but it falls apart when the hardware keyboard is taken into account.)
+	- Simultaneous swipe-to-pop-off-nav and "detected a link" alert results in unresponsive app.
+		"Just copied a quote link https://forums.somethingawful.com/showthread.php?goto=post&postid=464042879#post464042879, switched to Messages and then back to Awful app, and immediately swiped back from the thread to my Bookmarks page. However Awful created the "Detected an SA link -- open it? Or ignore it?" modal dialog box at the same time. The result of which was Awful became entirely nonresponsive to touch till I force-quit it!"
+			"I didn't think to try rotating my phone to Landscape or whatever. Also note that I copied the SA link by long-pressing on the attribution link of a quote tag, which I think is why it made the modal dialog box -- usually I copy links to posts by tapping the unfilled "•••" ellipsis symbol at the bottom right of the post in question and hitting "Link" and selecting "Copy" from there.
+			I believe my usual method causes Awful to instantly recognize the link so it won't react specially if it later sees that same link in the clipboard. Whereas this unusual method appeared to bypass the "recognize on copy" behavior."
+			cite: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=232#post464044369
+	- Links opening but not navigating in Awful Browser.
+		"I've been getting this since updating to iOS 10 also. I'm on a 6 Plus, using the "open in Awful's browser" option. Down for everyone and I should switch over to Safari until it's fixed, or just an issue for me?" @iphoneplus @ios10
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
@@ -388,12 +399,14 @@ New features:
 	- Set last-read post to last-visible post instead of marking the whole page as read.
 		"Would it be possible to set the last read post only when I exit the thread, and only to the last post I have seen? I think current behavior matches the website, where last read is set to the end of the current page as soon as you open the thread. The app has the ability to be smarter I would think."
 	- Make SAclopedia available for browsing.
+		"Any way we could view saclopedia entries in the app? (In the future)"
 	- Search the Forums.
 		Maybe fall back to scoped Google search if necessary?
 		Is search a platinum feature?
 		Mock http://i.imgur.com/PQg0PVk.png
 		"When are search and archives going to be added plz? Sorry for being an asshole about the good app."
 		"Hi, I am posting again asking for search to added, not because I am impatient, but because I fear the request will get lost if I do not."
+		"would there ever be a way to search using the app"
 	- Search within a thread.
 		Maybe fall back to scoped Google search if necessary?
 	- Search within a page (like a browser's command-f).
@@ -506,6 +519,7 @@ New features:
 	- Setting to turn off FYAD flags.
 		"Flags are showing up in Fyad threads which is cool but having an option to turn them off would be cool too. Peace."
 	- Get the Forums to host a site association file so the app is launched when tapping http:// links.
+		"a way to have links like in discord open this app rather than safari"
 	- Use the noseen=1 query parameter sometimes to avoid bumping the user's last-read-post marker.
 		Maybe when following links to far-off posts (Leper's Colony, or inter-thread links).
 		Maybe when creating URLs to posts for sharing.
@@ -663,6 +677,8 @@ New features:
 		Might not be such an issue assuming the spinner appears during auto-refresh.
 	- Make it so tapping a a visible image linkifies it again when "Load Image" setting is off.
 		"Would it be possible to have it so that pressing the image once it's loaded makes it a link again? Right now I have to toggle images on and off again and that loses my place on the page."
+	- Allow filtering out six-hour probations from the Leper's Colony.
+		"Is it possible to filter out the six hour probations in the leper tab at some point? It can be entertaining to browse but the six hour probations have no value."
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -876,3 +892,5 @@ Needs verification:
 	- Lengthy Leper's Colony entries jump around when tapping and holding.
 		"When you tap or tap and hold on an LC entry with a long probate/ban reason, as it highlights the box changes size to cut some lines off. It fixes itself if you tap-hold-scroll and seemingly if you try to screenshot. iOS 6.1.4 iPhone 5. Test case: the ban at http://forums.somethingawful.com/showthread.php?threadid=3571226&perpage=40&pagenumber=1#post419710507"
 		Still a thing?
+	- Viewing own profile comes up blank.
+		"anyone else have an issue on the app when trying to view your own profile? not that it matters, but my own profile loads up as a blank page. It's for the best, probably" @iphone6s
