@@ -47,6 +47,11 @@ target :Smilies do
   end
 end
 
+target :SmilieExtractor do
+  fl_animated_image
+  html_reader
+end
+
 post_install do |extension_safe_api|
   EXTENSION_SAFE_TARGETS = %w[FLAnimatedImage HTMLReader Pods-Smilies]
   extension_safe_api.pods_project.targets.each do |target|
