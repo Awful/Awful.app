@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+
+find "$root/Smilies/Stickers/Stickers.xcassets" \( -iname "*.gif" -o -iname "*.jpg" -o -iname "*.png" \) -exec \
+  convert {} -coalesce -bordercolor none -border 3x3 -resize 300% {} \;

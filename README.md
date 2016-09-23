@@ -154,6 +154,19 @@ Awful answers to a couple URL schemes:
 * `awfulhttp:` and `awfulhttps:` handle Forums website URLs to any screens that have a corresponding `awful:` URL described above.
     * The idea is you take your `https://forums.somethingawful.com/…` URL, put `awful` in front, and now it opens in Awful.
 
+Stickers
+--------
+
+There's an iMessage sticker pack with all the smilies. From a fresh start:
+
+* Save a webarchive of the Forums's [showsmilies][] page in `Smilies/Tests/showsmilies.webarchive`.
+* Build and run `Smilie Extractor` in the iOS simulator.
+* Tap the `Stickers` button.
+* Now run `make stickerscale` in Terminal.
+* You're done.
+
+[showsmilies]: http://forums.somethingawful.com/misc.php?action=showsmilies
+
 License
 -------
 

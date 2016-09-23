@@ -275,6 +275,8 @@
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
+		1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CBBAAB71D949EE200A847EC /* Stickers.xcassets */; };
+		1CBBAABC1D949EE200A847EC /* Smilies Stickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
@@ -309,6 +311,7 @@
 		1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */; };
 		1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
+		2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -427,6 +430,13 @@
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
 		};
+		1CBBAABA1D949EE200A847EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CBBAAB41D949EE000A847EC;
+			remoteInfo = "Smilies Stickers";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -459,6 +469,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				1CBBAABC1D949EE200A847EC /* Smilies Stickers.appex in Embed App Extensions */,
 				1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -727,6 +738,9 @@
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
 		1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLMenuPresenter+WebViewJunk.swift"; sourceTree = "<group>"; };
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
+		1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Smilies Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CBBAAB71D949EE200A847EC /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
+		1CBBAAB91D949EE200A847EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
@@ -782,8 +796,9 @@
 		1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsPageScraper.m; sourceTree = "<group>"; };
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Awful Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Awful Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieExtractor.release.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.release.xcconfig"; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		4EFE724A98A1BA6A9CA9F7CF /* Pods-SmiliesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmiliesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-SmiliesTests/Pods-SmiliesTests.release.xcconfig"; sourceTree = "<group>"; };
 		582656AF1CF1426AB875D197 /* Pods-CoreTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-CoreTests/Pods-CoreTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -828,7 +843,9 @@
 		AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
 		BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA065CF2C50CD212D10284E /* Pods_Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieExtractor.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.debug.xcconfig"; sourceTree = "<group>"; };
 		EA4787CE04FFF67519F0CB77 /* Pods-SmiliesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmiliesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-SmiliesTests/Pods-SmiliesTests.debug.xcconfig"; sourceTree = "<group>"; };
+		EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmilieExtractor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -839,6 +856,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C3A145D19DFC6790022C44C /* Smilies.framework in Frameworks */,
+				2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -894,6 +912,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		84009C08CEDC28CEDCAD6557 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -936,13 +961,14 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Awful Debug.app */,
+				1D6058910D05DD3D006BFB54 /* AwfulDebug.app */,
 				1C66A9C019DD304D001B9A41 /* Smilies.framework */,
 				1C66A9CA19DD304E001B9A41 /* SmiliesTests.xctest */,
 				1C66A9EF19DD3939001B9A41 /* Smilie Keyboard.appex */,
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C3CF9661A94B9B40065C964 /* AwfulCore.framework */,
 				1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */,
+				1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1228,6 +1254,7 @@
 				1C3A143419DFC5D10022C44C /* Extractor */,
 				1C66A9E419DD30ED001B9A41 /* Framework */,
 				1C66AA0119DD3971001B9A41 /* Keyboard */,
+				1CBBAAB61D949EE100A847EC /* Stickers */,
 				1C66A9E319DD3090001B9A41 /* Tests */,
 				1C3A146A19DFCD6D0022C44C /* Web Archives */,
 			);
@@ -1391,6 +1418,15 @@
 			);
 			name = Messages;
 			path = "Private Messages";
+			sourceTree = "<group>";
+		};
+		1CBBAAB61D949EE100A847EC /* Stickers */ = {
+			isa = PBXGroup;
+			children = (
+				1CBBAAB71D949EE200A847EC /* Stickers.xcassets */,
+				1CBBAAB91D949EE200A847EC /* Info.plist */,
+			);
+			path = Stickers;
 			sourceTree = "<group>";
 		};
 		1CBE1B0719CA03F100510187 /* Images */ = {
@@ -1604,6 +1640,7 @@
 				BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */,
 				A7B3F77323960DADE60F24B0 /* Pods_SmiliesTests.framework */,
 				27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */,
+				EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -1655,6 +1692,8 @@
 				4EFE724A98A1BA6A9CA9F7CF /* Pods-SmiliesTests.release.xcconfig */,
 				9F642485F166EBF5608DC271 /* Pods-CoreTests.debug.xcconfig */,
 				582656AF1CF1426AB875D197 /* Pods-CoreTests.release.xcconfig */,
+				E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */,
+				28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1714,10 +1753,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C3A145B19DFC5D10022C44C /* Build configuration list for PBXNativeTarget "SmilieExtractor" */;
 			buildPhases = (
+				9A76259C1D52DE28DC87E457 /* [CP] Check Pods Manifest.lock */,
 				1C3A142F19DFC5D10022C44C /* Sources */,
 				1C3A143019DFC5D10022C44C /* Frameworks */,
 				1C3A143119DFC5D10022C44C /* Resources */,
 				1C3A145E19DFC67F0022C44C /* Embed Frameworks */,
+				7D85AF5AE5673F5516988F40 /* [CP] Embed Pods Frameworks */,
+				FC0DD6EDD34B2B4DF105D497 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1830,6 +1872,22 @@
 			productReference = 1C66A9EF19DD3939001B9A41 /* Smilie Keyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		1CBBAAB41D949EE000A847EC /* Smilies Stickers */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CBBAABF1D949EE300A847EC /* Build configuration list for PBXNativeTarget "Smilies Stickers" */;
+			buildPhases = (
+				1CBBAAB31D949EE000A847EC /* Resources */,
+				84009C08CEDC28CEDCAD6557 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Smilies Stickers";
+			productName = "Smilies Stickers";
+			productReference = 1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */;
+			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
+		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -1853,10 +1911,11 @@
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 				1C66A9FB19DD393A001B9A41 /* PBXTargetDependency */,
+				1CBBAABB1D949EE200A847EC /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
-			productReference = 1D6058910D05DD3D006BFB54 /* Awful Debug.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1893,13 +1952,20 @@
 					};
 					1C66A9EE19DD3939001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = 9RR6L9X39A;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
 						};
 					};
+					1CBBAAB41D949EE000A847EC = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 9RR6L9X39A;
+						ProvisioningStyle = Automatic;
+					};
 					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1933,6 +1999,7 @@
 				1C66A9BF19DD304D001B9A41 /* Smilies */,
 				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
+				1CBBAAB41D949EE000A847EC /* Smilies Stickers */,
 			);
 		};
 /* End PBXProject section */
@@ -1987,6 +2054,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CBBAAB31D949EE000A847EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2208,6 +2283,21 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SmiliesTests/Pods-SmiliesTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7D85AF5AE5673F5516988F40 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		86C484B656A86F2B1261C508 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2236,6 +2326,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+		};
+		9A76259C1D52DE28DC87E457 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 		9E93F8ADCC412D5641BE9475 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2295,6 +2400,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC0DD6EDD34B2B4DF105D497 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2602,6 +2722,11 @@
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
 		};
+		1CBBAABB1D949EE200A847EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CBBAAB41D949EE000A847EC /* Smilies Stickers */;
+			targetProxy = 1CBBAABA1D949EE200A847EC /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -2640,6 +2765,7 @@
 		};
 		1C3A145319DFC5D10022C44C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2677,6 +2803,7 @@
 		};
 		1C3A145419DFC5D10022C44C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2986,6 +3113,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CODE_SIGN_ENTITLEMENTS = ../Smilies/Keyboard/Keyboard.entitlements;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3028,6 +3156,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ../Smilies/Keyboard/Keyboard.entitlements;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3048,18 +3177,64 @@
 			};
 			name = Release;
 		};
+		1CBBAABD1D949EE200A847EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}.SmiliesStickers";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		1CBBAABE1D949EE200A847EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}.SmiliesStickers";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = " Debug";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -3089,6 +3264,7 @@
 				CODE_SIGN_ENTITLEMENTS = ../App/Awful.entitlements;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -3114,6 +3290,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX = Debug;
 				AWFUL_BUNDLE_ID_SUFFIX = .debug;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3270,6 +3447,15 @@
 			buildConfigurations = (
 				1C66A9FD19DD393A001B9A41 /* Debug */,
 				1C66A9FE19DD393A001B9A41 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1CBBAABF1D949EE300A847EC /* Build configuration list for PBXNativeTarget "Smilies Stickers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CBBAABD1D949EE200A847EC /* Debug */,
+				1CBBAABE1D949EE200A847EC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

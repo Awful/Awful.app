@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A379a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Iv5-lj-5ug">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A320" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Iv5-lj-5ug">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -24,24 +26,31 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController title="Smilie Extractor" id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
-                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" text="Tap “Extract” to begin." id="pW3-dd-GuE">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" text="Tap “Stickers” or “Extract” to begin." id="pW3-dd-GuE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="12"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
                     <navigationItem key="navigationItem" id="5qN-4q-FUq">
-                        <barButtonItem key="leftBarButtonItem" title="Extract" id="Lhw-lm-bQV">
+                        <barButtonItem key="leftBarButtonItem" title="Stickers" id="glb-MN-9qB">
                             <connections>
-                                <action selector="didTapExtract:" destination="BYZ-38-t0r" id="l9G-gS-WRG"/>
+                                <action selector="didTapStickers:" destination="BYZ-38-t0r" id="PKO-9b-HUd"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Replace" id="jrf-t6-3v4">
-                            <connections>
-                                <action selector="didTapReplace:" destination="BYZ-38-t0r" id="imE-Uy-oPZ"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem enabled="NO" title="Replace" id="jrf-t6-3v4">
+                                <connections>
+                                    <action selector="didTapReplace:" destination="BYZ-38-t0r" id="imE-Uy-oPZ"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Extract" id="Lhw-lm-bQV">
+                                <connections>
+                                    <action selector="didTapExtract:" destination="BYZ-38-t0r" id="l9G-gS-WRG"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="replaceBarButtonItem" destination="jrf-t6-3v4" id="U81-QS-7sL"/>
