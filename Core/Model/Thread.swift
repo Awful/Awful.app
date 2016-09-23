@@ -4,7 +4,7 @@
 
 import CoreData
 
-@objc(AwfulThread)
+@objc(Thread)
 public class AwfulThread: AwfulManagedObject {
     @NSManaged var anyUnreadPosts: Bool
     @NSManaged var archived: Bool

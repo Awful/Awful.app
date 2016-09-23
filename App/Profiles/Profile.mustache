@@ -43,8 +43,8 @@
                 <caption>Additional Information</caption>
                 {{# regdate }}<tr><th>Member Since</th><td>{{ regDateFormat(.) }}</td></tr>{{/ }}
                 {{# postCount }}<tr><th>Post Count</th><td>{{ postCount }}</td></tr>{{/ }}
-                {{# postRate }}<tr><th>Post Rate</th><td>{{ . }} posts per day</td></tr>{{/ }}
-                {{# lastPostDate }}<tr><th>Last Post</th><td>{{ lastPostDateFormat(.) }}</td></tr>{{/ }}
+                {{# postRate }}<tr><th>Post Rate</th><td>{{ . }}</td></tr>{{/ }}
+                {{# lastPost }}<tr><th>Last Post</th><td>{{ lastPostDateFormat(.) }}</td></tr>{{/ }}
                 {{# location }}<tr><th>Location</th><td>{{ . }}</td></tr>{{/ }}
                 {{# interests }}<tr><th>Interests</th><td>{{ . }}</td></tr>{{/ }}
                 {{# occupation }}<tr><th>Occupation</th><td>{{ . }}</td></tr>{{/ }}

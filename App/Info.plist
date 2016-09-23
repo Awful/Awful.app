@@ -40,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>31800</string>
+	<string>31802</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>ImgurAnonymousAPIClientID</key>
@@ -60,6 +60,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Awful will upload to Imgur any photos you take and choose to include in your post when you tap Post</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Awful will upload to Imgur any photos you choose from your library when you tap Post</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>com.awfulapp.Awful.activity.browsing-posts</string>
@@ -87,9 +91,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Awful will upload to Imgur any photos you choose from your library when you tap Post</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Awful will upload to Imgur any photos you take and choose to include in your post when you tap Post</string>
 </dict>
 </plist>

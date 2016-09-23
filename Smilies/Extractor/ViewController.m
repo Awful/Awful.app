@@ -60,6 +60,98 @@
     return _archive;
 }
 
+- (IBAction)didTapStickers:(UIBarButtonItem *)sender
+{
+    self.textView.text = @"Stickering…";
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSURL *stickersFolder = [SmiliesFolderURL() URLByAppendingPathComponent:@"Stickers" isDirectory:YES];
+    NSURL *xcassetsFolder = [stickersFolder URLByAppendingPathComponent:@"Stickers.xcassets" isDirectory:YES];
+    NSURL *stickerPackFolder = [xcassetsFolder URLByAppendingPathComponent:@"Sticker Pack.stickerpack" isDirectory:YES];
+    
+    // Delete old smilie stickers.
+    NSEnumerator *enumerator = [fileManager enumeratorAtURL:stickerPackFolder
+                                 includingPropertiesForKeys:@[NSURLIsDirectoryKey]
+                                                    options:NSDirectoryEnumerationSkipsSubdirectoryDescendants
+                                               errorHandler:nil];
+    for (NSURL *subfolder in enumerator) {
+        NSNumber *isDirectory;
+        NSError *error;
+        BOOL ok = [subfolder getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:&error];
+        NSAssert(ok, @"error: %@", error);
+        if (!isDirectory.boolValue) {
+            continue;
+        }
+        ok = [fileManager removeItemAtURL:subfolder error:&error];
+        NSAssert(ok, @"error: %@", error);
+    }
+    
+    // Make new smilie stickers.
+    NSMutableArray *stickers = [NSMutableArray new];
+    EnumerateSmiliesInHTML(self.archive, ^(NSString *text, NSString *imageURL, BOOL potentiallyObjectionable, NSString *section, NSString *summary, NSData *imageData) {
+        if (potentiallyObjectionable) {
+            return;
+        }
+        
+        NSString *stickerFilename = [text stringByAppendingPathExtension:@"sticker"];
+        NSURL *subfolder = [stickerPackFolder URLByAppendingPathComponent:stickerFilename isDirectory:YES];
+        NSError *error;
+        BOOL ok = [fileManager createDirectoryAtURL:subfolder withIntermediateDirectories:YES attributes:nil error:&error];
+        NSAssert(ok, @"error: %@", error);
+        [stickers addObject:@{@"filename": stickerFilename}];
+        
+        NSString *imageFilename = imageURL.lastPathComponent;
+        ok = [imageData writeToURL:[subfolder URLByAppendingPathComponent:imageFilename isDirectory:NO] atomically:NO];
+        NSAssert(ok, @"couldn't write image data");
+        
+        NSDictionary *contents = @{@"info": @{@"version": @1, @"author": @"Smilie Extractor"},
+                                   @"properties": @{@"accessibility-label": summary, @"filename": imageFilename}};
+        NSData *json = [NSJSONSerialization dataWithJSONObject:contents options:0 error:&error];
+        NSAssert(json, @"error: %@", error);
+        ok = [json writeToURL:[subfolder URLByAppendingPathComponent:@"Contents.json" isDirectory:NO] atomically:NO];
+        NSAssert(ok, @"couldn't write json data");
+    });
+    
+    NSDictionary *contents = @{@"stickers": stickers,
+                               @"info": @{@"version": @1, @"author": @"Smilie Extractor"},
+                               @"properties": @{@"grid-size": @"small"}};
+    NSError *error;
+    NSData *json = [NSJSONSerialization dataWithJSONObject:contents options:0 error:&error];
+    NSAssert(json, @"error: %@", error);
+    BOOL ok = [json writeToURL:[xcassetsFolder URLByAppendingPathComponent:@"Contents.json" isDirectory:NO] atomically:NO];
+    NSAssert(ok, @"couldn't write json data");
+    
+    self.textView.text = [self.textView.text stringByAppendingString:@" done!"];
+}
+
+static void EnumerateSmiliesInHTML(SmilieWebArchive *webArchive, void (^block)(NSString *text, NSString *imageURL, BOOL potentiallyObjectionable, NSString *section, NSString *summary, NSData *imageData))
+{
+    HTMLDocument *document = [HTMLDocument documentWithString:webArchive.mainFrameHTML];
+    HTMLElement *container = [document firstNodeMatchingSelector:@".smilie_list"];
+    NSArray *headers = [container nodesMatchingSelector:@"h3"];
+    NSArray *lists = [container nodesMatchingSelector:@".smilie_group"];
+    NSCAssert(headers.count == lists.count, @"expecting equal numbers of section headers and sections");
+    NSURL *objectionURL = [[NSBundle bundleForClass:[ViewController class]] URLForResource:@"PotentiallyObjectionableTexts" withExtension:@"plist"];
+    NSSet *objectionTexts = [NSSet setWithArray:[NSArray arrayWithContentsOfURL:objectionURL]];
+    [headers enumerateObjectsUsingBlock:^(HTMLElement *header, NSUInteger i, BOOL *stop) {
+        HTMLElement *section = lists[i];
+        for (HTMLElement *item in [section nodesMatchingSelector:@"li"]) {
+            
+            NSString *text = [item firstNodeMatchingSelector:@".text"].textContent;
+            HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
+            NSString *imageURL = img[@"src"];
+            BOOL potentiallyObjectionable = [objectionTexts containsObject:text];
+            NSString *section = header.textContent;
+            NSString *summary = img[@"title"];
+            
+            NSData *imageData = [webArchive dataForSubresourceWithURL:[NSURL URLWithString:imageURL]];
+            
+            block(text, imageURL, potentiallyObjectionable, section, summary, imageData);
+        }
+    }];
+}
+
 - (IBAction)didTapExtract:(UIBarButtonItem *)sender
 {
     sender.enabled = NO;
@@ -87,14 +179,6 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
 - (void)scrapeSmiliesCompletionHandler:(void (^)(void))completionHandler
 {
     [self.managedObjectContext performBlock:^{
-        HTMLDocument *document = [HTMLDocument documentWithString:self.archive.mainFrameHTML];
-        HTMLElement *container = [document firstNodeMatchingSelector:@".smilie_list"];
-        NSArray *headers = [container nodesMatchingSelector:@"h3"];
-        NSArray *lists = [container nodesMatchingSelector:@".smilie_group"];
-        NSAssert(headers.count == lists.count, @"expecting equal numbers of section headers and sections");
-        NSURL *objectionURL = [[NSBundle bundleForClass:[ViewController class]] URLForResource:@"PotentiallyObjectionableTexts" withExtension:@"plist"];
-        NSSet *objectionTexts = [NSSet setWithArray:[NSArray arrayWithContentsOfURL:objectionURL]];
-        
         void (^save)() = ^{
             NSError *error;
             BOOL ok = [self.managedObjectContext save:&error];
@@ -103,24 +187,21 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
             }
         };
         
-        [headers enumerateObjectsUsingBlock:^(HTMLElement *header, NSUInteger i, BOOL *stop) {
-            HTMLElement *section = lists[i];
-            for (HTMLElement *item in [section nodesMatchingSelector:@"li"]) {
-                Smilie *smilie = [Smilie newInManagedObjectContext:self.managedObjectContext];
-                smilie.text = [item firstNodeMatchingSelector:@".text"].textContent;
-                HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
-                smilie.imageURL = img[@"src"];
-                smilie.potentiallyObjectionable = [objectionTexts containsObject:smilie.text];
-                smilie.section = header.textContent;
-                smilie.summary = img[@"title"];
-                
-                smilie.imageData = [self.archive dataForSubresourceWithURL:[NSURL URLWithString:smilie.imageURL]];
-                
-                UpdateSmilieImageDataDerivedAttributes(smilie);
-            }
+        __block NSInteger i = 0;
+        EnumerateSmiliesInHTML(self.archive, ^(NSString *text, NSString *imageURL, BOOL potentiallyObjectionable, NSString *section, NSString *summary, NSData *imageData) {
+            Smilie *smilie = [Smilie newInManagedObjectContext:self.managedObjectContext];
+            smilie.text = text;
+            smilie.imageURL = imageURL;
+            smilie.potentiallyObjectionable = potentiallyObjectionable;
+            smilie.section = section;
+            smilie.summary = summary;
+            smilie.imageData = imageData;
             
+            UpdateSmilieImageDataDerivedAttributes(smilie);
+            
+            i += 1;
             if (i % 100 == 0) save();
-        }];
+        });
         
         save();
         
@@ -128,14 +209,16 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
     }];
 }
 
+static NSURL * SmiliesFolderURL(void) {
+    NSURL *thisFileURL = [NSURL fileURLWithPath:[NSString stringWithCString:__FILE__ encoding:NSUTF8StringEncoding]];
+    return [[thisFileURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
+}
+
 - (IBAction)didTapReplace:(UIBarButtonItem *)sender
 {
     sender.enabled = NO;
     
-    // This is a terrible idea.
-    NSURL *thisFileURL = [NSURL fileURLWithPath:[NSString stringWithCString:__FILE__ encoding:NSUTF8StringEncoding]];
-    NSURL *smiliesFolderURL = [[thisFileURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
-    NSURL *frameworkURL = [smiliesFolderURL URLByAppendingPathComponent:@"Framework"];
+    NSURL *frameworkURL = [SmiliesFolderURL() URLByAppendingPathComponent:@"Framework"];
     NSURL *destinationURL = [frameworkURL URLByAppendingPathComponent:@"Smilies.sqlite"];
     
     NSMutableDictionary *newMetadata;
