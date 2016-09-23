@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Awful Debug.app"
+               BuildableName = "AwfulDebug.app"
                BlueprintName = "Awful"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
@@ -81,7 +81,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -104,7 +104,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -134,7 +134,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -157,7 +157,7 @@
                   <BuildableReference
                      BuildableIdentifier = "primary"
                      BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-                     BuildableName = "Awful Debug.app"
+                     BuildableName = "AwfulDebug.app"
                      BlueprintName = "Awful"
                      ReferencedContainer = "container:Awful.xcodeproj">
                   </BuildableReference>
