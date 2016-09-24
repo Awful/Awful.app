@@ -160,6 +160,13 @@ const static void * AssociatedBinding = &AssociatedBinding;
     self.text = [NSString stringWithFormat:formatString ?: @"%@", newValue];
 }
 
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey {
+    [super addAwful_overridingSetting:overridingSettingKey];
+    if (overridingSettingKey) {
+        [self awful_overridingSettingDidChange:overridingSettingKey];
+    }
+}
+
 - (void)awful_overridingSettingDidChange:(id)overridingSetting
 {
     // NSString *key = (NSString *)overridingSetting;
@@ -207,6 +214,13 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
     }
 }
 
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey {
+    [super addAwful_overridingSetting:overridingSettingKey];
+    if (overridingSettingKey) {
+        [self awful_overridingSettingDidChange:overridingSettingKey];
+    }
+}
+
 - (void)awful_valueChanged
 {
     [AwfulSettings sharedSettings][self.awful_setting] = @(self.value);
@@ -237,6 +251,13 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
         }
     } else {
         [self removeTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
+    }
+}
+
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey {
+    [super addAwful_overridingSetting:overridingSettingKey];
+    if (overridingSettingKey) {
+        [self awful_overridingSettingDidChange:overridingSettingKey];
     }
 }
 
@@ -281,10 +302,17 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
             self.maximumValue = [info[@"Maximum"] doubleValue];
         }
         
-        //UISlider needs a kick to display the right value the first time it appears
+        //UISlider needs a kick to display the right value and enablement status
         [self awful_settingDidChange:[AwfulSettings sharedSettings][self.awful_setting]];
     } else {
         [self removeTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
+    }
+}
+
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey {
+    [super addAwful_overridingSetting:overridingSettingKey];
+    if (overridingSettingKey) {
+        [self awful_overridingSettingDidChange:overridingSettingKey];
     }
 }
 
