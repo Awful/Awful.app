@@ -107,6 +107,7 @@ final class SettingsViewController: TableViewController {
         super.viewDidLoad()
         
         tableView.separatorStyle = .singleLine
+        tableView.register(UINib(nibName: "SettingsSliderCell", bundle: nil), forCellReuseIdentifier: SettingType.Slider.rawValue)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -141,6 +142,7 @@ final class SettingsViewController: TableViewController {
         case Stepper = "Stepper"
         case Disclosure = "Disclosure"
         case DisclosureDetail = "DisclosureDetail"
+        case Slider = "Slider"
         
         var cellStyle: UITableViewCellStyle {
             switch self {
@@ -149,6 +151,9 @@ final class SettingsViewController: TableViewController {
                 
             case .Immutable, .Stepper, .DisclosureDetail:
                 return .value1
+            
+            case .Slider:
+                return .default
             }
         }
         
@@ -172,6 +177,8 @@ final class SettingsViewController: TableViewController {
             } else {
                 settingType = .Disclosure
             }
+        } else if let typeString = setting["Type"] as? String, typeString == "Slider" {
+            settingType = .Slider
         } else {
             settingType = .Immutable
         }
@@ -179,6 +186,9 @@ final class SettingsViewController: TableViewController {
         let cell: UITableViewCell
         if let dequeued = tableView.dequeueReusableCell(withIdentifier: settingType.cellIdentifier) {
             cell = dequeued
+        } else if settingType == .Slider {
+            cell = SettingsSliderCell(style:settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
+            
         } else {
             cell = UITableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
             switch settingType {
@@ -200,7 +210,7 @@ final class SettingsViewController: TableViewController {
                 cell.accessibilityTraits |= UIAccessibilityTraitButton
                 cell.accessoryType = .none
                 
-            case .Immutable:
+            case .Immutable, .Slider:
                 break
             }
         }
@@ -218,6 +228,9 @@ final class SettingsViewController: TableViewController {
                 
             case .Immutable, .OnOff, .Disclosure, .Stepper, .Button:
                 cell.textLabel?.text = transformer.transformedValue(AwfulSettings.shared()) as? String
+                
+            case .Slider:
+                break
             }
         } else if setting["ShowValue"] as? Bool == true {
             cell.textLabel?.text = setting["Title"] as? String
@@ -234,6 +247,11 @@ final class SettingsViewController: TableViewController {
         if settingType == .OnOff {
             guard let switchView = cell.accessoryView as? UISwitch else { fatalError("setting should have a UISwitch accessory") }
             switchView.awful_setting = setting["Key"] as? String
+            
+            // Add overriding settings
+            if switchView.awful_setting == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String {
+                switchView.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
+            }
         }
         
         if settingType == .Stepper {
@@ -243,11 +261,21 @@ final class SettingsViewController: TableViewController {
             cell.textLabel?.awful_settingFormatString = setting["Title"] as? String
         }
         
+        if settingType == .Slider {
+            guard let slider = (cell as! SettingsSliderCell).slider as UISlider? else { fatalError("setting should have a UISlider accessory") }
+            slider.awful_setting = setting["Key"] as? String
+            
+            // Add overriding settings
+            if slider.awful_setting == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
+                slider.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
+            }
+            
+        }
         switch settingType {
         case .Button, .Disclosure, .DisclosureDetail:
             cell.selectionStyle = .blue
             
-        case .Immutable, .OnOff, .Stepper:
+        case .Immutable, .OnOff, .Stepper, .Slider:
             cell.selectionStyle = .none
         }
         
@@ -349,5 +377,9 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section]["Explanation"] as? String
+    }
+    
+    func awfulSettingsDidChange(_ notification: Notification) {
+        
     }
 }

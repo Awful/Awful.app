@@ -132,6 +132,14 @@ BOOL_PROPERTY(darkTheme, setDarkTheme)
 
 BOOL_PROPERTY(autoDarkTheme, setAutoDarkTheme)
 
+- (double)autoThemeThreshold {
+    return [self[AwfulSettingsKeys.autoThemeThreshold] doubleValue];
+}
+
+- (void)setAutoThemeThreshold:(double)autoThemeThreshold {
+    self[AwfulSettingsKeys.autoThemeThreshold] = @(autoThemeThreshold);
+}
+
 BOOL_PROPERTY(pullForNext, setPullForNext)
 
 struct {
@@ -351,6 +359,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .confirmNewPosts = @"confirm_before_replying",
     .darkTheme = @"dark_theme",
     .autoDarkTheme = @"auto_dark_theme",
+    .autoThemeThreshold = @"auto_theme_threshold",
     .pullForNext = @"pull_for_next",
     .username = @"username",
     .userID = @"userID",

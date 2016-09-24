@@ -215,16 +215,16 @@
 			<string>Themes</string>
 			<key>Settings</key>
 			<array>
-                <dict>
-                    <key>Title</key>
-                    <string>Automatic Dark Mode</string>
-                    <key>Type</key>
-                    <string>Switch</string>
-                    <key>Default</key>
-                    <false/>
-                    <key>Key</key>
-                    <string>auto_dark_theme</string>
-                </dict>
+				<dict>
+					<key>Title</key>
+					<string>Automatic Dark Mode</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>auto_dark_theme</string>
+				</dict>
 				<dict>
 					<key>Title</key>
 					<string>Dark Mode</string>
@@ -234,6 +234,20 @@
 					<false/>
 					<key>Key</key>
 					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Threshold</string>
+					<key>Type</key>
+					<string>Slider</string>
+					<key>Minimum</key>
+					<real>0</real>
+					<key>Maximum</key>
+					<integer>100</integer>
+					<key>Default</key>
+					<integer>40</integer>
+					<key>Key</key>
+					<string>auto_theme_threshold</string>
 				</dict>
 				<dict>
 					<key>Title</key>

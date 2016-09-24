@@ -280,17 +280,24 @@ private extension AppDelegate {
         guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
         if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
             guard let window = window else { return }
-            let snapshot = window.snapshotView(afterScreenUpdates: false)
-            window.addSubview(snapshot!)
+            if let snapshot = window.snapshotView(afterScreenUpdates: false) {
+                window.addSubview(snapshot)
+                themeDidChange()
+                
+                UIView.transition(from: snapshot, to: window, duration: 0.2, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: { (completed) in
+                    snapshot.removeFromSuperview()
+                })
+            } else {
+                themeDidChange()
+            }
             
-            themeDidChange()
             
-            UIView.transition(from: snapshot!, to: window, duration: 0.2, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: { (completed) in
-                snapshot?.removeFromSuperview()
-            })
+            
         } else if key == AwfulSettingsKeys.customBaseURL.takeUnretainedValue() as String {
             updateClientBaseURL()
         } else if key == AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String {
+            NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        } else if key == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
             NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
         }
     }
@@ -298,10 +305,11 @@ private extension AppDelegate {
     @objc func brightnessDidChange(note: NSNotification) {
         if AwfulSettings.shared().autoDarkTheme {
             if let screen: UIScreen = note.object as? UIScreen {
+                let threshold = CGFloat(AwfulSettings.shared().autoThemeThreshold / 100.0)
                 // TODO: Replace threshold with user-set preference
-                if screen.brightness > 0.4 && AwfulSettings.shared().darkTheme {
+                if screen.brightness > threshold && AwfulSettings.shared().darkTheme {
                     AwfulSettings.shared().darkTheme = false
-                } else if screen.brightness <= 0.4 && !AwfulSettings.shared().darkTheme {
+                } else if screen.brightness <= threshold && !AwfulSettings.shared().darkTheme {
                     AwfulSettings.shared().darkTheme = true
                 }
             }

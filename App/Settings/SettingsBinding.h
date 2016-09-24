@@ -10,6 +10,9 @@
  * Binds a relevant property to the AwfulSettings key.
  */
 @property (copy, nonatomic) NSString *awful_setting;
+@property (copy, nonatomic) NSArray *awful_overridingSettings;
+
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey;
 
 @end
 
@@ -36,3 +39,11 @@
  * Binds the `on` property to the `boolValue` of the `settingsKey`.
  */
 @interface UISwitch (AwfulSettingsBinding) <SettingsBindable> @end
+
+
+/**
+ * Binds the `value` property to the `double` value of the `settingsKey`.
+ *
+ * In addition, if the setting describes a `Minimum` and/or `Maximum`, those values are set to the `minimumValue` and `maximumValue` properties.
+ */
+@interface UISlider (AwfulSettingsBinding) <SettingsBindable> @end
