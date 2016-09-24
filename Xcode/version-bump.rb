@@ -27,7 +27,7 @@ def set_version(new_version)
   new_major = new_version / 10000
   short_version = "#{new_major}.#{new_minor}"
   
-  ["Info.plist", "../Smilies/Keyboard/Info.plist"].each do |plist|
+  ["Info.plist", "../Smilies/Keyboard/Info.plist", "../Smilies/Stickers/Info.plist"].each do |plist|
     buddy("Set :CFBundleShortVersionString #{short_version}", plist)
     buddy("Set :CFBundleVersion #{new_version}", plist)
   end

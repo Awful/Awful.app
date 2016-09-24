@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+stickers="$root/Smilies/Stickers/Stickers.xcassets"
 
-find "$root/Smilies/Stickers/Stickers.xcassets" \( -iname "*.gif" -o -iname "*.jpg" -o -iname "*.png" \) -exec \
-  convert {} -coalesce -bordercolor none -border 3x3 -resize 300% {} \;
+find "$stickers" -iname "*.gif" -exec \
+  gifsicle --batch --scale 3 -O3 {} \;
+
+find "$stickers" -iname "*.png" -exec \
+  convert {} -resize 300% {} \;
