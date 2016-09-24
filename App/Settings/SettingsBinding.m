@@ -41,7 +41,6 @@
 
 - (void)settingsDidChange:(NSNotification *)notification
 {
-    NSLog(@"Setting changed");
     NSString *key = notification.userInfo[AwfulSettingsDidChangeSettingKey];
     if ([key isEqualToString:self.settingsKey]) {
         [self sendAction];
@@ -248,7 +247,6 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_settingDidChange:(NSNumber *)newValue
 {
-    NSLog(@"Changing switch setting");
     self.on = newValue.boolValue;
 }
 
