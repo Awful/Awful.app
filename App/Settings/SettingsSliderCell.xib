@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A322" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,7 +11,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="USL-U7-cGb">
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" minimumValueImage="brightness-down" maximumValueImage="brightness-up" translatesAutoresizingMaskIntoConstraints="NO" id="USL-U7-cGb">
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="tIw-4N-sSx"/>
                     </constraints>
@@ -30,7 +30,11 @@
             <connections>
                 <outlet property="slider" destination="USL-U7-cGb" id="Thc-Nb-XrT"/>
             </connections>
-            <point key="canvasLocation" x="193" y="-28"/>
+            <point key="canvasLocation" x="2" y="-7"/>
         </view>
     </objects>
+    <resources>
+        <image name="brightness-down" width="25" height="25"/>
+        <image name="brightness-up" width="25" height="25"/>
+    </resources>
 </document>
