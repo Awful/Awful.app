@@ -32,7 +32,7 @@ final class ThemePicker: UIControl {
         button.addTarget(self, action: #selector(didTapThemeButton), for: .touchUpInside)
         let index = min(index, subviews.count)
         insertSubview(button, at: index)
-        buttons.append(button)
+        buttons.insert(button, at: index)
         
         invalidateIntrinsicContentSize()
         setNeedsLayout()
