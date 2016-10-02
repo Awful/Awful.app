@@ -77,7 +77,7 @@ final class ReplyWorkspace: NSObject {
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
             kvoController.observe(draft, keyPath: "thread.title", options: [.initial, .new]) { [unowned self] _, _, change in
-                self.compositionViewController.title = change?[NSKeyValueChangeKey.newKey] as? String
+                self.compositionViewController.title = change?[NSKeyValueChangeKey.newKey.rawValue] as? String
             }
             
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
