@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2333a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -56,9 +56,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Scale Text 100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
-                    <frame key="frameInset" minX="8" minY="105" width="125" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scale Text 100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
@@ -143,14 +141,18 @@
                 <constraint firstItem="mYe-FY-VF2" firstAttribute="top" secondItem="Tqs-Zr-NaN" secondAttribute="bottom" constant="16" id="6qF-yQ-5HR"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="79o-Fw-uc2"/>
                 <constraint firstAttribute="trailing" secondItem="kv2-c9-5sj" secondAttribute="trailing" constant="8" id="7t1-Mx-pP2"/>
+                <constraint firstItem="kv2-c9-5sj" firstAttribute="centerY" secondItem="xqX-OM-5FZ" secondAttribute="centerY" id="7zf-zM-tFq"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="8hj-Ve-cu5"/>
                 <constraint firstAttribute="trailing" secondItem="xMB-Ac-jjY" secondAttribute="trailing" constant="8" id="CIm-QY-Gsd"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="EER-iy-1xh"/>
                 <constraint firstAttribute="trailing" secondItem="Tqs-Zr-NaN" secondAttribute="trailing" constant="8" id="EdS-Dz-7NA"/>
+                <constraint firstItem="Xho-0N-tKL" firstAttribute="centerY" secondItem="09i-VH-Faf" secondAttribute="centerY" id="HCE-Sv-ApF"/>
                 <constraint firstAttribute="bottom" secondItem="mYe-FY-VF2" secondAttribute="bottom" constant="20" id="Kae-og-gOZ"/>
                 <constraint firstAttribute="trailing" secondItem="PWM-Qs-8gj" secondAttribute="trailing" id="LDb-Ns-qD6"/>
                 <constraint firstItem="jBq-go-frF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Xcw-hW-Cb2"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="l4w-sl-F1e" secondAttribute="centerY" id="Y94-YE-Utn"/>
+                <constraint firstItem="Tqs-Zr-NaN" firstAttribute="centerY" secondItem="PtM-NY-3PO" secondAttribute="centerY" id="Yni-mW-tl0"/>
+                <constraint firstItem="CyB-GB-e47" firstAttribute="leading" secondItem="09i-VH-Faf" secondAttribute="leading" id="bh2-oM-EUr"/>
                 <constraint firstItem="PtM-NY-3PO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="c2q-Da-jwm"/>
                 <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="5" id="cZu-ef-6a4"/>
                 <constraint firstAttribute="trailing" secondItem="mYe-FY-VF2" secondAttribute="trailing" constant="8" id="deU-3H-5AK"/>
@@ -160,9 +162,9 @@
                 <constraint firstItem="xMB-Ac-jjY" firstAttribute="top" secondItem="Xho-0N-tKL" secondAttribute="bottom" constant="16" id="jnR-a0-vyv"/>
                 <constraint firstItem="rif-rC-wd0" firstAttribute="centerY" secondItem="xqX-OM-5FZ" secondAttribute="centerY" id="kib-cp-qOn"/>
                 <constraint firstAttribute="trailing" secondItem="Xho-0N-tKL" secondAttribute="trailing" constant="8" id="ljC-op-rew"/>
+                <constraint firstItem="Xho-0N-tKL" firstAttribute="top" secondItem="kv2-c9-5sj" secondAttribute="bottom" constant="18.5" id="mIg-9m-Uh5"/>
                 <constraint firstItem="CyB-GB-e47" firstAttribute="leading" secondItem="jBq-go-frF" secondAttribute="leading" id="rAO-Qu-QWH"/>
                 <constraint firstItem="PWM-Qs-8gj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="raR-G9-Bjq"/>
-                <constraint firstItem="PtM-NY-3PO" firstAttribute="top" secondItem="CyB-GB-e47" secondAttribute="bottom" constant="26" id="rbd-zE-gVU"/>
                 <constraint firstItem="CyB-GB-e47" firstAttribute="centerY" secondItem="xMB-Ac-jjY" secondAttribute="centerY" id="zJF-XG-8kr"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
