@@ -390,6 +390,8 @@ Medium priority:
 			cite: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=232#post464044369
 	- Links opening but not navigating in Awful Browser.
 		"I've been getting this since updating to iOS 10 also. I'm on a 6 Plus, using the "open in Awful's browser" option. Down for everyone and I should switch over to Safari until it's fixed, or just an issue for me?" @iphoneplus @ios10
+	- Embedded deleted tweets wreck embedding on same page for non-deleted tweets.
+		"I have an issue with how the app embeds tweets. The USPol thread contains many posts that are ill-advised tweets that later get taken down. See, for example, page 568 of this month's thread: https://forums.somethingawful.com/showthread.php?threadid=3788694&perpage=40&pagenumber=568. Deleted tweets don't embed properly (duh), but they also break the embedding of undeleted tweets on the same page. The text of the tweets loads, but the final product isn't converted into a tweet-looking box, nor are any images/videos properly loaded. Edit: now with img! https://i.imgur.com/5Lp6qLg.png" 
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
@@ -679,6 +681,10 @@ New features:
 		"Would it be possible to have it so that pressing the image once it's loaded makes it a link again? Right now I have to toggle images on and off again and that loses my place on the page."
 	- Allow filtering out six-hour probations from the Leper's Colony.
 		"Is it possible to filter out the six hour probations in the leper tab at some point? It can be entertaining to browse but the six hour probations have no value."
+	- Change BYOB stylesheet. (Whatever that means.)
+		"I know you can change the byob style sheet browsing on pc, but is that possible in the app?"
+	- App-specific orientation lock.
+		"Is there some way to add app specific rotation lock ala kindle or pocket?"
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -894,3 +900,5 @@ Needs verification:
 		Still a thing?
 	- Viewing own profile comes up blank.
 		"anyone else have an issue on the app when trying to view your own profile? not that it matters, but my own profile loads up as a blank page. It's for the best, probably" @iphone6s
+	- Odd queueing/caching behaviour with multiple pages in a forum.
+		"after loading a few extra pages in a forum, sometimes Awful will attempt to load that many pages again on subsequent visits to the forum. Oftentimes the app will freeze while it tries loading everything, but still buffer any touch events you might be giving it so it loads everything simultaneously. Doing a pull to refresh will sometimes collapse it back down to one page temporarily, and logging out and back in resets the page counter. iphone se 3.17 but it happened to my old 5s as well" @awful3.17
