@@ -276,7 +276,6 @@
 		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CBBAAB71D949EE200A847EC /* Stickers.xcassets */; };
-		1CBBAABC1D949EE200A847EC /* Smilies Stickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
@@ -432,13 +431,6 @@
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
 		};
-		1CBBAABA1D949EE200A847EC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1CBBAAB41D949EE000A847EC;
-			remoteInfo = "Smilies Stickers";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -471,7 +463,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1CBBAABC1D949EE200A847EC /* Smilies Stickers.appex in Embed App Extensions */,
 				1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -1917,7 +1908,6 @@
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 				1C66A9FB19DD393A001B9A41 /* PBXTargetDependency */,
-				1CBBAABB1D949EE200A847EC /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -2729,11 +2719,6 @@
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
-		};
-		1CBBAABB1D949EE200A847EC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1CBBAAB41D949EE000A847EC /* Smilies Stickers */;
-			targetProxy = 1CBBAABA1D949EE200A847EC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
