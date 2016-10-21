@@ -246,12 +246,12 @@ function interestingElementsAtPoint(x, y) {
     }
     
     var iframe = elementAtPoint.closest('iframe');
-    if (iframe.length && isSpoiled(iframe)) {
+    if (iframe.length > 0 && isSpoiled(iframe) && $(iframe).attr('src').length > 0) {
         items.spoiledVideo = {
-        rect: rectOfElement(iframe),
-        URL: iframe.attr('src')
+            rect: rectOfElement(iframe),
+            URL: iframe.attr('src')
         };
-    };
+    }
     
     return items;
 }
