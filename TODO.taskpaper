@@ -19,8 +19,14 @@ High priority:
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
 				"Come to think of it, yeah. It happens not infrequently there. Some others too."
 		"Just had it happen in the cute thread in PYF." (posted 2016-Sept-03)
+		"I've seen crashes on small threads too with a lot of embeds - the Catie Shaw one was basically unreadable." (posted 2016-Oct-07)
 	- Can scroll posts page horizontally.
 		"With tap to play gifs turned on, there are so many placeholders in this post that they overflow the bounds of the post area and make it so you can drag the whole thread of posts left and right http://forums.somethingawful.com/showthread.php?threadid=3771497&userid=0&perpage=40&pagenumber=226#post464190151" @ios9.3.6 @iphone6 @awful3.17
+	- Lots of crashing when coming back to foreground.
+		Unclear whether evicted from memory.
+		Cache pruner?
+	- Tapping an ignored post loads an unrelated post.
+		"I shamefully put someone on ignore a while back that I totally shouldn't have, but since I almost exclusively use the app (where you can't un-ignore someone, but their posts show up inline with one click without loading a separate page) it wasn't a huge deal. Except right now after upgrading to iOS 10 when I click on an ignored post it actually loads a completely random post from a completely random user instead."
 Medium priority:
 	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
 		"If you "edit" a post then change your mind and decide to reply and make a new one it still only edits the original post."
@@ -392,6 +398,8 @@ Medium priority:
 		"I've been getting this since updating to iOS 10 also. I'm on a 6 Plus, using the "open in Awful's browser" option. Down for everyone and I should switch over to Safari until it's fixed, or just an issue for me?" @iphoneplus @ios10
 	- Embedded deleted tweets wreck embedding on same page for non-deleted tweets.
 		"I have an issue with how the app embeds tweets. The USPol thread contains many posts that are ill-advised tweets that later get taken down. See, for example, page 568 of this month's thread: https://forums.somethingawful.com/showthread.php?threadid=3788694&perpage=40&pagenumber=568. Deleted tweets don't embed properly (duh), but they also break the embedding of undeleted tweets on the same page. The text of the tweets loads, but the final product isn't converted into a tweet-looking box, nor are any images/videos properly loaded. Edit: now with img! https://i.imgur.com/5Lp6qLg.png" 
+	- Page numbers in posts page toolbar stay small after orientation changes.
+		"Have a thread open in portrait orientation. Tap a link, rotate to landscape and back to portrait, and then close the in-app browser sheet. When you come back to the thread, the page numbers at the bottom are in a smaller font. This cosmetic oddity goes away if you load a new page or go back to your bookmarks, etc. Sticks around if you merely reload the current page though."
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
