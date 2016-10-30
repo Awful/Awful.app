@@ -55,19 +55,19 @@ PODS:
   - WebViewJavascriptBridge (4.1.4)
 
 DEPENDENCIES:
-  - AFNetworking (= 2.5.2)
-  - ARChromeActivity (= 1.0.6)
-  - FLAnimatedImage (= 1.0.2)
-  - GRMustache (= 7.3.2)
-  - HTMLReader (= 1.0.1)
-  - ImgurAnonymousAPIClient (= 0.3.2)
-  - JLRoutes (= 1.5.1)
-  - KVOController (= 1.0.3)
-  - MRProgress/Overlay (= 0.8.0)
+  - AFNetworking (~> 2.0)
+  - ARChromeActivity (~> 1.0.6)
+  - FLAnimatedImage (~> 1.0)
+  - GRMustache (~> 7.3.2)
+  - HTMLReader (~> 1.0)
+  - ImgurAnonymousAPIClient (~> 0.3)
+  - JLRoutes (~> 1.5)
+  - KVOController (~> 1.0)
+  - MRProgress/Overlay (~> 0.8.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
-  - TUSafariActivity (= 1.0.4)
-  - WebViewJavascriptBridge (= 4.1.4)
+  - TUSafariActivity (~> 1.0)
+  - WebViewJavascriptBridge (~> 4.1)
 
 EXTERNAL SOURCES:
   PSMenuItem:
@@ -101,6 +101,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: c2bf71871e6be88ff342b01ab3f34e833f674dd6
+PODFILE CHECKSUM: 1c1616bae59974f6f8e61e2efce5d75e59bab8c8
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

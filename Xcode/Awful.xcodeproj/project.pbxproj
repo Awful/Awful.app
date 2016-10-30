@@ -1984,6 +1984,7 @@
 				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -2202,7 +2203,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env bash";
+			shellPath = /bin/bash;
 			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../App\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Profiles/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 		360DD18118D355D46EC7742B /* [CP] Embed Pods Frameworks */ = {
@@ -2232,7 +2233,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		58FC1CD8E73DDDA14A520B6B /* [CP] Check Pods Manifest.lock */ = {
@@ -2247,7 +2248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		668D09585E84BF2285DCBD7E /* [CP] Copy Pods Resources */ = {
@@ -2322,7 +2323,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 		};
 		9A76259C1D52DE28DC87E457 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2336,7 +2337,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		9E93F8ADCC412D5641BE9475 /* [CP] Check Pods Manifest.lock */ = {
@@ -2351,7 +2352,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A23C194590335D8E6BCAC3AB /* [CP] Copy Pods Resources */ = {
@@ -2381,7 +2382,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		FB2E294B8B502DF72F9AE6E3 /* [CP] Embed Pods Frameworks */ = {
@@ -2854,7 +2855,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2878,7 +2878,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2898,7 +2897,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
 				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
 			name = Debug;
@@ -2915,7 +2913,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
 				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
 			name = Release;
@@ -3241,7 +3238,6 @@
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3273,7 +3269,6 @@
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3321,6 +3316,7 @@
 				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -3368,6 +3364,7 @@
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WARNING_CFLAGS = (
