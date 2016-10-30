@@ -1,19 +1,11 @@
 High priority:
-	- Twitter embeds can hijack the posts web view when tapping bits that aren't the tweet date. @twitter @done(2016-09-05)
-		"If you tap on the embedded tweet, it replaces the entire page of the thread instead of opening in the browser sheet, which does let you see replies or whatevz but less useful if you want to keep reading the thread after the tweet. As far as I can tell, you can't get back to the current page of posts without reloading the page."
-		"That leads to another bug - the twitter page loads in the main view instead of pushing another viewcontroller so you lose your place in the thread"
-		"Please add a way to go back to the thread page that you were viewing after clicking on embedded tweets."
-	- SA Mart threads post with the wrong secondary tag. @done(2016-09-05)
-		"In SA Mart put Buy as the title and Sell came out. This is the second time. I made triple sure the B was highlighted and it showed up in the preview as "B" and when it posted it came out as an "S". I use the iPhone app and have an iPhone 6s Plus." @iphoneplus
-		"I don;t [sic] know if this is documented, but every time I make an SA Mart thread, the category is flipped. As in, if I post as buying from within the app, it will be selling and vice versa."
-	- The Film Dump isn't showing any thread tags. @done(2016-09-05)
-	- Some links fail to "Open in Safari" but are fine in Awful Browser. @done(2016-09-05)
-		"If I tap the link in the post below, it opens fine in awful browser. If I long-tap and open in safari, I get a 404. Something messing up the url escaping I guess? https://forums.somethingawful.com/showthread.php?threadid=3548182&perpage=40&pagenumber=760#post458545691"
-			URL is https://www.se.rit.edu/~tabeec/RIT_441/Resources_files/How%20To%20Write%20Unmaintainable%20Code.pdf
+	- Add (well, re-add) Crashlytics. iTunes Connect reports aren't cutting it.
+		Also maybe turn on Answers and start tracking a few noncreepy analytics (e.g. missing thread tags).
 	- Don't freeze on or endlessly bounce the pull-to-refresh indicator.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
 		"I get a bug when I refresh my bookmarked threads only on my iPad Pro. The smiley face icon to indicate it's refreshing will keep bouncing forever until I terminate the app. Works fine on my iPhone though."
 		"Still getting landscape freeze on 3.17 on Bookmarks screen. Happens after doing a pull to reload."
+		"Just updated to 3.18, that screen rotation bug is still there."
 	- Crash in posts page, possibly on pages with embedded tweets.
 		"Still having the crashing problems. Maybe a memory leak. Seems like it happens sometimes on pages with tweet embeds?"
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
@@ -27,7 +19,24 @@ High priority:
 		Cache pruner?
 	- Tapping an ignored post loads an unrelated post.
 		"I shamefully put someone on ignore a while back that I totally shouldn't have, but since I almost exclusively use the app (where you can't un-ignore someone, but their posts show up inline with one click without loading a separate page) it wasn't a huge deal. Except right now after upgrading to iOS 10 when I click on an ignored post it actually loads a completely random post from a completely random user instead."
+	- More complaints than usual about used storage space, is cache pruning working?
+		Not sure it ever worked all that well. Should think about how to do this properly, then attempt to implement that plan.
+		Add a "clear cache" button to Settings?
+			"given that logging out and logging back in to clear the cache is a semi-common troubleshooting step here in this thread, would it be worth it to add a "Clear Cache", probz with a confirmation dialog, to the Settings screen?"
+	- Semi-frequent crashes refreshing bookmarks. @awful3.18 @ios9
+		"I'm getting semi-frequent crashes on refreshing bookmarks. Can't seem to replicate on command though. Latest App Store version of app, iOS 9 (latest version)"
+	- Safari view controller often, but with no obvious pattern, fails to load; just shows blank.
+		SafariViewController is pretty fire and forget. We're not stupidly mucking with it are we?
+		"Links still don't work (despite the latest update) on my iPhone 6 Plus. It just shows a blank window and "website name" as the title whenever I click on a link."
+	- Can't post a photo edited with the iOS Markup extension thing.
+		"For some reason embedding images via the long press + from album wasn't working earlier." "I figured it out. I was trying to post a photo that was edited with Apple's new Markup thing. Couldn't work. When I took a screenshot of the marked up image, it worked perfectly."
+	- Crash attempting to view/refresh a thread with no active data connection.
+		"Don't know if this is known because it might not affect many people, but I've noticed if there's no active data stream and you try to refresh or view a thread, the app will crash."
+	- Stop saying "archives required" when the forums are fucked/down.
+		Very confusing!
 Medium priority:
+	- Does the smilie keyboard's "turn on full access" note not show up anymore?
+		"I've never been able to get the keyboard to work. I have it enabled, but I'm unable to select an emoji to use in a text. Is there some step I'm missing? Can I work with iPhone? Up to date os" … "Edit: I had to give keyboard full access to get it working properly. Now it's working just fine."
 	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
 		"If you "edit" a post then change your mind and decide to reply and make a new one it still only edits the original post."
 		"I went to a post of mine intending to quote it but I hit Edit instead. When I backed out and then went to Quote, the quote got tacked on to the original post as an edit, it didn't make a new post."
@@ -400,6 +409,11 @@ Medium priority:
 		"I have an issue with how the app embeds tweets. The USPol thread contains many posts that are ill-advised tweets that later get taken down. See, for example, page 568 of this month's thread: https://forums.somethingawful.com/showthread.php?threadid=3788694&perpage=40&pagenumber=568. Deleted tweets don't embed properly (duh), but they also break the embedding of undeleted tweets on the same page. The text of the tweets loads, but the final product isn't converted into a tweet-looking box, nor are any images/videos properly loaded. Edit: now with img! https://i.imgur.com/5Lp6qLg.png" 
 	- Page numbers in posts page toolbar stay small after orientation changes.
 		"Have a thread open in portrait orientation. Tap a link, rotate to landscape and back to portrait, and then close the in-app browser sheet. When you come back to the thread, the page numbers at the bottom are in a smaller font. This cosmetic oddity goes away if you load a new page or go back to your bookmarks, etc. Sticks around if you merely reload the current page though."
+	- Username changes aren't reflected quickly in-app.
+		"if your username is changed while you remain logged into Awful app the whole time, new quotes of your posts are not highlighted in purple; old quotes attributed to your old username are still highlighted instead. Similarly when you preview a new post, it still displays your old username atop the preview."
+	- Unhelpful long-press on embedded tweets.
+		"if you long-press on a link within an embedded tweet, it will first pop up the useless "Copy URL/Cancel" buttons where the only URL copied is <https://forums.somethingawful.com>, as I've previously reported. But now if you keep pressing for a fraction of a second longer, it will pop up a new and exciting and partially useless set of buttons! These are "Copy/Open in Safari/Share.../Cancel": "Copy" seems to do literally nothing, "Share..." likewise (since I guess there's already the first set of buttons on the screen mb preventing the Sharing sheet from appearing?), and I've never tried "Open in Safari" so it might work!"
+		Example post: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=237#post465566860
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
