@@ -1,5 +1,16 @@
-# Big, pointless HTMLReader cruft.
-/Carthage/Checkouts/HTMLReader/Tests/html5lib
+# Build artifact folder
+/build/
+
+# Bundler local install
+/Vendor/bundle/
+/.bundle/
+
+# Fastlane crud
+/fastlane/README.md
+/fastlane/report.xml
+
+# Fastlane dotenv, for dev account-specific config (e.g. Crashlytics API key)
+/fastlane/.env
 
 # App Group and Entitlements private or auto-generated files
 app-group

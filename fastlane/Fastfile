@@ -1,0 +1,142 @@
+default_platform :ios
+XCODE_PROJECT = File.expand_path("../Xcode/Awful.xcodeproj")
+
+before_all do
+  fastlane_version "1.106.2"
+  xcversion(version: "~> 8.0")
+  
+  DEFAULT_ENV = {
+    "FL_BUILD_NUMBER_PROJECT" => XCODE_PROJECT,
+    "FL_VERSION_NUMBER_PROJECT" => XCODE_PROJECT,
+  }
+  ENV.update(DEFAULT_ENV) { |name, old_val, new_val| old_val.nil? ? new_val : old_val }
+end
+
+
+error do |lane, exception, options|
+  
+  first_two_lines = exception.message.split("\n").slice(0, 2)
+  notification(
+    subtitle: "Awful Build Error",
+    message: first_two_lines.join(" "),
+  )
+end
+
+
+desc "Bump build number, then make and upload a beta build to TestFlight"
+desc ""
+desc "Options:"
+desc "  minor:true     – bump the minor version number too"
+desc "  skip_bump:true – don't bump the build number"
+lane :beta do |options|
+  
+  did_change_version = false
+  
+  if options[:minor]
+    bump_version_number
+    did_change_version = true
+  end
+  
+  unless options[:skip_bump]
+    bump_build_number
+    did_change_version = true
+  end
+  
+  current_version = get_version_number
+  build_number = get_build_number.to_i
+  
+  if did_change_version
+    commit_version_bump(
+      message: "Bump version to #{current_version} (#{build_number}).",
+      xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
+    )
+  end
+
+  xcargs = []  
+  crashlytics_api_token = ENV["CRASHLYTICS_API_TOKEN"]
+  if crashlytics_api_token
+    xcargs << %Q[CRASHLYTICS_API_TOKEN="#{crashlytics_api_token}"]
+  end
+  
+  gym(
+    workspace: "Awful.xcworkspace",
+    scheme: "Awful",
+    configuration: "Release",
+    output_directory: "build/",
+    output_name: "Awful",
+    xcargs: xcargs.join(" "),
+  )
+  
+  if crashlytics_api_key
+    upload_symbols_to_crashlytics(
+      api_token: crashlytics_api_key,
+      distribute_external: true,
+    )
+  end
+  
+  if ENV["PILOT_USERNAME"]
+    changelog = prompt(
+      text: "Change log: ",
+      multi_line_end_keyword: "END"
+    )
+    
+    testflight(changelog: changelog)
+  end
+  
+  add_git_tag(
+    tag: "#{current_version}-beta#{build_number / 100}",
+    force: true,
+  )
+  
+  push_to_git_remote
+  
+  notification(
+    subtitle: "Job Done",
+    message: "Awful has been sent to testers",
+  )
+end
+
+
+desc "Returns version number components [major, minor] as an array of integers"
+private_lane :get_version_number_components do |options|
+  
+  parts = get_version_number
+    .split(".")
+    .map(&:to_i)
+end
+
+
+desc "Updates build number based on current major/minor version plus an increment"
+private_lane :bump_build_number do |options|
+  
+  major, minor = get_version_number_components
+  current_build_number = get_build_number.to_i
+  
+  lowest_matching_build_number = major * 10000 + minor * 100
+  
+  if current_build_number < lowest_matching_build_number
+    increment_build_number(build_number: lowest_matching_build_number.to_s)
+  else
+    increment_build_number
+  end
+end
+
+
+desc "Increments part of the version number by one"
+desc ""
+desc "Options:"
+desc "  major:true – bumps the major version and sets minor to 0"
+private_lane :bump_version_number do |options|
+  
+  major, minor = get_version_number_components
+  
+  if options[:major]
+    major += 1
+    minor = 0
+  else
+    minor += 1
+  end
+  
+  new_version = [major, minor].join(".")
+  increment_version_number(version_number: new_version)
+end
