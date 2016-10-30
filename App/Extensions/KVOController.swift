@@ -18,7 +18,7 @@ extension FBKVOController {
     */
     func observe<Observee: AnyObject>(_ object: Observee, keyPath: String, options: NSKeyValueObservingOptions = [], typedBlock: @escaping (Observee, Change) -> Void) {
         observe(object, keyPath: keyPath, options: options) { [unowned object] _, _, change in
-            typedBlock(object, change!)
+            typedBlock(object, change)
         }
     }
     
@@ -33,7 +33,7 @@ extension FBKVOController {
     */
     func observe<Observee: AnyObject>(_ object: Observee, keyPaths: [String], options: NSKeyValueObservingOptions = [], typedBlock: @escaping (Observee, Change) -> Void) {
         observe(object, keyPaths: keyPaths, options: options) { [unowned object] _, _, change in
-            typedBlock(object, change!)
+            typedBlock(object, change)
         }
     }
 }

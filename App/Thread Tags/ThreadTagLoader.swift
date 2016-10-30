@@ -64,7 +64,7 @@ final class ThreadTagLoader: NSObject {
         super.init()
         
         let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer?.acceptableContentTypes = ["text/plain"]
+        responseSerializer.acceptableContentTypes = ["text/plain"]
         session.responseSerializer = responseSerializer
     }
     
@@ -178,7 +178,7 @@ final class ThreadTagLoader: NSObject {
             group.enter()
             
             guard let URL = NSURL(string: (relativePath as NSString).appendingPathComponent(threadTagName), relativeTo: session.baseURL) else { continue }
-            guard let request = try? session.requestSerializer.request(withMethod: "GET", urlString: URL.absoluteString, parameters: nil, error: ()) else { continue }
+            let request = session.requestSerializer.request(withMethod: "GET", urlString: URL.absoluteString!, parameters: nil, error: nil)
             session.downloadTask(with: request as URLRequest, progress: nil, destination: { (targetPath, response) -> URL in
                 return self.cacheFolder.appendingPathComponent(threadTagName, isDirectory: false)
                 

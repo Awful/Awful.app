@@ -38,7 +38,7 @@ final class AvatarLoader: NSObject {
             request.setCacheHeadersWithResponse(oldResponse)
         }
         
-        sessionManager.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, URLResponse) -> URL! in
+        sessionManager.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, URLResponse) -> URL? in
             guard let
                 response = URLResponse as? HTTPURLResponse
                 , response.statusCode >= 200 && response.statusCode < 300
@@ -63,9 +63,7 @@ final class AvatarLoader: NSObject {
             return destinationURL
             
             }, completionHandler: { (response, filePath, error) in
-                if let response = response {
-                    NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
-                }
+                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
                 
                 if
                     let error = error,

@@ -28,7 +28,7 @@ final class AwfulURLRouter: NSObject {
         
         routes.addRoute("/forums/:forumID", handler: { [weak self] (parameters) -> Bool in
             guard let
-                forumID = parameters?["forumID"] as? String,
+                forumID = parameters["forumID"] as? String,
                 let context = self?.managedObjectContext
                 else { return false }
             let key = ForumKey(forumID: forumID)
@@ -41,15 +41,15 @@ final class AwfulURLRouter: NSObject {
         })
         
         routes.addRoute("/threads/:threadID/pages/:page", handler: { [weak self] (parameters) -> Bool in
-            return self?.showThread(withParameters: parameters!) ?? false
+            return self?.showThread(withParameters: parameters) ?? false
         })
         
         routes.addRoute("/threads/:threadID", handler: { [weak self] (parameters) -> Bool in
-            return self?.showThread(withParameters: parameters!) ?? false
+            return self?.showThread(withParameters: parameters) ?? false
         })
         
         routes.addRoute("/posts/:postID", handler: { [weak self] (parameters) -> Bool in
-            guard let postID = parameters?["postID"] as? String else { return false }
+            guard let postID = parameters["postID"] as? String else { return false }
             let key = PostKey(postID: postID)
             guard let context = self?.managedObjectContext else { return false }
             if let
@@ -94,7 +94,7 @@ final class AwfulURLRouter: NSObject {
             guard let inbox = self?.selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
             _ = inbox.navigationController?.popToViewController(inbox, animated: false)
             
-            guard let messageID = parameters?["messageID"] as? String else { return false }
+            guard let messageID = parameters["messageID"] as? String else { return false }
             let key = PrivateMessageKey(messageID: messageID)
             guard let context = self?.managedObjectContext else { return false }
             if let message = PrivateMessage.objectForKey(objectKey: key, inManagedObjectContext: context) as? PrivateMessage {
@@ -138,7 +138,7 @@ final class AwfulURLRouter: NSObject {
         })
         
         routes.addRoute("/users/:userID", handler: { [weak self] (parameters) -> Bool in
-            guard let userID = parameters?["userID"] as? String else { return false }
+            guard let userID = parameters["userID"] as? String else { return false }
             self?.fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
@@ -154,7 +154,7 @@ final class AwfulURLRouter: NSObject {
         })
         
         routes.addRoute("/banlist/:userID", handler: { [weak self] (parameters) -> Bool in
-            guard let userID = parameters?["userID"] as? String else { return false }
+            guard let userID = parameters["userID"] as? String else { return false }
             self?.fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)

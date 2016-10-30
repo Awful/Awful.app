@@ -29,7 +29,7 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
         super.init(coder: coder)
     }
     
-    override public func httpRequestOperation(with request: URLRequest!, success: ((AFHTTPRequestOperation?, Any?) -> Swift.Void)!, failure: ((AFHTTPRequestOperation?, Error?) -> Swift.Void)!) -> AFHTTPRequestOperation! {
+    override public func httpRequestOperation(with request: URLRequest, success: ((AFHTTPRequestOperation, Any) -> Void)? = nil, failure: ((AFHTTPRequestOperation, Error) -> Void)? = nil) -> AFHTTPRequestOperation {
         let operation = super.httpRequestOperation(with: request as URLRequest!, success: success, failure: failure)
         
         /*
@@ -40,9 +40,9 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
             This came up when using Awful from some public wi-fi that redirected to a login page. Six hours and a different network later, the same login page was being served up from the cache.
          */
         guard request.httpMethod?.caseInsensitiveCompare("GET") == .orderedSame else { return operation }
-        operation?.setCacheResponseBlock { (connection, response) -> CachedURLResponse! in
-            guard connection?.currentRequest.cachePolicy == .useProtocolCachePolicy else { return response }
-            guard let HTTPResponse = response?.response as? HTTPURLResponse else { return response }
+        operation.setCacheResponseBlock { (connection, response) -> CachedURLResponse? in
+            guard connection.currentRequest.cachePolicy == .useProtocolCachePolicy else { return response }
+            guard let HTTPResponse = response.response as? HTTPURLResponse else { return response }
             let headers = HTTPResponse.allHeaderFields
             guard headers["Cache-Control"] == nil && headers["Expires"] == nil else { return response }
             

@@ -52,7 +52,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
             request.setCacheHeadersWithResponse(oldResponse)
         }
         
-        session?.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, response) -> URL! in
+        session.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, response) -> URL in
             self.createCacheFolderIfNecessary()
             return self.cachedStylesheetURL
             
@@ -72,9 +72,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                     return
                 }
                 
-                if let response = response {
-                    NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path)
-                }
+                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponseURL.path)
                 
                 self.reloadCachedStylesheet()
                 
