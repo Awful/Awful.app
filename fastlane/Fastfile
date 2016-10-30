@@ -23,31 +23,21 @@ error do |lane, exception, options|
 end
 
 
-desc "Bump build number, then make and upload a beta build to TestFlight"
+desc "Build and upload a beta to TestFlight, bumping the build number too"
 desc ""
 desc "Options:"
-desc "  minor:true     – bump the minor version number too"
 desc "  skip_bump:true – don't bump the build number"
 lane :beta do |options|
   
-  did_change_version = false
-  
-  if options[:minor]
-    bump_version_number
-    did_change_version = true
-  end
+  ensure_git_status_clean
   
   unless options[:skip_bump]
     bump_build_number
-    did_change_version = true
-  end
   
-  current_version = get_version_number
-  build_number = get_build_number.to_i
+    build_number = get_build_number
   
-  if did_change_version
     commit_version_bump(
-      message: "Bump version to #{current_version} (#{build_number}).",
+      message: "Bump build number to #{build_number}.",
       xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
     )
   end
@@ -67,11 +57,8 @@ lane :beta do |options|
     xcargs: xcargs.join(" "),
   )
   
-  if crashlytics_api_key
-    upload_symbols_to_crashlytics(
-      api_token: crashlytics_api_key,
-      distribute_external: true,
-    )
+  if crashlytics_api_token
+    upload_symbols_to_crashlytics
   end
   
   if ENV["PILOT_USERNAME"]
@@ -80,11 +67,14 @@ lane :beta do |options|
       multi_line_end_keyword: "END"
     )
     
-    testflight(changelog: changelog)
+    testflight(
+      changelog: changelog,
+      distribute_external: true,
+    )
   end
   
   add_git_tag(
-    tag: "#{current_version}-beta#{build_number / 100}",
+    tag: "#{get_version_number}-beta#{get_build_number.to_i / 100}",
     force: true,
   )
   
@@ -122,11 +112,11 @@ private_lane :bump_build_number do |options|
 end
 
 
-desc "Increments part of the version number by one"
+desc "Increments the minor version number by one"
 desc ""
 desc "Options:"
-desc "  major:true – bumps the major version and sets minor to 0"
-private_lane :bump_version_number do |options|
+desc "  major:true – instead increments the major number by one and sets minor to 0"
+lane :bump_version do |options|
   
   major, minor = get_version_number_components
   
@@ -139,4 +129,9 @@ private_lane :bump_version_number do |options|
   
   new_version = [major, minor].join(".")
   increment_version_number(version_number: new_version)
+  
+  commit_version_bump(
+    message: "Bump version to #{new_version}",
+    xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
+  )
 end
