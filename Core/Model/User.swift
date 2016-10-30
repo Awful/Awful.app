@@ -29,9 +29,9 @@ extension User {
     public var avatarURL: URL? {
         if let HTML = customTitleHTML {
             if let element = avatarImageElement(customTitleHTML: HTML) {
-                if let url = element.objectForKeyedSubscript("data-cfsrc") as! String? {
+                if let url = element["data-cfsrc"] {
                     return URL(string: url)
-                } else if let url = element.objectForKeyedSubscript("src") as! String? {
+                } else if let url = element["src"] {
                     return URL(string: url)
                 }
                 return nil

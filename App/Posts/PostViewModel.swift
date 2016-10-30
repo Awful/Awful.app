@@ -96,11 +96,11 @@ private extension HTMLDocument {
     func markRevealIgnoredPostLink() {
         guard
             let link = firstNode(matchingSelector: "a[title=\"DON'T DO IT!!\"]"),
-            let href = link.objectForKeyedSubscript("href") as? String,
+            let href = link["href"],
             var components = URLComponents(string: href)
             else { return }
         components.fragment = "awful-ignored"
         guard let replacement = components.url?.absoluteString else { return }
-        link.setObject(replacement, forKeyedSubscript: "href")
+        link["href"] = replacement
     }
 }
