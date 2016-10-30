@@ -54,7 +54,7 @@ final class PostViewModel: NSObject {
     var accessibilityRoles: String {
         let spokenRoles = [
             "ik": "internet knight",
-            "op": "oritinal poster",
+            "op": "original poster",
             ]
         return roles
             .components(separatedBy: .whitespacesAndNewlines)
