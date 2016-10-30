@@ -10,6 +10,12 @@ final class PrivateMessageScrapingTests: ScrapingTestCase {
         return PrivateMessageScraper.self
     }
     
+    override func setUp() {
+        super.setUp()
+        
+        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+    }
+
     func testSingleMessage() {
         let scraper = scrapeFixtureNamed("private-one") as! PrivateMessageScraper
         let message = scraper.privateMessage

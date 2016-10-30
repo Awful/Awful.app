@@ -10,6 +10,12 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         return AwfulThreadListScraper.self
     }
     
+    override func setUp() {
+        super.setUp()
+        
+        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+    }
+
     func testAskTellThreadList() {
         let scraper = scrapeFixtureNamed("showthread-asktell") as! AwfulThreadListScraper
         let stupidQuestions = scraper.threads.first as! AwfulCore.AwfulThread

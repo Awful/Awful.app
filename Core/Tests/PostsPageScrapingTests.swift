@@ -10,6 +10,12 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         return AwfulPostsPageScraper.self
     }
     
+    override func setUp() {
+        super.setUp()
+        
+        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+    }
+
     func testCanadianPoliticsThread() {
         let scraper = scrapeFixtureNamed("showthread") as! AwfulPostsPageScraper
         let posts = scraper.posts as! [Post]

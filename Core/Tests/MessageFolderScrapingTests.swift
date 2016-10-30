@@ -2,12 +2,19 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import XCTest
 import AwfulCore
+import Foundation
+import XCTest
 
 final class MessageFolderScrapingTests: ScrapingTestCase {
     override class func scraperClass() -> AnyClass {
         return PrivateMessageFolderScraper.self
+    }
+    
+    override func setUp() {
+        super.setUp()
+        
+        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
     }
 
     func testInbox() {

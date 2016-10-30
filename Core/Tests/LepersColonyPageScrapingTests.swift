@@ -10,6 +10,12 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
         return LepersColonyPageScraper.self
     }
     
+    override func setUp() {
+        super.setUp()
+        
+        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+    }
+
     func testFirstPage() {
         let scraper = scrapeFixtureNamed("banlist") as! LepersColonyPageScraper
         let punishments = scraper.punishments as! [Punishment]
