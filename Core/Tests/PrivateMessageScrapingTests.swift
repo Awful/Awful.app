@@ -21,11 +21,11 @@ final class PrivateMessageScrapingTests: ScrapingTestCase {
         XCTAssert((message?.seen)!)
         XCTAssert(!(message?.replied)!)
         XCTAssert(!(message?.forwarded)!)
-        XCTAssert(message?.sentDate!.timeIntervalSince1970 == 1352408160)
+        XCTAssertEqual(message?.sentDate!.timeIntervalSince1970, 1352408160)
         XCTAssert(message?.innerHTML!.range(of: "awesome app") != nil)
         let from = message?.from!
         XCTAssert(from?.userID == "47395")
         XCTAssert(from?.username == "InFlames235")
-        XCTAssert(from?.regdate!.timeIntervalSince1970 == 1073952000)
+        XCTAssertEqual(from?.regdate!.timeIntervalSince1970, 1073952000)
     }
 }

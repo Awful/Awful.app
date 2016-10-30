@@ -31,7 +31,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssert(firstPost.postID == "407741839")
         XCTAssert(firstPost.innerHTML!.range(of: "more I think about it") != nil)
         XCTAssert(firstPost.threadIndex == 161)
-        XCTAssert(firstPost.postDate!.timeIntervalSince1970 == 1348139760)
+        XCTAssertEqual(firstPost.postDate!.timeIntervalSince1970, 1348139760)
         XCTAssert(firstPost.beenSeen)
         XCTAssertFalse(firstPost.editable)
         XCTAssert(firstPost.thread == canpoliThread)
@@ -39,7 +39,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssert(majuju.username == "Majuju")
         XCTAssert(majuju.userID == "108110")
         XCTAssert(majuju.canReceivePrivateMessages)
-        XCTAssert(majuju.regdate!.timeIntervalSince1970 == 1167350400)
+        XCTAssertEqual(majuju.regdate!.timeIntervalSince1970, 1167350400)
         XCTAssert(majuju.customTitleHTML!.range(of: "AAA") != nil)
         
         let accentAiguPost = posts[10]
@@ -91,12 +91,12 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         XCTAssert(posts.count == 40)
         let first = posts[0]
         XCTAssert(first.author!.username == "BiG TrUcKs !!!")
-        XCTAssert(first.postDate!.timeIntervalSince1970 == 1388525460)
+        XCTAssertEqual(first.postDate!.timeIntervalSince1970, 1388525460)
         XCTAssert(first.innerHTML!.range(of: "twitter assholes") != nil)
         XCTAssert(first.threadIndex ==  1)
         let second = posts[1]
         XCTAssert(second.author!.username == "syxxcowz")
-        XCTAssert(second.postDate!.timeIntervalSince1970 == 1388525580)
+        XCTAssertEqual(second.postDate!.timeIntervalSince1970, 1388525580)
         XCTAssert(second.innerHTML!.range(of: "hate twiter") != nil)
         XCTAssert(second.threadIndex == 2)
     }
@@ -105,7 +105,7 @@ final class PostsPageScrapingTests: ScrapingTestCase {
         let _ = scrapeFixtureNamed("showthread-last")
         let thread = fetchAll(AwfulThread.self, inContext: managedObjectContext)[0]
         XCTAssert(thread.lastPostAuthorName == "Ashmole")
-        XCTAssert(thread.lastPostDate!.timeIntervalSince1970 == 1357586460)
+        XCTAssertEqual(thread.lastPostDate!.timeIntervalSince1970, 1357586460)
     }
     
     func testIgnoredPost() {

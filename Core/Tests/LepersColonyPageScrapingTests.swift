@@ -20,7 +20,7 @@ final class LepersColonyPageScrapingTests: ScrapingTestCase {
         let first = punishments[0]
         XCTAssert(first.sentence == PunishmentSentence.Probation)
         XCTAssert(first.post!.postID == "421665753")
-        XCTAssert(first.date.timeIntervalSince1970 == 1384078200)
+        XCTAssertEqual(first.date.timeIntervalSince1970, 1384078200)
         XCTAssert(first.subject.username == "Kheldragar")
         XCTAssert(first.subject.userID == "202925")
         XCTAssert(first.reasonHTML!.range(of: "shitty as you") != nil)

@@ -38,7 +38,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(wireThread.totalReplies == 434)
         XCTAssert(wireThread.numberOfVotes == 0)
         XCTAssert(wireThread.rating == 0)
-        XCTAssert(wireThread.lastPostDate!.timeIntervalSince1970 == 1357964700)
+        XCTAssertEqual(wireThread.lastPostDate!.timeIntervalSince1970, 1357964700)
         XCTAssert(wireThread.lastPostAuthorName == "MC Fruit Stripe")
         
         let CoCFAQ = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'FAQ'"))!
@@ -51,7 +51,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(CoCFAQ.author!.username == "Scaevolus")
         XCTAssert(CoCFAQ.totalReplies == 0)
         XCTAssert(CoCFAQ.rating == 0)
-        XCTAssert(CoCFAQ.lastPostDate!.timeIntervalSince1970 == 1209381240)
+        XCTAssertEqual(CoCFAQ.lastPostDate!.timeIntervalSince1970, 1209381240)
         XCTAssert(CoCFAQ.lastPostAuthorName == "Scaevolus")
         
         let androidAppThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "author.username = 'Ferg'"))!
@@ -137,7 +137,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(rulesThread.totalReplies == 11)
         XCTAssert(rulesThread.numberOfVotes == 0)
         XCTAssert(rulesThread.rating == 0)
-        XCTAssert(rulesThread.lastPostDate!.timeIntervalSince1970 == 1330198920)
+        XCTAssertEqual(rulesThread.lastPostDate!.timeIntervalSince1970, 1330198920)
         XCTAssert(rulesThread.lastPostAuthorName == "Xandu")
         
         let venezuelanThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'Venezuelan'"))!
@@ -150,7 +150,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
         XCTAssert(venezuelanThread.totalReplies == 410)
         XCTAssert(venezuelanThread.numberOfVotes == 0)
         XCTAssert(venezuelanThread.rating == 0)
-        XCTAssert(venezuelanThread.lastPostDate!.timeIntervalSince1970 == 1357082460)
+        XCTAssertEqual(venezuelanThread.lastPostDate!.timeIntervalSince1970, 1357082460)
         XCTAssert(venezuelanThread.lastPostAuthorName == "d3c0y2")
     }
     

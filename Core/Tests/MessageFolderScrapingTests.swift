@@ -19,7 +19,7 @@ final class MessageFolderScrapingTests: ScrapingTestCase {
         let tagged = fetchOne(PrivateMessage.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "rawFromUsername = 'CamH'"))!
         XCTAssert(tagged.messageID == "4549686")
         XCTAssert(tagged.subject == "Re: Awful app etc.")
-        XCTAssert(tagged.sentDate!.timeIntervalSince1970 == 1348778940)
+        XCTAssertEqual(tagged.sentDate!.timeIntervalSince1970, 1348778940)
         XCTAssert(tagged.threadTag!.imageName == "sex")
         XCTAssert(tagged.replied)
         XCTAssert(tagged.seen)
