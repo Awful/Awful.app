@@ -5,6 +5,8 @@
 import AFNetworking
 import AVFoundation
 import AwfulCore
+import Crashlytics
+import Fabric
 import GRMustache
 import Smilies
 import UIKit
@@ -18,6 +20,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
+        
+        if
+            let fabric = Bundle.main.object(forInfoDictionaryKey: "Fabric") as? [String: Any],
+            let key = fabric["APIKey"] as? String,
+            !key.isEmpty
+        {
+            Fabric.with([Crashlytics.self])
+        }
         
         GRMustache.preventNSUndefinedKeyExceptionAttack()
         

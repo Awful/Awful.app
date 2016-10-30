@@ -41,6 +41,20 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>31900</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>$(CRASHLYTICS_API_TOKEN)</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>ImgurAnonymousAPIClientID</key>
