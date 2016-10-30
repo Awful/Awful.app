@@ -281,7 +281,9 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
                               NSStringFromClass(self.class));
                     #endif
                 } else {
-                    self.titleLabelText = (id)[[NSAttributedString alloc] initWithString:self.titleLabel.text attributes:_savedAttributes];
+                    NSString *plainText = self.titleLabel.text;
+                    NSString *_Nonnull text = plainText ? (NSString *_Nonnull)plainText :  @"";
+                    self.titleLabelText = (id)[[NSAttributedString alloc] initWithString:text attributes:_savedAttributes];
                     _savedAttributes = nil;
                 }
             }
@@ -748,7 +750,11 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
         CGFloat paddingBottom = 0;
         
         if (self.mode != MRProgressOverlayViewModeDeterminateHorizontalBar) {
-            modeViewFrame = CGRectMake(modePadding, y, innerViewWidth, innerViewWidth);
+            if (self.mode == MRProgressOverlayViewModeCustom) {
+                modeViewFrame = CGRectMake(modePadding, y, innerViewWidth, self.modeView.frame.size.height);
+            } else {
+                modeViewFrame = CGRectMake(modePadding, y, innerViewWidth, innerViewWidth);
+            }
             paddingBottom = isTextNonEmpty ? 20 : modePadding;
         } else {
             modeViewFrame = CGRectMake(10, y, dialogWidth-20, 5);

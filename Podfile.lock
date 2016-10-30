@@ -1,53 +1,53 @@
 PODS:
-  - AFNetworking (2.5.2):
-    - AFNetworking/NSURLConnection (= 2.5.2)
-    - AFNetworking/NSURLSession (= 2.5.2)
-    - AFNetworking/Reachability (= 2.5.2)
-    - AFNetworking/Security (= 2.5.2)
-    - AFNetworking/Serialization (= 2.5.2)
-    - AFNetworking/UIKit (= 2.5.2)
-  - AFNetworking/NSURLConnection (2.5.2):
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.2):
+  - AFNetworking/NSURLSession (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.2)
-  - AFNetworking/Security (2.5.2)
-  - AFNetworking/Serialization (2.5.2)
-  - AFNetworking/UIKit (2.5.2):
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.6)
-  - FLAnimatedImage (1.0.2)
+  - FLAnimatedImage (1.0.12)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
   - HTMLReader (2.0)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
-  - JLRoutes (1.5.1)
+  - JLRoutes (1.6.4)
   - JRSwizzle (1.0)
-  - KVOController (1.0.3)
-  - MRProgress/ActivityIndicator (0.8.0):
+  - KVOController (1.2.0)
+  - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
-  - MRProgress/Blur (0.8.0):
+  - MRProgress/Blur (0.8.3):
     - MRProgress/Helper
-  - MRProgress/Circular (0.8.0):
+  - MRProgress/Circular (0.8.3):
     - MRProgress/Helper
     - MRProgress/ProgressBaseClass
     - MRProgress/Stopable
-  - MRProgress/Helper (0.8.0)
-  - MRProgress/Icons (0.8.0)
-  - MRProgress/Overlay (0.8.0):
+  - MRProgress/Helper (0.8.3)
+  - MRProgress/Icons (0.8.3)
+  - MRProgress/Overlay (0.8.3):
     - MRProgress/ActivityIndicator
     - MRProgress/Blur
     - MRProgress/Circular
     - MRProgress/Helper
     - MRProgress/Icons
-  - MRProgress/ProgressBaseClass (0.8.0)
-  - MRProgress/Stopable (0.8.0):
+  - MRProgress/ProgressBaseClass (0.8.3)
+  - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
   - PSMenuItem (1.0.0)
   - PullToRefresher (1.4.0)
@@ -86,16 +86,16 @@ CHECKOUT OPTIONS:
     :git: https://github.com/marlontojal/PullToRefresh
 
 SPEC CHECKSUMS:
-  AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
-  FLAnimatedImage: 352065d63a011faade774ca3b833237785a59854
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   HTMLReader: 7fbf32ddfcbcdfeba0833713e4545d1862aeb07c
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
-  JLRoutes: eececedd8c3f1f040209520f783e12049674416e
+  JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MRProgress: 43bed03f7a1919add87aa583678c8ea244c1cd0d
+  KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
+  MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: c4629a459f305c14a66d35f52c2feeaccf85c49e
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546

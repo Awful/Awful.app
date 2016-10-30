@@ -3,6 +3,7 @@ platform :ios, '8.0'
 project 'Xcode/Awful'
 inhibit_all_warnings!
 use_frameworks!
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 target 'Awful' do
   pod 'AFNetworking', '~> 2.0'

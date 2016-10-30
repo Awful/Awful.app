@@ -4,7 +4,7 @@ JLRoutes
 ### What is it? ###
 JLRoutes is advanced URL parsing with a block-based callback API. It is designed to make it very easy to handle complex URL schemes in your application without having to do any URL or string parsing of any kind.
 
-[More information on how to register custom URL schemes in your application's Info.plist.](http://developer.apple.com/library/ios/documentation/iphone/conceptual/iphoneosprogrammingguide/AdvancedAppTricks/AdvancedAppTricks.html#//apple_ref/doc/uid/TP40007072-CH7-SW50)
+[More information on how to register custom URL schemes in your application's Info.plist.](https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html#//apple_ref/doc/uid/TP40007072-CH6-SW2)
 
 ### Features ###
 * Simple API with minimal impact to existing codebases
@@ -18,13 +18,19 @@ JLRoutes is advanced URL parsing with a block-based callback API. It is designed
 * Pretty-print the whole routing table
 * No dependencies other than Foundation
 
+### Installation ###
+JLRoutes is available for installation using CocoaPods or Carthage (add `github "joeldev/JLRoutes"` to your `Cartfile`).
+
+### Requirements ###
+* iOS 7.0+ or OS X 10.9+
+
 ### Simple Example ###
 ```objc
 // in your app delegate:
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   // ...
-  [JLRoutes addRoute:@"/user/view/:userID" handler:^BOOL(NSDictionary *parameters) {
+  [[JLRoutes globalRoutes] addRoute:@"/user/view/:userID" handler:^BOOL(NSDictionary *parameters) {
     NSString *userID = parameters[@"userID"]; // defined in the route by specifying ":userID"
     // present UI for viewing user with ID 'userID'
     return YES; // return YES to say we have handled the route
@@ -33,7 +39,7 @@ JLRoutes is advanced URL parsing with a block-based callback API. It is designed
   return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options {
   return [JLRoutes routeURL:url];
 }
 ```
@@ -76,7 +82,7 @@ It is also important to note that if you pass nil for the handler block, an inte
 ### More Complex Example ###
 
 ```objc
-[JLRoutes addRoute:@"/:object/:action/:primaryKey" handler:^BOOL(NSDictionary *parameters) {
+[[JLRoutes globalRoutes] addRoute:@"/:object/:action/:primaryKey" handler:^BOOL(NSDictionary *parameters) {
   NSString *object = parameters[@"object"];
   NSString *action = parameters[@"action"];
   NSString *primaryKey = parameters[@"primaryKey"];
@@ -113,7 +119,7 @@ JLRoutes supports setting up routes within the namespace of a given URL scheme. 
 However, if you decide that you do need to handle multiple schemes with different sets of functionality, here is an example of how to do that:
 
 ```objc
-[JLRoutes addRoute:@"/foo" handler:^BOOL(NSDictionary *parameters) {
+[[JLRoutes globalRoutes] addRoute:@"/foo" handler:^BOOL(NSDictionary *parameters) {
   // This block is called if the scheme is not 'thing' or 'stuff' (see below)
   return YES;
 }];
@@ -134,7 +140,7 @@ This example shows that you can declare the same routes in different schemes and
 Continuing with this example, if you were to add the following route to the collection above:
 
 ```objc
-[JLRoutes addRoute:@"/global" handler:^BOOL(NSDictionary *parameters) {
+[[JLRoutes globalRoutes] addRoute:@"/global" handler:^BOOL(NSDictionary *parameters) {
   return YES;
 }];
 ```
@@ -152,35 +158,37 @@ This tells JLRoutes that if a URL cannot be routed within the namespace `thing` 
 
 JLRoutes supports setting up routes that will match an arbitrary number of path components at the end of the routed URL. An array containing the additional path components will be added to the parameters dictionary with the key `kJLRouteWildcardComponentsKey`.
 
-For example, the following route would be triggerd for any URL that started with `/wildcard/`, but would be rejected by the handler if the next component wasn't `joker`.
+For example, the following route would be triggered for any URL that started with `/wildcard/`, but would be rejected by the handler if the next component wasn't `joker`.
 
 ```objc
-[JLRoutes addRoute:@"/wildcard/*" handler:^BOOL(NSDictionary *parameters) {
-	NSArray *pathComponents = parameters[kJLRouteWildcardComponentsKey];
-	if ([pathComponents count] > 0 && [pathComponents[0] isEqualToString:@"joker"]) {
-		// the route matched; do stuff
-		return YES;
-	}
+[[JLRoutes globalRoutes] addRoute:@"/wildcard/*" handler:^BOOL(NSDictionary *parameters) {
+  NSArray *pathComponents = parameters[kJLRouteWildcardComponentsKey];
+  if ([pathComponents count] > 0 && [pathComponents[0] isEqualToString:@"joker"]) {
+    // the route matched; do stuff
+    return YES;
+  }
 
-	// not interested unless the joker's in it
-	return NO;
+  // not interested unless the joker's in it
+  return NO;
 }];
 ```
 
-### Installation ###
-JLRoutes is available for installation via CocoaPods.
 
-### Requirements ###
-* ARC
-* iOS 5.0+ or OS X 10.7+
-* Foundation.framework
+### Optional routes ###
+
+JLRoutes supports setting up routes with optional parameters. At the route registration moment, JLRoute will register multiple routes with all combinations of the route with the optional parameters and without the optional parameters. For example, for the route `/user/:userId(/post/:postId)(/reply/:replyId)`, it will register the following routes:
+
+- `/user/:userId/post/:postId/reply/:replyId`
+- `/user/:userId/post/:postId/`
+- `/user/:userId`
+
 
 ### License ###
 BSD 3-Clause License:
-> Copyright (c) 2013, Joel Levin. All rights reserved.
- 
+> Copyright (c) 2016, Joel Levin. All rights reserved.
+
 > Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- 
+
 >*  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 * Neither the name of JLRoutes nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
