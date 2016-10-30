@@ -9,7 +9,7 @@ target 'Awful' do
   pod 'ARChromeActivity', '~> 1.0.6'
   pod 'FLAnimatedImage', '~> 1.0'
   pod 'GRMustache', '~> 7.3.2'
-  pod 'HTMLReader', '~> 1.0'
+  pod 'HTMLReader', '~> 2.0'
   pod 'ImgurAnonymousAPIClient', '~> 0.3'
   pod 'JLRoutes', '~> 1.5'
   pod 'KVOController', '~> 1.0'
@@ -27,7 +27,7 @@ end
 
 target 'Core' do
   pod 'AFNetworking', '~> 2.0'
-  pod 'HTMLReader', '~> 1.0'
+  pod 'HTMLReader', '~> 2.0'
   
   target 'CoreTests' do
       inherit! :search_paths
@@ -36,7 +36,7 @@ end
 
 target :Smilies do
   pod 'FLAnimatedImage', '~> 1.0'
-  pod 'HTMLReader', '~> 1.0'
+  pod 'HTMLReader', '~> 2.0'
   
   target :SmiliesTests do
     inherit! :search_paths
@@ -45,7 +45,7 @@ end
 
 target :SmilieExtractor do
   pod 'FLAnimatedImage', '~> 1.0'
-  pod 'HTMLReader', '~> 1.0'
+  pod 'HTMLReader', '~> 2.0'
 end
 
 post_install do |extension_safe_api|
