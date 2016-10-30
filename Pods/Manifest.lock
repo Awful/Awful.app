@@ -21,6 +21,9 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.6)
+  - Crashlytics (3.8.3):
+    - Fabric (~> 1.6.3)
+  - Fabric (1.6.11)
   - FLAnimatedImage (1.0.12)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
@@ -57,6 +60,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
   - ARChromeActivity (~> 1.0.6)
+  - Crashlytics
   - FLAnimatedImage (~> 1.0)
   - GRMustache (~> 7.3.2)
   - HTMLReader (~> 2.0)
@@ -88,6 +92,8 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
+  Crashlytics: 2b6dbe138a42395577cfa73dfa1aa7248cadf39e
+  Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   HTMLReader: 7fbf32ddfcbcdfeba0833713e4545d1862aeb07c
@@ -101,6 +107,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: d7db059eafad0e24e08958795e532037ef970eea
+PODFILE CHECKSUM: 8dbbbf1f8184f6555277878e27464a8a94126ca5
 
 COCOAPODS: 1.1.1

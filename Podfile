@@ -8,6 +8,7 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 target 'Awful' do
   pod 'AFNetworking', '~> 2.0'
   pod 'ARChromeActivity', '~> 1.0.6'
+  pod 'Crashlytics'
   pod 'FLAnimatedImage', '~> 1.0'
   pod 'GRMustache', '~> 7.3.2'
   pod 'HTMLReader', '~> 2.0'
