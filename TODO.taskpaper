@@ -37,12 +37,6 @@ High priority:
 Medium priority:
 	- Does the smilie keyboard's "turn on full access" note not show up anymore?
 		"I've never been able to get the keyboard to work. I have it enabled, but I'm unable to select an emoji to use in a text. Is there some step I'm missing? Can I work with iPhone? Up to date os" … "Edit: I had to give keyboard full access to get it working properly. Now it's working just fine."
-	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
-		"If you "edit" a post then change your mind and decide to reply and make a new one it still only edits the original post."
-		"I went to a post of mine intending to quote it but I hit Edit instead. When I backed out and then went to Quote, the quote got tacked on to the original post as an edit, it didn't make a new post."
-		Especially bad for mods http://forums.somethingawful.com/showthread.php?threadid=3510131&userid=0&perpage=40&pagenumber=224#post461295184
-		"if you edit a post, then hit cancel, then go quote a post, you will actually end up editing the post you were editing earlier. (rather than making a new post with quote as intended )"
-		"So this is really minor but it would be nice if the "Cancel" button to the top and left of me right now didn't say Cancel but instead said something like "Back" since its not really a cancel button. For the longest time I didn't know I could hit that button mid post in order to grab another quote or re-read a post before posting cause I always thought it would cancel and delete my entry."
 	- Only trigger the "pull for next page of posts" gesture if scrolling started near the bottom.
 		"Would it be possible to make the "keep scrolling at the bottom of the page to go to the next one" thing less sensitive? Or maybe put in some sort of delay (something like, when you're scrolling and you hit the end of the page, it doesn't trigger until it comes to a stop and you pull up again?) I keep missing the last couple posts on every page, because I apparently scroll too fast :( If neither of those are doable, could we at least get an option to turn it off in settings?"
 		"My dream is to not make pull to load a new page activate the first time I hit the bottom of a page. Sometimes I'm trying to back track to the end of a page and after everything loads I find I hit the bottom too hard and it loaded the next."

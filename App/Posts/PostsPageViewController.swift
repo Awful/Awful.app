@@ -336,11 +336,9 @@ final class PostsPageViewController: ViewController {
         present(replyWorkspace!.viewController, animated: true, completion: nil)
     }
     
-    fileprivate var replyCompletionBlock: (_ saveDraft: Bool, _ didSucceed: Bool) -> Void {
-        return { [weak self] (saveDraft, didSucceed) in
-            if !saveDraft {
-                self?.replyWorkspace = nil
-            }
+    fileprivate var replyCompletionBlock: (_ didSucceed: Bool) -> Void {
+        return { [weak self] (didSucceed) in
+            self?.replyWorkspace = nil
             
             if didSucceed {
                 self?.loadPage(AwfulThreadPage.nextUnread.rawValue, updatingCache: true, updatingLastReadPost: true)
