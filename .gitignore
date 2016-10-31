@@ -8,6 +8,7 @@
 # Fastlane crud
 /fastlane/README.md
 /fastlane/report.xml
+/fastlane/test_output/
 
 # Fastlane dotenv, for dev account-specific config (e.g. Crashlytics API key)
 /fastlane/.env
