@@ -76,7 +76,11 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             self?.stopAnimatingPullToRefresh()
             self?.stopAnimatingInfiniteScroll()
             
-            self?.scrollToLoadMoreBlock = (threads?.count)! >= 40 ? { self?.loadMore() } : nil
+            if let threads = threads, threads.count >= 40 {
+                self?.scrollToLoadMoreBlock = { self?.loadMore() }
+            } else {
+                self?.scrollToLoadMoreBlock = nil
+            }
         }
     }
     
