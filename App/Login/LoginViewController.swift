@@ -112,7 +112,7 @@ class LoginViewController: ViewController {
         OnePasswordExtension.shared().findLogin(forURLString: "forums.somethingawful.com", for: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
             if loginInfo == nil {
                 if (error as? NSError)?.code != AppExtensionErrorCodeCancelledByUser {
-                    NSLog("[\(Mirror(reflecting: self)) \(#function)] 1Password extension failed: \(error)")
+                    NSLog("[\(self) \(#function)] 1Password extension failed: \(error)")
                 }
                 return
             }

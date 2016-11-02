@@ -87,7 +87,7 @@ final class ProfileViewController: ViewController {
         let (userID, username) = (user.userID, user.username)
         AwfulForumsClient.shared().profileUser(withID: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
             if let error = error {
-                NSLog("[\(Mirror(reflecting:self)) \(#function)] error fetching user profile for \(username) (ID \(userID)): \(error)")
+                NSLog("[\(self) \(#function)] error fetching user profile for \(username) (ID \(userID)): \(error)")
             } else {
                 self?.renderProfile()
             }
