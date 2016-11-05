@@ -1,6 +1,4 @@
 High priority:
-	- Add (well, re-add) Crashlytics. iTunes Connect reports aren't cutting it.
-		Also maybe turn on Answers and start tracking a few noncreepy analytics (e.g. missing thread tags).
 	- Don't freeze on or endlessly bounce the pull-to-refresh indicator.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
 		"I get a bug when I refresh my bookmarked threads only on my iPad Pro. The smiley face icon to indicate it's refreshing will keep bouncing forever until I terminate the app. Works fine on my iPhone though."
@@ -35,6 +33,11 @@ High priority:
 	- Stop saying "archives required" when the forums are fucked/down.
 		Very confusing!
 Medium priority:
+	- Permanent error scraping PM list.
+		Pretty sure this is when the inbox is empty (we didn't find any messages and so we assume that scraping failed).
+		"Every time I hit the messages tab with my fat/clumsy fingers it gives me an error message."
+			"Network Error: Failed to parse message in folder; could not find message ID (code 3)"
+			"I'm getting an error on my iPhone SE whenever I try to access my private messages. It's this isolated to me, or are pms just borked? Does it just mean I have no messages? http://i.imgur.com/1T37R4V.jpg"
 	- Does the smilie keyboard's "turn on full access" note not show up anymore?
 		"I've never been able to get the keyboard to work. I have it enabled, but I'm unable to select an emoji to use in a text. Is there some step I'm missing? Can I work with iPhone? Up to date os" … "Edit: I had to give keyboard full access to get it working properly. Now it's working just fine."
 	- Fix tapping "edit", then backing out, then tapping "quote" (or writing a post), and it's unexpectedly still an edit.
@@ -56,6 +59,7 @@ Medium priority:
 		"Awful always reopens in the middle of the thread even if I was at the bottom, even if the app was not purged—if I close the app while at the bottom of a thread and reopen immediately it jumps up several posts. This only happens in landscape and the position it jumps to is the same as the position it goes to if you scroll to the bottom in landscape and then rotate to portrait and back, so I think it's just resetting the scroll position based on where the "bottom" is in portrait."
 	- Correctly handle nested tags when tapping the [/..] auto-BBcode-close-tag button.
 		"I've noticed that the "[/..]" button on the reply screen's keyboard no longer works correctly with nested tags, and instead will just attempt to close the most recent tag even if that was already a close-tag -- and even if it's not actually a tag at all! So you'll get like "[//..][///..][////..][/////..]" if you hit that button four times as it attempts to close my "[/..]" "tag" from the beginning of this paragraph. Did something happen within the past few releases to the parser or regex engine that recognized open-tags?"
+		"when composing a post, the "[/..]" button still fixates onto trying to re-close closing tags as well as not-actually-tags, so pressing it 3 times here inserts: [//..][///..][////..]"
 		Was recently ported to Swift, very possible that introduced an error.
 	- Only enable [/..] auto-close button after finishing a BBcode tag that takes a parameter.
 		"If you have a parametrized opener like "[quote=" then the button activates as soon as you enter the "=", before the tag is actually finished with the "]"."
@@ -65,6 +69,7 @@ Medium priority:
 			• returning to page 28 then pulling successfully for page 29; page 29 still pulls to refresh
 			• and force-quitting Awful and trying from what I figured would be a fresh state; yep pull to refresh page 29."
 		"a couple times now I've seen a pull-for-next-page instead refresh the current page (even if it's nowhere near the end of the thread, like page 6 of 30). I unfortunately can't yet find any pattern to when this happens and it seems pretty rare, but it is rather confusing for a moment. I can at least just hit the next page button instead when it happens, so that does still work."
+		"On page 100 of USPOL NOV: The Vindication of Prester Jane by the Narcissist Donald Trump, pull-for-next-page is stuck on activating a page refresh instead of actually ever going on to page 101. This has persisted through several refreshes, loading the thread again from my bookmarks page (after marking unread a few posts so it opened back up on page 100), and even force-quitting the app. Is there some kind of pattern for this only-refresh-certain-pages behavior? I've seen it before and it's always seemed fairly arbitrary to me. I never loaded page 100 when it was actually the last page of the thread either, which would otherwise sound like a reasonably understandable cause."
 	- Fix tapping on an ignored user's post to reveal it.
 		"Tapping on an ignored users post to reveal it seems bugged. Sometimes it brings up a random post from the thread, and if it's the last post sometimes it doesn't show up."
 		"Have had this issue for the last two app versions I believe. Sometimes tapping to view post will bring up another ignored post and tapping that one will load a third random one" [circa @awful3.16 I think]
@@ -852,9 +857,7 @@ Needs verification:
 		"I just had a terrible bug where I was stuck in between the post and preview screen and pressing cancel did nothing. Tried force closing the app and restarting my phone multiples times with no luck, it kept bringing me back to that very same post screen. Only thing that worked was deleting the app and reinstalling it to reset the whole affair."
 			"Couldn't get back to the side menu or any other screen outside of those two editor screens. Restarting the app and even restarting the phone didn't help, somehow the app preserved that bugged state and only reinstalling it reset it."
 			"Canceling an edit basically just wouldn't happen, neither Delete Edit or Save Draft did anything, though closing the app through multitasking got it just fine. E: Update! This happens consistently with editing posts. Like this one for example! You have to preview and save changes, canceling or saving the draft does nothing at all."
-	- Permanent error scraping PM list.
-		"Every time I hit the messages tab with my fat/clumsy fingers it gives me an error message."
-			"Network Error: Failed to parse message in folder; could not find message ID (code 3)"
+	
 			"I do have messages, but they are viewed and kind of old."
 	- Can interact with the posts view behind a share popup.
 		"If you long-press on a link to show the sharing menu and keep touching the screen after it comes up, you can then drag that finger to scroll the backgrounded+tinted thread around." @ios8.2 @awful3.2
