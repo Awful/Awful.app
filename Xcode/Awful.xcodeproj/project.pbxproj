@@ -138,6 +138,8 @@
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
 		1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */; };
+		1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */; };
+		1C2DC7351DCEA605005040FD /* Smilies Stickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
@@ -375,6 +377,13 @@
 			remoteGlobalIDString = 1C0B86111B1801FB0088BE53;
 			remoteInfo = GenerateEntitlements;
 		};
+		1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CBBAAB41D949EE000A847EC;
+			remoteInfo = "Smilies Stickers";
+		};
 		1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -463,6 +472,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				1C2DC7351DCEA605005040FD /* Smilies Stickers.appex in Embed App Extensions */,
 				1C66A9F919DD393A001B9A41 /* Smilie Keyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -554,6 +564,7 @@
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
@@ -1178,6 +1189,7 @@
 				1C3A144419DFC5D10022C44C /* LaunchScreen.xib */,
 				1C3A143719DFC5D10022C44C /* main.m */,
 				1C3A143F19DFC5D10022C44C /* Main.storyboard */,
+				1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */,
 				1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */,
 				1C3A143C19DFC5D10022C44C /* ViewController.h */,
 				1C3A143D19DFC5D10022C44C /* ViewController.m */,
@@ -1908,6 +1920,7 @@
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 				1C66A9FB19DD393A001B9A41 /* PBXTargetDependency */,
+				1C2DC7371DCEA605005040FD /* PBXTargetDependency */,
 			);
 			name = Awful;
 			productName = Awful;
@@ -2008,6 +2021,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */,
 				1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */,
 				1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */,
 				1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */,
@@ -2682,6 +2696,11 @@
 			isa = PBXTargetDependency;
 			target = 1C0B86111B1801FB0088BE53 /* GenerateEntitlements */;
 			targetProxy = 1C0B861F1B18093D0088BE53 /* PBXContainerItemProxy */;
+		};
+		1C2DC7371DCEA605005040FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CBBAAB41D949EE000A847EC /* Smilies Stickers */;
+			targetProxy = 1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */;
 		};
 		1C3A146119DFC6AA0022C44C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
