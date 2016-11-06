@@ -64,6 +64,17 @@
 {
     self.textView.text = @"Stickering…";
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self extractStickers];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.textView.text = [self.textView.text stringByAppendingString:@" done!\n\nDon't forget to scale them up!"];
+        });
+    });
+}
+
+- (void)extractStickers
+{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     NSURL *stickersFolder = [SmiliesFolderURL() URLByAppendingPathComponent:@"Stickers" isDirectory:YES];
@@ -127,8 +138,6 @@
     NSAssert(json, @"error: %@", error);
     ok = [json writeToURL:[stickerPackFolder URLByAppendingPathComponent:@"Contents.json" isDirectory:NO] atomically:NO];
     NSAssert(ok, @"couldn't write json data");
-    
-    self.textView.text = [self.textView.text stringByAppendingString:@" done!"];
 }
 
 static NSSet * LoadObjectionableTexts(NSString *basename) {
