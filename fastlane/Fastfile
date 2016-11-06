@@ -135,3 +135,10 @@ lane :bump_version do |options|
     xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
   )
 end
+
+
+desc "Make the stickers 3x images"
+desc "Should probably run this after running SmilieExtractor"
+lane :embiggen_stickers do |options|
+  sh File.join("..", "Xcode", "scale-stickers")
+end

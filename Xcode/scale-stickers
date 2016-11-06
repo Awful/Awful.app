@@ -6,5 +6,5 @@ stickers="$root/Smilies/Stickers/Stickers.xcassets"
 find "$stickers" -iname "*.gif" -exec \
   gifsicle --batch --scale 3 -O3 {} \;
 
-find "$stickers" -iname "*.png" -exec \
+find "$stickers" -iname "*.jpg" -or -iname "*.jpeg" -or -iname "*.png" -exec \
   convert {} -resize 300% {} \;
