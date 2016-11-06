@@ -73,8 +73,8 @@ lane :beta do |options|
     )
   end
   
-  major, minor = get_version_number
-  beta_count = get_build_number.to_i / 100
+  major, minor = get_version_number_components
+  beta_count = get_build_number.to_i % 100
   add_git_tag(
     tag: "#{major}.#{minor}-beta#{beta_count}",
     force: true,
