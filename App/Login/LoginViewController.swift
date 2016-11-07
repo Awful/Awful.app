@@ -182,17 +182,20 @@ extension LoginViewController {
         let options = UIViewAnimationOptions(rawValue: UInt(curve.uintValue) << 16)
         UIView.animate(withDuration: duration.doubleValue, delay: 0, options: options, animations: {
             let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-            let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
-            let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
-            let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
+            if self.view.window != nil {
+                let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
+                let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
+                let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
+                
+                var contentInsets = self.scrollView.contentInset
+                contentInsets.bottom = insetBottom
+                self.scrollView.contentInset = contentInsets
+                
+                var scrollIndicatorInsets = self.scrollView.scrollIndicatorInsets
+                scrollIndicatorInsets.bottom = insetBottom
+                self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets
+            }
             
-            var contentInsets = self.scrollView.contentInset
-            contentInsets.bottom = insetBottom
-            self.scrollView.contentInset = contentInsets
-            
-            var scrollIndicatorInsets = self.scrollView.scrollIndicatorInsets
-            scrollIndicatorInsets.bottom = insetBottom
-            self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets
         }, completion: nil)
     }
 }
