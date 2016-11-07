@@ -35,11 +35,13 @@
         <string>:gizz:</string>
         <string>:gonk:</string>
         <string>:goshawk:</string>
+        <string>:greenangel:</string>
         <string>:guinness:</string>
         <string>:hawaaaafap:</string>
         <string>:hb:</string>
         <string>:hchatter:</string>
         <string>:hehe:</string>
+        <string>:henget:</string>
         <string>:heysexy:</string>
         <string>:hist101:</string>
         <string>:holy:</string>
@@ -55,6 +57,8 @@
         <string>:marc:</string>
         <string>:margeball:</string>
         <string>:monocle:</string>
+        <string>:mrgw:</string>
+        <string>:mrwhite:</string>
         <string>:neckbeard:</string>
         <string>:newfap:</string>
         <string>:nexus:</string>
@@ -90,6 +94,7 @@
         <string>:shrug:</string>
         <string>:siren:</string>
         <string>:smugdon:</string>
+        <string>:smugmrgw:</string>
         <string>:sotw:</string>
         <string>:sparkles:</string>
         <string>:spooky:</string>
@@ -212,6 +217,10 @@
         <string>:flaccid:</string>
         <string>:forkbomb:</string>
         <string>:freep:</string>
+        <string>:frog:</string>
+        <string>:frogbon:</string>
+        <string>:frogc00l:</string>
+        <string>:froggonk:</string>
         <string>:frogsiren:</string>
         <string>:fuckoff:</string>
         <string>:furcry:</string>
@@ -229,6 +238,7 @@
         <string>:mrapig:</string>
         <string>:mrgw2:</string>
         <string>:mump:</string>
+        <string>:parrot:</string>
         <string>:psyboom:</string>
         <string>:psypop:</string>
         <string>:pwm:</string>
@@ -262,10 +272,12 @@
         <string>:godwinning:</string>
         <string>:hitler:</string>
         <string>:italy:</string>
+        <string>:japan:</string>
         <string>:mexico:</string>
         <string>:mil101:</string>
         <string>:tfrxmas:</string>
         <string>:ussr:</string>
+        <string>:woz:</string>
         <string>:zpatriot:</string>
         <string>:aatrek:</string>
         <string>:anasta:</string>
@@ -304,6 +316,8 @@
         <string>:nyoron:</string>
         <string>:orks101:</string>
         <string>:orks:</string>
+        <string>:pcgaming1:</string>
+        <string>:pcgaming:</string>
         <string>:pgi:</string>
         <string>:qfg:</string>
         <string>:quagmire:</string>
@@ -366,6 +380,7 @@
         <string>:flipoff:</string>
         <string>:freakfuta:</string>
         <string>:frogleave:</string>
+        <string>:frolf:</string>
         <string>:fuckthis:</string>
         <string>:fuzzknot:</string>
         <string>:glompoff:</string>
