@@ -38,27 +38,37 @@ final class ThreadTagLoader: NSObject {
     
     /// Convenient singleton.
     static let sharedLoader: ThreadTagLoader = {
-        guard let
-            tagListURLString = Bundle(for: ThreadTagLoader.self).infoDictionary?["AwfulNewThreadTagListURL"] as? String,
+        let bundle = Bundle(for: ThreadTagLoader.self)
+        guard
+            let tagListURLString = bundle.infoDictionary?["AwfulNewThreadTagListURL"] as? String,
             let tagListURL = URL(string: tagListURLString)
             else { fatalError("missing AwfulNewThreadTagListURL in Info.plist") }
+        
+        guard
+            let objectionableURL = bundle.url(forResource: "PotentiallyObjectionableThreadTags", withExtension: "plist"),
+            let objectionableImageNames = NSArray(contentsOf: objectionableURL) as? [String]
+            else { fatalError("Missing PotentiallyObjectionableThreadTags.plist resource") }
+        
         let caches = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let cacheFolder = caches.appendingPathComponent("Thread Tags", isDirectory: true)
-        return ThreadTagLoader(tagListURL: tagListURL, cacheFolder: cacheFolder)
+        
+        return ThreadTagLoader(tagListURL: tagListURL, cacheFolder: cacheFolder, objectionableImageNames: objectionableImageNames)
     }()
     
     fileprivate let tagListURL: URL
     fileprivate let cacheFolder: URL
     fileprivate let session: AFHTTPSessionManager
     fileprivate var downloadingNewTags = false
+    fileprivate let objectionableImageNames: Set<String>
     
     /**
         - parameter tagListURL: The location of a list of tags available for download.
         - parameter cacheFolder: Where to save updated thread tags.
      */
-    init(tagListURL: URL, cacheFolder: URL) {
+    init(tagListURL: URL, cacheFolder: URL, objectionableImageNames: [String]) {
         self.tagListURL = tagListURL
         self.cacheFolder = cacheFolder
+        self.objectionableImageNames = Set(objectionableImageNames)
         let baseURL = tagListURL.deletingLastPathComponent()
         session = AFHTTPSessionManager(baseURL: baseURL)
         super.init()
@@ -77,6 +87,12 @@ final class ThreadTagLoader: NSObject {
      */
     func imageNamed(_ imageName: String) -> UIImage? {
         let extensionless = (imageName as NSString).deletingPathExtension
+        
+        // App Review :(
+        if objectionableImageNames.contains(extensionless) {
+            return nil
+        }
+        
         guard let image = shippedImageNamed(extensionless) ?? cachedImageNamed(extensionless) else {
             updateIfNecessary()
             return nil
