@@ -20,7 +20,7 @@ final class ReplyWorkspace: NSObject {
     
     The closure obviously can't be saved as part of UIKit state preservation, so be sure to set something after restoring state.
     */
-    var completion: ((_ saveDraft: Bool, _ didSucceed: Bool) -> Void)?
+    var completion: (( _ didSucceed: Bool) -> Void)?
     
     /// Constructs a workspace for a new reply to a thread.
     convenience init(thread: AwfulThread) {
@@ -119,8 +119,7 @@ final class ReplyWorkspace: NSObject {
     }
     
     @objc fileprivate func didTapCancel(_ sender: UIBarButtonItem) {
-        let saveDraft = compositionViewController.textView.attributedText.length > 0
-        completion?(saveDraft, false)
+        completion?(false)
     }
     
     @objc fileprivate func didTapPreview(_ sender: UIBarButtonItem) {
@@ -149,7 +148,7 @@ final class ReplyWorkspace: NSObject {
             } else {
                 DraftStore.sharedStore().deleteDraft(self.draft)
                 
-                self.completion?(false, true)
+                self.completion?(true)
             }
         }
         self.submitProgress = submitProgress
