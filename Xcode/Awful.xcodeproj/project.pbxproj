@@ -1663,8 +1663,8 @@
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
-				1CF186A517D48E5700B26717 /* Thread Tags */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
+				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			name = Resources;
 			path = ../Resources;
