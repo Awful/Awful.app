@@ -23,10 +23,11 @@ error do |lane, exception, options|
 end
 
 
-desc "Build and upload a beta to TestFlight, bumping the build number too"
+desc "Build and upload a binary to iTunes Connect and release via TestFlight, bumping the build number too"
 desc ""
 desc "Options:"
 desc "  skip_bump:true – don't bump the build number"
+desc "  skip_testflight:true - don't release via TestFlight"
 lane :beta do |options|
   
   ensure_git_status_clean
@@ -61,7 +62,7 @@ lane :beta do |options|
     upload_symbols_to_crashlytics
   end
   
-  if ENV["PILOT_USERNAME"]
+  if ENV["PILOT_USERNAME"] && !options[:skip_testflight]
     changelog = prompt(
       text: "Change log: ",
       multi_line_end_keyword: "END"
