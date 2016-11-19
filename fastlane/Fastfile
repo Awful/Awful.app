@@ -27,10 +27,11 @@ desc "Build and upload a binary to iTunes Connect and release via TestFlight, bu
 desc ""
 desc "Options:"
 desc "  skip_bump:true – don't bump the build number"
+desc "  skip_gitclean:true - ignore dirty git repo"
 desc "  skip_testflight:true - don't release via TestFlight"
 lane :beta do |options|
   
-  ensure_git_status_clean
+  ensure_git_status_clean unless options[:skip_gitclean]
   
   unless options[:skip_bump]
     bump_build_number
@@ -40,6 +41,7 @@ lane :beta do |options|
     commit_version_bump(
       message: "Bump build number to #{build_number}.",
       xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
+      force: options[:skip_gitclean],
     )
   end
 
