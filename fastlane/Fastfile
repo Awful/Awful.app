@@ -64,16 +64,19 @@ lane :beta do |options|
     upload_symbols_to_crashlytics
   end
   
-  if ENV["PILOT_USERNAME"] && !options[:skip_testflight]
-    changelog = prompt(
-      text: "Change log: ",
-      multi_line_end_keyword: "END"
-    )
+  if ENV["PILOT_USERNAME"]
+    params = {
+      distribute_external: !options[:skip_testflight],
+    }
     
-    testflight(
-      changelog: changelog,
-      distribute_external: true,
-    )
+    unless options[:skip_testflight]
+      params[:changelog] = prompt(
+        text: "Change log: ",
+        multi_line_end_keyword: "END"
+      )
+    end
+    
+    testflight(params)
   end
   
   major, minor = get_version_number_components
