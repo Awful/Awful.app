@@ -1,9 +1,13 @@
 High priority:
-	- Don't freeze on or endlessly bounce the pull-to-refresh indicator.
+	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
+		These seem related so they're grouped together. Might not be related though.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
 		"I get a bug when I refresh my bookmarked threads only on my iPad Pro. The smiley face icon to indicate it's refreshing will keep bouncing forever until I terminate the app. Works fine on my iPhone though."
 		"Still getting landscape freeze on 3.17 on Bookmarks screen. Happens after doing a pull to reload."
 		"Just updated to 3.18, that screen rotation bug is still there."
+		"it's prob. been mentioned already but im still getting that landscape/portrait freeze on an iPhone 6s. It's a lot less frequent than before but it still happens all the time"
+		"I'm seeing the app freeze up when changing orientation in Forums, Bookmarks, PMs or Lepers views. Settings view and in a thread are fine. Exiting to home (not force quitting) and back into the app clears it up." @iphone6s @ios10.1.1 @awful3.19
+		"Ditto on the screen orientation bug. Also using 6S."
 	- Crash in posts page, possibly on pages with embedded tweets.
 		"Still having the crashing problems. Maybe a memory leak. Seems like it happens sometimes on pages with tweet embeds?"
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
@@ -32,6 +36,8 @@ High priority:
 		"Don't know if this is known because it might not affect many people, but I've noticed if there's no active data stream and you try to refresh or view a thread, the app will crash."
 	- Stop saying "archives required" when the forums are fucked/down.
 		Very confusing!
+	- Adding a bookmark gives an error, but seems to succeed anyway.
+		"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
 Medium priority:
 	- Permanent error scraping PM list.
 		Pretty sure this is when the inbox is empty (we didn't find any messages and so we assume that scraping failed).
@@ -410,12 +416,14 @@ Medium priority:
 			cite: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=232#post464044369
 	- Links opening but not navigating in Awful Browser.
 		"I've been getting this since updating to iOS 10 also. I'm on a 6 Plus, using the "open in Awful's browser" option. Down for everyone and I should switch over to Safari until it's fixed, or just an issue for me?" @iphoneplus @ios10
+		"So I've been pretty consistently getting the bug where opening a link in Awful's in-app browser just pulls up a blank page. Backing out and tying the link again doesn't work. And yeah this happens every link, and only (for some bizarre reason) on my iPhone 6s+. On my iPad Air 2, Awful opens browser links just fine."
 	- Embedded deleted tweets wreck embedding on same page for non-deleted tweets.
 		"I have an issue with how the app embeds tweets. The USPol thread contains many posts that are ill-advised tweets that later get taken down. See, for example, page 568 of this month's thread: https://forums.somethingawful.com/showthread.php?threadid=3788694&perpage=40&pagenumber=568. Deleted tweets don't embed properly (duh), but they also break the embedding of undeleted tweets on the same page. The text of the tweets loads, but the final product isn't converted into a tweet-looking box, nor are any images/videos properly loaded. Edit: now with img! https://i.imgur.com/5Lp6qLg.png" 
 	- Page numbers in posts page toolbar stay small after orientation changes.
 		"Have a thread open in portrait orientation. Tap a link, rotate to landscape and back to portrait, and then close the in-app browser sheet. When you come back to the thread, the page numbers at the bottom are in a smaller font. This cosmetic oddity goes away if you load a new page or go back to your bookmarks, etc. Sticks around if you merely reload the current page though."
 	- Username changes aren't reflected quickly in-app.
 		"if your username is changed while you remain logged into Awful app the whole time, new quotes of your posts are not highlighted in purple; old quotes attributed to your old username are still highlighted instead. Similarly when you preview a new post, it still displays your old username atop the preview."
+		"when my handle was changed by a mod, it wasn't updated in the app. So my posts or quotes of my posts weren't highlighted. Re logging fixed this, however"
 	- Unhelpful long-press on embedded tweets.
 		"if you long-press on a link within an embedded tweet, it will first pop up the useless "Copy URL/Cancel" buttons where the only URL copied is <https://forums.somethingawful.com>, as I've previously reported. But now if you keep pressing for a fraction of a second longer, it will pop up a new and exciting and partially useless set of buttons! These are "Copy/Open in Safari/Share.../Cancel": "Copy" seems to do literally nothing, "Share..." likewise (since I guess there's already the first set of buttons on the screen mb preventing the Sharing sheet from appearing?), and I've never tried "Open in Safari" so it might work!"
 		Example post: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=237#post465566860
@@ -461,8 +469,8 @@ New features:
 		"Feature request: if you hold on a forum emoticon, show the bbcode for it instead of showing it full-screen."
 		"It'd be nice to be able to favorite a smiley from someone else's post."
 		Action sheet?
-	- Show post histories.
-		This was on my feature list but I dunno exactly what it means. I think a way to tap a user and search the Forums for all their posts?
+	- Show post history for a user.
+		"support the ability to see all of a user's post history. The profile page in general seems pretty light tbh."
 	- Setting/ability to embed images always as [img] by default (not [timg]).
 		"I was posting large size web comics into the GBS web comics thread, where some people frown upon timg due to how it reacts when the forum is viewed on touchscreen devices in a normal web browser."
 		"If there isn't an option to embed images from my phone's library not as timg automatically but img instead already, can their be one?"
@@ -597,6 +605,7 @@ New features:
 		"The link in http://forums.somethingawful.com/showthread.php?threadid=3740700&perpage=40&pagenumber=905#post453511573 doesn't open in YouTube directly. Because of the shortener?" (URL is https://youtu.be/C6UzTXqnxjw)
 	- Only allow "pull for next page" gesture in posts view if, when touch started, scroll view was at or very near bottom.
 		"Can 'pull to load next page' be a toggle in settings please I've jumped to the next page twice in literally the last 30 seconds before reading the last two posts on the page"
+		"when scrolling down a page, often I'll miss the last two or three posts because it'll launch the next page. Some kind of an indicator that you're getting to the end of a page would be nice' forcing users to release and swipe down further to get the app to launch the next page would be better."
 	- Background app refresh.
 		The iOS feature where your app gets launched in the background once in a while to "refresh" itself. Maybe we refresh the bookmarks list, any open thread lists, and the PM inbox.
 	- Local notifications for new PMs (if the app is in the background and happens to discover a previously-unknown, unread PM)
@@ -712,6 +721,7 @@ New features:
 		"I know you can change the byob style sheet browsing on pc, but is that possible in the app?"
 	- App-specific orientation lock.
 		"Is there some way to add app specific rotation lock ala kindle or pocket?"
+	- Allow changing bookmark colours.
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -857,7 +867,7 @@ Needs verification:
 		"I just had a terrible bug where I was stuck in between the post and preview screen and pressing cancel did nothing. Tried force closing the app and restarting my phone multiples times with no luck, it kept bringing me back to that very same post screen. Only thing that worked was deleting the app and reinstalling it to reset the whole affair."
 			"Couldn't get back to the side menu or any other screen outside of those two editor screens. Restarting the app and even restarting the phone didn't help, somehow the app preserved that bugged state and only reinstalling it reset it."
 			"Canceling an edit basically just wouldn't happen, neither Delete Edit or Save Draft did anything, though closing the app through multitasking got it just fine. E: Update! This happens consistently with editing posts. Like this one for example! You have to preview and save changes, canceling or saving the draft does nothing at all."
-	
+			
 			"I do have messages, but they are viewed and kind of old."
 	- Can interact with the posts view behind a share popup.
 		"If you long-press on a link to show the sharing menu and keep touching the screen after it comes up, you can then drag that finger to scroll the backgrounded+tinted thread around." @ios8.2 @awful3.2
@@ -927,3 +937,5 @@ Needs verification:
 		"anyone else have an issue on the app when trying to view your own profile? not that it matters, but my own profile loads up as a blank page. It's for the best, probably" @iphone6s
 	- Odd queueing/caching behaviour with multiple pages in a forum.
 		"after loading a few extra pages in a forum, sometimes Awful will attempt to load that many pages again on subsequent visits to the forum. Oftentimes the app will freeze while it tries loading everything, but still buffer any touch events you might be giving it so it loads everything simultaneously. Doing a pull to refresh will sometimes collapse it back down to one page temporarily, and logging out and back in resets the page counter. iphone se 3.17 but it happened to my old 5s as well" @awful3.17
+	- Minor weirdness with username in the post preview screen.
+		"Also I'm seeing some minor weirdness with the username in the post preview screen. So far I've seen my name showing up in blue like I'm the OP of a thread when I'm not, and I've seen my mod star not show up. I have not been able to reliably reproduce either of these."
