@@ -43,6 +43,10 @@ startBridge(function(bridge) {
   bridge.registerHandler('fontScale', function(scalePercentage) {
     fontScale(scalePercentage);
   });
+    
+    bridge.registerHandler('jumpToFractionalOffset', function(offset) {
+        window.scroll(0, document.body.scrollHeight * offset);
+    });
 });
 
 // Action sheet popovers need to synchronously get the bounding rect of the header. The bridge can't help us, so here's a function meant to be called directly from Objective-C.

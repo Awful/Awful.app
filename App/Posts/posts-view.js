@@ -23,6 +23,10 @@ startBridge(function(bridge) {
         window.location.hash = '#' + postID;
     });
     
+    bridge.registerHandler('jumpToFractionalOffset', function(offset) {
+        window.scroll(0, document.body.scrollHeight * offset);
+    });
+    
     bridge.registerHandler('markReadUpToPostWithID', function(postID) {
         var lastReadIndex = $('#' + postID).index();
         if (lastReadIndex === -1) return;
@@ -59,7 +63,6 @@ startBridge(function(bridge) {
     });
     
     bridge.registerHandler('embedTweets', function() {
-        //$('a').each(function() { embedTweet(this);})
         window.twttr.events.bind(
             'loaded',
             function (event) {

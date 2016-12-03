@@ -57,7 +57,7 @@ final class MessageViewController: ViewController {
         webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
         didRender = true
         
-        webView.fractionalContentOffset = fractionalContentOffsetOnLoad
+        self.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fractionalContentOffsetOnLoad)
     }
     
     @objc fileprivate func didTapReplyButtonItem(_ sender: UIBarButtonItem?) {
@@ -339,7 +339,7 @@ extension MessageViewController: UIWebViewDelegate {
         if !didLoadOnce {
             didLoadOnce = true
             
-            webView.fractionalContentOffset = fractionalContentOffsetOnLoad
+            self.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fractionalContentOffsetOnLoad)
         }
         
         if AwfulSettings.shared().embedTweets {

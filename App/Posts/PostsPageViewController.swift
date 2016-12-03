@@ -1029,7 +1029,7 @@ final class PostsPageViewController: ViewController {
             }
             
             else if let fraction = self?.scrollToFractionAfterLoading, fraction > 0 {
-                self?.webView.fractionalContentOffset = fraction
+                self?.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fraction)
             }
         })
         
@@ -1155,6 +1155,7 @@ extension PostsPageViewController: UIWebViewDelegate {
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
         guard !webViewDidLoadOnce && webView.request?.url?.absoluteString != "about:blank" else { return }
+        
         if AwfulSettings.shared().embedTweets {
             webViewJavascriptBridge?.callHandler("embedTweets")
         }
@@ -1176,11 +1177,10 @@ extension PostsPageViewController: UIWebViewDelegate {
         if let postID = jumpToPostIDAfterLoading {
             webViewJavascriptBridge?.callHandler("jumpToPostWithID", data: postID)
         } else if let fractionalOffset = scrollToFractionAfterLoading {
-            webView.fractionalContentOffset = fractionalOffset
+            self.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fractionalOffset)
         }
         
         clearLoadingMessage()
-        
         
     }
 }
