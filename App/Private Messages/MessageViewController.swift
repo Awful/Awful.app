@@ -214,6 +214,12 @@ final class MessageViewController: ViewController {
             self?.showUserActions(from: rect)
         })
         
+        webViewJavascriptBridge?.registerHandler("didFinishLoadingTweets", handler: { [weak self] (data, callback) in
+           if let fraction = self?.fractionalContentOffsetOnLoad, fraction > 0 {
+                self?.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fraction)
+            }
+        })
+        
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressWebView))
         longPress.delegate = self
         webView.addGestureRecognizer(longPress)
@@ -314,9 +320,27 @@ private enum Keys: String {
     case ScrollFraction = "AwfulScrollFraction"
 }
 
+/// Twitter and YouTube embeds try to use taps to take over the frame. Here we try to detect that and treat it as if a link was tapped.
+fileprivate func isHijackingWebView(_ navigationType: UIWebViewNavigationType, url: URL) -> Bool {
+    guard case .other = navigationType else { return false }
+    guard let host = url.host?.lowercased() else { return false }
+    if host.hasSuffix("www.youtube.com") && url.path.lowercased().hasPrefix("/watch") {
+        return true
+    } else if
+        host.hasSuffix("twitter.com"),
+        let thirdComponent = url.pathComponents.dropFirst(2).first,
+        thirdComponent.lowercased() == "status"
+    {
+        return true
+    } else {
+        return false
+    }
+}
+
 extension MessageViewController: UIWebViewDelegate {
     func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard let url = request.url else { return true }
+        guard navigationType == .linkClicked || isHijackingWebView(navigationType, url: url) else { return true }
         
         var navigationType = navigationType
         // Tapping the title of an embedded YouTube video doesn't come through as a click. It'll just take over the web view if we're not careful.
@@ -324,7 +348,7 @@ extension MessageViewController: UIWebViewDelegate {
             navigationType = .linkClicked
         }
         
-        guard navigationType == .linkClicked else { return true }
+        guard navigationType == .linkClicked || url.host?.lowercased().hasSuffix("twitter.com") == true else { return true }
         if let awfulURL = url.awfulURL {
             AppDelegate.instance.openAwfulURL(awfulURL)
         } else if url.opensInBrowser {

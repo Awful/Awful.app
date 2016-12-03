@@ -29,7 +29,26 @@ startBridge(function(bridge) {
   });
             
   bridge.registerHandler('embedTweets', function() {
-    $('a').each(function() { embedTweet(this);})
+      window.twttr.events.bind(
+          'loaded',
+          function (event) {
+              bridge.callHandler('didFinishLoadingTweets', null);
+          }
+          );
+      var URLs = $('a').toArray();
+      window.Awful.tweets = [];
+      
+      var e;
+      for (var i = 0; i < URLs.length; i++) {
+          e = parseTweetURL(URLs[i]);
+          if (e != null) {
+              window.Awful.tweets.push(URLs[i]);
+          }
+      }
+      
+      for (var i = 0; i < window.Awful.tweets.length; i++) {
+          embedTweet(window.Awful.tweets[i]);
+      }
   });
   
   bridge.registerHandler('showAvatars', function(show) {
