@@ -286,6 +286,8 @@ BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
 
 BOOL_PROPERTY(openYouTubeLinksInYouTube, setOpenYouTubeLinksInYouTube)
 
+BOOL_PROPERTY(openTwitterLinksInTwitter, setOpenTwitterLinksInTwitter)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -374,6 +376,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .handoffEnabled = @"handoff_enabled",
     .defaultBrowser = @"default_browser",
     .openYouTubeLinksInYouTube = @"open_youtube_links_in_youtube",
+    .openTwitterLinksInTwitter = @"open_twitter_links_in_twitter",
 };
 
 NSArray * AwfulDefaultBrowsers(void)

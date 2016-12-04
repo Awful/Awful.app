@@ -48,6 +48,12 @@ private enum _URLMenuPresenter {
             return
         }
         
+        if canOpenInTwitter(url) &&
+            AwfulSettings.shared().openTwitterLinksInTwitter {
+            UIApplication.shared.openURL(url)
+            return
+        }
+        
         if canOpenInVLC(url) {
             let vlcURL = URL(string: "vlc://\(url.host!)\(url.path)")!
             UIApplication.shared.openURL(vlcURL)
@@ -87,6 +93,8 @@ private enum _URLMenuPresenter {
                     let title: String
                     if canOpenInYouTube(linkURL) {
                         title = "Open in YouTube"
+                    } else if canOpenInTwitter(linkURL) {
+                        title = "Open in Twitter"
                     } else {
                         title = "Open in Safari"
                     }
@@ -265,6 +273,15 @@ private func canOpenInVLC(_ url: URL) -> Bool {
     if installed == true
         && path.hasSuffix(".webm") == true {
             return true
+    }
+    return false
+}
+
+private func canOpenInTwitter(_ url: URL) -> Bool {
+    let installed = UIApplication.shared.canOpenURL(URL(string: "twitter://")!)
+    let host = url.host?.lowercased()
+    if installed == true && host?.hasSuffix("twitter.com") == true {
+        return true
     }
     return false
 }

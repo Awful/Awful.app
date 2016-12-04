@@ -66,6 +66,7 @@
 		<string>org-appextension-feature-password-management</string>
 		<string>vimeo</string>
 		<string>youtube</string>
+		<string>twitter</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
