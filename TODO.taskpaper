@@ -21,6 +21,7 @@ High priority:
 		Cache pruner?
 	- Tapping an ignored post loads an unrelated post.
 		"I shamefully put someone on ignore a while back that I totally shouldn't have, but since I almost exclusively use the app (where you can't un-ignore someone, but their posts show up inline with one click without loading a separate page) it wasn't a huge deal. Except right now after upgrading to iOS 10 when I click on an ignored post it actually loads a completely random post from a completely random user instead."
+		"it appears that sometimes when you tap on an ignored user's post to reveal it, it replaces it with a recent post from someone else in the thread." @awful3.17 @ios9
 	- More complaints than usual about used storage space, is cache pruning working?
 		Not sure it ever worked all that well. Should think about how to do this properly, then attempt to implement that plan.
 		Add a "clear cache" button to Settings?
@@ -39,6 +40,8 @@ High priority:
 	- Adding a bookmark gives an error, but seems to succeed anyway.
 		"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
 Medium priority:
+	- Long-pressing am embedded YouTube video pops up two menus of varying (but largely limited) functionality.
+		"This is fixed (which I think you've noted), but I'm seeing this same bug with embedded YouTube videos, though the buttons are "Open/Add to Reading List/Copy/Share..." here. I think I first saw it around the same time as the embedded tweet double-popup-buttons bug, but hadn't activated it in a while when I made the above report. None of the double-popup-buttons do anything except for possibly Copy, which I think just sets the clipboard to the empty string rather than actually copying the video URL." @awful3.19 @ios10.1
 	- Permanent error scraping PM list.
 		Pretty sure this is when the inbox is empty (we didn't find any messages and so we assume that scraping failed).
 		"Every time I hit the messages tab with my fat/clumsy fingers it gives me an error message."
@@ -939,3 +942,5 @@ Needs verification:
 		"after loading a few extra pages in a forum, sometimes Awful will attempt to load that many pages again on subsequent visits to the forum. Oftentimes the app will freeze while it tries loading everything, but still buffer any touch events you might be giving it so it loads everything simultaneously. Doing a pull to refresh will sometimes collapse it back down to one page temporarily, and logging out and back in resets the page counter. iphone se 3.17 but it happened to my old 5s as well" @awful3.17
 	- Minor weirdness with username in the post preview screen.
 		"Also I'm seeing some minor weirdness with the username in the post preview screen. So far I've seen my name showing up in blue like I'm the OP of a thread when I'm not, and I've seen my mod star not show up. I have not been able to reliably reproduce either of these."
+	- Crash when attempting to expand/collapse forums.
+		"I just realized I can't maximize or minimize any subforums. No error message, the app just crashes when I press the arrow." @awful3.19 @ios10.1.1
