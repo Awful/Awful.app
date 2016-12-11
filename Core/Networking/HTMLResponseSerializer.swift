@@ -9,7 +9,7 @@ final class HTMLResponseSerializer: AFHTTPResponseSerializer {
     override init() {
         super.init()
         
-        acceptableContentTypes = ["text/html", "application/xhtml+xml"]
+        acceptableContentTypes = ["text/html", "application/xhtml+xml", "application/json"]
     }
     
     required init?(coder: NSCoder) {
