@@ -1,4 +1,10 @@
 High priority:
+	- FYAD thread list is busted.
+		"I don't know if there was a change in FYAD but the thread index is broken now. It only displays a few threads then the backing color, and touching a thread selects one several down. Leaving and re-entering sometimes fixes it, and sometimes breaks it if it was working. If you don't scroll at all the few threads shown will select correctly but it will always break if you scroll down enough.  This started happening since the last update. Blowing away local cache doesn't help."
+	- PM list and reply screen getting borked.
+		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
+	- Getting some mojibake when submitting posts.
+		"TÃƒÂ¶st MotÃ¶rhead Ok, Umlauts aren't displayed properly." http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=240#post467243335
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
 		These seem related so they're grouped together. Might not be related though.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
@@ -40,6 +46,9 @@ High priority:
 	- Adding a bookmark gives an error, but seems to succeed anyway.
 		"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
 Medium priority:
+	- Mark-thread-as-unread-to-here is throwing an "unacceptable response content type" error even though it's succeeding.
+		"I've been getting this whenever I mark a thread as unread recently. The unmark goes through just fine despite appearances and a refresh fixes things up. http://i.imgur.com/DvFvVqZ.jpg"
+		""Mark Unread" isn't working. Everything else is dandy, but I can't hide my shame from reading terrible threads."
 	- Long-pressing am embedded YouTube video pops up two menus of varying (but largely limited) functionality.
 		"This is fixed (which I think you've noted), but I'm seeing this same bug with embedded YouTube videos, though the buttons are "Open/Add to Reading List/Copy/Share..." here. I think I first saw it around the same time as the embedded tweet double-popup-buttons bug, but hadn't activated it in a while when I made the above report. None of the double-popup-buttons do anything except for possibly Copy, which I think just sets the clipboard to the empty string rather than actually copying the video URL." @awful3.19 @ios10.1
 	- Permanent error scraping PM list.
