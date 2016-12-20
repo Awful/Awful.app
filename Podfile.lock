@@ -27,7 +27,7 @@ PODS:
   - FLAnimatedImage (1.0.12)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
-  - HTMLReader (2.0)
+  - HTMLReader (2.0.2)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.6.4)
@@ -96,7 +96,7 @@ SPEC CHECKSUMS:
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
-  HTMLReader: 7fbf32ddfcbcdfeba0833713e4545d1862aeb07c
+  HTMLReader: e58462a84fe1840cbe4706a8a705524052806081
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
