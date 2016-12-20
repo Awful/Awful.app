@@ -8,7 +8,7 @@ import UIKit
 /// Taps into a UIWebViewDelegate so it works with an AFNetworkActivityIndicatorManager.
 final class WebViewNetworkActivityIndicatorManager: NSObject {
     fileprivate let manager: AFNetworkActivityIndicatorManager
-    fileprivate let nextDelegate: UIWebViewDelegate?
+    fileprivate weak var nextDelegate: UIWebViewDelegate?
     fileprivate var activeRequestCount = 0 {
         didSet {
             if oldValue == 0 && activeRequestCount > 0 {
