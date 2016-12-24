@@ -7,6 +7,9 @@
 FOUNDATION_EXPORT double AwfulCoreVersionNumber;
 FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 
+// Categories (so Swift can call the methods)
+#import <AwfulCore/NSString+Undeprecation.h>
+
 // Model
 #import <AwfulCore/AwfulThreadPage.h>
 

@@ -238,6 +238,8 @@
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C7994AB1E0F101E0016BEAE /* NSString+Undeprecation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C7994AC1E0F101E0016BEAE /* NSString+Undeprecation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -695,6 +697,8 @@
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
+		1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Undeprecation.h"; path = "Categories/NSString+Undeprecation.h"; sourceTree = "<group>"; };
+		1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Undeprecation.m"; path = "Categories/NSString+Undeprecation.m"; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -1212,6 +1216,7 @@
 			isa = PBXGroup;
 			children = (
 				1C3CF96A1A94B9B40065C964 /* AwfulCore.h */,
+				1C7994A81E0F0FEB0016BEAE /* Categories */,
 				1C14A4BF1A94C3C50045DDF7 /* Data */,
 				1C14A4DB1A94C7260045DDF7 /* Errors.swift */,
 				1C3CF9691A94B9B40065C964 /* Info.plist */,
@@ -1350,6 +1355,15 @@
 				1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */,
 			);
 			path = Profiles;
+			sourceTree = "<group>";
+		};
+		1C7994A81E0F0FEB0016BEAE /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */,
+				1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
@@ -1733,6 +1747,7 @@
 				1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */,
 				1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */,
 				1C14A4CA1A94C4A60045DDF7 /* PrivateMessageFolderScraper.h in Headers */,
+				1C7994AB1E0F101E0016BEAE /* NSString+Undeprecation.h in Headers */,
 				1C3CF96B1A94B9B40065C964 /* AwfulCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2456,6 +2471,7 @@
 			files = (
 				1C14A4B21A94C0B50045DDF7 /* CachePruner.swift in Sources */,
 				1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */,
+				1C7994AC1E0F101E0016BEAE /* NSString+Undeprecation.m in Sources */,
 				1C14A4D91A94C4BF0045DDF7 /* PrivateMessageScraper.m in Sources */,
 				1C097A8D1A97AF0600425EEF /* AwfulForumsClient.m in Sources */,
 				1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */,

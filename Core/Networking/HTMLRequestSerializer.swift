@@ -5,18 +5,56 @@
 import AFNetworking
 import Foundation
 
-/// Ensures parameter values are within its string encoding by turning any outside characters into decimal HTML entities.
+/**
+    Ensures parameter values are within its string encoding by turning any outside characters into decimal HTML entities.
+ 
+    - Warning: Ignores the `stringEncoding` property and always uses win1252.
+    - Warning: Only works for parameters that resemble `[String: Any]`, where no values are themselves a collection.
+ */
 final class HTMLRequestSerializer: AFHTTPRequestSerializer {
-    override func request(bySerializingRequest request: URLRequest, withParameters parameters: Any?, error: NSErrorPointer) -> URLRequest? {
-        if let method = request.httpMethod, httpMethodsEncodingParametersInURI.contains(method) { return super.request(bySerializingRequest: request, withParameters: parameters, error: error) }
+    
+    override init() {
+        super.init()
         
-        guard stringEncoding == String.Encoding.windowsCP1252.rawValue else { fatalError("only works with win1252") }
-        guard var dict = parameters as? [NSObject: Any] else { return super.request(bySerializingRequest:request, withParameters: parameters, error: error) }
-        for key in dict.keys {
-            guard let value = dict[key] as? String, !value.canBeConverted(to: String.Encoding(rawValue: stringEncoding)) else { continue }
-            dict[key] = escape(s: value)
+        self.setQueryStringSerializationWith(queryString)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        self.setQueryStringSerializationWith(queryString)
+    }
+}
+
+private func queryString(request: URLRequest, parameters: Any, error: NSErrorPointer) -> String {
+    return (parameters as! [String: Any])
+        .map { QueryStringPair(field: $0, value: $1) }
+        .map { $0.URLEncodedValue }
+        .joined(separator: "&")
+}
+
+private let charactersToBeEscapedInQueryString = ":/?&=;+!@#$()',*"
+private let charactersToLeaveUnescapedInQueryString = "[]."
+
+private struct QueryStringPair {
+    let field: String
+    let value: Any
+    
+    var URLEncodedValue: String {
+        let escapedField = (field as NSString).awful_stringByAddingPercentEncodingAllowingCharacters(
+            in: charactersToLeaveUnescapedInQueryString,
+            escapingAdditionalCharactersIn: charactersToBeEscapedInQueryString,
+            encoding: String.Encoding.windowsCP1252.rawValue) as String
+        
+        guard !(value is NSNull) else {
+            return escapedField
         }
-        return super.request(bySerializingRequest:request, withParameters: dict, error: error)
+        
+        let stringyValue = (value as? CustomStringConvertible)?.description ?? "\(value)"
+        
+        let escapedValue = (escape(stringyValue) as NSString).awful_stringByAddingPercentEncodingAllowingCharacters(in: charactersToLeaveUnescapedInQueryString, escapingAdditionalCharactersIn: charactersToBeEscapedInQueryString, encoding: String.Encoding.windowsCP1252.rawValue) as String
+        
+        return "\(escapedField)=\(escapedValue)"
     }
 }
 
@@ -30,7 +68,7 @@ private func iswin1252(c: UnicodeScalar) -> Bool {
     }
 }
 
-private func escape(s: String) -> String {
+private func escape(_ s: String) -> String {
     let scalars = s.unicodeScalars.flatMap { (c: UnicodeScalar) -> [UnicodeScalar] in
         if iswin1252(c: c) {
             return [c]
