@@ -1,10 +1,7 @@
 High priority:
-	- FYAD thread list is busted.
-		"I don't know if there was a change in FYAD but the thread index is broken now. It only displays a few threads then the backing color, and touching a thread selects one several down. Leaving and re-entering sometimes fixes it, and sometimes breaks it if it was working. If you don't scroll at all the few threads shown will select correctly but it will always break if you scroll down enough.  This started happening since the last update. Blowing away local cache doesn't help."
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
-	- Getting some mojibake when submitting posts.
-		"TÃƒÂ¶st MotÃ¶rhead Ok, Umlauts aren't displayed properly." http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=240#post467243335
+	"TÃƒÂ¶st MotÃ¶rhead Ok, Umlauts aren't displayed properly." http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=240#post467243335
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
 		These seem related so they're grouped together. Might not be related though.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
@@ -43,9 +40,14 @@ High priority:
 		"Don't know if this is known because it might not affect many people, but I've noticed if there's no active data stream and you try to refresh or view a thread, the app will crash."
 	- Stop saying "archives required" when the forums are fucked/down.
 		Very confusing!
-	- Adding a bookmark gives an error, but seems to succeed anyway.
-		"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
+	- Can't dismiss the posts page settings view on iPhone 7+ in landscape.
+		" the PostsPageSettingsView can't be dismissed on an iPhone 7 Plus in landscape. It also looks real bad."
+	"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
 Medium priority:
+	- Smilie keyboard got real small.
+		"So what happened to cause the emoticon keyboard to get so small?  It used to be twice as tall but now you can only see just one or two rows which makes it frustrating to scroll through."
+	- Vimeo embeds can hijack the posts webview.
+		"If you click on the little V in the bottom-right of an embedded Vimeo video, you can open the Vimeo page inside of the Awful app."
 	- Mark-thread-as-unread-to-here is throwing an "unacceptable response content type" error even though it's succeeding.
 		"I've been getting this whenever I mark a thread as unread recently. The unmark goes through just fine despite appearances and a refresh fixes things up. http://i.imgur.com/DvFvVqZ.jpg"
 		""Mark Unread" isn't working. Everything else is dandy, but I can't hide my shame from reading terrible threads."
@@ -734,6 +736,8 @@ New features:
 	- App-specific orientation lock.
 		"Is there some way to add app specific rotation lock ala kindle or pocket?"
 	- Allow changing bookmark colours.
+	- An auto-scroll setting for hands-free operation.
+		"I would love some sort of auto scroll setting for when I read in bed. Hands free! Imagine."
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
