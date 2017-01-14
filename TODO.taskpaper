@@ -1,7 +1,6 @@
 High priority:
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
-	"TÃƒÂ¶st MotÃ¶rhead Ok, Umlauts aren't displayed properly." http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=240#post467243335
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
 		These seem related so they're grouped together. Might not be related though.
 		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
@@ -42,7 +41,6 @@ High priority:
 		Very confusing!
 	- Can't dismiss the posts page settings view on iPhone 7+ in landscape.
 		" the PostsPageSettingsView can't be dismissed on an iPhone 7 Plus in landscape. It also looks real bad."
-	"long pressing a thread and trying to add bookmark is giving me an error. http://i.imgur.com/jxNNzRE.png" @iphone5s @awful3.20-beta6 @ios10.2-beta
 Medium priority:
 	- Smilie keyboard got real small.
 		"So what happened to cause the emoticon keyboard to get so small?  It used to be twice as tall but now you can only see just one or two rows which makes it frustrating to scroll through."
@@ -81,6 +79,7 @@ Medium priority:
 		"I've noticed that the "[/..]" button on the reply screen's keyboard no longer works correctly with nested tags, and instead will just attempt to close the most recent tag even if that was already a close-tag -- and even if it's not actually a tag at all! So you'll get like "[//..][///..][////..][/////..]" if you hit that button four times as it attempts to close my "[/..]" "tag" from the beginning of this paragraph. Did something happen within the past few releases to the parser or regex engine that recognized open-tags?"
 		"when composing a post, the "[/..]" button still fixates onto trying to re-close closing tags as well as not-actually-tags, so pressing it 3 times here inserts: [//..][///..][////..]"
 		Was recently ported to Swift, very possible that introduced an error.
+		"Closing tags with the "[/..]" key still duplicates the most recent square brackets instead of actually closing the most recent open tag (e.g. "[//..]" if I hit that here.)"
 	- Only enable [/..] auto-close button after finishing a BBcode tag that takes a parameter.
 		"If you have a parametrized opener like "[quote=" then the button activates as soon as you enter the "=", before the tag is actually finished with the "]"."
 	- Ensure pull-for-next-page does that, and does not refresh the current page.
@@ -441,12 +440,15 @@ Medium priority:
 	- Unhelpful long-press on embedded tweets.
 		"if you long-press on a link within an embedded tweet, it will first pop up the useless "Copy URL/Cancel" buttons where the only URL copied is <https://forums.somethingawful.com>, as I've previously reported. But now if you keep pressing for a fraction of a second longer, it will pop up a new and exciting and partially useless set of buttons! These are "Copy/Open in Safari/Share.../Cancel": "Copy" seems to do literally nothing, "Share..." likewise (since I guess there's already the first set of buttons on the screen mb preventing the Sharing sheet from appearing?), and I've never tried "Open in Safari" so it might work!"
 		Example post: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=237#post465566860
+	- Some animated GIFs leave frames behind when in dark mode.
+		"when using dark mode background, a bunch of animated gifs (including emoticons) still leave prior frames behind in pixels that should be transparent on certain frames, e.g. :angel: and :roflolmao: and :yikes:"
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
 		Apparently if a mod gets on the ignore list, the only valid change is to remove the mod. So maybe don't try to bulk add/remove in one request, or check for "errors" where nothing changes, or something.
 		"Is there a reason you can't block someone from the app?"
 		"I found out today that there's no way to add a user to your ignore list from within the app. I am apparently getting crotchety in my old age, because this is something I'd like to do. Diabolik900 suggested I request the feature here, so here I am. Thanks for listening!"
+		"Can you ignore people from in the app?"
 	- Set last-read post to last-visible post instead of marking the whole page as read.
 		"Would it be possible to set the last read post only when I exit the thread, and only to the last post I have seen? I think current behavior matches the website, where last read is set to the end of the current page as soon as you open the thread. The app has the ability to be smarter I would think."
 	- Make SAclopedia available for browsing.
@@ -502,6 +504,7 @@ New features:
 	- Show fully-formatted Leper's Colony entries, not just the plain text version.
 		"Any plans on adding images to the leper colony btw?"
 		"Oh yeah +1 from me on this one."
+		"I don't know if this is a bug or if it's just not a thing yet, but gifs don't show up in leper's colony for me. "
 	- Allow backing out of all posts views in split view, leaving the main pane empty. @ipad
 		"I wish there were a way in the iPad app to get out of a thread view and just leave the main pane empty. I'm used to the phone version where you can go back to the bookmark list and so when I come back to the iPad app I have to figure out if I am in the middle of reading whatever thread is open or if I already read it."
 	- Open embedded tweets in Twitter.app. @twitter
@@ -738,6 +741,9 @@ New features:
 	- Allow changing bookmark colours.
 	- An auto-scroll setting for hands-free operation.
 		"I would love some sort of auto scroll setting for when I read in bed. Hands free! Imagine."
+	- "add a button to the post ... menu that scrolls to the top of that individual post."
+	- A button in the poster menu to jump to the next post.
+		"Also a "scroll to next post" button into the poster's name menu, s'il vous plaît, Pokeyhomme!"
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -957,3 +963,5 @@ Needs verification:
 		"Also I'm seeing some minor weirdness with the username in the post preview screen. So far I've seen my name showing up in blue like I'm the OP of a thread when I'm not, and I've seen my mod star not show up. I have not been able to reliably reproduce either of these."
 	- Crash when attempting to expand/collapse forums.
 		"I just realized I can't maximize or minimize any subforums. No error message, the app just crashes when I press the arrow." @awful3.19 @ios10.1.1
+	- Post preview ignoring dark mode?
+		"Post preview on ipad seems to be ignoring the dark mode setting and always displaying nondark mode"
