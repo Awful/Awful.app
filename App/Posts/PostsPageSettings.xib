@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2333a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D30a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,12 +33,14 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="292"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <rect key="frame" x="0.0" y="0.0" width="328" height="302"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PWM-Qs-8gj" userLabel="Header Background">
+                    <rect key="frame" x="0.0" y="0.0" width="328" height="37"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Formatting" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nRF-Tv-dRt" userLabel="Header">
+                            <rect key="frame" x="122.5" y="7" width="84" height="21"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
@@ -43,12 +48,13 @@
                     </subviews>
                     <color key="backgroundColor" red="0.95657652616500854" green="0.95657652616500854" blue="0.95657652616500854" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstAttribute="bottomMargin" secondItem="nRF-Tv-dRt" secondAttribute="bottom" id="JhV-FW-Wd4"/>
-                        <constraint firstAttribute="centerX" secondItem="nRF-Tv-dRt" secondAttribute="centerX" constant="-2" id="bYe-QR-DFa"/>
-                        <constraint firstItem="nRF-Tv-dRt" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="topMargin" id="gvl-Of-SS6"/>
+                        <constraint firstAttribute="bottomMargin" secondItem="nRF-Tv-dRt" secondAttribute="bottom" constant="1" id="JhV-FW-Wd4"/>
+                        <constraint firstAttribute="centerX" secondItem="nRF-Tv-dRt" secondAttribute="centerX" id="bYe-QR-DFa"/>
+                        <constraint firstItem="nRF-Tv-dRt" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="topMargin" constant="-1" id="gvl-Of-SS6"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avatars" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rif-rC-wd0">
+                    <rect key="frame" x="8" y="57" width="57" height="20"/>
                     <accessibility key="accessibilityConfiguration">
                         <bool key="isElement" value="NO"/>
                     </accessibility>
@@ -57,6 +63,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scale Text 100%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09i-VH-Faf">
+                    <rect key="frame" x="8" y="105" width="125" height="21"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
@@ -66,32 +73,28 @@
                     </userDefinedRuntimeAttributes>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l4w-sl-F1e" userLabel="Avatars Switch">
+                    <rect key="frame" x="70" y="52" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Show avatars"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="show_avatars"/>
                     </userDefinedRuntimeAttributes>
                 </switch>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Images" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqX-OM-5FZ">
-                    <accessibility key="accessibilityConfiguration">
-                        <bool key="isElement" value="NO"/>
-                    </accessibility>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kv2-c9-5sj" userLabel="Images Switch">
+                    <rect key="frame" x="271" y="52" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Load images automatically"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="show_images"/>
                     </userDefinedRuntimeAttributes>
                 </switch>
                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="32" translatesAutoresizingMaskIntoConstraints="NO" id="mYe-FY-VF2" userLabel="Theme Picker" customClass="ThemePicker" customModule="Awful" customModuleProvider="target">
+                    <rect key="frame" x="67" y="240" width="253" height="42"/>
                     <color key="backgroundColor" red="0.95657652616500854" green="0.95657652616500854" blue="0.95657652616500854" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <action selector="changeSelectedTheme:" destination="-1" eventType="valueChanged" id="2DZ-Ar-SHV"/>
                     </connections>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Dark Theme In Low Light" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="CyB-GB-e47">
+                    <rect key="frame" x="8" y="151" width="225" height="21"/>
                     <accessibility key="accessibilityConfiguration">
                         <bool key="isElement" value="NO"/>
                     </accessibility>
@@ -100,6 +103,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xMB-Ac-jjY" userLabel="Auto Theme Switch">
+                    <rect key="frame" x="271" y="146" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Automatically switch theme with brightness"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="auto_dark_theme"/>
@@ -109,22 +113,35 @@
                     </connections>
                 </switch>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tqs-Zr-NaN" userLabel="Dark Theme Switch">
+                    <rect key="frame" x="271" y="193" width="51" height="31"/>
                     <accessibility key="accessibilityConfiguration" label="Use a dark theme"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="dark_theme"/>
                     </userDefinedRuntimeAttributes>
                 </switch>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Style" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBq-go-frF">
+                    <rect key="frame" x="8" y="252.5" width="39" height="20"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="100" minimumValue="50" maximumValue="200" stepValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Xho-0N-tKL" userLabel="Font Scale Stepper">
+                    <rect key="frame" x="226" y="101" width="94" height="29"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="string" keyPath="awful_setting" value="font_scale"/>
                     </userDefinedRuntimeAttributes>
                 </stepper>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dark Theme" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PtM-NY-3PO">
+                    <rect key="frame" x="8" y="198" width="94" height="21"/>
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Images" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqX-OM-5FZ">
+                    <rect key="frame" x="206" y="57" width="56" height="21"/>
                     <accessibility key="accessibilityConfiguration">
                         <bool key="isElement" value="NO"/>
                     </accessibility>
@@ -154,7 +171,7 @@
                 <constraint firstItem="Tqs-Zr-NaN" firstAttribute="centerY" secondItem="PtM-NY-3PO" secondAttribute="centerY" id="Yni-mW-tl0"/>
                 <constraint firstItem="CyB-GB-e47" firstAttribute="leading" secondItem="09i-VH-Faf" secondAttribute="leading" id="bh2-oM-EUr"/>
                 <constraint firstItem="PtM-NY-3PO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="c2q-Da-jwm"/>
-                <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="5" id="cZu-ef-6a4"/>
+                <constraint firstItem="kv2-c9-5sj" firstAttribute="leading" secondItem="xqX-OM-5FZ" secondAttribute="trailing" constant="9" id="cZu-ef-6a4"/>
                 <constraint firstAttribute="trailing" secondItem="mYe-FY-VF2" secondAttribute="trailing" constant="8" id="deU-3H-5AK"/>
                 <constraint firstItem="xqX-OM-5FZ" firstAttribute="top" secondItem="PWM-Qs-8gj" secondAttribute="bottom" constant="20" id="gBQ-41-aji"/>
                 <constraint firstItem="l4w-sl-F1e" firstAttribute="leading" secondItem="rif-rC-wd0" secondAttribute="trailing" constant="5" id="gId-cF-Y2h"/>
@@ -169,7 +186,7 @@
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="241" y="71"/>
+            <point key="canvasLocation" x="219" y="-111"/>
         </view>
     </objects>
 </document>

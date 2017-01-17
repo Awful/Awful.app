@@ -39,8 +39,6 @@ High priority:
 		"Don't know if this is known because it might not affect many people, but I've noticed if there's no active data stream and you try to refresh or view a thread, the app will crash."
 	- Stop saying "archives required" when the forums are fucked/down.
 		Very confusing!
-	- Can't dismiss the posts page settings view on iPhone 7+ in landscape.
-		" the PostsPageSettingsView can't be dismissed on an iPhone 7 Plus in landscape. It also looks real bad."
 Medium priority:
 	- Smilie keyboard got real small.
 		"So what happened to cause the emoticon keyboard to get so small?  It used to be twice as tall but now you can only see just one or two rows which makes it frustrating to scroll through."

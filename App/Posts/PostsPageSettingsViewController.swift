@@ -121,7 +121,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     // MARK: UIAdaptivePresentationControllerDelegate
     
-    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return .none
     }
     
