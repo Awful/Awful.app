@@ -144,8 +144,8 @@ extension InAppActionViewController {
 private let cellIdentifier = "Cell"
 
 extension InAppActionViewController {
-    @objc(adaptivePresentationStyleForPresentationController:)
-    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    @objc(adaptivePresentationStyleForPresentationController:traitCollection:)
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return .none
     }
     
