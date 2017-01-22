@@ -1,4 +1,6 @@
 High priority:
+	- "F2P" thread icon is gigantic.
+		e.g. on TF2 thread. http://i.imgur.com/AtANiWF.png
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
@@ -10,6 +12,7 @@ High priority:
 		"it's prob. been mentioned already but im still getting that landscape/portrait freeze on an iPhone 6s. It's a lot less frequent than before but it still happens all the time"
 		"I'm seeing the app freeze up when changing orientation in Forums, Bookmarks, PMs or Lepers views. Settings view and in a thread are fine. Exiting to home (not force quitting) and back into the app clears it up." @iphone6s @ios10.1.1 @awful3.19
 		"Ditto on the screen orientation bug. Also using 6S."
+		"This is a weird one. About half the time I rotate my phone to landscape orientation the app locks up and I have to kill the process." "Seems to happen if I rotate the phone right after refreshing a thread, from the main forum list it doesn't happen" @iphone6 @ios10.2 
 	- Crash in posts page, possibly on pages with embedded tweets.
 		"Still having the crashing problems. Maybe a memory leak. Seems like it happens sometimes on pages with tweet embeds?"
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
@@ -440,6 +443,14 @@ Medium priority:
 		Example post: http://forums.somethingawful.com/showthread.php?noseen=0&threadid=3510131&perpage=40&pagenumber=237#post465566860
 	- Some animated GIFs leave frames behind when in dark mode.
 		"when using dark mode background, a bunch of animated gifs (including emoticons) still leave prior frames behind in pixels that should be transparent on certain frames, e.g. :angel: and :roflolmao: and :yikes:"
+	- Not obvious how to assign a thread icon in dark mode.
+		"When posting a new thread (at least in dark mode) it doesn't seem super obvious (to me) where to tap to assign a thread icon."
+	- "Preview" button in compose screen doesn't activate when it should after selecting a thread icon.
+		"if you select a thread icon after writing your subject and op, it appears the Preview button activeness validation doesn't fire until you make another edit to the op text."
+	- Timeout message when posting mentions image upload when there's no image.
+		"the error message when you you try to post and it times out says that the image upload failed, even when no image is being upload. This is affecting production."
+	- Thread compose text view isn't getting out from under the keyboard?
+		"Also if your op is too long it hides the bottom lines under your keyboard so you have no idea what you're typing."
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
@@ -634,6 +645,7 @@ New features:
 		"I think that quote blue text 'Samurai Saunders posted:' should be regular weight rather than bold. http://i.imgur.com/vES4Okv.png"
 	- See about opening Forums website URLs in Awful.
 		Would need SA to host a site association file over HTTPS. Can make file, dunno if anyone is interested in hosting it.
+		"On android I was able to click a link to a thread and it opened in the app automatically, this doesn't happen for me on iOS, it keeps opening in safari. Is this a limitation on iOS? A setting I'm missing?"
 	- Posts view page toolbar button ("< 1 / 5 >") is discoloured when iOS "button shapes" accessibility setting is enabled.
 		"iPhone version - I'm using the button shapes accessibility feature in iOS 7.1 and when you're swiping to go back the color of the button spazzes out. This happens if you're more than one thread later in, so like when you're in a thread and you click on a link to another post and then you try to swipe back."
 	- Setting for "load previous N posts" when opening a thread to the next unread post.
@@ -739,9 +751,12 @@ New features:
 	- Allow changing bookmark colours.
 	- An auto-scroll setting for hands-free operation.
 		"I would love some sort of auto scroll setting for when I read in bed. Hands free! Imagine."
+		"I remember Instapaper had an option to variable scroll based on the tilt of the device using the accelerometer. That could be a good substitute for the volume button scrolling request."
 	- "add a button to the post ... menu that scrolls to the top of that individual post."
 	- A button in the poster menu to jump to the next post.
 		"Also a "scroll to next post" button into the poster's name menu, s'il vous plaît, Pokeyhomme!"
+	- gifv support
+		"Gifv support please!"
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
