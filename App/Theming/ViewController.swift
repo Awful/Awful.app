@@ -148,6 +148,8 @@ class TableViewController: UITableViewController {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
         niggly.autoresizingMask = .flexibleWidth
+        niggly.backgroundColor = view.backgroundColor
+        niggly.bounds.size.height += 8
         pullToRefreshView = niggly
         let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .top)
         pullToRefresh.animationDuration = 0.3
@@ -251,14 +253,13 @@ class TableViewController: UITableViewController {
         infiniteScrollState = .loadingMore
         block()
         
-        let imageView = UIImageView(image: NigglyRefreshView.makeImage())
-        imageView.bounds.size.height += 12
-        imageView.contentMode = .center
-        imageView.backgroundColor = tableView.backgroundColor
-        tableView.tableFooterView = imageView
-        imageView.startAnimating()
+        let loadMoreView = NigglyLoadMoreView()
+        loadMoreView.sizeToFit()
+        loadMoreView.bounds.size.height += 12
+        loadMoreView.backgroundColor = tableView.backgroundColor
+        tableView.tableFooterView = loadMoreView
         
-        tableView.contentInset.bottom += imageView.bounds.height
+        tableView.contentInset.bottom += loadMoreView.bounds.height
     }
 }
 

@@ -7,86 +7,131 @@
 //
 
 import PullToRefresh
+import SpriteKit
 import UIKit
 
 private let verticalMargin: CGFloat = 10
 
 final class NigglyRefreshView: UIView, RefreshViewAnimator {
-    static func makeImage() -> UIImage {
-        return UIImage.animatedImageNamed("niggly-throbber", duration: 1.240)!
-    }
+    private let atlas: SKTextureAtlas
+    private let sceneView: SKView
+    private let node: SKSpriteNode
     
     override init(frame: CGRect) {
-        let image = NigglyRefreshView.makeImage()
+        atlas = SKTextureAtlas(named: "niggly-throbber")
+        node = SKSpriteNode(texture: atlas.textureNamed("niggly-throbber0"))
+        let scene = SKScene(size: node.size)
+        node.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+        scene.addChild(node)
+        
+        sceneView = SKView(frame: CGRect(origin: .zero, size: scene.size))
+        sceneView.presentScene(scene)
         
         var frame = frame
-        frame.size.height = max(frame.height, image.size.height + verticalMargin * 2)
+        if frame.width == 0 {
+            frame.size.width = intrinsicSize.width
+        }
+        if frame.height == 0 {
+            frame.size.height = intrinsicSize.height
+        }
         super.init(frame: frame)
         
-        layer.contentsGravity = kCAGravityCenter
-        layer.contentsScale = image.scale
+        addSubview(sceneView)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func addAnimation() {
-        guard layer.animation(forKey: "sprite") == nil else { return }
-        layer.add(makeSpriteAnimation(for: NigglyRefreshView.makeImage()), forKey: "sprite")
+    override var backgroundColor: UIColor? {
+        didSet {
+            let color = backgroundColor ?? .white
+            sceneView.backgroundColor = color
+            sceneView.scene?.backgroundColor = color
+            node.color = color
+        }
     }
     
-    fileprivate func removeAnimation() {
-        layer.removeAnimation(forKey: "sprite")
+    override func layoutSubviews() {
+        sceneView.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
     
     func animateState(_ state: State) {
         switch state {
         case .initial:
-            removeAnimation()
+            node.removeAllActions()
             
         case .releasing(let progress) where progress < 1:
-            addAnimation()
-            layer.pause()
+            node.speed = 0
+            node.run(makeNigglyRefreshAction(atlas: atlas), withKey: actionKey)
             
         case .loading, .releasing:
-            layer.resume()
+            node.speed = 1
             
         case .finished:
-            layer.pause()
+            node.speed = 0
         }
     }
-}
-
-
-private extension CALayer {
-    func pause() {
-        guard speed != 0 else { return }
-        let pausedTime = convertTime(CACurrentMediaTime(), from: nil)
-        speed = 0.0
-        timeOffset = pausedTime
-    }
     
-    func resume() {
-        guard speed == 0 else { return }
-        let pausedTime = timeOffset
-        speed = 1.0
-        timeOffset = 0.0
-        beginTime = 0.0
-        let timeSincePause = convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-        beginTime = timeSincePause
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIViewNoIntrinsicMetric, height: intrinsicSize.height)
     }
 }
 
-
-private func makeSpriteAnimation(for image: UIImage) -> CAAnimation {
-    let images = image.images!
+final class NigglyLoadMoreView: UIView {
+    private let sceneView: SKView
+    private let node: SKSpriteNode
     
-    let animation = CAKeyframeAnimation(keyPath: "contents")
-    animation.calculationMode = kCAAnimationDiscrete
-    animation.values = images.map { $0.cgImage! }
-    animation.duration = image.duration
-    animation.repeatCount = Float.infinity
-    animation.keyTimes = (images.indices.map { Float($0) / Float(images.count) } + [1.0]).map { NSNumber(value: $0) }
-    return animation
+    override init(frame: CGRect) {
+        let atlas = SKTextureAtlas(named: "niggly-throbber")
+        node = SKSpriteNode(texture: atlas.textureNamed("niggly-throbber0"))
+        let scene = SKScene(size: node.size)
+        node.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+        scene.addChild(node)
+        
+        sceneView = SKView(frame: CGRect(origin: .zero, size: scene.size))
+        sceneView.presentScene(scene)
+        
+        var frame = frame
+        if frame.width == 0 {
+            frame.size.width = intrinsicSize.width
+        }
+        if frame.height == 0 {
+            frame.size.height = intrinsicSize.height
+        }
+        super.init(frame: frame)
+        
+        addSubview(sceneView)
+        
+        node.run(makeNigglyRefreshAction(atlas: atlas), withKey: actionKey)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override var backgroundColor: UIColor? {
+        didSet {
+            let color = backgroundColor ?? .white
+            sceneView.backgroundColor = color
+            sceneView.scene?.backgroundColor = color
+            node.color = color
+        }
+    }
+    
+    override func layoutSubviews() {
+        sceneView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIViewNoIntrinsicMetric, height: intrinsicSize.height)
+    }
 }
+
+private func makeNigglyRefreshAction(atlas: SKTextureAtlas) -> SKAction {
+    let textures = (0...30).map { atlas.textureNamed("niggly-throbber\($0)") }
+    return SKAction.repeatForever(SKAction.animate(with: textures, timePerFrame: 0.04))
+}
+
+private let actionKey = "niggly"
+private let intrinsicSize = CGSize(width: 36, height: 36)
