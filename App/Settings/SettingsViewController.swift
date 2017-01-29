@@ -25,8 +25,8 @@ final class SettingsViewController: TableViewController {
     fileprivate let sections: [[String: AnyObject]]! = {
         let currentDevice: String
         // For settings purposes, we consider devices with a regular horizontal size class in landscape to be iPads. This includes iPads and also the iPhone 6 Plus.
-        // TODO Find a better way of doing this than checking the displayScale.
-        if UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.nativeScale == 3 {
+        let tc = UIScreen.main.traitCollection
+        if tc.horizontalSizeClass == .regular || tc.verticalSizeClass == .regular {
             currentDevice = "iPad"
         } else {
             currentDevice = "iPhone"
