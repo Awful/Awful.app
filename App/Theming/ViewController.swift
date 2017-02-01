@@ -147,15 +147,19 @@ class TableViewController: UITableViewController {
     fileprivate func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
+        niggly.bounds.size.height = niggly.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         niggly.autoresizingMask = .flexibleWidth
         niggly.backgroundColor = view.backgroundColor
-        niggly.bounds.size.height += 8
         pullToRefreshView = niggly
-        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: niggly, height: niggly.bounds.height, position: .top)
+        
+        let animator = NigglyRefreshView.RefreshAnimator(view: niggly)
+        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: animator, height: niggly.bounds.height, position: .top)
         pullToRefresh.animationDuration = 0.3
         pullToRefresh.initialSpringVelocity = 0
         pullToRefresh.springDamping = 1
-        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in self?.pullToRefreshBlock?() })
+        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in
+            self?.pullToRefreshBlock?()
+        })
     }
     
     fileprivate weak var pullToRefreshView: UIView?
@@ -253,10 +257,10 @@ class TableViewController: UITableViewController {
         infiniteScrollState = .loadingMore
         block()
         
-        let loadMoreView = NigglyLoadMoreView()
-        loadMoreView.sizeToFit()
-        loadMoreView.bounds.size.height += 12
+        let loadMoreView = NigglyRefreshView()
+        loadMoreView.bounds.size.height = loadMoreView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         loadMoreView.backgroundColor = tableView.backgroundColor
+        loadMoreView.startAnimating()
         tableView.tableFooterView = loadMoreView
         
         tableView.contentInset.bottom += loadMoreView.bounds.height

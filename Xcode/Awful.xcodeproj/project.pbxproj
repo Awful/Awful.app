@@ -142,6 +142,8 @@
 		1C2DC7351DCEA605005040FD /* Smilies Stickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
 		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
+		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
+		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
 		1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */; };
@@ -570,6 +572,8 @@
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
 		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
 		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
+		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
+		1C353C081E41832600CCBA51 /* CoreAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAnimation.swift; sourceTree = "<group>"; };
 		1C35FB7718329D3400B52724 /* FormScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormScrapingTests.swift; sourceTree = "<group>"; };
 		1C35FB7A1832A5A900B52724 /* AwfulForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForm.h; sourceTree = "<group>"; };
 		1C35FB7B1832A5A900B52724 /* AwfulForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForm.m; sourceTree = "<group>"; };
@@ -1408,6 +1412,7 @@
 			isa = PBXGroup;
 			children = (
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
+				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
 				1C16FBDA1CBAA5A900C88BD1 /* CoreGraphics.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
@@ -1630,12 +1635,13 @@
 				1C9438681C2875610029DFB1 /* ForumTableViewCell.swift */,
 				1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
+				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
+				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
 				1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */,
 				1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */,
-				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2679,6 +2685,7 @@
 				7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */,
 				1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
+				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */,
@@ -2695,6 +2702,7 @@
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
+				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);

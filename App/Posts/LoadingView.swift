@@ -48,24 +48,25 @@ class LoadingView: UIView {
 }
 
 private class DefaultLoadingView: LoadingView {
-    lazy var spinner: UIImageView = {
-        let image = UIImage.animatedImageNamed("v-throbber", duration: 1.53)
-        let spinner = UIImageView(image: image)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(spinner)
+    lazy var spinner: SpriteSheetView = {
+        let image = UIImage(named: "v-throbber")!
+        let view = SpriteSheetView(spriteSheet: image)
+        view.frameRate = 30
+        view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(view)
         
-        self.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-        self.centerYAnchor.constraint(equalTo: spinner.bottomAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            self.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            self.centerYAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
         
-        return spinner
+        return view
     }()
     
     override func retheme() {
         super.retheme()
         
-        let tint = theme?["postsLoadingViewTintColor"] as UIColor?
-        backgroundColor = tint
-        spinner.backgroundColor = tint
+        backgroundColor = theme?["postsLoadingViewTintColor"] as UIColor?
     }
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
