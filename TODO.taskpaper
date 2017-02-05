@@ -1,6 +1,8 @@
 High priority:
 	- "F2P" thread icon is gigantic.
 		e.g. on TF2 thread. http://i.imgur.com/AtANiWF.png
+	- Crash rearranging a favourite forum above the "Favorites" title.
+		"There's a weird crash edge case with editing the Favorites forums ordering. It's possible to drag a favorite above the Favorites title in Edit mode which causes an instant crash when released. I was able to reproduce this when rearranging a forum to the top of the list on both the latest iPad and iPhone release."
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
@@ -100,6 +102,7 @@ Medium priority:
 	- Fix dismissing the image preview screen after sharing.
 		"Whenever I share an image to GroupMe, it successfully posts but I then have to force close the Awful app. I can't swipe the image back down nor can I tap "done". iPhone 6+"
 	- Stop failing to upload to Imgur.
+		"I'm having way more imaging uploading problems with this current release." @awful3.21
 		"I get "Image Upload Failed Imgur did not respond as expected (code -1)" when I try to upload and attach an image."
 		"Getting a few Error Code 0 and -1s when trying to upload images. 9.1, latest app version [3.7]. Is this a known issue?" @awful3.7 @ios9.1
 			"Same here. Also upload too fast, can't remember if that's a different code."
@@ -978,3 +981,4 @@ Needs verification:
 		"I just realized I can't maximize or minimize any subforums. No error message, the app just crashes when I press the arrow." @awful3.19 @ios10.1.1
 	- Post preview ignoring dark mode?
 		"Post preview on ipad seems to be ignoring the dark mode setting and always displaying nondark mode"
+	- "Some YouTube videos disappear while playing just showing the thread but the audio keeps going even when you go to next page. iOS 10.2 iPhone 6."
