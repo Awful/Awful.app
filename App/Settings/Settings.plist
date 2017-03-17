@@ -19,6 +19,12 @@
 					<key>Action</key>
 					<string>LogOut</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Empty Cache</string>
+					<key>Action</key>
+					<string>EmptyCache</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -208,25 +214,25 @@
 					<key>CanOpenURL</key>
 					<string>youtube://</string>
 				</dict>
-                <dict>
-                    <key>Title</key>
-                    <string>Open Twitter in Twitter</string>
-                    <key>Type</key>
-                    <string>Switch</string>
-                    <key>Default</key>
-                    <true/>
-                    <key>Key</key>
-                    <string>open_twitter_links_in_twitter</string>
-                    <key>CanOpenURL</key>
-                    <string>twitter://</string>
-                </dict>
+				<dict>
+					<key>Title</key>
+					<string>Open Twitter in Twitter</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>open_twitter_links_in_twitter</string>
+					<key>CanOpenURL</key>
+					<string>twitter://</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Themes</string>
-            <key>Explanation</key>
-            <string>Optionally, Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to use which theme.</string>
+			<key>Explanation</key>
+			<string>Optionally, Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to use which theme.</string>
 			<key>Settings</key>
 			<array>
 				<dict>

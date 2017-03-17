@@ -181,10 +181,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         for cookie in cookieJar.cookies ?? [] {
             cookieJar.deleteCookie(cookie)
         }
-        URLCache.shared.removeAllCachedResponses()
-        
         AwfulSettings.shared().reset()
-        AvatarLoader.sharedLoader.emptyCache()
+        emptyCache()
         
         // Do this after resetting settings so that it gets the default baseURL.
         updateClientBaseURL()
@@ -195,6 +193,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             
             self?.dataStore.deleteStoreAndReset()
         }
+    }
+    
+    func emptyCache() {
+        URLCache.shared.removeAllCachedResponses()
+        AvatarLoader.sharedLoader.emptyCache()
     }
     
     /**

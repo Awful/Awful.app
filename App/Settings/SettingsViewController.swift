@@ -311,6 +311,9 @@ final class SettingsViewController: TableViewController {
             alert.addActionWithTitle("Log Out", handler: { AppDelegate.instance.logOut() })
             present(alert, animated: true, completion: nil)
             
+        case ("EmptyCache"?, _):
+            AppDelegate.instance.emptyCache();
+            
         case ("GoToAwfulThread"?, _):
             guard let threadID = setting["ThreadID"] as? String else { fatalError("setting \(setting) needs a ThreadID") }
             let url = URL(string: "awful://threads/")!.appendingPathComponent(threadID, isDirectory: false)
