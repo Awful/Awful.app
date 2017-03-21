@@ -50,6 +50,8 @@ High priority:
 	- Crash when attempting to expand/collapse forums.
 		"I just realized I can't maximize or minimize any subforums. No error message, the app just crashes when I press the arrow." @awful3.19 @ios10.1.1
 		"The app crashes every time I try and expand a subforum's list of sub-subfora. So if I tap the plus next to debate and discussion, immediate crash. I can close an expanded list, but I can't expand it again. Edit: iPhone 6, latest iOS and awful app. I'm also signed in on my iPad, problem doesn't occur there." @iphone6 @awful3.20
+	- Frequent crashes while browsing.
+		"Is it normal for the app to crash every two or three threads that I look at? iOS, 6S, tons of empty space. " "It's pretty much any thread after reading two or three pages, or if I switch between more then a few threads. I get about a dozen crashes a day or so." @iphone6s @ios10.2.1
 Medium priority:
 	- Smilie keyboard got real small.
 		"So what happened to cause the emoticon keyboard to get so small?  It used to be twice as tall but now you can only see just one or two rows which makes it frustrating to scroll through."
@@ -464,6 +466,7 @@ Medium priority:
 		"the error message when you you try to post and it times out says that the image upload failed, even when no image is being upload. This is affecting production."
 	- Thread compose text view isn't getting out from under the keyboard?
 		"Also if your op is too long it hides the bottom lines under your keyboard so you have no idea what you're typing."
+	- "when composing a post and a new line begins with a colon cuz of a smilie can the app suppress wanting to capitalize the first alpha character? :Getin:"
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
@@ -992,3 +995,6 @@ Needs verification:
 	- Post preview ignoring dark mode?
 		"Post preview on ipad seems to be ignoring the dark mode setting and always displaying nondark mode"
 	- "Some YouTube videos disappear while playing just showing the thread but the audio keeps going even when you go to next page. iOS 10.2 iPhone 6."
+	- "Opening and closing sub forum listings seems to completely break the forums list. About 80% of the time the list doesn't visually expand/collapse, but tapping on the screen will lead me to a seemingly random forum." @iphone7
+		"attempting to refresh the forums list page causes everything off screen to vanish; scrolling down leads to a blank abyss."
+	- "A tiny bug I found that's tricky to reproduce unfortunately, but if you open an unread thread, go back and try to tap and hold the same thread before/right as it adds the unread post number and makes its way up to the top of the forum thread list, the forum freezes. The top bar still works so you can go back to the forums list after which everything is fine. Like I said, a tiny bug."
