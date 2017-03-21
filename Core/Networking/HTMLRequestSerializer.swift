@@ -33,8 +33,8 @@ private func queryString(request: URLRequest, parameters: Any, error: NSErrorPoi
         .joined(separator: "&")
 }
 
-private let charactersToBeEscapedInQueryString = ":/?&=;+!@#$()',*"
-private let charactersToLeaveUnescapedInQueryString = "[]."
+private let charactersToBeEscapedInQueryString = ":/?&=;+!@#$()',~"
+private let charactersToLeaveUnescapedInQueryString = "."
 
 private struct QueryStringPair {
     let field: String

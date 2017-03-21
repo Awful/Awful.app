@@ -1,9 +1,4 @@
 High priority:
-	- Can't log in with certain passwords.
-		"I've changed my password, and I can't seem to log in using the app with my new password. I tried changing it again, and the new password wouldn't work with the mobile app either, though it works in my PC's browser just fine. I feel like I must be doing something wrong, but damned if I can figure out what."
-		"Alright, so yesterday I started having issues with trying to post from my phone- whenever I tried, it would tell me "preview post not found". Today I woke up to find that it had logged me out for no apparent reason- this is fine, except that now I can't log in again. It repeatedly gives me the error that my username or password is wrong- but I know they're not wrong, because I double checked by logging in both on my desktop and on my phone using Safari. Is this a known issue/is there a fix?"
-	- "F2P" thread icon is gigantic.
-		e.g. on TF2 thread. http://i.imgur.com/AtANiWF.png
 	- Crash rearranging a favourite forum above the "Favorites" title.
 		"There's a weird crash edge case with editing the Favorites forums ordering. It's possible to drag a favorite above the Favorites title in Edit mode which causes an instant crash when released. I was able to reproduce this when rearranging a forum to the top of the list on both the latest iPad and iPhone release."
 	- PM list and reply screen getting borked.
