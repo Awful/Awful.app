@@ -1,6 +1,4 @@
 High priority:
-	- Crash rearranging a favourite forum above the "Favorites" title.
-		"There's a weird crash edge case with editing the Favorites forums ordering. It's possible to drag a favorite above the Favorites title in Edit mode which causes an instant crash when released. I was able to reproduce this when rearranging a forum to the top of the list on both the latest iPad and iPhone release."
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
 	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.

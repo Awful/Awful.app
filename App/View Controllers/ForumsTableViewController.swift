@@ -148,7 +148,7 @@ extension ForumsTableViewController {
     
     override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
         guard let lastFavoriteIndex = dataSource.lastFavoriteIndex else { fatalError("asking for target index path for non-favorite") }
-        let targetRow = min((toIndexPath as NSIndexPath).row, lastFavoriteIndex)
+        let targetRow = max(1, min((toIndexPath as NSIndexPath).row, lastFavoriteIndex))
         return IndexPath(row: targetRow, section: 0)
     }
 }
