@@ -312,7 +312,16 @@ final class SettingsViewController: TableViewController {
             present(alert, animated: true, completion: nil)
             
         case ("EmptyCache"?, _):
+            let usageBefore = URLCache.shared.currentDiskUsage
             AppDelegate.instance.emptyCache();
+            let usageAfter = URLCache.shared.currentDiskUsage
+            let message = "You cleared up \((usageBefore - usageAfter)/(1024*1024)) megabytes! Great job, go hog wild!!"
+            let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default) { action in
+                self.dismiss(animated: true)
+            }
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true)
             
         case ("GoToAwfulThread"?, _):
             guard let threadID = setting["ThreadID"] as? String else { fatalError("setting \(setting) needs a ThreadID") }
