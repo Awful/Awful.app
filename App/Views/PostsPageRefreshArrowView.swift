@@ -9,7 +9,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     fileprivate let spinner: UIActivityIndicatorView
     fileprivate struct Angles {
         static let triggered = CGFloat(0)
-        static let waiting = CGFloat(-M_PI_2)
+        static let waiting = CGFloat(-Double.pi / 2)
     }
     
     init() {

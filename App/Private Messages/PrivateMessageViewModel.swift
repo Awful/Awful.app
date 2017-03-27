@@ -59,7 +59,7 @@ final class PrivateMessageViewModel: NSObject {
         var error: NSError?
         let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "private-message.js"], &error)
         if script == nil {
-            print("\(#function) error loading scripts: \(error)")
+            print("\(#function) error loading scripts: \(String(describing: error))")
         }
         return script
     }

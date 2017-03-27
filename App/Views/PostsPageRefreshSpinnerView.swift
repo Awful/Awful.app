@@ -29,7 +29,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
             break
             
         case (.waiting, .triggered):
-            rotateArrows(CGFloat(M_PI_2))
+            rotateArrows(CGFloat(Double.pi / 2))
             
         case (_, .refreshing):
             rotateArrowsForever()
@@ -67,7 +67,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         
         let animation = CABasicAnimation(keyPath: "transform.rotation.z")
         animation.fromValue = arrowsRotation
-        animation.toValue = arrowsRotation + (2 * CGFloat(M_PI))
+        animation.toValue = arrowsRotation + (2 * CGFloat(Double.pi))
         animation.duration = 1
         animation.repeatCount = .infinity
         arrows.layer.add(animation, forKey: indefiniteRotationAnimationKey)

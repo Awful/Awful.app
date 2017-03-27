@@ -999,7 +999,7 @@ final class PostsPageViewController: ViewController {
         webViewNetworkActivityIndicatorManager = activityIndicatorManager
         
         webViewJavascriptBridge = WebViewJavascriptBridge(for: webView, webViewDelegate: activityIndicatorManager, handler: { (data, callback) in
-            print("\(#function) webViewJavascriptBridge got \(data)")
+            print("\(#function) webViewJavascriptBridge got \(String(describing: data))")
         })
         
         webViewJavascriptBridge?.registerHandler("didTapUserHeader", handler: { [weak self] (data, callback) in

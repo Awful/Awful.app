@@ -45,7 +45,7 @@ final class ProfileViewController: ViewController {
                 source = try NSString(contentsOf: URL!, encoding: String.Encoding.utf8.rawValue) as String
             }
             catch {
-                NSException(name: NSExceptionName.internalInconsistencyException, reason: "could not load script at \(URL)", userInfo: nil).raise()
+                NSException(name: NSExceptionName.internalInconsistencyException, reason: "could not load script at \(String(describing: URL))", userInfo: nil).raise()
             }
             let script = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
             userContentController.addUserScript(script)
@@ -87,7 +87,7 @@ final class ProfileViewController: ViewController {
         let (userID, username) = (user.userID, user.username)
         AwfulForumsClient.shared().profileUser(withID: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
             if let error = error {
-                NSLog("[\(self) \(#function)] error fetching user profile for \(username) (ID \(userID)): \(error)")
+                NSLog("[\(String(describing: self)) \(#function)] error fetching user profile for \(String(describing: username)) (ID \(userID)): \(error)")
             } else {
                 self?.renderProfile()
             }
@@ -102,7 +102,7 @@ final class ProfileViewController: ViewController {
                 HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
             }
             catch {
-                NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(user.username) (ID \(user.userID)): \(error)")
+                NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(String(describing: user.username)) (ID \(user.userID)): \(error)")
             }
         }
         webView.loadHTMLString(HTML, baseURL: baseURL as URL)

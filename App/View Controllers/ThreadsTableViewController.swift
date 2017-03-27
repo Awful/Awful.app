@@ -65,7 +65,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     fileprivate func loadPage(_ page: Int) {
         let _ = AwfulForumsClient.shared().listThreads(in: forum, with: filterThreadTag, onPage: page) { [weak self] (error: Error?, threads: [Any]?) in
-            if let error = error as? NSError , self?.visible == true {
+            if let error = error as NSError? , self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.present(alert, animated: true, completion: nil)
             }

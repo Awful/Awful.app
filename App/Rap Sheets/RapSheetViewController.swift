@@ -172,7 +172,7 @@ final class RapSheetViewController: TableViewController {
         case .Permaban: description = "permabanned"
         default: description = "banned"
         }
-        cell.accessibilityLabel = "\(punishment.subject.username) was \(description) by \(punishment.requester?.username ?? "") on \(date): \(punishment.reasonHTML ?? "")"
+        cell.accessibilityLabel = "\(String(describing: punishment.subject.username)) was \(description) by \(punishment.requester?.username ?? "") on \(date): \(punishment.reasonHTML ?? "")"
         
         cell.textLabel?.textColor = theme["listTextColor"]
         cell.detailTextLabel?.textColor = theme["listSecondaryTextColor"]

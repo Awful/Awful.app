@@ -135,13 +135,6 @@ final class MessageListViewController: TableViewController {
         
         refreshIfNecessary()
     }
-}
-
-extension MessageListViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let message = dataSource.itemAtIndexPath(indexPath) as! PrivateMessage
-        showMessage(message)
-    }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
@@ -157,6 +150,15 @@ extension MessageListViewController {
         selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
         cell.selectedBackgroundView = selectedBackgroundView
     }
+}
+
+extension MessageListViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let message = dataSource.itemAtIndexPath(indexPath) as! PrivateMessage
+        showMessage(message)
+    }
+    
+    
 }
 
 extension MessageListViewController: ComposeTextViewControllerDelegate {

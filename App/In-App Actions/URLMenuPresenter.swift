@@ -69,7 +69,7 @@ private enum _URLMenuPresenter {
         case AwfulDefaultBrowserChrome?:
             UIApplication.shared.openURL(chromifyURL(url))
         default:
-            fatalError("unexpected browser \(browser)")
+            fatalError("unexpected browser \(String(describing: browser))")
         }
     }
     

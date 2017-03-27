@@ -204,7 +204,7 @@ final class MessageViewController: ViewController {
         networkActivityIndicatorManager = WebViewNetworkActivityIndicatorManager(nextDelegate: self)
         
         webViewJavascriptBridge = WebViewJavascriptBridge(for: webView, webViewDelegate: networkActivityIndicatorManager, handler: { (data, callback) in
-            print("\(#function) \(data)")
+            print("\(#function) \(String(describing: data))")
         })
         webViewJavascriptBridge?.registerHandler("didTapUserHeader", handler: { [weak self] (rectString, responseCallback) in
             guard let

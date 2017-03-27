@@ -1960,7 +1960,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C0B86111B1801FB0088BE53 = {

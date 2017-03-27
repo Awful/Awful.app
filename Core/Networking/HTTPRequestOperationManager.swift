@@ -46,7 +46,7 @@ public final class HTTPRequestOperationManager: AFHTTPRequestOperationManager {
             let headers = HTTPResponse.allHeaderFields
             guard headers["Cache-Control"] == nil && headers["Expires"] == nil else { return response }
             
-            print("\(#function) refusing to cache response to \(request.url)")
+            print("\(#function) refusing to cache response to \(String(describing: request.url))")
             return nil
         }
         return operation
