@@ -229,6 +229,7 @@ Medium priority:
 		"Last night we switched to daylight saving time (in the US at least) and I'm noticing some posts from last night have no time stamps in the app. I think this is really just a symptom of a forums bug, and one that will only come up for one hour a year, so it's probably not worth spending any time on it, but I thought it was at least worth mentioning. The posts missing time stamps (according to the forums) were all posted between 2 and 3 AM. I think the forums switched to DST an hour late, and thus those posts are all from datetimes that don't actually exist."
 	- Don't crash on the Forums tab.
 		"So the awful app started crashing whenever I went to the general forums tab. I don't know what relevant info I would need to provide but I'm on a iphone 5s"
+		"If I tap on an arrow to view sub-forums under any forum, the app crashes. Awful 3.22 iOS 10.3.1 on iPad"
 	- Avoid needlessly locating post when opening certain copied URLs.
 		Opening a copied URL that mentions a `#post123` ends up "locating post" when it's really not necessary.
 	- Scroll thread lists like butter.
@@ -460,6 +461,8 @@ Medium priority:
 	- Thread compose text view isn't getting out from under the keyboard?
 		"Also if your op is too long it hides the bottom lines under your keyboard so you have no idea what you're typing."
 	- "when composing a post and a new line begins with a colon cuz of a smilie can the app suppress wanting to capitalize the first alpha character? :Getin:"
+	- Load more in a thread list is too jumpy, hides some new threads.
+		"when I'm scrolling down through the list of threads in a forum and i get to the point where it has to load more the list will jump up when the additional threads are loaded. Then I have to scroll up a little to see what I missed before scrolling down the list again."
 New features:
 	- Scrape and, well, announce announcements.
 	- Add/remove users from ignore list.
@@ -570,6 +573,7 @@ New features:
 	- Somehow notify user when on probation.
 		"Suggestion: change the blue banner to purple while probated"
 		Apparently probation end date is not in user's time zone. (Maybe that's obvious.)
+		"I was probated for a day and the error I got when trying to post on the app seemed more like a connection error than anything. I had to check if my cell data for the awful app was on, then I considered restarting my phone. I actually didn't figure out that I was probated until I noticed on my computer. You probably don't need to design new things to serve probated jerks, so do with this feedback what you will."
 	- Make probation links tap-able.
 		"Any chance in a future update that we can click on a probation link to read the notes?"
 	- Add an "only on wi-fi" option for "show images" etc. settings.
@@ -768,6 +772,10 @@ New features:
 		"Gifv support please!"
 	- Save photos taken in the post screen to the camera roll.
 		"It's not a huge deal; I think this is just the only app I use that doesn't save it."
+	- Haptics.
+		"haptics all over the app - esp a nice "chunk" kick from the haptic engine when i pull for the next page of posts"
+	- More keyboard hotkeys.
+		" I scroll by page with spacebar and was wondering if we could get next page assigned to 'n' or maybe '>' for convenience."
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
