@@ -1,16 +1,6 @@
 High priority:
 	- PM list and reply screen getting borked.
 		"http://i.imgur.com/ZfGSAUW.png http://i.imgur.com/ZYOdBKO.png Can't scroll down to see what you type in the reply and I guess I'm getting the PM tomorrow??"
-	- Don't freeze on orientation change and don't endlessly bounce the pull-to-refresh indicator.
-		These seem related so they're grouped together. Might not be related though.
-		"If I open carry on then's rap sheet in landscape it [the bouncing refresh permapain for PMs or rap sheets] still happens. Same with PMs."
-		"I get a bug when I refresh my bookmarked threads only on my iPad Pro. The smiley face icon to indicate it's refreshing will keep bouncing forever until I terminate the app. Works fine on my iPhone though."
-		"Still getting landscape freeze on 3.17 on Bookmarks screen. Happens after doing a pull to reload."
-		"Just updated to 3.18, that screen rotation bug is still there."
-		"it's prob. been mentioned already but im still getting that landscape/portrait freeze on an iPhone 6s. It's a lot less frequent than before but it still happens all the time"
-		"I'm seeing the app freeze up when changing orientation in Forums, Bookmarks, PMs or Lepers views. Settings view and in a thread are fine. Exiting to home (not force quitting) and back into the app clears it up." @iphone6s @ios10.1.1 @awful3.19
-		"Ditto on the screen orientation bug. Also using 6S."
-		"This is a weird one. About half the time I rotate my phone to landscape orientation the app locks up and I have to kill the process." "Seems to happen if I rotate the phone right after refreshing a thread, from the main forum list it doesn't happen" @iphone6 @ios10.2 
 	- Crash in posts page, possibly on pages with embedded tweets.
 		"Still having the crashing problems. Maybe a memory leak. Seems like it happens sometimes on pages with tweet embeds?"
 			"Is this on the trump thread? I've been seeing more frequent crashes too, I think the volume of twitter/image embeds there exacerbates the issue where the thread viewer always reloads from network 3 times."
@@ -25,10 +15,7 @@ High priority:
 	- Tapping an ignored post loads an unrelated post.
 		"I shamefully put someone on ignore a while back that I totally shouldn't have, but since I almost exclusively use the app (where you can't un-ignore someone, but their posts show up inline with one click without loading a separate page) it wasn't a huge deal. Except right now after upgrading to iOS 10 when I click on an ignored post it actually loads a completely random post from a completely random user instead."
 		"it appears that sometimes when you tap on an ignored user's post to reveal it, it replaces it with a recent post from someone else in the thread." @awful3.17 @ios9
-	- More complaints than usual about used storage space, is cache pruning working?
-		Not sure it ever worked all that well. Should think about how to do this properly, then attempt to implement that plan.
-		Add a "clear cache" button to Settings?
-			"given that logging out and logging back in to clear the cache is a semi-common troubleshooting step here in this thread, would it be worth it to add a "Clear Cache", probz with a confirmation dialog, to the Settings screen?"
+	"given that logging out and logging back in to clear the cache is a semi-common troubleshooting step here in this thread, would it be worth it to add a "Clear Cache", probz with a confirmation dialog, to the Settings screen?"
 	- Semi-frequent crashes refreshing bookmarks. @awful3.18 @ios9
 		"I'm getting semi-frequent crashes on refreshing bookmarks. Can't seem to replicate on command though. Latest App Store version of app, iOS 9 (latest version)"
 	- Safari view controller often, but with no obvious pattern, fails to load; just shows blank.
