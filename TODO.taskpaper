@@ -164,6 +164,7 @@ Medium priority:
 		"I am also having the multiple bookmarks problem. I'm up to three identical bookmarks on some threads. But I've never posted in those threads before."
 		"I just posted a reply to a bookmarked thread and went back to bookmarks and that thread is now duplicated, using the latest version from the app store"
 		"I also have the duplication issue on bookmarks with an iPhone 6+."
+		"weird shit happening with the bookmarks tab again. only loads five or six threads and then just scrolls past blank spaces. some threads show up twice. sometimes tapping a thread will instead open a different thread. restarting the app usually fixes it breifly before it does it again. iphone 5, ios 10.3.1 https://imgur.com/a/944mG"
 	- Fix pull-for-next-page when at bottom of posts page (often after tapping "scroll to end").
 		"If you go to the next page of a thread and hit scroll to end, pulling up to view the next doesn't work."
 		"Pull-for-next-page doesn't work right after using scroll-to-end. Have to scroll back up a bit first."
@@ -986,3 +987,7 @@ Needs verification:
 	- "Opening and closing sub forum listings seems to completely break the forums list. About 80% of the time the list doesn't visually expand/collapse, but tapping on the screen will lead me to a seemingly random forum." @iphone7
 		"attempting to refresh the forums list page causes everything off screen to vanish; scrolling down leads to a blank abyss."
 	- "A tiny bug I found that's tricky to reproduce unfortunately, but if you open an unread thread, go back and try to tap and hold the same thread before/right as it adds the unread post number and makes its way up to the top of the forum thread list, the forum freezes. The top bar still works so you can go back to the forums list after which everything is fine. Like I said, a tiny bug."
+	- Replies silently failing to post.
+		"Twice today I have replied to a thread only to be dumped back at the top of the page like I'd edited a post and my post has disappeared into thin air"
+			Wonder if there's some error state we failed to check, so we sail right through to "let me show you your new post" without actually throwing an error?
+			"Yeah, I'm guessing this. Is there a timeout error when replying to a thread multiple times in a short period of time or when lots of people are replying to a thread and maybe the app can't figure out where the post should be?"
