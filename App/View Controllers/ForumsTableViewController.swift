@@ -28,7 +28,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func refresh() {
-        AwfulForumsClient.shared().taxonomizeForumsAndThen { (error: Error?, forums: [Any]?) in
+        _ = ForumsClient.shared.taxonomizeForums { (error: Error?, forums: [Forum]?) in
             if error == nil {
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
                 self.migrateFavoriteForumsFromSettings()

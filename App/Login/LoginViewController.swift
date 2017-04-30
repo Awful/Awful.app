@@ -125,7 +125,7 @@ class LoginViewController: ViewController {
     fileprivate func attemptToLogIn() {
         assert(state == .canAttemptLogin, "unexpected state")
         state = .attemptingLogin
-        let _ = AwfulForumsClient.shared().logIn(withUsername: usernameTextField.text, password: passwordTextField.text) { [unowned self] (error: Error?, user: User?) -> Void in
+        let _ = ForumsClient.shared.logIn(username: usernameTextField.text ?? "", password: passwordTextField.text ?? "") { [unowned self] (error: Error?, user: User?) -> Void in
             if let user = user {
                 let settings = AwfulSettings.shared()!
                 settings.username = user.username

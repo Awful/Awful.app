@@ -47,7 +47,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            AwfulForumsClient.shared().listPosts(in: thread, writtenBy: nil, onPage: AwfulThreadPage.last.rawValue, updateLastReadPost: true, andThen: { (error: Error?, _, _, _) -> Void in
+            _ = ForumsClient.shared.listPosts(in: thread, writtenBy: nil, page: AwfulThreadPage.last.rawValue, updateLastReadPost: true, completion: { (error: Error?, _, _, _) -> Void in
                 guard let
                     error = error,
                     let previewingViewController = postsViewController.parent
@@ -68,7 +68,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            AwfulForumsClient.shared().setThread(thread, isBookmarked:!thread.bookmarked) { (error: Error?) in
+            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked) { (error: Error?) in
                 guard let presentingViewController = previewViewController.parent else {
                     return
                 }

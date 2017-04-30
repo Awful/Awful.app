@@ -25,7 +25,7 @@ extension InAppActionViewController {
         
         let bookmarkItemType: IconAction = thread.bookmarked ? .removeBookmark : .addBookmark
         items.append(IconActionItem(bookmarkItemType) { [weak viewController] in
-            AwfulForumsClient.shared().setThread(thread, isBookmarked: !thread.bookmarked) { (error: Error?) in
+            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked) { (error: Error?) in
                 if let error = error {
                     let alert = UIAlertController(networkError: error, handler: nil)
                     viewController?.present(alert, animated: true, completion: nil)
@@ -56,7 +56,7 @@ extension InAppActionViewController {
             items.append(IconActionItem(.markAsUnread) { [weak viewController] in
                 let oldSeen = thread.seenPosts
                 thread.seenPosts = 0
-                AwfulForumsClient.shared().markThreadUnread(thread) { (error: Error?) in
+                _ = ForumsClient.shared.markUnread(thread) { (error: Error?) in
                     if let error = error {
                         if thread.seenPosts == 0 {
                             thread.seenPosts = oldSeen

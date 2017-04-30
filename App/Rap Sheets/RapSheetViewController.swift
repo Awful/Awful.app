@@ -46,13 +46,13 @@ final class RapSheetViewController: TableViewController {
     }
     
     fileprivate func load(_ page: Int) {
-        AwfulForumsClient.shared().listPunishments(onPage: page, for: user) { [weak self] (error: Error?, newPunishments: [Any]?) in
+        _ = ForumsClient.shared.listPunishments(of: user, page: page) { [weak self] (error: Error?, newPunishments: [Punishment]?) in
             if let error = error {
                 self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return
             }
             
-            let newPunishments = newPunishments as? [Punishment] ?? []
+            let newPunishments = newPunishments ?? []
             
             self?.mostRecentlyLoadedPage = page
             

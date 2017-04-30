@@ -61,7 +61,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func loadPage(page: Int) {
-        AwfulForumsClient.shared().listBookmarkedThreads(onPage: page) { [weak self] (error: Error?, threads: [Any]?) -> Void in
+        _ = ForumsClient.shared.listBookmarkedThreads(on: page) { [weak self] (error: Error?, threads: [AwfulThread]?) -> Void in
             if let error = error, self?.visible == true {
                 let alert = UIAlertController(networkError: error as NSError, handler: nil)
                 self?.present(alert, animated: true, completion: nil)
@@ -117,7 +117,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         
         becomeFirstResponder()
         
-        if AwfulForumsClient.shared().reachable &&
+        if ForumsClient.shared.isReachable &&
             (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks))
         {
             refresh()
@@ -197,7 +197,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     override func updateUserActivityState(_ activity: NSUserActivity) {
         activity.title = "Bookmarked Threads"
         activity.addUserInfoEntries(from: [Handoff.InfoBookmarksKey: true])
-        activity.webpageURL = URL(string: "/bookmarkthreads.php", relativeTo: AwfulForumsClient.shared().baseURL)
+        activity.webpageURL = URL(string: "/bookmarkthreads.php", relativeTo: ForumsClient.shared.baseURL)
     }
     
     // MARK: ThreadPeekPopControllerDelegate
@@ -239,7 +239,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        AwfulForumsClient.shared().setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: Error?) -> Void in
+        _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: Error?) -> Void in
             if let error = error {
                 let alert = UIAlertController(networkError: error as NSError, handler: nil)
                 self?.present(alert, animated: true, completion: nil)

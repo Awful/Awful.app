@@ -15,7 +15,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         moc.parent = self.forum.managedObjectContext
         return moc
     }()
-    fileprivate var networkOperation: Operation?
+    fileprivate weak var networkOperation: Cancellable?
     fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
     
     init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
@@ -50,7 +50,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
-        networkOperation = AwfulForumsClient.shared().previewOriginalPostForThread(in: forum, withBBcode: interpolatedBBcode, andThen: { [weak self] (error: Error?, postHTML: String?) in
+        networkOperation = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode, completion: { [weak self] (error: Error?, postHTML: String?) in
             if let error = error {
                 self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
                 return

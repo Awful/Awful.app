@@ -67,7 +67,7 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            AwfulForumsClient.shared().locatePost(withID: key.postID, andThen: { [weak self] (error: Error?, post: Post?, page: AwfulThreadPage) in
+            _ = ForumsClient.shared.locatePost(id: key.postID, completion: { [weak self] (error: Error?, post: Post?, page: Int) in
                 if let error = error {
                     overlay?.titleLabelText = "Post Not Found"
                     overlay?.mode = .cross
@@ -80,7 +80,7 @@ final class AwfulURLRouter: NSObject {
                 overlay?.dismiss(true, completion: {
                     guard let post = post, let thread = post.thread else { return }
                     let postsVC = PostsPageViewController(thread: thread)
-                    postsVC.loadPage(page.rawValue, updatingCache: true, updatingLastReadPost: true)
+                    postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
                     postsVC.scrollPostToVisible(post)
                     _ = self?.showPostsViewController(postsVC)
                     
@@ -106,7 +106,7 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            _ = AwfulForumsClient.shared().readPrivateMessage(with: key, andThen: { [weak self] (error: Error?, message: PrivateMessage?) in
+            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: key, completion: { [weak self] (error: Error?, message: PrivateMessage?) in
                 if let error = error {
                     overlay?.titleLabelText = "Message Not Found"
                     overlay?.mode = .cross
@@ -306,7 +306,7 @@ final class AwfulURLRouter: NSObject {
             return
         }
         
-        AwfulForumsClient.shared().profileUser(withID: userID, username: nil, andThen: { (error: Error?, profile: Profile?) in
+        _ = ForumsClient.shared.profileUser(id: userID, username: nil, completion: { (error: Error?, profile: Profile?) in
             completion(error, profile?.user)
         })
     }

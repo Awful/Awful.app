@@ -69,7 +69,7 @@ extension URL {
 private func verifyHost(_ url: URL) -> Bool {
     guard let host = url.host else { return false }
     switch CaseInsensitive(host) {
-    case "forums.somethingawful.com", "archives.somethingawful.com", AwfulForumsClient.shared().baseURL.host:
+    case "forums.somethingawful.com", "archives.somethingawful.com", ForumsClient.shared.baseURL?.host ?? "forums.somethingawful.com":
         return true
     default:
         return false

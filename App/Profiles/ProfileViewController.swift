@@ -85,7 +85,7 @@ final class ProfileViewController: ViewController {
         webView.scrollView.flashScrollIndicators()
         
         let (userID, username) = (user.userID, user.username)
-        AwfulForumsClient.shared().profileUser(withID: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
+        _ = ForumsClient.shared.profileUser(id: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
             if let error = error {
                 NSLog("[\(String(describing: self)) \(#function)] error fetching user profile for \(String(describing: username)) (ID \(userID)): \(error)")
             } else {
@@ -105,11 +105,11 @@ final class ProfileViewController: ViewController {
                 NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(String(describing: user.username)) (ID \(user.userID)): \(error)")
             }
         }
-        webView.loadHTMLString(HTML, baseURL: baseURL as URL)
+        webView.loadHTMLString(HTML, baseURL: baseURL)
     }
     
-    var baseURL: URL {
-        return AwfulForumsClient.shared().baseURL
+    var baseURL: URL? {
+        return ForumsClient.shared.baseURL
     }
 }
 
@@ -120,7 +120,11 @@ extension ProfileViewController: WKScriptMessageHandler {
             sendPrivateMessage()
         case "showHomepageActions":
             let body = message.body as! [String:String]
-            if let url = URL(string: body["URL"]!, relativeTo: baseURL as URL) {
+            if
+                let baseURL = baseURL,
+                let urlString = body["URL"],
+                let url = URL(string: urlString, relativeTo: baseURL)
+            {
                 showActionsForHomepage(url, atRect: CGRectFromString(body["rect"]!))
             }
         default:

@@ -147,7 +147,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        AwfulForumsClient.shared().listAvailablePostIconsForForum(withID: forum.forumID) { [weak self] (error: Error?, form: AwfulForm?) in
+        _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID) { [weak self] (error: Error?, form: AwfulForm?) in
             self?.updatingThreadTags = false
             self?.availableThreadTags = form?.threadTags as! [ThreadTag]?
             self?.availableSecondaryThreadTags = form?.secondaryThreadTags as! [ThreadTag]?
@@ -192,7 +192,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
             subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
             else { return completion(false) }
-        AwfulForumsClient.shared().postThread(in: forum, withSubject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bBcode: composition) { [weak self] (error: Error?, thread: AwfulThread?) in
+        _ = ForumsClient.shared.postThread(in: forum, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition) { [weak self] (error: Error?, thread: AwfulThread?) in
             if let error = error {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
                     completion(false)

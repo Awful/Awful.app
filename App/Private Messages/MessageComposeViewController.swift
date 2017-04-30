@@ -89,10 +89,10 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
-        AwfulForumsClient.shared().listAvailablePrivateMessageThreadTagsAndThen { [weak self] (error: Error?, threadTags: [Any]?) in
+        _ = ForumsClient.shared.listAvailablePrivateMessageThreadTags { [weak self] (error: Error?, threadTags: [ThreadTag]?) in
             self?.updatingThreadTags = false
             
-            if let threadTags = threadTags as? [ThreadTag] {
+            if let threadTags = threadTags {
                 self?.availableThreadTags = threadTags
                 
                 let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.flatMap { $0.imageName }
@@ -119,7 +119,7 @@ final class MessageComposeViewController: ComposeTextViewController {
             to = fieldView.toField.textField.text,
             let subject = fieldView.subjectField.textField.text
             else { return }
-        let _ = AwfulForumsClient.shared().sendPrivateMessage(to: to, withSubject: subject, threadTag: threadTag, bBcode: composition, asReplyTo: regardingMessage, forwardedFrom: forwardingMessage) { [weak self] (error: Error?) in
+        let _ = ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, regarding: regardingMessage, forwarding: forwardingMessage) { [weak self] (error: Error?) in
             if let error = error {
                 completion(false)
                 self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)

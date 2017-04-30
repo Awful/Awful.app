@@ -36,7 +36,7 @@ final class ReplyWorkspace: NSObject {
         let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view, animated: false)
         progressView?.titleLabelText = "Reading post…"
         
-        _ = AwfulForumsClient.shared().findBBcodeContents(with: post) { [weak self] (error: Error?, BBcode: String?) in
+        _ = ForumsClient.shared.findBBcodeContents(of: post) { [weak self] (error: Error?, BBcode: String?) in
             progressView?.dismiss(true)
             
             if let error = error {
@@ -189,7 +189,7 @@ final class ReplyWorkspace: NSObject {
     func quotePost(_ post: Post, completion: @escaping (Error?) -> Void) {
         createCompositionViewController()
 
-        AwfulForumsClient.shared().quoteBBcodeContents(with: post) { [weak self] (error: Error?, BBcode: String?) in
+        _ = ForumsClient.shared.quoteBBcodeContents(of: post) { [weak self] (error: Error?, BBcode: String?) in
             if let textView = self?.compositionViewController.textView, var replacement = BBcode {
                 let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
                 
@@ -339,7 +339,7 @@ extension NewReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                AwfulForumsClient.shared().reply(to: self.thread, withBBcode: plainText) { (error: Error?, post: Post?) in
+                _ = ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "") { (error: Error?, post: Post?) in
                     completion(error)
                 }
             }
@@ -353,7 +353,7 @@ extension EditReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                _ = AwfulForumsClient.shared().edit(self.post, setBBcode: plainText, andThen: completion)
+                _ = ForumsClient.shared.edit(self.post, bbcode: plainText ?? "", completion: completion)
             }
         }
     }

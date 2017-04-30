@@ -19,7 +19,7 @@ final class PostsPageViewController: ViewController {
     }
     fileprivate var webViewDidLoadOnce = false
     fileprivate var advertisementHTML: String?
-    fileprivate var networkOperation: Operation?
+    fileprivate weak var networkOperation: Cancellable?
     fileprivate var refreshControl: PostsPageRefreshControl?
     fileprivate var loadingView: LoadingView? {
         didSet {
@@ -162,7 +162,7 @@ final class PostsPageViewController: ViewController {
             return
         }
         
-        networkOperation = AwfulForumsClient.shared().listPosts(in: thread, writtenBy: author, onPage: rawPage, updateLastReadPost: updateLastReadPost, andThen: { [weak self] (error: Error?, posts: [Any]?, firstUnreadPost, advertisementHTML: String?) in
+        networkOperation = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: rawPage, updateLastReadPost: updateLastReadPost, completion: { [weak self] (error: Error?, posts: [Post]?, firstUnreadPost, advertisementHTML: String?) in
             guard let strongSelf = self else { return }
             
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -175,7 +175,7 @@ final class PostsPageViewController: ViewController {
                     let alert = UIAlertController(title: "Archives Required", error: error)
                     strongSelf.present(alert, animated: true, completion: nil)
                 } else {
-                    let offlineMode = !AwfulForumsClient.shared().reachable && (error as NSError).domain == NSURLErrorDomain
+                    let offlineMode = !ForumsClient.shared.isReachable && (error as NSError).domain == NSURLErrorDomain
                     if strongSelf.posts.isEmpty || !offlineMode {
                         let alert = UIAlertController(title: "Could Not Load Page", error: error)
                         strongSelf.present(alert, animated: true, completion: nil)
@@ -183,7 +183,7 @@ final class PostsPageViewController: ViewController {
                 }
             }
             
-            if let posts = posts as? [Post] , !posts.isEmpty {
+            if let posts = posts, !posts.isEmpty {
                 strongSelf.posts = posts
                 
                 let anyPost = posts[0]
@@ -303,7 +303,7 @@ final class PostsPageViewController: ViewController {
         
         do {
             let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostsView", bundle: nil)
-            webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
+            webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
         } catch {
             print("\(#function) error loading posts view HTML: \(error)")
         }
@@ -432,7 +432,7 @@ final class PostsPageViewController: ViewController {
                         let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
                         overlay?.tintColor = self.theme["tintColor"]
                         
-                        AwfulForumsClient.shared().rateThread(self.thread, i, andThen: { [weak self] (error: Error?) in
+                        _ = ForumsClient.shared.rate(self.thread, as: i, completion: { [weak self] (error: Error?) in
                             if let error = error {
                                 overlay?.dismiss(false)
                                 
@@ -459,7 +459,7 @@ final class PostsPageViewController: ViewController {
             
             let bookmarkType: IconAction = self.thread.bookmarked ? .removeBookmark : .addBookmark
             let bookmarkItem = IconActionItem(bookmarkType, block: {
-                AwfulForumsClient.shared().setThread(self.thread, isBookmarked: !self.thread.bookmarked, andThen: { [weak self] (error: Error?) in
+                _ = ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked, completion: { [weak self] (error: Error?) in
                     if let error = error {
                         print("\(#function) error marking thread: \(error)")
                         return
@@ -715,7 +715,7 @@ final class PostsPageViewController: ViewController {
     
     fileprivate func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
-        AwfulForumsClient.shared().readIgnoredPost(post) { [weak self] (error: Error?) in
+        _ = ForumsClient.shared.readIgnoredPost(post) { [weak self] (error: Error?) in
             if let error = error {
                 let alert = UIAlertController.alertWithNetworkError(error)
                 self?.present(alert, animated: true, completion: nil)
@@ -835,7 +835,7 @@ final class PostsPageViewController: ViewController {
         
         if author == nil {
             items.append(IconActionItem(.markReadUpToHere, block: {
-                AwfulForumsClient.shared().markThreadReadUp(to: post, andThen: { [weak self] (error: Error?) in
+                _ = ForumsClient.shared.markThreadAsReadUpTo(post, completion: { [weak self] (error: Error?) in
                     if let error = error {
                         let alert = UIAlertController(title: "Could Not Mark Read", error: error)
                         self?.present(alert, animated: true, completion: nil)
@@ -857,7 +857,7 @@ final class PostsPageViewController: ViewController {
         
         if post.editable {
             items.append(IconActionItem(.editPost, block: {
-                _ = AwfulForumsClient.shared().findBBcodeContents(with: post, andThen: { [weak self] (error: Error?, text: String?) in
+                _ = ForumsClient.shared.findBBcodeContents(of: post, completion: { [weak self] (error: Error?, text: String?) in
                     if let error = error {
                         let alert = UIAlertController(title: "Could Not Edit Post", error: error)
                         self?.present(alert, animated: true, completion: nil)
@@ -939,17 +939,20 @@ final class PostsPageViewController: ViewController {
             activity.addUserInfoEntries(from: [Handoff.InfoFilteredThreadUserIDKey: author.userID])
         }
         
-        guard let components = NSURLComponents(url: AwfulForumsClient.shared().baseURL, resolvingAgainstBaseURL: true) else { return }
+        guard
+            let baseURL = ForumsClient.shared.baseURL,
+            var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+            else { return }
         components.path = "showthread.php"
-        var queryItems: [NSURLQueryItem] = [
-            NSURLQueryItem(name: "threadid", value: thread.threadID),
-            NSURLQueryItem(name: "perpage", value: "\(40)"),
+        var queryItems: [URLQueryItem] = [
+            URLQueryItem(name: "threadid", value: thread.threadID),
+            URLQueryItem(name: "perpage", value: "\(40)"),
         ]
         if page >= 1 {
-            queryItems.append(NSURLQueryItem(name: "pagenumber", value: "\(page)"))
+            queryItems.append(URLQueryItem(name: "pagenumber", value: "\(page)"))
         }
         if let author = author {
-            queryItems.append(NSURLQueryItem(name: "userid", value: author.userID))
+            queryItems.append(URLQueryItem(name: "userid", value: author.userID))
         }
         activity.webpageURL = components.url
     }

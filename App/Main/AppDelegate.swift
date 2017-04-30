@@ -41,9 +41,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: removeOldDataStores)
         
-        AwfulForumsClient.shared().managedObjectContext = managedObjectContext
+        ForumsClient.shared.managedObjectContext = managedObjectContext
         updateClientBaseURL()
-        AwfulForumsClient.shared().didRemotelyLogOutBlock = { [weak self] in
+        ForumsClient.shared.didRemotelyLogOut = { [weak self] in
             self?.logOut()
         }
         
@@ -59,7 +59,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.currentTheme["tintColor"]
         
-        if AwfulForumsClient.shared().loggedIn {
+        if ForumsClient.shared.isLoggedIn {
             setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
         } else {
             setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
@@ -109,7 +109,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        return AwfulForumsClient.shared().loggedIn
+        return ForumsClient.shared.isLoggedIn
     }
     
     func application(_ application: UIApplication, willEncodeRestorableStateWith coder: NSCoder) {
@@ -117,7 +117,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        guard AwfulForumsClient.shared().loggedIn else { return false }
+        guard ForumsClient.shared.isLoggedIn else { return false }
         return coder.decodeInteger(forKey: interfaceVersionKey) == currentInterfaceVersion.rawValue
     }
     
@@ -131,7 +131,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        guard AwfulForumsClient.shared().loggedIn else { return false }
+        guard ForumsClient.shared.isLoggedIn else { return false }
         if let scheme = url.scheme, ["awfulhttp", "awfulhttps"].contains(scheme.lowercased()) {
             guard let awfulURL = url.awfulURL else { return false }
             return openAwfulURL(awfulURL)
@@ -179,7 +179,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func checkClipboard() {
-        guard AwfulForumsClient.shared().loggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
+        guard ForumsClient.shared.isLoggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
         guard let
             url = UIPasteboard.general.awful_URL,
             let awfulURL = url.awfulURL
@@ -352,11 +352,13 @@ private extension AppDelegate {
             components.path = ""
         }
         
-        AwfulForumsClient.shared().baseURL = components.url
+        ForumsClient.shared.baseURL = components.url
     }
     
     func showPromptIfLoginCookieExpiresSoon() {
-        guard let expiryDate = AwfulForumsClient.shared().loginCookieExpiryDate, expiryDate.timeIntervalSinceNow < loginCookieExpiringSoonThreshold
+        guard
+            let expiryDate = ForumsClient.shared.loginCookieExpiryDate,
+            expiryDate.timeIntervalSinceNow < loginCookieExpiringSoonThreshold
             else { return }
         let lastPromptDate = UserDefaults.standard.object(forKey: loginCookieLastExpiryPromptDateKey) as? Date ?? .distantFuture
         guard lastPromptDate.timeIntervalSinceNow < -loginCookieExpiryPromptFrequency else { return }

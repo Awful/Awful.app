@@ -54,7 +54,7 @@ final class MessageViewController: ViewController {
             print("\(#function) error rendering private message: \(error)")
             html = ""
         }
-        webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
+        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
         didRender = true
         
         self.webViewJavascriptBridge?.callHandler("jumpToFractionalOffset", data: fractionalContentOffsetOnLoad)
@@ -64,7 +64,7 @@ final class MessageViewController: ViewController {
         let actionSheet = UIAlertController.actionSheet()
         
         actionSheet.addActionWithTitle("Reply") {
-            _ = AwfulForumsClient.shared().quoteBBcodeContents(of: self.privateMessage, andThen: { [weak self] (error: Error?, BBcode: String?) in
+            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage, completion: { [weak self] (error: Error?, BBcode: String?) in
                 if let error = error {
                     self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
@@ -81,7 +81,7 @@ final class MessageViewController: ViewController {
         }
         
         actionSheet.addActionWithTitle("Forward") {
-            _ = AwfulForumsClient.shared().quoteBBcodeContents(of: self.privateMessage, andThen: { [weak self] (error: Error?, BBcode: String?) in
+            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage, completion: { [weak self] (error: Error?, BBcode: String?) in
                 if let error = error {
                     self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
                     return
@@ -189,7 +189,7 @@ final class MessageViewController: ViewController {
         } else {
             activity.title = "Private Message"
         }
-        activity.webpageURL = URL(string: "/private.php?action=show&privatemessageid=\(privateMessage.messageID)", relativeTo: AwfulForumsClient.shared().baseURL)
+        activity.webpageURL = URL(string: "/private.php?action=show&privatemessageid=\(privateMessage.messageID)", relativeTo: ForumsClient.shared.baseURL)
     }
     
     // MARK: View lifecycle
@@ -229,7 +229,7 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
             
-            AwfulForumsClient.shared().readPrivateMessage(with: privateMessage.objectKey, andThen: { [weak self] (error: Error?, message: PrivateMessage?) in
+            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey, completion: { [weak self] (error: Error?, message: PrivateMessage?) in
                 self?.title = message?.subject
                 
                 self?.renderMessage()

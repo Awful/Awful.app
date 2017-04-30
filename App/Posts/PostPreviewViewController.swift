@@ -13,7 +13,7 @@ class PostPreviewViewController: ViewController {
     var submitBlock: (() -> Void)?
     fileprivate var loadingView: LoadingView?
     var fakePost: Post?
-    fileprivate var networkOperation: Operation?
+    fileprivate weak var networkOperation: Cancellable?
     fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
     fileprivate var webViewDidLoadOnce = false
     fileprivate lazy var managedObjectContext: NSManagedObjectContext = {
@@ -107,9 +107,9 @@ class PostPreviewViewController: ViewController {
         }
         
         if let editingPost = editingPost {
-            networkOperation = AwfulForumsClient.shared().previewEdit(to: editingPost, withBBcode: interpolatedBBcode, andThen: callback)
+            networkOperation = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode, completion: callback)
         } else if let thread = thread {
-            networkOperation = AwfulForumsClient.shared().previewReply(to: thread, withBBcode: interpolatedBBcode, andThen: callback)
+            networkOperation = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode, completion: callback)
         } else {
             print("\(#function) Nothing to do??")
         }
@@ -143,7 +143,7 @@ class PostPreviewViewController: ViewController {
         
         do {
             let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostPreview", bundle: nil)
-            webView.loadHTMLString(html, baseURL: AwfulForumsClient.shared().baseURL)
+            webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
         } catch {
             print("\(#function) error loading post preview HTML: \(error)")
         }

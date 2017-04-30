@@ -64,7 +64,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     fileprivate func loadPage(_ page: Int) {
-        let _ = AwfulForumsClient.shared().listThreads(in: forum, with: filterThreadTag, onPage: page) { [weak self] (error: Error?, threads: [Any]?) in
+        let _ = ForumsClient.shared.listThreads(in: forum, taggedWith: filterThreadTag, on: page) { [weak self] (error: Error?, threads: [AwfulThread]?) in
             if let error = error as NSError? , self?.visible == true {
                 let alert = UIAlertController(networkError: error, handler: nil)
                 self?.present(alert, animated: true, completion: nil)
@@ -137,7 +137,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         } else {
             isTimeToRefresh = RefreshMinder.sharedMinder.shouldRefreshFilteredForum(forum)
         }
-        if AwfulForumsClient.shared().reachable &&
+        if ForumsClient.shared.isReachable &&
             (isTimeToRefresh || dataManager.contents.isEmpty)
         {
             refresh()
