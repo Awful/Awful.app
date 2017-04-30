@@ -3,10 +3,15 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "AwfulScraper.h"
+@class Punishment;
 
-/// A LepersColonyPageScraper finds AwfulBan objects from a list of bans and probations.
+NS_ASSUME_NONNULL_BEGIN
+
+/// A LepersColonyPageScraper finds Punishment objects from a list of bans and probations.
 @interface LepersColonyPageScraper : AwfulScraper
 
-@property (readonly, copy, nonatomic) NSArray *punishments;
+@property (readonly, nullable, copy, nonatomic) NSArray<Punishment *> *punishments;
 
 @end
+
+NS_ASSUME_NONNULL_END

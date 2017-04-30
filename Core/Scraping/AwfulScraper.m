@@ -5,6 +5,8 @@
 #import "AwfulScraper.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation AwfulScraper
 
 + (instancetype)scrapeNode:(HTMLNode *)node intoManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -42,3 +44,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -52,7 +52,7 @@ class ScrapingTestCase: XCTestCase {
         let document = fixtureNamed(fixtureName)
         let scraperClass = type(of: self).scraperClass() as! AwfulScraper.Type
         let scraper = scraperClass.scrape(document, into: managedObjectContext)
-        assert(scraper?.error == nil, "error scraping \(scraperClass): \(String(describing: scraper?.error))")
-        return scraper!
+        assert(scraper.error == nil, "error scraping \(scraperClass): \(String(describing: scraper.error))")
+        return scraper
     }
 }

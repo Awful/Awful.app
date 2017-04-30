@@ -39,28 +39,28 @@ final class ProfileScrapingTests: ScrapingTestCase {
     
     func testWithFunkyText() {
         let scraper = scrapeFixtureNamed("profile3") as! ProfileScraper
-        let rinkles = scraper.profile.user
-        XCTAssert(rinkles.customTitleHTML!.range(of: "<i>") != nil)
-        XCTAssert(rinkles.customTitleHTML!.range(of: "I'm getting at is") != nil)
-        XCTAssert(rinkles.customTitleHTML!.range(of: "safs/titles") != nil)
+        let rinkles = scraper.profile?.user
+        XCTAssert(rinkles?.customTitleHTML?.range(of: "<i>") != nil)
+        XCTAssert(rinkles?.customTitleHTML?.range(of: "I'm getting at is") != nil)
+        XCTAssert(rinkles?.customTitleHTML?.range(of: "safs/titles") != nil)
     }
     
     func testWithNoAvatarOrTitle() {
         let scraper = scrapeFixtureNamed("profile4") as! ProfileScraper
-        let crypticEdge = scraper.profile.user
-        XCTAssert(crypticEdge.customTitleHTML!.range(of: "<br") != nil)
+        let crypticEdge = scraper.profile?.user
+        XCTAssert(crypticEdge?.customTitleHTML?.range(of: "<br") != nil)
     }
     
     func testStupidNewbie() {
         let scraper = scrapeFixtureNamed("profile5") as! ProfileScraper
-        let newbie = scraper.profile.user
-        XCTAssert(newbie.customTitleHTML!.range(of: "newbie.gif") != nil)
+        let newbie = scraper.profile?.user
+        XCTAssert(newbie?.customTitleHTML?.range(of: "newbie.gif") != nil)
     }
     
     func testWithGangTagButNoAvatar() {
         let scraper = scrapeFixtureNamed("profile6") as! ProfileScraper
-        let gripper = scraper.profile.user
-        XCTAssert(gripper.customTitleHTML!.range(of: "i am winner") != nil)
-        XCTAssert(gripper.customTitleHTML!.range(of: "tccburnouts.png") != nil)
+        let gripper = scraper.profile?.user
+        XCTAssert(gripper?.customTitleHTML?.range(of: "i am winner") != nil)
+        XCTAssert(gripper?.customTitleHTML?.range(of: "tccburnouts.png") != nil)
     }
 }

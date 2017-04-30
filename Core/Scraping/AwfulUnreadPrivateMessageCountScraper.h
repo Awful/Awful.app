@@ -4,9 +4,13 @@
 
 #import "AwfulScraper.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// An AwfulUnreadPrivateMessageCountScraper scrapes the private message inbox for the number of unread messages.
 @interface AwfulUnreadPrivateMessageCountScraper : AwfulScraper
 
 @property (readonly, assign, nonatomic) NSInteger unreadPrivateMessageCount;
 
 @end
+
+NS_ASSUME_NONNULL_END

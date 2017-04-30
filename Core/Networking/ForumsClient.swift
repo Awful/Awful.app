@@ -163,7 +163,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { ProfileScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.profile != nil {
                     do {
@@ -215,7 +215,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulForumHierarchyScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulForumHierarchyScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.forums != nil {
                     do {
@@ -225,7 +225,7 @@ public final class ForumsClient {
                         error = saveError
                     }
                 }
-                let objectIDs = (scraper?.forums as? [Forum] ?? []).map { $0.objectID }
+                let objectIDs = (scraper?.forums ?? []).map { $0.objectID }
                 DispatchQueue.main.async {
                     let forums = objectIDs.flatMap { mainContext.object(with: $0) as? Forum }
                     completion(error, forums)
@@ -268,7 +268,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if let threads = scraper?.threads as? [AwfulThread], error == nil {
                     if page == 1, var threadsToForget = scraper?.forum?.threads as? Set<AwfulThread> {
@@ -319,7 +319,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if let threads = scraper?.threads as? [AwfulThread], error == nil {
                     threads.forEach { $0.bookmarked = true }
@@ -692,7 +692,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulPostsPageScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulPostsPageScraper.scrape($0, into: backgroundContext) }
                 let error: Error?
                 if scraper?.posts != nil {
                     do {
@@ -719,7 +719,7 @@ public final class ForumsClient {
                     return scannedInt
                 }()
 
-                let objectIDs = (scraper?.posts as? [Post] ?? []).map { $0.objectID }
+                let objectIDs = (scraper?.posts ?? []).map { $0.objectID }
                 DispatchQueue.main.async {
                     // The posts page scraper may have updated the passed-in thread, so we should make sure the passed-in thread is up-to-date. And although the AwfulForumsClient API is assumed to be called from the main thread, we cannot assume the passed-in thread's context is the same as our main thread context.
                     thread.managedObjectContext?.refresh(thread, mergeChanges: true)
@@ -770,7 +770,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulPostScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulPostScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.post != nil {
                     do {
@@ -910,7 +910,7 @@ public final class ForumsClient {
             let document = document as? HTMLDocument
             let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
             let form = htmlForm.flatMap { AwfulForm(element: $0) }
-            let message = form?.allParameters["message"] as? String
+            let message = form?.allParameters?["message"]
             let error: Error?
             if message == nil {
                 if form != nil {
@@ -947,7 +947,7 @@ public final class ForumsClient {
             let document = document as? HTMLDocument
             let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
             let form = htmlForm.flatMap { AwfulForm(element: $0) }
-            let bbcode = form?.allParameters["message"] as? String
+            let bbcode = form?.allParameters?["message"]
             let error: Error?
             if bbcode == nil {
                 if
@@ -1190,9 +1190,9 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { ProfileScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
-                if scraper?.profile.user != nil {
+                if scraper?.profile?.user != nil {
                     do {
                         try backgroundContext.save()
                     }
@@ -1200,7 +1200,7 @@ public final class ForumsClient {
                         error = saveError
                     }
                 }
-                let objectID = scraper?.profile.user.objectID
+                let objectID = scraper?.profile?.user.objectID
                 DispatchQueue.main.async {
                     let user = objectID.flatMap { mainContext.object(with: $0) as? User }
                     completion(error, user)
@@ -1243,7 +1243,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { ProfileScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.profile != nil {
                     do {
@@ -1289,7 +1289,7 @@ public final class ForumsClient {
             let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
                 let document = document as? HTMLDocument
                 mainContext.perform {
-                    let scraper = document.flatMap { LepersColonyPageScraper.scrape($0, into: mainContext) }
+                    let scraper = document.map { LepersColonyPageScraper.scrape($0, into: mainContext) }
                     var error = scraper?.error
                     if scraper?.punishments != nil {
                         do {
@@ -1299,7 +1299,7 @@ public final class ForumsClient {
                             error = saveError
                         }
                     }
-                    completion(error, scraper?.punishments as? [Punishment])
+                    completion(error, scraper?.punishments)
                 }
             }
 
@@ -1343,7 +1343,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { AwfulUnreadPrivateMessageCountScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { AwfulUnreadPrivateMessageCountScraper.scrape($0, into: backgroundContext) }
                 DispatchQueue.main.async {
                     completion(scraper?.error, scraper?.unreadPrivateMessageCount)
                 }
@@ -1373,7 +1373,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { PrivateMessageFolderScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { PrivateMessageFolderScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.messages != nil {
                     do {
@@ -1383,7 +1383,7 @@ public final class ForumsClient {
                         error = saveError
                     }
                 }
-                let objectIDs = (scraper?.messages as? [PrivateMessage] ?? []).map { $0.objectID }
+                let objectIDs = (scraper?.messages ?? []).map { $0.objectID }
                 mainContext.perform {
                     let messages = objectIDs.flatMap { mainContext.object(with: $0) as? PrivateMessage }
                     completion(error, messages)
@@ -1438,7 +1438,7 @@ public final class ForumsClient {
         let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
             let document = document as? HTMLDocument
             backgroundContext.perform {
-                let scraper = document.flatMap { PrivateMessageScraper.scrape($0, into: backgroundContext) }
+                let scraper = document.map { PrivateMessageScraper.scrape($0, into: backgroundContext) }
                 var error = scraper?.error
                 if scraper?.privateMessage != nil {
                     do {
@@ -1448,7 +1448,7 @@ public final class ForumsClient {
                         error = saveError
                     }
                 }
-                let objectID = scraper?.privateMessage.objectID
+                let objectID = scraper?.privateMessage?.objectID
                 mainContext.perform {
                     let message = objectID.flatMap { mainContext.object(with: $0) as? PrivateMessage }
                     completion(error, message)
@@ -1482,7 +1482,7 @@ public final class ForumsClient {
             backgroundContext.perform {
                 let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                let message = form?.allParameters["message"] as? String
+                let message = form?.allParameters?["message"]
                 let error: Error?
                 if message == nil {
                     let missingBit = form == nil ? "form" : "text box"
@@ -1526,7 +1526,7 @@ public final class ForumsClient {
                 let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
                 form?.scrapeThreadTags(into: backgroundContext)
-                if let threadTags = form?.threadTags as? [ThreadTag] {
+                if let threadTags = form?.threadTags {
                     do {
                         try backgroundContext.save()
                     }

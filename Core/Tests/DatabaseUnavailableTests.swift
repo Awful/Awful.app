@@ -10,25 +10,25 @@ private let fixture = fixtureNamed("database-unavailable")
 final class DatabaseUnavailableTests: ScrapingTestCase {
     func testForumHierarchy() {
         let scraper = AwfulForumHierarchyScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper?.error);
+        XCTAssertNotNil(scraper.error);
         XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testPostsPage() {
         let scraper = AwfulPostsPageScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper?.error)
+        XCTAssertNotNil(scraper.error)
         XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testProfile() {
         let scraper = ProfileScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper?.error)
+        XCTAssertNotNil(scraper.error)
         XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).isEmpty)
     }
     
     func testThreadList() {
         let scraper = AwfulThreadListScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper?.error)
+        XCTAssertNotNil(scraper.error)
         XCTAssertTrue(fetchAll(AwfulThread.self, inContext: managedObjectContext).isEmpty)
     }
 }

@@ -47,6 +47,6 @@ final class ForumHierarchyScrapingTests: ScrapingTestCase {
     func testDropdownOnlyHasSections() {
         let document = fixtureNamed("forumdisplay3")
         let scraper = AwfulForumHierarchyScraper.scrape(document, into: managedObjectContext)
-        XCTAssert(scraper?.error != nil)
+        XCTAssert(scraper.error != nil)
     }
 }

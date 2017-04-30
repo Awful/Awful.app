@@ -5,16 +5,20 @@
 #import "AwfulScraper.h"
 @class User;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// An AuthorScraper scrapes an User from information near a post or profile.
 @interface AuthorScraper : AwfulScraper
 
-@property (readonly, copy, nonatomic) NSString *userID;
+@property (readonly, nullable, copy, nonatomic) NSString *userID;
 
-@property (readonly, copy, nonatomic) NSString *username;
+@property (readonly, nullable, copy, nonatomic) NSString *username;
 
-@property (readonly, copy, nonatomic) NSDictionary *otherAttributes;
+@property (readonly, nullable, copy, nonatomic) NSDictionary *otherAttributes;
 
 /// Gets a lazily-fetched or -created User for the scraped userID and/or username.
-@property (strong, nonatomic) User *author;
+@property (nullable, strong, nonatomic) User *author;
 
 @end
+
+NS_ASSUME_NONNULL_END

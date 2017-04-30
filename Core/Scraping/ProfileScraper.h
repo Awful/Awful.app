@@ -5,9 +5,13 @@
 #import "AwfulScraper.h"
 @class Profile;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// A ProfileScraper scrapes a User object from a profile page.
 @interface ProfileScraper : AwfulScraper
 
-@property (readonly, strong, nonatomic) Profile *profile;
+@property (readonly, nullable, strong, nonatomic) Profile *profile;
 
 @end
+
+NS_ASSUME_NONNULL_END

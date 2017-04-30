@@ -5,6 +5,8 @@
 @import CoreData;
 @import HTMLReader;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
     An AwfulScraper turns HTML into model objects.
  
@@ -23,9 +25,11 @@
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-@property (strong, nonatomic) NSError *error;
+@property (nullable, strong, nonatomic) NSError *error;
 
 /// Subclasses must implement. Call super to perform some basic checks for typical site-wide errors (like "database unavailable").
 - (void)scrape;
 
 @end
+
+NS_ASSUME_NONNULL_END

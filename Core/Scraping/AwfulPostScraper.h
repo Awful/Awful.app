@@ -5,9 +5,13 @@
 #import "AwfulScraper.h"
 @class Post;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// An AwfulPostScraper scrapes a single AwfulPost object.
 @interface AwfulPostScraper : AwfulScraper
 
-@property (readonly, strong, nonatomic) Post *post;
+@property (readonly, nullable, strong, nonatomic) Post *post;
 
 @end
+
+NS_ASSUME_NONNULL_END

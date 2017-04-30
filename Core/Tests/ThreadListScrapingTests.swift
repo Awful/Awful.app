@@ -18,7 +18,7 @@ final class ThreadListScrapingTests: ScrapingTestCase {
 
     func testAskTellThreadList() {
         let scraper = scrapeFixtureNamed("showthread-asktell") as! AwfulThreadListScraper
-        let stupidQuestions = scraper.threads.first as! AwfulCore.AwfulThread
+        let stupidQuestions = scraper.threads?.first as! AwfulCore.AwfulThread
         let askTag = stupidQuestions.secondaryThreadTag!
         XCTAssert(askTag.imageName == "ama")
     }

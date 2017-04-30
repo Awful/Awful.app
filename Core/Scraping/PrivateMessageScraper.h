@@ -5,9 +5,13 @@
 #import "AwfulScraper.h"
 @class PrivateMessage;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// A PrivateMessageScraper scrapes a standalone AwfulPrivateMessage.
 @interface PrivateMessageScraper : AwfulScraper
 
-@property (readonly, strong, nonatomic) PrivateMessage *privateMessage;
+@property (readonly, nullable, strong, nonatomic) PrivateMessage *privateMessage;
 
 @end
+
+NS_ASSUME_NONNULL_END
