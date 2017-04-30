@@ -116,7 +116,7 @@
     NSMutableArray *postKeys = [NSMutableArray new];
     NSMutableArray *authorScrapers = [NSMutableArray new];
     for (HTMLElement *table in postTables) {
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:table[@"id"]];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:table[@"id"]];
         [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
         NSString *postID = [scanner.string substringFromIndex:scanner.scanLocation];
         if (postID.length == 0) {

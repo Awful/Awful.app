@@ -35,7 +35,7 @@
     
     HTMLElement *infoParagraph = [self.node firstNodeMatchingSelector:@"td.info p:first-of-type"];
     if (infoParagraph) {
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:infoParagraph.innerHTML];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:infoParagraph.innerHTML];
         [scanner scanUpToString:@"claims to be a " intoString:nil];
         [scanner scanString:@"claims to be a " intoString:nil];
         NSString *gender;
@@ -105,7 +105,7 @@
     NSString *postCountText = [postCountDefinition.children.firstObject textContent];
     if (postCountText.length > 0) {
         NSInteger postCount;
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:postCountText];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:postCountText];
         BOOL ok = [scanner scanInteger:&postCount];
         if (ok) {
             self.profile.postCount = (int32_t)postCount;
@@ -115,7 +115,7 @@
     HTMLElement *postRateDefinition = [additionalList firstNodeMatchingSelector:@"dd:nth-of-type(3)"];
     NSString *postRateText = [postRateDefinition.children.firstObject textContent];
     if (postRateText.length > 0) {
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:postRateText];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:postRateText];
         BOOL ok = [scanner scanFloat:nil];
         if (ok) {
             self.profile.postRate = [scanner.string substringToIndex:scanner.scanLocation];

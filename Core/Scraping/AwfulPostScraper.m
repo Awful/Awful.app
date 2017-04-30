@@ -26,7 +26,7 @@
     HTMLElement *table = [self.node firstNodeMatchingSelector:@"table.post[id]"];
     
     {{
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:table[@"id"]];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:table[@"id"]];
         NSCharacterSet *digitCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
         [scanner scanUpToCharactersFromSet:digitCharacterSet intoString:nil];
         NSString *postID;

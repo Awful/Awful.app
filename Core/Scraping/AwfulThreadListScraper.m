@@ -91,7 +91,7 @@
         }
         
         NSString *threadID;
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:IDAttribute];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:IDAttribute];
         [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
         threadID = [scanner.string substringFromIndex:scanner.scanLocation];
         if (threadID.length > 0) {
@@ -229,7 +229,7 @@
         
         HTMLElement *ratingImage = [row firstNodeMatchingSelector:@"td.rating img"];
         if (ratingImage) {
-            AwfulScanner *scanner = [AwfulScanner scannerWithString:ratingImage[@"title"]];
+            NSScanner *scanner = [NSScanner awful_scannerWithString:ratingImage[@"title"]];
             [scanner scanUpToCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:nil];
             int numberOfVotes;
             BOOL ok = [scanner scanInt:&numberOfVotes];

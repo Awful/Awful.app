@@ -5,7 +5,6 @@
 #import "PrivateMessageScraper.h"
 #import "AuthorScraper.h"
 #import "AwfulCompoundDateParser.h"
-#import "AwfulScanner.h"
 #import <AwfulCore/AwfulCore-Swift.h>
 
 @interface PrivateMessageScraper ()

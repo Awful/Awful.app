@@ -49,7 +49,7 @@
         
         NSMutableDictionary *info = [NSMutableDictionary new];
         info[@"itemID"] = itemID;
-        AwfulScanner *scanner = [AwfulScanner scannerWithString:option.textContent];
+        NSScanner *scanner = [NSScanner awful_scannerWithString:option.textContent];
         NSUInteger depth = 0;
         while ([scanner scanString:@"--" intoString:nil]) {
             depth++;

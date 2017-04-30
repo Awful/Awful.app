@@ -4,30 +4,19 @@
 
 #import "AwfulScanner.h"
 
-@implementation AwfulScanner
+NS_ASSUME_NONNULL_BEGIN
 
-static inline id CommonInit(NSScanner *self)
+@implementation NSScanner (AwfulScanner)
+
+/// A scanner created with this method ignores no characters and is case sensitive.
++ (instancetype)awful_scannerWithString:(NSString *)string
 {
-    self.charactersToBeSkipped = nil;
-    self.caseSensitive = YES;
-    return self;
-}
-
-// NSScanner has no designated initializer :-(
-
-+ (instancetype)scannerWithString:(NSString *)string
-{
-    return CommonInit([super scannerWithString:string]);
-}
-
-+ (instancetype)localizedScannerWithString:(NSString *)string
-{
-    return CommonInit([super localizedScannerWithString:string]);
-}
-
-- (id)initWithString:(NSString *)string
-{
-    return CommonInit([super initWithString:string]);
+    NSScanner *scanner = [self scannerWithString:string];
+    scanner.charactersToBeSkipped = nil;
+    scanner.caseSensitive = YES;
+    return scanner;
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

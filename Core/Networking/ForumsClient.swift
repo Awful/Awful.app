@@ -709,9 +709,9 @@ public final class ForumsClient {
 
                 let firstUnreadPostIndex: Int? = {
                     guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
-                    guard let fragment = op.response?.url?.fragment else { return nil }
+                    guard let fragment = op.response?.url?.fragment, !fragment.isEmpty else { return nil }
 
-                    let scanner = AwfulScanner(string: fragment)
+                    let scanner = Scanner.awful_scanner(with: fragment)
                     guard scanner.scanString("pti", into: nil) else { return nil }
 
                     var scannedInt: Int = 0
