@@ -739,7 +739,9 @@ public final class ForumsClient {
         // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
         op.setRedirectResponseBlock { (connection, request, redirectResponse) -> URLRequest in
             var components = request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
-            components?.queryItems = (components?.queryItems ?? [])
+            let queryItems = (components?.queryItems ?? [])
+                .filter { $0.name != "perpage" }
+            components?.queryItems = queryItems
                 + [URLQueryItem(name: "perpage", value: "40")]
             var request = request
             request.url = components?.url
