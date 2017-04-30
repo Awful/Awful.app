@@ -21,6 +21,7 @@ High priority:
 	- Safari view controller often, but with no obvious pattern, fails to load; just shows blank.
 		SafariViewController is pretty fire and forget. We're not stupidly mucking with it are we?
 		"Links still don't work (despite the latest update) on my iPhone 6 Plus. It just shows a blank window and "website name" as the title whenever I click on a link."
+		[after mentioning this bug and receiving advice to retry until it works] "I've been trying this repeatedly with no success so I guess it's safari for me for the time being"
 	- Can't post a photo edited with the iOS Markup extension thing.
 		"For some reason embedding images via the long press + from album wasn't working earlier." "I figured it out. I was trying to post a photo that was edited with Apple's new Markup thing. Couldn't work. When I took a screenshot of the marked up image, it worked perfectly."
 	- Crash attempting to view/refresh a thread with no active data connection.
