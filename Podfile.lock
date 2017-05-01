@@ -52,6 +52,27 @@ PODS:
   - MRProgress/ProgressBaseClass (0.8.3)
   - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
+  - OMGHTTPURLRQ (3.2.2):
+    - OMGHTTPURLRQ/RQ (= 3.2.2)
+  - OMGHTTPURLRQ/FormURLEncode (3.2.2)
+  - OMGHTTPURLRQ/RQ (3.2.2):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.2.2)
+  - PromiseKit (4.1.7):
+    - PromiseKit/Foundation (= 4.1.7)
+    - PromiseKit/QuartzCore (= 4.1.7)
+    - PromiseKit/UIKit (= 4.1.7)
+  - PromiseKit/CorePromise (4.1.7)
+  - PromiseKit/Foundation (4.1.7):
+    - PromiseKit/CorePromise
+  - PromiseKit/OMGHTTPURLRQ (4.1.7):
+    - OMGHTTPURLRQ (~> 3.2)
+    - PromiseKit/Foundation
+  - PromiseKit/QuartzCore (4.1.7):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (4.1.7):
+    - PromiseKit/CorePromise
   - PSMenuItem (1.0.0)
   - PullToRefresher (1.4.0)
   - TUSafariActivity (1.0.4)
@@ -68,6 +89,8 @@ DEPENDENCIES:
   - JLRoutes (~> 1.5)
   - KVOController (~> 1.0)
   - MRProgress/Overlay (~> 0.8.0)
+  - PromiseKit (~> 4.0)
+  - PromiseKit/OMGHTTPURLRQ (~> 4.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
   - TUSafariActivity (~> 1.0)
@@ -102,11 +125,13 @@ SPEC CHECKSUMS:
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
+  OMGHTTPURLRQ: edb14c7d28add69226b79d826f930805927a0ffa
+  PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: c4629a459f305c14a66d35f52c2feeaccf85c49e
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: 8dbbbf1f8184f6555277878e27464a8a94126ca5
+PODFILE CHECKSUM: 27e100ffc9374768158356a96b0fb823aefebcdc
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.1
