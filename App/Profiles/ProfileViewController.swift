@@ -85,12 +85,12 @@ final class ProfileViewController: ViewController {
         webView.scrollView.flashScrollIndicators()
         
         let (userID, username) = (user.userID, user.username)
-        _ = ForumsClient.shared.profileUser(id: user.userID, username: user.username) { [weak self] (error: Error?, profile: Profile?) in
-            if let error = error {
-                NSLog("[\(String(describing: self)) \(#function)] error fetching user profile for \(String(describing: username)) (ID \(userID)): \(error)")
-            } else {
+        _ = ForumsClient.shared.profileUser(id: user.userID, username: user.username)
+            .then { [weak self] (profile) in
                 self?.renderProfile()
             }
+            .catch { (error) in
+                print("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")
         }
     }
     

@@ -98,8 +98,10 @@
         [infoDictionaries addObject:info];
     }
 
-    if (postKeys.count == 0)
+    if (infoDictionaries.count == 0) {
+        self.punishments = punishments;
         return;
+    }
 
     NSArray *posts = [Post objectsForKeysWithObjectKeys:postKeys inManagedObjectContext:self.managedObjectContext];
     NSDictionary *postsByKey = [NSDictionary dictionaryWithObjects:posts forKeys:[posts valueForKey:@"objectKey"]];

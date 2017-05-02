@@ -25,13 +25,11 @@ extension InAppActionViewController {
         
         let bookmarkItemType: IconAction = thread.bookmarked ? .removeBookmark : .addBookmark
         items.append(IconActionItem(bookmarkItemType) { [weak viewController] in
-            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked) { (error: Error?) in
-                if let error = error {
-                    let alert = UIAlertController(networkError: error, handler: nil)
-                    viewController?.present(alert, animated: true, completion: nil)
-                }
+            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+            .catch { (error) -> Void in
+                let alert = UIAlertController(networkError: error, handler: nil)
+                viewController?.present(alert, animated: true, completion: nil)
             }
-            return // hooray for implicit return
             })
         
         if let author = thread.author {
@@ -56,16 +54,15 @@ extension InAppActionViewController {
             items.append(IconActionItem(.markAsUnread) { [weak viewController] in
                 let oldSeen = thread.seenPosts
                 thread.seenPosts = 0
-                _ = ForumsClient.shared.markUnread(thread) { (error: Error?) in
-                    if let error = error {
+                _ = ForumsClient.shared.markUnread(thread)
+                    .catch { (error) -> Void in
                         if thread.seenPosts == 0 {
                             thread.seenPosts = oldSeen
                         }
                         let alert = UIAlertController(networkError: error, handler: nil)
                         viewController?.present(alert, animated: true, completion: nil)
-                    }
                 }
-                })
+            })
         }
         
         self.items = items

@@ -147,22 +147,31 @@ final class ThreadComposeViewController: ComposeTextViewController {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID) { [weak self] (error: Error?, form: AwfulForm?) in
-            self?.updatingThreadTags = false
-            self?.availableThreadTags = form?.threadTags 
-            self?.availableSecondaryThreadTags = form?.secondaryThreadTags 
-            guard let tags = self?.availableThreadTags else { return }
-            let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
-            let secondaryImageNames = self?.availableSecondaryThreadTags?.flatMap { $0.imageName }
-            let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
-            self?.threadTagPicker = picker
-            picker.delegate = self
-            picker.title = "Choose Thread Tag"
-            if secondaryImageNames?.isEmpty == false {
-                picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
-            } else {
-                picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
+        _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
+            .then { [weak self] (form) -> Void in
+                guard let sself = self else { return }
+                sself.updatingThreadTags = false
+                sself.availableThreadTags = form.threadTags
+                sself.availableSecondaryThreadTags = form.secondaryThreadTags
+                guard let tags = sself.availableThreadTags else { return }
+
+                let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
+                let secondaryImageNames = sself.availableSecondaryThreadTags?.flatMap { $0.imageName }
+                let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
+                sself.threadTagPicker = picker
+                picker.delegate = sself
+                picker.title = "Choose Thread Tag"
+                if secondaryImageNames?.isEmpty == false {
+                    picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
+                } else {
+                    picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
+                }
             }
+            .catch { [weak self] (error) -> Void in
+                guard let sself = self else { return }
+                sself.updatingThreadTags = false
+                sself.availableThreadTags = nil
+                sself.availableSecondaryThreadTags = nil
         }
     }
     
@@ -188,21 +197,21 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
-        guard let
-            subject = fieldView.subjectField.textField.text,
+        guard
+            let subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
             else { return completion(false) }
-        _ = ForumsClient.shared.postThread(in: forum, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition) { [weak self] (error: Error?, thread: AwfulThread?) in
-            if let error = error {
+        
+        _ = ForumsClient.shared.postThread(in: forum, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
+            .then { [weak self] (thread) -> Void in
+                self?.thread = thread
+                completion(true)
+            }
+            .catch { [weak self] (error) -> Void in
                 let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
                     completion(false)
                 })
                 self?.present(alert, animated: true, completion: nil)
-                return
-            }
-            
-            self?.thread = thread
-            completion(true)
         }
     }
     

@@ -46,18 +46,17 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                 return
             }
             let thread = postsViewController.thread
-            
-            _ = ForumsClient.shared.listPosts(in: thread, writtenBy: nil, page: AwfulThreadPage.last.rawValue, updateLastReadPost: true, completion: { (error: Error?, _, _, _) -> Void in
-                guard let
-                    error = error,
-                    let previewingViewController = postsViewController.parent
-                else {
-                    return
-                }
-                
-                let alert = UIAlertController(networkError: error as NSError, handler: nil)
-                previewingViewController.present(alert, animated: true, completion: nil)
-            })
+
+            _ = ForumsClient.shared.listPosts(in: thread, writtenBy: nil, page: AwfulThreadPage.last.rawValue, updateLastReadPost: true)
+                .promise
+                .catch { (error) -> Void in
+                    guard let previewingViewController = postsViewController.parent else {
+                        return
+                    }
+
+                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                    previewingViewController.present(alert, animated: true)
+            }
         }
         
         let bookmarkTitle = thread?.bookmarked == true ? "Remove Bookmark" : "Add Bookmark"
@@ -68,22 +67,26 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             let thread = postsViewController.thread
             
-            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked) { (error: Error?) in
-                guard let presentingViewController = previewViewController.parent else {
-                    return
-                }
-                
-                if let error = error {
-                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
-                    presentingViewController.present(alert, animated: true, completion: nil)
-                } else {
+            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+                .then { () -> Void in
+                    guard let presentingViewController = previewViewController.parent else {
+                        return
+                    }
+
                     let title = thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
                     let overlay = MRProgressOverlayView.showOverlayAdded(to: presentingViewController.view, title: title, mode: .checkmark, animated: true)
-                    
+
                     Timer.scheduledTimerWithInterval(0.7) { timer in
                         overlay?.dismiss(true)
                     }
                 }
+                .catch { (error) -> Void in
+                    guard let presentingViewController = previewViewController.parent else {
+                        return
+                    }
+
+                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                    presentingViewController.present(alert, animated: true, completion: nil)
             }
         }
         

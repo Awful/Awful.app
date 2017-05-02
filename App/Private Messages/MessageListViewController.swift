@@ -89,16 +89,19 @@ final class MessageListViewController: TableViewController {
     @objc fileprivate func refresh() {
         startAnimatingPullToRefresh()
         
-        _ = ForumsClient.shared.listPrivateMessagesInInbox { [weak self] (error: Error?, messages: [PrivateMessage]?) in
-            if let error = error {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                if self?.visible == true {
-                    self?.present(alert, animated: true, completion: nil)
-                }
-            } else {
+        _ = ForumsClient.shared.listPrivateMessagesInInbox()
+            .then { (messages) -> Void in
                 RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
             }
-            self?.stopAnimatingPullToRefresh()
+            .catch { [weak self] (error) -> Void in
+                guard let sself = self else { return }
+                if sself.visible {
+                    let alert = UIAlertController(networkError: error, handler: nil)
+                    sself.present(alert, animated: true, completion: nil)
+                }
+            }
+            .always { [weak self] in
+                self?.stopAnimatingPullToRefresh()
         }
     }
     
@@ -197,13 +200,12 @@ extension MessageListViewController: DeletesMessages {
         if !message.seen {
             NewMessageChecker.sharedChecker.decrementUnreadCount()
         }
-        _ = ForumsClient.shared.deletePrivateMessage(message) { [weak self] (error: Error?) in
-            if let error = error {
+        _ = ForumsClient.shared.deletePrivateMessage(message)
+            .catch { [weak self] (error) in
                 let alert = UIAlertController(title: "Could Not Delete Message", error: error)
                 if self?.visible == true {
                     self?.present(alert, animated: true, completion: nil)
                 }
-            }
         }
     }
 }

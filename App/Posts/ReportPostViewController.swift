@@ -31,15 +31,16 @@ final class ReportPostViewController: ViewController {
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: view.window, title: "Reporting…", mode: .indeterminate, animated: true)!
-        _ = ForumsClient.shared.report(post, reason: rootView.commentTextField.text ?? "") { [weak self] (error: Error?) in
-            progressView.dismiss(true)
-            
-            if let error = error {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.present(alert, animated: true, completion: nil)
-            } else {
+        _ = ForumsClient.shared.report(post, reason: rootView.commentTextField.text ?? "")
+            .then { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
+            .catch { [weak self] (error) -> Void in
+                let alert = UIAlertController(networkError: error, handler: nil)
+                self?.present(alert, animated: true, completion: nil)
+            }
+            .always {
+                progressView.dismiss(true)
         }
     }
     

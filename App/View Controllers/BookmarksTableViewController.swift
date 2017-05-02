@@ -61,26 +61,26 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
     
     private func loadPage(page: Int) {
-        _ = ForumsClient.shared.listBookmarkedThreads(on: page) { [weak self] (error: Error?, threads: [AwfulThread]?) -> Void in
-            if let error = error, self?.visible == true {
-                let alert = UIAlertController(networkError: error as NSError, handler: nil)
-                self?.present(alert, animated: true, completion: nil)
-            }
-            
-            if error as NSError? == .none {
-                self?.latestPage = page
-                
+        ForumsClient.shared.listBookmarkedThreads(page: page)
+            .then { (threads) -> Void in
+                self.latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
+
+                if threads.count >= 40 {
+                    self.scrollToLoadMoreBlock = { self.loadMore() }
+                }
+                else {
+                    self.scrollToLoadMoreBlock = nil
+                }
             }
-            
-            self?.stopAnimatingPullToRefresh()
-            self?.stopAnimatingInfiniteScroll()
-            
-            if let threads = threads, threads.count >= 40 {
-                self?.scrollToLoadMoreBlock = { self?.loadMore() }
-            } else {
-                self?.scrollToLoadMoreBlock = nil
+            .catch { (error) in
+                guard self.visible else { return }
+                let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                self.present(alert, animated: true, completion: nil)
             }
+            .always {
+                self.stopAnimatingPullToRefresh()
+                self.stopAnimatingInfiniteScroll()
         }
     }
     
@@ -239,11 +239,10 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked) { [weak self] (error: Error?) -> Void in
-            if let error = error {
+        _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
+            .catch { [weak self] (error) -> Void in
                 let alert = UIAlertController(networkError: error as NSError, handler: nil)
                 self?.present(alert, animated: true, completion: nil)
-            }
         }
     }
     

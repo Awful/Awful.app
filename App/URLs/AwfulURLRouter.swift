@@ -67,26 +67,26 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            _ = ForumsClient.shared.locatePost(id: key.postID, completion: { [weak self] (error: Error?, post: Post?, page: Int) in
-                if let error = error {
+            _ = ForumsClient.shared.locatePost(id: key.postID)
+                .then { [weak self] (post, page) -> Void in
+                    overlay?.dismiss(true, completion: {
+                        guard
+                            let sself = self,
+                            let thread = post.thread
+                            else { return }
+                        let postsVC = PostsPageViewController(thread: thread)
+                        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                        postsVC.scrollPostToVisible(post)
+                        _ = sself.showPostsViewController(postsVC)
+                    })
+                }
+                .catch { (error) -> Void in
                     overlay?.titleLabelText = "Post Not Found"
                     overlay?.mode = .cross
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         overlay?.dismiss(true)
                     }
-                    return
-                }
-                
-                overlay?.dismiss(true, completion: {
-                    guard let post = post, let thread = post.thread else { return }
-                    let postsVC = PostsPageViewController(thread: thread)
-                    postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-                    postsVC.scrollPostToVisible(post)
-                    _ = self?.showPostsViewController(postsVC)
-                    
-                    try! context.save()
-                })
-            })
+            }
             return true
         })
         
@@ -106,22 +106,21 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: key, completion: { [weak self] (error: Error?, message: PrivateMessage?) in
-                if let error = error {
+            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: key)
+                .then { (message) in
+                    overlay?.dismiss(true, completion: {
+                        inbox.showMessage(message)
+                    })
+                }
+                .catch { (error) in
                     overlay?.titleLabelText = "Message Not Found"
                     overlay?.mode = .cross
-                    
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         overlay?.dismiss(true)
                     }
-                    return
-                }
-                
-                guard let message = message else { fatalError("no error should mean yes message") }
-                overlay?.dismiss(true, completion: {
-                    inbox.showMessage(message)
-                })
-            })
+            }
+
             return true
         })
         
@@ -306,8 +305,8 @@ final class AwfulURLRouter: NSObject {
             return
         }
         
-        _ = ForumsClient.shared.profileUser(id: userID, username: nil, completion: { (error: Error?, profile: Profile?) in
-            completion(error, profile?.user)
-        })
+        _ = ForumsClient.shared.profileUser(id: userID, username: nil)
+            .then { completion(nil, $0.user) }
+            .catch { completion($0, nil) }
     }
 }

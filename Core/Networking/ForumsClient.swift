@@ -10,11 +10,12 @@ import AFNetworking
 import CoreData
 import Foundation
 import HTMLReader
+import PromiseKit
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    private var httpManager: HTTPRequestOperationManager?
-    private var backgroundManagedObjectContext: NSManagedObjectContext?
+    fileprivate var httpManager: HTTPRequestOperationManager?
+    fileprivate var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
 
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
@@ -139,19 +140,60 @@ public final class ForumsClient {
         return loginCookie?.expiresDate
     }
 
+    enum PromiseError: Error {
+        case failedTransferToMainContext
+        case missingHTTPManager
+        case missingManagedObjectContext
+        case unexpectedContentType(String, expected: String)
+    }
+
+    fileprivate enum Method: String {
+        case get = "GET"
+        case post = "POST"
+    }
+
+    private func fetch(
+        method: Method,
+        urlString: String,
+        parameters: [String: Any]?,
+        redirectResponseBlock: ((_ connection: NSURLConnection, _ request: URLRequest, _ redirectResponse: URLResponse) -> URLRequest)? = nil)
+        -> (promise: Promise<(response: URLResponse?, responseObject: Any)>, cancellable: Cancellable)
+    {
+        guard let httpManager = httpManager else {
+            return (Promise(error: PromiseError.missingHTTPManager), Operation())
+        }
+
+        var error: NSError?
+        let url = URL(string: urlString, relativeTo: baseURL)
+        let request = httpManager.requestSerializer.request(withMethod: method.rawValue, urlString: url?.absoluteString ?? "", parameters: parameters, error: &error)
+        // Checking the error is bad form, but the request serializer interface claims (seemingly incorrectly) to return a nonnull instance, so I'm not sure how else to check for a failure here.
+        if let error = error {
+            return (promise: Promise(error: error), cancellable: Operation())
+        }
+
+        let promise = Promise<(response: URLResponse?, responseObject: Any)>.pending()
+        let op = httpManager.httpRequestOperation(
+            with: request as URLRequest,
+            success: { (op: AFHTTPRequestOperation, responseObject: Any) -> Void in
+                promise.fulfill((response: op.response, responseObject: responseObject))
+        },
+            failure: { (op: AFHTTPRequestOperation, error: Error) -> Void in
+                promise.reject(error)
+        })
+        op.setRedirectResponseBlock(redirectResponseBlock)
+        httpManager.operationQueue.addOperation(op)
+
+        return (promise: promise.promise, cancellable: op)
+    }
+
     // MARK: Session
 
-    /**
-     - Parameter completion: A block to call after logging in, which takes as parameters: an `Error` on failure, or `nil` on success; and a `User` on success or `nil` on failure.
-     */
-    public func logIn(username: String, password: String, completion: @escaping (_ error: Error?, _ user: User?) -> Void) -> Cancellable? {
+    public func logIn(username: String, password: String) -> Promise<User> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
@@ -160,101 +202,74 @@ public final class ForumsClient {
             "password" : password,
             "next": "/member.php?action=getinfo"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.profile != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .post, urlString: "account.php?json=1", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
+                let scraper = ProfileScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                let objectID = scraper?.profile?.user.objectID
-                DispatchQueue.main.async {
-                    let user = objectID.flatMap { mainContext.object(with: $0) as? User }
-                    completion(error, user)
+                guard let user = scraper.profile?.user else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Couldn't find logged-in user"])
                 }
-            }
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            var error = error
-            if op?.response?.statusCode == 401 {
-                let userInfo: [String: Any] = [
-                    NSLocalizedDescriptionKey: "Invalid username or password",
-                    NSUnderlyingErrorKey: error]
-                error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.invalidUsernameOrPassword, userInfo: userInfo)
-            }
-            completion(error, nil)
-        }
+                try context.save()
 
-        return httpManager?.post("account.php?json=1", parameters: parameters, success: success, failure: failure)
+                return user.objectID
+            }
+            .then(on: mainContext) { (objectID, context) in
+                guard let user = context.object(with: objectID) as? User else {
+                    throw PromiseError.failedTransferToMainContext
+                }
+                return user
+        }
     }
 
-    // MARK: - Forums
+    // MARK: Forums
 
-    /**
-     - Parameter completion: A block to call after finding the forum hierarchy which takes as parameters: an `Error` on failure or `nil` on success; and an array of `Forum`s on success or `nil` on failure.
-     */
-    public func taxonomizeForums(completion: @escaping (_ error: Error?, _ forums: [Forum]?) -> Void) -> Cancellable? {
+    public func taxonomizeForums() -> Promise<[Forum]> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = ["forumid": "48"]
+        // Seems like only `forumdisplay.php` and `showthread.php` have the `<select>` with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
+        return fetch(method: .get, urlString: "forumdisplay.php", parameters: ["forumid": "48"])
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+                let scraper = AwfulForumHierarchyScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
+                }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulForumHierarchyScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.forums != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+                guard let forums = scraper.forums else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Couldn't find forums"])
                 }
-                let objectIDs = (scraper?.forums ?? []).map { $0.objectID }
-                DispatchQueue.main.async {
-                    let forums = objectIDs.flatMap { mainContext.object(with: $0) as? Forum }
-                    completion(error, forums)
-                }
+
+                try context.save()
+
+                return forums.map { $0.objectID }
             }
+            .then(on: mainContext) { (objectIDs, context) -> [Forum] in
+                return objectIDs.flatMap { context.object(with: $0) as? Forum }
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        // Seems like only forumdisplay.php and showthread.php have the <select> with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-        return httpManager?.get("forumdisplay.php", parameters: parameters, success: success, failure: failure)
     }
 
-    // MARK: - Threads
+    // MARK: Threads
 
-    /**
-     - Parameter threadTag: A thread tag to use for filtering forums, or `nil` for no filtering.
-     - Parameter callback: A block to call after listing the threads which takes two parameters: an `Error` on failure or `nil` on success; and an array of `AwfulThread`s on success or `nil` on failure.
-     */
-    public func listThreads(in forum: Forum, taggedWith threadTag: ThreadTag?, on page: Int, completion: @escaping (_ error: Error?, _ threads: [AwfulThread]?) -> Void) -> Cancellable? {
+    /// - Parameter tagged: A thread tag to use for filtering forums, or `nil` for no filtering.
+    public func listThreads(in forum: Forum, tagged threadTag: ThreadTag?, page: Int) -> Promise<[AwfulThread]> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         var parameters = [
@@ -265,50 +280,43 @@ public final class ForumsClient {
             parameters["posticon"] = threadTagID
         }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if let threads = scraper?.threads as? [AwfulThread], error == nil {
-                    if page == 1, var threadsToForget = scraper?.forum?.threads as? Set<AwfulThread> {
-                        threadsToForget.subtract(threads)
-                        threadsToForget.forEach { $0.threadListPage = 0 }
-                    }
-                    threads.forEach { $0.threadListPage = Int32(page) }
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+                let scraper = AwfulThreadListScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                let objectIDs = (scraper?.threads as? [AwfulThread] ?? []).map { $0.objectID }
-                DispatchQueue.main.async {
-                    let threads = objectIDs.flatMap { mainContext.object(with: $0) as? AwfulThread }
-                    completion(error, threads)
+
+                guard let threads = scraper.threads as? [AwfulThread] else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Couldn't find threads"])
                 }
+
+                if
+                    page == 1,
+                    var threadsToForget = scraper.forum?.threads as? Set<AwfulThread>
+                {
+                    threadsToForget.subtract(threads)
+                    threadsToForget.forEach { $0.threadListPage = 0 }
+                }
+                threads.forEach { $0.threadListPage = Int32(page) }
+                try context.save()
+
+                return threads.map { $0.objectID }
             }
+            .then(on: mainContext) { (objectIDs, context) -> [AwfulThread] in
+                return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("forumdisplay.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after listing the threads which takes two parameters: an `Error` on failure or `nil` on success; and an array of `AwfulThread`s on success or `nil` on failure.
-     */
-    public func listBookmarkedThreads(on page: Int, completion: @escaping (_ error: Error?, _ threads: [AwfulThread]?) -> Void) -> Cancellable? {
+    public func listBookmarkedThreads(page: Int) -> Promise<[AwfulThread]> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
@@ -316,252 +324,181 @@ public final class ForumsClient {
             "perpage": "40",
             "pagenumber": "\(page)"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulThreadListScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if let threads = scraper?.threads as? [AwfulThread], error == nil {
-                    threads.forEach { $0.bookmarked = true }
-                    let threadIDsToIgnore = threads.map { $0.threadID }
-                    let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
-                    fetchRequest.predicate = NSPredicate(format: "bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", Int64(page), threadIDsToIgnore)
-                    do {
-                        let threadsToForget = try backgroundContext.fetch(fetchRequest)
-                        threadsToForget.forEach { $0.bookmarkListPage = 0 }
-                    }
-                    catch let fetchError {
-                        error = fetchError
-                    }
-                    threads.forEach { $0.bookmarkListPage = Int32(page) }
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+                let scraper = AwfulThreadListScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                let objectIDs = (scraper?.threads as? [AwfulThread] ?? []).map { $0.objectID }
-                DispatchQueue.main.async {
-                    let threads = objectIDs.flatMap { mainContext.object(with: $0) as? AwfulThread }
-                    completion(error, threads)
+
+                guard let threads = scraper.threads as? [AwfulThread] else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Couldn't find threads"])
                 }
+                threads.forEach { $0.bookmarked = true }
+
+                let threadIDsToIgnore = threads.map { $0.threadID }
+                let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+                fetchRequest.predicate = NSPredicate(format: "bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", Int64(page), threadIDsToIgnore)
+                let threadsToForget = try context.fetch(fetchRequest)
+                threadsToForget.forEach { $0.bookmarkListPage = 0 }
+                threads.forEach { $0.bookmarkListPage = Int32(page) }
+
+                try context.save()
+
+                return threads.map { $0.objectID }
             }
+            .then(on: mainContext) { (objectIDs, context) -> [AwfulThread] in
+                return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("bookmarkthreads.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after (un)bookmarking the thread, which takes an `Error` as a parameter on failure, or `nil` on success.
-     */
-    public func setThread(_ thread: AwfulThread, isBookmarked: Bool, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func setThread(_ thread: AwfulThread, isBookmarked: Bool) -> Promise<Void> {
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
+        }
+
         let parameters = [
             "json": "1",
             "action": isBookmarked ? "add" : "remove",
             "threadid": thread.threadID]
 
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            thread.bookmarked = isBookmarked
-            if isBookmarked, thread.bookmarkListPage <= 0 {
-                thread.bookmarkListPage = 1
-            }
-            let error: Error?
-            do {
-                try thread.managedObjectContext?.save()
-                error = nil
-            }
-            catch let saveError {
-                error = saveError
-            }
-            completion(error)
+        return fetch(method: .post, urlString: "bookmarkthreads.php", parameters: parameters)
+            .promise
+            .then(on: mainContext) { (response, context) in
+                thread.bookmarked = isBookmarked
+                if isBookmarked, thread.bookmarkListPage <= 0 {
+                    thread.bookmarkListPage = 1
+                }
+                try context.save()
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("bookmarkthreads.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after rating the thread, which takes as a parameter an `Error` on failure or `nil` on success.
-     */
-    public func rate(_ thread: AwfulThread, as rating: Int, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func rate(_ thread: AwfulThread, as rating: Int) -> Promise<Void> {
         let parameters = [
             "vote": "\(max(5, min(1, rating)))",
             "threadid": thread.threadID]
 
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            completion(nil)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("threadrate.php", parameters: parameters, success: success, failure: failure)
+        return fetch(method: .post, urlString: "threadrate.php", parameters: parameters)
+            .promise
+            .then { (_) -> Void in }
     }
 
-    /**
-     - Parameter completion: A block to call after marking the thread read, which takes as a parameter an `Error` on failure or `nil` on success.
-     */
-    public func markThreadAsReadUpTo(_ post: Post, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func markThreadAsReadUpTo(_ post: Post) -> Promise<Void> {
         guard let threadID = post.thread?.threadID else {
             assertionFailure("post needs a thread ID")
             let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
-            completion(error)
-            return Operation()
+            return Promise(error: error)
         }
+
         let parameters = [
             "action": "setseen",
             "threadid": threadID,
             "index": "\(post.threadIndex)"]
 
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            completion(nil)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.get("showthread.php", parameters: parameters, success: success, failure: failure)
+        return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
+            .promise
+            .then { (_) -> Void in }
     }
 
-    /**
-     - Parameter completion: A block to call after marking the thread unread, which takes as a parameter an `Error` object on failure or `nil` on success.
-     */
-    public func markUnread(_ thread: AwfulThread, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func markUnread(_ thread: AwfulThread) -> Promise<Void> {
         let parameters = [
             "threadid": thread.threadID,
             "action": "resetseen",
             "json": "1"]
 
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            completion(nil)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("showthread.php", parameters: parameters, success: success, failure: failure)
+        return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
+            .promise
+            .then { (_) -> Void in }
     }
 
-    /**
-     List post icons usable for a new thread in a forum.
-     
-     - Parameter forumID: Which forum to list icons for.
-     - Parameter completion: A block to call after listing post icons, which takes as parameters: an `Error` on failure, or `nil` on success; an `AwfulForm` with thread tags and secondary thread tags on success, or `nil` on failure.
-     */
-    public func listAvailablePostIcons(inForumIdentifiedBy forumID: String, completion: @escaping (_ error: Error?, _ form: AwfulForm?) -> Void) -> Cancellable? {
+    public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<AwfulForm> {
         guard let mainContext = managedObjectContext else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
             "action": "newthread",
             "forumid": forumID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            DispatchQueue.global(qos: .userInitiated).async {
-                let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
-                let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                mainContext.perform {
-                    let error: Error?
-                    if let form = form {
-                        do {
-                            form.scrapeThreadTags(into: mainContext)
-                            try mainContext.save()
-                            error = nil
-                        }
-                        catch let saveError {
-                            error = saveError
-                        }
-                    }
-                    else {
-                        error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not find new thread form"])
-                    }
-                    completion(error, form)
+        return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: mainContext) { (document, context) -> AwfulForm in
+                guard
+                    let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
+                    let form = AwfulForm(element: htmlForm) else
+                {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find new thread form"])
                 }
-            }
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
+                form.scrapeThreadTags(into: context)
+                try context.save()
 
-        return httpManager?.get("newthread.php", parameters: parameters, success: success, failure: failure)
+                return form
+        }
     }
 
-    /**
-     - Parameter completion: A block to call after posting the thread, which takes as parameters: an `Error` on failure or `nil` on success; and the new `AwfulThread` on success, or `nil` on failure.
-     */
-    public func postThread(in forum: Forum, subject: String, threadTag: ThreadTag?, secondaryTag: ThreadTag?, bbcode: String, completion: @escaping (_ error: Error?, _ thread: AwfulThread?) -> Void) -> Cancellable? {
+    public func postThread(in forum: Forum, subject: String, threadTag: ThreadTag?, secondaryTag: ThreadTag?, bbcode: String) -> Promise<AwfulThread> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext,
-            let httpManager = httpManager else
+            let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
             "action": "newthread",
             "forumid": forum.forumID]
 
-        let threadTagObjectID = threadTag?.objectID
-        let secondaryTagObjectID = secondaryTag?.objectID
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
-                let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                guard var parameters = form?.recommendedParameters() as? [String: Any] else {
-                    let error: Error
-                    let specialMessage = document?.firstNode(matchingSelector: "#content center div.standard")
+        let formAndParameters = fetch(method: .get, urlString: "newthread.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> (AwfulForm, [String: Any]) in
+                guard
+                    let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
+                    let form = AwfulForm(element: htmlForm),
+                    let parameters = form.recommendedParameters() as? [String: Any] else
+                {
+                    let specialMessage = document.firstNode(matchingSelector: "#content center div.standard")
                     if
                         let specialMessage = specialMessage,
                         specialMessage.textContent.contains("accepting")
                     {
-                        error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
                             NSLocalizedDescriptionKey: "You're not allowed to post threads in this forum"])
                     }
                     else {
-                        error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                             NSLocalizedDescriptionKey: "Could not find new thread form"])
                     }
-                    DispatchQueue.main.async {
-                        completion(error, nil)
-                    }
-                    return
                 }
 
-                form?.scrapeThreadTags(into: backgroundContext)
+                form.scrapeThreadTags(into: backgroundContext)
+                try backgroundContext.save()
 
+                return (form, parameters)
+        }
+
+        let threadTagObjectID = threadTag?.objectID
+        let secondaryTagObjectID = secondaryTag?.objectID
+
+
+        let submitParameters = formAndParameters
+            .then(on: backgroundContext) { (formAndParameters, context) -> [String: Any] in
+                let (form, _) = formAndParameters
+                var (_, parameters) = formAndParameters
                 parameters["subject"] = subject
 
                 if
                     let objectID = threadTagObjectID,
-                    let threadTag = backgroundContext.object(with: objectID) as? ThreadTag,
+                    let threadTag = context.object(with: objectID) as? ThreadTag,
                     let imageName = threadTag.imageName,
-                    let threadTagID = form?.threadTagID(withImageName: imageName),
-                    let key = form?.selectedThreadTagKey
+                    let threadTagID = form.threadTagID(withImageName: imageName),
+                    let key = form.selectedThreadTagKey
                 {
                     parameters[key] = threadTagID
                 }
@@ -570,49 +507,52 @@ public final class ForumsClient {
 
                 if
                     let objectID = secondaryTagObjectID,
-                    let threadTag = backgroundContext.object(with: objectID) as? ThreadTag,
+                    let threadTag = context.object(with: objectID) as? ThreadTag,
                     let imageName = threadTag.imageName,
-                    let threadTagID = form?.secondaryThreadTagID(withImageName: imageName),
-                    let key = form?.selectedSecondaryThreadTagKey
+                    let threadTagID = form.secondaryThreadTagID(withImageName: imageName),
+                    let key = form.selectedSecondaryThreadTagKey
                 {
                     parameters[key] = threadTagID
                 }
 
                 parameters.removeValue(forKey: "preview")
 
-                let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-                    let document = document as? HTMLDocument
-                    let link = document?.firstNode(matchingSelector: "a[href *= 'showthread']")
-                    let threadID = (link?["href"])
-                        .flatMap { URLComponents(string: $0) }
-                        .flatMap { $0.queryItems }?
-                        .first { $0.name == "threadid" }?
-                        .value
-                    let thread: AwfulThread?
-                    let error: Error?
-                    if let threadID = threadID {
-                        thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), inManagedObjectContext: mainContext) as? AwfulThread
-                        error = nil
-                    }
-                    else {
-                        thread = nil
-                        error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."])
-                    }
-                    completion(error, thread)
-                }
-
-                httpManager.post("newthread.php", parameters: parameters, success: success, failure: failure)
-            }
+                return parameters
         }
 
-        return httpManager.get("newthread.php", parameters: parameters, success: success, failure: failure)
+        let threadID = submitParameters
+            .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                guard
+                    let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
+                    let href = link["href"],
+                    let components = URLComponents(string: href),
+                    let queryItems = components.queryItems,
+                    let threadIDPair = queryItems.first(where: { $0.name == "threadid" }),
+                    let threadID = threadIDPair.value else
+                {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."])
+                }
+
+                return threadID
+        }
+
+        return threadID
+            .then(on: mainContext) { (threadID, context) -> AwfulThread in
+                let key = ThreadKey(threadID: threadID)
+                guard let thread = AwfulThread.objectForKey(objectKey: key, inManagedObjectContext: context) as? AwfulThread else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "The new thread could not be saved, but it was probably made. Check the forum you posted it in."])
+                }
+
+                return thread
+        }
     }
 
-    /**
-     - Parameter completion: A block to call after rendering the preview, which returns nothing and takes as parameters: an `Error` object on failure or `nil` on success; and the rendered post's HTML on success or `nil` on failure.
-     */
-    public func previewOriginalPostForThread(in forum: Forum, bbcode: String, completion: @escaping (_ error: Error?, _ postHTML: String?) -> Void) -> Cancellable? {
+    /// - Returns: The promise of the previewed post's HTML.
+    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> (Promise<String>, Cancellable) {
         let parameters = [
             "forumid": forum.forumID,
             "action": "postthread",
@@ -620,35 +560,39 @@ public final class ForumsClient {
             "parseurl": "yes",
             "preview": "Preview Post"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            let postbody = document?.firstNode(matchingSelector: ".postbody")
-            if let postbody = postbody {
-                workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                completion(nil, postbody.innerHTML)
-            }
-            else {
-                let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                    NSLocalizedDescriptionKey: "Could not find previewed original post"])
-                completion(error, nil)
-            }
+        let (promise, cancellable) = fetch(method: .post, urlString: "newthread.php", parameters: parameters)
+        let html = promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                if let postbody = document.firstNode(matchingSelector: ".postbody") {
+                    workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+                    return postbody.innerHTML
+                }
+                else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find previewed original post"])
+                }
         }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.post("newthread.php", parameters: parameters, success: success, failure: failure)
+        return (html, cancellable)
     }
 
-    // MARK: - Posts
+    // MARK: Posts
 
     /**
      - Parameter writtenBy: A `User` whose posts should be the only ones listed. If `nil`, posts from all authors are listed.
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
-     - Parameter completion: A block to call after listing posts, which takes as parameters: an `Error` on failure, or `nil` on success; an array of `AwfulPost`s on success, or `nil` on failure; the index of the first unread post in the posts array on success; and the banner ad HTML on success.
      */
-    public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: Int, updateLastReadPost: Bool, completion: @escaping (_ error: Error?, _ posts: [Post]?, _ firstUnreadPost: Int, _ advertisementHTML: String?) -> Void) -> Cancellable? {
+    public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: Int, updateLastReadPost: Bool)
+        -> (promise: Promise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String?)>, cancellable: Cancellable)
+    {
+        guard
+            let backgroundContext = backgroundManagedObjectContext,
+            let mainContext = managedObjectContext else
+        {
+            return (Promise(error: PromiseError.missingManagedObjectContext), Operation())
+        }
+
         var parameters = [
             "threadid": thread.threadID,
             "perpage": "40"]
@@ -670,46 +614,39 @@ public final class ForumsClient {
             parameters["userid"] = userID
         }
 
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext,
-            let httpManager = httpManager else
-        {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil, NSNotFound, nil)
-            return nil
+        // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
+        func redirectResponseBlock(connection: NSURLConnection, request: URLRequest, redirectResponse: URLResponse) -> URLRequest {
+            var components = request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
+            let queryItems = (components?.queryItems ?? [])
+                .filter { $0.name != "perpage" }
+            components?.queryItems = queryItems
+                + [URLQueryItem(name: "perpage", value: "40")]
+
+            var request = request
+            request.url = components?.url
+            return request
         }
 
-        var error: NSError?
-        let url = URL(string: "showthread.php", relativeTo: httpManager.baseURL)
-        let request = httpManager.requestSerializer.request(withMethod: "GET", urlString: url?.absoluteString ?? "", parameters: parameters, error: &error)
-        // Checking the error is bad form, but the request serializer interface claims (seemingly incorrectly) to return a nonnull instance, so I'm not sure how else to check for a failure here.
-        if error != nil {
-            completion(error, nil, NSNotFound, nil)
-            return nil
-        }
+        let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectResponseBlock: redirectResponseBlock)
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulPostsPageScraper.scrape($0, into: backgroundContext) }
-                let error: Error?
-                if scraper?.posts != nil {
-                    do {
-                        try backgroundContext.save()
-                        error = nil
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        let parsed = promise
+            .then(on: backgroundContext) { (response, context)
+                -> (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?) in
+                let (response, responseObject) = response
+                let scraper = try AwfulPostsPageScraper.scrape(cast(responseObject), into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                else {
-                    error = nil
+                guard let posts = scraper.posts else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find posts"])
                 }
+
+                try context.save()
 
                 let firstUnreadPostIndex: Int? = {
                     guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
-                    guard let fragment = op.response?.url?.fragment, !fragment.isEmpty else { return nil }
+                    guard let fragment = response?.url?.fragment, !fragment.isEmpty else { return nil }
 
                     let scanner = Scanner.awful_scanner(with: fragment)
                     guard scanner.scanString("pti", into: nil) else { return nil }
@@ -719,158 +656,130 @@ public final class ForumsClient {
                     return scannedInt
                 }()
 
-                let objectIDs = (scraper?.posts ?? []).map { $0.objectID }
-                DispatchQueue.main.async {
-                    // The posts page scraper may have updated the passed-in thread, so we should make sure the passed-in thread is up-to-date. And although the AwfulForumsClient API is assumed to be called from the main thread, we cannot assume the passed-in thread's context is the same as our main thread context.
-                    thread.managedObjectContext?.refresh(thread, mergeChanges: true)
-
-                    let posts = objectIDs.flatMap { mainContext.object(with: $0) as? Post }
-                    completion(error, posts, firstUnreadPostIndex ?? NSNotFound, scraper?.advertisementHTML)
-                }
+                return (posts.map { $0.objectID }, firstUnreadPostIndex, scraper.advertisementHTML)
             }
+            .then(on: mainContext) { (parsed: (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?), context: NSManagedObjectContext)
+                -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String?) in
+                let (objectIDs: objectIDs, firstUnreadPostIndex: firstUnreadPostIndex, advertisementHTML: advertisementHTML) = parsed
+                let posts = objectIDs.flatMap { context.object(with: $0) as? Post }
+                return (posts: posts, firstUnreadPost: firstUnreadPostIndex, advertisementHTML: advertisementHTML)
         }
 
-        let failure = { (op: AFHTTPRequestOperation, error: Error) -> Void in
-            completion(error, nil, NSNotFound, nil)
-        }
-
-        let op = httpManager.httpRequestOperation(with: request as URLRequest, success: success, failure: failure)
-
-        // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
-        op.setRedirectResponseBlock { (connection, request, redirectResponse) -> URLRequest in
-            var components = request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
-            let queryItems = (components?.queryItems ?? [])
-                .filter { $0.name != "perpage" }
-            components?.queryItems = queryItems
-                + [URLQueryItem(name: "perpage", value: "40")]
-            var request = request
-            request.url = components?.url
-            return request
-        }
-
-        httpManager.operationQueue.addOperation(op)
-        return op
+        return (parsed, cancellable)
     }
 
     /**
      - Parameter post: An ignored post whose author and innerHTML should be filled.
-     - Parameter completion: A block to call after reading the post, which takes a single parameter: an `Error` on failure, or `nil` on success.
      */
-    public func readIgnoredPost(_ post: Post, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
-        guard let backgroundContext = backgroundManagedObjectContext else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
-            return nil
+    public func readIgnoredPost(_ post: Post) -> Promise<Void> {
+        guard
+            let backgroundContext = backgroundManagedObjectContext,
+            let postContext = post.managedObjectContext else
+        {
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
             "action": "showpost",
             "postid": post.postID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulPostScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.post != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> Void in
+                let scraper = AwfulPostScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
+                }
+                guard scraper.post != nil else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find post"])
+                }
 
-                    post.managedObjectContext?.performAndWait {
-                        post.managedObjectContext?.refresh(post, mergeChanges: true)
-                    }
-                }
-                DispatchQueue.main.async {
-                    completion(error)
-                }
+                try context.save()
             }
+            .then(on: postContext) { (_, context) -> Void in
+                context.refresh(post, mergeChanges: true)
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.get("showthread.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after sending the reply, which takes as parameters: an `Error` on failure, or `nil` on success; and the newly-created `Post` on success, or `nil` on failure.
-     */
-    public func reply(to thread: AwfulThread, bbcode: String, completion: @escaping (_ error: Error?, _ post: Post?) -> Void) -> Cancellable? {
+    public enum ReplyLocation {
+        case lastPostInThread
+        case post(Post)
+    }
+
+    public func reply(to thread: AwfulThread, bbcode: String) -> Promise<ReplyLocation> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext,
-            let httpManager = httpManager else
+            let mainContext = managedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
             "action": "newreply",
             "threadid": thread.threadID]
-
         let wasThreadClosed = thread.closed
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
+        let formParameters = fetch(method: .get, urlString: "newreply.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [String: Any] in
                 guard
-                    let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']"),
+                    let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm),
                     var parameters = form.recommendedParameters() as? [String: Any] else
                 {
                     let description = wasThreadClosed
                         ? "Could not reply; the thread may be closed."
                         : "Could not reply; failed to find the form."
-                    let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: description])
-                    DispatchQueue.main.async {
-                        completion(error, nil)
-                    }
-                    return
                 }
 
                 parameters["message"] = bbcode
                 parameters.removeValue(forKey: "preview")
-
-                let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-                    let document = document as? HTMLDocument
-                    let link = document?.firstNode(matchingSelector: "a[href *= 'goto=post']")
-                        ?? document?.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
-                    let components = link
-                        .flatMap { $0["href"] }
-                        .flatMap { URLComponents(string: $0) }
-                    let postKey: PostKey? = {
-                        guard let queryItems = components?.queryItems else { return nil }
-                        let goto = queryItems.first { $0.name == "goto" }
-                        guard goto?.value == "post" else { return nil }
-                        let postID = queryItems.first { $0.name == "postid" }?.value
-                        return postID.map { PostKey(postID: $0) }
-                    }()
-                    let post = postKey.flatMap { Post.objectForKey(objectKey: $0, inManagedObjectContext: mainContext) as? Post }
-                    completion(nil, post)
-                }
-
-                httpManager.post("newreply.php", parameters: parameters, success: success, failure: failure)
-            }
+                return parameters
         }
 
-        return httpManager.get("newreply.php", parameters: parameters, success: success, failure: failure)
+        let postID = formParameters
+            .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document: HTMLDocument) -> String? in
+                let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
+                    ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
+                let queryItems = link
+                    .flatMap { $0["href"] }
+                    .flatMap { URLComponents(string: $0) }
+                    .flatMap { $0.queryItems }
+                if
+                    let goto = queryItems?.first(where: { $0.name == "goto" }),
+                    goto.value == "post",
+                    let postID = queryItems?.first(where: { $0.name == "postid" })?.value
+                {
+                    return postID
+                }
+                else {
+                    return nil
+                }
+        }
+
+        return postID
+            .then(on: mainContext) { (postID, context) -> ReplyLocation in
+                if let postID = postID {
+                    let key = PostKey(postID: postID)
+                    guard let post = Post.objectForKey(objectKey: key, inManagedObjectContext: context) as? Post else {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Could not save new post. It might've worked anyway"])
+                    }
+                    return .post(post)
+                }
+                else {
+                    return .lastPostInThread
+                }
+        }
     }
 
-    /**
-     - Parameter completion: A block to call after rendering the preview, which returns nothing and takes as parameters: an `Error` on failure, or `nil` on success; and the rendered post's HTML on success or `nil` on failure.
-     */
-    public func previewReply(to thread: AwfulThread, bbcode: String, completion: @escaping (_ error: Error?, _ postHTML: String?) -> Void) -> Cancellable? {
+    public func previewReply(to thread: AwfulThread, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
         let parameters = [
             "action": "postreply",
             "threadid": thread.threadID,
@@ -878,162 +787,207 @@ public final class ForumsClient {
             "parseurl": "yes",
             "preview": "Preview Reply"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            if let postbody = document?.firstNode(matchingSelector: ".postbody") {
+        let (promise, cancellable) = fetch(method: .post, urlString: "newreply.php", parameters: parameters)
+
+        let parsed = promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find previewed post"])
+                }
+
                 workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                completion(nil, postbody.innerHTML)
-            }
-            else {
-                let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                    NSLocalizedDescriptionKey: "Could not find previewed post"])
-                completion(error, nil)
-            }
+                return postbody.innerHTML
         }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.post("newreply.php", parameters: parameters, success: success, failure: failure)
+        return (promise: parsed, cancellable: cancellable)
     }
 
-    /**
-     - Parameter completion: A block to call after finding the text of the post, which takes as parameters: an `Error` on failure, or `nil` on success; and the BBcode text of the post on success, or `nil` on failure.
-     */
-    public func findBBcodeContents(of post: Post, completion: @escaping (_ error: Error?, _ text: String?) -> Void) -> Cancellable? {
+    public func findBBcodeContents(of post: Post) -> Promise<String> {
         let parameters = [
             "action": "editpost",
             "postid": post.postID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
-            let form = htmlForm.flatMap { AwfulForm(element: $0) }
-            let message = form?.allParameters?["message"]
-            let error: Error?
-            if message == nil {
-                if form != nil {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find post contents in edit post form"])
+        return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
+                let form = htmlForm.flatMap { AwfulForm(element: $0) }
+                guard let message = form?.allParameters?["message"] else {
+                    if form != nil {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Could not find post contents in edit post form"])
+                    }
+                    else {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Could not find edit post form"])
+                    }
                 }
-                else {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find edit post form"])
-                }
-            }
-            else {
-                error = nil
-            }
-            completion(error, message)
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+                return message
         }
-
-        return httpManager?.get("editpost.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after finding the quoted text of the post, which takes as parameters: an `Error` on failure, or `nil` on success; and the BBcode quoted text of the post on success, or `nil` on failure.
-     */
-    public func quoteBBcodeContents(of post: Post, completion: @escaping (_ error: Error?, _ quotedText: String?) -> Void) -> Cancellable? {
+    public func quoteBBcodeContents(of post: Post) -> Promise<String> {
         let parameters = [
             "action": "newreply",
             "postid": post.postID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
-            let form = htmlForm.flatMap { AwfulForm(element: $0) }
-            let bbcode = form?.allParameters?["message"]
-            let error: Error?
-            if bbcode == nil {
-                if
-                    let specialMessage = document?.firstNode(matchingSelector: "#content center div.standard"),
-                    specialMessage.textContent.contains("permission")
+        return fetch(method: .get, urlString: "newreply.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                guard
+                    let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
+                    let form = AwfulForm(element: htmlForm),
+                    let bbcode = form.allParameters?["message"] else
                 {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                        NSLocalizedDescriptionKey: "You're not allowed to post in this thread"])
+                    if
+                        let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+                        specialMessage.textContent.contains("permission")
+                    {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
+                            NSLocalizedDescriptionKey: "You're not allowed to post in this thread"])
+                    }
+                    else {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Failed to quote post; could not find form"])
+                    }
                 }
-                else {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Failed to quote post; could not find form"])
-                }
-            }
-            else {
-                error = nil
-            }
-            completion(error, bbcode)
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+                return bbcode
         }
-
-        return httpManager?.get("newreply.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     A block to call after editing the post, which takes as a parameter an `Error` on failure or `nil` on success.
-     */
-    public func edit(_ post: Post, bbcode: String, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
-        guard let httpManager = httpManager else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
-            return nil
-        }
-
+    public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
         let parameters = [
             "action": "editpost",
             "postid": post.postID]
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
-            let form = htmlForm.flatMap { AwfulForm(element: $0) }
-            guard
-                var parameters = form?.recommendedParameters() as? [String: Any],
-                parameters["postid"] != nil else
-            {
-                let error: Error?
-                if
-                    let specialMessage = document?.firstNode(matchingSelector: "#content center div.standard"),
-                    specialMessage.textContent.contains("permission")
+        return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> [String: Any] in
+                guard
+                    let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
+                    let form = AwfulForm(element: htmlForm),
+                    var parameters = form.recommendedParameters() as? [String: Any],
+                    parameters["postid"] != nil else
                 {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                        NSLocalizedDescriptionKey: "You're not allowed to edit posts in this thread"])
+                    if
+                        let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+                        specialMessage.textContent.contains("permission")
+                    {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
+                            NSLocalizedDescriptionKey: "You're not allowed to edit posts in this thread"])
+                    }
+                    else {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Failed to edit post; could not find form"])
+                    }
                 }
-                else {
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Failed to edit post; could not find form"])
-                }
-                completion(error)
-                return
+
+                parameters["message"] = bbcode
+                parameters.removeValue(forKey: "preview")
+                return parameters
             }
-
-            parameters["message"] = bbcode
-            parameters.removeValue(forKey: "preview")
-
-            let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-                completion(nil)
-            }
-
-            httpManager.post("editpost.php", parameters: parameters, success: success, failure: failure)
-        }
-
-        return httpManager.get("editpost.php", parameters: parameters, success: success, failure: failure)
+            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
+            .then { _ in return () }
     }
 
     /**
-     - Parameter completion: A block to call after rendering the preview, which returns nothing and takes as parameters: an `Error` on failure or `nil` on success; and the rendered post's HTML on success or `nil` on failure.
+     - Parameter postID: The post's ID. Specified directly in case no such post exists, which would make for a useless `Post`.
+     - Returns: The promise of a post (with its `thread` set) and the page containing the post (may be `AwfulThreadPage.last`).
      */
-    public func previewEdit(to post: Post, bbcode: String, completion: @escaping (_ error: Error?, _ postHTML: String?) -> Void) -> Cancellable? {
+    public func locatePost(id postID: String) -> Promise<(post: Post, page: Int)> {
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
+        }
+
+        // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that redirect, then parse out the info we need.
+        let redirectURL = Promise<URL>.pending()
+        var cancellable: Cancellable?
+
+        func redirectResponse(connection: NSURLConnection, redirectRequest: URLRequest, response: URLResponse) -> URLRequest {
+            if
+                let url = redirectRequest.url,
+                url.lastPathComponent == "showthread.php",
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                let queryItems = components.queryItems,
+                queryItems.first(where: { $0.name == "goto" }) != nil
+            {
+                return redirectRequest
+            }
+
+            cancellable?.cancel()
+
+            guard let url = redirectRequest.url else {
+                redirectURL.reject(
+                NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                    NSLocalizedDescriptionKey: "The post could not be found (missing URL)"]))
+                return URLRequest(url: URL(string: "http:")!) // can't return nil for some reason?
+            }
+
+            redirectURL.fulfill(url)
+
+            return URLRequest(url: URL(string: "http:")!) // can't return nil for some reason?
+        }
+
+        let parameters = [
+            "goto": "post",
+            "postid": postID]
+
+        let initialRequest = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectResponseBlock: redirectResponse)
+        cancellable = initialRequest.cancellable
+        initialRequest.promise
+            .then { (response) -> Void in
+                // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
+                redirectURL.reject(
+                    NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "The post could not be found"]))
+            }
+            .catch { (error) -> Void in
+                // This catch excludes cancellation, so we've legitimately failed.
+                redirectURL.reject(error)
+        }
+
+        return redirectURL.promise
+            .then { (url) -> (threadID: String, page: Int) in
+                guard
+                    let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                    let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
+                    !threadID.isEmpty,
+                    let rawPagenumber = components.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
+                    let pagenumber = Int(rawPagenumber) else
+                {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "The thread ID or page number could not be found"])
+                }
+
+                return (threadID: threadID, page: pagenumber)
+            }
+            .then(on: mainContext) { (parsed, context) -> (post: Post, page: Int) in
+                let (threadID: threadID, page: page) = parsed
+                let postKey = PostKey(postID: postID)
+                let threadKey = ThreadKey(threadID: threadID)
+                guard
+                    let post = Post.objectForKey(objectKey: postKey, inManagedObjectContext: mainContext) as? Post,
+                    let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: mainContext) as? AwfulThread else
+                {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Couldn't make the post or thread"])
+                }
+
+                post.thread = thread
+                try context.save()
+
+                return (post: post, page: page)
+        }
+    }
+
+    public func previewEdit(to post: Post, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
         let parameters = [
             "action": "updatepost",
             "postid": post.postID,
@@ -1041,195 +995,92 @@ public final class ForumsClient {
             "parseurl": "yes",
             "preview": "Preview Post"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            if let postbody = document?.firstNode(matchingSelector: ".postbody") {
+        let (promise, cancellable) = fetch(method: .post, urlString: "editpost.php", parameters: parameters)
+
+        let parsed = promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find previewed post"])
+                }
+
                 workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                completion(nil, postbody.innerHTML)
-            }
-            else {
-                let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                    NSLocalizedDescriptionKey: "Could not find previewd post"])
-                completion(error, nil)
-            }
+                return postbody.innerHTML
         }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.post("editpost.php", parameters: parameters, success: success, failure: failure)
-    }
-
-    /**
-     - Parameter postID: The post's ID. Specified directly in case no such post exists, which would make for a useless `Post`.
-     - Parameter completion: A block to call after locating the post, which takes as parameters: an `Error` object on failure or `nil` on success; a `Post` on success or `nil` on failure; and the page containing the post (may be `AwfulThreadPage.last`).
-     */
-    public func locatePost(id postID: String, completion: @escaping (_ error: Error?, _ post: Post?, _ page: Int) -> Void) -> Cancellable? {
-        guard
-            let mainContext = managedObjectContext,
-            let httpManager = httpManager else
-        {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil, 0)
-            return nil
-        }
-
-        // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that redirect, then parse out the info we need.
-        var didSucceed = false
-
-        let parameters = [
-            "goto": "post",
-            "postid": postID]
-
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
-            let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                NSLocalizedDescriptionKey: "The post could not be found"])
-            completion(error, nil, 0)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            if !didSucceed {
-                completion(error, nil, 0)
-            }
-        }
-
-        let url = URL(string: "showthread.php", relativeTo: httpManager.baseURL)
-        var error: NSError?
-        let request = url.map { httpManager.requestSerializer.request(withMethod: "GET", urlString: $0.absoluteString, parameters: parameters, error: &error) }
-        let op = request.map { httpManager.httpRequestOperation(with: $0 as URLRequest, success: success, failure: failure) }
-
-        op?.setRedirectResponseBlock({ [weak op] (connection, redirectRequest, response) -> URLRequest in
-            didSucceed = true
-            op?.cancel()
-
-            let components = redirectRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
-            let rawThreadID = components?.queryItems?.first(where: { $0.name == "threadid" })?.value
-            guard
-                let threadID = rawThreadID,
-                !threadID.isEmpty,
-                let rawPagenumber = components?.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
-                let pagenumber = Int(rawPagenumber) else
-            {
-                let missingInfo = rawThreadID == nil ? "thread ID" : "page number"
-                let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                    NSLocalizedDescriptionKey: "The \(missingInfo) could not be found"])
-                DispatchQueue.main.async {
-                    completion(error, nil, 0)
-                }
-                return URLRequest(url: URL(string: "http:")!) // can't return nil for some reason?
-            }
-
-            mainContext.perform {
-                let postKey = PostKey(postID: postID)
-                let post = Post.objectForKey(objectKey: postKey, inManagedObjectContext: mainContext) as? Post
-                let threadKey = ThreadKey(threadID: threadID)
-                let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: mainContext) as? AwfulThread
-                post?.thread = thread
-                let error: Error?
-                do {
-                    try mainContext.save()
-                    error = nil
-                }
-                catch let saveError {
-                    error = saveError
-                }
-                DispatchQueue.main.async {
-                    completion(error, post, pagenumber)
-                }
-            }
-
-            return URLRequest(url: URL(string: "http:")!) // can't return nil for some reason?
-        })
-
-        if let op = op {
-            httpManager.operationQueue.addOperation(op)
-        }
-        return op
+        return (promise: parsed, cancellable: cancellable)
     }
 
     /**
      - Parameter reason: A further explanation of what's wrong with the post. Truncated to 60 characters.
      */
-    public func report(_ post: Post, reason: String, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func report(_ post: Post, reason: String) -> Promise<Void> {
         let parameters = [
             "action": "submit",
             "postid": post.postID,
             "comments": String(reason.characters.prefix(60))]
 
-        let success = { (op: AFHTTPRequestOperation, response: Any) -> Void in
-            // Error checking is intentionally lax here. Let plat non-havers spin their wheels.
-            completion(nil)
+        return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
+            .promise
+            .then { _ in return () }
+            .recover { (error) -> Promise<Void> in
+                print("error reporting post \(post.postID): \(error)")
+                return Promise(value: ())
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("modalert.php", parameters: parameters, success: success, failure: failure)
     }
 
-    // MARK: - People
+    // MARK: Users
 
-    /**
-     - Parameter completion: A block to call after learning user info, which takes as parameters: an `Error` on failure or `nil` on success; and a `User` for the logged-in user on success, or `nil` on failure.
-     */
-    public func profileLoggedInUser(completion: @escaping (_ error: Error?, _ user: User?) -> Void) -> Cancellable? {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+    private func profile(parameters: [String: Any]) -> Promise<NSManagedObjectID> {
+        guard let backgroundContext = backgroundManagedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = ["action": "getinfo"]
+        return fetch(method: .get, urlString: "member.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
+                let scraper = ProfileScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
+                }
+                guard let profile = scraper.profile else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find profile"])
+                }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.profile?.user != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
-                }
-                let objectID = scraper?.profile?.user.objectID
-                DispatchQueue.main.async {
-                    let user = objectID.flatMap { mainContext.object(with: $0) as? User }
-                    completion(error, user)
-                }
+                try context.save()
+
+                return profile.objectID
             }
+    }
+
+    public func profileLoggedInUser() -> Promise<User> {
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
+        return profile(parameters: ["action": "getinfo"])
+            .then(on: mainContext) { (objectID, context) -> User in
+                guard let profile = context.object(with: objectID) as? Profile else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not save profile"])
+                }
 
-        return httpManager?.get("member.php", parameters: parameters, success: success, failure: failure)
+                return profile.user
+        }
     }
 
     /**
      - Parameter id: The user's ID. Specified directly in case no such user exists, which would make for a useless `User`.
      - Parameter username: The user's username. If userID is not given, username must be given.
-     - Parameter completion: A block to call after learning of the user's info, which takes as parameters: an `Error` on failure or `nil` on success; and a `Profile` on success or `nil` on failure.
      */
-    public func profileUser(id userID: String?, username: String?, completion: @escaping (_ error: Error?, _ profile: Profile?) -> Void) -> Cancellable? {
+    public func profileUser(id userID: String?, username: String?) -> Promise<Profile> {
         assert(userID != nil || username != nil)
 
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         var parameters = ["action": "getinfo"]
@@ -1240,307 +1091,206 @@ public final class ForumsClient {
             parameters["username"] = username
         }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { ProfileScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.profile != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return profile(parameters: parameters)
+            .then(on: mainContext) { (objectID, context) -> Profile in
+                guard let profile = context.object(with: objectID) as? Profile else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not save profile"])
                 }
-                let objectID = scraper?.profile?.objectID
-                DispatchQueue.main.async {
-                    let profile = objectID.flatMap { mainContext.object(with: $0) as? Profile }
-                    completion(error, profile)
-                }
-            }
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+                return profile
         }
-
-        return httpManager?.get("member.php", parameters: parameters, success: success, failure: failure)
     }
 
-    // MARK: - Leper's Colony
-
-    /**
-     - Parameter completion: A block to call after listing bans and probations, which takes as parameters: an `Error` on failure or `nil` on success; and an array of `Punishment`s on success, or `nil` on failure.
-     */
-    public func listPunishments(of user: User?, page: Int, completion: @escaping (_ error: Error?, _ punishments: [Punishment]?) -> Void) -> Cancellable? {
-        guard let httpManager = httpManager, let mainContext = managedObjectContext else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+    private func lepersColony(parameters: [String: Any]) -> Promise<[Punishment]> {
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        func doIt() -> Cancellable? {
-            var parameters: [String: Any] = ["pagenumber": "\(page)"]
-            if let userID = user?.userID {
-                parameters["userid"] = userID
-            }
-
-            let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-                let document = document as? HTMLDocument
-                mainContext.perform {
-                    let scraper = document.map { LepersColonyPageScraper.scrape($0, into: mainContext) }
-                    var error = scraper?.error
-                    if scraper?.punishments != nil {
-                        do {
-                            try mainContext.save()
-                        }
-                        catch let saveError {
-                            error = saveError
-                        }
-                    }
-                    completion(error, scraper?.punishments)
+        return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: mainContext) { (document, context) -> [Punishment] in
+                let scraper = LepersColonyPageScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-            }
+                guard let punishments = scraper.punishments else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find punishments"])
+                }
 
-            let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-                completion(error, nil)
-            }
+                try context.save()
+                return punishments
+        }
+    }
 
-            return httpManager.get("banlist.php", parameters: parameters, success: success, failure: failure)
+    public func listPunishments(of user: User?, page: Int) -> Promise<[Punishment]> {
+        guard let user = user else {
+            return lepersColony(parameters: ["pagenumber": "\(page)"])
         }
 
-        if
-            let user = user,
-            let username = user.username,
-            !username.isEmpty,
-            user.userID.isEmpty
-        {
-            return profileUser(id: nil, username: username, completion: { (error, profile) in
-                if let error = error {
-                    return completion(error, nil)
-                }
-                _ = doIt()
-            })
+        let userID: Promise<String>
+        if !user.userID.isEmpty {
+            userID = Promise(value: user.userID)
         }
         else {
-            return doIt()
+            guard let username = user.username else {
+                assertionFailure("need user ID or username")
+                return lepersColony(parameters: ["pagenumber": "\(page)"])
+            }
+
+            userID = profileUser(id: nil, username: username)
+                .then { $0.user.userID }
+        }
+
+        return userID
+            .then { (userID) -> Promise<[Punishment]> in
+                let parameters = [
+                    "pagenumber": "\(page)",
+                    "userid": userID]
+                return self.lepersColony(parameters: parameters)
         }
     }
 
-    // MARK: - Private Messages
+    // MARK: Private Messages
 
-    /**
-     - Parameter completion: A block to call after counting the unread messages in the logged-in user's PM inbox, which takes as parameters: an `Error` on failure, or `nil` on success; and the number of unread messages on success, or `nil` on failure.
-     */
-    public func countUnreadPrivateMessagesInInbox(completion: @escaping (_ error: Error?, _ unreadMessageCount: Int?) -> Void) -> Cancellable? {
+    public func countUnreadPrivateMessagesInInbox() -> Promise<Int> {
         guard let backgroundContext = backgroundManagedObjectContext else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { AwfulUnreadPrivateMessageCountScraper.scrape($0, into: backgroundContext) }
-                DispatchQueue.main.async {
-                    completion(scraper?.error, scraper?.unreadPrivateMessageCount)
+        return fetch(method: .get, urlString: "private.php", parameters: nil)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> Int in
+                let scraper = AwfulUnreadPrivateMessageCountScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-            }
-        }
 
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
+                return scraper.unreadPrivateMessageCount
         }
-
-        return httpManager?.get("private.php", parameters: nil, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after listing the logged-in user's PM inbox, which takes as parameters: an `Error` on failure, or `nil` on success; and an array of `PrivateMessage`s on success, or `nil` on failure.
-     */
-    public func listPrivateMessagesInInbox(completion: @escaping (_ error: Error?, _ messages: [PrivateMessage]?) -> Void) -> Cancellable? {
+    public func listPrivateMessagesInInbox() -> Promise<[PrivateMessage]> {
         guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
+            let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { PrivateMessageFolderScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.messages != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .get, urlString: "private.php", parameters: nil)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+                let scraper = PrivateMessageFolderScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                let objectIDs = (scraper?.messages ?? []).map { $0.objectID }
-                mainContext.perform {
-                    let messages = objectIDs.flatMap { mainContext.object(with: $0) as? PrivateMessage }
-                    completion(error, messages)
+                guard let messages = scraper.messages else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find messages"])
                 }
+
+                try context.save()
+
+                return messages.map { $0.objectID }
             }
+            .then(on: mainContext) { (objectIDs, context) -> [PrivateMessage] in
+                return objectIDs.flatMap { context.object(with: $0) as? PrivateMessage }
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("private.php", parameters: nil, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after deleting the message, which takes as a parameter an `Error` on failure, or `nil` on success.
-     */
-    public func deletePrivateMessage(_ message: PrivateMessage, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func deletePrivateMessage(_ message: PrivateMessage) -> Promise<Void> {
         let parameters = [
             "action": "dodelete",
             "privatemessageid": message.messageID,
             "delete": "yes"]
 
-        let success = { (op: AFHTTPRequestOperation, responseObject: Any) -> Void in
-            completion(nil)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("private.php", parameters: parameters, success: success, failure: failure)
+        return fetch(method: .post, urlString: "private.php", parameters: parameters)
+            .promise
+            .then { _ in return () }
     }
 
-    /**
-     - Parameter completion: A block to call after reading the message, which takes as parameters: an `Error` on failure, or `nil` on success; and the read `PrivateMessage` on success, or `nil` on failure.
-     */
-    public func readPrivateMessage(identifiedBy messageKey: PrivateMessageKey, completion: @escaping (_ error: Error?, _ message: PrivateMessage?) -> Void) -> Cancellable? {
+    public func readPrivateMessage(identifiedBy messageKey: PrivateMessageKey) -> Promise<PrivateMessage> {
         guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
+            let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = [
             "action": "show",
             "privatemessageid": messageKey.messageID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let scraper = document.map { PrivateMessageScraper.scrape($0, into: backgroundContext) }
-                var error = scraper?.error
-                if scraper?.privateMessage != nil {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch let saveError {
-                        error = saveError
-                    }
+        return fetch(method: .get, urlString: "private.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
+                let scraper = PrivateMessageScraper.scrape(document, into: context)
+                if let error = scraper.error {
+                    throw error
                 }
-                let objectID = scraper?.privateMessage?.objectID
-                mainContext.perform {
-                    let message = objectID.flatMap { mainContext.object(with: $0) as? PrivateMessage }
-                    completion(error, message)
+
+                guard let privateMessage = scraper.privateMessage else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not find message"])
                 }
+
+                try context.save()
+
+                return privateMessage.objectID
             }
+            .then(on: mainContext) { (objectID, context) -> PrivateMessage in
+                guard let privateMessage = context.object(with: objectID) as? PrivateMessage else {
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                        NSLocalizedDescriptionKey: "Could not save message"])
+                }
+                return privateMessage
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("private.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after quoting the message, which takes as parameters: an `Error` on failure or `nil` on success; and the quoted BBcode contents on success or `nil` on failure.
-     */
-    public func quoteBBcodeContents(of message: PrivateMessage, completion: @escaping (_ error: Error?, _ bbcode: String?) -> Void) -> Cancellable? {
-        guard let backgroundContext = backgroundManagedObjectContext else {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
-        }
-
+    public func quoteBBcodeContents(of message: PrivateMessage) -> Promise<String> {
         let parameters = [
             "action": "newmessage",
             "privatemessageid": message.messageID]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
+        return fetch(method: .get, urlString: "private.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: .global()) { (document) -> String in
+                let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                let message = form?.allParameters?["message"]
-                let error: Error?
-                if message == nil {
+                guard let message = form?.allParameters?["message"] else {
                     let missingBit = form == nil ? "form" : "text box"
-                    error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Failed quoting private message; could not find \(missingBit)"])
                 }
-                else {
-                    error = nil
-                }
-                DispatchQueue.main.async {
-                    completion(error, message)
-                }
-            }
+                return message
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("private.php", parameters: parameters, success: success, failure: failure)
     }
 
-    /**
-     - Parameter completion: A block to call after listing thread tags, which takes as parameters: an `Error` on failure, or `nil` on success; and an array of `ThreadTag`s on success, or `nil` on failure.
-     */
-    public func listAvailablePrivateMessageThreadTags(completion: @escaping (_ error: Error?, _ threadTags: [ThreadTag]?) -> Void) -> Cancellable? {
+    public func listAvailablePrivateMessageThreadTags() -> Promise<[ThreadTag]> {
         guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
+            let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext else
         {
-            assertionFailure("need client setup")
-            completion(NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil), nil)
-            return nil
+            return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         let parameters = ["action": "newmessage"]
 
-        let success = { (op: AFHTTPRequestOperation, document: Any) -> Void in
-            let document = document as? HTMLDocument
-            backgroundContext.perform {
-                let htmlForm = document?.firstNode(matchingSelector: "form[name='vbform']")
+        return fetch(method: .get, urlString: "private.php", parameters: parameters)
+            .promise
+            .then { try cast($1) as HTMLDocument }
+            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+                let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                form?.scrapeThreadTags(into: backgroundContext)
-                if let threadTags = form?.threadTags {
-                    do {
-                        try backgroundContext.save()
-                    }
-                    catch {
-                        return DispatchQueue.main.async { completion(error, nil) }
-                    }
-
-                    let objectIDs = threadTags.map { $0.objectID }
-                    mainContext.perform {
-                        let threadTags = objectIDs.flatMap { mainContext.object(with: $0) as? ThreadTag }
-                        completion(nil, threadTags)
-                    }
-                }
-                else {
+                form?.scrapeThreadTags(into: context)
+                guard let threadTags = form?.threadTags else {
                     let description: String
                     if form == nil {
                         description = "Could not find new private message form"
@@ -1548,27 +1298,26 @@ public final class ForumsClient {
                     else {
                         description = "Failed scraping thread tags from new private message form"
                     }
-                    let error = NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: description])
-                    DispatchQueue.main.async { completion(error, nil) }
                 }
+
+                try context.save()
+
+                return threadTags.map { $0.objectID }
             }
+            .then(on: mainContext) { (managedObjectIDs, context) -> [ThreadTag] in
+                return managedObjectIDs.flatMap { context.object(with: $0) as? ThreadTag }
         }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error, nil)
-        }
-
-        return httpManager?.get("private.php", parameters: parameters, success: success, failure: failure)
     }
 
     /**
-     - Parameter to: The intended recipient's username. (Requiring a `User` would be unhelpful as the username is typed in and may not actually exist.)
-     - Parameter regarding: Should be `nil` if `forwarding` parameter is non-`nil`.
-     - Parameter forwarding: Should be `nil` if `regarding` is non-`nil`.
-     - Parameter completion: A block to call after sending the message, which takes as a parameter an `Error` on failure, or `nil` on success.
+     - Parameters:
+        - to: The intended recipient's username. (Requiring a `User` would be unhelpful as the username is typed in and may not actually exist.)
+        - regarding: Should be `nil` if `forwarding` parameter is non-`nil`.
+        - forwarding: Should be `nil` if `regarding` is non-`nil`.
      */
-    public func sendPrivateMessage(to username: String, subject: String, threadTag: ThreadTag?, bbcode: String, regarding regardingMessage: PrivateMessage?, forwarding forwardedMessage: PrivateMessage?, completion: @escaping (_ error: Error?) -> Void) -> Cancellable? {
+    public func sendPrivateMessage(to username: String, subject: String, threadTag: ThreadTag?, bbcode: String, regarding regardingMessage: PrivateMessage?, forwarding forwardedMessage: PrivateMessage?) -> Promise<Void> {
         var parameters = [
             "touser": username,
             "title": subject,
@@ -1583,17 +1332,12 @@ public final class ForumsClient {
             parameters["prevmessageid"] = prevmessageID
         }
 
-        let success = { (op: AFHTTPRequestOperation, responseObject: Any) -> Void in
-            completion(nil)
-        }
-
-        let failure = { (op: AFHTTPRequestOperation?, error: Error) -> Void in
-            completion(error)
-        }
-
-        return httpManager?.post("private.php", parameters: parameters, success: success, failure: failure)
+        return fetch(method: .post, urlString: "private.php", parameters: parameters)
+            .promise
+            .then { _ in return () }
     }
 }
+
 
 /// A (typically network) operation that can be cancelled.
 public protocol Cancellable: class {
@@ -1604,11 +1348,40 @@ public protocol Cancellable: class {
 
 extension Operation: Cancellable {}
 
+
 private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
     for img in postbody.nodes(matchingSelector: "img[src^='http://awful-image']") {
         if let src = img["src"] {
             let suffix = src.characters.dropFirst("http://".characters.count)
             img["src"] = String(suffix)
+        }
+    }
+}
+
+
+private func cast<T>(_ value: Any) throws -> T {
+    guard let response = value as? T else {
+        throw ForumsClient.PromiseError.unexpectedContentType(
+            "\(type(of: value))",
+            expected: "\(T.self)")
+    }
+    return response
+}
+
+
+extension Promise {
+    fileprivate func then<U>(on context: NSManagedObjectContext, execute body: @escaping (T, _ context: NSManagedObjectContext) throws -> U) -> Promise<U> {
+        return then(on: .global()) { (value) -> Promise<U> in
+            return Promise<U> { (fulfill, reject) in
+                context.perform {
+                    do {
+                        try fulfill(body(value, context))
+                    }
+                    catch {
+                        reject(error)
+                    }
+                }
+            }
         }
     }
 }

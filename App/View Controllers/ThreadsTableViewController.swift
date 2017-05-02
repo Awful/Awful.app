@@ -64,30 +64,29 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     fileprivate func loadPage(_ page: Int) {
-        let _ = ForumsClient.shared.listThreads(in: forum, taggedWith: filterThreadTag, on: page) { [weak self] (error: Error?, threads: [AwfulThread]?) in
-            if let error = error as NSError? , self?.visible == true {
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.present(alert, animated: true, completion: nil)
-            }
-            
-            if error == nil {
-                self?.latestPage = page
-                
-                self?.scrollToLoadMoreBlock = { self?.loadNextPage() }
-                
-                self?.tableView.tableHeaderView = self!.filterButton
-                
-                if let forum = self?.forum , self?.filterThreadTag == nil {
-                    RefreshMinder.sharedMinder.didRefreshForum(forum)
-                } else if let forum = self?.forum {
-                    RefreshMinder.sharedMinder.didRefreshFilteredForum(forum)
+        ForumsClient.shared.listThreads(in: forum, tagged: filterThreadTag, page: page)
+            .then { (threads) -> Void in
+                self.latestPage = page
+
+                self.scrollToLoadMoreBlock = { self.loadNextPage() }
+
+                self.tableView.tableHeaderView = self.filterButton
+
+                if self.filterThreadTag == nil {
+                    RefreshMinder.sharedMinder.didRefreshForum(self.forum)
+                } else {
+                    RefreshMinder.sharedMinder.didRefreshFilteredForum(self.forum)
                 }
-                    
-                self?.updateComposeBarButtonItem()
+
+                self.updateComposeBarButtonItem()
             }
-            
-            self?.stopAnimatingPullToRefresh()
-            self?.stopAnimatingInfiniteScroll()
+            .catch { (error) in
+                let alert = UIAlertController(networkError: error, handler: nil)
+                self.present(alert, animated: true, completion: nil)
+            }
+            .always {
+                self.stopAnimatingPullToRefresh()
+                self.stopAnimatingInfiniteScroll()
         }
     }
     

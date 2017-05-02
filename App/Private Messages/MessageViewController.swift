@@ -64,37 +64,33 @@ final class MessageViewController: ViewController {
         let actionSheet = UIAlertController.actionSheet()
         
         actionSheet.addActionWithTitle("Reply") {
-            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage, completion: { [weak self] (error: Error?, BBcode: String?) in
-                if let error = error {
+            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
+                .then { [weak self] (bbcode) -> Void in
+                    guard let privateMessage = self?.privateMessage else { return }
+                    let composeVC = MessageComposeViewController(regardingMessage: privateMessage, initialContents: bbcode)
+                    composeVC.delegate = self
+                    composeVC.restorationIdentifier = "New private message replying to private message"
+                    self?.composeVC = composeVC
+                    self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
+            }
+                .catch { [weak self] (error) in
                     self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
-                    return
-                }
-                
-                guard let BBcode = BBcode else { fatalError("no error should mean yes BBcode") }
-                guard let privateMessage = self?.privateMessage else { return }
-                let composeVC = MessageComposeViewController(regardingMessage: privateMessage, initialContents: BBcode)
-                composeVC.delegate = self
-                composeVC.restorationIdentifier = "New private message replying to private message"
-                self?.composeVC = composeVC
-                self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
-            })
+            }
         }
         
         actionSheet.addActionWithTitle("Forward") {
-            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage, completion: { [weak self] (error: Error?, BBcode: String?) in
-                if let error = error {
-                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
-                    return
+            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
+                .then { [weak self] (bbcode) -> Void in
+                    guard let privateMessage = self?.privateMessage else { return }
+                    let composeVC = MessageComposeViewController(forwardingMessage: privateMessage, initialContents: bbcode)
+                    composeVC.delegate = self
+                    composeVC.restorationIdentifier = "New private message forwarding private message"
+                    self?.composeVC = composeVC
+                    self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
                 }
-                
-                guard let BBcode = BBcode else { fatalError("no error should mean yes BBcode") }
-                guard let privateMessage = self?.privateMessage else { return }
-                let composeVC = MessageComposeViewController(forwardingMessage: privateMessage, initialContents: BBcode)
-                composeVC.delegate = self
-                composeVC.restorationIdentifier = "New private message forwarding private message"
-                self?.composeVC = composeVC
-                self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
-            })
+                .catch { [weak self] (error) in
+                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
+            }
         }
         
         actionSheet.addCancelActionWithHandler(nil)
@@ -228,22 +224,27 @@ final class MessageViewController: ViewController {
             let loadingView = LoadingView.loadingViewWithTheme(theme)
             self.loadingView = loadingView
             view.addSubview(loadingView)
-            
-            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey, completion: { [weak self] (error: Error?, message: PrivateMessage?) in
-                self?.title = message?.subject
-                
-                self?.renderMessage()
-                
-                self?.loadingView?.removeFromSuperview()
-                self?.loadingView = nil
-                
-                self?.userActivity?.needsSave = true
-                
-                if message?.seen == false {
-                    NewMessageChecker.sharedChecker.decrementUnreadCount()
-                    message?.seen = true
+
+            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
+                .then { [weak self] (message) -> Void in
+                    self?.title = message.subject
+
+                    if message.seen == false {
+                        NewMessageChecker.sharedChecker.decrementUnreadCount()
+                        message.seen = true
+                    }
                 }
-            })
+                .catch { [weak self] (error) in
+                    self?.title = ""
+                }
+                .always { [weak self] in
+                    self?.renderMessage()
+
+                    self?.loadingView?.removeFromSuperview()
+                    self?.loadingView = nil
+
+                    self?.userActivity?.needsSave = true
+            }
         } else {
             renderMessage()
         }

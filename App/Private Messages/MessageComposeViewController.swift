@@ -89,18 +89,18 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
-        _ = ForumsClient.shared.listAvailablePrivateMessageThreadTags { [weak self] (error: Error?, threadTags: [ThreadTag]?) in
-            self?.updatingThreadTags = false
-            
-            if let threadTags = threadTags {
+        _ = ForumsClient.shared.listAvailablePrivateMessageThreadTags()
+            .then { [weak self] (threadTags) -> Void in
                 self?.availableThreadTags = threadTags
-                
+
                 let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.flatMap { $0.imageName }
                 let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: nil)
                 picker.delegate = self
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
                 self?.threadTagPicker = picker
             }
+            .always { [weak self] in
+                self?.updatingThreadTags = false
         }
     }
     
@@ -119,13 +119,13 @@ final class MessageComposeViewController: ComposeTextViewController {
             to = fieldView.toField.textField.text,
             let subject = fieldView.subjectField.textField.text
             else { return }
-        let _ = ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, regarding: regardingMessage, forwarding: forwardingMessage) { [weak self] (error: Error?) in
-            if let error = error {
-                completion(false)
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
-            } else {
+        _ = ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, regarding: regardingMessage, forwarding: forwardingMessage)
+            .then { () -> Void in
                 completion(true)
             }
+            .catch { [weak self] (error) in
+                completion(false)
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
         }
     }
     

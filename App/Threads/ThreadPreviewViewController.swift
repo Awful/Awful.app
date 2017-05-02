@@ -50,27 +50,29 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
-        networkOperation = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode, completion: { [weak self] (error: Error?, postHTML: String?) in
-            if let error = error {
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
-                return
-            }
-            
-            self?.networkOperation = nil
-            guard let context = self?.managedObjectContext else { return }
-            
+        let (html, cancellable) = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
+        networkOperation = cancellable
+        html.then { [weak self] (postHTML) -> Void in
+            guard let sself = self else { return }
+
+            sself.networkOperation = nil
+            let context = sself.managedObjectContext
+
             let threadKey = ThreadKey(threadID: "fake")
             let fakeThread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: context) as! AwfulThread
             let userKey = UserKey(userID: AwfulSettings.shared().userID, username: AwfulSettings.shared().username)
             fakeThread.author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
             let postKey = PostKey(postID: "sofake")
-            self?.fakePost = Post.objectForKey(objectKey: postKey, inManagedObjectContext: context) as? Post
-            self?.fakePost?.thread = fakeThread
-            self?.fakePost?.author = fakeThread.author
-            self?.fakePost?.innerHTML = postHTML
-            self?.fakePost?.postDate = NSDate()
-            self?.renderPreview()
-        })
+            sself.fakePost = Post.objectForKey(objectKey: postKey, inManagedObjectContext: context) as? Post
+            sself.fakePost?.thread = fakeThread
+            sself.fakePost?.author = fakeThread.author
+            sself.fakePost?.innerHTML = postHTML
+            sself.fakePost?.postDate = NSDate()
+            sself.renderPreview()
+            }
+            .catch { [weak self] (error) -> Void in
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
+        }
     }
     
     override func renderPreview() {

@@ -46,36 +46,36 @@ final class RapSheetViewController: TableViewController {
     }
     
     fileprivate func load(_ page: Int) {
-        _ = ForumsClient.shared.listPunishments(of: user, page: page) { [weak self] (error: Error?, newPunishments: [Punishment]?) in
-            if let error = error {
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
-                return
-            }
-            
-            let newPunishments = newPunishments ?? []
-            
-            self?.mostRecentlyLoadedPage = page
-            
-            if page == 1 {
-                self?.punishments.removeAllObjects()
-                self?.punishments.addObjects(from: newPunishments)
-                self?.tableView.reloadData()
-                
-                if self?.punishments.count == 0 {
-                    self?.showNothingToSeeView()
+        _ = ForumsClient.shared.listPunishments(of: user, page: page)
+            .then { [weak self]  (newPunishments) -> Void in
+                guard let sself = self else { return }
+
+                sself.mostRecentlyLoadedPage = page
+
+                if page == 1 {
+                    sself.punishments.removeAllObjects()
+                    sself.punishments.addObjects(from: newPunishments)
+                    sself.tableView.reloadData()
+
+                    if sself.punishments.count == 0 {
+                        sself.showNothingToSeeView()
+                    } else {
+                        sself.setUpInfiniteScroll()
+                    }
                 } else {
-                    self?.setUpInfiniteScroll()
+                    let oldCount = sself.punishments.count
+                    sself.punishments.addObjects(from: newPunishments)
+                    let newCount = sself.punishments.count
+                    let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+                    sself.tableView.insertRows(at: indexPaths, with: .automatic)
                 }
-            } else {
-                let oldCount = self?.punishments.count ?? 0
-                self?.punishments.addObjects(from: newPunishments)
-                let newCount = self?.punishments.count ?? 0
-                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-                self?.tableView.insertRows(at: indexPaths, with: .automatic)
             }
-            
-            self?.stopAnimatingPullToRefresh()
-            self?.stopAnimatingInfiniteScroll()
+            .catch { [weak self] (error) -> Void in
+                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
+            }
+            .always { [weak self] in
+                self?.stopAnimatingPullToRefresh()
+                self?.stopAnimatingInfiniteScroll()
         }
     }
     

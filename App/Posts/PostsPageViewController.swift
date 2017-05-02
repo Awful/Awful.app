@@ -161,70 +161,79 @@ final class PostsPageViewController: ViewController {
             clearLoadingMessage()
             return
         }
-        
-        networkOperation = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: rawPage, updateLastReadPost: updateLastReadPost, completion: { [weak self] (error: Error?, posts: [Post]?, firstUnreadPost, advertisementHTML: String?) in
-            guard let strongSelf = self else { return }
-            
+
+        let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: rawPage, updateLastReadPost: updateLastReadPost)
+        networkOperation = cancellable
+
+        promise.then { [weak self] (posts, firstUnreadPost, advertisementHTML) -> Void in
+            guard let sself = self else { return }
+
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-            if strongSelf.page != rawPage { return }
-            
-            if let error = error {
-                strongSelf.clearLoadingMessage()
-                
+            guard sself.page == rawPage else { return }
+
+            if !posts.isEmpty {
+                sself.posts = posts
+
+                let anyPost = posts[0]
+                if sself.author != nil {
+                    sself.page = anyPost.singleUserPage
+                } else {
+                    sself.page = anyPost.page
+                }
+            }
+
+            if sself.posts.isEmpty && rawPage < 0 {
+                let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
+                sself.currentPageItem.title = "Page ? of \(pageCount)"
+            }
+
+            sself.configureUserActivityIfPossible()
+
+            if sself.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                sself.hiddenPosts = firstUnreadPost - 1
+            }
+
+            if reloadingSamePage || renderedCachedPosts {
+                sself.scrollToFractionAfterLoading = sself.webView.fractionalContentOffset
+            }
+
+            sself.renderPosts()
+
+            sself.updateUserInterface()
+
+            if let lastPost = sself.posts.last, updateLastReadPost {
+                if sself.thread.seenPosts < lastPost.threadIndex {
+                    sself.thread.seenPosts = lastPost.threadIndex
+                }
+            }
+
+            sself.refreshControl?.endRefreshing()
+            }
+
+            .catch { [weak self] (error) -> Void in
+                guard let sself = self else { return }
+
+                // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
+                if sself.page != rawPage { return }
+
+                sself.clearLoadingMessage()
+
                 if (error as NSError).code == AwfulErrorCodes.archivesRequired {
                     let alert = UIAlertController(title: "Archives Required", error: error)
-                    strongSelf.present(alert, animated: true, completion: nil)
+                    sself.present(alert, animated: true, completion: nil)
                 } else {
                     let offlineMode = !ForumsClient.shared.isReachable && (error as NSError).domain == NSURLErrorDomain
-                    if strongSelf.posts.isEmpty || !offlineMode {
+                    if sself.posts.isEmpty || !offlineMode {
                         let alert = UIAlertController(title: "Could Not Load Page", error: error)
-                        strongSelf.present(alert, animated: true, completion: nil)
+                        sself.present(alert, animated: true, completion: nil)
                     }
                 }
-            }
-            
-            if let posts = posts, !posts.isEmpty {
-                strongSelf.posts = posts
-                
-                let anyPost = posts[0]
-                if strongSelf.author != nil {
-                    strongSelf.page = anyPost.singleUserPage
-                } else {
-                    strongSelf.page = anyPost.page
+
+                if sself.posts.isEmpty && rawPage < 0 {
+                    let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
+                    sself.currentPageItem.title = "Page ? of \(pageCount)"
                 }
-            }
-            
-            if strongSelf.posts.isEmpty && rawPage < 0 {
-                let pageCount = strongSelf.numberOfPages > 0 ? "\(strongSelf.numberOfPages)" : "?"
-                strongSelf.currentPageItem.title = "Page ? of \(pageCount)"
-            }
-            
-            if error != nil {
-                return
-            }
-            
-            strongSelf.configureUserActivityIfPossible()
-            
-            if strongSelf.hiddenPosts == 0 && Int(firstUnreadPost) != NSNotFound {
-                strongSelf.hiddenPosts = Int(firstUnreadPost)
-            }
-            
-            if reloadingSamePage || renderedCachedPosts {
-                strongSelf.scrollToFractionAfterLoading = strongSelf.webView.fractionalContentOffset
-            }
-            
-            strongSelf.renderPosts()
-            
-            strongSelf.updateUserInterface()
-            
-            if let lastPost = strongSelf.posts.last , updateLastReadPost {
-                if strongSelf.thread.seenPosts < lastPost.threadIndex {
-                    strongSelf.thread.seenPosts = lastPost.threadIndex
-                }
-            }
-            
-            strongSelf.refreshControl?.endRefreshing()
-        })
+        }
     }
     
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
@@ -432,21 +441,21 @@ final class PostsPageViewController: ViewController {
                         let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
                         overlay?.tintColor = self.theme["tintColor"]
                         
-                        _ = ForumsClient.shared.rate(self.thread, as: i, completion: { [weak self] (error: Error?) in
-                            if let error = error {
+                        _ = ForumsClient.shared.rate(self.thread, as: i)
+                            .then { () -> Void in
+                                overlay?.mode = .checkmark
+
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                                    overlay?.dismiss(true)
+                                }
+                            }
+                            .catch { [weak self] (error) -> Void in
+
                                 overlay?.dismiss(false)
-                                
+
                                 let alert = UIAlertController(title: "Vote Failed", error: error)
                                 self?.present(alert, animated: true, completion: nil)
-                                return
-                            }
-                            
-                            overlay?.mode = .checkmark
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                overlay?.dismiss(true)
-                            }
-                        })
+                        }
                     })
                 }
                 actionSheet.addCancelActionWithHandler(nil)
@@ -459,21 +468,20 @@ final class PostsPageViewController: ViewController {
             
             let bookmarkType: IconAction = self.thread.bookmarked ? .removeBookmark : .addBookmark
             let bookmarkItem = IconActionItem(bookmarkType, block: {
-                _ = ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked, completion: { [weak self] (error: Error?) in
-                    if let error = error {
+                _ = ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
+                    .then { [weak self] () -> Void in
+                        guard let strongSelf = self else { return }
+
+                        let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
+                        let overlay = MRProgressOverlayView.showOverlayAdded(to: strongSelf.view, title: status, mode: .checkmark, animated: true)
+                        overlay?.tintColor = strongSelf.theme["tintColor"]
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            overlay?.dismiss(true)
+                        }
+                    }
+                    .catch { (error) -> Void in
                         print("\(#function) error marking thread: \(error)")
-                        return
-                    }
-                    
-                    guard let strongSelf = self else { return }
-                    
-                    let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: strongSelf.view, title: status, mode: .checkmark, animated: true)
-                    overlay?.tintColor = strongSelf.theme["tintColor"]
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
-                })
+                }
             })
             
             actionVC.items = [copyURLItem, voteItem, bookmarkItem]
@@ -715,22 +723,21 @@ final class PostsPageViewController: ViewController {
     
     fileprivate func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
-        _ = ForumsClient.shared.readIgnoredPost(post) { [weak self] (error: Error?) in
-            if let error = error {
-                let alert = UIAlertController.alertWithNetworkError(error)
-                self?.present(alert, animated: true, completion: nil)
-                return
+        _ = ForumsClient.shared.readIgnoredPost(post)
+            .then { [weak self] () -> Void in
+                // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
+                guard
+                    let sself = self,
+                    var i = sself.posts.index(of: post)
+                    else { return }
+                i -= sself.hiddenPosts
+                guard i >= 0 else { return }
+                let data: [String: AnyObject] = ["index": i as NSNumber, "HTML": sself.renderedPostAtIndex(i) as NSString]
+                sself.webViewJavascriptBridge?.callHandler("postHTMLAtIndex", data: data)
             }
-            
-            // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
-            guard
-                let strongSelf = self,
-                var i = strongSelf.posts.index(of: post)
-                else { return }
-            i -= strongSelf.hiddenPosts 
-            guard i >= 0 else { return }
-            let data: [String: AnyObject] = ["index": i as NSNumber, "HTML": strongSelf.renderedPostAtIndex(i) as NSString]
-            strongSelf.webViewJavascriptBridge?.callHandler("postHTMLAtIndex", data: data)
+            .catch { [weak self] (error) -> Void in
+                let alert = UIAlertController.alertWithNetworkError(error)
+                self?.present(alert, animated: true)
         }
     }
     
@@ -835,40 +842,39 @@ final class PostsPageViewController: ViewController {
         
         if author == nil {
             items.append(IconActionItem(.markReadUpToHere, block: {
-                _ = ForumsClient.shared.markThreadAsReadUpTo(post, completion: { [weak self] (error: Error?) in
-                    if let error = error {
+                _ = ForumsClient.shared.markThreadAsReadUpTo(post)
+                    .then { [weak self] () -> Void in
+                        post.thread?.seenPosts = post.threadIndex
+
+                        self?.webViewJavascriptBridge?.callHandler("markReadUpToPostWithID", data: post.postID)
+
+                        guard let view = self?.view else { return }
+                        let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Marked Read", mode: .checkmark, animated: true)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            overlay?.dismiss(true)
+                        }
+                    }
+                    .catch { [weak self] (error) -> Void in
                         let alert = UIAlertController(title: "Could Not Mark Read", error: error)
                         self?.present(alert, animated: true, completion: nil)
-                        return
-                    }
-                    
-                    post.thread?.seenPosts = post.threadIndex
-                    
-                    self?.webViewJavascriptBridge?.callHandler("markReadUpToPostWithID", data: post.postID)
-                    
-                    guard let view = self?.view else { return }
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Marked Read", mode: .checkmark, animated: true)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
-                })
+                }
             }))
         }
         
         if post.editable {
             items.append(IconActionItem(.editPost, block: {
-                _ = ForumsClient.shared.findBBcodeContents(of: post, completion: { [weak self] (error: Error?, text: String?) in
-                    if let error = error {
-                        let alert = UIAlertController(title: "Could Not Edit Post", error: error)
-                        self?.present(alert, animated: true, completion: nil)
-                        return
+                _ = ForumsClient.shared.findBBcodeContents(of: post)
+                    .then { [weak self] (text) -> Void in
+                        guard let sself = self else { return }
+                        let replyWorkspace = ReplyWorkspace(post: post)
+                        sself.replyWorkspace = replyWorkspace
+                        replyWorkspace.completion = sself.replyCompletionBlock
+                        sself.present(replyWorkspace.viewController, animated: true)
                     }
-                    
-                    let replyWorkspace = ReplyWorkspace(post: post)
-                    self?.replyWorkspace = replyWorkspace
-                    replyWorkspace.completion = self?.replyCompletionBlock
-                    self?.present(replyWorkspace.viewController, animated: true, completion: nil)
-                })
+                    .catch { [weak self] (error) -> Void in
+                        let alert = UIAlertController(title: "Could Not Edit Post", error: error)
+                        self?.present(alert, animated: true)
+                }
             }))
         }
         

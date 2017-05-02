@@ -28,13 +28,12 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func refresh() {
-        _ = ForumsClient.shared.taxonomizeForums { (error: Error?, forums: [Forum]?) in
-            if error == nil {
+        ForumsClient.shared.taxonomizeForums()
+            .then { (forums) -> Void in
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
                 self.migrateFavoriteForumsFromSettings()
             }
-            self.stopAnimatingPullToRefresh()
-        }
+            .always { self.stopAnimatingPullToRefresh() }
     }
     
     fileprivate func migrateFavoriteForumsFromSettings() {

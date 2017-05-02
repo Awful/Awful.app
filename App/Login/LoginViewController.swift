@@ -125,8 +125,9 @@ class LoginViewController: ViewController {
     fileprivate func attemptToLogIn() {
         assert(state == .canAttemptLogin, "unexpected state")
         state = .attemptingLogin
-        let _ = ForumsClient.shared.logIn(username: usernameTextField.text ?? "", password: passwordTextField.text ?? "") { [unowned self] (error: Error?, user: User?) -> Void in
-            if let user = user {
+        ForumsClient.shared.logIn(username: usernameTextField.text ?? "",
+                                  password: passwordTextField.text ?? "")
+            .then { (user) -> Void in
                 let settings = AwfulSettings.shared()!
                 settings.username = user.username
                 settings.userID = user.userID
@@ -134,9 +135,9 @@ class LoginViewController: ViewController {
                 if let completionBlock = self.completionBlock {
                     completionBlock(self)
                 }
-            } else {
-                self.state = .failedLogin
             }
+            .catch { (error) in
+                self.state = .failedLogin
         }
     }
     

@@ -4,6 +4,7 @@
 
 import AwfulCore
 import GRMustache
+import PromiseKit
 
 /// Previews a post (new or edited).
 class PostPreviewViewController: ViewController {
@@ -105,16 +106,23 @@ class PostPreviewViewController: ViewController {
             self?.fakePost?.innerHTML = postHTML
             self?.renderPreview()
         }
-        
+
+        let promise: Promise<String>
+        let cancellable: Cancellable
         if let editingPost = editingPost {
-            networkOperation = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode, completion: callback)
+            (promise: promise, cancellable: cancellable) = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode)
         } else if let thread = thread {
-            networkOperation = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode, completion: callback)
+            (promise: promise, cancellable: cancellable) = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode)
         } else {
             print("\(#function) Nothing to do??")
+            return
         }
+        networkOperation = cancellable
+        promise
+            .then { callback(nil, $0) }
+            .catch { callback($0, nil) }
     }
-    
+
     func renderPreview() {
         webViewDidLoadOnce = false
         

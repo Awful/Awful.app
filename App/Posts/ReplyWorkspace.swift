@@ -35,18 +35,20 @@ final class ReplyWorkspace: NSObject {
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view, animated: false)
         progressView?.titleLabelText = "Reading post…"
-        
-        _ = ForumsClient.shared.findBBcodeContents(of: post) { [weak self] (error: Error?, BBcode: String?) in
-            progressView?.dismiss(true)
-            
-            if let error = error {
-                if self?.compositionViewController.visible == true {
-                    let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
-                    self?.viewController.present(alert, animated: true, completion: nil)
-                }
-            } else {
-                self?.compositionViewController.textView.text = BBcode
+
+        _ = ForumsClient.shared.findBBcodeContents(of: post)
+            .then { [weak self] (bbcode) -> Void in
+                self?.compositionViewController.textView.text = bbcode
             }
+            .catch { [weak self] (error) -> Void in
+                guard let sself = self else { return }
+                if sself.compositionViewController.visible {
+                    let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
+                    sself.viewController.present(alert, animated: true)
+                }
+            }
+            .always {
+                progressView?.dismiss(true)
         }
     }
     
@@ -189,10 +191,14 @@ final class ReplyWorkspace: NSObject {
     func quotePost(_ post: Post, completion: @escaping (Error?) -> Void) {
         createCompositionViewController()
 
-        _ = ForumsClient.shared.quoteBBcodeContents(of: post) { [weak self] (error: Error?, BBcode: String?) in
-            if let textView = self?.compositionViewController.textView, var replacement = BBcode {
+        _ = ForumsClient.shared.quoteBBcodeContents(of: post)
+            .then { [weak self] (bbcode) -> Void in
+                guard let sself = self else { return }
+
+                let textView = sself.compositionViewController.textView
+                var replacement = bbcode
                 let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
-                
+
                 // Yep. This is just a delight.
                 let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
                 if precedingOffset < 0 {
@@ -207,11 +213,13 @@ final class ReplyWorkspace: NSObject {
                         }
                     }
                 }
-                
+
                 textView.replace(selectedRange, withText: replacement)
+
+                completion(nil)
             }
-            
-            completion(error)
+            .catch { (error) -> Void in
+                completion(error)
         }
     }
 }
@@ -339,9 +347,9 @@ extension NewReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                _ = ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "") { (error: Error?, post: Post?) in
-                    completion(error)
-                }
+                _ = ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "")
+                    .then { _ in completion(nil) }
+                    .catch { completion($0) }
             }
         }
     }
@@ -353,7 +361,9 @@ extension EditReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                _ = ForumsClient.shared.edit(self.post, bbcode: plainText ?? "", completion: completion)
+                _ = ForumsClient.shared.edit(self.post, bbcode: plainText ?? "")
+                    .then { completion(nil) }
+                    .catch { completion($0) }
             }
         }
     }

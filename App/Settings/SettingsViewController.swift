@@ -74,23 +74,21 @@ final class SettingsViewController: TableViewController {
     
     fileprivate func refreshIfNecessary() {
         guard RefreshMinder.sharedMinder.shouldRefreshLoggedInUser else { return }
-        _ = ForumsClient.shared.profileLoggedInUser { [weak self] (error: Error?, user: User?) in
-            if let error = error {
-                print("\(#function) failed refreshing user info: \(error)")
-                return
+        _ = ForumsClient.shared.profileLoggedInUser()
+            .then { [weak self] (user) -> Void in
+                RefreshMinder.sharedMinder.didRefreshLoggedInUser()
+
+                AwfulSettings.shared().userID = user.userID
+                AwfulSettings.shared().username = user.username
+                AwfulSettings.shared().canSendPrivateMessages = user.canReceivePrivateMessages
+
+                self?.tableView.reloadData()
             }
-            
-            guard let user = user else { fatalError("no error should mean yes user") }
-            RefreshMinder.sharedMinder.didRefreshLoggedInUser()
-            
-            AwfulSettings.shared().userID = user.userID
-            AwfulSettings.shared().username = user.username
-            AwfulSettings.shared().canSendPrivateMessages = user.canReceivePrivateMessages
-            
-            self?.tableView.reloadData()
+            .catch { (error) -> Void in
+                print("\(#function) failed refreshing user info: \(error)")
         }
     }
-    
+
     fileprivate func setting(at indexPath: IndexPath) -> [String: AnyObject] {
         guard let settings = sections[(indexPath as NSIndexPath).section]["Settings"] as? [[String: AnyObject]] else { fatalError("wrong settings type") }
         return settings[(indexPath as NSIndexPath).row]
