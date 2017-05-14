@@ -105,29 +105,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
         
         // Check clipboard for a forums URL
-        guard AwfulForumsClient.shared().loggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
-        guard let
-            url = UIPasteboard.general.awful_URL,
-            let awfulURL = url.awfulURL
-            else { return }
-        for urlTypes in Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: AnyObject]] ?? [] {
-            for urlScheme in urlTypes["CFBundleURLSchemes"] as? [String] ?? [] {
-                if urlScheme.caseInsensitiveCompare(url.scheme!) == .orderedSame {
-                    return
-                }
-            }
-        }
-        
-        guard AwfulSettings.shared().lastOfferedPasteboardURL != url.absoluteString else { return }
-        AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.message = "Would you like to open this URL in Awful?\n\n\(url.absoluteString)"
-        alert.addCancelActionWithHandler(nil)
-        alert.addActionWithTitle("Open", handler: { (action) in
-            let _ = self.openAwfulURL(awfulURL)
-        })
-        window?.rootViewController?.present(alert, animated: true, completion: nil)
+        checkClipboard()
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -198,6 +176,32 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func emptyCache() {
         URLCache.shared.removeAllCachedResponses()
         AvatarLoader.sharedLoader.emptyCache()
+    }
+    
+    func checkClipboard() {
+        guard AwfulForumsClient.shared().loggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
+        guard let
+            url = UIPasteboard.general.awful_URL,
+            let awfulURL = url.awfulURL
+            else { return }
+        for urlTypes in Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: AnyObject]] ?? [] {
+            for urlScheme in urlTypes["CFBundleURLSchemes"] as? [String] ?? [] {
+                if urlScheme.caseInsensitiveCompare(url.scheme!) == .orderedSame {
+                    return
+                }
+            }
+        }
+        
+        guard AwfulSettings.shared().lastOfferedPasteboardURL != url.absoluteString else { return }
+        AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        alert.message = "Would you like to open this URL in Awful?\n\n\(url.absoluteString)"
+        alert.addCancelActionWithHandler(nil)
+        alert.addActionWithTitle("Open", handler: { (action) in
+            let _ = self.openAwfulURL(awfulURL)
+        })
+        window?.rootViewController?.present(alert, animated: true, completion: nil)
     }
     
     /**
@@ -312,6 +316,8 @@ private extension AppDelegate {
             NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
         } else if key == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
             NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        } else if key == AwfulSettingsKeys.clipboardURLEnabled.takeUnretainedValue() as String {
+            checkClipboard()
         }
     }
     
