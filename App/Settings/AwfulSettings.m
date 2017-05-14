@@ -264,6 +264,8 @@ static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
 
 BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
 
+BOOL_PROPERTY(clipboardURLEnabled, setClipboardURLEnabled)
+
 - (NSString *)defaultBrowser
 {
     NSString *browser = self[AwfulSettingsKeys.defaultBrowser];
@@ -374,6 +376,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .fontScale = @"font_scale",
     .ubiquitousThemeNames = @"ubiquitous_theme_names",
     .handoffEnabled = @"handoff_enabled",
+    .clipboardURLEnabled = @"clipboard_url_enabled",
     .defaultBrowser = @"default_browser",
     .openYouTubeLinksInYouTube = @"open_youtube_links_in_youtube",
     .openTwitterLinksInTwitter = @"open_twitter_links_in_twitter",

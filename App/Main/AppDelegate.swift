@@ -101,7 +101,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
-        guard AwfulForumsClient.shared().loggedIn else { return }
+        // Brightness may have changed while app was inactive
+        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        
+        // Check clipboard for a forums URL
+        guard AwfulForumsClient.shared().loggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
         guard let
             url = UIPasteboard.general.awful_URL,
             let awfulURL = url.awfulURL
@@ -124,10 +128,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             let _ = self.openAwfulURL(awfulURL)
         })
         window?.rootViewController?.present(alert, animated: true, completion: nil)
-        
-        // Brightness may have changed while app was inactive
-        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
-
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {

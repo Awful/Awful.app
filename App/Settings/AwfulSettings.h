@@ -69,6 +69,8 @@
 
 @property (assign, nonatomic) BOOL handoffEnabled;
 
+@property (assign, nonatomic) BOOL clipboardURLEnabled;
+
 /// Values are one of the strings listed below as AwfulDefaultBrowserXXX.
 @property (copy, nonatomic) NSString *defaultBrowser;
 
@@ -122,6 +124,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *fontScale;
     __unsafe_unretained NSString *ubiquitousThemeNames;
     __unsafe_unretained NSString *handoffEnabled;
+    __unsafe_unretained NSString *clipboardURLEnabled;
     __unsafe_unretained NSString *defaultBrowser;
     __unsafe_unretained NSString *openYouTubeLinksInYouTube;
     __unsafe_unretained NSString *openTwitterLinksInTwitter;

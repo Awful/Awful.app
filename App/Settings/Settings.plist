@@ -281,7 +281,7 @@
 		</dict>
 		<dict>
 			<key>Explanation</key>
-			<string>Handoff allows you to continue reading threads on nearby devices.</string>
+			<string>Handoff allows you to continue reading threads on nearby devices. Checking the clipboard for a forums URL when you open the app allows you to jump straight to the URL in Awful.</string>
 			<key>DeviceCapability</key>
 			<string>Handoff</string>
 			<key>Settings</key>
@@ -296,6 +296,16 @@
 					<key>Key</key>
 					<string>handoff_enabled</string>
 				</dict>
+                <dict>
+                    <key>Title</key>
+                    <string>Check Clipboard for URL</string>
+                    <key>Type</key>
+                    <string>Switch</string>
+                    <key>Default</key>
+                    <true/>
+                    <key>Key</key>
+                    <string>clipboard_url_enabled</string>
+                </dict>
 			</array>
 		</dict>
 		<dict>
