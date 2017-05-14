@@ -187,17 +187,29 @@ private let bundledThemes: [String: Theme] = {
 
 extension Theme {
     class var defaultTheme: Theme {
+        if AwfulSettings.shared().alternateTheme {
+            return bundledThemes["alternateDefault"]!
+        }
         return bundledThemes["default"]!
     }
     
     class var darkTheme: Theme {
+        if AwfulSettings.shared().alternateTheme {
+            return bundledThemes["alternateDark"]!
+        }
         return bundledThemes["dark"]!
     }
     
     class var currentTheme: Theme {
         if AwfulSettings.shared().darkTheme {
+            if AwfulSettings.shared().alternateTheme {
+                return bundledThemes["alternateDark"]!
+            }
             return bundledThemes["dark"]!
         } else {
+            if AwfulSettings.shared().alternateTheme {
+                return bundledThemes["alternateDefault"]!
+            }
             return defaultTheme
         }
     }
@@ -208,7 +220,7 @@ extension Theme {
     
     class func currentThemeForForum(forum: Forum) -> Theme {
         if let name = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
-            if name == "default" || name == "dark" {
+            if name == "default" || name == "dark" || name == "alternateDefault" || name == "alternateDark" {
                 return currentTheme
             }
             return bundledThemes[name]!
@@ -227,8 +239,8 @@ extension Theme {
     }
     
     class func appThemeMatchesTheme(themeName: String) -> Bool {
-        if (themeName == "default" && AwfulSettings.shared().darkTheme)
-            || (themeName == "dark" && !AwfulSettings.shared().darkTheme) {
+        if ((themeName == "default" || themeName == "alternateDefault") && AwfulSettings.shared().darkTheme)
+            || ((themeName == "dark" || themeName == "alternateDark") && !AwfulSettings.shared().darkTheme) {
             return false
         }
         return true

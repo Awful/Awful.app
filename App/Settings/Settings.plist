@@ -232,9 +232,19 @@
 			<key>Title</key>
 			<string>Themes</string>
 			<key>Explanation</key>
-			<string>Optionally, Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to use which theme.</string>
+			<string>Choose the alternate app theme for a tweaked, but not authentic, look. Optionally, Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to use which theme.</string>
 			<key>Settings</key>
 			<array>
+                <dict>
+                    <key>Title</key>
+                    <string>Alternate App Theme</string>
+                    <key>Type</key>
+                    <string>Switch</string>
+                    <key>Default</key>
+                    <false/>
+                    <key>Key</key>
+                    <string>alternate_theme</string>
+                </dict>
 				<dict>
 					<key>Title</key>
 					<string>Automatic Dark Mode</string>

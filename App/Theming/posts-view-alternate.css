@@ -1,0 +1,378 @@
+/*
+ posts-view.css
+ Awful
+ 
+ Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+ */
+body {
+    font: -apple-system-body;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
+}
+body {
+    word-wrap: break-word;
+}
+.postbody img,
+.postbody iframe,
+.postbody embed {
+    max-width: 100%;
+}
+post {
+    display: block;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    margin-top: 0.5em;
+}
+.iphone post header,
+.iphone post .postbody {
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+}
+.iphone post footer {
+    padding-left: 0.6em;
+}
+.iphone post .action-button {
+    padding-right: 0.6em;
+}
+.ipad post header,
+.ipad post .postbody {
+    padding-left: 1.07em;
+    padding-right: 1.07em;
+}
+.ipad post footer {
+    padding-left: 1.07em;
+}
+.ipad post .action-button {
+    padding-right: 1.07em;
+}
+post:first-child {
+    margin-top: 0;
+}
+header {
+    padding-top: 0.75em;
+    padding-bottom: 0.7em;
+}
+.ipad header {
+    padding-top: 1.22em;
+    /*    padding-bottom: 0.7em;*/
+}
+header:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.avatar {
+    display: inline-block;
+    vertical-align: middle;
+}
+.iphone .avatar {
+    max-width: 2.5em;
+    max-height: 2.5em;
+}
+.ipad .avatar {
+    max-width: 4em;
+    max-height: 4em;
+}
+.nameanddate {
+    display: inline-block;
+    vertical-align: middle;
+}
+.username {
+    margin: 0 0 2px;
+}
+.postdate {
+    font-size: .8em;
+    font-weight: lighter;
+    -webkit-flex-grow: 1;
+    -webkit-flex-wrap: wrap-reverse;
+}
+.regdate {
+    display: block;
+    font-size: .8em;
+    font-weight: lighter;
+    margin: -0.4em 0 0;
+}
+.username {
+    display: inline-block;
+    font-size: 1.1em;
+    font-weight: 500;
+    /* Peta's 3D username */
+    /*  Platinum users */
+}
+.username:before {
+    margin-right: .25em;
+}
+.role-admin .username:before {
+    color: #990011;
+}
+.role-mod .username:before {
+    color: #006699;
+}
+.role-admin .username:before,
+.role-mod .username:before {
+    content: '★';
+}
+.op .username {
+    color: #199ed7;
+}
+.userid-182864 .username {
+    color: rgba(0, 0, 0, 0.5);
+    text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
+}
+.platinum .username:before {
+    background-image: url('awful-resource://platinum-member.png');
+    content: "";
+    background-size: 12px 15px;
+    width: 12px;
+    height: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.coder .username:before {
+    content: url('awful-resource://image-coder.png');
+}
+.idiotking .username:before {
+    content: url('awful-resource://ik.png');
+}
+.diamond .username:before {
+    content: url('awful-resource://diamond-icon.png');
+}
+.redpill .username:before {
+    content: url('awful-resource://redpill.png');
+}
+.award .username:before {
+    content: url('awful-resource://award.png');
+}
+.action-button {
+    margin: 0;
+    padding: 0.6em;
+    border: none;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+}
+.action-button img {
+    width: 24px;
+    height: 8px;
+}
+.postbody img {
+    -webkit-user-select: none;
+}
+.bbc-block {
+    border-left: 2px solid #999;
+    font-size: 82%;
+    margin: 5px 0;
+    padding: 0 10px 5px;
+}
+.ipad .bbc-block {
+    margin: 0 10px 1em 10px;
+}
+.bbc-block h4 {
+    margin: 0;
+    padding: 1px 0px 2px;
+    font-weight: bold;
+}
+.bbc-block h5 {
+    margin: 0;
+}
+.bbc-block.mention,
+.bbc-block.mention h4 a {
+    color: #7409a0;
+    border-color: #7409a0;
+}
+code,
+pre,
+tt {
+    font-family: menlo;
+    font-size: .9em;
+}
+span.mention {
+    color: #7409a0;
+}
+.quote_link {
+    text-decoration: none;
+}
+[data-awful-linkified-image] {
+    text-decoration: underline;
+}
+.gifWrap.overlay {
+    position: relative;
+    display: inline-block;
+}
+.gifWrap.overlay:before {
+    content: "GIF";
+    display: block;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-image: url('awful-resource://play-button.png');
+    background-size: .85em;
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    color: #000;
+    height: 1.35em;
+    margin: auto;
+    position: absolute;
+    width: 1.75em;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: .25em;
+    padding-right: 1.25em;
+    border-radius: .125em;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+}
+.gifWrap.overlay.loading:before {
+    background-image: url('awful-resource://spinner-button.png');
+}
+.gifWrap.overlay.playing:before {
+    display: none;
+}
+.gifWrap + br,
+.gifWrap + br + br {
+    display: none;
+}
+blockquote {
+    margin: 0;
+}
+blockquote img {
+    max-width: 160px;
+    max-height: 100px;
+}
+.postbody a {
+    -webkit-tap-highlight-color: transparent;
+}
+.postbody b::before,
+.postbody i::before,
+.postbody s::before,
+.postbody span.bbc-spoiler::before,
+.postbody sub::before,
+.postbody sup::before,
+.postbody tt::before,
+.postbody u::before {
+    content: "\200C";
+}
+.iphone .postbody ol,
+.iphone .postbody ul {
+    margin: 0;
+    padding-left: 1.5em;
+}
+.bbc-block.code pre {
+    margin: 0;
+}
+.editedby {
+    margin-bottom: 0;
+    font-size: 90%;
+    font-style: italic;
+}
+.attachment {
+    margin: 0;
+}
+footer {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+}
+footer:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+#fyad-flag {
+    width: 100%;
+    height: 102px;
+}
+#fyad-flag img {
+    border: 1px solid black;
+}
+.ipad #fyad-flag img {
+    display: block;
+    margin: 0 auto;
+}
+#ad {
+    text-align: center;
+}
+#ad img {
+    max-width: 100%;
+}
+.iphone #ad {
+    padding: .6em;
+    padding-bottom: 0;
+}
+.ipad #ad {
+    padding: 1.07em;
+    padding-bottom: 0;
+}
+#end {
+    font-weight: normal;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+.voiceover-only {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+header,
+footer {
+    -webkit-user-select: none;
+}
+body {
+    background-color: #f4f3f3;
+}
+post {
+    background-color: #ffffff;
+    border-bottom-color: #ddd;
+    border-top-color: #ddd;
+}
+post.seen {
+    background-color: #e6f2ff;
+}
+header {
+    border-bottom: 0;
+}
+.awful-smile {
+    image-rendering: -webkit-crisp-edges;
+}
+.postbody a,
+[data-awful-linkified-image] {
+    color: #004696;
+}
+.bbc-spoiler:not(.spoiled) {
+    color: #000000;
+    background: #000000;
+}
+.bbc-spoiler:not(.spoiled) li {
+    color: #000000;
+    background: #000000;
+    list-style: none;
+}
+.bbc-spoiler:not(.spoiled) img {
+    opacity: 0;
+    height: 0;
+    width: 100%;
+}
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
+    color: #000000;
+}
+.bbc-block h4,
+.bbc-block h5 {
+    color: #555;
+}
+footer {
+    margin-top: 0.6em;
+}
+.postdate,
+.regdate {
+    color: #8e8e8e;
+}
+.action-button img {
+    -webkit-filter: invert() brightness(56%);
+}
+#end {
+    color: #8e8e8e;
+    line-height: 3em;
+}

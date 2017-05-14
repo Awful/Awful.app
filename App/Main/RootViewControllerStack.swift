@@ -109,7 +109,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             updateMessagesTabPresence()
         } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape.takeUnretainedValue() as String {
             configureSplitViewControllerDisplayMode()
-		} else if changeKey == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String {
+		} else if changeKey == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || changeKey == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String {
 			configureTabBarColor()
 		}
     }
@@ -120,7 +120,14 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 		} else {
 			self.tabBarController.tabBar.barTintColor = nil
 		}
-		self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
+        
+        if AwfulSettings.shared().alternateTheme {
+            self.tabBarController.tabBar.tintColor = UIColor(red: 0.0, green: 0.275, blue: 0.588, alpha: 1.0)
+        } else {
+            self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
+
+        }
+        
 	}
 	
     fileprivate func configureSplitViewControllerDisplayMode() {

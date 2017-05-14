@@ -35,6 +35,8 @@
 
 @property (assign, nonatomic) BOOL confirmNewPosts;
 
+@property (assign, nonatomic) BOOL alternateTheme;
+
 @property (assign, nonatomic) BOOL darkTheme;
 
 @property (assign, nonatomic) BOOL autoDarkTheme;
@@ -107,6 +109,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *autoplayGIFs;
     __unsafe_unretained NSString *embedTweets;
     __unsafe_unretained NSString *confirmNewPosts;
+    __unsafe_unretained NSString *alternateTheme;
     __unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *autoDarkTheme;
     __unsafe_unretained NSString *autoThemeThreshold;

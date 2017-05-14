@@ -295,7 +295,7 @@ private extension AppDelegate {
     
     @objc func settingsDidChange(_ notification: Notification) {
         guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-        if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
+        if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
             guard let window = window else { return }
             if let snapshot = window.snapshotView(afterScreenUpdates: false) {
                 window.addSubview(snapshot)

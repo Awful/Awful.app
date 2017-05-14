@@ -128,6 +128,8 @@ BOOL_PROPERTY(embedTweets, setEmbedTweets)
 
 BOOL_PROPERTY(confirmNewPosts, setConfirmNewPosts)
 
+BOOL_PROPERTY(alternateTheme, setAlternateTheme)
+
 BOOL_PROPERTY(darkTheme, setDarkTheme)
 
 BOOL_PROPERTY(autoDarkTheme, setAutoDarkTheme)
@@ -361,6 +363,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .forumThreadsSortedByUnread = @"forum_threads_sorted_unread",
     .bookmarksSortedByUnread = @"bookmarks_sorted_unread",
     .confirmNewPosts = @"confirm_before_replying",
+    .alternateTheme = @"alternate_theme",
     .darkTheme = @"dark_theme",
     .autoDarkTheme = @"auto_dark_theme",
     .autoThemeThreshold = @"auto_theme_threshold",
