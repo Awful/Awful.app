@@ -21,19 +21,19 @@ import UIKit
 
     The theme named "default" is special: it is the parent of all themes that do not specify a parent. It's the root theme. All themes eventually point back to the default theme.
 */
-@objc final class Theme: NSObject, Comparable {
+final class Theme: Comparable {
     let name: String
-    fileprivate let dictionary: [String: AnyObject]
+    fileprivate let dictionary: [String: Any]
     fileprivate var parent: Theme?
     
-    fileprivate init(name: String, dictionary: [String: AnyObject]) {
+    fileprivate init(name: String, dictionary: [String: Any]) {
         self.name = name
         self.dictionary = flatten(dictionary)
     }
     
     /// The name of the theme, suitable for presentation.
     var descriptiveName: String {
-        return (dictionary["descriptiveName"] as! String?) ?? name
+        return dictionary["descriptiveName"] as? String ?? name
     }
     
     /// A color representative of the theme, suitable for presentation.
@@ -48,7 +48,10 @@ import UIKit
     
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     var keyboardAppearance: UIKeyboardAppearance {
-        let appearance = (dictionary["keyboardAppearance"] as! String?) ?? parent?["keyboardAppearance"] ?? "default"
+        let appearance = dictionary["keyboardAppearance"] as? String
+            ?? parent?["keyboardAppearance"]
+            ?? "default"
+
         switch appearance {
         case "Dark", "dark":
             return .dark
@@ -63,67 +66,51 @@ import UIKit
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
-        if let style = (dictionary["scrollIndicatorStyle"] as! String?) ?? parent?["scrollIndicatorStyle"] {
-            switch style {
-            case "Dark", "dark":
-                return .black
-            case "Light", "light":
-                return .white
-            default:
-                fatalError("Unrecognized scroll indicator style: \(style) (in theme \(name))")
-            }
-        } else {
-            return .default
+        guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
+
+        switch style {
+        case "Dark", "dark":
+            return .black
+        case "Light", "light":
+            return .white
+        default:
+            fatalError("Unrecognized scroll indicator style: \(style) (in theme \(name))")
         }
     }
-    
+
     /// The named color (the "Color" suffix is optional).
     subscript(colorName: String) -> UIColor? {
-        @objc(colorNamed:) get {
-            let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
-            if let value = dictionary[key] as? String {
-                if let hexColor = UIColor.fromHex(value) {
-                    return hexColor
-                } else if let patternImage = UIImage(named: value) {
-                    return UIColor(patternImage: patternImage)
-                } else {
-                    fatalError("Unrecognized theme attribute color: \(value) (in theme \(name), for key \(colorName)")
-                }
-            } else {
-                return parent?[key]
-            }
+        let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
+        guard let value = dictionary[key] as? String else { return parent?[key] }
+
+        if let hexColor = UIColor.fromHex(value) {
+            return hexColor
+        }
+        else if let patternImage = UIImage(named: value) {
+            return UIColor(patternImage: patternImage)
+        }
+        else {
+            fatalError("Unrecognized theme attribute color: \(value) (in theme \(name), for key \(colorName)")
         }
     }
-    
+
     /// The named theme attribute as a string.
     subscript(key: String) -> String? {
-        @objc(stringNamed:) get {
-            if let value = (dictionary[key] as! String?) ?? parent?[key] {
-                if key.hasSuffix("CSS") {
-                    let URL = Bundle.main.url(forResource: value, withExtension: nil)!
-                    var CSS = NSString()
-                    do {
-                        try CSS = NSString(contentsOf: URL, usedEncoding: nil)
-                    }
-                    catch {
-                        fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)")
-                    }
-                    return CSS as String
-                } else {
-                    return value
-                }
-            } else {
-                return nil
+        guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
+        if key.hasSuffix("CSS") {
+            guard let url = Bundle.main.url(forResource: value, withExtension: nil) else {
+                fatalError("Missing CSS file for \(key): \(value)")
+            }
+
+            do {
+                return try String(contentsOf: url, encoding: .utf8)
+            }
+            catch {
+                fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)): \(error)")
             }
         }
-    }
-    
-    /// A subscript accessible to Objective-C.
-    subscript(key: String) -> AnyObject? {
-        if key.hasSuffix("Color") {
-            return self[key] as UIColor?
-        } else {
-            return self[key] as String? as AnyObject?
+        else {
+            return value
         }
     }
 }
