@@ -29,6 +29,8 @@
 		1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
+		1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */; };
+		1C0AFAE31ECA96E6002D4003 /* posts-view-alternate.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE11ECA96E6002D4003 /* posts-view-alternate.css */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
 		1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */; };
 		1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */; };
@@ -499,6 +501,8 @@
 		1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
+		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
+		1C0AFAE11ECA96E6002D4003 /* posts-view-alternate.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate.css"; sourceTree = "<group>"; };
 		1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulURLRouter.swift; sourceTree = "<group>"; };
 		1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageViewController.swift; sourceTree = "<group>"; };
 		1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
@@ -1592,6 +1596,8 @@
 			children = (
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */,
+				1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */,
+				1C0AFAE11ECA96E6002D4003 /* posts-view-alternate.css */,
 				1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */,
 				8CE6100518CAACF9002E92DA /* posts-view-byob.css */,
 				1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */,
@@ -2116,10 +2122,12 @@
 				1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */,
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
+				1C0AFAE31ECA96E6002D4003 /* posts-view-alternate.css in Resources */,
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
 				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */,
 				1C5B9C3B17F20BB800D4981D /* posts-view-macinyos.css in Resources */,
+				1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
