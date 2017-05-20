@@ -84,10 +84,6 @@ Medium priority:
 	- Fix tapping on an ignored user's post to reveal it.
 		"Tapping on an ignored users post to reveal it seems bugged. Sometimes it brings up a random post from the thread, and if it's the last post sometimes it doesn't show up."
 		"Have had this issue for the last two app versions I believe. Sometimes tapping to view post will bring up another ignored post and tapping that one will load a third random one" [circa @awful3.16 I think]
-	- Fix niggly pull-to-refresh causing a bouncing table sometimes.
-		"Sometimes my bookmark list continually bounce while the loading smiley shows up."
-		"The constantly bouncing smiley happens if I've got wifi enabled with proxy but the proxy is down. So likely connection issues aren't resolving quite right."
-		"I dare say it happens randomly, but I think it occurs when the refresh happens without me pulling down. It's only been happening since you added that animated emoji [:niggly:] instead of a throbber."
 	- Fix dismissing the image preview screen after sharing.
 		"Whenever I share an image to GroupMe, it successfully posts but I then have to force close the Awful app. I can't swipe the image back down nor can I tap "done". iPhone 6+"
 	- Stop failing to upload to Imgur.
@@ -765,6 +761,13 @@ New features:
 		"haptics all over the app - esp a nice "chunk" kick from the haptic engine when i pull for the next page of posts"
 	- More keyboard hotkeys.
 		" I scroll by page with spacebar and was wondering if we could get next page assigned to 'n' or maybe '>' for convenience."
+	- Sidebar toggle on iPhone+ landscape?
+		"can you wonderful devs add a toggle for the sidebar in an easier spot on the 7 plus landscape view? i had my team throw together a mock-up https://i.imgur.com/JToXpmG_d.jpg?maxwidth=640&shape=thumb&fidelity=high"
+	- New :eyepop: and :roflolmao: throbbers. http://i.imgur.com/y48Qi8D.gif http://i.imgur.com/qKK7IuJ.gif
+		https://drive.google.com/drive/folders/0B_J1KGlvSez7VzFpZmVpMUVDMnc?usp=sharing
+		Could rotate throbbers? Or use certain ones in certain places?
+	- Move sidebar to right side of screen, for left-handed folk?
+		"Is there any way an option to move the side bar to the right on ipad could be added? Left handed here and I loading a different thread with my pinky when scrolling with the index"
 Needs verification:
 	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -992,3 +995,4 @@ Needs verification:
 		"Twice today I have replied to a thread only to be dumped back at the top of the page like I'd edited a post and my post has disappeared into thin air"
 			Wonder if there's some error state we failed to check, so we sail right through to "let me show you your new post" without actually throwing an error?
 			"Yeah, I'm guessing this. Is there a timeout error when replying to a thread multiple times in a short period of time or when lots of people are replying to a thread and maybe the app can't figure out where the post should be?"
+		"Pretty sure this [server-side post throttling] is correct and the only reason people are noticing it more and more recently is because of some weird fuckshit with the server clocks happening lately. It's supposed to be a 10 second limit in between posts but sometimes it'll arbitrarily reject a post when it's been more like 60 seconds since your last. I don't think that's a problem on the Awful app's end but it would be nice if it held onto your post and it didn't just disappear into the void"
