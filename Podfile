@@ -30,8 +30,8 @@ end
 target 'Core' do
   pod 'AFNetworking', '~> 2.0'
   pod 'HTMLReader', '~> 2.0'
+  pod 'OMGHTTPURLRQ', '~> 3.0'
   pod 'PromiseKit', '~> 4.0'
-  pod 'PromiseKit/OMGHTTPURLRQ', '~> 4.0'
   
   target 'CoreTests' do
       inherit! :search_paths

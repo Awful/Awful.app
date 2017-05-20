@@ -1649,7 +1649,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1CC9B6A41D7DD35C000C7A06 /* CHANGELOG.md */,
@@ -2025,7 +2025,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3269,7 +3269,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -3299,7 +3298,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;

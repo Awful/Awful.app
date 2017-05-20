@@ -17,7 +17,6 @@
 #import "NSTask+AnyPromise.h"
 #import "NSURLSession+AnyPromise.h"
 #import "PMKFoundation.h"
-#import "PMKOMGHTTPURLRQ.h"
 #import "CALayer+AnyPromise.h"
 #import "PMKQuartzCore.h"
 #import "PMKUIKit.h"

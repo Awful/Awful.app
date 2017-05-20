@@ -66,9 +66,6 @@ PODS:
   - PromiseKit/CorePromise (4.1.7)
   - PromiseKit/Foundation (4.1.7):
     - PromiseKit/CorePromise
-  - PromiseKit/OMGHTTPURLRQ (4.1.7):
-    - OMGHTTPURLRQ (~> 3.2)
-    - PromiseKit/Foundation
   - PromiseKit/QuartzCore (4.1.7):
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (4.1.7):
@@ -89,8 +86,8 @@ DEPENDENCIES:
   - JLRoutes (~> 1.5)
   - KVOController (~> 1.0)
   - MRProgress/Overlay (~> 0.8.0)
+  - OMGHTTPURLRQ (~> 3.0)
   - PromiseKit (~> 4.0)
-  - PromiseKit/OMGHTTPURLRQ (~> 4.0)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
   - TUSafariActivity (~> 1.0)
@@ -132,6 +129,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: 27e100ffc9374768158356a96b0fb823aefebcdc
+PODFILE CHECKSUM: cd9e8cce271c1595fcf5ecd9cf9128d74a21212e
 
 COCOAPODS: 1.2.1
