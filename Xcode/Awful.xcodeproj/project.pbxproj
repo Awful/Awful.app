@@ -6,20 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		1C0B86111B1801FB0088BE53 /* GenerateEntitlements */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 1C0B861B1B1801FB0088BE53 /* Build configuration list for PBXAggregateTarget "GenerateEntitlements" */;
-			buildPhases = (
-				1C0B861C1B1802130088BE53 /* Generate .entitlements files */,
-			);
-			dependencies = (
-			);
-			name = GenerateEntitlements;
-			productName = GenerateEntitlements;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
@@ -368,20 +354,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
-		};
-		1C0B861D1B1809350088BE53 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C0B86111B1801FB0088BE53;
-			remoteInfo = GenerateEntitlements;
-		};
-		1C0B861F1B18093D0088BE53 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C0B86111B1801FB0088BE53;
-			remoteInfo = GenerateEntitlements;
 		};
 		1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1899,7 +1871,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C0B86201B18093D0088BE53 /* PBXTargetDependency */,
 				1C66AA0319DD39A9001B9A41 /* PBXTargetDependency */,
 			);
 			name = "Smilie Keyboard";
@@ -1940,7 +1911,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C0B861E1B1809350088BE53 /* PBXTargetDependency */,
 				1C3CF97C1A94B9B50065C964 /* PBXTargetDependency */,
 				1C66A9D319DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9D719DD304F001B9A41 /* PBXTargetDependency */,
@@ -1965,9 +1935,6 @@
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
-					1C0B86111B1801FB0088BE53 = {
-						CreatedOnToolsVersion = 6.3.2;
-					};
 					1C3A143219DFC5D10022C44C = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
@@ -2033,7 +2000,6 @@
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1C3CF9651A94B9B40065C964 /* Core */,
 				1C3CF96F1A94B9B40065C964 /* CoreTests */,
-				1C0B86111B1801FB0088BE53 /* GenerateEntitlements */,
 				1C66A9EE19DD3939001B9A41 /* Smilie Keyboard */,
 				1C66A9BF19DD304D001B9A41 /* Smilies */,
 				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
@@ -2223,20 +2189,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-CoreTests/Pods-CoreTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		1C0B861C1B1802130088BE53 /* Generate .entitlements files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate .entitlements files";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "cd \"$PROJECT_DIR/..\"\n[ -e app-group ] && APP_GROUP=`cat app-group | tr -d '[[:space:]]'`\n\ncp Xcode/AppGroup.entitlements App/Awful.entitlements\n\nif [ \"$APP_GROUP\" ]; then\n    function buddy() {\n        /usr/libexec/PlistBuddy -x -c \"$1\" App/Awful.entitlements\n    }\n    buddy \"Add :com.apple.security.application-groups array\"\n    buddy \"Add :com.apple.security.application-groups:0 string $APP_GROUP\"\nfi\n\ncp App/Awful.entitlements Smilies/Keyboard/Keyboard.entitlements\n";
 		};
 		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2720,16 +2672,6 @@
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C097AA21A97C48600425EEF /* PBXContainerItemProxy */;
 		};
-		1C0B861E1B1809350088BE53 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C0B86111B1801FB0088BE53 /* GenerateEntitlements */;
-			targetProxy = 1C0B861D1B1809350088BE53 /* PBXContainerItemProxy */;
-		};
-		1C0B86201B18093D0088BE53 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C0B86111B1801FB0088BE53 /* GenerateEntitlements */;
-			targetProxy = 1C0B861F1B18093D0088BE53 /* PBXContainerItemProxy */;
-		};
 		1C2DC7371DCEA605005040FD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1CBBAAB41D949EE000A847EC /* Smilies Stickers */;
@@ -2797,20 +2739,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1C0B86121B1801FB0088BE53 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = GenerateEntitlements;
-			};
-			name = Debug;
-		};
-		1C0B86131B1801FB0088BE53 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = GenerateEntitlements;
-			};
-			name = Release;
-		};
 		1C3A145319DFC5D10022C44C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */;
@@ -3436,15 +3364,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1C0B861B1B1801FB0088BE53 /* Build configuration list for PBXAggregateTarget "GenerateEntitlements" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C0B86121B1801FB0088BE53 /* Debug */,
-				1C0B86131B1801FB0088BE53 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		1C3A145B19DFC5D10022C44C /* Build configuration list for PBXNativeTarget "SmilieExtractor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

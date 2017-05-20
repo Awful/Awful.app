@@ -13,10 +13,8 @@
 # Fastlane dotenv, for dev account-specific config (e.g. Crashlytics API key)
 /fastlane/.env
 
-# App Group and Entitlements private or auto-generated files
+# App Group private files
 app-group
-/App/Awful.entitlements
-/Smilies/Keyboard/Keyboard.entitlements
 
 # OS X and Xcode junk
 .DS_Store

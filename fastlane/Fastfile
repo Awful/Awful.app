@@ -51,6 +51,8 @@ lane :beta do |options|
     xcargs << %Q[CRASHLYTICS_API_TOKEN="#{crashlytics_api_token}"]
   end
   
+  app_group_entitlements
+  
   gym(
     workspace: "Awful.xcworkspace",
     scheme: "Awful",
@@ -78,6 +80,8 @@ lane :beta do |options|
     
     testflight(params)
   end
+  
+  reset_git_repo # reset .entitlements changes
   
   major, minor = get_version_number_components
   beta_count = get_build_number.to_i % 100
@@ -149,4 +153,11 @@ desc "Make the stickers 3x images"
 desc "Should probably run this after running SmilieExtractor"
 lane :embiggen_stickers do |options|
   sh File.join("..", "Xcode", "scale-stickers")
+end
+
+
+desc "Set up .entitlements files to use App Group"
+desc "Requires file called app-group in repo root whose contents is the name of your App Group"
+lane :app_group_entitlements do
+  sh File.join("..", "Xcode", "gen-entitlements.sh")
 end
