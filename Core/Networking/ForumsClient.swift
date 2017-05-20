@@ -10,12 +10,14 @@ import AFNetworking
 import CoreData
 import Foundation
 import HTMLReader
+import OMGHTTPURLRQ
 import PromiseKit
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    fileprivate var httpManager: HTTPRequestOperationManager?
-    fileprivate var backgroundManagedObjectContext: NSManagedObjectContext?
+    private var urlSession: URLSession?
+    private var redirectBlocks: [Int: SessionDelegate.WillRedirectCallback] = [:]
+    private var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
 
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
@@ -29,7 +31,7 @@ public final class ForumsClient {
     }
     
     deinit {
-        httpManager?.operationQueue.cancelAllOperations()
+        urlSession?.invalidateAndCancel()
     }
 
     @objc private func networkOperationDidStart(_ notification: Notification) {
@@ -52,20 +54,54 @@ public final class ForumsClient {
         }
     }
 
+    private class SessionDelegate: NSObject, URLSessionTaskDelegate {
+        private let willRedirect: WillRedirectCallback
+
+        typealias WillRedirectCallback = (_ task: URLSessionTask, _ response: HTTPURLResponse, _ newRequest: URLRequest) -> URLRequest?
+
+        init(willRedirect: @escaping WillRedirectCallback) {
+            self.willRedirect = willRedirect
+        }
+
+        func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+            completionHandler(willRedirect(task, response, request))
+        }
+    }
+
     /**
      The Forums endpoint for the client. Typically https://forums.somethingawful.com
 
      Setting a new baseURL cancels all in-flight requests.
      */
     public var baseURL: URL? {
-        get {
-            return httpManager?.baseURL
-        }
-        set {
-            guard newValue != httpManager?.baseURL else { return }
-            
-            httpManager?.operationQueue.cancelAllOperations()
-            httpManager = HTTPRequestOperationManager(baseURL: newValue)
+        didSet {
+            guard oldValue != baseURL else { return }
+
+            urlSession?.invalidateAndCancel()
+            urlSession = nil
+            redirectBlocks.removeAll()
+
+            guard baseURL != nil else { return }
+
+            let config: URLSessionConfiguration = {
+                let config = URLSessionConfiguration.default
+                var headers = config.httpAdditionalHeaders ?? [:]
+                headers["User-Agent"] = OMGUserAgent()
+                config.httpAdditionalHeaders = headers
+                return config
+            }()
+
+            let willRedirect = { [unowned self] (task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? in
+                if let block = self.redirectBlocks[task.taskIdentifier] {
+                    return block(task, response, newRequest)
+                }
+                else {
+                    return newRequest
+                }
+            }
+
+            let delegate = SessionDelegate(willRedirect: willRedirect)
+            urlSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
         }
     }
 
@@ -119,14 +155,9 @@ public final class ForumsClient {
         }
     }
 
-    /// Whether or not the Forums endpoint appears reachable.
-    public var isReachable: Bool {
-        return httpManager?.reachabilityManager.isReachable ?? false
-    }
-
     private var loginCookie: HTTPCookie? {
         return baseURL
-            .flatMap { HTTPCookieStorage.shared.cookies(for: $0) }?
+            .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
             .first { $0.name == "bbuserid" }
     }
 
@@ -142,7 +173,9 @@ public final class ForumsClient {
 
     enum PromiseError: Error {
         case failedTransferToMainContext
-        case missingHTTPManager
+        case missingURLSession
+        case invalidBaseURL
+        case missingDataAndError
         case missingManagedObjectContext
         case unexpectedContentType(String, expected: String)
     }
@@ -156,37 +189,60 @@ public final class ForumsClient {
         method: Method,
         urlString: String,
         parameters: [String: Any]?,
-        redirectResponseBlock: ((_ connection: NSURLConnection, _ request: URLRequest, _ redirectResponse: URLResponse) -> URLRequest)? = nil)
-        -> (promise: Promise<(response: URLResponse?, responseObject: Any)>, cancellable: Cancellable)
+        redirectBlock: SessionDelegate.WillRedirectCallback? = nil)
+        -> (promise: Promise<(Data, URLResponse)>, cancellable: Cancellable)
     {
-        guard let httpManager = httpManager else {
-            return (Promise(error: PromiseError.missingHTTPManager), Operation())
+        guard let baseURL = baseURL, let urlSession = urlSession else {
+            return (Promise(error: PromiseError.missingURLSession), Operation())
         }
 
-        var error: NSError?
-        let url = URL(string: urlString, relativeTo: baseURL)
-        let request = httpManager.requestSerializer.request(withMethod: method.rawValue, urlString: url?.absoluteString ?? "", parameters: parameters, error: &error)
-        // Checking the error is bad form, but the request serializer interface claims (seemingly incorrectly) to return a nonnull instance, so I'm not sure how else to check for a failure here.
-        if let error = error {
-            return (promise: Promise(error: error), cancellable: Operation())
+        guard let url = URL(string: urlString, relativeTo: baseURL) else {
+            return (Promise(error: PromiseError.invalidBaseURL), Operation())
         }
 
-        let promise = Promise<(response: URLResponse?, responseObject: Any)>.pending()
-        let op = httpManager.httpRequestOperation(
-            with: request as URLRequest,
-            success: { (op: AFHTTPRequestOperation, responseObject: Any) -> Void in
-                promise.fulfill((response: op.response, responseObject: responseObject))
-        },
-            failure: { (op: AFHTTPRequestOperation, error: Error) -> Void in
-                promise.reject(error)
-        })
-        op.setRedirectResponseBlock(redirectResponseBlock)
-        httpManager.operationQueue.addOperation(op)
+        let request: URLRequest
+        do {
+            switch method {
+            case .get: request = try OMGHTTPURLRQ.get(url.absoluteString, parameters) as URLRequest
+            case .post: request = try OMGHTTPURLRQ.post(url.absoluteString, parameters) as URLRequest
+            }
+        }
+        catch {
+            return (Promise(error: error), Operation())
+        }
 
-        return (promise: promise.promise, cancellable: op)
+        let (promise, fulfill, reject) = Promise<(Data, URLResponse)>.pending()
+
+        let task = urlSession.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                return reject(error)
+            }
+
+            guard let data = data, let response = response else {
+                return reject(PromiseError.missingDataAndError)
+            }
+
+            fulfill((data, response))
+        }
+
+        if let redirectBlock = redirectBlock {
+            redirectBlocks[task.taskIdentifier] = redirectBlock
+        }
+
+        task.resume()
+
+        _ = promise.then { (data, response) -> Void in
+            self.redirectBlocks.removeValue(forKey: task.taskIdentifier)
+
+            if !self.isLoggedIn, let block = self.didRemotelyLogOut {
+                DispatchQueue.main.async(execute: block)
+            }
+        }
+
+        return (promise: promise, cancellable: task)
     }
 
-    // MARK: Session
+    // MARK: Forums Session
 
     public func logIn(username: String, password: String) -> Promise<User> {
         guard
@@ -204,7 +260,7 @@ public final class ForumsClient {
 
         return fetch(method: .post, urlString: "account.php?json=1", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
                 let scraper = ProfileScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -240,7 +296,7 @@ public final class ForumsClient {
         // Seems like only `forumdisplay.php` and `showthread.php` have the `<select>` with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: ["forumid": "48"])
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
                 let scraper = AwfulForumHierarchyScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -282,7 +338,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
                 let scraper = AwfulThreadListScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -326,7 +382,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
                 let scraper = AwfulThreadListScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -383,7 +439,7 @@ public final class ForumsClient {
 
         return fetch(method: .post, urlString: "threadrate.php", parameters: parameters)
             .promise
-            .then { (_) -> Void in }
+            .then { _ in return () }
     }
 
     public func markThreadAsReadUpTo(_ post: Post) -> Promise<Void> {
@@ -400,7 +456,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
             .promise
-            .then { (_) -> Void in }
+            .then { _ in return () }
     }
 
     public func markUnread(_ thread: AwfulThread) -> Promise<Void> {
@@ -411,7 +467,7 @@ public final class ForumsClient {
 
         return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
             .promise
-            .then { (_) -> Void in }
+            .then { _ in return () }
     }
 
     public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<AwfulForm> {
@@ -425,7 +481,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: mainContext) { (document, context) -> AwfulForm in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
@@ -456,7 +512,7 @@ public final class ForumsClient {
 
         let formAndParameters = fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> (AwfulForm, [String: Any]) in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
@@ -522,7 +578,7 @@ public final class ForumsClient {
 
         let threadID = submitParameters
             .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 guard
                     let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
@@ -562,7 +618,7 @@ public final class ForumsClient {
 
         let (promise, cancellable) = fetch(method: .post, urlString: "newthread.php", parameters: parameters)
         let html = promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 if let postbody = document.firstNode(matchingSelector: ".postbody") {
                     workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -615,25 +671,26 @@ public final class ForumsClient {
         }
 
         // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
-        func redirectResponseBlock(connection: NSURLConnection, request: URLRequest, redirectResponse: URLResponse) -> URLRequest {
-            var components = request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
+        func redirectBlock(task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? {
+            var components = newRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
             let queryItems = (components?.queryItems ?? [])
                 .filter { $0.name != "perpage" }
             components?.queryItems = queryItems
                 + [URLQueryItem(name: "perpage", value: "40")]
 
-            var request = request
+            var request = newRequest
             request.url = components?.url
             return request
         }
 
-        let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectResponseBlock: redirectResponseBlock)
+        let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
 
         let parsed = promise
-            .then(on: backgroundContext) { (response, context)
+            .then(on: backgroundContext) { (dataAndResponse, context)
                 -> (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?) in
-                let (response, responseObject) = response
-                let scraper = try AwfulPostsPageScraper.scrape(cast(responseObject), into: context)
+                let (data, response) = dataAndResponse
+                let document = parseHTML(data: data, response: response)
+                let scraper = AwfulPostsPageScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
                 }
@@ -646,7 +703,7 @@ public final class ForumsClient {
 
                 let firstUnreadPostIndex: Int? = {
                     guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
-                    guard let fragment = response?.url?.fragment, !fragment.isEmpty else { return nil }
+                    guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
 
                     let scanner = Scanner.awful_scanner(with: fragment)
                     guard scanner.scanString("pti", into: nil) else { return nil }
@@ -685,7 +742,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> Void in
                 let scraper = AwfulPostScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -722,7 +779,7 @@ public final class ForumsClient {
         let wasThreadClosed = thread.closed
         let formParameters = fetch(method: .get, urlString: "newreply.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [String: Any] in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
@@ -743,7 +800,7 @@ public final class ForumsClient {
 
         let postID = formParameters
             .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document: HTMLDocument) -> String? in
                 let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
                     ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
@@ -790,7 +847,7 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .post, urlString: "newreply.php", parameters: parameters)
 
         let parsed = promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
@@ -811,7 +868,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
@@ -837,7 +894,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "newreply.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
@@ -868,7 +925,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> [String: Any] in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
@@ -908,22 +965,21 @@ public final class ForumsClient {
 
         // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that redirect, then parse out the info we need.
         let redirectURL = Promise<URL>.pending()
-        var cancellable: Cancellable?
 
-        func redirectResponse(connection: NSURLConnection, redirectRequest: URLRequest, response: URLResponse) -> URLRequest {
+        func redirectBlock(task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? {
             if
-                let url = redirectRequest.url,
+                let url = newRequest.url,
                 url.lastPathComponent == "showthread.php",
                 let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                 let queryItems = components.queryItems,
                 queryItems.first(where: { $0.name == "goto" }) != nil
             {
-                return redirectRequest
+                return newRequest
             }
 
-            cancellable?.cancel()
+            task.cancel()
 
-            guard let url = redirectRequest.url else {
+            guard let url = newRequest.url else {
                 redirectURL.reject(
                 NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                     NSLocalizedDescriptionKey: "The post could not be found (missing URL)"]))
@@ -931,18 +987,16 @@ public final class ForumsClient {
             }
 
             redirectURL.fulfill(url)
-
-            return URLRequest(url: URL(string: "http:")!) // can't return nil for some reason?
+            return nil
         }
 
         let parameters = [
             "goto": "post",
             "postid": postID]
 
-        let initialRequest = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectResponseBlock: redirectResponse)
-        cancellable = initialRequest.cancellable
-        initialRequest.promise
-            .then { (response) -> Void in
+        fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
+            .promise
+            .then { (data, response) -> Void in
                 // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
                 redirectURL.reject(
                     NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
@@ -954,7 +1008,7 @@ public final class ForumsClient {
         }
 
         return redirectURL.promise
-            .then { (url) -> (threadID: String, page: Int) in
+            .then(on: .global()) { (url) -> (threadID: String, page: Int) in
                 guard
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                     let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
@@ -998,7 +1052,7 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .post, urlString: "editpost.php", parameters: parameters)
 
         let parsed = promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
@@ -1039,7 +1093,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "member.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
                 let scraper = ProfileScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -1109,7 +1163,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: mainContext) { (document, context) -> [Punishment] in
                 let scraper = LepersColonyPageScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -1162,7 +1216,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: nil)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> Int in
                 let scraper = AwfulUnreadPrivateMessageCountScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -1183,7 +1237,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: nil)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
                 let scraper = PrivateMessageFolderScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -1228,7 +1282,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
                 let scraper = PrivateMessageScraper.scrape(document, into: context)
                 if let error = scraper.error {
@@ -1260,7 +1314,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { (document) -> String in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
@@ -1285,7 +1339,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
-            .then { try cast($1) as HTMLDocument }
+            .then(on: .global(), execute: parseHTML)
             .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
@@ -1347,6 +1401,24 @@ public protocol Cancellable: class {
 }
 
 extension Operation: Cancellable {}
+extension URLSessionTask: Cancellable {}
+
+
+private func parseHTML(data: Data, response: URLResponse) -> HTMLDocument {
+    let contentType: String? = {
+        guard let response = response as? HTTPURLResponse else { return nil }
+        return response.allHeaderFields["Content-Type"] as? String
+    }()
+    return HTMLDocument(data: data, contentTypeHeader: contentType)
+}
+
+private func parseJSONDict(data: Data, response: URLResponse) throws -> [String: Any] {
+    let json = try JSONSerialization.jsonObject(with: data, options: [])
+    guard let dict = json as? [String: Any] else {
+        throw ForumsClient.PromiseError.unexpectedContentType("\(type(of: json))", expected: "Dictionary<String, Any>")
+    }
+    return dict
+}
 
 
 private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
@@ -1356,16 +1428,6 @@ private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElemen
             img["src"] = String(suffix)
         }
     }
-}
-
-
-private func cast<T>(_ value: Any) throws -> T {
-    guard let response = value as? T else {
-        throw ForumsClient.PromiseError.unexpectedContentType(
-            "\(type(of: value))",
-            expected: "\(T.self)")
-    }
-    return response
 }
 
 

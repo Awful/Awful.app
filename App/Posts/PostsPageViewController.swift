@@ -222,7 +222,7 @@ final class PostsPageViewController: ViewController {
                     let alert = UIAlertController(title: "Archives Required", error: error)
                     sself.present(alert, animated: true, completion: nil)
                 } else {
-                    let offlineMode = !ForumsClient.shared.isReachable && (error as NSError).domain == NSURLErrorDomain
+                    let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
                     if sself.posts.isEmpty || !offlineMode {
                         let alert = UIAlertController(title: "Could Not Load Page", error: error)
                         sself.present(alert, animated: true, completion: nil)

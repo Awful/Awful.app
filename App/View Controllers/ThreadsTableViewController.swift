@@ -136,9 +136,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         } else {
             isTimeToRefresh = RefreshMinder.sharedMinder.shouldRefreshFilteredForum(forum)
         }
-        if ForumsClient.shared.isReachable &&
-            (isTimeToRefresh || dataManager.contents.isEmpty)
-        {
+        if isTimeToRefresh || dataManager.contents.isEmpty {
             refresh()
         }
     }

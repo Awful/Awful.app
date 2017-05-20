@@ -117,9 +117,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         
         becomeFirstResponder()
         
-        if ForumsClient.shared.isReachable &&
-            (dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks))
-        {
+        if dataManager.contents.isEmpty || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks) {
             refresh()
         }
     }
