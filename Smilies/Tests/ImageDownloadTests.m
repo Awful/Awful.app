@@ -32,10 +32,10 @@
     SmilieDataStore *dataStore = [TestDataStore new];
     Smilie *forwardToWork = [Smilie newInManagedObjectContext:dataStore.managedObjectContext];
     forwardToWork.text = @"!forwardtowork!";
-    forwardToWork.imageURL = @"http://i.somethingawful.com/forumsystem/emoticons/emot-backtowork.gif";
+    forwardToWork.imageURL = @"https://i.somethingawful.com/forumsystem/emoticons/emot-backtowork.gif";
     Smilie *realColbert = [Smilie newInManagedObjectContext:dataStore.managedObjectContext];
     realColbert.text = @"!colbert!";
-    realColbert.imageURL = @"http://i.somethingawful.com/forumsystem/emoticons/emot-crossarms.gif";
+    realColbert.imageURL = @"https://i.somethingawful.com/forumsystem/emoticons/emot-crossarms.gif";
     NSError *error;
     if (![forwardToWork.managedObjectContext save:nil]) {
         NSAssert(NO, @"error saving new smilies: %@", error);
