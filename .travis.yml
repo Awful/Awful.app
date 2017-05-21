@@ -1,9 +1,9 @@
 language: objective-c
-osx_image: xcode8
-install: true # skip cocoapods; all dependencies are already in the repo
+osx_image: xcode8.3
+install: true # skip pod install; all dependencies are already in the repo
 script:
-  - scan --scheme Awful
-  - scan --scheme Smilies
+  - bundle install --path vendor/bundle
+  - bundle exec fastlane scan --scheme Awful
 notifications:
   email:
     - nolan@nolanw.ca
