@@ -152,19 +152,11 @@ public final class ForumsClient {
         return fetch(method: .post, urlString: "account.php?json=1", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
-                let scraper = ProfileScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-                guard let user = scraper.profile?.user else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Couldn't find logged-in user"])
-                }
-
+            .then(on: .global(), execute: ProfileScrapeResult.init)
+            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+                let profile = try scrapeResult.upsert(into: context)
                 try context.save()
-
-                return user.objectID
+                return profile.user.objectID
             }
             .then(on: mainContext) { (objectID, context) in
                 guard let user = context.object(with: objectID) as? User else {
@@ -985,18 +977,10 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "member.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
-                let scraper = ProfileScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-                guard let profile = scraper.profile else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find profile"])
-                }
-
+            .then(on: .global(), execute: ProfileScrapeResult.init)
+            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+                let profile = try scrapeResult.upsert(into: context)
                 try context.save()
-
                 return profile.objectID
             }
     }

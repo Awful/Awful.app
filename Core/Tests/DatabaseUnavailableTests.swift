@@ -20,12 +20,6 @@ final class DatabaseUnavailableTests: ScrapingTestCase {
         XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).isEmpty)
     }
     
-    func testProfile() {
-        let scraper = ProfileScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(fetchAll(User.self, inContext: managedObjectContext).isEmpty)
-    }
-    
     func testThreadList() {
         let scraper = AwfulThreadListScraper.scrape(fixture, into:managedObjectContext)
         XCTAssertNotNil(scraper.error)

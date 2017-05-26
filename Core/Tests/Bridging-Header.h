@@ -12,4 +12,3 @@
 #import "LepersColonyPageScraper.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
-#import "ProfileScraper.h"

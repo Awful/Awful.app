@@ -12,13 +12,15 @@ import WebKit
 
 /// Shows detailed information about a particular user.
 final class ProfileViewController: ViewController {
-    let user: User
+    fileprivate var user: User {
+        didSet { updateTitle() }
+    }
     
     init(user: User) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
         
-        title = user.username ?? "Profile"
+        updateTitle()
         modalPresentationStyle = .formSheet
         hidesBottomBarWhenPushed = true
     }
@@ -32,6 +34,10 @@ final class ProfileViewController: ViewController {
     }
     
     fileprivate var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
+
+    private func updateTitle() {
+        title = user.username ?? "Profile"
+    }
     
     override func loadView() {
         let configuration = WKWebViewConfiguration()
@@ -86,8 +92,10 @@ final class ProfileViewController: ViewController {
         
         let (userID, username) = (user.userID, user.username)
         _ = ForumsClient.shared.profileUser(id: user.userID, username: user.username)
-            .then { [weak self] (profile) in
-                self?.renderProfile()
+            .then { [weak self] (profile) -> Void in
+                guard let sself = self else { return }
+                sself.user = profile.user
+                sself.renderProfile()
             }
             .catch { (error) in
                 print("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")

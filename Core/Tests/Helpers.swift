@@ -47,3 +47,7 @@ func fixtureNamed(_ basename: String) -> HTMLDocument {
     
     return HTMLDocument(string: (fixtureHTML as String?)!)
 }
+
+func scrapeFixture<T: ScrapeResult>(named fixtureName: String) -> T {
+    return try! T(fixtureNamed(fixtureName))
+}

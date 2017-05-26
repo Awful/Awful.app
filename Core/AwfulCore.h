@@ -18,7 +18,6 @@ FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 #import <AwfulCore/NSString+Undeprecation.h>
 #import <AwfulCore/PrivateMessageFolderScraper.h>
 #import <AwfulCore/PrivateMessageScraper.h>
-#import <AwfulCore/ProfileScraper.h>
 
 // Model
 #import <AwfulCore/AwfulThreadPage.h>
