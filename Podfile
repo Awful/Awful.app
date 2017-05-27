@@ -28,13 +28,12 @@ target 'Awful' do
 end
 
 target 'Core' do
-  pod 'AFNetworking', '~> 2.0'
   pod 'HTMLReader', '~> 2.0'
   pod 'OMGHTTPURLRQ', '~> 3.0'
   pod 'PromiseKit', '~> 4.0'
   
   target 'CoreTests' do
-      inherit! :search_paths
+    inherit! :search_paths
   end
 end
 
@@ -50,15 +49,4 @@ end
 target :SmilieExtractor do
   pod 'FLAnimatedImage', '~> 1.0'
   pod 'HTMLReader', '~> 2.0'
-end
-
-post_install do |extension_safe_api|
-  EXTENSION_SAFE_TARGETS = %w[FLAnimatedImage HTMLReader Pods-Smilies]
-  extension_safe_api.pods_project.targets.each do |target|
-    if EXTENSION_SAFE_TARGETS.include? target.name
-      target.build_configurations.each do |config|
-        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
-      end
-    end
-  end
 end
