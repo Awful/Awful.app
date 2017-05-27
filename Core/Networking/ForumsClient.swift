@@ -200,6 +200,8 @@ public final class ForumsClient {
             return (Promise(error: PromiseError.invalidBaseURL), Operation())
         }
 
+        let parameters = parameters.map(win1252Escaped)
+
         let request: URLRequest
         do {
             switch method {
@@ -1446,4 +1448,35 @@ extension Promise {
             }
         }
     }
+}
+
+
+/// Turns parameter values into strings, then turns everything in parameter key/values outside win1252 into HTML entities.
+private func win1252Escaped(_ parameters: [String: Any]) -> [String: String] {
+    func iswin1252(c: UnicodeScalar) -> Bool {
+        // http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit1252.txt
+        switch c.value {
+        case 0...0x7f, 0x81, 0x8d, 0x8f, 0x90, 0x9d, 0xa0...0xff, 0x152, 0x153, 0x160, 0x161, 0x178, 0x17d, 0x17e, 0x192, 0x2c6, 0x2dc, 0x2013, 0x2014, 0x2018...0x201a, 0x201c...0x201e, 0x2020...0x2022, 0x2026, 0x2030, 0x2039, 0x203a, 0x20ac, 0x2122:
+            return true
+        default:
+            return false
+        }
+    }
+
+    func escape(_ s: String) -> String {
+        let scalars = s.unicodeScalars.flatMap { (c: UnicodeScalar) -> [UnicodeScalar] in
+            if iswin1252(c: c) {
+                return [c]
+            } else {
+                return Array("&#\(c.value);".unicodeScalars)
+            }
+        }
+        return String(String.UnicodeScalarView(scalars))
+    }
+
+    var escapedParameters: [String: String] = [:]
+    for (key, value) in parameters {
+        escapedParameters[escape(key)] = escape("\(value)")
+    }
+    return escapedParameters
 }
