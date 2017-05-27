@@ -24,4 +24,16 @@ final class StandardErrorScrapingTests: XCTestCase {
         XCTAssertThrowsError(try scrapeFixture(named: "banlist") as StandardErrorScrapeResult)
         XCTAssertThrowsError(try scrapeFixture(named: "showthread") as StandardErrorScrapeResult)
     }
+
+    func testRequiresArchives() {
+        let scraped = try! scrapeFixture(named: "error-requires-archives") as StandardErrorScrapeResult
+        XCTAssert(scraped.title.contains("Senor Lowtax"))
+        XCTAssert(scraped.message.contains("archives upgrade"))
+    }
+
+    func testRequiresPlat() {
+        let scraped = try! scrapeFixture(named: "error-requires-plat") as StandardErrorScrapeResult
+        XCTAssert(scraped.title.contains("Senor Lowtax"))
+        XCTAssert(scraped.message.contains("only accessible to Platinum members"))
+    }
 }
