@@ -1081,20 +1081,11 @@ public final class ForumsClient {
     // MARK: Private Messages
 
     public func countUnreadPrivateMessagesInInbox() -> Promise<Int> {
-        guard let backgroundContext = backgroundManagedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
-
         return fetch(method: .get, urlString: "private.php", parameters: nil)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> Int in
-                let scraper = AwfulUnreadPrivateMessageCountScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-
-                return scraper.unreadPrivateMessageCount
+            .then(on: .global()) { (document) -> Int in
+                return try UnreadPrivateMessageCountScrapeResult(document).unreadPrivateMessageCount
         }
     }
 

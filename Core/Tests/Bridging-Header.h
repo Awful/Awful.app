@@ -8,7 +8,6 @@
 #import "AwfulPostsPageScraper.h"
 #import "AwfulScraper.h"
 #import "AwfulThreadListScraper.h"
-#import "AwfulUnreadPrivateMessageCountScraper.h"
 #import "LepersColonyPageScraper.h"
 #import "PrivateMessageFolderScraper.h"
 #import "PrivateMessageScraper.h"
