@@ -7,10 +7,24 @@
 //
 
 import Foundation
+import HTMLReader
 
 internal func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }
+
+
+internal extension HTMLNode {
+    var nextSibling: HTMLNode? {
+        guard let parent = parent else { return nil }
+
+        let i = parent.index(ofChild: self)
+        guard i != UInt(NSNotFound), i + 1 < parent.numberOfChildren else { return nil }
+
+        return parent.child(at: i + 1)
+    }
+}
+
 
 internal func makeScrapingDateFormatter(format: String) -> DateFormatter {
     let formatter = DateFormatter()
@@ -19,6 +33,7 @@ internal func makeScrapingDateFormatter(format: String) -> DateFormatter {
     formatter.dateFormat = format
     return formatter
 }
+
 
 internal extension Scanner {
     func scanCharacters(from cs: CharacterSet) -> String? {

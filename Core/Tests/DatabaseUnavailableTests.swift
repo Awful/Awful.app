@@ -2,27 +2,24 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
 private let fixture = fixtureNamed("database-unavailable")
 
-final class DatabaseUnavailableTests: ScrapingTestCase {
-    func testForumHierarchy() {
-        let scraper = AwfulForumHierarchyScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper.error);
-        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
+final class DatabaseUnavailableScrapingTests: XCTestCase {
+    func testDatabaseUnavailable() {
+        let scraped = try! scrapeFixture(named: "database-unavailable") as DatabaseUnavailableScrapeResult
+        XCTAssert(scraped.title.contains("Database Unavailable"))
+        XCTAssert(scraped.message.contains("currently not available"))
     }
-    
-    func testPostsPage() {
-        let scraper = AwfulPostsPageScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(fetchAll(Post.self, inContext: managedObjectContext).isEmpty)
+
+    func testNonError() {
+        XCTAssertThrowsError(try scrapeFixture(named: "forumdisplay") as DatabaseUnavailableScrapeResult)
+        XCTAssertThrowsError(try scrapeFixture(named: "profile") as DatabaseUnavailableScrapeResult)
     }
-    
-    func testThreadList() {
-        let scraper = AwfulThreadListScraper.scrape(fixture, into:managedObjectContext)
-        XCTAssertNotNil(scraper.error)
-        XCTAssertTrue(fetchAll(AwfulThread.self, inContext: managedObjectContext).isEmpty)
+
+    func testStandardError() {
+        XCTAssertThrowsError(try scrapeFixture(named: "error-must-register") as DatabaseUnavailableScrapeResult)
     }
 }

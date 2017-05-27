@@ -572,7 +572,7 @@ public final class ForumsClient {
             .then(on: backgroundContext) { (dataAndResponse, context)
                 -> (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?) in
                 let (data, response) = dataAndResponse
-                let document = parseHTML(data: data, response: response)
+                let document = try parseHTML(data: data, response: response)
                 let scraper = AwfulPostsPageScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -1279,12 +1279,14 @@ extension Operation: Cancellable {}
 extension URLSessionTask: Cancellable {}
 
 
-private func parseHTML(data: Data, response: URLResponse) -> HTMLDocument {
+private func parseHTML(data: Data, response: URLResponse) throws -> HTMLDocument {
     let contentType: String? = {
         guard let response = response as? HTTPURLResponse else { return nil }
         return response.allHeaderFields["Content-Type"] as? String
     }()
-    return HTMLDocument(data: data, contentTypeHeader: contentType)
+    let document = HTMLDocument(data: data, contentTypeHeader: contentType)
+    try checkServerErrors(document)
+    return document
 }
 
 private func parseJSONDict(data: Data, response: URLResponse) throws -> [String: Any] {
@@ -1320,5 +1322,28 @@ extension Promise {
                 }
             }
         }
+    }
+}
+
+
+enum ServerError: LocalizedError {
+    case databaseUnavailable(title: String, message: String)
+    case standard(title: String, message: String)
+
+    var errorDescription: String? {
+        switch self {
+        case .databaseUnavailable(title: _, message: let message),
+             .standard(title: _, message: let message):
+            return message
+        }
+    }
+}
+
+private func checkServerErrors(_ document: HTMLDocument) throws {
+    if let result = try? DatabaseUnavailableScrapeResult(document) {
+        throw ServerError.databaseUnavailable(title: result.title, message: result.message)
+    }
+    else if let result = try? StandardErrorScrapeResult(document) {
+        throw ServerError.standard(title: result.title, message: result.message)
     }
 }
