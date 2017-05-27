@@ -321,8 +321,7 @@ public final class ForumsClient {
             "threadid": thread.threadID]
 
         return fetch(method: .post, urlString: "threadrate.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
     }
 
     public func markThreadAsReadUpTo(_ post: Post) -> Promise<Void> {
@@ -338,8 +337,7 @@ public final class ForumsClient {
             "index": "\(post.threadIndex)"]
 
         return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
     }
 
     public func markUnread(_ thread: AwfulThread) -> Promise<Void> {
@@ -349,8 +347,7 @@ public final class ForumsClient {
             "json": "1"]
 
         return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
     }
 
     public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<AwfulForm> {
@@ -834,7 +831,7 @@ public final class ForumsClient {
                 return parameters
             }
             .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
-            .then { _ in return () }
+            .asVoid()
     }
 
     /**
@@ -959,8 +956,7 @@ public final class ForumsClient {
             "comments": String(reason.characters.prefix(60))]
 
         return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
             .recover { (error) -> Promise<Void> in
                 print("error reporting post \(post.postID): \(error)")
                 return Promise(value: ())
@@ -1139,8 +1135,7 @@ public final class ForumsClient {
             "delete": "yes"]
 
         return fetch(method: .post, urlString: "private.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
     }
 
     public func readPrivateMessage(identifiedBy messageKey: PrivateMessageKey) -> Promise<PrivateMessage> {
@@ -1262,8 +1257,7 @@ public final class ForumsClient {
         }
 
         return fetch(method: .post, urlString: "private.php", parameters: parameters)
-            .promise
-            .then { _ in return () }
+            .promise.asVoid()
     }
 }
 
