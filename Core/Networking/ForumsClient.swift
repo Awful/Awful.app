@@ -6,17 +6,14 @@
 //  Copyright © 2017 Awful Contributors. All rights reserved.
 //
 
-import AFNetworking
 import CoreData
 import Foundation
 import HTMLReader
-import OMGHTTPURLRQ
 import PromiseKit
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    private var urlSession: URLSession?
-    private var redirectBlocks: [Int: SessionDelegate.WillRedirectCallback] = [:]
+    private var urlSession: ForumsURLSession?
     private var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
 
@@ -25,48 +22,7 @@ public final class ForumsClient {
 
     /// Convenient singleton.
     public static let shared = ForumsClient()
-    
-    private init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(networkOperationDidStart), name: .AFNetworkingOperationDidFinish, object: nil)
-    }
-    
-    deinit {
-        urlSession?.invalidateAndCancel()
-    }
-
-    @objc private func networkOperationDidStart(_ notification: Notification) {
-        guard
-            isLoggedIn,
-            let op = notification.object as? AFURLConnectionOperation,
-            let url = op.request.url,
-            let baseURL = baseURL,
-            url.absoluteString.hasPrefix(baseURL.absoluteString)
-            else { return }
-
-        NotificationCenter.default.addObserver(self, selector: #selector(networkOperationDidFinish), name: .AFNetworkingOperationDidFinish, object: op)
-    }
-
-    @objc private func networkOperationDidFinish(_ notification: Notification) {
-        guard let op = notification.object as? AFHTTPRequestOperation else { return }
-
-        if op.error == nil && !isLoggedIn {
-            didRemotelyLogOut?()
-        }
-    }
-
-    private class SessionDelegate: NSObject, URLSessionTaskDelegate {
-        private let willRedirect: WillRedirectCallback
-
-        typealias WillRedirectCallback = (_ task: URLSessionTask, _ response: HTTPURLResponse, _ newRequest: URLRequest) -> URLRequest?
-
-        init(willRedirect: @escaping WillRedirectCallback) {
-            self.willRedirect = willRedirect
-        }
-
-        func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
-            completionHandler(willRedirect(task, response, request))
-        }
-    }
+    private init() {}
 
     /**
      The Forums endpoint for the client. Typically https://forums.somethingawful.com
@@ -76,32 +32,7 @@ public final class ForumsClient {
     public var baseURL: URL? {
         didSet {
             guard oldValue != baseURL else { return }
-
-            urlSession?.invalidateAndCancel()
-            urlSession = nil
-            redirectBlocks.removeAll()
-
-            guard baseURL != nil else { return }
-
-            let config: URLSessionConfiguration = {
-                let config = URLSessionConfiguration.default
-                var headers = config.httpAdditionalHeaders ?? [:]
-                headers["User-Agent"] = OMGUserAgent()
-                config.httpAdditionalHeaders = headers
-                return config
-            }()
-
-            let willRedirect = { [unowned self] (task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? in
-                if let block = self.redirectBlocks[task.taskIdentifier] {
-                    return block(task, response, newRequest)
-                }
-                else {
-                    return newRequest
-                }
-            }
-
-            let delegate = SessionDelegate(willRedirect: willRedirect)
-            urlSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+            urlSession = baseURL.map(ForumsURLSession.init)
         }
     }
 
@@ -157,7 +88,7 @@ public final class ForumsClient {
 
     private var loginCookie: HTTPCookie? {
         return baseURL
-            .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
+            .flatMap { urlSession?.httpCookieStorage?.cookies(for: $0) }?
             .first { $0.name == "bbuserid" }
     }
 
@@ -180,68 +111,26 @@ public final class ForumsClient {
         case unexpectedContentType(String, expected: String)
     }
 
-    fileprivate enum Method: String {
-        case get = "GET"
-        case post = "POST"
-    }
-
     private func fetch(
-        method: Method,
+        method: ForumsURLSession.Method,
         urlString: String,
         parameters: [String: Any]?,
-        redirectBlock: SessionDelegate.WillRedirectCallback? = nil)
-        -> (promise: Promise<(Data, URLResponse)>, cancellable: Cancellable)
+        redirectBlock: ForumsURLSession.WillRedirectCallback? = nil)
+        -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable)
     {
-        guard let baseURL = baseURL, let urlSession = urlSession else {
+        guard let urlSession = urlSession else {
             return (Promise(error: PromiseError.missingURLSession), Operation())
         }
 
-        guard let url = URL(string: urlString, relativeTo: baseURL) else {
-            return (Promise(error: PromiseError.invalidBaseURL), Operation())
-        }
+        let tuple = urlSession.fetch(method: method, urlString: urlString, parameters: parameters, redirectBlock: redirectBlock)
 
-        let parameters = parameters.map(win1252Escaped)
-
-        let request: URLRequest
-        do {
-            switch method {
-            case .get: request = try OMGHTTPURLRQ.get(url.absoluteString, parameters) as URLRequest
-            case .post: request = try OMGHTTPURLRQ.post(url.absoluteString, parameters) as URLRequest
-            }
-        }
-        catch {
-            return (Promise(error: error), Operation())
-        }
-
-        let (promise, fulfill, reject) = Promise<(Data, URLResponse)>.pending()
-
-        let task = urlSession.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                return reject(error)
-            }
-
-            guard let data = data, let response = response else {
-                return reject(PromiseError.missingDataAndError)
-            }
-
-            fulfill((data, response))
-        }
-
-        if let redirectBlock = redirectBlock {
-            redirectBlocks[task.taskIdentifier] = redirectBlock
-        }
-
-        task.resume()
-
-        _ = promise.then { (data, response) -> Void in
-            self.redirectBlocks.removeValue(forKey: task.taskIdentifier)
-
+        _ = tuple.promise.then { (data, response) -> Void in
             if !self.isLoggedIn, let block = self.didRemotelyLogOut {
                 DispatchQueue.main.async(execute: block)
             }
         }
 
-        return (promise: promise, cancellable: task)
+        return tuple
     }
 
     // MARK: Forums Session
@@ -1448,35 +1337,4 @@ extension Promise {
             }
         }
     }
-}
-
-
-/// Turns parameter values into strings, then turns everything in parameter key/values outside win1252 into HTML entities.
-private func win1252Escaped(_ parameters: [String: Any]) -> [String: String] {
-    func iswin1252(c: UnicodeScalar) -> Bool {
-        // http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit1252.txt
-        switch c.value {
-        case 0...0x7f, 0x81, 0x8d, 0x8f, 0x90, 0x9d, 0xa0...0xff, 0x152, 0x153, 0x160, 0x161, 0x178, 0x17d, 0x17e, 0x192, 0x2c6, 0x2dc, 0x2013, 0x2014, 0x2018...0x201a, 0x201c...0x201e, 0x2020...0x2022, 0x2026, 0x2030, 0x2039, 0x203a, 0x20ac, 0x2122:
-            return true
-        default:
-            return false
-        }
-    }
-
-    func escape(_ s: String) -> String {
-        let scalars = s.unicodeScalars.flatMap { (c: UnicodeScalar) -> [UnicodeScalar] in
-            if iswin1252(c: c) {
-                return [c]
-            } else {
-                return Array("&#\(c.value);".unicodeScalars)
-            }
-        }
-        return String(String.UnicodeScalarView(scalars))
-    }
-
-    var escapedParameters: [String: String] = [:]
-    for (key, value) in parameters {
-        escapedParameters[escape(key)] = escape("\(value)")
-    }
-    return escapedParameters
 }
