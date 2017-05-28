@@ -9,6 +9,21 @@
 import CoreData
 
 internal extension AuthorSidebarScrapeResult {
+    func update(_ user: User) {
+        if isAdministrator != user.administrator { user.administrator = isAdministrator }
+        if customTitle.rawValue != user.customTitleHTML { user.customTitleHTML = customTitle.rawValue }
+        if isModerator != user.moderator { user.moderator = isModerator }
+        if let regdate = regdate, user.regdate as Date? != regdate { user.regdate = regdate as NSDate }
+        if !userID.isEmpty, userID.rawValue != user.userID { user.userID = userID.rawValue }
+        if !username.isEmpty, username != user.username { user.username = username }
+
+        var allAuthorClasses = additionalAuthorClasses
+        if isAdministrator { allAuthorClasses.insert("role-admin") }
+        if isModerator { allAuthorClasses.insert("role-mod") }
+        let authorClasses = allAuthorClasses.sorted().joined(separator: " ")
+        if authorClasses != user.authorClasses { user.authorClasses = authorClasses }
+    }
+
     func upsert(into context: NSManagedObjectContext) throws -> User {
         let request = NSFetchRequest<User>(entityName: User.entityName())
 
@@ -29,18 +44,7 @@ internal extension AuthorSidebarScrapeResult {
         let users = try context.fetch(request)
         let user = users.isEmpty ? User.insertIntoManagedObjectContext(context: context) : merge(users)
 
-        if isAdministrator != user.administrator { user.administrator = isAdministrator }
-        if customTitle.rawValue != user.customTitleHTML { user.customTitleHTML = customTitle.rawValue }
-        if isModerator != user.moderator { user.moderator = isModerator }
-        if let regdate = regdate, user.regdate as Date? != regdate { user.regdate = regdate as NSDate }
-        if !userID.isEmpty, userID.rawValue != user.userID { user.userID = userID.rawValue }
-        if !username.isEmpty, username != user.username { user.username = username }
-
-        var allAuthorClasses = additionalAuthorClasses
-        if isAdministrator { allAuthorClasses.insert("role-admin") }
-        if isModerator { allAuthorClasses.insert("role-mod") }
-        let authorClasses = allAuthorClasses.sorted().joined(separator: " ")
-        if authorClasses != user.authorClasses { user.authorClasses = authorClasses }
+        update(user)
 
         return user
     }

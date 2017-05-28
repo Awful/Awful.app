@@ -9,6 +9,16 @@
 import CoreData
 
 internal extension PrivateMessageScrapeResult {
+    func update(_ message: PrivateMessage) {
+        if body.rawValue != message.innerHTML { message.innerHTML = body.rawValue }
+        if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
+        if privateMessageID.rawValue != message.messageID { message.messageID = privateMessageID.rawValue }
+        if let sentDate = sentDate, sentDate != message.sentDate as Date? { message.sentDate = sentDate as NSDate }
+        if subject != message.subject { message.subject = subject }
+        if wasForwarded != message.forwarded { message.forwarded = wasForwarded }
+        if wasRepliedTo != message.replied { message.replied = wasRepliedTo }
+    }
+
     func upsert(into context: NSManagedObjectContext) throws -> PrivateMessage {
         let request = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
         request.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessage.messageID), privateMessageID.rawValue)
@@ -17,15 +27,10 @@ internal extension PrivateMessageScrapeResult {
         let message = try context.fetch(request).first
             ?? PrivateMessage.insertIntoManagedObjectContext(context: context)
 
-        if body.rawValue != message.innerHTML { message.innerHTML = body.rawValue }
         let from = author.flatMap { try? $0.upsert(into: context) }
         if from != message.from { message.from = from }
-        if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
-        if privateMessageID.rawValue != message.messageID { message.messageID = privateMessageID.rawValue }
-        if let sentDate = sentDate, sentDate != message.sentDate as Date? { message.sentDate = sentDate as NSDate }
-        if subject != message.subject { message.subject = subject }
-        if wasForwarded != message.forwarded { message.forwarded = wasForwarded }
-        if wasRepliedTo != message.replied { message.replied = wasRepliedTo }
+
+        update(message)
 
         return message
     }

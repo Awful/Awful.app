@@ -9,19 +9,9 @@
 import CoreData
 
 internal extension ProfileScrapeResult {
-    func upsert(into context: NSManagedObjectContext) throws -> Profile {
-        let user = try author.upsert(into: context)
-
-        let profile: Profile = {
-            if let profile = user.profile { return profile }
-            let newProfile = Profile.insertIntoManagedObjectContext(context: context)
-            user.profile = newProfile
-            return newProfile
-        }()
-
+    func update(_ profile: Profile) {
         if about.rawValue != profile.aboutMe { profile.aboutMe = about.rawValue }
         if aimName != profile.aimName { profile.aimName = aimName }
-        if canReceivePrivateMessages != user.canReceivePrivateMessages { user.canReceivePrivateMessages = canReceivePrivateMessages }
         if gender != profile.gender { profile.gender = gender }
         if homepage != profile.homepageURL as URL? { profile.homepageURL = homepage as NSURL? }
         if icqName != profile.icqName { profile.icqName = icqName }
@@ -33,6 +23,20 @@ internal extension ProfileScrapeResult {
         if postRate != profile.postRate { profile.postRate = postRate }
         if profilePicture != profile.profilePictureURL as URL? { profile.profilePictureURL = profilePicture as NSURL? }
         if yahooName != profile.yahooName { profile.yahooName = yahooName }
+    }
+
+    func upsert(into context: NSManagedObjectContext) throws -> Profile {
+        let user = try author.upsert(into: context)
+        if canReceivePrivateMessages != user.canReceivePrivateMessages { user.canReceivePrivateMessages = canReceivePrivateMessages }
+
+        let profile: Profile = {
+            if let profile = user.profile { return profile }
+            let newProfile = Profile.insertIntoManagedObjectContext(context: context)
+            user.profile = newProfile
+            return newProfile
+        }()
+
+        update(profile)
 
         return profile
     }
