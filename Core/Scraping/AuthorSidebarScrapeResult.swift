@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import HTMLReader
 
 /// Scrapes the sidebar with author info that appears alongside posts, private messages, and user profiles.
 public struct AuthorSidebarScrapeResult: ScrapeResult {

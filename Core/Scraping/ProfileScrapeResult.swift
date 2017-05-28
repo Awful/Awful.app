@@ -6,6 +6,7 @@
 //  Copyright © 2017 Awful Contributors. All rights reserved.
 //
 
+import Foundation
 import HTMLReader
 
 public struct ProfileScrapeResult: ScrapeResult {
