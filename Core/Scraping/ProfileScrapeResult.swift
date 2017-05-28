@@ -10,28 +10,20 @@ import HTMLReader
 
 public struct ProfileScrapeResult: ScrapeResult {
     public let about: RawHTML
-    public var additionalAuthorClasses: Set<String> { return author.additionalAuthorClasses }
     public let aimName: String
+    public let author: AuthorSidebarScrapeResult
     public let canReceivePrivateMessages: Bool
-    public var customTitle: RawHTML { return author.customTitle }
     public let gender: String
     public let homepage: URL?
     public let icqName: String
     public let interests: String
-    public var isAdministrator: Bool { return author.isAdministrator }
-    public var isModerator: Bool { return author.isModerator }
     public let lastPostDate: Date?
     public let location: String
     public let occupation: String
     public let postCount: Int?
     public let postRate: String
     public let profilePicture: URL?
-    public var regdate: Date? { return author.regdate }
-    public var userID: UserID { return author.userID }
-    public var username: String { return author.username }
     public let yahooName: String
-
-    private let author: AuthorSidebarScrapeResult
 
     public init(_ html: HTMLNode) throws {
         author = try AuthorSidebarScrapeResult(html)
@@ -49,10 +41,11 @@ public struct ProfileScrapeResult: ScrapeResult {
                 }
                 ?? ""
 
-            about = RawHTML(rawValue: infoCell
+            about = infoCell
                 .flatMap { $0.firstNode(matchingSelector: "p:nth-of-type(2)") }
                 .map { $0.innerHTML }
-                ?? "")
+                .map(RawHTML.init)
+                ?? .empty
         }
 
         do {
@@ -139,14 +132,4 @@ public struct ProfileScrapeResult: ScrapeResult {
 
 private func containsContactInfo(_ dd: HTMLElement) -> Bool {
     return dd.firstNode(matchingSelector: "span.unset") == nil
-}
-
-
-private let postDate24HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy h:mm a")
-private let postDate12HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy HH:mm")
-
-
-private func parsePostDate(_ string: String) -> Date? {
-    return postDate24HourFormatter.date(from: string)
-        ?? postDate12HourFormatter.date(from: string)
 }

@@ -35,6 +35,16 @@ internal func makeScrapingDateFormatter(format: String) -> DateFormatter {
 }
 
 
+
+private let postDate24HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy h:mm a")
+private let postDate12HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy HH:mm")
+
+internal func parsePostDate(_ string: String) -> Date? {
+    return postDate24HourFormatter.date(from: string)
+        ?? postDate12HourFormatter.date(from: string)
+}
+
+
 internal extension Scanner {
     func scanCharacters(from cs: CharacterSet) -> String? {
         var result: NSString?

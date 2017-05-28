@@ -8,10 +8,10 @@ import XCTest
 final class ProfileScrapingTests: XCTestCase {
     func testWithAvatarAndText() {
         let scraped = try! scrapeFixture(named: "profile") as ProfileScrapeResult
-        XCTAssertEqual(scraped.userID.rawValue, "106125")
-        XCTAssertEqual(scraped.username, "pokeyman")
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "play?"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "title-pokeyman"))
+        XCTAssertEqual(scraped.author.userID, UserID(rawValue: "106125"))
+        XCTAssertEqual(scraped.author.username, "pokeyman")
+        XCTAssert(scraped.author.customTitle.rawValue.contains("play?"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("title-pokeyman"))
         XCTAssert(scraped.canReceivePrivateMessages)
         XCTAssertEqual(scraped.icqName, "1234")
         XCTAssert(scraped.aimName.isEmpty)
@@ -26,31 +26,31 @@ final class ProfileScrapingTests: XCTestCase {
     func testWithAvatarAndGangTag() {
         let scraped = try! scrapeFixture(named: "profile2") as ProfileScrapeResult
         XCTAssertEqual(scraped.location, "San Francisco")
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "safs/titles"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "dd/68"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "01/df"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("safs/titles"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("dd/68"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("01/df"))
     }
     
     func testWithFunkyText() {
         let scraped = try! scrapeFixture(named: "profile3") as ProfileScrapeResult
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "<i>"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "I'm getting at is"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "safs/titles"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("<i>"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("I'm getting at is"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("safs/titles"))
     }
     
     func testWithNoAvatarOrTitle() {
         let scraped = try! scrapeFixture(named: "profile4") as ProfileScrapeResult
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "<br"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("<br"))
     }
     
     func testStupidNewbie() {
         let scraped = try! scrapeFixture(named: "profile5") as ProfileScrapeResult
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "newbie.gif"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("newbie.gif"))
     }
     
     func testWithGangTagButNoAvatar() {
         let scraped = try! scrapeFixture(named: "profile6") as ProfileScrapeResult
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "i am winner"))
-        XCTAssertNotNil(scraped.customTitle.rawValue.range(of: "tccburnouts.png"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("i am winner"))
+        XCTAssert(scraped.author.customTitle.rawValue.contains("tccburnouts.png"))
     }
 }

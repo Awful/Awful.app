@@ -1144,20 +1144,11 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> NSManagedObjectID in
-                let scraper = PrivateMessageScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-
-                guard let privateMessage = scraper.privateMessage else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find message"])
-                }
-
+            .then(on: .global(), execute: PrivateMessageScrapeResult.init)
+            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+                let message = try scrapeResult.upsert(into: context)
                 try context.save()
-
-                return privateMessage.objectID
+                return message.objectID
             }
             .then(on: mainContext) { (objectID, context) -> PrivateMessage in
                 guard let privateMessage = context.object(with: objectID) as? PrivateMessage else {

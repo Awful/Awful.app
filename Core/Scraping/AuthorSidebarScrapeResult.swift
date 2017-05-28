@@ -9,16 +9,16 @@
 import Foundation
 
 /// Scrapes the sidebar with author info that appears alongside posts, private messages, and user profiles.
-internal struct AuthorSidebarScrapeResult: ScrapeResult {
-    let additionalAuthorClasses: Set<String>
-    let customTitle: RawHTML
-    let isAdministrator: Bool
-    let isModerator: Bool
-    let regdate: Date?
-    let userID: UserID
-    let username: String
+public struct AuthorSidebarScrapeResult: ScrapeResult {
+    public let additionalAuthorClasses: Set<String>
+    public let customTitle: RawHTML
+    public let isAdministrator: Bool
+    public let isModerator: Bool
+    public let regdate: Date?
+    public let userID: UserID
+    public let username: String
 
-    init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode) throws {
         if
             let profileLink = html.firstNode(matchingSelector: "ul.profilelinks a[href *= 'userid']"),
             let href = profileLink["href"],
