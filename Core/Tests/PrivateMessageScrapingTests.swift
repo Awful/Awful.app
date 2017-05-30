@@ -32,7 +32,7 @@ final class PrivateMessageScrapingTests: XCTestCase {
         XCTAssert(!result.wasRepliedTo)
         XCTAssert(!result.wasForwarded)
         XCTAssertEqual(result.sentDate?.timeIntervalSince1970, 1352408160)
-        XCTAssert(result.body.rawValue.contains("awesome app"))
+        XCTAssert(result.body.contains("awesome app"))
         XCTAssertEqual(result.author?.userID, UserID(rawValue: "47395"))
         XCTAssertEqual(result.author?.username, "InFlames235")
         XCTAssertEqual(result.author?.regdate?.timeIntervalSince1970, 1073952000)

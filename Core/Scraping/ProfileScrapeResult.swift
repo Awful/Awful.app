@@ -45,8 +45,7 @@ public struct ProfileScrapeResult: ScrapeResult {
             about = infoCell
                 .flatMap { $0.firstNode(matchingSelector: "p:nth-of-type(2)") }
                 .map { $0.innerHTML }
-                .map(RawHTML.init)
-                ?? .empty
+                ?? ""
         }
 
         do {

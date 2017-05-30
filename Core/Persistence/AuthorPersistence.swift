@@ -11,10 +11,10 @@ import CoreData
 internal extension AuthorSidebarScrapeResult {
     func update(_ user: User) {
         if isAdministrator != user.administrator { user.administrator = isAdministrator }
-        if customTitle.rawValue != user.customTitleHTML { user.customTitleHTML = customTitle.rawValue }
+        if customTitle != user.customTitleHTML { user.customTitleHTML = customTitle }
         if isModerator != user.moderator { user.moderator = isModerator }
         if let regdate = regdate, user.regdate as Date? != regdate { user.regdate = regdate as NSDate }
-        if !userID.isEmpty, userID.rawValue != user.userID { user.userID = userID.rawValue }
+        if userID.rawValue != user.userID { user.userID = userID.rawValue }
         if !username.isEmpty, username != user.username { user.username = username }
 
         var allAuthorClasses = additionalAuthorClasses
@@ -28,10 +28,8 @@ internal extension AuthorSidebarScrapeResult {
         let request = NSFetchRequest<User>(entityName: User.entityName())
 
         request.predicate = {
-            var subpredicates: [NSPredicate] = []
-            if !userID.isEmpty {
-                subpredicates.append(NSPredicate(format: "%K = %@", #keyPath(User.userID), userID.rawValue))
-            }
+            var subpredicates: [NSPredicate] = [
+                NSPredicate(format: "%K = %@", #keyPath(User.userID), userID.rawValue)]
             if !username.isEmpty {
                 subpredicates.append(NSPredicate(format: "%K = %@", #keyPath(User.username), username))
             }

@@ -25,12 +25,12 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
             let href = replyLink["href"],
             let components = URLComponents(string: href),
             let messageIDPair = components.queryItems?.first(where: { $0.name == "privatemessageid" }),
-            let privateMessageID = messageIDPair.value,
-            !privateMessageID.isEmpty else
+            let rawID = messageIDPair.value,
+            let privateMessageID = PrivateMessageID(rawValue: rawID) else
         {
             throw ScrapingError.missingRequiredValue("privatemessageid")
         }
-        self.privateMessageID = PrivateMessageID(rawValue: privateMessageID)
+        self.privateMessageID = privateMessageID
 
         author = try? AuthorSidebarScrapeResult(html)
 
@@ -56,7 +56,6 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
 
         body = html.firstNode(matchingSelector: "td.postbody")
             .map { $0.innerHTML }
-            .map(RawHTML.init)
-            ?? .empty
+            ?? ""
     }
 }

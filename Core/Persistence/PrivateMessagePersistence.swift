@@ -10,7 +10,7 @@ import CoreData
 
 internal extension PrivateMessageScrapeResult {
     func update(_ message: PrivateMessage) {
-        if body.rawValue != message.innerHTML { message.innerHTML = body.rawValue }
+        if body != message.innerHTML { message.innerHTML = body }
         if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
         if privateMessageID.rawValue != message.messageID { message.messageID = privateMessageID.rawValue }
         if let sentDate = sentDate, sentDate != message.sentDate as Date? { message.sentDate = sentDate as NSDate }

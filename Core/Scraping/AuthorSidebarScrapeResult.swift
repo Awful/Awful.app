@@ -25,9 +25,10 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             let href = profileLink["href"],
             let components = URLComponents(string: href),
             let userIDItem = components.queryItems?.first(where: { $0.name == "userid" }),
-            let userID = userIDItem.value
+            let rawID = userIDItem.value,
+            let userID = UserID(rawValue: rawID)
         {
-            self.userID = UserID(rawValue: userID)
+            self.userID = userID
         }
         else if
             let userInfo = html.firstNode(matchingSelector: "td.userinfo"),
@@ -38,20 +39,17 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
         }
         else if
             let userIDInput = html.firstNode(matchingSelector: "input[name = 'userid']"),
-            let userID = userIDInput["value"]
+            let rawID = userIDInput["value"],
+            let userID = UserID(rawValue: rawID)
         {
-            self.userID = UserID(rawValue: userID)
+            self.userID = userID
         }
         else {
-            userID = UserID(rawValue: "")
+            throw ScrapingError.missingRequiredValue("userID")
         }
 
         let authorTerm = html.firstNode(matchingSelector: "dt.author")
         username = authorTerm?.textContent ?? ""
-
-        if userID.isEmpty, username.isEmpty {
-            throw ScrapingError.missingRequiredValue("userID or username")
-        }
 
         var classes = Set((authorTerm?["class"] ?? "")
             .components(separatedBy: .whitespacesAndNewlines))
@@ -64,13 +62,13 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             .map { $0.textContent }
             .flatMap(regdateFormatter.date)
 
-        customTitle = RawHTML(rawValue: html
+        customTitle = html
             .firstNode(matchingSelector: "dl.userinfo dd.title")
             .flatMap { $0.children.array as? [HTMLNode] }?
             .filter { !isSuperfluousLineBreak($0) }
             .map { $0.serializedFragment }
             .joined()
-            ?? "")
+            ?? ""
     }
 }
 
@@ -82,8 +80,11 @@ private func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
 private func parseUserID(_ htmlClass: String) -> UserID? {
     let scanner = Scanner.awful_scanner(with: htmlClass)
     while scanner.scanUpToAndPast("userid-") {
-        if let id = scanner.scanCharacters(from: .decimalDigits) {
-            return UserID(rawValue: id)
+        if
+            let id = scanner.scanCharacters(from: .decimalDigits),
+            let userID = UserID(rawValue: id)
+        {
+            return userID
         }
     }
     return nil

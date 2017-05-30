@@ -10,7 +10,7 @@ import CoreData
 
 internal extension ProfileScrapeResult {
     func update(_ profile: Profile) {
-        if about.rawValue != profile.aboutMe { profile.aboutMe = about.rawValue }
+        if about != profile.aboutMe { profile.aboutMe = about }
         if aimName != profile.aimName { profile.aimName = aimName }
         if gender != profile.gender { profile.gender = gender }
         if homepage != profile.homepageURL as URL? { profile.homepageURL = homepage as NSURL? }
