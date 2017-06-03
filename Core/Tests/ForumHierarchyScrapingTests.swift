@@ -2,51 +2,58 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
-final class ForumHierarchyScrapingTests: ScrapingTestCase {
-    override class func scraperClass() -> AnyClass {
-        return AwfulForumHierarchyScraper.self
-    }
-    
+final class ForumHierarchyScrapingTests: XCTestCase {
     func testHierarchy() {
-        let _ = scrapeFixtureNamed("forumdisplay") as! AwfulForumHierarchyScraper
-        let groups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        let groupNames = groups.map{$0.name!}.sorted()
+        let result = try! scrapeFixture(named: "forumdisplay") as ForumHierarchyScrapeResult
+
+        let groups = result.nodes.filter { $0.depth == 0 }
+        let groupNames = groups.map{ $0.name }.sorted()
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
-        XCTAssertTrue(fetchAll(Forum.self, inContext: managedObjectContext).count == 66)
-        
-        let EN = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name BEGINSWITH 'E/N'"))!
-        XCTAssert(EN.forumID == "214")
-        XCTAssert(EN.name == "E/N Bullshit")
-        let GBS = EN.parentForum!
-        XCTAssert(GBS.forumID == "1")
-        XCTAssert(GBS.name == "General Bullshit")
-        let main = GBS.group!
-        XCTAssert(main.groupID == "48")
-        XCTAssert(main.name == "Main")
-        XCTAssert(EN.group == main)
-        
-        let gameRoom = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '103'"))!
-        XCTAssert(gameRoom.name == "The Game Room")
-        let traditionalGames = gameRoom.parentForum!
-        XCTAssert(traditionalGames.forumID == "234")
-        XCTAssert(traditionalGames.name == "Traditional Games")
-        let games = traditionalGames.parentForum!
-        XCTAssert(games.forumID == "44")
-        XCTAssert(games.name == "Games")
-        let discussion = games.group!
-        XCTAssert(discussion.groupID == "51")
-        XCTAssert(discussion.name == "Discussion")
-        XCTAssert(traditionalGames.group == discussion)
-        XCTAssert(gameRoom.group == discussion)
+
+        let forums = result.nodes.filter { $0.depth > 0 }
+        XCTAssertEqual(forums.count, 66)
+
+        let en = forums.first { $0.name.hasPrefix("E/N") }!
+        XCTAssertEqual(en.id.rawValue, "214")
+        XCTAssertEqual(en.name, "E/N Bullshit")
+        XCTAssertEqual(en.depth, 2)
+
+        let gbs = forums[forums.index(of: en)! - 2]
+        XCTAssertEqual(gbs.id.rawValue, "1")
+        XCTAssertEqual(gbs.name, "General Bullshit")
+        XCTAssertEqual(gbs.depth, en.depth - 1)
+
+        let main = groups[0]
+        XCTAssertEqual(main.id.rawValue, "48")
+        XCTAssertEqual(main.name, "Main")
+        XCTAssertEqual(main.depth, gbs.depth - 1)
+
+        let gameRoom = forums.first { $0.id.rawValue == "103"}!
+        XCTAssertEqual(gameRoom.name, "The Game Room")
+        XCTAssertEqual(gameRoom.depth, 3)
+
+        let traditionalGames = forums[forums.index(of: gameRoom)! - 1]
+        XCTAssertEqual(traditionalGames.id.rawValue, "234")
+        XCTAssertEqual(traditionalGames.name, "Traditional Games")
+        XCTAssertEqual(traditionalGames.depth, gameRoom.depth - 1)
+
+        let games = forums[forums.index(of: traditionalGames)! - 7]
+        XCTAssertEqual(games.id.rawValue, "44")
+        XCTAssertEqual(games.name, "Games")
+        XCTAssertEqual(games.depth, traditionalGames.depth - 1)
+
+        let discussion = groups[1]
+        XCTAssertEqual(discussion.id.rawValue, "51")
+        XCTAssertEqual(discussion.name, "Discussion")
     }
     
     /// This is a thing that can happen sometimes, and it made the app crash.
     func testDropdownOnlyHasSections() {
-        let document = fixtureNamed("forumdisplay3")
-        let scraper = AwfulForumHierarchyScraper.scrape(document, into: managedObjectContext)
-        XCTAssert(scraper.error != nil)
+        let result = try! scrapeFixture(named: "forumdisplay3") as ForumHierarchyScrapeResult
+        let forums = result.nodes.filter { $0.depth > 0 }
+        XCTAssert(forums.isEmpty)
     }
 }

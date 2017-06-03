@@ -97,7 +97,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { (text) -> String? in
                     let scanner = Scanner.awful_scanner(with: text)
                     guard scanner.scanFloat(nil) else { return nil }
-                    return String(scanner.string.utf16.prefix(scanner.scanLocation))
+                    return scanner.scanned
                 }
                 ?? ""
 

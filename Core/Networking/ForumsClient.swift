@@ -176,19 +176,10 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: ["forumid": "48"])
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
-                let scraper = AwfulForumHierarchyScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-
-                guard let forums = scraper.forums else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Couldn't find forums"])
-                }
-
+            .then(on: .global(), execute: ForumHierarchyScrapeResult.init)
+            .then(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
+                let forums = try scrapeResult.upsert(into: context)
                 try context.save()
-
                 return forums.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [Forum] in

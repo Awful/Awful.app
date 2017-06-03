@@ -49,6 +49,14 @@ internal func parsePostDate(_ string: String) -> Date? {
 
 
 internal extension Scanner {
+    var remainder: String {
+        return String(string.utf16.dropFirst(scanLocation)) ?? ""
+    }
+
+    var scanned: String {
+        return String(string.utf16.prefix(scanLocation)) ?? ""
+    }
+
     func scanCharacters(from cs: CharacterSet) -> String? {
         var result: NSString?
         guard scanCharacters(from: cs, into: &result) else { return nil }

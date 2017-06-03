@@ -40,7 +40,6 @@
 		1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C35FB7A1832A5A900B52724 /* AwfulForm.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C01A94C4A60045DDF7 /* AuthorScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EAC182EB37A00785766 /* AuthorScraper.h */; };
 		1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */; };
-		1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985B18297255003DBBC2 /* AwfulScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -49,7 +48,6 @@
 		1C14A4CA1A94C4A60045DDF7 /* PrivateMessageFolderScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4CE1A94C4BF0045DDF7 /* AuthorScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EAD182EB37A00785766 /* AuthorScraper.m */; };
 		1C14A4CF1A94C4BF0045DDF7 /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
-		1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
 		1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */; };
 		1C14A4D21A94C4BF0045DDF7 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
 		1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
@@ -110,6 +108,7 @@
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
+		1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -547,6 +546,7 @@
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
+		1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapeResult.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -666,8 +666,6 @@
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapingTests.swift; sourceTree = "<group>"; };
-		1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHierarchyScraper.h; sourceTree = "<group>"; };
-		1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHierarchyScraper.m; sourceTree = "<group>"; };
 		1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapingTests.swift; sourceTree = "<group>"; };
 		1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6D2EAC182EB37A00785766 /* AuthorScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorScraper.h; sourceTree = "<group>"; };
@@ -1002,8 +1000,6 @@
 				1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */,
 				1C35FB7A1832A5A900B52724 /* AwfulForm.h */,
 				1C35FB7B1832A5A900B52724 /* AwfulForm.m */,
-				1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */,
-				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
 				1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */,
 				1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */,
 				1CFE985B18297255003DBBC2 /* AwfulScanner.h */,
@@ -1014,6 +1010,7 @@
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 				1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */,
 				1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */,
+				1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */,
 				1CF0F8E11ED8F43400C16099 /* Helpers.swift */,
 				1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */,
 				1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */,
@@ -1751,7 +1748,6 @@
 				1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */,
 				1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */,
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
-				1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */,
 				1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */,
 				1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */,
 				1C14A4C01A94C4A60045DDF7 /* AuthorScraper.h in Headers */,
@@ -2482,6 +2478,7 @@
 				1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */,
 				1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */,
 				1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */,
+				1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */,
 				1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */,
 				1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */,
 				1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */,
@@ -2503,7 +2500,6 @@
 				1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */,
 				1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */,
 				1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */,
-				1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */,
 				1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */,
 				1C14A4B41A94C0B50045DDF7 /* Forum.swift in Sources */,
