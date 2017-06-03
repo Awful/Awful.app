@@ -1,10 +1,6 @@
-//
 //  SettingsSliderCell.swift
-//  Awful
 //
-//  Created by Liam Westby on 9/24/16.
-//  Copyright © 2016 Awful Contributors. All rights reserved.
-//
+//  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
 import UIKit

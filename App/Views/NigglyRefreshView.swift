@@ -1,10 +1,6 @@
-//
 //  NigglyRefreshView.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2016-06-22.
-//  Copyright © 2016 Awful Contributors. All rights reserved.
-//
+//  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import PullToRefresh
 import SpriteKit

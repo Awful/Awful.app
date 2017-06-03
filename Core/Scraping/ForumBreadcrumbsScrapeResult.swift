@@ -1,10 +1,6 @@
-//
 //  ForumBreadcrumbsScrapeResult.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2017-05-28.
-//  Copyright © 2017 Awful Contributors. All rights reserved.
-//
+//  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import HTMLReader
 

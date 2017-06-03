@@ -1,10 +1,6 @@
-//
 //  NSString+Undeprecation.m
-//  Awful
 //
-//  Created by Nolan Waite on 2016-12-24.
-//  Copyright © 2016 Awful Contributors. All rights reserved.
-//
+//  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "NSString+Undeprecation.h"
 
