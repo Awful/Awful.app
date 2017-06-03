@@ -15,7 +15,7 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
     public let userID: UserID
     public let username: String
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         if
             let profileLink = html.firstNode(matchingSelector: "ul.profilelinks a[href *= 'userid']"),
             let href = profileLink["href"],

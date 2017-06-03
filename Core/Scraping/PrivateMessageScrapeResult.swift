@@ -15,7 +15,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
     public let wasForwarded: Bool
     public let wasRepliedTo: Bool
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         guard
             let replyLink = html.firstNode(matchingSelector: "div.buttons a[href]"),
             let href = replyLink["href"],
@@ -28,7 +28,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
         }
         self.privateMessageID = privateMessageID
 
-        author = try? AuthorSidebarScrapeResult(html)
+        author = try? AuthorSidebarScrapeResult(html, url: url)
 
         subject = html.firstNode(matchingSelector: "div.breadcrumbs b")
             .flatMap { $0.children.lastObject as? HTMLTextNode }

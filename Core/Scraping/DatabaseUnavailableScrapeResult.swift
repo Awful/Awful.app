@@ -8,7 +8,7 @@ public struct DatabaseUnavailableScrapeResult: ScrapeResult {
     public let title: String
     public let message: String
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         guard let body = html.firstNode(matchingSelector: "body"), body.hasClass("database_error") else {
             throw ScrapingError.missingExpectedElement("body.database_error")
         }

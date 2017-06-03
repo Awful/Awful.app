@@ -8,7 +8,6 @@ FOUNDATION_EXPORT double AwfulCoreVersionNumber;
 FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 
 // Private bits (so Swift can call the methods)
-#import <AwfulCore/AwfulPostScraper.h>
 #import <AwfulCore/AwfulScanner.h>
 #import <AwfulCore/AwfulThreadListScraper.h>
 #import <AwfulCore/LepersColonyPageScraper.h>

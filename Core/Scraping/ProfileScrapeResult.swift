@@ -22,8 +22,8 @@ public struct ProfileScrapeResult: ScrapeResult {
     public let profilePicture: URL?
     public let yahooName: String
 
-    public init(_ html: HTMLNode) throws {
-        author = try AuthorSidebarScrapeResult(html)
+    public init(_ html: HTMLNode, url: URL?) throws {
+        author = try AuthorSidebarScrapeResult(html, url: url)
 
         do {
             let infoCell = html.firstNode(matchingSelector: "td.info")

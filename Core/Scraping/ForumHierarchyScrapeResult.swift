@@ -1,17 +1,13 @@
-//
 //  ForumHierarchyScrapeResult.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2017-06-03.
-//  Copyright © 2017 Awful Contributors. All rights reserved.
-//
+//  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import HTMLReader
 
 public struct ForumHierarchyScrapeResult: ScrapeResult {
     public let nodes: [ForumHierarchyNode]
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         let select = try html.requiredNode(matchingSelector: "select[name = 'forumid']")
         nodes = try select
             .nodes(matchingSelector: "option[value]")

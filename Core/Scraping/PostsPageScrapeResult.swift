@@ -12,12 +12,13 @@ public struct PostsPageScrapeResult: ScrapeResult {
     public let pageCount: Int?
     public let pageNumber: Int?
     public let posts: [PostScrapeResult]
+    public let postsPerPage: Int?
     public let threadID: ThreadID?
     public let threadIsBookmarked: Bool?
     public let threadIsClosed: Bool
     public let threadTitle: String
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         let body = try html.requiredNode(matchingSelector: "body")
 
         advertisement = body
@@ -25,7 +26,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
             .serializedFragment
             ?? ""
 
-        breadcrumbs = try? ForumBreadcrumbsScrapeResult(body)
+        breadcrumbs = try? ForumBreadcrumbsScrapeResult(body, url: url)
 
         forumID = (body["data-forum"] as String?).flatMap(ForumID.init)
 
@@ -49,10 +50,16 @@ public struct PostsPageScrapeResult: ScrapeResult {
             pageNumber = 1
         }
 
-        // TODO: calculate indexInThread using perpage and page number (need to pass in URL so we can parse it for perpage)
         posts = try body
             .nodes(matchingSelector: "table.post")
-            .map(PostScrapeResult.init)
+            .map { try PostScrapeResult($0, url: url) }
+
+        postsPerPage = url
+            .flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
+            .flatMap { $0.queryItems }
+            .flatMap { $0.first { item in return item.name == "perpage" } }
+            .flatMap { $0.value }
+            .flatMap { Int($0) }
 
         threadID = (body["data-thread"] as String?).flatMap(ThreadID.init)
 

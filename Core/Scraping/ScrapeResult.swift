@@ -8,7 +8,7 @@ import HTMLReader
  A common interface for all scrapers.
  */
 public protocol ScrapeResult {
-    init(_ html: HTMLNode) throws
+    init(_ html: HTMLNode, url: URL?) throws
 }
 
 

@@ -7,7 +7,7 @@ import HTMLReader
 public struct UnreadPrivateMessageCountScrapeResult: ScrapeResult {
     public let unreadPrivateMessageCount: Int
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         unreadPrivateMessageCount = html
             .nodes(matchingSelector: "table.standard img[src *= 'newpm']")
             .count

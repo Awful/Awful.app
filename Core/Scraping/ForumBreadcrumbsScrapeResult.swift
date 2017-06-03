@@ -7,7 +7,7 @@ import HTMLReader
 public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
     public let forums: [ForumBreadcrumb]
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         forums = try html
             .requiredNode(matchingSelector: "div.breadcrumbs")
             .nodes(matchingSelector: "a[href *= 'forumid']")

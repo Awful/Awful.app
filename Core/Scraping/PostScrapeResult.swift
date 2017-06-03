@@ -5,7 +5,7 @@
 import Foundation
 import HTMLReader
 
-public struct PostScrapeResult: ScrapeResult {
+public struct PostScrapeResult {
     public let author: AuthorSidebarScrapeResult
     public let authorCanReceivePrivateMessages: Bool
     public let authorIsOriginalPoster: Bool
@@ -20,7 +20,7 @@ public struct PostScrapeResult: ScrapeResult {
     public let isIgnored: Bool
     public let postDate: Date?
 
-    public init(_ html: HTMLNode) throws {
+    public init(_ html: HTMLNode, url: URL?) throws {
         let table = try html.requiredNode(matchingSelector: "table.post[id]")
 
         do {
@@ -39,12 +39,16 @@ public struct PostScrapeResult: ScrapeResult {
             self.id = id
         }
 
-        author = try AuthorSidebarScrapeResult(table)
+        author = try AuthorSidebarScrapeResult(table, url: url)
 
         authorCanReceivePrivateMessages = table.firstNode(matchingSelector: "ul.profilelinks a[href *= 'private.php']") != nil
 
         authorIsOriginalPoster = table.firstNode(matchingSelector: "dt.author.op") != nil
 
+        body = table.firstNode(matchingSelector: "div.complete_shit")?.innerHTML
+            ?? table.firstNode(matchingSelector: "td.postbody")?.innerHTML
+            ?? ""
+        
         hasBeenSeen = table.firstNode(matchingSelector: "tr.seen1")
             ?? table.firstNode(matchingSelector: "tr.seen2")
             != nil
@@ -61,14 +65,5 @@ public struct PostScrapeResult: ScrapeResult {
             .flatMap { $0.children.lastObject as? HTMLNode }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
             .flatMap(parsePostDate)
-
-        if !isIgnored {
-            body = table.firstNode(matchingSelector: "div.complete_shit")?.innerHTML
-                ?? table.firstNode(matchingSelector: "td.postbody")?.innerHTML
-                ?? ""
-        }
-        else {
-            body = ""
-        }
     }
 }

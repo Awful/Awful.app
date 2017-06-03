@@ -49,5 +49,5 @@ func fixtureNamed(_ basename: String) -> HTMLDocument {
 }
 
 func scrapeFixture<T: ScrapeResult>(named fixtureName: String) throws -> T {
-    return try T(fixtureNamed(fixtureName))
+    return try T(fixtureNamed(fixtureName), url: URL(string: "https://example.com/?perpage=40"))
 }

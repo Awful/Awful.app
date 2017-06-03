@@ -12,7 +12,7 @@ internal extension PostScrapeResult {
             if authorCanReceivePrivateMessages != user.canReceivePrivateMessages { user.canReceivePrivateMessages = authorCanReceivePrivateMessages }
         }
 
-        if !isIgnored, body != post.innerHTML { post.innerHTML = body }
+        if !body.isEmpty, body != post.innerHTML { post.innerHTML = body }
         if id.rawValue != post.postID { post.postID = id.rawValue }
         if isEditable != post.editable { post.editable = isEditable }
         if isIgnored != post.ignored { post.ignored = isIgnored }
@@ -117,26 +117,42 @@ internal extension PostsPageScrapeResult {
 
             raw.update(post)
 
-            if let indexInThread = raw.indexInThread {
-                if isSingleUserFilterEnabled {
-                    if indexInThread != Int(post.filteredThreadIndex) { post.filteredThreadIndex = Int32(indexInThread) }
-                }
-                else {
-                    if indexInThread != Int(post.threadIndex) { post.threadIndex = Int32(indexInThread) }
-                }
-            }
-
             return post
+        }
+
+        // Ignored posts don't inform us of their index within the thread, so we need to try our best to derive correct indices.
+        let calculatedIndices: [Int]
+        if
+            let hasIndexInThread = self.posts.index(where: { $0.indexInThread != nil }),
+            let indexInThread = self.posts[hasIndexInThread].indexInThread
+        {
+            calculatedIndices = posts.indices.map { indexInThread + $0 - hasIndexInThread }
+        }
+        else if let pageNumber = pageNumber, let postsPerPage = postsPerPage {
+            let start = (pageNumber - 1) * postsPerPage + 1
+            calculatedIndices = posts.indices.map { $0 + start }
+        }
+        else {
+            calculatedIndices = []
+        }
+
+        for (calculatedIndex, post) in zip(calculatedIndices, posts) {
+            if isSingleUserFilterEnabled {
+                if calculatedIndex != Int(post.filteredThreadIndex) { post.filteredThreadIndex = Int32(calculatedIndex) }
+            }
+            else {
+                if calculatedIndex != Int(post.threadIndex) { post.threadIndex = Int32(calculatedIndex) }
+            }
         }
 
         if
             !isSingleUserFilterEnabled,
             let thread = thread,
-            let firstUnseen = self.posts.first(where: { !$0.hasBeenSeen }),
-            let indexInThread = firstUnseen.indexInThread
+            let firstUnseen = posts.first(where: { !$0.beenSeen }),
+            firstUnseen.threadIndex > 0
         {
-            let seenPostCount = indexInThread - 1
-            if seenPostCount != Int(thread.seenPosts) { thread.seenPosts = Int32(seenPostCount) }
+            let seenPostCount = firstUnseen.threadIndex - 1
+            if seenPostCount != thread.seenPosts { thread.seenPosts = seenPostCount }
         }
 
         return posts
@@ -163,5 +179,39 @@ internal extension PostsPageScrapeResult {
         }
 
         return users
+    }
+}
+
+internal extension ShowPostScrapeResult {
+    func upsert(into context: NSManagedObjectContext) throws -> Post {
+        let request = NSFetchRequest<Post>(entityName: Post.entityName())
+        request.predicate = NSPredicate(format: "%K = %@", #keyPath(Post.postID), self.post.id.rawValue)
+        request.returnsObjectsAsFaults = false
+
+        let post = try context.fetch(request).first
+            ?? Post.insertIntoManagedObjectContext(context: context)
+
+        let user = try author.upsert(into: context)
+        if user != post.author { post.author = user }
+
+        self.post.update(post)
+
+        let thread = try threadID.map { id -> AwfulThread in
+            let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+            request.predicate = NSPredicate(format: "%K = %@", #keyPath(AwfulThread.threadID), id.rawValue)
+            request.returnsObjectsAsFaults = false
+
+            let thread = try context.fetch(request).first
+                ?? AwfulThread.insertIntoManagedObjectContext(context: context)
+
+            if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
+            if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
+
+            return thread
+        }
+
+        if let thread = thread, thread != post.thread { post.thread = thread }
+
+        return post
     }
 }
