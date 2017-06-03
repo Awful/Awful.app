@@ -230,6 +230,12 @@ extension Theme {
             || ((themeName == "dark" || themeName == "alternateDark") && !AwfulSettings.shared().darkTheme) {
             return false
         }
+        
+        if ((themeName == "default" && AwfulSettings.shared().alternateTheme)
+            || (themeName == "alternateDefault" && !AwfulSettings.shared().alternateTheme)) {
+            return false
+        }
+        
         return true
     }
 }
